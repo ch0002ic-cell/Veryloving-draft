@@ -26,6 +26,25 @@
 	<key>VL_API_BASE_URL</key>
 	<string>$(VL_API_SCHEME)://$(VL_API_HOST)</string>
 
+	<!-- App Transport Security: allow cleartext HTTP to localhost ONLY, so the
+	     app can reach the local reference backend (../backend) during
+	     development. All other traffic still requires HTTPS (TLS 1.3). This
+	     exception is harmless in production builds (the app never connects to
+	     localhost there); switch VL_API_HOST to an HTTPS host for release. -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
@@ -44,16 +63,18 @@
 	</array>
 
 	<!-- Permission usage strings (required or the app is rejected at submission). -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Veryloving uses your microphone so you can talk with your AI companion.</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Veryloving connects to your jewelry over Bluetooth to receive SOS triggers and battery status.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Veryloving shares your location with your emergency contacts when you trigger an SOS.</string>
+	<string>Veryloving uses your location to send SOS alerts with your exact position to emergency contacts.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Veryloving keeps sharing your location with emergency contacts for a short time after an SOS, even in the background.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Veryloving uses the microphone for voice conversations with your AI companion.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Veryloving uses Bluetooth to connect to your Guardian jewelry device.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Veryloving sends notifications for SOS alerts, safety reminders, and check-ins.</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Veryloving uses Face ID to keep your account and emergency contacts secure.</string>
+	<string>Use Face ID to securely unlock the Veryloving app.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Veryloving can import contacts to make adding emergency contacts faster.</string>
 

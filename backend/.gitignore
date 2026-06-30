@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Local secrets / config
+.env
+
+# Persisted store
+data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store

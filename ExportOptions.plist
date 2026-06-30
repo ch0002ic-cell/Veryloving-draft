@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ExportOptions.plist — template for `xcodebuild -exportArchive` when uploading
+  to App Store Connect / TestFlight. Fill in the two placeholders below:
+    • YOUR_TEAM_ID                              → your 10-char Apple Developer Team ID
+    • YOUR_APP_STORE_PROVISIONING_PROFILE_NAME  → the App Store distribution profile name
+  See docs/TESTFLIGHT.md for the full archive → export → upload workflow.
+-->
+<plist version="1.0">
+<dict>
+    <key>destination</key>
+    <string>upload</string>
+    <key>method</key>
+    <string>app-store</string>
+    <key>teamID</key>
+    <string>YOUR_TEAM_ID</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>ai.veryloving.app</key>
+        <string>YOUR_APP_STORE_PROVISIONING_PROFILE_NAME</string>
+    </dict>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>uploadSymbols</key>
+    <true/>
+    <key>manageAppVersionAndBuildNumber</key>
+    <false/>
+</dict>
+</plist>

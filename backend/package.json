@@ -1,0 +1,32 @@
+{
+  "name": "veryloving-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reference backend for the Veryloving iOS app. Implements the contract in ../docs/BACKEND_API.md with in-memory storage and mock SMS/push.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "smoke": "node scripts/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "veryloving",
+    "safety",
+    "sos",
+    "express"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "uuid": "^14.0.1"
+  }
+}
