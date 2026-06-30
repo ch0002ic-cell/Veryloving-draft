@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Push notifications for SOS / battery / check-ins. Switch to "production" for App Store builds. -->
+	<key>aps-environment</key>
+	<string>development</string>
+
+	<!-- Sign in with Apple. Requires the capability to be enabled on your provisioning profile. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>

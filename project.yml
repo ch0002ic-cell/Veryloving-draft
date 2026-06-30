@@ -1,0 +1,88 @@
+name: Veryloving
+options:
+  bundleIdPrefix: ai.veryloving
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"                 # Swift 5 language mode (compiled by the Swift 6.x toolchain).
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""                 # <-- set your Apple Developer Team ID here (or in Xcode signing).
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: NO
+
+targets:
+  Veryloving:
+    type: application
+    platform: iOS
+    configFiles:
+      Debug: Config/Base.xcconfig
+      Release: Config/Base.xcconfig
+    sources:
+      - path: Veryloving
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.veryloving.app
+        INFOPLIST_FILE: Veryloving/Resources/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Veryloving/Resources/Veryloving.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"       # iPhone only for the MVP.
+        DEVELOPMENT_ASSET_PATHS: '"Veryloving/Resources/Preview Content"'
+        SWIFT_EMIT_LOC_STRINGS: YES
+        ENABLE_PREVIEWS: YES
+
+  VerylovingTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: VerylovingTests
+    dependencies:
+      - target: Veryloving
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.veryloving.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Veryloving:
+    build:
+      targets:
+        Veryloving: all
+        VerylovingTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - VerylovingTests
+    profile:
+      config: Release
+    archive:
+      config: Release
+
+# ---------------------------------------------------------------------------
+# Intended Swift Package Manager dependencies (added per phase, see README).
+# Kept commented so the project builds with zero external configuration today.
+# The Core/* protocols are the seams where these slot in.
+#
+# packages:
+#   Firebase:
+#     url: https://github.com/firebase/firebase-ios-sdk
+#     from: "11.0.0"
+#   RevenueCat:
+#     url: https://github.com/RevenueCat/purchases-ios
+#     from: "5.0.0"
+#   GoogleSignIn:
+#     url: https://github.com/google/GoogleSignIn-iOS
+#     from: "8.0.0"
+# ---------------------------------------------------------------------------

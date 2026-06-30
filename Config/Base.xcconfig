@@ -1,0 +1,13 @@
+// Base.xcconfig
+// Build configuration shared by Debug and Release. Holds NON-secret defaults.
+// Secrets/per-developer overrides live in the git-ignored Secrets.xcconfig
+// (copy Secrets.example.xcconfig → Secrets.xcconfig and fill it in).
+//
+// NOTE: xcconfig treats "//" as a comment, so we never put a full URL here.
+// The scheme + host are composed into VL_API_BASE_URL in Info.plist instead.
+
+VL_API_SCHEME = https
+VL_API_HOST =
+
+// Optional local override (Secrets.xcconfig sets VL_API_HOST = your-server.com).
+#include? "Secrets.xcconfig"

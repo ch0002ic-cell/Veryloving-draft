@@ -1,0 +1,20 @@
+# Xcode / build
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+xcuserdata/
+.swiftpm/
+
+# The .xcodeproj is generated from project.yml by XcodeGen — do not commit it.
+*.xcodeproj
+
+# macOS
+.DS_Store
+
+# Secrets — never commit. Provide values at runtime (Keychain) or via xcconfig/CI.
+Secrets.xcconfig
+GoogleService-Info.plist
+*.p8
+*.p12
+*.mobileprovision
