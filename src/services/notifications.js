@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { explainPermission } from './permissions';
+import { translate } from '../i18n/core';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false })
@@ -15,7 +16,7 @@ export async function requestNotificationPermission({ showRationale = true } = {
     status = requested.status;
   }
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('safety', { name: 'Safety alerts', importance: Notifications.AndroidImportance.MAX });
+    await Notifications.setNotificationChannelAsync('safety', { name: translate('notifications.channelName'), importance: Notifications.AndroidImportance.MAX });
   }
   return status === 'granted';
 }

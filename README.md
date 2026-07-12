@@ -2,6 +2,8 @@
 
 VeryLoving is an Expo Router safety companion with onboarding, location and Mapbox safety views, NorthStar BLE jewelry, emergency contacts and SOS flows, social features, and Hume EVI voice conversations with local history and offline fallback.
 
+The interface supports system-selected English and Spanish, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for the phone data contract and the steps to add another language.
+
 ## Development Setup
 
 ### Prerequisites
@@ -76,7 +78,7 @@ npm test
 npm run lint
 ```
 
-The suite covers conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization.
+The suite covers global E.164 formatting and validation, locale resolution and translation parity, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization.
 
 Validate the production JavaScript bundle:
 

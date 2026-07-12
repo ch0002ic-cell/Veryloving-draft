@@ -8,8 +8,10 @@ import { images } from '../src/constants/assets';
 import { triggerSOS } from '../src/services/emergency';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
 export default function EmergencySOS() {
   const { contacts } = useAppState();
-  return <Screen><Header title="Emergency SOS" subtitle="Escalate only when you need immediate support." /><Image source={images.star} style={{ width: '100%', height: 160 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.regular }}>This will notify your safety flow and prepare emergency contacts.</Text></Card><Button title="Activate SOS" variant="danger" onPress={() => triggerSOS(contacts)} /><Button title="Call AI companion" onPress={() => router.push('/safety-call')} /><Button title="Cancel" variant="ghost" onPress={() => router.back()} /></Screen>;
+  const { t } = useI18n();
+  return <Screen><Header title={t('emergency.title')} subtitle={t('emergency.subtitle')} /><Image source={images.star} style={{ width: '100%', height: 160 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.regular }}>{t('emergency.body')}</Text></Card><Button title={t('emergency.activate')} variant="danger" onPress={() => triggerSOS(contacts)} /><Button title={t('emergency.callCompanion')} onPress={() => router.push('/safety-call')} /><Button title={t('common.cancel')} variant="ghost" onPress={() => router.back()} /></Screen>;
 }

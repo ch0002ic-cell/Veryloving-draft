@@ -4,6 +4,7 @@ export const SETTINGS_KEY = 'veryloving.settings';
 export const DEFAULT_SETTINGS = {
   mode: 'home',
   selectedVoiceId: 'capybara',
+  language: 'system',
   showCompanion: true,
   offlineMode: false,
   reminderEnabled: true

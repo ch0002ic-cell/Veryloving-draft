@@ -1,0 +1,357 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Back",
+    "call": "Call",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "close": "Close",
+    "connect": "Connect",
+    "connecting": "Connecting...",
+    "continue": "Continue",
+    "delete": "Delete",
+    "finish": "Finish",
+    "friends": "Friends",
+    "google": "Google",
+    "home": "Home",
+    "map": "Map",
+    "notNow": "Not now",
+    "remove": "Remove",
+    "retry": "Retry",
+    "retrying": "Retrying",
+    "save": "Save",
+    "selected": "Selected",
+    "send": "Send",
+    "settings": "Settings",
+    "skip": "Skip",
+    "skipForNow": "Skip for now",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Unknown",
+    "user": "VeryLoving user",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Language",
+    "subtitle": "Choose the language used throughout the app.",
+    "system": "System default",
+    "english": "English",
+    "spanish": "Spanish"
+  },
+  "phone": {
+    "label": "Phone number",
+    "placeholder": "Phone number",
+    "selectCountry": "Select country or region",
+    "searchCountry": "Search country, code, or dialing prefix",
+    "noCountries": "No countries match your search.",
+    "countryButton": "Change country, currently %{country} plus %{callingCode}",
+    "inputAccessibility": "Phone number for %{country}",
+    "required": "Enter a phone number.",
+    "tooShort": "This phone number is too short.",
+    "tooLong": "This phone number is too long.",
+    "invalid": "Enter a valid phone number for the selected country.",
+    "valid": "Valid international phone number"
+  },
+  "auth": {
+    "onboardingTagline": "A personal safety companion for the moments between “I’m fine” and “I need help.”",
+    "createAccount": "Create account",
+    "continueOnboarding": "Continue with onboarding",
+    "createSubtitle": "Choose a sign-in method to protect your safety graph.",
+    "phoneVerification": "Phone verification",
+    "sendCode": "Send code",
+    "verifyCode": "Verify code",
+    "sentTo": "Sent to %{phone}",
+    "yourPhone": "your phone",
+    "verificationCode": "Verification code",
+    "verify": "Verify",
+    "invalidCode": "Enter the verification code.",
+    "googleUnavailableTitle": "Google Sign-In unavailable",
+    "googleUnavailableMessage": "Using a local development session. Native Google Sign-In works in a development build.",
+    "northStarTitle": "NorthStar jewelry",
+    "northStarSubtitle": "Pair now or continue and add it later.",
+    "northStarBody": "The VL01 wearable can trigger safety flows with taps and long press gestures.",
+    "setupJewelry": "Set up jewelry",
+    "meetCapybear": "Meet Capybear",
+    "meetCapybearSubtitle": "Your gentle safety companion on the map and in calls.",
+    "capybearBody": "Capybear can help with home mode, guardian mode, emergency mode, excuse calls, and voice support.",
+    "chooseVoice": "Choose a voice",
+    "capybearReminder": "Capybear reminder",
+    "remindersReady": "Gentle reminders are ready."
+  },
+  "permissions": {
+    "locationTitle": "Location safety",
+    "locationSubtitle": "Used for the map, danger zones, safe arrival, and SOS context.",
+    "locationBody": "VeryLoving asks for location so guardians can understand where help may be needed. You can change this later in Settings.",
+    "allowLocation": "Allow location",
+    "notificationsTitle": "Safety alerts",
+    "notificationsSubtitle": "Notifications support check-ins and emergency events.",
+    "notificationsBody": "We only use notifications for safety prompts, emergency updates, and reminders you enable.",
+    "enableNotifications": "Enable notifications",
+    "locationRationaleTitle": "Location keeps safety context accurate",
+    "locationRationaleMessage": "VeryLoving uses your location for the safety map, danger zones, quick share, and SOS context. You can change this later in Settings.",
+    "notificationsRationaleTitle": "Safety alerts need notifications",
+    "notificationsRationaleMessage": "VeryLoving sends check-in reminders, emergency updates, and safety prompts you enable. We do not use notifications for ads.",
+    "microphoneRationaleTitle": "Microphone powers safety calls",
+    "microphoneRationaleMessage": "VeryLoving uses your microphone only when you start an AI companion or safety call.",
+    "bluetoothRationaleTitle": "Bluetooth connects your wearable",
+    "bluetoothRationaleMessage": "VeryLoving uses Bluetooth to pair with NorthStar jewelry, read connection status, and trigger safety flows from the wearable.",
+    "cameraRationaleTitle": "Camera is optional",
+    "cameraRationaleMessage": "VeryLoving uses the camera only when you choose to take a profile photo or share a safety image."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving keeps this flow available from Settings and the dashboard.",
+    "chooseVoiceTitle": "Choose your voice",
+    "chooseVoiceSubtitle": "Pick the companion voice that feels safest to hear.",
+    "homeTitle": "Home mode",
+    "homeSubtitle": "Quiet monitoring for daily safety.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Share context with trusted people.",
+    "emergencyTitle": "Emergency mode",
+    "emergencySubtitle": "Five taps can escalate to SOS and guardian alerts.",
+    "excuseTitle": "Excuse call",
+    "excuseSubtitle": "Create a graceful reason to leave an uncomfortable situation.",
+    "safetyCallTitle": "Safety call",
+    "safetyCallSubtitle": "Start a real-time companion call when you need support.",
+    "practiceTitle": "Practice scene",
+    "practiceSubtitle": "Try the safety flows in a low-pressure demo."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Keep the jewelry nearby while scanning.",
+    "scan": "Scan for devices",
+    "scanning": "Scanning nearby...",
+    "noDevices": "No nearby NorthStar devices found yet.",
+    "scanStartFailed": "Bluetooth scanning could not start. Please try again.",
+    "scanFailed": "We could not find nearby jewelry. Check Bluetooth, keep NorthStar close, and try again.",
+    "scanAccessFailed": "Bluetooth scanning could not start. Check Bluetooth access and try again.",
+    "connectTimeout": "NorthStar took too long to connect. Move it closer and try again.",
+    "connectFailed": "We could not connect to NorthStar. Check that it is charged and nearby, then try again."
+  },
+  "home": {
+    "subtitle": "Safety companion dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} is ready",
+    "readyBody": "Voice, map, jewelry, and guardians are one tap away.",
+    "safetyCall": "Safety call",
+    "northStarDevice": "NorthStar device",
+    "deviceConnected": "%{name} connected · %{battery}%",
+    "noDevice": "No device connected",
+    "manageDevice": "Manage device",
+    "mode": "Mode",
+    "modes": {
+      "home": "Home",
+      "guardian": "Guardian",
+      "emergency": "Emergency"
+    }
+  },
+  "map": {
+    "finding": "Finding your location...",
+    "retry": "Retry location",
+    "title": "Safety map",
+    "previewSubtitle": "Expo Go preview; Mapbox renders in a development build.",
+    "preview": "Map preview",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Refresh location",
+    "refreshing": "Finding location...",
+    "updateFailed": "We could not update your location. Please try again.",
+    "notRequested": "Location access was not requested. You can enable it later from Settings.",
+    "permissionOff": "Location access is off. Enable it in Settings to center the safety map on you.",
+    "timeout": "Your location is taking longer than expected. Move somewhere with a clearer signal and try again.",
+    "zones": {
+      "crowding": "Late night crowding",
+      "lowLighting": "Low lighting area"
+    },
+    "risks": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Connecting...",
+    "offlineCompanion": "Offline companion",
+    "offline": "Offline",
+    "connected": "Connected",
+    "interrupted": "Connection interrupted",
+    "ready": "Ready to connect",
+    "connectingSecurely": "Connecting securely to your voice companion...",
+    "messagesWaiting": {
+      "one": "%{count} message waiting to send",
+      "other": "%{count} messages waiting to send"
+    },
+    "useOffline": "Use offline companion",
+    "reconnect": "Reconnect to voice AI",
+    "typePlaceholder": "Type if speaking is hard",
+    "endCall": "End call",
+    "startCall": "Start call"
+  },
+  "chat": {
+    "waiting": "Waiting for connection",
+    "notSent": "Message not sent.",
+    "retryAccessibility": "Retry sending message"
+  },
+  "history": {
+    "clearTitle": "Clear conversation history?",
+    "clearMessage": "This removes saved AI companion messages from this device.",
+    "deleteTitle": "Delete this conversation?",
+    "cannotUndo": "This cannot be undone.",
+    "title": "Conversation history",
+    "subtitle": "AI companion messages saved on this device.",
+    "empty": "No conversations saved yet.",
+    "aiCompanion": "AI companion",
+    "resume": "Resume",
+    "clearAll": "Clear all history",
+    "roles": {
+      "assistant": "companion",
+      "user": "you"
+    }
+  },
+  "voices": {
+    "title": "My safety call voices",
+    "subtitle": "Choose the companion voice that feels right to hear.",
+    "test": "Test voice",
+    "stop": "Stop sample",
+    "selectionFailedTitle": "Selection not saved",
+    "selectionFailedMessage": "Please try choosing the voice again.",
+    "sampleFailedTitle": "Sample unavailable",
+    "sampleFailedMessage": "This voice sample could not be played. Please try again.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "soft, calm, grounding"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "bright, reassuring, conversational"
+      },
+      "boyfriend": {
+        "name": "Boyfriend",
+        "description": "steady, affectionate, present"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "confident, protective, motivating"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Voice",
+    "changeVoice": "Change voice",
+    "showCompanion": "Show companion",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Use bundled companion responses when the network or Hume credentials are unavailable.",
+    "privacyData": "Privacy & data",
+    "privacyBody": "Export or delete the local data stored on this device.",
+    "preparingExport": "Preparing export...",
+    "exportData": "Export my data",
+    "privacyPolicy": "Privacy policy",
+    "deleting": "Deleting...",
+    "deleteAll": "Delete all local data",
+    "deviceManagement": "Device management",
+    "emergencyContacts": "Emergency contacts",
+    "signOut": "Sign out",
+    "exportFailedTitle": "Export failed",
+    "exportFailedMessage": "Unable to export your data right now.",
+    "deleteConfirmTitle": "Delete all local data?",
+    "deleteConfirmMessage": "This removes your profile, settings, emergency contacts, conversation history, permission reminders, and local auth session from this device.",
+    "deleteEverything": "Delete everything",
+    "deleteFailedTitle": "Deletion failed",
+    "deleteFailedMessage": "Unable to delete local data right now.",
+    "linkFailed": "Unable to open link"
+  },
+  "contacts": {
+    "title": "Emergency contacts",
+    "subtitle": "Trusted people available during safety flows.",
+    "addTitle": "Add emergency contact",
+    "name": "Name",
+    "namePlaceholder": "Contact name",
+    "phone": "Contact phone number",
+    "add": "Add contact",
+    "empty": "No emergency contacts added yet.",
+    "removeTitle": "Remove %{name}?",
+    "removeMessage": "This person will no longer appear in your emergency flow.",
+    "nameRequired": "Enter the contact's name.",
+    "callAccessibility": "Call %{name}",
+    "removeAccessibility": "Remove %{name}"
+  },
+  "device": {
+    "title": "Device management",
+    "subtitle": "Manage your NorthStar device.",
+    "connected": "Connected · %{battery}% battery",
+    "none": "No devices connected",
+    "disconnect": "Disconnect device",
+    "connect": "Connect device"
+  },
+  "friends": {
+    "title": "Friends",
+    "subtitle": "Guardians, requests, and emergency graph.",
+    "addDemo": "Add demo friend",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Pending"
+    }
+  },
+  "emergency": {
+    "title": "Emergency SOS",
+    "subtitle": "Escalate only when you need immediate support.",
+    "body": "This will notify your safety flow and prepare emergency contacts.",
+    "activate": "Activate SOS",
+    "callCompanion": "Call AI companion",
+    "notificationTitle": "SOS activated",
+    "notificationBody": "Your emergency flow is ready.",
+    "readyTitle": "SOS ready",
+    "callContact": "Call %{name}?",
+    "addContact": "Add an emergency contact in Settings.",
+    "quickShareTitle": "Quick share",
+    "quickShareMessage": "Location sharing stub is ready. Connect the backend share endpoint to send live links."
+  },
+  "quickShare": {
+    "title": "Quick share",
+    "subtitle": "Location share flow is ready."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Double-tap your NorthStar to drop a safety orange.",
+    "body": "Gesture route is ready for BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Development-only route."
+  },
+  "errors": {
+    "voiceOffline": "You seem offline. Your message will be sent when you reconnect.",
+    "voiceQueued": "Message saved. It will be sent when the voice companion reconnects.",
+    "voiceRetrying": "Trying to send your message again...",
+    "voiceConnecting": "Connecting securely to your voice companion...",
+    "microphone": "Microphone access is needed for voice calls. You can enable it in Settings, or type a message instead.",
+    "billing": "The online voice companion is temporarily unavailable. You can continue with the offline companion.",
+    "authentication": "The voice companion could not verify this session. Sign in again or use the offline companion for now.",
+    "timeout": "The voice companion took too long to respond. Check your connection and try again.",
+    "network": "We could not reach the voice companion. Check your connection, then try again or continue offline.",
+    "genericVoice": "Something interrupted the voice call. Try again, or continue with the offline companion."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data export"
+  },
+  "notifications": {
+    "channelName": "Safety alerts"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving needs microphone access for safety and AI companion calls.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving uses your location for the safety map and nearby safety features.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving uses your location to support safe-arrival and emergency flows.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving uses background location for safe-arrival and nearby danger-zone features.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only when you choose to take a profile or safety photo.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving uses your photo library only when you choose a profile or safety image.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth to connect to your NorthStar safety jewelry.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving uses Bluetooth to connect to your NorthStar safety jewelry."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

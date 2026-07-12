@@ -3,6 +3,8 @@ import * as SecureStore from 'expo-secure-store';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Alert, Platform } from 'react-native';
 import { logger } from '../utils/logger';
+import { translate } from '../i18n/core';
+import { createPhoneValue } from '../utils/phone';
 
 const AuthContext = createContext(null);
 const TOKEN_KEY = 'veryloving.auth.token';
@@ -42,7 +44,7 @@ export function AuthProvider({ children }) {
     const credential = await AppleAuthentication.signInAsync({
       requestedScopes: [AppleAuthentication.AppleAuthenticationScope.FULL_NAME, AppleAuthentication.AppleAuthenticationScope.EMAIL]
     });
-    await persist({ id: credential.user, name: credential.fullName?.givenName || 'VeryLoving User', provider: 'apple' }, credential.identityToken || 'apple-token');
+    await persist({ id: credential.user, name: credential.fullName?.givenName || null, provider: 'apple' }, credential.identityToken || 'apple-token');
   };
 
   const signInWithGoogle = async () => {
@@ -54,15 +56,25 @@ export function AuthProvider({ children }) {
       await persist({ id: result.user.id, name: result.user.name, email: result.user.email, provider: 'google' }, result.idToken || 'google-token');
     } catch (error) {
       logger.warn('[Auth] Google Sign-In fallback', error);
-      Alert.alert('Google Sign-In unavailable', 'Using a local development session. Native Google Sign-In works in a dev build.');
+      Alert.alert(translate('auth.googleUnavailableTitle'), translate('auth.googleUnavailableMessage'));
       await persist({ id: 'dev-google', name: 'Grace', provider: 'google' }, 'dev-access-token');
     }
   };
 
-  const signInWithPhone = async (phone) => ({ verificationId: `dev-${phone}` });
-  const verifyCode = async (_verificationId, code) => {
-    if (!code || code.length < 4) throw new Error('Enter the verification code.');
-    await persist({ id: 'phone-user', name: 'Grace', phone: 'verified', provider: 'phone' }, 'dev-access-token');
+  const signInWithPhone = async ({ e164, countryCode }) => {
+    const phone = createPhoneValue(e164, countryCode);
+    if (!phone.isValid) throw new Error(translate(`phone.${phone.validationError || 'invalid'}`));
+    return { verificationId: `dev-${phone.e164}`, phone: phone.e164, countryCode: phone.countryCode };
+  };
+  const verifyCode = async (_verificationId, code, phoneDetails = {}) => {
+    if (!code || code.length < 4) throw new Error(translate('auth.invalidCode'));
+    await persist({
+      id: 'phone-user',
+      name: null,
+      phone: phoneDetails.phone,
+      countryCode: phoneDetails.countryCode,
+      provider: 'phone'
+    }, 'dev-access-token');
   };
 
   const signOut = async () => {

@@ -5,12 +5,13 @@ import { DEFAULT_SETTINGS, loadSettings, mergeSettings, persistSettings } from '
 
 const AppContext = createContext(null);
 const CONTACTS_KEY = 'veryloving.emergencyContacts';
-const DEFAULT_CONTACTS = [{ id: '1', name: 'Mom', phone: '+1 555 0100' }];
+const DEFAULT_CONTACTS = [];
 
 export function AppProvider({ children }) {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const settingsRef = useRef(DEFAULT_SETTINGS);
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS);
+  const contactsRef = useRef(DEFAULT_CONTACTS);
   const [device, setDevice] = useState({ connected: false, name: 'NorthStar VL01', battery: 82 });
   const [friends, setFriends] = useState([{ id: 'grace', name: 'Grace', status: 'Guardian' }]);
 
@@ -19,7 +20,9 @@ export function AppProvider({ children }) {
       const savedSettings = await loadSettings();
       settingsRef.current = savedSettings;
       setSettings(savedSettings);
-      setContacts(await storage.getJSON(CONTACTS_KEY, DEFAULT_CONTACTS));
+      const savedContacts = await storage.getJSON(CONTACTS_KEY, DEFAULT_CONTACTS);
+      contactsRef.current = savedContacts;
+      setContacts(savedContacts);
     })();
   }, []);
 
@@ -31,14 +34,26 @@ export function AppProvider({ children }) {
     return next;
   }, []);
 
-  const addContact = async (contact) => {
-    const next = [...contacts, { id: Date.now().toString(), ...contact }];
+  const addContact = useCallback(async (contact) => {
+    const nextContact = { id: Date.now().toString(), ...contact };
+    const next = [...contactsRef.current, nextContact];
+    contactsRef.current = next;
     setContacts(next);
     await storage.setJSON(CONTACTS_KEY, next);
-  };
+    return nextContact;
+  }, []);
+
+  const removeContact = useCallback(async (contactId) => {
+    const next = contactsRef.current.filter((contact) => contact.id !== contactId);
+    contactsRef.current = next;
+    setContacts(next);
+    await storage.setJSON(CONTACTS_KEY, next);
+    return next;
+  }, []);
 
   const resetLocalState = useCallback(() => {
     settingsRef.current = DEFAULT_SETTINGS;
+    contactsRef.current = DEFAULT_CONTACTS;
     setSettings(DEFAULT_SETTINGS);
     setContacts(DEFAULT_CONTACTS);
     setDevice({ connected: false, name: 'NorthStar VL01', battery: 82 });
@@ -47,7 +62,7 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState }), [settings, updateSettings, contacts, device, friends, selectedVoice, resetLocalState]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState }), [settings, updateSettings, contacts, addContact, removeContact, device, friends, selectedVoice, resetLocalState]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

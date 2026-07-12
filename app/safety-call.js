@@ -7,17 +7,19 @@ import { ChatBubble } from '../src/components/ChatBubble';
 import { VoiceActivityIndicator } from '../src/components/VoiceActivityIndicator';
 import { useHumeVoiceCall } from '../src/hooks/useHumeVoiceCall';
 import { colors, fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
-function connectionLabel({ isConnecting, isOnline, status }) {
-  if (isConnecting) return 'Connecting...';
-  if (!isOnline) return status === 'connected' ? 'Offline companion' : 'Offline';
-  if (status === 'connected') return 'Connected';
-  if (status === 'error') return 'Connection interrupted';
-  return 'Ready to connect';
+function connectionLabel({ isConnecting, isOnline, status, t }) {
+  if (isConnecting) return t('safetyCall.connecting');
+  if (!isOnline) return status === 'connected' ? t('safetyCall.offlineCompanion') : t('safetyCall.offline');
+  if (status === 'connected') return t('safetyCall.connected');
+  if (status === 'error') return t('safetyCall.interrupted');
+  return t('safetyCall.ready');
 }
 
 export default function SafetyCall() {
   const { sessionId } = useLocalSearchParams();
+  const { t } = useI18n();
   const {
     status,
     messages,
@@ -59,27 +61,25 @@ export default function SafetyCall() {
   return (
     <Screen scroll={false}>
       <View style={styles.header}>
-        <Button title="Close" variant="ghost" onPress={() => router.back()} />
+        <Button title={t('common.close')} variant="ghost" onPress={() => router.back()} />
         <View style={styles.connectionStatus}>
           {isConnecting ? <ActivityIndicator size="small" color={colors.orange} /> : null}
-          <Text style={styles.status}>{connectionLabel({ isConnecting, isOnline, status })}</Text>
+          <Text style={styles.status}>{connectionLabel({ isConnecting, isOnline, status, t })}</Text>
         </View>
       </View>
 
       <View style={styles.center}>
         <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
         <VoiceActivityIndicator active={active} />
-        <Text style={styles.name}>{selectedVoice.displayName}</Text>
-        {isConnecting ? <Text style={styles.connecting}>Connecting securely to your voice companion...</Text> : null}
+        <Text style={styles.name}>{t(`voices.profiles.${selectedVoice.id}.name`)}</Text>
+        {isConnecting ? <Text style={styles.connecting}>{t('safetyCall.connectingSecurely')}</Text> : null}
         {pendingMessageCount ? (
-          <Text style={styles.queued}>
-            {pendingMessageCount} message{pendingMessageCount === 1 ? '' : 's'} waiting to send
-          </Text>
+          <Text style={styles.queued}>{t('safetyCall.messagesWaiting', { count: pendingMessageCount })}</Text>
         ) : null}
         {notice ? <Text style={styles.notice}>{notice}</Text> : null}
         {error ? <Text accessibilityRole="alert" style={styles.error}>{error.message}</Text> : null}
-        {fallbackAvailable ? <Button title="Use offline companion" variant="ghost" onPress={startOfflineFallback} loading={isConnecting} /> : null}
-        {canRetryOnline ? <Button title="Reconnect to voice AI" variant="ghost" onPress={retryOnline} loading={isConnecting} /> : null}
+        {fallbackAvailable ? <Button title={t('safetyCall.useOffline')} variant="ghost" onPress={startOfflineFallback} loading={isConnecting} /> : null}
+        {canRetryOnline ? <Button title={t('safetyCall.reconnect')} variant="ghost" onPress={retryOnline} loading={isConnecting} /> : null}
       </View>
 
       <FlatList
@@ -104,17 +104,17 @@ export default function SafetyCall() {
         <TextInput
           value={text}
           onChangeText={setText}
-          placeholder="Type if speaking is hard"
+          placeholder={t('safetyCall.typePlaceholder')}
           returnKeyType="send"
           onSubmitEditing={submitText}
           style={styles.input}
         />
-        <Button title="Send" onPress={submitText} disabled={!text.trim()} />
+        <Button title={t('common.send')} onPress={submitText} disabled={!text.trim()} />
       </View>
       <View style={styles.actions}>
         {active
-          ? <Button title="End call" variant="danger" onPress={stop} />
-          : <Button title={isConnecting ? 'Connecting...' : 'Start call'} icon="call" onPress={start} loading={isConnecting} />}
+          ? <Button title={t('safetyCall.endCall')} variant="danger" onPress={stop} />
+          : <Button title={isConnecting ? t('safetyCall.connecting') : t('safetyCall.startCall')} icon="call" onPress={start} loading={isConnecting} />}
       </View>
     </Screen>
   );

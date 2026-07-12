@@ -1,10 +1,14 @@
 import { Alert, Linking } from 'react-native';
 import { scheduleLocalSafetyNotification } from './notifications';
+import { translate } from '../i18n/core';
 
 export async function triggerSOS(contacts = []) {
-  await scheduleLocalSafetyNotification('SOS activated', 'Your emergency flow is ready.');
+  await scheduleLocalSafetyNotification(translate('emergency.notificationTitle'), translate('emergency.notificationBody'));
   const first = contacts[0];
-  Alert.alert('SOS ready', first ? `Call ${first.name}?` : 'Add an emergency contact in Settings.');
+  Alert.alert(
+    translate('emergency.readyTitle'),
+    first ? translate('emergency.callContact', { name: first.name }) : translate('emergency.addContact')
+  );
 }
 
 export function callNumber(phone) {
@@ -13,5 +17,5 @@ export function callNumber(phone) {
 }
 
 export function shareQuickLocation() {
-  Alert.alert('Quick share', 'Location sharing stub is ready. Connect backend share endpoint to send live links.');
+  Alert.alert(translate('emergency.quickShareTitle'), translate('emergency.quickShareMessage'));
 }

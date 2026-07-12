@@ -4,17 +4,19 @@ import { Screen } from '../../src/components/Screen';
 import { Button } from '../../src/components/Button';
 import { images } from '../../src/constants/assets';
 import { colors, fonts } from '../../src/constants/theme';
+import { useI18n } from '../../src/context/I18nContext';
 
 export default function Onboarding() {
+  const { t } = useI18n();
   return (
     <Screen background={images.onboarding1} scroll={false} style={styles.wrap}>
       <View style={styles.hero}>
         <Image source={images.capybaraMenu} style={styles.capy} resizeMode="contain" />
         <Text style={styles.title}>VeryLoving</Text>
-        <Text style={styles.subtitle}>A personal safety companion for the moments between “I’m fine” and “I need help.”</Text>
+        <Text style={styles.subtitle}>{t('auth.onboardingTagline')}</Text>
       </View>
-      <Button title="Create account" onPress={() => router.push('/(auth)/create-account')} />
-      <Button title="Continue with onboarding" variant="ghost" onPress={() => router.push('/(auth)/location-permission')} />
+      <Button title={t('auth.createAccount')} onPress={() => router.push('/(auth)/create-account')} />
+      <Button title={t('auth.continueOnboarding')} variant="ghost" onPress={() => router.push('/(auth)/location-permission')} />
     </Screen>
   );
 }

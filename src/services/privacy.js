@@ -5,6 +5,7 @@ import { AUTH_STORAGE_KEYS } from '../context/AuthContext';
 import { CONVERSATION_HISTORY_KEY, loadConversationHistory } from './conversation-history';
 import { RATIONALE_PREFIX } from './permissions';
 import { storage } from './storage';
+import { translate } from '../i18n/core';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
 const LOCAL_KEY_PREFIX = 'veryloving.';
@@ -63,9 +64,9 @@ export async function exportUserData() {
   const json = JSON.stringify(data, null, 2);
   await FileSystem.writeAsStringAsync(uri, json);
   await Share.share({
-    title: 'VeryLoving data export',
+    title: translate('privacy.exportTitle'),
     url: uri,
-    message: Platform.OS === 'ios' ? 'VeryLoving data export' : json
+    message: Platform.OS === 'ios' ? translate('privacy.exportTitle') : json
   });
   return uri;
 }

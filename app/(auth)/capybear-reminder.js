@@ -2,4 +2,5 @@ import { router } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
-export default function CapybearReminder() { return <Screen><Header title='Capybear reminder' subtitle='Gentle reminders are ready.' /><Button title='Continue' onPress={() => router.replace('/(tabs)')} /></Screen>; }
+import { useI18n } from '../../src/context/I18nContext';
+export default function CapybearReminder() { const { t } = useI18n(); return <Screen><Header title={t('auth.capybearReminder')} subtitle={t('auth.remindersReady')} /><Button title={t('common.continue')} onPress={() => router.replace('/(tabs)')} /></Screen>; }

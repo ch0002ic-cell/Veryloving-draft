@@ -7,8 +7,10 @@ import { Card } from '../src/components/Card';
 import { images } from '../src/constants/assets';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
 export default function DeviceManagement() {
   const { device, setDevice } = useAppState();
-  return <Screen><Header title="Device Management" subtitle="Manage your NorthStar device." /><Image source={device.connected ? images.jewelryConnected : images.jewelryDisconnected} style={{ width: '100%', height: 220 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.bold }}>{device.name}</Text><Text>{device.connected ? `Connected · ${device.battery}% battery` : 'No devices connected'}</Text></Card><Button title={device.connected ? 'Disconnect Device' : 'Connect Device'} onPress={() => device.connected ? setDevice({ ...device, connected: false }) : router.push('/(auth)/jewelry-setup?mode=standalone')} /></Screen>;
+  const { t } = useI18n();
+  return <Screen><Header title={t('device.title')} subtitle={t('device.subtitle')} /><Image source={device.connected ? images.jewelryConnected : images.jewelryDisconnected} style={{ width: '100%', height: 220 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.bold }}>{device.name}</Text><Text>{device.connected ? t('device.connected', { battery: device.battery }) : t('device.none')}</Text></Card><Button title={device.connected ? t('device.disconnect') : t('device.connect')} onPress={() => device.connected ? setDevice({ ...device, connected: false }) : router.push('/(auth)/jewelry-setup?mode=standalone')} /></Screen>;
 }

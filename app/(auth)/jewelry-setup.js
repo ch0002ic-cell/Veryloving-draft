@@ -8,6 +8,7 @@ import { Card } from '../../src/components/Card';
 import { bleService } from '../../src/services/ble';
 import { useAppState } from '../../src/context/AppContext';
 import { colors, fonts } from '../../src/constants/theme';
+import { useI18n } from '../../src/context/I18nContext';
 
 export default function JewelrySetup() {
   const [devices, setDevices] = useState([]);
@@ -17,6 +18,7 @@ export default function JewelrySetup() {
   const mountedRef = useRef(true);
   const stopScanRef = useRef(null);
   const { setDevice } = useAppState();
+  const { t } = useI18n();
 
   const stopScan = useCallback(() => {
     stopScanRef.current?.();
@@ -59,10 +61,10 @@ export default function JewelrySetup() {
     } catch (scanError) {
       if (mountedRef.current) {
         setScanning(false);
-        setError(scanError.message || 'Bluetooth scanning could not start. Please try again.');
+        setError(scanError.message || t('jewelry.scanStartFailed'));
       }
     }
-  }, [stopScan]);
+  }, [stopScan, t]);
 
   const connect = useCallback(async (candidate) => {
     stopScan();
@@ -82,9 +84,9 @@ export default function JewelrySetup() {
 
   return (
     <Screen scroll={false}>
-      <Header title="Pair NorthStar" subtitle="Keep the jewelry nearby while scanning." />
+      <Header title={t('jewelry.pairTitle')} subtitle={t('jewelry.pairSubtitle')} />
       <Button
-        title={scanning ? 'Scanning nearby...' : 'Scan for devices'}
+        title={scanning ? t('jewelry.scanning') : t('jewelry.scan')}
         icon="bluetooth"
         onPress={scan}
         loading={scanning}
@@ -97,17 +99,17 @@ export default function JewelrySetup() {
           <Card style={styles.deviceCard}>
             <Text style={styles.deviceName}>{item.name || item.id}</Text>
             <Button
-              title={connectingId === item.id ? 'Connecting...' : 'Connect'}
+              title={connectingId === item.id ? t('common.connecting') : t('common.connect')}
               onPress={() => connect(item)}
               loading={connectingId === item.id}
               disabled={Boolean(connectingId && connectingId !== item.id)}
             />
           </Card>
         )}
-        ListEmptyComponent={!scanning ? <Text style={styles.empty}>No nearby NorthStar devices found yet.</Text> : null}
+        ListEmptyComponent={!scanning ? <Text style={styles.empty}>{t('jewelry.noDevices')}</Text> : null}
         contentContainerStyle={styles.list}
       />
-      <Button title="Skip" variant="ghost" onPress={() => router.push('/(auth)/capybear-setup')} />
+      <Button title={t('common.skip')} variant="ghost" onPress={() => router.push('/(auth)/capybear-setup')} />
     </Screen>
   );
 }

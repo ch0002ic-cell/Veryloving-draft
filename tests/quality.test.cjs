@@ -13,7 +13,7 @@ const {
 const { userFacingVoiceError, voiceCallCopy } = require('../src/utils/user-facing-error');
 const { OperationTimeoutError, withTimeout } = require('../src/utils/async');
 
-test('voice selection settings survive storage reloads', async () => {
+test('voice and language settings survive storage reloads', async () => {
   let stored = null;
   storage.setJSON = async (key, value) => {
     assert.equal(key, SETTINGS_KEY);
@@ -21,9 +21,10 @@ test('voice selection settings survive storage reloads', async () => {
   };
   storage.getJSON = async () => structuredClone(stored);
 
-  await persistSettings(mergeSettings(DEFAULT_SETTINGS, { selectedVoiceId: 'bestie' }));
+  await persistSettings(mergeSettings(DEFAULT_SETTINGS, { selectedVoiceId: 'bestie', language: 'es' }));
   const reloaded = await loadSettings();
   assert.equal(reloaded.selectedVoiceId, 'bestie');
+  assert.equal(reloaded.language, 'es');
   assert.equal(reloaded.mode, DEFAULT_SETTINGS.mode);
 });
 

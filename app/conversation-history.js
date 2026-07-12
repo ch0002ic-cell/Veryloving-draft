@@ -8,9 +8,11 @@ import { Card } from '../src/components/Card';
 import { clearConversationHistory, deleteConversationSession, loadConversationHistory } from '../src/services/conversation-history';
 import { clearOfflineMessageQueue, deleteQueuedMessagesForSession } from '../src/services/offline-message-queue';
 import { colors, fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
 export default function ConversationHistory() {
   const [sessions, setSessions] = useState([]);
+  const { locale, t } = useI18n();
 
   const refresh = useCallback(async () => {
     setSessions(await loadConversationHistory());
@@ -21,26 +23,26 @@ export default function ConversationHistory() {
   }, [refresh]);
 
   const confirmClear = () => {
-    Alert.alert('Clear conversation history?', 'This removes saved AI companion messages from this device.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear', style: 'destructive', onPress: async () => { await Promise.all([clearConversationHistory(), clearOfflineMessageQueue()]); await refresh(); } }
+    Alert.alert(t('history.clearTitle'), t('history.clearMessage'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.clear'), style: 'destructive', onPress: async () => { await Promise.all([clearConversationHistory(), clearOfflineMessageQueue()]); await refresh(); } }
     ]);
   };
 
   const removeSession = (sessionId) => {
-    Alert.alert('Delete this conversation?', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => { await deleteQueuedMessagesForSession(sessionId); setSessions(await deleteConversationSession(sessionId)); } }
+    Alert.alert(t('history.deleteTitle'), t('history.cannotUndo'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.delete'), style: 'destructive', onPress: async () => { await deleteQueuedMessagesForSession(sessionId); setSessions(await deleteConversationSession(sessionId)); } }
     ]);
   };
 
   return (
     <Screen scroll={false}>
-      <Header title="Conversation history" subtitle="AI companion messages saved on this device." />
+      <Header title={t('history.title')} subtitle={t('history.subtitle')} />
       <FlatList
         data={sessions}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Card><Text style={styles.muted}>No conversations saved yet.</Text></Card>}
+        ListEmptyComponent={<Card><Text style={styles.muted}>{t('history.empty')}</Text></Card>}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
           const preview = item.messages?.slice(-2) || [];
@@ -48,24 +50,24 @@ export default function ConversationHistory() {
             <Card style={styles.card}>
               <View style={styles.row}>
                 <View style={styles.titleGroup}>
-                  <Text style={styles.title}>{item.voiceName || 'AI companion'}</Text>
-                  <Text style={styles.muted}>{new Date(item.updatedAt || item.startedAt).toLocaleString()}</Text>
+                  <Text style={styles.title}>{item.voiceId ? t(`voices.profiles.${item.voiceId}.name`) : item.voiceName || t('history.aiCompanion')}</Text>
+                  <Text style={styles.muted}>{new Date(item.updatedAt || item.startedAt).toLocaleString(locale)}</Text>
                 </View>
                 <View style={styles.actions}>
-                  <Button title="Resume" variant="ghost" onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
-                  <Button title="Delete" variant="ghost" onPress={() => removeSession(item.id)} />
+                  <Button title={t('history.resume')} variant="ghost" onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
+                  <Button title={t('common.delete')} variant="ghost" onPress={() => removeSession(item.id)} />
                 </View>
               </View>
               {preview.map((message) => (
                 <Text key={message.id} style={styles.message}>
-                  <Text style={styles.role}>{message.role}: </Text>{message.text}
+                  <Text style={styles.role}>{t(`history.roles.${message.role}`)}: </Text>{message.text}
                 </Text>
               ))}
             </Card>
           );
         }}
       />
-      {sessions.length ? <Button title="Clear all history" variant="danger" onPress={confirmClear} /> : null}
+      {sessions.length ? <Button title={t('history.clearAll')} variant="danger" onPress={confirmClear} /> : null}
     </Screen>
   );
 }

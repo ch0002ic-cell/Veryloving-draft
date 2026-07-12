@@ -1,8 +1,10 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts } from '../constants/theme';
+import { useI18n } from '../context/I18nContext';
 
 export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry, retrying = false }) {
+  const { t } = useI18n();
   const user = role === 'user';
   const failed = user && deliveryStatus === 'failed';
   const queued = user && deliveryStatus === 'queued';
@@ -11,13 +13,13 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
       <View style={[styles.bubble, user ? styles.user : styles.assistant, failed && styles.failedBubble]}>
         <Text style={[styles.text, user && styles.userText]}>{text}</Text>
       </View>
-      {queued ? <Text style={styles.delivery}>Waiting for connection</Text> : null}
+      {queued ? <Text style={styles.delivery}>{t('chat.waiting')}</Text> : null}
       {failed ? (
         <View style={styles.failureRow}>
-          <Text style={styles.failureText}>{deliveryError || 'Message not sent.'}</Text>
+          <Text style={styles.failureText}>{deliveryError || t('chat.notSent')}</Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Retry sending message"
+            accessibilityLabel={t('chat.retryAccessibility')}
             disabled={retrying}
             onPress={onRetry}
             hitSlop={8}
@@ -26,7 +28,7 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
             {retrying
               ? <ActivityIndicator size="small" color={colors.red} />
               : <Ionicons name="refresh" size={16} color={colors.red} />}
-            <Text style={styles.retryText}>{retrying ? 'Retrying' : 'Retry'}</Text>
+            <Text style={styles.retryText}>{retrying ? t('common.retrying') : t('common.retry')}</Text>
           </Pressable>
         </View>
       ) : null}

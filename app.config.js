@@ -1,3 +1,13 @@
+const languageCatalog = require('./src/i18n/languages.js');
+const supportedLocales = languageCatalog
+  .filter((language) => language.messages)
+  .map((language) => language.code);
+const nativeLocales = Object.fromEntries(
+  languageCatalog
+    .filter((language) => language.messages?.native)
+    .map((language) => [language.code, language.messages.native])
+);
+
 const config = {
   "name": "VeryLoving",
   "slug": "veryloving-react-native",
@@ -5,6 +15,7 @@ const config = {
   "orientation": "portrait",
   "icon": "./assets/icon.png",
   "userInterfaceStyle": "light",
+  "locales": nativeLocales,
   "assetBundlePatterns": [
     "**/*"
   ],
@@ -232,6 +243,15 @@ const config = {
         "color": "#304557"
       }
     ],
+    [
+      "expo-localization",
+      {
+        "supportedLocales": {
+          "ios": supportedLocales,
+          "android": supportedLocales
+        }
+      }
+    ],
     "./plugins/withPodfile.js",
     "./plugins/withEntitlements.js"
   ],
@@ -247,6 +267,7 @@ const config = {
   },
   "extra": {
     "releaseChannel": "production",
+    "supportsRTL": true,
     "router": {},
     "eas": {
       "projectId": "e723f2d7-d6bb-4a31-83c4-07e832cf7242"

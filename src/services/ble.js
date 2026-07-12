@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import { explainPermission } from './permissions';
 import { logger } from '../utils/logger';
 import { OperationTimeoutError, withTimeout } from '../utils/async';
+import { translate } from '../i18n/core';
 
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
@@ -80,7 +81,7 @@ export class BLEService {
               operation.retryCount += 1;
               operation.retryTimer = setTimeout(startScan, 1000 * operation.retryCount);
             } else {
-              operation.finish('error', new Error('We could not find nearby jewelry. Check Bluetooth, keep NorthStar close, and try again.'));
+              operation.finish('error', new Error(translate('jewelry.scanFailed')));
             }
             return;
           }
@@ -88,7 +89,7 @@ export class BLEService {
         });
       } catch (scanError) {
         logger.error('[BLE] Unable to start scan', scanError);
-        operation.finish('error', new Error('Bluetooth scanning could not start. Check Bluetooth access and try again.'));
+        operation.finish('error', new Error(translate('jewelry.scanAccessFailed')));
       }
     };
     startScan();
@@ -114,15 +115,15 @@ export class BLEService {
         const candidate = await device.connect();
         await candidate.discoverAllServicesAndCharacteristics();
         return candidate;
-      })(), CONNECT_TIMEOUT_MS, 'NorthStar took too long to connect.');
+      })(), CONNECT_TIMEOUT_MS, translate('jewelry.connectTimeout'));
       return { id: connected.id, name: connected.name || 'NorthStar VL01', battery: 82, connected: true };
     } catch (error) {
       try { await device.cancelConnection?.(); } catch {}
       logger.error('[BLE] Connection failed', error);
       if (error instanceof OperationTimeoutError) {
-        throw new Error('NorthStar took too long to connect. Move it closer and try again.');
+        throw new Error(translate('jewelry.connectTimeout'));
       }
-      throw new Error('We could not connect to NorthStar. Check that it is charged and nearby, then try again.');
+      throw new Error(translate('jewelry.connectFailed'));
     }
   }
 }

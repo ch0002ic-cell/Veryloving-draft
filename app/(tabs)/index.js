@@ -8,34 +8,38 @@ import { StatusPill } from '../../src/components/StatusPill';
 import { images } from '../../src/constants/assets';
 import { colors, fonts } from '../../src/constants/theme';
 import { useAppState } from '../../src/context/AppContext';
+import { useI18n } from '../../src/context/I18nContext';
 
 export default function Home() {
   const { settings, updateSettings, device, selectedVoice } = useAppState();
+  const { t } = useI18n();
+  const voiceName = t(`voices.profiles.${selectedVoice.id}.name`);
+  const modeName = t(`home.modes.${settings.mode}`);
   return (
     <Screen>
-      <Header title="VeryLoving" subtitle="Safety companion dashboard" />
+      <Header title={t('common.veryLoving')} subtitle={t('home.subtitle')} />
       <Card style={styles.hero}>
         <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
         <View style={{ flex: 1 }}>
-          <StatusPill label={`${settings.mode.toUpperCase()} MODE`} tone="active" />
-          <Text style={styles.heroTitle}>{selectedVoice.displayName} is ready</Text>
-          <Text style={styles.muted}>Voice, map, jewelry, and guardians are one tap away.</Text>
+          <StatusPill label={t('home.modeStatus', { mode: modeName.toUpperCase() })} tone="active" />
+          <Text style={styles.heroTitle}>{t('home.companionReady', { name: voiceName })}</Text>
+          <Text style={styles.muted}>{t('home.readyBody')}</Text>
         </View>
       </Card>
       <View style={styles.grid}>
-        <Button title="Safety call" icon="call" onPress={() => router.push('/safety-call')} />
-        <Button title="SOS" icon="warning" variant="danger" onPress={() => router.push('/emergency-sos')} />
-        <Button title="Friends" icon="people" variant="ghost" onPress={() => router.push('/friends')} />
-        <Button title="Settings" icon="settings" variant="ghost" onPress={() => router.push('/settings')} />
+        <Button title={t('home.safetyCall')} icon="call" onPress={() => router.push('/safety-call')} />
+        <Button title={t('common.sos')} icon="warning" variant="danger" onPress={() => router.push('/emergency-sos')} />
+        <Button title={t('common.friends')} icon="people" variant="ghost" onPress={() => router.push('/friends')} />
+        <Button title={t('common.settings')} icon="settings" variant="ghost" onPress={() => router.push('/settings')} />
       </View>
       <Card>
-        <Text style={styles.section}>NorthStar Device</Text>
-        <Text style={styles.muted}>{device.connected ? `${device.name} connected · ${device.battery}%` : 'No device connected'}</Text>
-        <Button title="Manage device" variant="ghost" onPress={() => router.push('/device-management')} />
+        <Text style={styles.section}>{t('home.northStarDevice')}</Text>
+        <Text style={styles.muted}>{device.connected ? t('home.deviceConnected', { name: device.name, battery: device.battery }) : t('home.noDevice')}</Text>
+        <Button title={t('home.manageDevice')} variant="ghost" onPress={() => router.push('/device-management')} />
       </Card>
       <Card>
-        <Text style={styles.section}>Mode</Text>
-        <View style={styles.modeRow}>{['home', 'guardian', 'emergency'].map((mode) => <Button key={mode} title={mode} variant={settings.mode === mode ? 'orange' : 'ghost'} onPress={() => updateSettings({ mode })} />)}</View>
+        <Text style={styles.section}>{t('home.mode')}</Text>
+        <View style={styles.modeRow}>{['home', 'guardian', 'emergency'].map((mode) => <Button key={mode} title={t(`home.modes.${mode}`)} variant={settings.mode === mode ? 'orange' : 'ghost'} onPress={() => updateSettings({ mode })} />)}</View>
       </Card>
     </Screen>
   );

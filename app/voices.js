@@ -9,8 +9,10 @@ import { Card } from '../src/components/Card';
 import { voiceProfiles } from '../src/mocks/voiceProfiles';
 import { useAppState } from '../src/context/AppContext';
 import { colors, fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
 const VoiceOption = memo(function VoiceOption({ voice, selected, previewing, onSelect, onPreview }) {
+  const { t } = useI18n();
   return (
     <Card style={[styles.card, selected && styles.selected]}>
       <Pressable
@@ -24,17 +26,17 @@ const VoiceOption = memo(function VoiceOption({ voice, selected, previewing, onS
           {selected ? (
             <View style={styles.badge}>
               <Ionicons name="checkmark-circle" size={16} color="#fff" />
-              <Text style={styles.badgeText}>Selected</Text>
+              <Text style={styles.badgeText}>{t('common.selected')}</Text>
             </View>
           ) : null}
         </View>
         <View style={styles.copy}>
-          <Text style={styles.name}>{voice.displayName}</Text>
-          <Text style={styles.desc}>{voice.description}</Text>
+          <Text style={styles.name}>{t(`voices.profiles.${voice.id}.name`)}</Text>
+          <Text style={styles.desc}>{t(`voices.profiles.${voice.id}.description`)}</Text>
         </View>
       </Pressable>
       <Button
-        title={previewing ? 'Stop sample' : 'Test voice'}
+        title={previewing ? t('voices.stop') : t('voices.test')}
         icon={previewing ? 'stop-circle-outline' : 'play-circle-outline'}
         variant="ghost"
         onPress={onPreview}
@@ -48,6 +50,7 @@ export default function Voices() {
   const player = useAudioPlayer(null, { updateInterval: 150 });
   const playerStatus = useAudioPlayerStatus(player);
   const [previewingId, setPreviewingId] = useState(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     if (playerStatus.didJustFinish) setPreviewingId(null);
@@ -57,7 +60,7 @@ export default function Voices() {
     try {
       await updateSettings({ selectedVoiceId: voiceId });
     } catch {
-      Alert.alert('Selection not saved', 'Please try choosing the voice again.');
+      Alert.alert(t('voices.selectionFailedTitle'), t('voices.selectionFailedMessage'));
     }
   };
 
@@ -80,13 +83,13 @@ export default function Voices() {
       setPreviewingId(voice.id);
     } catch {
       setPreviewingId(null);
-      Alert.alert('Sample unavailable', 'This voice sample could not be played. Please try again.');
+      Alert.alert(t('voices.sampleFailedTitle'), t('voices.sampleFailedMessage'));
     }
   };
 
   return (
     <Screen scroll={false}>
-      <Header title="My safety call voices" subtitle="Choose the companion voice that feels right to hear." />
+      <Header title={t('voices.title')} subtitle={t('voices.subtitle')} />
       <FlatList
         data={voiceProfiles}
         extraData={{ selectedVoiceId: settings.selectedVoiceId, previewingId }}

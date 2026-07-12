@@ -1,28 +1,29 @@
 import { Alert } from 'react-native';
 import { storage } from './storage';
+import { translate } from '../i18n/core';
 
 const RATIONALE_PREFIX = 'veryloving.permissionRationale.';
 
 export const permissionRationales = {
   location: {
-    title: 'Location keeps safety context accurate',
-    message: 'VeryLoving uses your location for the safety map, danger zones, quick share, and SOS context. You can change this later in Settings.'
+    titleKey: 'permissions.locationRationaleTitle',
+    messageKey: 'permissions.locationRationaleMessage'
   },
   notifications: {
-    title: 'Safety alerts need notifications',
-    message: 'VeryLoving sends check-in reminders, emergency updates, and safety prompts you enable. We do not use notifications for ads.'
+    titleKey: 'permissions.notificationsRationaleTitle',
+    messageKey: 'permissions.notificationsRationaleMessage'
   },
   microphone: {
-    title: 'Microphone powers safety calls',
-    message: 'VeryLoving uses your microphone only when you start an AI companion or safety call.'
+    titleKey: 'permissions.microphoneRationaleTitle',
+    messageKey: 'permissions.microphoneRationaleMessage'
   },
   bluetooth: {
-    title: 'Bluetooth connects your wearable',
-    message: 'VeryLoving uses Bluetooth to pair with NorthStar jewelry, read connection status, and trigger safety flows from the wearable.'
+    titleKey: 'permissions.bluetoothRationaleTitle',
+    messageKey: 'permissions.bluetoothRationaleMessage'
   },
   camera: {
-    title: 'Camera is optional',
-    message: 'VeryLoving uses the camera only when you choose to take a profile photo or share a safety image.'
+    titleKey: 'permissions.cameraRationaleTitle',
+    messageKey: 'permissions.cameraRationaleMessage'
   }
 };
 
@@ -40,9 +41,9 @@ export async function explainPermission(permissionId, { force = false } = {}) {
   if (!force && await hasSeenPermissionRationale(permissionId)) return true;
 
   const accepted = await new Promise((resolve) => {
-    Alert.alert(rationale.title, rationale.message, [
-      { text: 'Not now', style: 'cancel', onPress: () => resolve(false) },
-      { text: 'Continue', onPress: () => resolve(true) }
+    Alert.alert(translate(rationale.titleKey), translate(rationale.messageKey), [
+      { text: translate('common.notNow'), style: 'cancel', onPress: () => resolve(false) },
+      { text: translate('common.continue'), onPress: () => resolve(true) }
     ]);
   });
 

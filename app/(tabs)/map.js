@@ -6,6 +6,7 @@ import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { dangerZones, getMapboxModule, requestCurrentLocation } from '../../src/services/mapbox';
 import { colors, fonts } from '../../src/constants/theme';
+import { useI18n } from '../../src/context/I18nContext';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -27,6 +28,7 @@ export default function MapScreen() {
   const mountedRef = useRef(true);
   const requestIdRef = useRef(0);
   const Mapbox = useMemo(() => getMapboxModule(), []);
+  const { t } = useI18n();
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
@@ -40,12 +42,12 @@ export default function MapScreen() {
       if (mountedRef.current && requestId === requestIdRef.current) setLocation(nextLocation);
     } catch (locationError) {
       if (mountedRef.current && requestId === requestIdRef.current) {
-        setError(locationError.message || 'We could not update your location. Please try again.');
+        setError(locationError.message || t('map.updateFailed'));
       }
     } finally {
       if (mountedRef.current && requestId === requestIdRef.current) setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -64,9 +66,9 @@ export default function MapScreen() {
           <View style={styles.mapStatus}>
             {loading ? <ActivityIndicator color={colors.orange} /> : null}
             <Text accessibilityRole={error ? 'alert' : undefined} style={[styles.statusText, error && styles.error]}>
-              {loading ? 'Finding your location...' : error}
+              {loading ? t('map.finding') : error}
             </Text>
-            {error ? <Button title="Retry location" variant="ghost" onPress={refreshLocation} /> : null}
+            {error ? <Button title={t('map.retry')} variant="ghost" onPress={refreshLocation} /> : null}
           </View>
         ) : null}
       </View>
@@ -75,19 +77,19 @@ export default function MapScreen() {
 
   return (
     <Screen>
-      <Header title="Safety map" subtitle="Expo Go preview; Mapbox renders in a development build." />
+      <Header title={t('map.title')} subtitle={t('map.previewSubtitle')} />
       <View style={styles.mapFallback}>
-        {loading ? <ActivityIndicator color={colors.orange} /> : <Text style={styles.mapText}>Map preview</Text>}
+        {loading ? <ActivityIndicator color={colors.orange} /> : <Text style={styles.mapText}>{t('map.preview')}</Text>}
         <Text style={styles.coords}>{coordinates.join(', ')}</Text>
       </View>
       {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
-          <Text style={styles.zone}>{zone.name}</Text>
-          <Text style={styles.muted}>Risk: {zone.risk} · Radius {zone.radius}m</Text>
+          <Text style={styles.zone}>{t(zone.nameKey)}</Text>
+          <Text style={styles.muted}>{t('map.risk', { risk: t(`map.risks.${zone.risk}`), radius: zone.radius })}</Text>
         </Card>
       ))}
-      <Button title={loading ? 'Finding location...' : 'Refresh location'} onPress={refreshLocation} loading={loading} />
+      <Button title={loading ? t('map.refreshing') : t('map.refresh')} onPress={refreshLocation} loading={loading} />
     </Screen>
   );
 }

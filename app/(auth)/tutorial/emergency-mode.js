@@ -1,11 +1,5 @@
-import { router } from 'expo-router';
-import { Text } from 'react-native';
-import { Screen } from '../../../src/components/Screen';
-import { Header } from '../../../src/components/Header';
-import { Card } from '../../../src/components/Card';
-import { Button } from '../../../src/components/Button';
-import { fonts } from '../../../src/constants/theme';
+import { TutorialPage } from '../../../src/components/TutorialPage';
 
-export default function TutorialPage() {
-  return <Screen><Header title='Emergency mode' subtitle='Five taps can escalate to SOS and guardian alerts.' /><Card><Text style={{ fontFamily: fonts.regular, lineHeight: 22 }}>VeryLoving keeps this flow available from Settings and the dashboard.</Text></Card><Button title='Continue' onPress={() => router.push('/(auth)/tutorial/excuse-call')} /><Button title='Skip tutorial' variant='ghost' onPress={() => router.replace('/(tabs)')} /></Screen>;
+export default function EmergencyModeTutorial() {
+  return <TutorialPage titleKey="tutorial.emergencyTitle" subtitleKey="tutorial.emergencySubtitle" nextPath="/(auth)/tutorial/excuse-call" />;
 }
