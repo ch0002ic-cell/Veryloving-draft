@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/context/AuthContext';
 import { AppProvider } from '../src/context/AppContext';
@@ -17,13 +17,20 @@ export default function RootLayout() {
       <AuthProvider>
         <AppProvider>
           <I18nProvider>
-            <StatusBar style="dark" />
-            <Stack screenOptions={{ headerShown: false }}>
+            <StatusBar style="dark" backgroundColor={colors.cream} />
+            <Stack
+              screenOptions={{
+                animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'simple_push',
+                contentStyle: { backgroundColor: colors.cream },
+                gestureEnabled: true,
+                headerShown: false
+              }}
+            >
               <Stack.Screen name="index" />
               <Stack.Screen name="(auth)" />
               <Stack.Screen name="(tabs)" />
-              <Stack.Screen name="safety-call" options={{ presentation: 'modal' }} />
-              <Stack.Screen name="emergency-sos" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="safety-call" options={{ animation: 'slide_from_bottom', presentation: 'modal' }} />
+              <Stack.Screen name="emergency-sos" options={{ animation: 'slide_from_bottom', presentation: 'modal' }} />
               <Stack.Screen name="settings" />
               <Stack.Screen name="voices" />
               <Stack.Screen name="device-management" />

@@ -20,6 +20,16 @@ const {
 } = require('../src/utils/phone');
 const { DEFAULT_SETTINGS, mergeSettings } = require('../src/services/settings-store');
 
+function valueAtPath(value, path) {
+  return path.split('.').reduce((current, key) => current?.[key], value);
+}
+
+function interpolationTokens(value) {
+  return [...String(value).matchAll(/%\{([^}]+)\}/g)]
+    .map((match) => match[1])
+    .sort();
+}
+
 test('phone metadata covers the global E.164 country set', () => {
   assert.ok(countryCodes.length > 200);
   assert.ok(countryCodes.includes('US'));
@@ -81,30 +91,61 @@ test('country options are complete, localized, and searchable by dialing code', 
   assert.equal(getDefaultCountry([{ regionCode: null }]), 'US');
 });
 
-test('English and Spanish translation catalogs have identical key coverage', () => {
-  assert.deepEqual(getTranslationKeys(translations.es), getTranslationKeys(translations.en));
-  assert.ok(getTranslationKeys(translations.en).length > 250);
+test('every supported translation catalog has identical key coverage', () => {
+  const englishKeys = getTranslationKeys(translations.en);
+  for (const locale of ['es', 'fr', 'zh']) {
+    assert.deepEqual(getTranslationKeys(translations[locale]), englishKeys, `${locale} keys must match English`);
+  }
+  assert.ok(englishKeys.length > 300);
+});
+
+test('translated strings preserve every interpolation placeholder', () => {
+  for (const key of getTranslationKeys(translations.en)) {
+    const englishTokens = interpolationTokens(valueAtPath(translations.en, key));
+    for (const locale of ['es', 'fr', 'zh']) {
+      assert.deepEqual(
+        interpolationTokens(valueAtPath(translations[locale], key)),
+        englishTokens,
+        `${locale}.${key} must preserve English placeholders`
+      );
+    }
+  }
 });
 
 test('language resolution supports regional tags, system preference, and fallback', () => {
   assert.equal(normalizeLanguageCode('es-MX'), 'es');
+  assert.equal(normalizeLanguageCode('fr-CA'), 'fr');
+  assert.equal(normalizeLanguageCode('zh-Hans-CN'), 'zh');
   assert.equal(resolveLanguage('system', [{ languageTag: 'es-ES' }]), 'es');
-  assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hans' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hans' }]), 'zh');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'de-DE' }]), 'en');
   assert.equal(resolveLanguage('en', [{ languageTag: 'es-ES' }]), 'en');
   assert.equal(translateForLocale('es', 'auth.createAccount'), 'Crear cuenta');
+  assert.equal(translateForLocale('fr', 'auth.createAccount'), 'Créer un compte');
+  assert.equal(translateForLocale('zh', 'auth.createAccount'), '创建账户');
   assert.equal(translateForLocale('en', 'auth.createAccount'), 'Create account');
   assert.equal(
     translateForLocale('es', 'safetyCall.messagesWaiting', { count: 2 }),
     '2 mensajes pendientes de envío'
+  );
+  assert.equal(
+    translateForLocale('fr', 'safetyCall.messagesWaiting', { count: 2 }),
+    "2 messages en attente d'envoi"
+  );
+  assert.equal(
+    translateForLocale('zh', 'safetyCall.messagesWaiting', { count: 2 }),
+    '2条消息等待发送'
   );
 });
 
 test('Expo config derives native locale declarations from the language catalog', () => {
   const config = require('../app.config')();
   const localizationPlugin = config.plugins.find((plugin) => Array.isArray(plugin) && plugin[0] === 'expo-localization');
-  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, ['en', 'es']);
-  assert.deepEqual(localizationPlugin[1].supportedLocales.android, ['en', 'es']);
+  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, ['en', 'es', 'fr', 'zh']);
+  assert.deepEqual(localizationPlugin[1].supportedLocales.android, ['en', 'es', 'fr', 'zh']);
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
+  assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
+  assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);
 });
 
 test('language preference is retained by settings merges', () => {

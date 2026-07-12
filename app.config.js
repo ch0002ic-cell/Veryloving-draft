@@ -15,6 +15,8 @@ const config = {
   "orientation": "portrait",
   "icon": "./assets/icon.png",
   "userInterfaceStyle": "light",
+  "backgroundColor": "#FFF8EF",
+  "primaryColor": "#304557",
   "locales": nativeLocales,
   "assetBundlePatterns": [
     "**/*"
@@ -180,27 +182,23 @@ const config = {
   "android": {
     "adaptiveIcon": {
       "foregroundImage": "./assets/adaptive-icon.png",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#FFF8EF",
+      "monochromeImage": "./assets/images/misc/StarIcon.png"
     },
     "package": "com.veryloving.app",
     "versionCode": 3,
+    "allowBackup": false,
+    "softwareKeyboardLayoutMode": "resize",
     "permissions": [
-      "ACCESS_FINE_LOCATION",
-      "ACCESS_COARSE_LOCATION",
-      "RECORD_AUDIO",
       "android.permission.ACCESS_COARSE_LOCATION",
       "android.permission.ACCESS_FINE_LOCATION",
-      "android.permission.BLUETOOTH_SCAN",
-      "android.permission.BLUETOOTH_CONNECT",
-      "android.permission.BLUETOOTH_ADVERTISE",
       "android.permission.RECORD_AUDIO",
       "android.permission.MODIFY_AUDIO_SETTINGS",
       "android.permission.FOREGROUND_SERVICE",
       "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
       "android.permission.FOREGROUND_SERVICE_MICROPHONE",
       "android.permission.POST_NOTIFICATIONS",
-      "android.permission.BLUETOOTH",
-      "android.permission.BLUETOOTH_ADMIN"
+      "android.permission.CAMERA"
     ],
     "predictiveBackGestureEnabled": false
   },
@@ -209,6 +207,35 @@ const config = {
     "expo-asset",
     "expo-location",
     "expo-apple-authentication",
+    [
+      "expo-status-bar",
+      {
+        "style": "dark"
+      }
+    ],
+    [
+      "expo-splash-screen",
+      {
+        "backgroundColor": "#FFF8EF",
+        "image": "./assets/icon.png",
+        "imageWidth": 180,
+        "resizeMode": "contain"
+      }
+    ],
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "Allow VeryLoving to access photos you choose for your profile or safety sharing.",
+        "cameraPermission": "Allow VeryLoving to use the camera when you choose to take a profile or safety photo.",
+        "microphonePermission": "Allow VeryLoving to use the microphone for safety and AI companion calls.",
+        "colors": {
+          "cropToolbarColor": "#FFF8EF",
+          "cropToolbarIconColor": "#304557",
+          "cropToolbarActionTextColor": "#304557",
+          "cropBackgroundColor": "#FFF8EF"
+        }
+      }
+    ],
     [
       "@react-native-google-signin/google-signin",
       {
@@ -228,7 +255,7 @@ const config = {
     [
       "react-native-ble-plx",
       {
-        "isBackgroundEnabled": true,
+        "isBackgroundEnabled": false,
         "modes": [
           "central"
         ],
@@ -239,7 +266,7 @@ const config = {
     [
       "expo-notifications",
       {
-        "icon": "./assets/icon.png",
+        "icon": "./assets/images/misc/StarIcon.png",
         "color": "#304557"
       }
     ],
@@ -253,7 +280,8 @@ const config = {
       }
     ],
     "./plugins/withPodfile.js",
-    "./plugins/withEntitlements.js"
+    "./plugins/withEntitlements.js",
+    "./plugins/withAndroidManifest.js"
   ],
   "scheme": "veryloving",
   "web": {
@@ -284,6 +312,7 @@ const config = {
 module.exports = () => {
   const mapboxAccessToken = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
+  const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
   const humeWSProxyURL = process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
   const humeConfigId = process.env.EXPO_PUBLIC_HUME_CONFIG_ID || '';
   const humeCustomizationURL = process.env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
@@ -296,6 +325,7 @@ module.exports = () => {
     extra: {
       ...config.extra,
       apiBaseUrl,
+      googleWebClientId,
       humeWSProxyURL,
       humeConfigId,
       humeCustomizationURL,

@@ -9,6 +9,10 @@ import { bleService } from '../../src/services/ble';
 import { useAppState } from '../../src/context/AppContext';
 import { colors, fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
+import { EmptyState } from '../../src/components/EmptyState';
+import { FeedbackBanner } from '../../src/components/FeedbackBanner';
+import { LoadingState } from '../../src/components/LoadingState';
+import { images } from '../../src/constants/assets';
 
 export default function JewelrySetup() {
   const [devices, setDevices] = useState([]);
@@ -16,6 +20,7 @@ export default function JewelrySetup() {
   const [connectingId, setConnectingId] = useState(null);
   const [error, setError] = useState(null);
   const mountedRef = useRef(true);
+  const appStateRef = useRef(AppState.currentState);
   const stopScanRef = useRef(null);
   const { setDevice } = useAppState();
   const { t } = useI18n();
@@ -30,6 +35,7 @@ export default function JewelrySetup() {
   useEffect(() => {
     mountedRef.current = true;
     const subscription = AppState.addEventListener('change', (nextState) => {
+      appStateRef.current = nextState;
       if (nextState !== 'active') stopScan();
     });
     return () => {
@@ -56,7 +62,7 @@ export default function JewelrySetup() {
           onComplete: () => mountedRef.current && setScanning(false)
         }
       );
-      if (!mountedRef.current) cleanup();
+      if (!mountedRef.current || appStateRef.current !== 'active') cleanup();
       else stopScanRef.current = cleanup;
     } catch (scanError) {
       if (mountedRef.current) {
@@ -91,7 +97,7 @@ export default function JewelrySetup() {
         onPress={scan}
         loading={scanning}
       />
-      {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
+      <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={scan} />
       <FlatList
         data={devices}
         keyExtractor={(item) => item.id}
@@ -106,7 +112,15 @@ export default function JewelrySetup() {
             />
           </Card>
         )}
-        ListEmptyComponent={!scanning ? <Text style={styles.empty}>{t('jewelry.noDevices')}</Text> : null}
+        ListEmptyComponent={scanning
+          ? <LoadingState message={t('jewelry.searchingMessage')} />
+          : (
+            <EmptyState
+              image={images.jewelryDisconnected}
+              title={t('jewelry.emptyTitle')}
+              message={t('jewelry.emptyMessage')}
+            />
+          )}
         contentContainerStyle={styles.list}
       />
       <Button title={t('common.skip')} variant="ghost" onPress={() => router.push('/(auth)/capybear-setup')} />
@@ -118,6 +132,5 @@ const styles = StyleSheet.create({
   list: { flexGrow: 1, paddingVertical: 10 },
   deviceCard: { marginBottom: 10, gap: 10 },
   deviceName: { fontFamily: fonts.semibold, color: colors.ink },
-  empty: { paddingVertical: 24, fontFamily: fonts.regular, color: colors.inkSoft, textAlign: 'center' },
   error: { fontFamily: fonts.regular, color: colors.red, lineHeight: 20, textAlign: 'center' }
 });

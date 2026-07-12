@@ -5,6 +5,12 @@ import { Alert, Platform } from 'react-native';
 import { logger } from '../utils/logger';
 import { translate } from '../i18n/core';
 import { createPhoneValue } from '../utils/phone';
+import { config } from '../utils/config';
+import {
+  googleIdentityFromResponse,
+  googleSignInCancellationError,
+  isGoogleSignInCancellation
+} from '../utils/google-auth';
 
 const AuthContext = createContext(null);
 const TOKEN_KEY = 'veryloving.auth.token';
@@ -21,20 +27,42 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      const rawUser = await SecureStore.getItemAsync(USER_KEY);
-      if (token) setAccessToken(token);
-      if (rawUser) setUser(JSON.parse(rawUser));
-      setLoading(false);
-    })();
+    let active = true;
+    Promise.all([
+      SecureStore.getItemAsync(TOKEN_KEY),
+      SecureStore.getItemAsync(USER_KEY)
+    ]).then(([token, rawUser]) => {
+      if (!active) return;
+      let savedUser = null;
+      try {
+        savedUser = rawUser ? JSON.parse(rawUser) : null;
+      } catch (error) {
+        logger.warn('[Auth] Ignoring an invalid stored profile', error);
+      }
+      if (token && savedUser) {
+        setAccessToken(token);
+        setUser(savedUser);
+      }
+    }).catch((error) => {
+      logger.warn('[Auth] Could not restore the secure session', error);
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const persist = async (nextUser, token) => {
+    await SecureStore.setItemAsync(TOKEN_KEY, token);
+    try {
+      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(nextUser));
+    } catch (error) {
+      await SecureStore.deleteItemAsync(TOKEN_KEY).catch(() => {});
+      throw error;
+    }
     setUser(nextUser);
     setAccessToken(token);
-    await SecureStore.setItemAsync(TOKEN_KEY, token);
-    await SecureStore.setItemAsync(USER_KEY, JSON.stringify(nextUser));
   };
 
   const signInWithApple = async () => {
@@ -50,11 +78,17 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = async () => {
     try {
       const GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
-      GoogleSignin.configure();
-      await GoogleSignin.hasPlayServices?.();
-      const result = await GoogleSignin.signIn();
-      await persist({ id: result.user.id, name: result.user.name, email: result.user.email, provider: 'google' }, result.idToken || 'google-token');
+      GoogleSignin.configure(config.googleWebClientId ? { webClientId: config.googleWebClientId } : {});
+      await GoogleSignin.hasPlayServices?.({ showPlayServicesUpdateDialog: true });
+      const identity = googleIdentityFromResponse(await GoogleSignin.signIn());
+      if (!identity) throw googleSignInCancellationError();
+      if (!identity.identityToken && !__DEV__) {
+        throw new Error('Google Sign-In did not return an identity token.');
+      }
+      await persist(identity.user, identity.identityToken || 'dev-google-token');
     } catch (error) {
+      if (isGoogleSignInCancellation(error)) throw error;
+      if (!__DEV__) throw error;
       logger.warn('[Auth] Google Sign-In fallback', error);
       Alert.alert(translate('auth.googleUnavailableTitle'), translate('auth.googleUnavailableMessage'));
       await persist({ id: 'dev-google', name: 'Grace', provider: 'google' }, 'dev-access-token');

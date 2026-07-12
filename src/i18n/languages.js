@@ -17,5 +17,17 @@ module.exports = [
     translationKey: 'languages.spanish',
     nativeName: 'Español',
     messages: require('./locales/es.json')
+  },
+  {
+    code: 'fr',
+    translationKey: 'languages.french',
+    nativeName: 'Français',
+    messages: require('./locales/fr.json')
+  },
+  {
+    code: 'zh',
+    translationKey: 'languages.chineseSimplified',
+    nativeName: '简体中文',
+    messages: require('./locales/zh.json')
   }
 ];

@@ -2,53 +2,99 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { storage } from '../services/storage';
 import { voiceProfiles } from '../mocks/voiceProfiles';
 import { DEFAULT_SETTINGS, loadSettings, mergeSettings, persistSettings } from '../services/settings-store';
+import { logger } from '../utils/logger';
 
 const AppContext = createContext(null);
 const CONTACTS_KEY = 'veryloving.emergencyContacts';
 const DEFAULT_CONTACTS = [];
+const DEFAULT_FRIENDS = [];
 
 export function AppProvider({ children }) {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const settingsRef = useRef(DEFAULT_SETTINGS);
+  const settingsMutationQueueRef = useRef(Promise.resolve());
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS);
   const contactsRef = useRef(DEFAULT_CONTACTS);
+  const contactsMutationQueueRef = useRef(Promise.resolve());
   const [device, setDevice] = useState({ connected: false, name: 'NorthStar VL01', battery: 82 });
-  const [friends, setFriends] = useState([{ id: 'grace', name: 'Grace', status: 'Guardian' }]);
+  const [friends, setFriends] = useState(DEFAULT_FRIENDS);
 
   useEffect(() => {
-    (async () => {
-      const savedSettings = await loadSettings();
+    let active = true;
+    Promise.all([
+      loadSettings(),
+      storage.getJSON(CONTACTS_KEY, DEFAULT_CONTACTS)
+    ]).then(([savedSettings, storedContacts]) => {
+      if (!active) return;
+      const savedContacts = Array.isArray(storedContacts) ? storedContacts : DEFAULT_CONTACTS;
       settingsRef.current = savedSettings;
-      setSettings(savedSettings);
-      const savedContacts = await storage.getJSON(CONTACTS_KEY, DEFAULT_CONTACTS);
       contactsRef.current = savedContacts;
+      setSettings(savedSettings);
       setContacts(savedContacts);
-    })();
+    }).catch((error) => {
+      logger.warn('[AppState] Could not restore local settings', error);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const updateSettings = useCallback(async (patch) => {
-    const next = mergeSettings(settingsRef.current, patch);
-    settingsRef.current = next;
-    setSettings(next);
-    await persistSettings(next);
-    return next;
+    const operation = settingsMutationQueueRef.current.catch(() => {}).then(async () => {
+      const previous = settingsRef.current;
+      const next = mergeSettings(previous, patch);
+      settingsRef.current = next;
+      setSettings(next);
+      try {
+        await persistSettings(next);
+        return next;
+      } catch (error) {
+        settingsRef.current = previous;
+        setSettings(previous);
+        throw error;
+      }
+    });
+    settingsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
+    return operation;
   }, []);
 
   const addContact = useCallback(async (contact) => {
     const nextContact = { id: Date.now().toString(), ...contact };
-    const next = [...contactsRef.current, nextContact];
-    contactsRef.current = next;
-    setContacts(next);
-    await storage.setJSON(CONTACTS_KEY, next);
-    return nextContact;
+    const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      const previous = contactsRef.current;
+      const next = [...previous, nextContact];
+      contactsRef.current = next;
+      setContacts(next);
+      try {
+        await storage.setJSON(CONTACTS_KEY, next);
+        return nextContact;
+      } catch (error) {
+        contactsRef.current = previous;
+        setContacts(previous);
+        throw error;
+      }
+    });
+    contactsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
+    return operation;
   }, []);
 
   const removeContact = useCallback(async (contactId) => {
-    const next = contactsRef.current.filter((contact) => contact.id !== contactId);
-    contactsRef.current = next;
-    setContacts(next);
-    await storage.setJSON(CONTACTS_KEY, next);
-    return next;
+    const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      const previous = contactsRef.current;
+      const next = previous.filter((contact) => contact.id !== contactId);
+      contactsRef.current = next;
+      setContacts(next);
+      try {
+        await storage.setJSON(CONTACTS_KEY, next);
+        return next;
+      } catch (error) {
+        contactsRef.current = previous;
+        setContacts(previous);
+        throw error;
+      }
+    });
+    contactsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
+    return operation;
   }, []);
 
   const resetLocalState = useCallback(() => {
@@ -57,7 +103,7 @@ export function AppProvider({ children }) {
     setSettings(DEFAULT_SETTINGS);
     setContacts(DEFAULT_CONTACTS);
     setDevice({ connected: false, name: 'NorthStar VL01', battery: 82 });
-    setFriends([{ id: 'grace', name: 'Grace', status: 'Guardian' }]);
+    setFriends(DEFAULT_FRIENDS);
   }, []);
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];

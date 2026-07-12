@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../constants/theme';
+import { colors, radii } from '../constants/theme';
 
 export function Card({ children, style }) {
   return <View style={[styles.card, style]}>{children}</View>;
@@ -8,13 +8,14 @@ export function Card({ children, style }) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.paper,
-    borderRadius: 18,
+    borderRadius: radii.md,
     padding: 16,
     borderWidth: 1,
     borderColor: colors.line,
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 5 }
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 1
   }
 });

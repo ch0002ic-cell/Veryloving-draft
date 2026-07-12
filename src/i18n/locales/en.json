@@ -15,6 +15,7 @@
     "friends": "Friends",
     "google": "Google",
     "home": "Home",
+    "loading": "Loading...",
     "map": "Map",
     "notNow": "Not now",
     "remove": "Remove",
@@ -37,7 +38,9 @@
     "subtitle": "Choose the language used throughout the app.",
     "system": "System default",
     "english": "English",
-    "spanish": "Spanish"
+    "spanish": "Spanish",
+    "french": "French",
+    "chineseSimplified": "Chinese (Simplified)"
   },
   "phone": {
     "label": "Phone number",
@@ -60,12 +63,16 @@
     "createSubtitle": "Choose a sign-in method to protect your safety graph.",
     "phoneVerification": "Phone verification",
     "sendCode": "Send code",
+    "sendingCode": "Sending code...",
     "verifyCode": "Verify code",
     "sentTo": "Sent to %{phone}",
     "yourPhone": "your phone",
     "verificationCode": "Verification code",
     "verify": "Verify",
+    "verifying": "Verifying...",
     "invalidCode": "Enter the verification code.",
+    "signInFailedTitle": "Sign-in interrupted",
+    "signInFailedMessage": "We could not complete sign-in. Check your connection and try again.",
     "googleUnavailableTitle": "Google Sign-In unavailable",
     "googleUnavailableMessage": "Using a local development session. Native Google Sign-In works in a development build.",
     "northStarTitle": "NorthStar jewelry",
@@ -125,8 +132,12 @@
     "scanStartFailed": "Bluetooth scanning could not start. Please try again.",
     "scanFailed": "We could not find nearby jewelry. Check Bluetooth, keep NorthStar close, and try again.",
     "scanAccessFailed": "Bluetooth scanning could not start. Check Bluetooth access and try again.",
+    "permissionDenied": "Nearby-device access is off. Allow Bluetooth access in Settings, then try again.",
     "connectTimeout": "NorthStar took too long to connect. Move it closer and try again.",
-    "connectFailed": "We could not connect to NorthStar. Check that it is charged and nearby, then try again."
+    "connectFailed": "We could not connect to NorthStar. Check that it is charged and nearby, then try again.",
+    "emptyTitle": "No nearby devices yet",
+    "emptyMessage": "Keep NorthStar charged and close to this phone, then scan again.",
+    "searchingMessage": "Looking for NorthStar devices nearby..."
   },
   "home": {
     "subtitle": "Safety companion dashboard",
@@ -158,6 +169,9 @@
     "notRequested": "Location access was not requested. You can enable it later from Settings.",
     "permissionOff": "Location access is off. Enable it in Settings to center the safety map on you.",
     "timeout": "Your location is taking longer than expected. Move somewhere with a clearer signal and try again.",
+    "savedTitle": "Saved places",
+    "savedEmptyTitle": "No saved places yet",
+    "savedEmptyMessage": "Trusted places you save will appear here for quick access.",
     "zones": {
       "crowding": "Late night crowding",
       "lowLighting": "Low lighting area"
@@ -184,7 +198,9 @@
     "reconnect": "Reconnect to voice AI",
     "typePlaceholder": "Type if speaking is hard",
     "endCall": "End call",
-    "startCall": "Start call"
+    "startCall": "Start call",
+    "emptyTitle": "Your conversation starts here",
+    "emptyMessage": "Start the call or type a message when you are ready."
   },
   "chat": {
     "waiting": "Waiting for connection",
@@ -199,6 +215,11 @@
     "title": "Conversation history",
     "subtitle": "AI companion messages saved on this device.",
     "empty": "No conversations saved yet.",
+    "emptyTitle": "No conversations yet",
+    "emptyMessage": "Your AI companion conversations will appear here after your first call.",
+    "loadFailed": "We could not load conversation history. Please try again.",
+    "clearFailed": "We could not clear conversation history. Please try again.",
+    "deleteFailed": "We could not delete that conversation. Please try again.",
     "aiCompanion": "AI companion",
     "resume": "Resume",
     "clearAll": "Clear all history",
@@ -258,7 +279,23 @@
     "deleteEverything": "Delete everything",
     "deleteFailedTitle": "Deletion failed",
     "deleteFailedMessage": "Unable to delete local data right now.",
-    "linkFailed": "Unable to open link"
+    "linkFailed": "Unable to open link",
+    "sections": {
+      "language": "Language",
+      "languageSubtitle": "Interface and system permission language",
+      "companion": "Companion",
+      "companionSubtitle": "Voice and offline preferences",
+      "deviceSafety": "Devices and safety",
+      "deviceSafetySubtitle": "NorthStar, guardians, and emergency contacts",
+      "privacy": "Privacy and data",
+      "privacySubtitle": "History, export, deletion, and policy",
+      "account": "Account",
+      "accountSubtitle": "Your current VeryLoving session"
+    },
+    "updateFailedTitle": "Setting not saved",
+    "updateFailedMessage": "We could not save that preference. Please try again.",
+    "signOutFailedTitle": "Could not sign out",
+    "signOutFailedMessage": "Your session is still active. Please try again."
   },
   "contacts": {
     "title": "Emergency contacts",
@@ -269,9 +306,15 @@
     "phone": "Contact phone number",
     "add": "Add contact",
     "empty": "No emergency contacts added yet.",
+    "emptyTitle": "No emergency contacts yet",
+    "emptyMessage": "Add someone you trust so they are ready when a safety flow needs them.",
     "removeTitle": "Remove %{name}?",
     "removeMessage": "This person will no longer appear in your emergency flow.",
     "nameRequired": "Enter the contact's name.",
+    "saveFailedTitle": "Contact not saved",
+    "saveFailedMessage": "We could not save this contact. Check the details and try again.",
+    "removeFailedTitle": "Contact not removed",
+    "removeFailedMessage": "We could not remove this contact. Please try again.",
     "callAccessibility": "Call %{name}",
     "removeAccessibility": "Remove %{name}"
   },
@@ -287,6 +330,8 @@
     "title": "Friends",
     "subtitle": "Guardians, requests, and emergency graph.",
     "addDemo": "Add demo friend",
+    "emptyTitle": "Your safety circle is empty",
+    "emptyMessage": "Trusted friends and guardians will appear here once they are added.",
     "newGuardian": "New Guardian",
     "statuses": {
       "guardian": "Guardian",

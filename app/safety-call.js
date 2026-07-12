@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../src/components/Screen';
@@ -8,9 +8,12 @@ import { VoiceActivityIndicator } from '../src/components/VoiceActivityIndicator
 import { useHumeVoiceCall } from '../src/hooks/useHumeVoiceCall';
 import { colors, fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
+import { EmptyState } from '../src/components/EmptyState';
+import { FeedbackBanner } from '../src/components/FeedbackBanner';
 
-function connectionLabel({ isConnecting, isOnline, status, t }) {
+function connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t }) {
   if (isConnecting) return t('safetyCall.connecting');
+  if (isOfflineCompanion) return t('safetyCall.offlineCompanion');
   if (!isOnline) return status === 'connected' ? t('safetyCall.offlineCompanion') : t('safetyCall.offline');
   if (status === 'connected') return t('safetyCall.connected');
   if (status === 'error') return t('safetyCall.interrupted');
@@ -36,10 +39,12 @@ export default function SafetyCall() {
     isConnecting,
     canRetryOnline,
     retryOnline,
-    retryMessage
+    retryMessage,
+    isOfflineCompanion
   } = useHumeVoiceCall({ initialSessionId: sessionId });
   const [text, setText] = useState('');
   const [retryingMessageId, setRetryingMessageId] = useState(null);
+  const messageListRef = useRef(null);
   const active = status === 'connected';
 
   const submitText = useCallback(async () => {
@@ -61,10 +66,12 @@ export default function SafetyCall() {
   return (
     <Screen scroll={false}>
       <View style={styles.header}>
-        <Button title={t('common.close')} variant="ghost" onPress={() => router.back()} />
+        <Button title={t('common.close')} variant="ghost" compact onPress={() => router.back()} />
         <View style={styles.connectionStatus}>
           {isConnecting ? <ActivityIndicator size="small" color={colors.orange} /> : null}
-          <Text style={styles.status}>{connectionLabel({ isConnecting, isOnline, status, t })}</Text>
+          <Text style={styles.status}>
+            {connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t })}
+          </Text>
         </View>
       </View>
 
@@ -76,13 +83,18 @@ export default function SafetyCall() {
         {pendingMessageCount ? (
           <Text style={styles.queued}>{t('safetyCall.messagesWaiting', { count: pendingMessageCount })}</Text>
         ) : null}
-        {notice ? <Text style={styles.notice}>{notice}</Text> : null}
-        {error ? <Text accessibilityRole="alert" style={styles.error}>{error.message}</Text> : null}
+        <FeedbackBanner message={notice} tone="info" />
+        <FeedbackBanner
+          message={error?.message}
+          actionLabel={canRetryOnline ? t('common.retry') : undefined}
+          onAction={canRetryOnline ? retryOnline : undefined}
+        />
         {fallbackAvailable ? <Button title={t('safetyCall.useOffline')} variant="ghost" onPress={startOfflineFallback} loading={isConnecting} /> : null}
         {canRetryOnline ? <Button title={t('safetyCall.reconnect')} variant="ghost" onPress={retryOnline} loading={isConnecting} /> : null}
       </View>
 
       <FlatList
+        ref={messageListRef}
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -98,6 +110,14 @@ export default function SafetyCall() {
         style={styles.messages}
         contentContainerStyle={styles.messageContent}
         keyboardShouldPersistTaps="handled"
+        ListEmptyComponent={(
+          <EmptyState
+            compact
+            title={t('safetyCall.emptyTitle')}
+            message={t('safetyCall.emptyMessage')}
+          />
+        )}
+        onContentSizeChange={() => messageListRef.current?.scrollToEnd({ animated: true })}
       />
 
       <View style={styles.inputRow}>
@@ -107,6 +127,7 @@ export default function SafetyCall() {
           placeholder={t('safetyCall.typePlaceholder')}
           returnKeyType="send"
           onSubmitEditing={submitText}
+          submitBehavior="submit"
           style={styles.input}
         />
         <Button title={t('common.send')} onPress={submitText} disabled={!text.trim()} />
@@ -129,11 +150,9 @@ const styles = StyleSheet.create({
   name: { fontFamily: fonts.bold, color: colors.ink, fontSize: 24 },
   connecting: { color: colors.ink, fontFamily: fonts.semibold, textAlign: 'center' },
   queued: { color: colors.inkSoft, fontFamily: fonts.regular, textAlign: 'center' },
-  notice: { maxWidth: 340, color: colors.blue, fontFamily: fonts.regular, lineHeight: 19, textAlign: 'center' },
-  error: { maxWidth: 340, color: colors.red, fontFamily: fonts.regular, lineHeight: 19, textAlign: 'center' },
   messages: { flex: 1 },
-  messageContent: { paddingVertical: 8 },
+  messageContent: { flexGrow: 1, paddingVertical: 8 },
   inputRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
-  input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 14, minHeight: 50, paddingHorizontal: 12 },
+  input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 8, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink },
   actions: { gap: 8 }
 });

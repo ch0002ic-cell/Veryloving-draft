@@ -22,13 +22,18 @@ export default function VerifyCode() {
   const { t } = useI18n();
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const submit = async () => {
+    if (submitting) return;
     try {
+      setSubmitting(true);
       setError(null);
       await verifyCode(verificationId, code, { phone, countryCode });
       router.replace('/(auth)/device-check');
     } catch (verificationError) {
       setError(verificationError.message);
+    } finally {
+      setSubmitting(false);
     }
   };
   return (
@@ -48,7 +53,12 @@ export default function VerifyCode() {
         value={code}
       />
       {error ? <Text accessibilityRole="alert" style={styles.error}>{error}</Text> : null}
-      <Button title={t('auth.verify')} onPress={submit} disabled={code.length < 4} />
+      <Button
+        title={submitting ? t('auth.verifying') : t('auth.verify')}
+        loading={submitting}
+        onPress={submit}
+        disabled={submitting || code.length < 4}
+      />
     </Screen>
   );
 }

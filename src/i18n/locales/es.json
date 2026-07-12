@@ -15,6 +15,7 @@
     "friends": "Amigos",
     "google": "Google",
     "home": "Inicio",
+    "loading": "Cargando...",
     "map": "Mapa",
     "notNow": "Ahora no",
     "remove": "Quitar",
@@ -37,7 +38,9 @@
     "subtitle": "Elige el idioma que se usa en toda la aplicación.",
     "system": "Idioma del sistema",
     "english": "Inglés",
-    "spanish": "Español"
+    "spanish": "Español",
+    "french": "Francés",
+    "chineseSimplified": "Chino simplificado"
   },
   "phone": {
     "label": "Número de teléfono",
@@ -60,12 +63,16 @@
     "createSubtitle": "Elige un método de acceso para proteger tu red de seguridad.",
     "phoneVerification": "Verificación por teléfono",
     "sendCode": "Enviar código",
+    "sendingCode": "Enviando código...",
     "verifyCode": "Verificar código",
     "sentTo": "Enviado a %{phone}",
     "yourPhone": "tu teléfono",
     "verificationCode": "Código de verificación",
     "verify": "Verificar",
+    "verifying": "Verificando...",
     "invalidCode": "Introduce el código de verificación.",
+    "signInFailedTitle": "Inicio de sesión interrumpido",
+    "signInFailedMessage": "No pudimos completar el inicio de sesión. Comprueba la conexión e inténtalo de nuevo.",
     "googleUnavailableTitle": "Inicio con Google no disponible",
     "googleUnavailableMessage": "Se usará una sesión local de desarrollo. El inicio nativo con Google funciona en una compilación de desarrollo.",
     "northStarTitle": "Joya NorthStar",
@@ -125,8 +132,12 @@
     "scanStartFailed": "No se pudo iniciar la búsqueda por Bluetooth. Inténtalo de nuevo.",
     "scanFailed": "No encontramos joyas cercanas. Comprueba Bluetooth, mantén NorthStar cerca e inténtalo de nuevo.",
     "scanAccessFailed": "No se pudo iniciar la búsqueda. Comprueba el acceso a Bluetooth e inténtalo de nuevo.",
+    "permissionDenied": "El acceso a dispositivos cercanos está desactivado. Permite el acceso a Bluetooth en Ajustes y vuelve a intentarlo.",
     "connectTimeout": "NorthStar tardó demasiado en conectarse. Acércala e inténtalo de nuevo.",
-    "connectFailed": "No pudimos conectar con NorthStar. Comprueba que tenga carga y esté cerca e inténtalo de nuevo."
+    "connectFailed": "No pudimos conectar con NorthStar. Comprueba que tenga carga y esté cerca e inténtalo de nuevo.",
+    "emptyTitle": "Aún no hay dispositivos cercanos",
+    "emptyMessage": "Mantén NorthStar cargada y cerca de este teléfono, y vuelve a buscar.",
+    "searchingMessage": "Buscando dispositivos NorthStar cercanos..."
   },
   "home": {
     "subtitle": "Panel del compañero de seguridad",
@@ -158,6 +169,9 @@
     "notRequested": "No se solicitó acceso a la ubicación. Puedes activarlo más tarde en Ajustes.",
     "permissionOff": "El acceso a la ubicación está desactivado. Actívalo en Ajustes para centrar el mapa en tu posición.",
     "timeout": "Tu ubicación está tardando más de lo esperado. Ve a un lugar con mejor señal e inténtalo de nuevo.",
+    "savedTitle": "Lugares guardados",
+    "savedEmptyTitle": "Aún no hay lugares guardados",
+    "savedEmptyMessage": "Los lugares de confianza que guardes aparecerán aquí para acceder rápidamente.",
     "zones": {
       "crowding": "Aglomeración nocturna",
       "lowLighting": "Zona con poca iluminación"
@@ -184,7 +198,9 @@
     "reconnect": "Reconectar con la IA de voz",
     "typePlaceholder": "Escribe si te cuesta hablar",
     "endCall": "Finalizar llamada",
-    "startCall": "Iniciar llamada"
+    "startCall": "Iniciar llamada",
+    "emptyTitle": "Tu conversación comienza aquí",
+    "emptyMessage": "Inicia la llamada o escribe un mensaje cuando estés lista."
   },
   "chat": {
     "waiting": "Esperando conexión",
@@ -199,6 +215,11 @@
     "title": "Historial de conversaciones",
     "subtitle": "Mensajes del compañero de IA guardados en este dispositivo.",
     "empty": "Aún no hay conversaciones guardadas.",
+    "emptyTitle": "Aún no hay conversaciones",
+    "emptyMessage": "Tus conversaciones con el compañero de IA aparecerán aquí después de la primera llamada.",
+    "loadFailed": "No pudimos cargar el historial de conversaciones. Inténtalo de nuevo.",
+    "clearFailed": "No pudimos borrar el historial de conversaciones. Inténtalo de nuevo.",
+    "deleteFailed": "No pudimos eliminar esa conversación. Inténtalo de nuevo.",
     "aiCompanion": "Compañero de IA",
     "resume": "Continuar",
     "clearAll": "Borrar todo el historial",
@@ -258,7 +279,23 @@
     "deleteEverything": "Eliminar todo",
     "deleteFailedTitle": "Error al eliminar",
     "deleteFailedMessage": "No se pueden eliminar los datos locales ahora mismo.",
-    "linkFailed": "No se puede abrir el enlace"
+    "linkFailed": "No se puede abrir el enlace",
+    "sections": {
+      "language": "Idioma",
+      "languageSubtitle": "Idioma de la interfaz y los permisos del sistema",
+      "companion": "Compañero",
+      "companionSubtitle": "Preferencias de voz y modo sin conexión",
+      "deviceSafety": "Dispositivos y seguridad",
+      "deviceSafetySubtitle": "NorthStar, guardianes y contactos de emergencia",
+      "privacy": "Privacidad y datos",
+      "privacySubtitle": "Historial, exportación, eliminación y política",
+      "account": "Cuenta",
+      "accountSubtitle": "Tu sesión actual de VeryLoving"
+    },
+    "updateFailedTitle": "No se guardó el ajuste",
+    "updateFailedMessage": "No pudimos guardar esa preferencia. Inténtalo de nuevo.",
+    "signOutFailedTitle": "No se pudo cerrar la sesión",
+    "signOutFailedMessage": "Tu sesión sigue activa. Inténtalo de nuevo."
   },
   "contacts": {
     "title": "Contactos de emergencia",
@@ -269,9 +306,15 @@
     "phone": "Teléfono del contacto",
     "add": "Añadir contacto",
     "empty": "Aún no has añadido contactos de emergencia.",
+    "emptyTitle": "Aún no hay contactos de emergencia",
+    "emptyMessage": "Añade a una persona de confianza para tenerla disponible cuando un flujo de seguridad la necesite.",
     "removeTitle": "¿Quitar a %{name}?",
     "removeMessage": "Esta persona dejará de aparecer en tu flujo de emergencia.",
     "nameRequired": "Introduce el nombre del contacto.",
+    "saveFailedTitle": "No se guardó el contacto",
+    "saveFailedMessage": "No pudimos guardar este contacto. Comprueba los datos e inténtalo de nuevo.",
+    "removeFailedTitle": "No se quitó el contacto",
+    "removeFailedMessage": "No pudimos quitar este contacto. Inténtalo de nuevo.",
     "callAccessibility": "Llamar a %{name}",
     "removeAccessibility": "Quitar a %{name}"
   },
@@ -287,6 +330,8 @@
     "title": "Amigos",
     "subtitle": "Guardianes, solicitudes y red de emergencia.",
     "addDemo": "Añadir amigo de prueba",
+    "emptyTitle": "Tu círculo de seguridad está vacío",
+    "emptyMessage": "Tus amigos y guardianes de confianza aparecerán aquí cuando los añadas.",
     "newGuardian": "Nuevo guardián",
     "statuses": {
       "guardian": "Guardián",

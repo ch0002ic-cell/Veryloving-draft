@@ -334,6 +334,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     isOnline,
     pendingMessageCount,
     isConnecting: isStarting || status === 'connecting' || status === 'reconnecting',
+    isOfflineCompanion: serviceRef.current === offlineEVIService && status === 'connected',
     canRetryOnline: isOnline && !forcedOffline && serviceRef.current === offlineEVIService,
     retryOnline,
     retryMessage,

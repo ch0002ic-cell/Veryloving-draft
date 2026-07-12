@@ -1,0 +1,402 @@
+{
+  "common": {
+    "add": "添加",
+    "apple": "Apple",
+    "back": "返回",
+    "call": "拨打电话",
+    "cancel": "取消",
+    "clear": "清除",
+    "close": "关闭",
+    "connect": "连接",
+    "connecting": "正在连接...",
+    "continue": "继续",
+    "delete": "删除",
+    "finish": "完成",
+    "friends": "好友",
+    "google": "Google",
+    "home": "主页",
+    "loading": "正在加载...",
+    "map": "地图",
+    "notNow": "暂不",
+    "remove": "移除",
+    "retry": "重试",
+    "retrying": "正在重试",
+    "save": "保存",
+    "selected": "已选择",
+    "send": "发送",
+    "settings": "设置",
+    "skip": "跳过",
+    "skipForNow": "暂时跳过",
+    "skipTutorial": "跳过教程",
+    "sos": "SOS",
+    "unknown": "未知",
+    "user": "VeryLoving 用户",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "语言",
+    "subtitle": "选择应用中使用的语言。",
+    "system": "跟随系统",
+    "english": "英语",
+    "spanish": "西班牙语",
+    "french": "法语",
+    "chineseSimplified": "简体中文"
+  },
+  "phone": {
+    "label": "手机号码",
+    "placeholder": "手机号码",
+    "selectCountry": "选择国家或地区",
+    "searchCountry": "搜索国家、代码或区号",
+    "noCountries": "没有符合搜索条件的国家或地区。",
+    "countryButton": "更改国家或地区，当前为%{country}，区号加%{callingCode}",
+    "inputAccessibility": "%{country}的手机号码",
+    "required": "请输入手机号码。",
+    "tooShort": "此手机号码过短。",
+    "tooLong": "此手机号码过长。",
+    "invalid": "请输入所选国家或地区的有效手机号码。",
+    "valid": "有效的国际手机号码"
+  },
+  "auth": {
+    "onboardingTagline": "在“我没事”和“我需要帮助”之间，陪伴你的个人安全伙伴。",
+    "createAccount": "创建账户",
+    "continueOnboarding": "继续新手引导",
+    "createSubtitle": "选择登录方式，以保护你的安全关系网络。",
+    "phoneVerification": "手机验证",
+    "sendCode": "发送验证码",
+    "sendingCode": "正在发送验证码...",
+    "verifyCode": "验证验证码",
+    "sentTo": "已发送至%{phone}",
+    "yourPhone": "你的手机",
+    "verificationCode": "验证码",
+    "verify": "验证",
+    "verifying": "正在验证...",
+    "invalidCode": "请输入验证码。",
+    "signInFailedTitle": "登录已中断",
+    "signInFailedMessage": "无法完成登录。请检查网络后重试。",
+    "googleUnavailableTitle": "Google 登录不可用",
+    "googleUnavailableMessage": "将使用本地开发会话。原生 Google 登录可在开发版本中使用。",
+    "northStarTitle": "NorthStar 安全首饰",
+    "northStarSubtitle": "现在配对，或稍后再添加。",
+    "northStarBody": "VL01 穿戴设备可通过轻触和长按启动安全流程。",
+    "setupJewelry": "设置安全首饰",
+    "meetCapybear": "认识 Capybear",
+    "meetCapybearSubtitle": "在地图和通话中陪伴你的温暖安全伙伴。",
+    "capybearBody": "Capybear 可以协助居家模式、守护模式、紧急模式、脱身来电和语音支持。",
+    "chooseVoice": "选择声音",
+    "capybearReminder": "Capybear 提醒",
+    "remindersReady": "贴心提醒已准备就绪。"
+  },
+  "permissions": {
+    "locationTitle": "位置安全",
+    "locationSubtitle": "用于地图、危险区域、安全到达和 SOS 情境。",
+    "locationBody": "VeryLoving 请求你的位置，以便守护人在需要时了解你可能在哪里需要帮助。你可以稍后在设置中更改。",
+    "allowLocation": "允许使用位置",
+    "notificationsTitle": "安全提醒",
+    "notificationsSubtitle": "通知用于签到和紧急事件。",
+    "notificationsBody": "我们只会发送你启用的安全提示、紧急更新和提醒。",
+    "enableNotifications": "启用通知",
+    "locationRationaleTitle": "位置信息让安全情境更准确",
+    "locationRationaleMessage": "VeryLoving 使用你的位置提供安全地图、危险区域、快速分享和 SOS 情境。你可以稍后在设置中更改。",
+    "notificationsRationaleTitle": "安全提醒需要通知权限",
+    "notificationsRationaleMessage": "VeryLoving 会发送你启用的签到提醒、紧急更新和安全提示。我们不会发送广告。",
+    "microphoneRationaleTitle": "麦克风用于安全通话",
+    "microphoneRationaleMessage": "VeryLoving 只会在你主动发起 AI 伙伴通话或安全通话时使用麦克风。",
+    "bluetoothRationaleTitle": "蓝牙用于连接穿戴设备",
+    "bluetoothRationaleMessage": "VeryLoving 使用蓝牙配对 NorthStar 安全首饰、读取连接状态，并通过穿戴设备启动安全流程。",
+    "cameraRationaleTitle": "相机为可选权限",
+    "cameraRationaleMessage": "VeryLoving 只会在你选择拍摄头像或分享安全图片时使用相机。"
+  },
+  "tutorial": {
+    "sharedBody": "你可以随时从设置和主页重新进入此流程。",
+    "chooseVoiceTitle": "选择你的声音",
+    "chooseVoiceSubtitle": "选择一个让你听起来最安心的伙伴声音。",
+    "homeTitle": "居家模式",
+    "homeSubtitle": "为日常安全提供安静守护。",
+    "guardianTitle": "守护模式",
+    "guardianSubtitle": "与信任的人分享安全情境。",
+    "emergencyTitle": "紧急模式",
+    "emergencySubtitle": "连续轻触五次可启动 SOS 并提醒守护人。",
+    "excuseTitle": "脱身来电",
+    "excuseSubtitle": "为离开不适场景提供一个自然的理由。",
+    "safetyCallTitle": "安全通话",
+    "safetyCallSubtitle": "需要支持时，发起实时伙伴通话。",
+    "practiceTitle": "练习场景",
+    "practiceSubtitle": "在轻松的演示中熟悉安全流程。"
+  },
+  "jewelry": {
+    "pairTitle": "配对 NorthStar",
+    "pairSubtitle": "搜索时请将安全首饰放在附近。",
+    "scan": "搜索设备",
+    "scanning": "正在搜索附近设备...",
+    "noDevices": "暂未发现附近的 NorthStar 设备。",
+    "scanStartFailed": "无法开始蓝牙搜索，请重试。",
+    "scanFailed": "未发现附近的安全首饰。请检查蓝牙，将 NorthStar 放在附近后重试。",
+    "scanAccessFailed": "无法开始蓝牙搜索。请检查蓝牙权限后重试。",
+    "permissionDenied": "附近设备权限已关闭。请在“设置”中允许蓝牙访问，然后重试。",
+    "connectTimeout": "NorthStar 连接超时。请将设备移近后重试。",
+    "connectFailed": "无法连接 NorthStar。请确认设备电量充足且在附近，然后重试。",
+    "emptyTitle": "附近暂未发现设备",
+    "emptyMessage": "请确认 NorthStar 电量充足并靠近此手机，然后重新搜索。",
+    "searchingMessage": "正在搜索附近的 NorthStar 设备..."
+  },
+  "home": {
+    "subtitle": "安全伙伴主页",
+    "modeStatus": "%{mode}模式",
+    "companionReady": "%{name}已准备就绪",
+    "readyBody": "语音、地图、安全首饰和守护人，一触即达。",
+    "safetyCall": "安全通话",
+    "northStarDevice": "NorthStar 设备",
+    "deviceConnected": "%{name}已连接 · 电量%{battery}%",
+    "noDevice": "未连接设备",
+    "manageDevice": "管理设备",
+    "mode": "模式",
+    "modes": {
+      "home": "居家",
+      "guardian": "守护",
+      "emergency": "紧急"
+    }
+  },
+  "map": {
+    "finding": "正在获取你的位置...",
+    "retry": "重试定位",
+    "title": "安全地图",
+    "previewSubtitle": "Expo Go 预览；Mapbox 会在开发版本中显示。",
+    "preview": "地图预览",
+    "risk": "风险：%{risk} · 半径%{radius}米",
+    "refresh": "刷新位置",
+    "refreshing": "正在获取位置...",
+    "updateFailed": "无法更新你的位置，请重试。",
+    "notRequested": "尚未请求位置权限。你可以稍后在设置中启用。",
+    "permissionOff": "位置权限已关闭。请在设置中启用，以便安全地图定位到你的位置。",
+    "timeout": "定位时间比预期更长。请移至信号更好的位置后重试。",
+    "savedTitle": "已保存地点",
+    "savedEmptyTitle": "暂未保存地点",
+    "savedEmptyMessage": "你保存的信任地点会显示在这里，方便快速访问。",
+    "zones": {
+      "crowding": "深夜人群密集区域",
+      "lowLighting": "照明不足区域"
+    },
+    "risks": {
+      "low": "低",
+      "medium": "中",
+      "high": "高"
+    }
+  },
+  "safetyCall": {
+    "connecting": "正在连接...",
+    "offlineCompanion": "离线伙伴",
+    "offline": "离线",
+    "connected": "已连接",
+    "interrupted": "连接已中断",
+    "ready": "可以连接",
+    "connectingSecurely": "正在安全连接语音伙伴...",
+    "messagesWaiting": {
+      "one": "%{count}条消息等待发送",
+      "other": "%{count}条消息等待发送"
+    },
+    "useOffline": "使用离线伙伴",
+    "reconnect": "重新连接语音 AI",
+    "typePlaceholder": "不方便说话时可以输入文字",
+    "endCall": "结束通话",
+    "startCall": "开始通话",
+    "emptyTitle": "从这里开始对话",
+    "emptyMessage": "准备好后，可以开始通话或输入消息。"
+  },
+  "chat": {
+    "waiting": "等待连接",
+    "notSent": "消息未发送。",
+    "retryAccessibility": "重试发送消息"
+  },
+  "history": {
+    "clearTitle": "清除对话记录？",
+    "clearMessage": "这将删除此设备上保存的 AI 伙伴消息。",
+    "deleteTitle": "删除此对话？",
+    "cannotUndo": "此操作无法撤销。",
+    "title": "对话记录",
+    "subtitle": "保存在此设备上的 AI 伙伴消息。",
+    "empty": "暂时没有保存的对话。",
+    "emptyTitle": "暂时没有对话",
+    "emptyMessage": "完成首次通话后，你与 AI 伙伴的对话会显示在这里。",
+    "loadFailed": "无法加载对话记录，请重试。",
+    "clearFailed": "无法清除对话记录，请重试。",
+    "deleteFailed": "无法删除此对话，请重试。",
+    "aiCompanion": "AI 伙伴",
+    "resume": "继续对话",
+    "clearAll": "清除所有记录",
+    "roles": {
+      "assistant": "伙伴",
+      "user": "你"
+    }
+  },
+  "voices": {
+    "title": "我的安全通话声音",
+    "subtitle": "选择一个让你感到安心的伙伴声音。",
+    "test": "试听声音",
+    "stop": "停止试听",
+    "selectionFailedTitle": "未能保存选择",
+    "selectionFailedMessage": "请重新选择声音。",
+    "sampleFailedTitle": "试听不可用",
+    "sampleFailedMessage": "无法播放此声音示例，请重试。",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "温柔、平静、让人安心"
+      },
+      "bestie": {
+        "name": "闺蜜",
+        "description": "开朗、贴心、善于交流"
+      },
+      "boyfriend": {
+        "name": "男友",
+        "description": "稳重、关爱、始终陪伴"
+      },
+      "muscleMan": {
+        "name": "守护者",
+        "description": "自信、可靠、鼓舞人心"
+      }
+    }
+  },
+  "settings": {
+    "voice": "声音",
+    "changeVoice": "更改声音",
+    "showCompanion": "显示伙伴",
+    "offlineMode": "离线模式",
+    "offlineModeSubtitle": "当网络或 Hume 凭据不可用时，使用应用内置的伙伴回复。",
+    "privacyData": "隐私与数据",
+    "privacyBody": "导出或删除保存在此设备上的本地数据。",
+    "preparingExport": "正在准备导出...",
+    "exportData": "导出我的数据",
+    "privacyPolicy": "隐私政策",
+    "deleting": "正在删除...",
+    "deleteAll": "删除所有本地数据",
+    "deviceManagement": "设备管理",
+    "emergencyContacts": "紧急联系人",
+    "signOut": "退出登录",
+    "exportFailedTitle": "导出失败",
+    "exportFailedMessage": "目前无法导出你的数据。",
+    "deleteConfirmTitle": "删除所有本地数据？",
+    "deleteConfirmMessage": "这将从此设备删除你的个人资料、设置、紧急联系人、对话记录、权限说明记录和本地登录会话。",
+    "deleteEverything": "全部删除",
+    "deleteFailedTitle": "删除失败",
+    "deleteFailedMessage": "目前无法删除本地数据。",
+    "linkFailed": "无法打开链接",
+    "sections": {
+      "language": "语言",
+      "languageSubtitle": "界面和系统权限提示语言",
+      "companion": "安全伙伴",
+      "companionSubtitle": "声音和离线模式偏好",
+      "deviceSafety": "设备与安全",
+      "deviceSafetySubtitle": "NorthStar、守护人和紧急联系人",
+      "privacy": "隐私与数据",
+      "privacySubtitle": "记录、导出、删除和隐私政策",
+      "account": "账户",
+      "accountSubtitle": "当前 VeryLoving 会话"
+    },
+    "updateFailedTitle": "设置未保存",
+    "updateFailedMessage": "无法保存此偏好，请重试。",
+    "signOutFailedTitle": "无法退出登录",
+    "signOutFailedMessage": "你的会话仍然有效，请重试。"
+  },
+  "contacts": {
+    "title": "紧急联系人",
+    "subtitle": "在安全流程中可联系的信任对象。",
+    "addTitle": "添加紧急联系人",
+    "name": "姓名",
+    "namePlaceholder": "联系人姓名",
+    "phone": "联系人手机号码",
+    "add": "添加联系人",
+    "empty": "尚未添加紧急联系人。",
+    "emptyTitle": "暂时没有紧急联系人",
+    "emptyMessage": "添加你信任的人，以便在安全流程需要时及时联系。",
+    "removeTitle": "移除%{name}？",
+    "removeMessage": "此联系人将不再出现在紧急流程中。",
+    "nameRequired": "请输入联系人姓名。",
+    "saveFailedTitle": "联系人未保存",
+    "saveFailedMessage": "无法保存此联系人。请检查信息后重试。",
+    "removeFailedTitle": "联系人未移除",
+    "removeFailedMessage": "无法移除此联系人，请重试。",
+    "callAccessibility": "拨打%{name}",
+    "removeAccessibility": "移除%{name}"
+  },
+  "device": {
+    "title": "设备管理",
+    "subtitle": "管理你的 NorthStar 设备。",
+    "connected": "已连接 · 电量%{battery}%",
+    "none": "未连接设备",
+    "disconnect": "断开设备",
+    "connect": "连接设备"
+  },
+  "friends": {
+    "title": "好友",
+    "subtitle": "守护人、好友请求和紧急关系网络。",
+    "addDemo": "添加演示好友",
+    "emptyTitle": "你的安全圈还是空的",
+    "emptyMessage": "添加后，信任的好友和守护人会显示在这里。",
+    "newGuardian": "新守护人",
+    "statuses": {
+      "guardian": "守护人",
+      "pending": "待确认"
+    }
+  },
+  "emergency": {
+    "title": "紧急 SOS",
+    "subtitle": "仅在需要立即获得帮助时启动。",
+    "body": "这将启动你的安全流程，并准备联系紧急联系人。",
+    "activate": "启动 SOS",
+    "callCompanion": "呼叫 AI 伙伴",
+    "notificationTitle": "SOS 已启动",
+    "notificationBody": "你的紧急流程已准备就绪。",
+    "readyTitle": "SOS 已准备",
+    "callContact": "拨打%{name}？",
+    "addContact": "请先在设置中添加紧急联系人。",
+    "quickShareTitle": "快速分享",
+    "quickShareMessage": "位置分享流程已准备就绪。连接后端分享接口后即可发送实时链接。"
+  },
+  "quickShare": {
+    "title": "快速分享",
+    "subtitle": "位置分享流程已准备就绪。"
+  },
+  "capybearTap": {
+    "title": "Capybear 轻触",
+    "subtitle": "双击 NorthStar 即可投放一枚安全橙子。",
+    "body": "手势流程已准备好连接蓝牙事件。"
+  },
+  "debug": {
+    "title": "VeryLoving 调试页面",
+    "subtitle": "仅限开发环境的页面。"
+  },
+  "errors": {
+    "voiceOffline": "你似乎已离线。恢复连接后将自动发送消息。",
+    "voiceQueued": "消息已保存。语音伙伴重新连接后将自动发送。",
+    "voiceRetrying": "正在重新发送消息...",
+    "voiceConnecting": "正在安全连接语音伙伴...",
+    "microphone": "语音通话需要麦克风权限。你可以在设置中启用，或改为输入文字。",
+    "billing": "在线语音伙伴暂时不可用。你可以继续使用离线伙伴。",
+    "authentication": "语音伙伴无法验证此会话。请重新登录，或暂时使用离线伙伴。",
+    "timeout": "语音伙伴响应超时。请检查网络后重试。",
+    "network": "无法连接语音伙伴。请检查网络后重试，或继续使用离线伙伴。",
+    "genericVoice": "语音通话被意外中断。请重试，或继续使用离线伙伴。"
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving 数据导出"
+  },
+  "notifications": {
+    "channelName": "安全提醒"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving 需要使用麦克风进行安全通话和 AI 伙伴通话。",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving 使用你的位置提供安全地图和附近的安全功能。",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving 使用你的位置支持安全到达和紧急流程。",
+      "NSLocationAlwaysUsageDescription": "VeryLoving 使用后台位置支持安全到达和附近危险区域功能。",
+      "NSCameraUsageDescription": "VeryLoving 只会在你选择拍摄头像或安全照片时使用相机。",
+      "NSPhotoLibraryUsageDescription": "VeryLoving 只会在你选择头像或安全图片时访问照片库。",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving 使用蓝牙连接你的 NorthStar 安全首饰。",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving 使用蓝牙连接你的 NorthStar 安全首饰。"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

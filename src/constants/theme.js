@@ -9,7 +9,11 @@ export const colors = {
   red: '#D94E4E',
   blue: '#3B82F6',
   line: '#E6ECEF',
-  muted: '#F4F6F7'
+  muted: '#F4F6F7',
+  orangeSoft: '#FFF0E8',
+  greenSoft: '#EAF7F0',
+  redSoft: '#FFF0F0',
+  blueSoft: '#EEF5FF'
 };
 
 export const fonts = {
@@ -23,7 +27,13 @@ export const fonts = {
 export const spacing = {
   xs: 4,
   sm: 8,
+  mdSm: 12,
   md: 16,
   lg: 24,
   xl: 32
+};
+
+export const radii = {
+  sm: 6,
+  md: 8
 };

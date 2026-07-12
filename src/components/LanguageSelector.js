@@ -1,10 +1,25 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../context/I18nContext';
 import { colors, fonts } from '../constants/theme';
 
-export function LanguageSelector() {
+export function LanguageSelector({ onError }) {
   const { languageOptions, languagePreference, setLanguage, t } = useI18n();
+  const [savingLanguage, setSavingLanguage] = useState(null);
+
+  const chooseLanguage = async (languageCode) => {
+    if (savingLanguage || languageCode === languagePreference) return;
+    setSavingLanguage(languageCode);
+    try {
+      await setLanguage(languageCode);
+    } catch (error) {
+      onError?.(error);
+    } finally {
+      setSavingLanguage(null);
+    }
+  };
+
   return (
     <View style={styles.list}>
       {languageOptions.map((language) => {
@@ -13,13 +28,16 @@ export function LanguageSelector() {
         return (
           <Pressable
             accessibilityRole="radio"
-            accessibilityState={{ checked: selected }}
+            accessibilityState={{ busy: savingLanguage === language.code, checked: selected, disabled: Boolean(savingLanguage) }}
+            disabled={Boolean(savingLanguage)}
             key={language.code}
-            onPress={() => setLanguage(language.code)}
+            onPress={() => chooseLanguage(language.code)}
             style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
           >
             <Text style={[styles.label, selected && styles.selectedLabel]}>{label}</Text>
-            {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.green} /> : null}
+            {savingLanguage === language.code
+              ? <ActivityIndicator size="small" color={colors.orange} />
+              : selected ? <Ionicons name="checkmark-circle" size={21} color={colors.green} /> : null}
           </Pressable>
         );
       })}

@@ -4,6 +4,7 @@ const extra = Constants.expoConfig?.extra ?? Constants.manifest?.extra ?? {};
 
 export const config = {
   apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL || extra.apiBaseUrl || 'https://veryloving-backend-production.up.railway.app',
+  googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || extra.googleWebClientId || '',
   humeWSProxyURL: process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '', // Only use env; no fallback to extra
   humeConfigId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID || extra.humeConfigId || 'e3d9acd6-22ea-4090-acfa-c354de25c05e',
   humeApiKey: __DEV__ ? process.env.EXPO_PUBLIC_HUME_API_KEY || '' : '',

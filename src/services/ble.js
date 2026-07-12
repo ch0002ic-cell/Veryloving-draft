@@ -1,11 +1,30 @@
-import { Platform } from 'react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 import { explainPermission } from './permissions';
+import {
+  getAndroidBluetoothPermissions,
+  hasGrantedAndroidBluetoothPermissions
+} from './ble-permissions';
 import { logger } from '../utils/logger';
 import { OperationTimeoutError, withTimeout } from '../utils/async';
 import { translate } from '../i18n/core';
 
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
+
+async function requestAndroidBluetoothAccess() {
+  if (Platform.OS !== 'android') return true;
+  const permissions = getAndroidBluetoothPermissions(Platform.Version);
+  const existing = await Promise.all(
+    permissions.map((permission) => PermissionsAndroid.check(permission))
+  );
+  if (existing.every(Boolean)) return true;
+  const results = await PermissionsAndroid.requestMultiple(permissions);
+  return hasGrantedAndroidBluetoothPermissions(
+    results,
+    permissions,
+    PermissionsAndroid.RESULTS.GRANTED
+  );
+}
 
 export class BLEService {
   manager = null;
@@ -27,6 +46,18 @@ export class BLEService {
   async scanForDevices(onDevice, { onError, onComplete, timeoutMs = DEFAULT_SCAN_TIMEOUT_MS } = {}) {
     if (!await explainPermission('bluetooth')) {
       onComplete?.('permission-declined');
+      return () => {};
+    }
+    try {
+      if (!await requestAndroidBluetoothAccess()) {
+        onError?.(new Error(translate('jewelry.permissionDenied')));
+        onComplete?.('permission-declined');
+        return () => {};
+      }
+    } catch (permissionError) {
+      logger.error('[BLE] Permission request failed', permissionError);
+      onError?.(new Error(translate('jewelry.scanAccessFailed')));
+      onComplete?.('permission-error');
       return () => {};
     }
 
