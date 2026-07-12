@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tāpiri",
+    "apple": "Apple",
+    "back": "Whakamuri",
+    "call": "Waea",
+    "cancel": "Whakakore",
+    "clear": "Mahea",
+    "close": "Katia",
+    "connect": "Hono",
+    "connecting": "Tūhono ana...",
+    "continue": "Haere tonu",
+    "delete": "Whakakore",
+    "finish": "Mutu",
+    "friends": "Ngā Hoa",
+    "google": "Google",
+    "home": "Kāinga",
+    "loading": "Kei te tāuta...",
+    "map": "Mahere",
+    "notNow": "Kāore i tēnei wā",
+    "remove": "Tango",
+    "retry": "Whakamātau anō",
+    "retrying": "Ngana anō",
+    "save": "Tiaki",
+    "selected": "I tīpakona",
+    "send": "Tukua",
+    "settings": "Ngā Tautuhinga",
+    "skip": "Haere tonu",
+    "skipForNow": "Tīpoka mō nāianei",
+    "skipTutorial": "Tīpoka akoranga",
+    "sos": "SOS",
+    "unknown": "Tē mōhiotia",
+    "user": "VeryLoving kaiwhakamahi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Reo",
+    "subtitle": "Kōwhiria te reo e whakamahia ana puta noa i te taupānga.",
+    "system": "Taunoa pūnaha",
+    "search": "Rapua ngā reo",
+    "noResults": "Kāore he reo e ōrite ana ki tō rapunga.",
+    "english": "Reo Pākehā",
+    "spanish": "Reo Pāniora",
+    "french": "Reo Wīwī",
+    "chineseSimplified": "Hainihi (Kua whakangāwarihia)"
+  },
+  "phone": {
+    "label": "Tau waea:",
+    "placeholder": "Tau waea:",
+    "selectCountry": "Tīpako whenua, rohe rānei",
+    "searchCountry": "Rapua te whenua, te waehere, te kuhimua waea rānei",
+    "noCountries": "Kāore he whenua e ōrite ana ki tō rapunga.",
+    "countryButton": "Hurihia te whenua, i tēnei wā %{country} me te %{callingCode}",
+    "inputAccessibility": "Tau waea mō %{country}",
+    "required": "Tāurua he tau waea.",
+    "tooShort": "He poto rawa tēnei tau waea.",
+    "tooLong": "He roa rawa tēnei tau waea.",
+    "invalid": "Tāurua he tau waea tika mō te whenua kua tīpakohia.",
+    "valid": "Tau waea aowhānui whaimana"
+  },
+  "auth": {
+    "onboardingTagline": "He hoa haumaru whaiaro mō ngā wā i waenganui i te \"Kei te pai ahau\" me te \"Kei te hiahia āwhina ahau.\"",
+    "createAccount": "Waihanga pūkete",
+    "continueOnboarding": "Haere tonu me te whakauru",
+    "createSubtitle": "Kōwhiria he aratuka takiuru hei pare i tō kauwhata haumaru.",
+    "phoneVerification": "Manatokonga waea",
+    "sendCode": "Tukua te waehere",
+    "sendingCode": "Tuku waehere ana...",
+    "verifyCode": "Manatokona te waehere",
+    "sentTo": "Kua tukua ki %{phone}",
+    "yourPhone": "Tō Waea",
+    "verificationCode": "Te waehere manatokonga",
+    "verify": "Manatoko",
+    "verifying": "Manatoko ana...",
+    "invalidCode": "Tāurua te waehere manatokonga.",
+    "signInFailedTitle": "Kua haukotia te takiuru",
+    "signInFailedMessage": "Kāore i taea te takiuru te whakaoti. Takina tō hononga ka ngana anō ai.",
+    "googleUnavailableTitle": "Google Kāore te Takiuru i te wātea",
+    "googleUnavailableMessage": "Mā te whakamahi i tētahi wātū whanaketanga paetata. Ka mahi a Native Google Sign-In i roto i tētahi hanga whanaketanga.",
+    "northStarTitle": "NorthStar taonga",
+    "northStarSubtitle": "Takiruatia ināianei, haere tonu rānei ka tāpiri ā muri ake.",
+    "northStarBody": "Ka taea e te mauranga VL01 te whakaoho i ngā rerenga haumaru mā ngā pato me ngā tohu pēhi roa.",
+    "setupJewelry": "Tatūria he taonga",
+    "meetCapybear": "Tūtaki ki Capybear",
+    "meetCapybearSubtitle": "Tō hoa haumaru mārire i runga i te mahere me ngā waea.",
+    "capybearBody": "Ka taea e Capybear te āwhina ki te aratau kāinga, te aratau kaitiaki, te aratau ohorere, ngā waea takunga, me te tautoko reo.",
+    "chooseVoice": "Kōwhiria he reo",
+    "capybearReminder": "Capybear whakamaumahara",
+    "remindersReady": "Kua rite ngā whakamaumahara mārire."
+  },
+  "permissions": {
+    "locationTitle": "Haumaru tauwāhi",
+    "locationSubtitle": "Whakamahia mō te mahere, ngā rohe mōrearea, te taenga haumaru, me te horopaki SOS.",
+    "locationBody": "VeryLoving tono tauwāhi kia mārama ai ngā kaitiaki ki te wāhi e hiahiatia ai te āwhina. Ka taea e koe tēnei te whakarerekē ā muri ake i Ngā Tautuhinga.",
+    "allowLocation": "Whakaaetia te tauwāhi",
+    "notificationsTitle": "Ngā matohi haumaru",
+    "notificationsSubtitle": "E tautoko ana ngā whakamōhiotanga i ngā takiuru me ngā takahanga ohotata.",
+    "notificationsBody": "Ka whakamahi anake mātou i ngā whakamōhiotanga mō ngā tohuāki haumaru, ngā whakahōutanga ohorere, me ngā whakamaumahara ka whakahohea e koe.",
+    "enableNotifications": "Whakahohe whakamōhiotanga",
+    "locationRationaleTitle": "Mā te tauwāhi e pupuri i te horopaki haumaru kia tika",
+    "locationRationaleMessage": "Ka whakamahi VeryLoving i tō tauwāhi mō te mahere haumaru, ngā rohe mōrearea, te tiri tere, me te horopaki SOS. Ka taea e koe tēnei te whakarerekē ā muri ake i Ngā Tautuhinga.",
+    "notificationsRationaleTitle": "Me whai whakamōhiotanga ngā matohi haumaru",
+    "notificationsRationaleMessage": "VeryLoving tuku whakamaumahara takiuru, whakahōutanga ohorere, me ngā tohutohu haumaru ka whakahohea e koe. Kāore mātou e whakamahi i ngā whakamōhiotanga mō ngā pānuitanga.",
+    "microphoneRationaleTitle": "Ka whakamana te uruoro i ngā waea haumaru",
+    "microphoneRationaleMessage": "VeryLoving whakamahi anake i tō uruoro ina tīmata koe i tētahi hoa AI, waea haumaru rānei.",
+    "bluetoothRationaleTitle": "Bluetooth tūhono ai i tō mauranga",
+    "bluetoothRationaleMessage": "Ka whakamahia e VeryLoving Bluetooth hei takirua ki NorthStar taonga, ki te pānui i te tūnga hononga, me te whakaoho i ngā rerenga haumaru mai i te mauranga.",
+    "cameraRationaleTitle": "He kōwhiringa te kāmera",
+    "cameraRationaleMessage": "VeryLoving ka whakamahi anake i te kāmera ina kōwhiri koe ki te tango whakaahua kōtaha, ki te tiri rānei i tētahi atahanga haumaru."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ka wātea tēnei rerenga mai i Ngā Tautuhinga me te paemana.",
+    "chooseVoiceTitle": "Kōwhiria tō reo",
+    "chooseVoiceSubtitle": "Kōwhiria te reo hoa e tino haumaru ana ki te rongo.",
+    "homeTitle": "Aratau kāinga",
+    "homeSubtitle": "Te aroturuki mārire mō te haumarutanga o ia rā.",
+    "guardianTitle": "Aratau kaitiaki",
+    "guardianSubtitle": "Tiria te horopaki ki ngā tāngata whirinaki.",
+    "emergencyTitle": "Aratau ohorere",
+    "emergencySubtitle": "E rima ngā pato ka taea te whakanui ake ki ngā matohi SOS me ngā kaitiaki.",
+    "excuseTitle": "Waea takunga",
+    "excuseSubtitle": "Waihangatia he take ātaahua hei waiho i tētahi āhuatanga hāneanea.",
+    "safetyCallTitle": "Waea haumaru",
+    "safetyCallSubtitle": "Tīmataria he waea hoa wā tūturu ina hiahia tautoko koe.",
+    "practiceTitle": "Tirohanga whakaharatau",
+    "practiceSubtitle": "Whakamātauria ngā rerenga haumaru i roto i tētahi whakaaturanga pēhanga iti."
+  },
+  "jewelry": {
+    "pairTitle": "Takirua NorthStar",
+    "pairSubtitle": "Puritia ngā taonga ki te taha i a koe e karapa ana.",
+    "scan": "Karapa mō ngā pūrere",
+    "scanning": "Karapa pātata ana...",
+    "noDevices": "Kāore anō kia kitea he pūrere NorthStar pātata.",
+    "scanStartFailed": "Bluetooth kore e taea te karapa te tīmata. Tēnā kia ngana anō.",
+    "scanFailed": "Kāore i kitea e mātau he taonga pātata. Takina Bluetooth, kia tata NorthStar, ka ngana anō.",
+    "scanAccessFailed": "Bluetooth kore e taea te karapa te tīmata. Takina Bluetooth āheitanga ka ngana anō.",
+    "permissionDenied": "Kua weto te urunga pūrere-pātata. Tukua Bluetooth urunga ki Ngā Tautuhinga, ka ngana anō.",
+    "connectTimeout": "NorthStar roa rawa te tūhono. Nekehia kia tata atu ka ngana anō.",
+    "connectFailed": "Kāore i taea e mātou te tūhono ki NorthStar. Tirohia mēnā kua whakahikotia, kua pātata mai, ka ngana anō.",
+    "emptyTitle": "Kāore anō kia whai pūrere pātata",
+    "emptyMessage": "Kia NorthStar whakahiko tonu, kia tata hoki ki tēnei waea, ka karapa anō.",
+    "searchingMessage": "Kei te kimi NorthStar pūrere pātata mai..."
+  },
+  "home": {
+    "subtitle": "Paemana hoa haumaru",
+    "modeStatus": "%{mode} ARATAU",
+    "companionReady": "%{name} kua rite",
+    "readyBody": "Kotahi te pato o te reo, te mahere, te taonga, me ngā kaitiaki.",
+    "safetyCall": "Waea haumaru",
+    "northStarDevice": "NorthStar pūrere",
+    "deviceConnected": "%{name} tūhono · %{battery}%",
+    "noDevice": "Kāore he pūrere kua tūhonotia",
+    "manageDevice": "Whakahaere pūrere",
+    "mode": "Aratau:",
+    "modes": {
+      "home": "Kāinga",
+      "guardian": "Kaitiaki",
+      "emergency": "ohorere"
+    }
+  },
+  "map": {
+    "finding": "Kimi ana i tō tauwāhi...",
+    "retry": "Ngana anō ki te tauwāhi",
+    "title": "Mahere haumaru",
+    "previewSubtitle": "Expo Go arokite; Mapbox tāhuahua i roto i tētahi hanga whanaketanga.",
+    "preview": "Arokite mahere",
+    "risk": "Mōrea: %{risk} · Pūtoro %{radius}m",
+    "refresh": "Tāmata tauwāhi",
+    "refreshing": "Kimi tauwāhi ana...",
+    "updateFailed": "Kāore i taea e mātou tō tauwāhi te whakahōu. Tēnā kia ngana anō.",
+    "notRequested": "Kāore i tonoa te āheitanga tauwāhi. Ka taea e koe te whakahohe ā muri ake mai i Ngā Tautuhinga.",
+    "permissionOff": "Kua weto te urunga tauwāhi. Whakahohea i roto i Ngā Tautuhinga hei whakawaenga i te mahere haumaru ki a koe.",
+    "timeout": "Kei te roa ake tō tauwāhi i te mea e tūmanakohia ana. Nuku ki tētahi wāhi whai tohu mārama ake, ka ngana anō.",
+    "savedTitle": "Ngā wāhi i tiakina",
+    "savedEmptyTitle": "Kāore anō kia tiakina ngā wāhi",
+    "savedEmptyMessage": "Ka puta mai ki konei ngā wāhi whirinaki ka tiakina e koe kia tere ai te urunga.",
+    "zones": {
+      "crowding": "Te huihuinga pō tōmuri",
+      "lowLighting": "Horahanga tīramarama hahaka"
+    },
+    "risks": {
+      "low": "iti",
+      "medium": "waenga",
+      "high": "tiketike"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Tūhono ana...",
+    "offlineCompanion": "Hoa tuimotu",
+    "offline": "Tuimotu",
+    "connected": "Kua Tūhonotia",
+    "interrupted": "Kua haukotia te tūhononga",
+    "ready": "Kua rite ki te tūhono",
+    "connectingSecurely": "Tūhono haumaru ana ki tō hoa reo...",
+    "messagesWaiting": {
+      "one": "%{count} karere e tatari ana ki te tuku",
+      "other": "%{count} ngā karere e tatari ana ki te tuku"
+    },
+    "useOffline": "Whakamahia te hoa tuimotu",
+    "reconnect": "Tūhono anō ki te AI reo",
+    "typePlaceholder": "Patohia mēnā he uaua te kōrero",
+    "endCall": "Whakamutu waea",
+    "startCall": "Tīmata waea",
+    "emptyTitle": "Ka tīmata tō kōrerorero i konei",
+    "emptyMessage": "Tīmataria te waea, patohia rānei tētahi karere ina rite koe."
+  },
+  "chat": {
+    "waiting": "Tatari ana ki te tūhononga",
+    "notSent": "Kāore te karere i tukua.",
+    "retryAccessibility": "Ngana anō ki te tuku karere"
+  },
+  "history": {
+    "clearTitle": "Ūkui hītori kōrerorero?",
+    "clearMessage": "Mā tēnei e tango i ngā karere AI hoa kua tiakina mai i tēnei pūrere.",
+    "deleteTitle": "Mukua tēnei kōrerorero?",
+    "cannotUndo": "Kāore e taea te wete i tēnei.",
+    "title": "Hītori kōrerorero",
+    "subtitle": "AI ngā karere hoa kua tiakina ki tēnei pūrere.",
+    "empty": "Kāore anō kia tiakina ngā kōrerorero.",
+    "emptyTitle": "Kāore anō kia kōrerorero",
+    "emptyMessage": "Ka puta mai ō kōrerorero hoa AI ki konei i muri i tō waea tuatahi.",
+    "loadFailed": "Kāore i taea e mātou te uta hītori kōrerorero. Tēnā kia ngana anō.",
+    "clearFailed": "Kāore i taea e mātou te ūkui te hītori kōrerorero. Tēnā kia ngana anō.",
+    "deleteFailed": "Kāore i taea e mātou taua kōrerorero te muku. Tēnā kia ngana anō.",
+    "aiCompanion": "AI hoa",
+    "resume": "Hoki Atu",
+    "clearAll": "Ūkuia te hītori katoa",
+    "roles": {
+      "assistant": "hoa",
+      "user": "koe"
+    }
+  },
+  "voices": {
+    "title": "Aku reo waea haumaru",
+    "subtitle": "Kōwhiria te reo hoa e tika ana kia rongo.",
+    "test": "Whakamātauria te reo",
+    "stop": "Poroa te tauira",
+    "selectionFailedTitle": "Kāore te tīpakonga i tiakina",
+    "selectionFailedMessage": "Ngana koa ki te kōwhiri anō i te reo.",
+    "sampleFailedTitle": "Kāore te tauira i te wātea",
+    "sampleFailedMessage": "Kāore i taea te purei i tēnei tauira reo. Tēnā kia ngana anō.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ngohengohe"
+      },
+      "bestie": {
+        "name": "Te Hoa Pai",
+        "description": "mārama, whakamarie, kōrerorero"
+      },
+      "boyfriend": {
+        "name": "Hoa tāne",
+        "description": "pūmau"
+      },
+      "muscleMan": {
+        "name": "Tangata Uaua",
+        "description": "māia, whakamarumaru"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Reo",
+    "changeVoice": "Hurihia te reo",
+    "showCompanion": "Whakaatu hoa",
+    "offlineMode": "Aratau tuimotu",
+    "offlineModeSubtitle": "Whakamahia ngā urupare hoa paiheretia ki te kore e wātea te whatunga, Hume rānei o ngā pūkenga.",
+    "privacyData": "Tūmataitinga & raraunga",
+    "privacyBody": "Kaweake, mukua rānei ngā raraunga paetata kua penapenatia ki tēnei pūrere.",
+    "preparingExport": "Whakarite ana i te kaweake...",
+    "exportData": "Kaweake i aku raraunga",
+    "privacyPolicy": "Kaupapahere tūmataitinga",
+    "deleting": "E muku ana...",
+    "deleteAll": "Mukua ngā raraunga paetata katoa",
+    "deviceManagement": "Whakahaerenga pūrere",
+    "emergencyContacts": "Ngā hoapā ohotata",
+    "signOut": "Takiputa",
+    "exportFailedTitle": "I rahua te kaweake",
+    "exportFailedMessage": "Kāore e taea tō raraunga te kaweake i tēnei wā tonu.",
+    "deleteConfirmTitle": "Mukua ngā raraunga paetata katoa?",
+    "deleteConfirmMessage": "Mā tēnei e tango tō kōtaha, ō tautuhinga, ō hoapā ohotata, hītori kōrerorero, ngā whakamaumahara whakaaetanga, me te wātū motuhēhēnga paetata mai i tēnei pūrere.",
+    "deleteEverything": "Mukua ngā mea katoa",
+    "deleteFailedTitle": "I rahua te mukunga",
+    "deleteFailedMessage": "Kāore e taea te muku raraunga paetata i tēnei wā tonu.",
+    "linkFailed": "Kāore e taea te whakatuwhera hono",
+    "sections": {
+      "language": "Reo",
+      "languageSubtitle": "Reo atanga me te whakaaetanga pūnaha",
+      "companion": "Hoa",
+      "companionSubtitle": "Ngā manakohanga reo, tuimotu hoki",
+      "deviceSafety": "Ngā pūrere me te haumarutanga",
+      "deviceSafetySubtitle": "NorthStar, ngā kaitiaki, me ngā hoapā ohotata",
+      "privacy": "Tūmataitinga me ngā raraunga",
+      "privacySubtitle": "Hītori, kaweake, mukunga, me te kaupapahere",
+      "account": "Kaute",
+      "accountSubtitle": "Tō wātū VeryLoving onāianei"
+    },
+    "updateFailedTitle": "Kāore te tautuhinga i tiakina",
+    "updateFailedMessage": "Kāore i taea e mātou te tiaki i taua manakohanga. Tēnā kia ngana anō.",
+    "signOutFailedTitle": "Kāore i taea te takiputa",
+    "signOutFailedMessage": "Kei te hohe tonu tō wātū. Tēnā kia ngana anō."
+  },
+  "contacts": {
+    "title": "Ngā hoapā ohotata",
+    "subtitle": "E wātea ana ngā tāngata whirinaki i te wā o ngā rerenga haumaru.",
+    "addTitle": "Tāpirihia he hoapā ohorere",
+    "name": "Ingoa",
+    "namePlaceholder": "Ingoa hoapā",
+    "phone": "Tau waea hoapā",
+    "add": "Tāpirihia he hoapā",
+    "empty": "Kāore anō kia tāpirihia he hoapā ohorere.",
+    "emptyTitle": "Kāore anō kia whai hoapā ohorere",
+    "emptyMessage": "Tāpirihia tētahi tangata e whakawhirinaki ana koe kia rite ai ia ina hiahiatia e tētahi rerenga haumaru.",
+    "removeTitle": "Tangohia %{name}?",
+    "removeMessage": "Ka kore tēnei tangata e puta mai i tō rerenga ohorere.",
+    "nameRequired": "Tāurua te ingoa o te hoapā.",
+    "saveFailedTitle": "Kāore te hoapā i tiakina",
+    "saveFailedMessage": "Kāore i taea tēnei hoapā te tiaki. Takina ngā taipitopito ka ngana anō.",
+    "removeFailedTitle": "Kāore i tangohia te hoapā",
+    "removeFailedMessage": "Kāore i taea e mātou tēnei hoapā te tango. Tēnā kia ngana anō.",
+    "callAccessibility": "Waea %{name}",
+    "removeAccessibility": "Tangohia %{name}"
+  },
+  "device": {
+    "title": "Whakahaerenga pūrere",
+    "subtitle": "Whakahaerehia tō pūrere NorthStar.",
+    "connected": "Kua Tūhonotia · %{battery}% pūhiko",
+    "none": "Kāore he pūrere e tūhono ana",
+    "disconnect": "Momotu pūrere",
+    "connect": "Tūhono pūrere"
+  },
+  "friends": {
+    "title": "Ngā Hoa",
+    "subtitle": "Ngā kaitiaki, ngā tono, me te kauwhata ohotata.",
+    "addDemo": "Tāpiri hoa tauira",
+    "emptyTitle": "Kei te putu tō porohita haumaru",
+    "emptyMessage": "Ka puta mai ngā hoa me ngā kaitiaki pono ki konei ina tāpirihia.",
+    "newGuardian": "Kaitiaki Hou",
+    "statuses": {
+      "guardian": "Kaitiaki",
+      "pending": "Tārewa"
+    }
+  },
+  "emergency": {
+    "title": "Ohotata SOS",
+    "subtitle": "Whakanuia anake ina hiahia tautoko wawe koe.",
+    "body": "Mā tēnei e whakamōhio atu tō rerenga haumaru me te whakarite i ngā hoapā ohotata.",
+    "activate": "Whakahohe SOS",
+    "callCompanion": "Waea atu ki AI hoa",
+    "notificationTitle": "SOS whakahohe",
+    "notificationBody": "Kua rite tō rerenga ohorere.",
+    "readyTitle": "SOS rite",
+    "callContact": "Waea %{name}?",
+    "addContact": "Tāpirihia he hoapā ohorere ki Ngā Tautuhinga.",
+    "quickShareTitle": "Tiri tere",
+    "quickShareMessage": "Kua rite te tumu tiri tauwāhi. Tūhonoa te tōpito tiri backend hei tuku hononga ora."
+  },
+  "quickShare": {
+    "title": "Tiri tere",
+    "subtitle": "Kua rite te rerenga tiri tauwāhi."
+  },
+  "capybearTap": {
+    "title": "Capybear pato",
+    "subtitle": "Pato-tauruatia tō NorthStar hei whakataka i tētahi ārani haumaru.",
+    "body": "Kua rite te ara tohu ā-ringa mō te taura takahanga BLE."
+  },
+  "debug": {
+    "title": "VeryLoving whārangi patuiro",
+    "subtitle": "Ara whanaketanga-anake."
+  },
+  "errors": {
+    "voiceOffline": "Te āhua nei tuimotu koe. Ka tukua tō karere ina tūhono anō koe.",
+    "voiceQueued": "Kua tiakina te karere. Ka tukua ina tūhono anō te hoa reo.",
+    "voiceRetrying": "E ngana ana ki te tuku anō i tō karere...",
+    "voiceConnecting": "Tūhono haumaru ana ki tō hoa reo...",
+    "microphone": "E hiahiatia ana te urunga uruoro mō ngā waea reo. Ka taea e koe te whakahohe i roto i Ngā Tautuhinga, te pato rānei i tētahi karere.",
+    "billing": "Kāore te hoa reo tuihono i te wātea mō te wā poto. Ka taea e koe te haere tonu me te hoa tuimotu.",
+    "authentication": "Kāore i taea e te hoa reo te manatoko i tēnei wātū. Takiuru anō, whakamahia rānei te hoa tuimotu mō tēnei wā.",
+    "timeout": "He roa rawa te urupare a te hoa reo. Takina tō hononga ka ngana anō ai.",
+    "network": "Kaore i taea e mātau te toro atu ki te hoa reo. Tirohia tō tūhononga, ka ngana anō, ka haere tuimotu tonu.",
+    "genericVoice": "Ka haukotia e tētahi mea te waea reo. Ngana anō, haere tonu rānei me te hoa tuimotu."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving kaweake raraunga"
+  },
+  "notifications": {
+    "channelName": "Ngā matohi haumaru"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hiahia ana ki te urunga uruoro mō te haumaru me te AI waea hoa.",
+      "NSLocationWhenInUseUsageDescription": "Ka whakamahi VeryLoving i tō tauwāhi mō te mahere haumaru me ngā āhuahira haumaru pātata.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving whakamahi i tō tauwāhi hei tautoko i ngā rerenga haumaru, ohotata hoki.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving whakamahi ana i te tauwāhi papamuri mō ngā āhuahira rohe mōrearea haumaru me ngā āhuahira rohe mōrearea pātata.",
+      "NSCameraUsageDescription": "VeryLoving whakamahi anake i te kāmera ina kōwhiri koe ki te tango i tētahi whakaahua kōtaha, haumaru rānei.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving whakamahi anake i tō puna whakaahua ina kōwhiri koe i tētahi kōtaha, atahanga haumaru rānei.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

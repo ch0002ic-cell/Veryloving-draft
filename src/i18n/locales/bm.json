@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ka fara kan",
+    "apple": "Apple",
+    "back": "Kɔ",
+    "call": "Weleli",
+    "cancel": "ka dankari",
+    "clear": "Jɛman",
+    "close": "Ka datugu",
+    "connect": "Ka kɔnɛkite",
+    "connecting": "Jɛɲɔgɔnya...",
+    "continue": "Ka taa fɛ",
+    "delete": "Ka jɔsi",
+    "finish": "Laban",
+    "friends": "Teriw",
+    "google": "Google",
+    "home": "So",
+    "loading": "Loading...",
+    "map": "Karta",
+    "notNow": "Sisan tɛ",
+    "remove": "Ka labɔ",
+    "retry": "Aw ye a lajɛ kokura",
+    "retrying": "Ka segin ka a ɲini",
+    "save": "Ka mara",
+    "selected": "Sugandili kɛra",
+    "send": "Ka ci",
+    "settings": "Settings (Labɛnw)",
+    "skip": "Ka lasogo",
+    "skipForNow": "Tɛmɛ sisan",
+    "skipTutorial": "Skip kalansen",
+    "sos": "SOS",
+    "unknown": "Lakodonbali",
+    "user": "VeryLoving baarakɛla",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Kan",
+    "subtitle": "Baara bɛ kɛ ni kan min ye porogramu bɛɛ kɔnɔ, o sugandi.",
+    "system": "Sistɛmu ka default",
+    "search": "Kanw ɲinini",
+    "noResults": "Kan si tɛ bɛn i ka ɲinini ma.",
+    "english": "Angilɛtɛri",
+    "spanish": "Ɛsipaɲɔli",
+    "french": "Faransikan na",
+    "chineseSimplified": "Sinuwa (Nɔgɔyalen) ."
+  },
+  "phone": {
+    "label": "Telefɔni nimɔrɔ",
+    "placeholder": "Telefɔni nimɔrɔ",
+    "selectCountry": "Jamana walima mara sugandi",
+    "searchCountry": "Jamana, kode walima weleli daminɛcogo ɲini",
+    "noCountries": "Jamana si tɛ bɛn i ka ɲinini ma.",
+    "countryButton": "Yɛlɛma jamana , sisan %{country} fara %{callingCode} kan .",
+    "inputAccessibility": "Telefɔni nimɔrɔ ye %{country} ye .",
+    "required": "Telefɔni nimɔrɔ dɔ sɛbɛn.",
+    "tooShort": "Nin telefɔni nimɔrɔ in ka surun kojugu.",
+    "tooLong": "Nin telefɔni nimɔrɔ in ka jan kojugu.",
+    "invalid": "Telefɔni nimɔrɔ bɛnnen dɔ sɛbɛn jamana sugandilen na.",
+    "valid": "Duniya telefɔni nimɔrɔ min bɛ se ka baara kɛ"
+  },
+  "auth": {
+    "onboardingTagline": "Mɔgɔ yɛrɛ lakanani taamaɲɔgɔn ye waati minnu bɛ “Ne bɛ ka ɲɛ” ni “Ne mago bɛ dɛmɛ na” cɛ.",
+    "createAccount": "Konte dabɔ",
+    "continueOnboarding": "Aw bɛ tɛmɛ ni onboarding ye",
+    "createSubtitle": "Aw bɛ doncogo dɔ sugandi walasa ka aw ka lakana jatebɔsɛbɛn lakana.",
+    "phoneVerification": "Telefɔni sɛgɛsɛgɛli",
+    "sendCode": "Kode ci",
+    "sendingCode": "Kode cilen...",
+    "verifyCode": "Kode sɛgɛsɛgɛ",
+    "sentTo": "A cilen don %{phone} ma .",
+    "yourPhone": "aw ka telefɔni na",
+    "verificationCode": "Sɛgɛsɛgɛli kode",
+    "verify": "Sɛgɛsɛgɛ",
+    "verifying": "Sɛgɛsɛgɛli kɛli...",
+    "invalidCode": "Aw bɛ sɛgɛsɛgɛli kode sɛbɛn.",
+    "signInFailedTitle": "Donni tigɛra",
+    "signInFailedMessage": "An ma se ka donko dafa. Aw ye aw ka jɛgɛnsira lajɛ ani ka segin k’a lajɛ.",
+    "googleUnavailableTitle": "Google Donni tɛ se ka kɛ",
+    "googleUnavailableMessage": "Baara kɛ ni sigida yiriwali kalan ye. Native Google Sign-In bɛ baara kɛ yiriwali jɔli dɔ kɔnɔ.",
+    "northStarTitle": "NorthStar biyew",
+    "northStarSubtitle": "Aw bɛ a fara ɲɔgɔn kan sisan walima ka taa a fɛ ka fara a kan kɔfɛ.",
+    "northStarBody": "VL01 doncogo bɛ se ka lakana jibɔw daminɛ ni pɔnpew ni digili taamasiɲɛ janw ye.",
+    "setupJewelry": "Aw ye biyew sigi sen kan",
+    "meetCapybear": "Aw ye Capybear kunbɛn .",
+    "meetCapybearSubtitle": "Aw ka lakana taamaɲɔgɔn dususumanin karti kan ani weleli la.",
+    "capybearBody": "Capybear bɛ se ka dɛmɛ don so cogoya la, kɔrɔsili cogoya la, kɔrɔtɔko cogoya la, yafa weleli la, ani kumakan dɛmɛni na.",
+    "chooseVoice": "Kan dɔ sugandi",
+    "capybearReminder": "Capybear hakilijigin",
+    "remindersReady": "Hakilijigin nɔgɔmanw labɛnnen don."
+  },
+  "permissions": {
+    "locationTitle": "Yɔrɔ lakanani",
+    "locationSubtitle": "A bɛ kɛ karti kama, farati yɔrɔw, nali lakananen, ani SOS sigida.",
+    "locationBody": "VeryLoving bɛ yɔrɔ ɲini walasa ladonbagaw ka se ka a faamu dɛmɛ bɛ se ka kɛ yɔrɔ min na. Aw bɛ se k’o Changer kɔfɛ Settings kɔnɔ.",
+    "allowLocation": "A to yɔrɔ min bɛ yen",
+    "notificationsTitle": "Lakanali lasɔminiw",
+    "notificationsSubtitle": "Ladɔnniyaliw bɛ dɛmɛ don ka don mɔgɔw la ani ko kɔrɔtɔlenw.",
+    "notificationsBody": "An bɛ baara kɛ ni kunnafoniw dɔrɔn ye lakana ɲininiw kama, kɔrɔtɔko kunnafoniw, ani hakilijiginw kama i bɛ se ka minnu kɛ.",
+    "enableNotifications": "Ladɔnniyaliw kɛcogo ɲɛ",
+    "locationRationaleTitle": "Yɔrɔ bɛ lakana cogoya to ka kɛ tiɲɛ ye",
+    "locationRationaleMessage": "VeryLoving bɛ baara kɛ ni i sigiyɔrɔ ye lakana karti kama, farati yɔrɔw, teliya tilali, ani SOS sigida. Aw bɛ se k’o Changer kɔfɛ Settings kɔnɔ.",
+    "notificationsRationaleTitle": "Lakanali lasɔminiw mago bɛ kunnafoniw na",
+    "notificationsRationaleMessage": "VeryLoving bɛ hakilijiginw ci donko la, kɔrɔtɔko kunnafoniw, ani lakana ɲininiw i bɛ se ka baara kɛ. An tɛ baara kɛ ni kunnafoniw ye piblisitew kama.",
+    "microphoneRationaleTitle": "Mikɔrɔfɔni bɛ fanga di lakana weleli ma",
+    "microphoneRationaleMessage": "VeryLoving bɛ baara kɛ ni i ka mikro ye dɔrɔn ni i ye AI taamaɲɔgɔn walima lakana weleli daminɛ.",
+    "bluetoothRationaleTitle": "Bluetooth bɛ i ka fini dontaw siri ɲɔgɔn na",
+    "bluetoothRationaleMessage": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka fara ɲɔgɔn kan ni NorthStar biyew ye, ka jɛɲɔgɔnya cogoya kalan, ani ka lakana jibɔw daminɛ ka bɔ fini dontaw la.",
+    "cameraRationaleTitle": "Kamera ye fɛn ye min bɛ se ka kɛ",
+    "cameraRationaleMessage": "VeryLoving bɛ baara kɛ ni kamera ye dɔrɔn ni i y’a sugandi ka i ka foto ta walima ka lakana ja dɔ tila."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving bɛ nin jibɔ in mara ka bɔ Settings ni dashboard la.",
+    "chooseVoiceTitle": "I kan sugandi",
+    "chooseVoiceSubtitle": "I ka taamaɲɔgɔn kan sugandi min bɛ i hakili la ko lakana ka bon kosɛbɛ ka mɛn.",
+    "homeTitle": "So cogoya",
+    "homeSubtitle": "Kɔlɔsili kɛli ni dususuma ye don o don lakana kama.",
+    "guardianTitle": "Garadiw cogoya",
+    "guardianSubtitle": "Aw ye contexte tila ni mɔgɔ dalenw ye.",
+    "emergencyTitle": "Kɔrɔtɔko cogoya",
+    "emergencySubtitle": "Pompi duuru bɛ ​​se ka wuli ka se SOS ma ani kɔlɔsilikɛlaw ka lasɔminiw.",
+    "excuseTitle": "Yafa weleli",
+    "excuseSubtitle": "Aw ye dalilu ɲuman dɔ dabɔ walasa ka bɔ ko dɔ la min tɛ mɔgɔ lafiya.",
+    "safetyCallTitle": "Lakanali weleli",
+    "safetyCallSubtitle": "Aw bɛ taamaɲɔgɔn weleli daminɛ waati yɛrɛ la ni aw mago bɛ dɛmɛ na.",
+    "practiceTitle": "I ka scene dege",
+    "practiceSubtitle": "Aw bɛ lakana jibɔyɔrɔw lajɛ demo dɔ kɔnɔ min bɛ kɛ ni tansiyɔn dɔgɔman ye."
+  },
+  "jewelry": {
+    "pairTitle": "Pari NorthStar ye .",
+    "pairSubtitle": "Aw bɛ biyew mara aw kɛrɛfɛ ni aw bɛ sɛgɛsɛgɛli kɛ.",
+    "scan": "Aw bɛ minɛnw sɛgɛsɛgɛ",
+    "scanning": "Scanning bɛ kɛ kɛrɛfɛ...",
+    "noDevices": "NorthStar minɛn minnu bɛ kɛrɛfɛ, olu si ma sɔrɔ fɔlɔ.",
+    "scanStartFailed": "Bluetooth sɛgɛsɛgɛli ma se ka daminɛ. Aw ye aw jija ka segin a kan.",
+    "scanFailed": "An ma se ka biyew sɔrɔ an kɛrɛfɛ. Bluetooth lajɛ , ka NorthStar da tugu, ka segin a kan.",
+    "scanAccessFailed": "Bluetooth sɛgɛsɛgɛli ma se ka daminɛ. Bluetooth sɔrɔli lajɛ ani ka segin a kan.",
+    "permissionDenied": "Minɛn minnu bɛ kɛrɛfɛ, olu sɔrɔli bɛ dabila. A to Bluetooth ka don Settings kɔnɔ, o kɔ, i k’a lajɛ kokura.",
+    "connectTimeout": "NorthStar ye waati jan ta ka tɛmɛn ka ɲɔgɔn sɔrɔ. Aw bɛ a gɛrɛ a la ka segin ka a lajɛ.",
+    "connectFailed": "An ma se ka ɲɔgɔn sɔrɔ NorthStar la . Aw bɛ a lajɛ ni a chargera ani ni a bɛ a kɛrɛfɛ, o kɔ aw bɛ segin ka a lajɛ.",
+    "emptyTitle": "Minɛn minnu bɛ kɛrɛfɛ, olu si tɛ yen fɔlɔ",
+    "emptyMessage": "Aw bɛ NorthStar charge ani ka gɛrɛ telefɔni in na, o kɔ aw bɛ segin ka scan kɛ.",
+    "searchingMessage": "NorthStar minɛnw ɲinina i kɛrɛfɛ..."
+  },
+  "home": {
+    "subtitle": "Lakanali taamaɲɔgɔn dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} labɛnnen don",
+    "readyBody": "Kumakan, karti, biyew ani kɔlɔsilikɛlaw bɛ ɲɔgɔn na ni pompi kelen ye.",
+    "safetyCall": "Lakanali weleli",
+    "northStarDevice": "NorthStar minɛn",
+    "deviceConnected": "%{name} jὲlen · %{battery} % .",
+    "noDevice": "Minɛn si ma don ɲɔgɔn na",
+    "manageDevice": "Minɛnw ɲɛnabɔ",
+    "mode": "Mode (Mode) ye",
+    "modes": {
+      "home": "So",
+      "guardian": "Gardien (Kɔlɔsilikɛla).",
+      "emergency": "Peresela ko"
+    }
+  },
+  "map": {
+    "finding": "Ka i sigiyɔrɔ sɔrɔ...",
+    "retry": "A’ ye yɔrɔ lajɛ kokura",
+    "title": "Lakanali karti",
+    "previewSubtitle": "Expo Go ɲɛjirali; Mapbox bɛ jira yiriwali jɔli dɔ kɔnɔ.",
+    "preview": "Karta ɲɛjirali",
+    "risk": "Farati : %{risk} · Radiyɔmu %{radius} m",
+    "refresh": "Yɔrɔ min bɛ fɛnw labɛn kokura",
+    "refreshing": "Yɔrɔ sɔrɔli...",
+    "updateFailed": "An ma se k’i sigiyɔrɔ kura ye. Aw ye aw jija ka segin a kan.",
+    "notRequested": "Yɔrɔ sɔrɔli ma ɲini. Aw bɛ se k’a daminɛ kɔfɛ ka bɔ Settings kɔnɔ.",
+    "permissionOff": "Yɔrɔ doncogo bɛ dabila. A kɛ Settings kɔnɔ walasa lakana karti cɛmancɛ ka kɛ i kan.",
+    "timeout": "I sigiyɔrɔ bɛ ka waati jan ta ka tɛmɛ i tun bɛ miiri min na. Aw bɛ taa yɔrɔ dɔ la ni taamasiɲɛ jɛlen ye ani ka segin k’a lajɛ.",
+    "savedTitle": "Yɔrɔ minnu kisilen don",
+    "savedEmptyTitle": "Yɔrɔ ma Kisi fɔlɔ",
+    "savedEmptyMessage": "I ye yɔrɔ minnu mara, i bɛ se ka da minnu kan, olu bɛna jira yan walasa ka se ka sɔrɔ joona.",
+    "zones": {
+      "crowding": "Sufɛla mɔgɔw ka caya",
+      "lowLighting": "Yeelen ka dɔgɔ yɔrɔ min na"
+    },
+    "risks": {
+      "low": "fɛ́gɛn",
+      "medium": "hakɛ",
+      "high": "jamanjan"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Jɛɲɔgɔnya...",
+    "offlineCompanion": "Offline jɛɲɔgɔn",
+    "offline": "Offline (Intɛrinɛti kan",
+    "connected": "Jɛɲɔgɔnya",
+    "interrupted": "Jɛɲɔgɔnya tigɛra",
+    "ready": "Labɛnnen don ka ɲɔgɔn sɔrɔ",
+    "connectingSecurely": "Ka jɛɲɔgɔnya ɲuman kɛ ni i kan taamaɲɔgɔn ye...",
+    "messagesWaiting": {
+      "one": "%{count} cikan bɛ makɔnɔni na ka ci",
+      "other": "%{count} cikanw bɛ makɔnɔni na ka ci"
+    },
+    "useOffline": "Baara kɛ ni jɛɲɔgɔn ye min tɛ ɛntɛrinɛti kan",
+    "reconnect": "Segin ka ɲɔgɔn sɔrɔ kan AI",
+    "typePlaceholder": "Sɛbɛn ni kuma ka gɛlɛn",
+    "endCall": "Weele laban",
+    "startCall": "Weele daminɛ",
+    "emptyTitle": "I ka baro bɛ daminɛ yan",
+    "emptyMessage": "Aw bɛ weleli daminɛ walima ka cikan sɛbɛn ni aw labɛnnen don."
+  },
+  "chat": {
+    "waiting": "Jɛɲɔgɔnya makɔnɔni",
+    "notSent": "Cikan ma ci.",
+    "retryAccessibility": "A ɲini ka cikan ci kokura"
+  },
+  "history": {
+    "clearTitle": "Baro tariku jɛlen don wa?",
+    "clearMessage": "O bɛ AI taamaɲɔgɔn cikan maralenw bɔ nin minɛn in kɔnɔ.",
+    "deleteTitle": "Aw ye nin baro in bɔ yen wa?",
+    "cannotUndo": "O tɛ se ka kɔsegin.",
+    "title": "Baro tariku",
+    "subtitle": "AI taamaɲɔgɔn cikanw maralen bɛ nin minɛn in kan.",
+    "empty": "Baro si ma Kisi fɔlɔ.",
+    "emptyTitle": "Baro si ma kɛ fɔlɔ",
+    "emptyMessage": "I ka AI taamaɲɔgɔn barow bɛna bɔ yan i ka weleli fɔlɔ kɔfɛ.",
+    "loadFailed": "An ma se ka baro tariku doni. Aw ye aw jija ka segin a kan.",
+    "clearFailed": "An ma se ka baro tariku jɛya. Aw ye aw jija ka segin a kan.",
+    "deleteFailed": "An ma se k’o baro bɔ yen. Aw ye aw jija ka segin a kan.",
+    "aiCompanion": "AI taamaɲɔgɔn",
+    "resume": "Ka daminɛ ko kura ye",
+    "clearAll": "Tariku bɛɛ jɛya",
+    "roles": {
+      "assistant": "tɔɲɔgɔn",
+      "user": "i"
+    }
+  },
+  "voices": {
+    "title": "N ka lakana welekanw",
+    "subtitle": "I ka taamaɲɔgɔn kan sugandi min bɛ i n’a fɔ a bɛnnen don ka mɛn.",
+    "test": "Kan kɔrɔbɔ",
+    "stop": "Sample jɔ",
+    "selectionFailedTitle": "Sugandili ma mara",
+    "selectionFailedMessage": "Aw ye aw jija ka kan sugandi kokura.",
+    "sampleFailedTitle": "Sample tɛ sɔrɔ",
+    "sampleFailedMessage": "O kan misali in ma Se ka Fɔ. Aw ye aw jija ka segin a kan.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "nɔgɔlen, hakili sigilen, dugukolo kan"
+      },
+      "bestie": {
+        "name": "Bestie ye",
+        "description": "yeelen, hakilisigi, baro"
+      },
+      "boyfriend": {
+        "name": "Kamalen",
+        "description": "sabatilen, kanuya, mɔgɔ bɛ yen"
+      },
+      "muscleMan": {
+        "name": "Muscleman (Muscleman) ye",
+        "description": "dannaya, lakanani, dusudon"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Kan",
+    "changeVoice": "Kumakan Changer",
+    "showCompanion": "A jira ko jɛɲɔgɔn",
+    "offlineMode": "Mode min tɛ ɛntɛrinɛti kan",
+    "offlineModeSubtitle": "Baara kɛ ni jɛɲɔgɔn jaabiw ye minnu bɛ fara ɲɔgɔn kan ni ɛntɛrinɛti walima Hume seereyaw tɛ sɔrɔ.",
+    "privacyData": "Kunnafoni dogolenw & kunnafoniw",
+    "privacyBody": "Sigida kunnafoniw minnu maralen bɛ nin minɛn in kan, olu bila kɛnɛ kan walima k’u bɔ yen.",
+    "preparingExport": "Export labɛnni...",
+    "exportData": "N ka dataw bila ka taa jamana wɛrɛw la",
+    "privacyPolicy": "Kunnafoni dogolenw ka sariya",
+    "deleting": "Ka bɔ...",
+    "deleteAll": "Sigida kunnafoniw bɛɛ bɔ yen",
+    "deviceManagement": "Minɛnw ɲɛnabɔli",
+    "emergencyContacts": "Kɔrɔtɔko la, mɔgɔ minnu bɛ se ka ɲɔgɔn sɔrɔ",
+    "signOut": "Aw ye aw tɔgɔ sɛbɛn ka bɔ yen",
+    "exportFailedTitle": "Export ma ɲɛ",
+    "exportFailedMessage": "Se tɛ ka i ka kunnafoniw bɔ kɛnɛ kan sisan.",
+    "deleteConfirmTitle": "Sigida kunnafoniw bɛɛ bɔ yen wa?",
+    "deleteConfirmMessage": "O bɛ i ka kunnafoni, i ka labɛnw, i ka kɔrɔtɔko la, i ka baro tariku, i ka yamaruya hakilijiginw ani i ka sigida ka dantigɛli waati bɔ nin minɛn in kɔnɔ.",
+    "deleteEverything": "Fɛn bɛɛ bɔ yen",
+    "deleteFailedTitle": "Deletion (bɔli) ma ɲɛ",
+    "deleteFailedMessage": "Se tɛ ka sigida kunnafoniw bɔ yen sisan.",
+    "linkFailed": "Se tɛ ka jɛgɛnsira da wuli",
+    "sections": {
+      "language": "Kan",
+      "languageSubtitle": "Interface ani sistɛm ka yamaruya kan",
+      "companion": "Tɔɲɔgɔn",
+      "companionSubtitle": "Kumakan ni ɛntɛrinɛti kɔkanna fɛɛrɛw",
+      "deviceSafety": "Minɛnw ni lakana",
+      "deviceSafetySubtitle": "NorthStar , lakanabagaw, ani kɔrɔtɔko mɔgɔw",
+      "privacy": "Kunnafoni dogolenw ni kunnafoniw",
+      "privacySubtitle": "Tariku, jagokɛcogo, bɔli, ani politiki",
+      "account": "Jate",
+      "accountSubtitle": "Aw ka sisan VeryLoving sigida"
+    },
+    "updateFailedTitle": "Setting ma mara",
+    "updateFailedMessage": "An ma se k’o ɲɛnatɔmɔli kisi. Aw ye aw jija ka segin a kan.",
+    "signOutFailedTitle": "A ma se ka bolonɔ bila ka bɔ yen",
+    "signOutFailedMessage": "Aw ka kalan bɛ sen na hali bi. Aw ye aw jija ka segin a kan."
+  },
+  "contacts": {
+    "title": "Kɔrɔtɔko la, mɔgɔ minnu bɛ se ka ɲɔgɔn sɔrɔ",
+    "subtitle": "Mɔgɔ dannamɔgɔ minnu bɛ sɔrɔ lakana boli waatiw la.",
+    "addTitle": "Aw bɛ kunnafoni kɔrɔtɔlenw fara a kan",
+    "name": "Tɔ̀gɔ",
+    "namePlaceholder": "Ladilikan tɔgɔ",
+    "phone": "Telefɔni nimɔrɔ min bɛ se ka kuma",
+    "add": "Aw ye contact fara a kan",
+    "empty": "Kɔrɔtɔko la, mɔgɔ si ma fara a kan fɔlɔ.",
+    "emptyTitle": "Kɔrɔtɔko la, mɔgɔ si ma sɔrɔ fɔlɔ",
+    "emptyMessage": "Aw bɛ mɔgɔ dɔ fara aw kan aw dalen bɛ min na walasa a ka labɛn ni lakana sira dɔ mago bɛ u la.",
+    "removeTitle": "Aw bɛ %{name} bɔ ?",
+    "removeMessage": "Nin tigi tɛna bɔ aw ka kɔrɔtɔko la tuguni.",
+    "nameRequired": "A’ ye mɔgɔ min tɔgɔ sɛbɛn, o tɔgɔ sɛbɛn.",
+    "saveFailedTitle": "Kontakt ma mara",
+    "saveFailedMessage": "An ma se ka nin ɲɔgɔnye in kisi. Aw ye kunnafoni kunbabaw lajɛ ani ka segin k’a lajɛ.",
+    "removeFailedTitle": "Kontakt ma bɔ yen",
+    "removeFailedMessage": "An ma se ka o ɲɔgɔnye in bɔ yen. Aw ye aw jija ka segin a kan.",
+    "callAccessibility": "A wele %{name}",
+    "removeAccessibility": "Aw ye %{name} bɔ ."
+  },
+  "device": {
+    "title": "Minɛnw ɲɛnabɔli",
+    "subtitle": "Aw ye aw ka NorthStar minɛn ɲɛnabɔ.",
+    "connected": "Jɛɲɔgɔnya · %{battery} % batiri",
+    "none": "Minɛn si ma don ɲɔgɔn na",
+    "disconnect": "Aw bɛ minɛnw tigɛtigɛ",
+    "connect": "A’ ye minɛnw siri ɲɔgɔn na"
+  },
+  "friends": {
+    "title": "Teriw",
+    "subtitle": "Garadiw, ɲininiw, ani kɔrɔtɔko jatebɔsɛbɛn.",
+    "addDemo": "A’ ye demo terikɛ fara a kan",
+    "emptyTitle": "Aw ka lakana sɛrɛkili lankolon don",
+    "emptyMessage": "Teriw ni kɔrɔsibaga minnu dalen bɛ u la, olu bɛna bɔ yan ni u farala ɲɔgɔn kan.",
+    "newGuardian": "Gardien kura",
+    "statuses": {
+      "guardian": "Gardien (Kɔlɔsilikɛla).",
+      "pending": "Makɔnɔlila"
+    }
+  },
+  "emergency": {
+    "title": "Kɔrɔtɔko SOS",
+    "subtitle": "Aw bɛ dɔ fara a kan dɔrɔn ni aw mago bɛ dɛmɛ na joona.",
+    "body": "O bɛna aw ka lakana taabolo ladɔnniya ani ka kɔrɔtɔko mɔgɔw labɛn.",
+    "activate": "Baara kɛ ni SOS ye .",
+    "callCompanion": "Aw ye AI taamaɲɔgɔn wele",
+    "notificationTitle": "SOS baara kɛra",
+    "notificationBody": "Aw ka kɔrɔtɔko bolicogo labɛnnen don.",
+    "readyTitle": "SOS labɛnnen don",
+    "callContact": "Aw bɛ wele ko %{name} ?",
+    "addContact": "Aw bɛ kunnafoni kɔrɔtɔlen dɔ fara a kan Settings kɔnɔ.",
+    "quickShareTitle": "Teliya ka tila",
+    "quickShareMessage": "Yɔrɔ tila-tila stub labɛnnen don. Backend share labanyɔrɔ siri ɲɔgɔn na walasa ka jɛgɛnsira ɲɛnamaw ci."
+  },
+  "quickShare": {
+    "title": "Teliya ka tila",
+    "subtitle": "Yɔrɔ tila-tila flow labɛnnen don."
+  },
+  "capybearTap": {
+    "title": "Capybear ka digi",
+    "subtitle": "Aw bɛ aw ka NorthStar digi siɲɛ fila walasa ka lakana orangi dɔ fili.",
+    "body": "Gesture route labɛnnen don BLE event wiring kama."
+  },
+  "debug": {
+    "title": "VeryLoving debug ɲɛ",
+    "subtitle": "Yiriwali dɔrɔn sira."
+  },
+  "errors": {
+    "voiceOffline": "A bɛ iko i tɛ ɛntɛrinɛti kan. I ka cikan bɛna ci ni i ye ɲɔgɔn sɔrɔ kokura.",
+    "voiceQueued": "Cikan min maralen don. A bɛna ci ni kan taamaɲɔgɔn ye ɲɔgɔn sɔrɔ kokura.",
+    "voiceRetrying": "A b'a ɲini k'i ka cikan ci tugun...",
+    "voiceConnecting": "Ka jɛɲɔgɔnya ɲuman kɛ ni i kan taamaɲɔgɔn ye...",
+    "microphone": "Mikɔrɔfɔni sɔrɔli ka kan ka kɛ kumakan weleli kama. I bɛ se k’a daminɛ Settings kɔnɔ, walima ka cikan sɛbɛn o nɔ na.",
+    "billing": "Ɛntɛrinɛti kan taamaɲɔgɔn tɛ sɔrɔ waati dɔ kɔnɔ. Aw bɛ se ka taa ɲɛ ni taamaɲɔgɔn ye min tɛ ɛntɛrinɛti kan.",
+    "authentication": "Kan taamaɲɔgɔn ma Se ka nin kalan in Sɛgɛsɛgɛ. I ka don kokura walima ka baara kɛ ni i taamaɲɔgɔn ye min tɛ ɛntɛrinɛti kan sisan.",
+    "timeout": "Kan taamaɲɔgɔn ye waati jan ta ka jaabi di. Aw ye aw ka jɛgɛnsira lajɛ ani ka segin k’a lajɛ.",
+    "network": "An ma se ka se kumakan taamaɲɔgɔn ma. Aw ye aw ka jɛgɛnsira lajɛ, o kɔ aw bɛ segin k’a lajɛ walima ka taa a fɛ ni ɛntɛrinɛti tɛ.",
+    "genericVoice": "Fɛn dɔ ye kumakan weleli tigɛ. Aw bɛ segin ka a lajɛ, walima ka taa a fɛ ni aw taamaɲɔgɔn ye min tɛ ɛntɛrinɛti kan."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving kunnafonidilanw bɔli"
+  },
+  "notifications": {
+    "channelName": "Lakanali lasɔminiw"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving mago bɛ mikro sɔrɔli la lakana kama ani AI taamaɲɔgɔn weleli kama.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving bɛ baara kɛ ni i sigiyɔrɔ ye lakana karti ni lakanafɛnw kɛrɛfɛ.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving bɛ baara kɛ ni i ka yɔrɔ ye walasa ka dɛmɛ don lakana-seli ni kɔrɔtɔko boliw la.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving bɛ baara kɛ ni kɔkanna yɔrɔ ye walasa ka se lakananenw ni farati-yɔrɔ kɛrɛfɛfɛnw ma.",
+      "NSCameraUsageDescription": "VeryLoving bɛ baara kɛ ni kamera ye dɔrɔn ni i y’a sugandi ka profil walima lakana foto ta.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving bɛ baara kɛ ni i ka fototalan ye dɔrɔn ni i ye profil walima lakana ja sugandi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka ɲɔgɔn sɔrɔ i ka NorthStar lakana biyew la.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka ɲɔgɔn sɔrɔ i ka NorthStar lakana biyew la."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

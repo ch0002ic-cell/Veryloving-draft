@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "ᐃᓚᓗᒍ",
+    "apple": "Apple",
+    "back": "ᑐᓄ",
+    "call": "ᐅᖄᓚᓗᑎᑦ",
+    "cancel": "ᓄᖅᑲᖅᑎᓪᓗᒍᑦ",
+    "clear": "ᑐᑭᓯᓇᑦᑎᐊᖅᑐᖅ",
+    "close": "ᖃᓂᑦᑐᖅ",
+    "connect": "ᑲᓲᒪᖃᑎᖃᕐᓂᖅ",
+    "connecting": "ᑲᑎᙵᓂᖅ...",
+    "continue": "ᑲᔪᓯᑐᐃᓐᓇᕆᑦ",
+    "delete": "ᐲᕐᓗᒍ",
+    "finish": "ᐱᐊᓂᒡᓗᒍ",
+    "friends": "ᐱᖃᓐᓇᕆᔭᑦ",
+    "google": "Google",
+    "home": "ᐊᖏᕐᕋᖅ",
+    "loading": "ᐴᖅᑲᐃᕙᓪᓕᐊᓂᖅ...",
+    "map": "ᓄᓇᙳᐊᖅ",
+    "notNow": "ᒫᓐᓇᐅᙱᑦᑐᖅ",
+    "remove": "ᐲᕐᓗᒍ",
+    "retry": "ᐱᒋᐊᒃᑲᓐᓂᕐᓂᖅ",
+    "retrying": "ᐆᒃᑐᒃᑲᓐᓂᕐᓂᖅ",
+    "save": "ᐱᐅᖅᓱᐊᕐᓗᒍ",
+    "selected": "ᓂᕈᐊᖅᑕᐅᓯᒪᔪᖅ",
+    "send": "ᓇᒃᓯᐅᑎᓗᒍ",
+    "settings": "ᐋᖅᑭᒃᓯᒪᓂᖏᑦ",
+    "skip": "ᐊᓪᓗᕐᓗᒍ",
+    "skipForNow": "ᖄᖏᑲᐃᓐᓇᕆᑦ",
+    "skipTutorial": "ᖄᖏᕐᓗᒍ ᐊᔪᕈᓐᓃᖅᓴᒐᒃᓴᖅ",
+    "sos": "SOS",
+    "unknown": "ᖃᐅᔨᒪᔭᐅᖏᑦᑐᖅ",
+    "user": "VeryLoving ᐊᑐᖅᑎ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ᐅᖃᐅᓯᖅ",
+    "subtitle": "ᓂᕈᐊᕐᓗᒍ ᐅᖃᐅᓯᖅᑕᖅ ᐊᑐᖅᑕᐅᔪᖅ ᖃᕋᓴᐅᔭᒃᑰᕈᑎᓕᒫᖓᓂ.",
+    "system": "ᐊᑐᖅᑕᐅᕙᒃᑐᖅ ᓈᒻᒪᙱᓕᐅᕈᑎ",
+    "search": "ᕿᓂᕐᓂᖅ ᐅᖃᐅᓰᑦ",
+    "noResults": "ᐅᖃᐅᓯᖅᑕᕐᓂᒃ ᐊᔾᔨᖃᙱᖦᖢᑎᒃ ᕿᓂᖅᑕᕐᓂᒃ.",
+    "english": "ᖃᓪᓗᓈᖅ",
+    "spanish": "ᓯᐹᓂᔅ",
+    "french": "ᐅᐃᕖᑎᑐᑦ",
+    "chineseSimplified": "ᓴᐃᓃᓰᑦ (ᐊᔪᕐᓇᕈᓐᓃᖅᑎᓯᒪᔪᖅ)"
+  },
+  "phone": {
+    "label": "ᐅᖄᓚᐅᑎᖓᑕ ᓈᓴᐅᑖ",
+    "placeholder": "ᐅᖄᓚᐅᑎᖓᑕ ᓈᓴᐅᑖ",
+    "selectCountry": "ᓂᕈᐊᕐᓗᒍ ᓄᓇᓕᕐᔪᐊᖅ ᐊᕕᒃᑐᖅᓯᒪᔪᕐᓘᓐᓃᑦ",
+    "searchCountry": "ᕿᓂᕐᓗᒍ ᓄᓇᓕᕐᔪᐊᖅ, ᓇᓗᓇᐃᒃᑯᑖ, ᐅᕝᕙᓘᓐᓃᑦ ᐅᖄᓚᐅᑎᖓ",
+    "noCountries": "ᓄᓇᓕᕐᔪᐊᑦ ᐊᔾᔨᖃᙱᑦᑐᑦ ᕿᓂᖅᑕᕐᓂᒃ.",
+    "countryButton": "ᐊᓯᔾᔨᕐᓗᒍ ᓄᓇᓕᕐᔪᐊᖅ, ᒫᓐᓇ %{country} ᐊᒻᒪ %{callingCode}",
+    "inputAccessibility": "ᐅᖄᓚᐅᑎᖓ %{country}",
+    "required": "ᐅᖄᓚᐅᑎᐅᑉ ᓈᓴᐅᑖ ᑎᑎᕋᕐᓗᒍ.",
+    "tooShort": "ᑖᓐᓇ ᐅᖄᓚᐅᑦ ᓇᐃᓗᐊᕐᒪᑦ.",
+    "tooLong": "ᐅᓇ ᐅᖄᓚᐅᑦ ᑕᑭᓗᐊᕐᒪᑦ.",
+    "invalid": "ᑎᑎᕋᕐᓗᒍ ᐊᑐᕈᓐᓇᖅᑐᖅ ᐅᖄᓚᐅᑎᐅᑉ ᓈᓴᐅᑖ ᓂᕈᐊᖅᑕᕐᓄᑦ ᓄᓇᓕᕐᔪᐊᒧᑦ.",
+    "valid": "ᐊᑐᕈᓐᓇᖅᑐᒥᒃ ᓄᓇᕐᔪᐊᓕᒫᒥ ᐅᖄᓚᐅᑎᖓᑕ ᓈᓴᐅᑖ"
+  },
+  "auth": {
+    "onboardingTagline": "ᐃᓄᖕᒧᑦ ᐊᑕᐅᓯᕐᒧᑦ ᖁᐊᖅᓵᕐᓇᖅᑐᒦᑎᑦᑎᑦᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᖃᑎᒋᔭᐅᕙᒃᑐᖅ ᐊᑯᓐᓂᖏᓐᓂ \"ᖃᓄᐃᙱᑦᑐᖓ\" ᐊᒻᒪᓗ \"ᐃᑲᔪᖅᑕᐅᔭᕆᐊᖃᖅᐳᖓ.\"",
+    "createAccount": "ᓇᓕᖅᑲᓕᐅᕐᓗᑎᑦ",
+    "continueOnboarding": "ᑲᔪᓰᓐᓇᕐᓗᓂ ᐃᓚᓕᐅᔾᔨᕙᓪᓕᐊᓂᕐᒥᒃ",
+    "createSubtitle": "ᓂᕈᐊᕐᓗᑎᑦ ᐊᑎᓕᐅᕈᑎᒥᒃ ᓴᐳᒻᒥᓂᐊᕐᓗᒍ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᑎᑎᕋᖅᓯᒪᔪᑦ.",
+    "phoneVerification": "ᐅᖄᓚᐅᑎᒃᑯᑦ ᓇᓗᓇᐃᖅᓯᔾᔪᑎ",
+    "sendCode": "ᓇᒃᓯᐅᑎᓗᒍ ᓇᓗᓇᐃᒃᑯᑖ",
+    "sendingCode": "ᓇᒃᓯᐅᔾᔨᓂᕐᒧᑦ ᓇᓗᓇᐃᒃᑯᑕᖅ...",
+    "verifyCode": "ᓇᓗᓇᐃᕐᓗᒍ ᓇᓗᓇᐃᒃᑯᑖ",
+    "sentTo": "ᓇᒃᓯᐅᔾᔭᐅᔪᖅ %{phone}",
+    "yourPhone": "ᐅᖄᓚᐅᑏᑦ",
+    "verificationCode": "ᓇᓗᓇᐃᖅᓯᔾᔪᑎᐅᑉ ᓇᓗᓇᐃᒃᑯᑖ",
+    "verify": "ᓇᓗᓇᐃᕐᓗᒍ",
+    "verifying": "ᓇᓗᓇᐃᖅᓯᓂᖅ...",
+    "invalidCode": "ᐃᓕᓗᒍ ᓇᓗᓇᐃᖅᓯᔾᔪᑎ ᓇᓗᓇᐃᒃᑯᑖ.",
+    "signInFailedTitle": "ᐊᑎᓕᐅᕐᓂᖅ ᓄᖅᑲᖅᑎᑕᐅᔪᖅ",
+    "signInFailedMessage": "ᐊᑎᓕᐅᕌᓂᒍᓐᓇᓚᐅᙱᑕᕗᑦ. ᖃᐅᔨᒋᐊᕐᓗᒍ ᑲᓱᖅᓯᒪᓂᕆᔭᐃᑦ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "googleUnavailableTitle": "Google ᐊᑎᓕᐅᕐᕕᒃᓴᖅ ᐊᑐᐃᓐᓇᐅᙱᑦᑐᖅ",
+    "googleUnavailableMessage": "ᐊᑐᕐᓗᓂ ᓄᓇᓕᖕᓂ ᐱᕙᓪᓕᐊᑎᑦᑎᓂᕐᒧᑦ ᐱᓕᕆᖃᑎᒌᖕᓂᕐᒥᒃ. ᓄᓇᖃᖅᑳᖅᑐᑦ Google ᐊᑎᓕᐅᕈᑎ ᐱᓕᕆᕗᖅ ᐱᕙᓪᓕᐊᑎᑦᑎᓂᕐᒧᑦ ᓴᓇᓂᕐᒥᒃ.",
+    "northStarTitle": "NorthStar ᑕᑯᒥᓴᐅᑎᑦ",
+    "northStarSubtitle": "ᑲᑎᙵᓕᕐᓗᒋᑦ ᒫᓐᓇ ᐅᕝᕙᓘᓐᓃᑦ ᑲᔪᓯᓗᑎᑦ ᐃᓚᓗᒍᓗ ᐅᐊᑦᑎᐊᕈᒃᑲᓐᓂᖅ.",
+    "northStarBody": "ᑖᓐᓇ VL01 ᐊᑐᖅᑕᐅᔪᓐᓇᖅᑐᖅ ᐱᒋᐊᖅᑎᑦᑎᔪᓐᓇᖅᐳᖅ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐃᖏᕐᕋᓂᕆᔭᐅᔪᒥᒃ ᐊᒃᑐᖅᓯᓂᒃᑯᑦ ᐊᑯᓂᐅᔪᒃᑯᓪᓗ ᓇᕿᑦᑕᕐᓂᒃᑯᑦ.",
+    "setupJewelry": "ᐋᖅᑭᒃᓱᕐᓗᒋᑦ ᑕᑯᒥᓴᐅᑎᑦ",
+    "meetCapybear": "ᑕᑯᓗᒍ Capybear",
+    "meetCapybearSubtitle": "ᐱᑦᑎᐊᕐᓇᖅᑐᖅ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᖃᓐᓇᕆᔭᐃᑦ ᓄᓇᙳᐊᒃᑯᑦ ᐅᖄᓚᑲᑕᒃᑳᖓᕕᓪᓗ.",
+    "capybearBody": "Capybear ᐃᑲᔪᕈᓐᓇᖅᑐᑦ ᐊᖏᕐᕋᒥ ᐋᖅᑭᒃᓯᒪᔪᒥᒃ, ᐸᖅᑭᔨᐅᑉ ᐋᖅᑭᒃᓯᒪᓂᖓᓂᒃ, ᑐᐊᕕᕐᓇᖅᑐᒃᑰᕈᑎᒥᒃ, ᐱᙱᔾᔪᑎᒥᒃ ᐅᖄᓚᓂᕐᒥᒃ, ᓂᐱᒃᑯᓪᓗ ᐃᑲᔪᖅᑐᐃᓂᕐᒥᒃ.",
+    "chooseVoice": "ᓂᐱᒥᒃ ᓂᕈᐊᕐᓗᑎᑦ",
+    "capybearReminder": "Capybear ᐃᖅᑲᐃᑎᑦᑎᔾᔪᑎ",
+    "remindersReady": "ᐃᖅᑲᐃᓯᔾᔪᑎᑦᑎᐊᕙᐃᑦ ᐊᑐᐃᓐᓇᐅᓕᖅᐳᑦ."
+  },
+  "permissions": {
+    "locationTitle": "ᐃᓂᒋᔭᖓᓂ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᖅ",
+    "locationSubtitle": "ᐊᑐᖅᑕᐅᔪᖅ ᓄᓇᙳᐊᒧᑦ, ᐅᓗᕆᐊᓇᖅᑐᓄᑦ ᐃᓂᓄᑦ, ᑎᑭᑦᑎᐊᕐᓂᕐᒧᑦ, ᐊᒻᒪ SOS ᐃᓗᓕᖏᓐᓄᑦ.",
+    "locationBody": "VeryLoving ᐊᐱᕆᔪᖅ ᓇᓃᓐᓂᖓᓂᒃ ᐸᖅᑭᔨᐅᔪᑦ ᑐᑭᓯᐅᒪᓂᐊᕐᒪᑕ ᓇᐅᒃᑯᑦ ᐃᑲᔪᖅᑕᐅᔭᕆᐊᖃᕐᒪᖔᑕ. ᑕᒪᓐᓇ ᐊᓯᔾᔨᕈᓐᓇᖅᑕᐃᑦ ᐅᐊᑦᑎᐊᕈᒃᑲᓐᓂᖅ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ.",
+    "allowLocation": "ᐃᓂᒋᔪᓐᓇᖅᑕᖓ",
+    "notificationsTitle": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᑐᓴᖅᑎᑦᑎᔾᔪᑎᑦ",
+    "notificationsSubtitle": "ᖃᐅᔨᒃᑲᐃᔾᔪᑎᑦ ᐃᑲᔪᖅᑐᐃᔪᑦ ᖃᐅᔨᒋᐊᕐᕕᖃᕐᓂᕐᒥᒃ ᑐᐊᕕᕐᓇᖅᑐᓕᕆᓂᕐᒥᒡᓗ.",
+    "notificationsBody": "ᐊᑐᑐᐃᓐᓇᓲᖑᔪᒍᑦ ᖃᐅᔨᒃᑲᐃᔾᔪᑎᓂᒃ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᓕᕆᔾᔪᑎᓄᑦ, ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᓄᑖᙳᕆᐊᖅᓯᒪᔪᓄᑦ, ᐊᒻᒪ ᐃᖅᑲᐃᓯᒋᐊᕈᑎᓄᑦ ᐊᔪᙱᑎᑕᕐᓄᑦ.",
+    "enableNotifications": "ᖃᐅᔨᑎᑦᑎᔾᔪᑎᑦ ᐊᔪᕈᓐᓃᖅᑎᓪᓗᒋᑦ",
+    "locationRationaleTitle": "ᓇᓃᓐᓂᖓ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐃᓗᓕᖏᑦ ᑕᒻᒪᖅᑕᖅᓯᒪᙱᖦᖢᑎᒃ",
+    "locationRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᓇᓃᓐᓂᕆᔭᕐᓂᒃ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᓄᓇᙳᐊᒧᑦ, ᖁᐊᖅᓵᕐᓇᖅᑐᓄᑦ ᐃᓂᓄᑦ, ᐊᒥᖅᑳᖃᑎᖃᑲᐅᖅᑐᕐᓂᕐᒧᑦ, SOS ᐃᓗᓕᖏᓐᓄᑦ. ᑕᒪᓐᓇ ᐊᓯᔾᔨᕈᓐᓇᖅᑕᐃᑦ ᐅᐊᑦᑎᐊᕈᒃᑲᓐᓂᖅ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ.",
+    "notificationsRationaleTitle": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᑐᓴᖅᑎᑦᑎᔾᔪᑎᑦ ᖃᐅᔨᒃᑲᖅᑕᐅᔭᕆᐊᓖᑦ",
+    "notificationsRationaleMessage": "VeryLoving ᓇᒃᓯᐅᔾᔨᕙᒃᐳᖅ ᐃᓯᖅᐸᓪᓕᐊᓂᕐᒧᑦ ᐃᖅᑲᐃᓯᒋᐊᕈᑎᓂᒃ, ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᓄᑖᙳᕆᐊᖅᓯᒪᔪᓂᒃ, ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᓪᓗ ᖃᓄᐃᓕᐅᖁᔨᔾᔪᑎᓂᒃ ᐊᔪᕈᓐᓃᖅᑎᑕᕐᓂᒃ. ᐊᑐᖅᐸᙱᑦᑐᒍᑦ ᖃᐅᔨᒃᑲᐃᔾᔪᑎᓂᒃ ᒪᓂᓴᐅᑎᓄᑦ.",
+    "microphoneRationaleTitle": "ᖃᓂᙳᕐᓇᐅᑎ ᓴᙱᒃᑎᒋᐊᖅᑎᑦᑎᕙᒃᐳᖅ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖃᓗᒍᑕᐅᔪᓂᒃ",
+    "microphoneRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᖃᓂᙳᕐᓇᐅᑎᖕᓂᒃ AI ᐅᕝᕙᓘᓐᓃᑦ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖄᓚᓕᕌᖓᕕᑦ.",
+    "bluetoothRationaleTitle": "Bluetooth ᑲᓲᒪᑎᑦᑎᔪᖅ ᐊᑐᒐᕐᓂᒃ",
+    "bluetoothRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᑲᑎᙵᑎᑦᑎᓪᓗᓂ NorthStar ᐱᐅᓴᐅᑎᓂᒃ, ᐅᖃᓕᒫᖅᐸᒃᖢᓂ ᐊᑕᓂᖓᑕ ᖃᓄᐃᓕᖓᓂᖓᓂᒃ, ᐱᒋᐊᖅᑎᑦᑎᕙᒃᖢᓂᓗ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᑐᖅᑕᐅᕙᒃᑐᒥᒃ ᐊᑐᖅᑕᒥᓄᑦ.",
+    "cameraRationaleTitle": "ᐊᔾᔨᓕᐅᕈᑎ ᐃᓱᒪᖅᓲᑕᐅᕗᖅ",
+    "cameraRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᐊᔾᔨᓕᐅᕈᑎᒥᒃ ᓂᕈᐊᕆᔭᖃᑐᐊᕌᖓᕕᑦ ᐊᔾᔨᓕᐅᕆᔪᒪᒍᕕᑦ ᐊᒥᖅᑳᖃᑎᖃᕈᒪᒍᕕᓪᓘᓐᓃᑦ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᔾᔨᙳᐊᒥᒃ."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ᑖᓐᓇ ᐃᖏᕐᕋᓂᐅᔪᖅ ᐊᑐᐃᓐᓇᐅᑎᑉᐸᒃᑕᖓ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ ᐊᒻᒪ ᖃᕋᓴᐅᔭᒃᑰᕈᑎᖓᓂ.",
+    "chooseVoiceTitle": "ᓂᐱᒋᔭᐃᑦ ᓂᕈᐊᕐᓗᒍ",
+    "chooseVoiceSubtitle": "ᓂᕈᐊᕐᓗᑎᑦ ᐱᖃᓐᓇᕆᔭᕐᓂᒃ ᓂᐱᒥᒃ ᖁᐊᖅᓵᕐᓇᙱᓐᓂᖅᐹᒥᒃ ᑐᓵᔭᕆᐊᒃᓴᖅ.",
+    "homeTitle": "ᐊᖏᕐᕋᖅᓯᒪᓂᖅ",
+    "homeSubtitle": "ᓂᐱᑭᑦᑐᒥᒃ ᓇᐅᑦᑎᖅᓱᖅᓯᓂᖅ ᖃᐅᑕᒫᑦ ᖁᐊᖅᓵᕐᓇᖅᑐᒦᑎᑦᑎᑦᑕᐃᓕᒪᓂᕐᒧᑦ.",
+    "guardianTitle": "ᐸᖅᑭᔨᐅᑉ ᐋᖅᑭᒃᓯᒪᓂᖓ",
+    "guardianSubtitle": "ᐅᖃᐅᓯᕆᓗᒋᑦ ᐃᓗᓕᖏᑦ ᐅᒃᐱᕆᔭᕐᓄᑦ ᐃᓄᖕᓄᑦ.",
+    "emergencyTitle": "ᑐᐊᕕᕐᓇᖅᑐᒃᑰᕈᑎ",
+    "emergencySubtitle": "ᑕᓪᓕᒪᐃᖅᓱᕐᓗᓂ ᓇᕿᑦᑕᕐᓗᒍ ᖁᕝᕙᖅᐹᓪᓕᕈᓐᓇᖅᐳᖅ SOS ᐊᒻᒪ ᐸᖅᑭᔨᒧᑦ ᖃᐅᔨᑎᑦᑎᔾᔪᑎᓂᒃ.",
+    "excuseTitle": "ᐅᖄᓚᓂᖅ",
+    "excuseSubtitle": "ᓴᖅᑭᑎᑦᑎᓗᑎᑦ ᐱᐅᔪᒻᒪᕆᖕᒥᒃ ᐱᔾᔪᑎᒥᒃ ᕿᒪᐃᓂᕐᒧᑦ ᐃᓗᐊᙱᑦᑐᒥᒃ ᖃᓄᐃᓕᖓᓂᕆᔭᐅᔪᒥᒃ.",
+    "safetyCallTitle": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖄᓚᓂᖅ",
+    "safetyCallSubtitle": "ᐱᒋᐊᖅᑎᑦᑎᓗᑎᑦ ᒫᓐᓇᑲᐅᑎᒋ ᐱᖃᓐᓇᕆᔭᕐᓄᑦ ᐅᖄᓚᖃᑦᑕᕐᓗᑎᑦ ᐃᑲᔪᖅᑕᐅᔭᕆᐊᖃᓕᕌᖓᕕᑦ.",
+    "practiceTitle": "ᐊᔪᕈᓐᓃᖅᓴᕐᓂᖅ",
+    "practiceSubtitle": "ᐆᒃᑐᕐᓗᒋᑦ ᐊᑦᑕᓇᔾᔭᐃᖅᓯᒪᓂᕐᒧᑦ ᐃᖏᕐᕋᔪᑦ ᐊᑦᑎᒃᑐᒥ ᐳᓪᓚᖃᖅᑐᒥ ᐆᒃᑐᕋᐅᑎᒥ."
+  },
+  "jewelry": {
+    "pairTitle": "ᒪᕐᕉᒃ NorthStar",
+    "pairSubtitle": "ᑕᑯᒥᓴᐅᑎᑦ ᖃᓂᒋᑎᑉᐸᒡᓗᒋᑦ ᐊᔾᔨᓕᐅᕆᓂᕐᓂ.",
+    "scan": "ᐱᖁᑎᓂᒃ ᕿᓂᕐᓗᑎᑦ",
+    "scanning": "ᖃᓂᑦᑐᒥ ᐊᔾᔨᓕᐅᕆᓂᖅ...",
+    "noDevices": "ᖃᓂᒋᔭᖓᓂ NorthStar ᓇᓂᓯᔪᖃᓚᐅᙱᑦᑐᖅ ᓱᓕ.",
+    "scanStartFailed": "Bluetooth ᐱᒋᐊᕈᓐᓇᓚᐅᙱᓚᖅ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "scanFailed": "ᖃᓂᒋᔭᑦᑎᓐᓂ ᑕᑯᒥᓴᐅᑎᓂᒃ ᓇᓂᓯᔪᓐᓇᓚᐅᙱᑦᑐᒍᑦ. ᖃᐅᔨᒋᐊᕐᓗᒍ Bluetooth, NorthStar ᖃᓂᒋᓗᒍ, ᐱᒋᐊᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "scanAccessFailed": "Bluetooth ᐱᒋᐊᕈᓐᓇᓚᐅᙱᓚᖅ. ᖃᐅᔨᒋᐊᕐᓗᒍ Bluetooth ᐃᓯᕈᓐᓇᐅᑎ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "permissionDenied": "ᖃᓂᑦᑐᒧᑦ ᐅᖄᓚᐅᑎᕋᓛᒧᑦ ᐃᓯᕈᓐᓇᕐᓂᖅ ᐊᔪᓕᖅᓯᒪᕗᖅ. ᐱᕕᖃᖅᑎᑉᐸᒡᓗᒋᑦ Bluetooth ᐃᓯᕈᓐᓇᖅᑎᑉᐸᒡᓗᒋᑦ ᐋᖅᑭᒃᓯᒪᓂᕆᔭᖏᓐᓂ, ᐱᒋᐊᒃᑲᓐᓂᓕᕐᒥᓗᑎᑦ.",
+    "connectTimeout": "NorthStar ᐊᑯᓂᐅᓗᐊᖅᑐᖅ ᑲᑎᙵᓇᓱᒃᖢᓂ. ᖃᒡᓕᒋᐊᕐᓗᒍ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "connectFailed": "ᑲᑎᙵᔪᓐᓇᓚᐅᙱᓚᒍᑦ NorthStar. ᖃᐅᔨᒋᐊᕐᓗᒍ ᓴᙱᓂᖃᕋᓗᐊᕐᒪᖔᑦ ᖃᓂᒋᔭᖓᓂᓗ, ᐱᒋᐊᒃᑲᓐᓂᓕᕐᒥᓗᑎᑦ.",
+    "emptyTitle": "ᖃᓂᑦᑐᓂᒃ ᐱᓕᕆᔾᔪᑎᓂᒃ ᓱᓕ ᐱᑕᖃᙱᑦᑐᖅ",
+    "emptyMessage": "ᐅᖄᓚᐅᑎᕋᓛᖅ NorthStar ᓴᙱᒃᑎᓯᒪᐃᓐᓇᕐᓗᒍ ᖃᓂᒋᓗᒍᓗ ᐅᖄᓚᐅᑎᕋᓛᖅ, ᐊᔾᔨᓕᐅᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "searchingMessage": "ᕿᓂᕐᓂᖅ NorthStar ᖃᓂᒋᔭᖓᓂ..."
+  },
+  "home": {
+    "subtitle": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᖃᑎᒋᔭᐅᔪᑦ ᓇᓗᓇᐃᒃᑯᑕᖏᑦ",
+    "modeStatus": "%{mode}",
+    "companionReady": "%{name} ᐊᑐᐃᓐᓇᐅᓕᖅᐳᖅ",
+    "readyBody": "ᓂᐱ, ᓄᓇᙳᐊᖅ, ᐱᐅᓴᐅᑎᑦ, ᐊᒻᒪ ᐸᖅᑭᔨᑦ ᐊᑐᐃᓐᓇᕐᓗᒋᑦ ᓇᕿᑦᑕᕐᓗᒋᑦ.",
+    "safetyCall": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖄᓚᓂᖅ",
+    "northStarDevice": "NorthStar ᐱᓕᕆᔾᔪᑎ",
+    "deviceConnected": "%{name} ᑲᑎᙵᔪᑦ · %{battery}%",
+    "noDevice": "ᐅᖃᓘᑎᕋᓛᒥᒃ ᑲᓱᖅᓯᒪᔪᖃᙱᑦᑐᖅ",
+    "manageDevice": "ᖃᕆᑕᐅᔭᕋᓛᖅ ᐊᐅᓚᓪᓗᒍ",
+    "mode": "ᐋᖅᑭᒃᓯᒪᓂᖓ",
+    "modes": {
+      "home": "ᐊᖏᕐᕋᖅ",
+      "guardian": "ᐸᖅᑭᔨ",
+      "emergency": "ᑐᐊᕕᕐᓇᖅᑐᖅ"
+    }
+  },
+  "map": {
+    "finding": "ᓇᓂᓯᓂᖅ ᓇᓃᓐᓂᕆᔭᕐᓂᒃ...",
+    "retry": "ᐆᒃᑐᒃᑲᓐᓂᕐᓗᒍ ᐃᓂᖓ",
+    "title": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᓄᓇᙳᐊᖅ",
+    "previewSubtitle": "Expo Go ᕿᒥᕐᕈᓂᖅ; Mapbox ᓴᖅᑭᑎᑦᑎᕗᖅ ᐱᕙᓪᓕᐊᑎᑦᑎᓂᕐᒧᑦ ᓴᓇᓂᕐᒥᒃ.",
+    "preview": "ᓄᓇᙳᐊᖅ ᕿᒥᕐᕈᔭᐅᓂᖓ",
+    "risk": "ᐊᑦᑕᕐᓇᖅᑐᖅ: %{risk} · Radius %{radius}m",
+    "refresh": "ᓄᑖᙳᕆᐊᕐᕕᐅᑉ ᐃᓂᖓ",
+    "refreshing": "ᓇᓂᓯᓂᖅ ᐃᓂᒋᓂᐊᖅᑕᖓᓂᒃ...",
+    "updateFailed": "ᓇᓃᓐᓂᕆᔭᐃᑦ ᓄᑖᙳᕆᐊᖅᑎᑦᑐᓐᓇᓚᐅᙱᑕᕗᑦ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "notRequested": "ᓇᓃᓐᓂᖓᓄᑦ ᐃᓯᕈᓐᓇᕐᓂᖅ ᑐᒃᓯᕋᐅᑕᐅᓚᐅᙱᑦᑐᖅ. ᐊᑐᓕᖅᑎᑦᑐᓐᓇᖅᑕᐃᑦ ᐅᐊᑦᑎᐊᕈᒃᑲᓐᓂᖅ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ.",
+    "permissionOff": "ᓇᓃᓐᓂᖓᓄᑦ ᐃᓯᕈᓐᓇᕐᓂᖅ ᐊᔪᓕᖅᓯᒪᕗᖅ. ᓇᕿᓪᓗᒍ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ ᐊᑦᑕᓇᔾᔭᐃᖅᓯᒪᓂᕐᒧᑦ ᓄᓇᙳᐊᖅ ᐃᓕᖕᓄᐊᕐᓂᐊᕋᕕᐅᒃ.",
+    "timeout": "ᓇᓃᓐᓂᕆᔭᐃᑦ ᐊᑯᓂᐅᓂᖅᓴᐅᖕᒪᑦ ᓂᕆᐅᒋᔭᐅᓚᐅᖅᑐᒥᑦ. ᓇᒧᙵᐅᓗᑎᑦ ᑐᑭᓯᓇᕐᓂᖅᓴᒥᒃ ᓇᓗᓇᐃᒃᑯᑕᖃᕐᓗᑎᑦ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᑎᓪᓗ.",
+    "savedTitle": "ᑐᖅᑯᖅᑕᐅᓯᒪᔪᑦ ᓄᓇᐃᑦ",
+    "savedEmptyTitle": "ᓱᓕ ᓴᓂᕐᕙᒃᑕᐅᓯᒪᔪᖃᙱᓚᖅ",
+    "savedEmptyMessage": "ᐅᒃᐱᕆᔭᐅᔪᓐᓇᑦᑎᐊᖅᑐᑦ ᐃᓂᐅᔪᑦ ᑐᖅᑯᖅᓯᒪᔭᑎᑦ ᓴᖅᑭᓐᓂᐊᖅᑐᑦ ᐅᕙᓂ ᐱᔭᐅᑲᐅᖅᑐᕈᓐᓇᖁᓪᓗᒋᑦ.",
+    "zones": {
+      "crowding": "ᐅᓐᓄᐊᒃᑯᑦ ᐃᓄᒋᐊᓗᐊᖃᑦᑕᖅᑐᑦ",
+      "lowLighting": "ᖃᐅᒪᑦᑎᐊᙱᓗᐊᖅᑐᖅ"
+    },
+    "risks": {
+      "low": "ᐊᑦᑎᒃᑐᖅ",
+      "medium": "ᐊᑯᓐᓂᖅᓱᖅᑐᖅ",
+      "high": "ᖁᕝᕙᓯᒃᑐᖅ"
+    }
+  },
+  "safetyCall": {
+    "connecting": "ᑲᑎᙵᓂᖅ...",
+    "offlineCompanion": "ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᖅ ᐱᖃᓐᓇᕆᔭᖅ",
+    "offline": "ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᖅ",
+    "connected": "ᐊᒃᑐᐊᓂᓖᑦ",
+    "interrupted": "ᑲᓱᖅᓯᒪᓂᖓ ᓄᖅᑲᖅᑎᑕᐅᔪᖅ",
+    "ready": "ᐊᑦᑕᑕᑐᐃᓐᓇᕆᐊᖃᓕᖅᑐᖓ",
+    "connectingSecurely": "ᐊᑦᑕᑕᖅᑎᑦᑎᐊᕐᓗᒍ ᓂᐱᒧᑦ ᐱᖃᓐᓇᕆᔭᕐᓄᑦ...",
+    "messagesWaiting": {
+      "one": "%{count} ᑐᓴᒐᒃᓴᖅ ᐅᑕᖅᑭᔪᖅ ᓇᒃᓯᐅᔾᔭᐅᓂᐊᕐᓂᖓᓂᒃ",
+      "other": "%{count} ᐅᑕᕿᔪᑦ ᓇᒃᓯᐅᔾᔭᐅᓂᐊᕐᓂᖏᓐᓂ"
+    },
+    "useOffline": "ᐊᑐᕐᓗᑎᑦ ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᒥᒃ ᐱᖃᓐᓇᕆᔭᕐᓂᒃ",
+    "reconnect": "ᓂᐱᓕᐅᖅᓯᒪᔪᒧᑦ AI",
+    "typePlaceholder": "ᓇᕿᑦᑕᕐᓗᒍ ᐅᖃᓪᓚᒍᓐᓇᑦᑎᐊᙱᒃᑯᕕᑦ",
+    "endCall": "ᓄᖅᑲᖅᑎᓪᓗᒍ ᐅᖄᓚᓂᖅ",
+    "startCall": "ᐱᒋᐊᕐᓗᒍ ᐅᖄᓚᓂᖅ",
+    "emptyTitle": "ᐅᖃᖃᑎᒌᖕᓂᕆᔭᐃᑦ ᐱᒋᐊᖅᐳᖅ ᐅᕙᓂ",
+    "emptyMessage": "ᐅᖄᓚᓗᑎᑦ ᐅᕝᕙᓘᓐᓃᑦ ᓇᕿᑦᑕᕐᓗᑎᑦ ᓂᐱᓕᐅᖅᓯᒪᔪᒥᒃ ᐱᑐᐃᓐᓇᕆᐊᖃᓕᕈᕕᑦ."
+  },
+  "chat": {
+    "waiting": "ᐅᑕᖅᑭᓂᖅ ᐊᑦᑕᑕᕐᕕᒃᓴᒥᒃ",
+    "notSent": "ᑐᓴᒐᒃᓴᖅ ᓇᒃᓯᐅᔾᔭᐅᙱᑦᑐᖅ.",
+    "retryAccessibility": "ᐱᒋᐊᒃᑲᓐᓂᕐᓗᒍ ᓇᒃᓯᐅᔾᔨᓂᖅ ᑐᓴᖅᑕᐅᔪᒃᓴᒥᒃ"
+  },
+  "history": {
+    "clearTitle": "ᑐᑭᓯᓇᑦᑎᐊᖅᑐᓂᒃ ᐅᖃᓪᓚᖃᑎᖃᖅᐸᓚᐅᖅᐱᑦ?",
+    "clearMessage": "ᑖᓐᓇ ᐲᖅᓯᔪᖅ ᑐᖅᑯᖅᑕᐅᓯᒪᔪᓂᒃ AI ᐱᖃᓐᓇᕆᔭᐅᔪᓂᒃ ᑐᓴᖅᑕᐅᔪᒃᓴᓂᒃ ᑕᕝᕙᙵᑦ ᖃᕆᑕᐅᔭᕋᓛᒥᑦ.",
+    "deleteTitle": "ᐲᕐᓗᒍ ᑖᓐᓇ ᐅᖃᖃᑎᒌᖕᓂᖅ?",
+    "cannotUndo": "ᑕᒪᓐᓇ ᓄᖅᑲᖅᑎᑕᐅᔪᓐᓇᙱᓚᖅ.",
+    "title": "ᐅᖃᖃᑎᒌᖕᓂᐅᖃᑦᑕᖅᓯᒪᔪᑦ",
+    "subtitle": "AI ᑐᓴᖅᑕᐅᔪᒃᓴᑦ ᑐᖅᑯᖅᑕᐅᓯᒪᔪᑦ ᖃᕆᑕᐅᔭᕋᓛᒃᑯᑦ.",
+    "empty": "ᐅᖃᓪᓚᖃᑎᖃᓚᐅᙱᑦᑐᑦ ᓱᓕ.",
+    "emptyTitle": "ᓱᓕ ᐅᖃᓪᓚᖃᑎᖃᓚᐅᙱᑦᑐᑦ",
+    "emptyMessage": "AI ᐱᖃᓐᓇᕆᔭᑎᑦ ᐅᖃᖃᑎᒌᖕᓂᖏᑦ ᓴᖅᑭᓐᓂᐊᖅᑐᑦ ᐅᕙᓂ ᓯᕗᓪᓕᕐᒥ ᐅᖄᓚᓚᐅᖅᑎᓪᓗᑎᑦ.",
+    "loadFailed": "ᐃᓕᐅᖅᑲᐃᔪᓐᓇᓚᐅᙱᓚᒍᑦ ᐅᖃᖃᑎᒌᖕᓂᐅᕙᒃᑐᓂᒃ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "clearFailed": "ᓇᓗᓇᐃᖅᓯᔪᓐᓇᓚᐅᙱᓚᒍᑦ ᐅᖃᖃᑎᒌᖕᓂᐅᖃᑦᑕᖅᓯᒪᔪᓂᒃ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "deleteFailed": "ᑕᒪᓐᓇ ᐅᖃᐅᓯᐅᔪᖅ ᓄᖅᑲᖅᑎᑦᑐᓐᓇᓚᐅᙱᑕᕗᑦ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "aiCompanion": "AI",
+    "resume": "ᐃᖅᑲᓇᐃᔮᕆᖃᑦᑕᖅᓯᒪᔭᖏᑦ",
+    "clearAll": "ᐱᐅᓯᕆᔭᐅᕙᓚᐅᖅᑐᓂᒃ ᐲᔭᕐᓗᒋᑦ",
+    "roles": {
+      "assistant": "ᐱᖃᑎᖓ",
+      "user": "ᐃᕝᕕᑦ"
+    }
+  },
+  "voices": {
+    "title": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖃᓗᒍᑎᒃᑲ ᓂᐱᖏᑦ",
+    "subtitle": "ᓂᕈᐊᕐᓗᑎᑦ ᐱᖃᓐᓇᕆᔭᕐᓂᒃ ᓂᐱᒥᒃ ᓈᒻᒪᒋᔭᕐᓂᒃ ᑐᓵᔭᕆᐊᒃᓴᖅ.",
+    "test": "ᖃᐅᔨᓴᕈᑎ ᓂᐱ",
+    "stop": "ᓄᖅᑲᖅᑎᓪᓗᒍ ᖃᐅᔨᓴᒐᒃᓴᖅ",
+    "selectionFailedTitle": "ᓂᕈᐊᖅᑕᖅ ᑐᖅᑯᖅᑕᐅᙱᑦᑐᖅ",
+    "selectionFailedMessage": "ᓂᐱᒥᒃ ᓂᕈᐊᒃᑲᓐᓂᕋᓱᓚᐅᕆᑦ.",
+    "sampleFailedTitle": "ᖃᐅᔨᓴᒐᒃᓴᖅ ᐊᑐᐃᓐᓇᐅᙱᑦᑐᖅ",
+    "sampleFailedMessage": "ᑖᓐᓇ ᓂᐱᒧᑦ ᐆᒃᑐᕋᐅᑎ ᑐᓴᖅᓴᐅᔪᓐᓇᓚᐅᙱᓚᖅ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ᓂᕈᒥᑦᑐᖅ, ᐅᐃᒪᔮᙱᑦᑐᖅ, ᑐᙵᑦᑎᐊᖅᑐᖅ"
+      },
+      "bestie": {
+        "name": "ᐱᐊᔅᑎ",
+        "description": "ᖃᐅᒪᑦᑎᐊᖅᑐᖅ, ᐊᑲᐅᓯᕚᓪᓕᕐᓇᖅᑐᖅ, ᐅᖃᓪᓚᒍᓐᓇᑦᑎᐊᖅᑐᖅ"
+      },
+      "boyfriend": {
+        "name": "ᐊᖑᑎᖓ ᐱᖃᓐᓈᖓ",
+        "description": "ᑐᙵᓂᖃᑦᑎᐊᖅᑐᖅ, ᓇᒡᓕᒍᓱᒃᑐᖅ, ᒫᓐᓇᓕᓴᖅ"
+      },
+      "muscleMan": {
+        "name": "ᓄᑭᓕᕆᔨ",
+        "description": "ᖁᓱᙱᑦᑎᐊᕐᓗᓂ, ᓴᐳᔾᔨᔪᓐᓇᕐᓗᓂ, ᐱᔪᒃᓯᑎᑦᑎᔪᓐᓇᕐᓗᓂ"
+      }
+    }
+  },
+  "settings": {
+    "voice": "ᓂᐱᖓ",
+    "changeVoice": "ᐊᓯᔾᔨᕐᓗᒍ ᓂᐱ",
+    "showCompanion": "ᑕᑯᑎᑉᐸᒡᓗᒍ ᐱᖃᑎᖓ",
+    "offlineMode": "ᑲᑉᐳᑎᓯᒪᙱᖦᖢᓂ",
+    "offlineModeSubtitle": "ᐊᑐᕐᓗᑎᑦ ᑲᑎᙵᔪᓂᒃ ᐱᖃᑎᖏᓐᓂᒃ ᑭᐅᔾᔪᑎᓂᒃ ᐱᓕᕆᔨᓄᑦ ᑐᓴᐅᒪᖃᑦᑕᐅᑎᖃᑎᒌᒍᑎᓂᒃ ᐅᕝᕙᓘᓐᓃᑦ Hume ᐊᔪᙱᔾᔪᑎᖏᓐᓂᒃ ᐊᑐᐃᓐᓇᐅᙱᒃᑳᖓᑕ.",
+    "privacyData": "ᑲᙳᓇᖅᑐᑦ ᐊᒻᒪ ᑎᑎᕋᖅᓯᒪᔪᑦ ᖃᐅᔨᓴᖅᑕᐅᓂᑯᐃᑦ",
+    "privacyBody": "ᐊᐅᓪᓚᖅᑎᓪᓗᒋᑦ ᐲᔭᕐᓗᒋᓪᓘᓐᓃᑦ ᓄᓇᓕᖕᓂ ᑎᑎᕋᖅᓯᒪᔪᑦ ᑐᖅᑯᖅᑕᐅᓯᒪᔪᑦ ᖃᕆᑕᐅᔭᕋᓛᒥ.",
+    "preparingExport": "ᐱᕙᒌᔭᕐᓂᖅ ᐊᐅᓪᓚᖅᑎᑦᑎᓂᕐᒧᑦ...",
+    "exportData": "ᑎᑎᖅᑲᒃᑲ ᐊᐅᓪᓚᖅᑎᓪᓗᒋᑦ",
+    "privacyPolicy": "ᑲᙳᓇᖅᑐᓕᕆᓂᕐᒧᑦ ᐊᑐᐊᒐᖅ",
+    "deleting": "ᐲᖅᓯᓂᖅ...",
+    "deleteAll": "ᐲᔭᖅᑕᐃᓐᓇᕆᓗᒋᑦ ᓄᓇᓕᖕᓂ ᑎᑎᕋᖅᓯᒪᔪᑦ ᖃᐅᔨᓴᖅᑕᐅᓂᑯᐃᑦ",
+    "deviceManagement": "ᖃᕆᑕᐅᔭᓕᕆᔾᔪᑎᓂᒃ ᐊᐅᓚᑦᑎᓂᖅ",
+    "emergencyContacts": "ᑐᐊᕕᕐᓇᖅᑐᖃᓕᖅᐸᑦ ᐅᖄᓚᕕᐅᔪᓐᓇᖅᑐᑦ",
+    "signOut": "ᐊᓂᔪᓄᑦ ᐊᑎᓕᐅᕐᕕᒃ",
+    "exportFailedTitle": "ᐊᐅᓪᓚᖅᑎᑦᑎᔪᓐᓇᓚᐅᙱᑦᑐᑦ",
+    "exportFailedMessage": "ᐊᐅᓪᓚᖅᑎᑦᑐᓐᓇᙱᑕᑎᑦ ᑎᑎᖅᑲᑎᑦ ᒫᓐᓇ.",
+    "deleteConfirmTitle": "ᐲᔭᖅᑕᐃᓐᓇᕆᓗᒋᑦ ᓄᓇᓕᖕᓂ ᑎᑎᕋᖅᓯᒪᔪᑦ ᖃᐅᔨᓴᖅᑕᐅᓂᑯᐃᑦ?",
+    "deleteConfirmMessage": "ᑖᓐᓇ ᐲᖅᓯᓇᔭᖅᑐᖅ ᑭᓇᐅᖕᒪᖔᖅᐱᑦ, ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂᒃ, ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᓂᒃ, ᐅᖃᓪᓗᕆᒃᓴᐅᑎᕕᓂᕐᓂᒃ, ᐱᔪᓐᓇᖅᑎᑦᑎᔾᔪᑎᓂᒃ ᐃᖅᑲᐃᑎᑦᑎᔾᔪᑎᓂᒃ, ᐊᒻᒪ ᓄᓇᓕᖕᓂ ᐊᐅᑦᑕᐅᑎᓂᒃ ᑕᕝᕙᙵᑦ ᖃᕆᑕᐅᔭᕋᓛᕐᓂᒃ.",
+    "deleteEverything": "ᐲᔭᖅᑕᐃᓐᓇᕆᓗᒋᑦ",
+    "deleteFailedTitle": "ᐲᖅᓯᓂᖅ ᑲᔪᓯᓚᐅᙱᑦᑐᖅ",
+    "deleteFailedMessage": "ᐲᖅᓯᔪᓐᓇᙱᖦᖢᖓ ᓄᓇᓕᖕᓂ ᑎᑎᕋᖅᓯᒪᔪᓂᒃ ᒫᓐᓇ.",
+    "linkFailed": "ᑲᓱᕐᕕᒃ ᒪᑐᐃᕈᓐᓇᙱᖦᖢᒍ",
+    "sections": {
+      "language": "ᐅᖃᐅᓯᖅ",
+      "languageSubtitle": "ᐃᓗᓕᖏᑦ ᐊᒻᒪ ᐱᓕᕆᔾᔪᑎᓄᑦ ᐱᔪᓐᓇᖅᑎᑦᑎᔾᔪᑎᑦ ᐅᖃᐅᓯᖅᑕᑦ",
+      "companion": "ᐱᖃᑎᖓ",
+      "companionSubtitle": "ᓂᐱᒃᑯᑦ ᐊᒻᒪ ᑲᑉᐳᑎᓯᒪᙱᑦᑐᒃᑯᑦ ᓂᕈᐊᕆᔭᑦ",
+      "deviceSafety": "ᐱᖁᑎᑦ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᓗ",
+      "deviceSafetySubtitle": "NorthStar, ᐸᖅᑭᔨᑦ, ᑐᐊᕕᕐᓇᖅᑐᓄᓪᓗ ᐅᖄᓚᔪᓐᓇᖅᑐᑦ",
+      "privacy": "ᑲᙳᓇᖅᑐᑦ ᐊᒻᒪ ᑎᑎᕋᖅᓯᒪᔪᑦ ᖃᐅᔨᓴᖅᑕᐅᓂᑯᐃᑦ",
+      "privacySubtitle": "ᖃᓄᐃᓕᐅᖅᑕᐅᕙᓚᐅᖅᑐᓄᑦ, ᐊᐅᓪᓚᖅᑎᑦᑎᓂᕐᒧᑦ, ᐲᖅᓯᓂᕐᒧᑦ, ᐊᒻᒪ ᐊᑐᐊᒐᕐᒧᑦ",
+      "account": "ᑮᓇᐅᔭᖁᑎᖃᕐᕕᒃ",
+      "accountSubtitle": "ᒫᓐᓇ VeryLoving ᐃᓕᓐᓂᐊᕐᓇᖅ"
+    },
+    "updateFailedTitle": "ᐋᖅᑭᒃᓯᒪᓂᖓ ᑐᖅᑯᖅᑕᐅᓯᒪᙱᑦᑐᖅ",
+    "updateFailedMessage": "ᑕᒪᓐᓇ ᐱᐅᒋᓂᖅᓴᕆᔪᓐᓇᓚᐅᙱᑕᕗᑦ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "signOutFailedTitle": "ᐊᑎᓕᐅᕈᓐᓇᓚᐅᙱᑦᑐᖅ",
+    "signOutFailedMessage": "ᑲᑎᙵᓂᕆᔭᐃᑦ ᓱᓕ ᐊᑐᖅᑐᖅ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ."
+  },
+  "contacts": {
+    "title": "ᑐᐊᕕᕐᓇᖅᑐᖃᓕᖅᐸᑦ ᐅᖄᓚᕕᐅᔪᓐᓇᖅᑐᑦ",
+    "subtitle": "ᑕᑎᒋᔭᐅᔪᓐᓇᑦᑎᐊᖅᑐᑦ ᐃᓄᐃᑦ ᐊᑐᐃᓐᓇᐅᔪᑦ ᐊᑦᑕᕐᓇᙱᑦᑐᒦᑎᓪᓗᒋᑦ.",
+    "addTitle": "ᐃᓚᓗᒍ ᑐᐊᕕᕐᓇᖅᑐᒧᑦ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖅ",
+    "name": "ᐊᑎᖓ",
+    "namePlaceholder": "ᖃᐅᔨᒋᐊᕐᕕᒃᓴᐅᑉ ᐊᑎᖓ",
+    "phone": "ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖅ ᐅᖄᓚᐅᑎᖓᑕ ᓈᓴᐅᑖ",
+    "add": "ᐃᓚᓗᒍ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖅ",
+    "empty": "ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᓂᒃ ᐃᓚᓯᔪᖃᓚᐅᙱᑦᑐᖅ ᓱᓕ.",
+    "emptyTitle": "ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᐅᖄᓚᕕᐅᔪᓐᓇᙱᑦᑐᑦ ᓱᓕ",
+    "emptyMessage": "ᐃᓚᓯᓗᑎᑦ ᐃᓄᖕᒥᒃ ᐅᒃᐱᕆᔭᕐᓂᒃ ᐱᑐᐃᓐᓇᕆᐊᖃᕐᓂᐊᕐᒪᑕ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᔭᕆᐊᖃᓕᕈᑎᒃ.",
+    "removeTitle": "ᐲᕐᓗᒍ %{name}?",
+    "removeMessage": "ᑖᓐᓇ ᐃᓄᒃ ᓴᖅᑭᔾᔮᔪᓐᓃᖅᑐᖅ ᑐᐊᕕᕐᓇᖅᑐᒃᑰᕈᑎᒋᔭᕐᓂ.",
+    "nameRequired": "ᖃᐅᔨᒋᐊᕐᕕᒃᓴᐅᑉ ᐊᑎᖓ ᑎᑎᕋᕐᓗᒍ.",
+    "saveFailedTitle": "ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖅ ᑐᖅᑯᖅᑕᐅᙱᑦᑐᖅ",
+    "saveFailedMessage": "ᑕᒪᓐᓇ ᐊᓯᐅᔾᔭᐃᖅᓯᔪᓐᓇᓚᐅᙱᓚᒍᑦ. ᖃᐅᔨᒋᐊᕐᓗᒋᑦ ᐃᓗᓕᖏᑦ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᑎᓪᓗ.",
+    "removeFailedTitle": "ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖅ ᐲᖅᑕᐅᙱᑦᑐᖅ",
+    "removeFailedMessage": "ᐲᖅᓯᔪᓐᓇᓚᐅᙱᓚᒍᑦ ᑕᒪᑐᒥᖓ ᐊᒃᑐᐊᓂᕆᔭᐅᔪᒥᒃ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ.",
+    "callAccessibility": "ᐅᖄᓚᓗᑎᑦ %{name}",
+    "removeAccessibility": "ᐲᕐᓗᒍ %{name}"
+  },
+  "device": {
+    "title": "ᖃᕆᑕᐅᔭᓕᕆᔾᔪᑎᓂᒃ ᐊᐅᓚᑦᑎᓂᖅ",
+    "subtitle": "ᐊᐅᓚᓪᓗᒍ NorthStar ᐅᖃᓘᑎᕋᓛᑦ.",
+    "connected": "ᑲᑎᙵᔪᑦ · %{battery}% ᐹᑕᓖ",
+    "none": "ᖃᕆᑕᐅᔭᕋᓛᑦ ᐊᑦᑕᑕᖅᓯᒪᙱᑦᑐᑦ",
+    "disconnect": "ᑲᑉᐳᔾᔭᐃᒃᑯᑎ",
+    "connect": "ᑲᑉᐳᑎᔾᔪᑎ"
+  },
+  "friends": {
+    "title": "ᐱᖃᓐᓇᕆᔭᑦ",
+    "subtitle": "ᐸᖅᑭᔨᑦ, ᑐᒃᓯᕋᖅᑕᐅᔪᑦ, ᐊᒻᒪ ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᑎᑎᕋᖅᓯᒪᔪᑦ.",
+    "addDemo": "ᐃᓚᓗᒍ ᐱᖃᓐᓇᕆᔭᖅ",
+    "emptyTitle": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᖕᒪᓗᖅᓯᓯᒪᓃᑦ ᐃᓗᓕᖃᙱᓚᖅ",
+    "emptyMessage": "ᐅᒃᐱᕆᔭᑦ ᐱᖃᓐᓇᕆᔭᑦ ᐸᖅᑭᔨᒋᔭᐅᔪᓪᓗ ᓴᖅᑭᓐᓂᐊᖅᑐᑦ ᐅᕙᓂ ᐃᓚᓕᐅᔾᔭᐅᒃᐸᑕ.",
+    "newGuardian": "ᓄᑖᖅ ᐸᖅᑭᔨ",
+    "statuses": {
+      "guardian": "ᐸᖅᑭᔨ",
+      "pending": "ᐅᑕᖅᑭᔪᑦ"
+    }
+  },
+  "emergency": {
+    "title": "ᑐᐊᕕᕐᓇᖅᑐᓄᑦ SOS",
+    "subtitle": "ᐊᖏᒡᓕᕙᓪᓕᐊᑎᑦᑎᑐᐃᓐᓇᖅᐸᒡᓗᑎᑦ ᑭᓯᐊᓂ ᐃᑲᔪᖅᑕᐅᔭᕆᐊᖃᓕᑐᐊᕌᖓᕕᑦ.",
+    "body": "ᑖᓐᓇ ᖃᐅᔨᑎᑦᑎᓂᐊᖅᑐᖅ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐃᖏᕐᕋᓂᕆᔭᕐᓂᒃ ᐱᕙᒌᔭᐃᓗᓂᓗ ᑐᐊᕕᕐᓇᖅᑐᓄᑦ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᓂᒃ.",
+    "activate": "ᐊᑐᓕᖅᑎᓪᓗᒍ SOS",
+    "callCompanion": "ᐅᖃᓗᒡᕕᒋᓗᒍ AI ᐱᖃᑎᒋᔭᐃᑦ",
+    "notificationTitle": "SOS",
+    "notificationBody": "ᑐᐊᕕᕐᓇᖅᑐᒧᑦ ᐃᖏᕐᕋᓂᕆᔭᐃᑦ ᐱᑐᐃᓐᓇᕆᐊᖃᓕᖅᐳᖅ.",
+    "readyTitle": "SOS",
+    "callContact": "ᐅᖄᓚᕕᒋᓗᒍ %{name}?",
+    "addContact": "ᐃᓚᓯᓗᑎᑦ ᑐᐊᕕᕐᓇᖅᑐᒧᑦ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᒥᒃ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ.",
+    "quickShareTitle": "ᑐᓴᖅᑎᑦᑎᑲᐅᖅᑐᕐᓂᖅ",
+    "quickShareMessage": "ᓇᓃᓐᓂᖓᓂᒃ ᐊᒥᖅᑳᖃᑎᖃᕐᓂᕐᒧᑦ ᓇᓗᓇᐃᒃᑯᑕᖅ ᐱᑐᐃᓐᓇᕆᐊᖃᓕᖅᐳᖅ. ᐊᑦᑕᑕᖅᑎᓪᓗᒍ ᑐᓄᐊᒍᑦ ᐊᒥᖅᑳᕈᑎ ᐃᓱᐊ ᓇᒃᓯᐅᔾᔨᓂᐊᕋᕕᑦ ᐃᕐᖐᓐᓇᖅ ᐊᑦᑕᑕᕐᕕᒃᓴᓂᒃ."
+  },
+  "quickShare": {
+    "title": "ᑐᓴᖅᑎᑦᑎᑲᐅᖅᑐᕐᓂᖅ",
+    "subtitle": "ᓇᓃᓐᓂᖓ ᐊᒥᖅᑳᕈᑎ ᐃᖏᕐᕋᓂᖓ ᐱᑐᐃᓐᓇᕆᐊᖃᓕᖅᑐᖅ."
+  },
+  "capybearTap": {
+    "title": "Capybear",
+    "subtitle": "ᒪᕐᕈᐃᕐᓗᒍ ᓇᕿᓪᓗᒍ NorthStar ᒥᓪᓗᐊᒐᕐᒥᒃ ᑲᑕᒃᓯᓂᐊᕐᓗᑎᑦ.",
+    "body": "Gesture ᐊᖅᑯᑎᖓ ᐱᑐᐃᓐᓇᕆᐊᖃᓕᖅᐳᖅ BLE ᖃᓄᐃᓕᐅᕐᓂᐅᔪᒧᑦ ᐅᐊᔭᓕᖅᓱᐃᓂᕐᒧᑦ."
+  },
+  "debug": {
+    "title": "VeryLoving debug ᒪᒃᐱᒐᖅ",
+    "subtitle": "ᐱᕙᓪᓕᐊᓂᕐᒧᑦ ᑭᓯᐊᓂ ᐊᖅᑯᑎᒋᔭᐅᔪᖅ."
+  },
+  "errors": {
+    "voiceOffline": "ᖃᕆᑕᐅᔭᒃᑰᕈᓐᓇᖅᑰᔨᙱᖦᖢᑎᑦ. ᑐᓴᖅᑕᐅᖁᔭᐃᑦ ᓇᒃᓯᐅᔾᔭᐅᓂᐊᖅᑐᖅ ᑲᓱᒃᑲᓐᓂᕈᕕᑦ.",
+    "voiceQueued": "ᑐᓴᒐᒃᓴᖅ ᑐᖅᑯᖅᑕᐅᔪᖅ. ᓇᒃᓯᐅᔾᔭᐅᓂᐊᖅᑐᖅ ᓂᐱᓕᐅᖅᓯᒪᔪᖅ ᐱᖃᑎᖓ ᑲᑉᐳᑎᒃᑲᓐᓂᖅᐸᑦ.",
+    "voiceRetrying": "ᑐᓴᖅᑕᐅᖁᔭᐃᑦ ᓇᒃᓯᐅᑎᒃᑲᓐᓂᕋᓱᒃᖢᒍ...",
+    "voiceConnecting": "ᐊᑦᑕᑕᖅᑎᑦᑎᐊᕐᓗᒍ ᓂᐱᒧᑦ ᐱᖃᓐᓇᕆᔭᕐᓄᑦ...",
+    "microphone": "ᖃᓂᙳᕐᓇᐅᑎᒧᑦ ᐊᑐᕈᓐᓇᕐᓂᖅ ᐱᔭᕆᐊᓕᒃ ᓂᐱᓕᐅᖅᓯᒪᔪᓄᑦ ᐅᖄᓚᔪᓄᑦ. ᐊᑐᓕᖅᑎᑦᑐᓐᓇᖅᑕᐃᑦ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ, ᐅᕝᕙᓘᓐᓃᑦ ᓇᕿᑦᑕᖔᕐᓗᒍ ᑐᓴᒐᒃᓴᖅ.",
+    "billing": "ᖃᕋᓴᐅᔭᒃᑯᑦ ᓂᐱᓕᐅᖅᓯᒪᔪᖅ ᐊᑐᐃᓐᓇᐅᙱᓚᐅᑲᒃᑐᖅ. ᑲᔪᓯᔪᓐᓇᖅᐳᑎᑦ ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᒥᒃ ᐱᖃᓐᓇᕆᔭᕐᓂᒃ.",
+    "authentication": "ᓂᐱᒧᑦ ᐱᖃᑎᖓ ᓇᓗᓇᐃᖅᓯᔪᓐᓇᓚᐅᙱᓚᖅ ᑕᒪᑐᒥᖓ ᑲᑎᙵᓂᐅᔪᒥᒃ. ᐊᑎᓕᐅᒃᑲᓐᓂᕐᓗᑎᑦ ᐊᑐᕐᓗᒍᓘᓐᓃᑦ ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᖅ ᐱᖃᑎᒋᔭᖅ ᒫᓐᓇ.",
+    "timeout": "ᓂᐱᖓ ᐊᑯᓂᐅᓗᐊᖅᑐᖅ ᑭᐅᓇᓱᒃᖢᓂ. ᖃᐅᔨᒋᐊᕐᓗᒍ ᑲᓱᖅᓯᒪᓂᕆᔭᐃᑦ ᐆᒃᑐᒃᑲᓐᓂᕐᓗᒍᓗ.",
+    "network": "ᓂᐱᒧᑦ ᐱᖃᑎᖓ ᑎᑭᐅᑎᔪᓐᓇᐃᓪᓕᓚᐅᖅᑕᕗᑦ. ᖃᐅᔨᒋᐊᕐᓗᒍ ᑲᓱᖅᓯᒪᓂᕆᔭᐃᑦ, ᐆᒃᑐᒃᑲᓐᓂᓕᕐᒥᓗᑎᑦ ᑲᔪᓯᑐᐃᓐᓇᕐᓗᑎᓪᓘᓐᓃᑦ ᖃᕆᑕᐅᔭᒃᑰᕈᓐᓇᐅᑎᒥᒃ.",
+    "genericVoice": "ᐅᓚᕕᓴᖅᑕᐅᓪᓗᓂ ᓂᐱᓕᐅᖅᓯᒪᔪᖅ. ᐆᒃᑐᒃᑲᓐᓂᕆᑦ, ᑲᔪᓯᓗᑎᓪᓘᓐᓃᑦ ᖃᕆᑕᐅᔭᒃᑰᙱᑦᑐᒥᒃ ᐱᖃᓐᓇᕆᔭᕐᓂᒃ."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ᐊᐅᓪᓚᖅᑎᑦᑎᓂᖅ"
+  },
+  "notifications": {
+    "channelName": "ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᑐᓴᖅᑎᑦᑎᔾᔪᑎᑦ"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ᖃᓂᙳᕐᓇᐅᑎᖃᕆᐊᖃᖅᐳᖅ ᖁᐊᖅᓵᕐᓇᖅᑐᒦᖁᓇᒍ AI ᐱᖃᓐᓇᕆᔭᒥᓄᑦ ᐅᖄᓚᖃᑦᑕᕈᒪᓂᕐᒧᑦ.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᓇᓃᓐᓂᕆᔭᕐᓂᒃ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᓄᓇᙳᐊᒧᑦ ᖃᓂᒋᔭᖏᓐᓄᓪᓗ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᑐᖅᑕᐅᕙᒃᑐᓄᑦ.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᓇᓃᓐᓂᕆᔭᕐᓂᒃ ᐃᑲᔪᖅᑐᐃᔪᒪᓪᓗᓂ ᖁᐊᖅᓵᕐᓇᙱᑦᑐᒃᑯᑦ−ᑎᑭᑦᑐᖃᖅᐸᖕᓂᖓᓄᑦ ᑐᐊᕕᕐᓇᖅᑐᓄᓪᓗ ᓇᒧᙵᐅᕙᓪᓕᐊᓂᕆᔭᐅᕙᒃᑐᓄᑦ.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᐃᓂᒋᔭᖓᓂ ᑎᑭᑦᑎᐊᕐᓂᕐᒧᑦ ᖃᓂᒋᔭᖏᓐᓄᓪᓗ ᖁᐊᖅᓵᕐᓇᖅᑐᓄᑦ ᐃᓂᒋᔭᐅᕙᒃᑐᓄᑦ.",
+      "NSCameraUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᐊᔾᔨᓕᐅᕈᑎᒥᒃ ᓂᕈᐊᕆᔭᖃᑐᐊᕌᖓᕕᑦ ᐊᔾᔨᓕᐅᕆᔪᒪᒍᕕᑦ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒥᒡᓘᓐᓃᑦ ᐊᔾᔨᓕᐅᕆᓂᕐᒥᒃ.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᐊᔾᔨᙳᐊᖁᑎᖕᓂᒃ ᓂᕈᐊᕆᔭᑐᐊᕌᖓᕕᑦ ᐊᔾᔨᙳᐊᒥᒃ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒥᒡᓘᓐᓃᑦ ᐊᔾᔨᙳᐊᒥᒃ.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᐊᑦᑕᑕᖅᑎᖦᖢᒍ NorthStar ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᐅᓴᐅᑎᓄᑦ.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᐊᑦᑕᑕᖅᑎᖦᖢᒍ NorthStar ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᐅᓴᐅᑎᓄᑦ."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

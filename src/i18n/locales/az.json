@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Geri",
+    "call": "Çağırış",
+    "cancel": "Ləğv etmək",
+    "clear": "Təmiz",
+    "close": "Bağlan",
+    "connect": "Əlaqə",
+    "connecting": "Qoşulur...",
+    "continue": "Davam et",
+    "delete": "Sil",
+    "finish": "Bitirmə",
+    "friends": "Dostlar",
+    "google": "Google",
+    "home": "Ev",
+    "loading": "Yüklənir...",
+    "map": "Xəritə",
+    "notNow": "İndi yox",
+    "remove": "Çıxar",
+    "retry": "Yenidən cəhd",
+    "retrying": "Yenidən cəhd",
+    "save": "Xilas et",
+    "selected": "Seçilmiş",
+    "send": "Göndər",
+    "settings": "Mühitlər",
+    "skip": "Keç",
+    "skipForNow": "Hələlik keçin",
+    "skipTutorial": "Dərsliyi keç",
+    "sos": "SOS",
+    "unknown": "Naməlum",
+    "user": "VeryLoving istifadəçisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Dil",
+    "subtitle": "Tətbiqdə istifadə olunan dili seçin.",
+    "system": "Sistemin defoltu",
+    "search": "Dillər axtarışı",
+    "noResults": "Heç bir dil axtarışınıza uyğun gəlmir.",
+    "english": "İngiliscə",
+    "spanish": "İspan dili",
+    "french": "Fransız dili",
+    "chineseSimplified": "Çin (Sadələşdirilmiş)"
+  },
+  "phone": {
+    "label": "Telefon nömrəsi",
+    "placeholder": "Telefon nömrəsi",
+    "selectCountry": "Seçilmiş ölkə və ya region",
+    "searchCountry": "Ölkə, kod və ya yığma prefiksini axtar",
+    "noCountries": "Heç bir ölkə axtarışınıza uyğun gəlmir.",
+    "countryButton": "Ölkəni dəyiş, hazırda %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefon nömrəsi %{country}",
+    "required": "Telefon nömrəsini daxil edin.",
+    "tooShort": "Bu telefon nömrəsi çox qısadır.",
+    "tooLong": "Bu telefon nömrəsi çox uzundur.",
+    "invalid": "Seçilmiş ölkə üçün etibarlı telefon nömrəsini daxil edin.",
+    "valid": "Etibarlı beynəlxalq telefon nömrəsi"
+  },
+  "auth": {
+    "onboardingTagline": "\"Yaxşıyam\" və \"Köməyə ehtiyacım var\" anları üçün şəxsi təhlükəsizlik yoldaşı.",
+    "createAccount": "Hesab yarat",
+    "continueOnboarding": "Onboarding-ə davam edin",
+    "createSubtitle": "Təhlükəsizlik qrafikinizi qorumaq üçün giriş üsulu seçin.",
+    "phoneVerification": "Telefon təsdiqi",
+    "sendCode": "Kod göndər",
+    "sendingCode": "Kod göndərirəm...",
+    "verifyCode": "Kodu yoxlayın",
+    "sentTo": "Göndərilib %{phone}",
+    "yourPhone": "Telefonun",
+    "verificationCode": "Yoxlama kodu",
+    "verify": "Yoxlayın",
+    "verifying": "Yoxlayıram...",
+    "invalidCode": "Təsdiq kodunu daxil edin.",
+    "signInFailedTitle": "Giriş kəsildi",
+    "signInFailedMessage": "Qeydiyyatı tamamlaya bilmədik. Bağlantınızı yoxlayın və yenidən cəhd edin.",
+    "googleUnavailableTitle": "Google Giriş mövcud deyil",
+    "googleUnavailableMessage": "Yerli inkişaf sessiyasından istifadə edirik. Native Google Sign-In inkişaf versiyasında işləyir.",
+    "northStarTitle": "NorthStar zinət əşyaları",
+    "northStarSubtitle": "İndi cütləşdirin və ya davam edin və sonra əlavə edin.",
+    "northStarBody": "VL01 geyilə bilən cihaz toxunuşlar və uzun basma jestləri ilə təhlükəsizlik axınlarını işə sala bilər.",
+    "setupJewelry": "Zinət əşyalarını qur",
+    "meetCapybear": "Tanış Capybear",
+    "meetCapybearSubtitle": "Xəritədə və zənglərdə sizin mehriban təhlükəsizlik yoldaşınız.",
+    "capybearBody": "Capybear ev rejimi, qoruyucu rejimi, təcili vəziyyət rejimi, bəhanə zəngləri və səs dəstəyi ilə bağlı kömək edə bilər.",
+    "chooseVoice": "Səs seç",
+    "capybearReminder": "Capybear xatırlatma",
+    "remindersReady": "Yumşaq xatırlatmalar hazırdır."
+  },
+  "permissions": {
+    "locationTitle": "Məkan təhlükəsizliyi",
+    "locationSubtitle": "Xəritə, təhlükəli zonalar, təhlükəsiz gəliş və SOS kontekst üçün istifadə olunur.",
+    "locationBody": "VeryLoving yerini soruşur ki, qoruyucular harada kömək lazım ola biləcəyini başa düşsünlər. Bunu sonra Ayarlarda dəyişə bilərsiniz.",
+    "allowLocation": "Yerləşməyə icazə ver",
+    "notificationsTitle": "Təhlükəsizlik xəbərdarlıqları",
+    "notificationsSubtitle": "Bildirişlər check-in və fövqəladə hallar üçün dəstək verir.",
+    "notificationsBody": "Biz yalnız təhlükəsizlik göstərişləri, təcili yeniləmələr və aktiv etdiyiniz xatırlatmalar üçün bildirişlərdən istifadə edirik.",
+    "enableNotifications": "Bildirişləri aktiv et",
+    "locationRationaleTitle": "Yer təhlükəsizlik kontekstini dəqiq saxlayır",
+    "locationRationaleMessage": "VeryLoving təhlükəsizlik xəritəsi, təhlükə zonaları, sürətli paylaşım və SOS kontekst üçün yerinizdən istifadə edir. Bunu sonra Ayarlarda dəyişə bilərsiniz.",
+    "notificationsRationaleTitle": "Təhlükəsizlik xəbərdarlıqları üçün bildiriş tələb olunur",
+    "notificationsRationaleMessage": "VeryLoving sizə qeydiyyat xatırlatmaları, təcili yeniliklər və təhlükəsizlik bildirişləri göndərir. Reklamlar üçün bildirişlərdən istifadə etmirik.",
+    "microphoneRationaleTitle": "Mikrofon təhlükəsizlik çağırışlarını gücləndirir",
+    "microphoneRationaleMessage": "VeryLoving mikrofonunuzu yalnız AI yoldaş və ya təhlükəsizlik zəngi başladıqda istifadə edir.",
+    "bluetoothRationaleTitle": "Bluetooth geyilə biləcəyiniz cihazınızı birləşdirir",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth istifadə edərək NorthStar zinət əşyası ilə birləşdirilir, əlaqə statusunu oxuyur və geyilə bilən cihazdan təhlükəsizlik axınlarını tetikləyir.",
+    "cameraRationaleTitle": "Kamera seçimlidir",
+    "cameraRationaleMessage": "VeryLoving kameradan yalnız profil şəkli çəkmək və ya təhlükəsizlik şəkli paylaşmaq istəyəndə istifadə edir."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving bu axını Parametrlərdən və paneldən əlçatan saxlayır.",
+    "chooseVoiceTitle": "Səsini seç",
+    "chooseVoiceSubtitle": "Ən təhlükəsiz eşidilən yoldaş səsini seçin.",
+    "homeTitle": "Ev rejimi",
+    "homeSubtitle": "Gündəlik təhlükəsizlik üçün səssiz monitorinq.",
+    "guardianTitle": "Guardian rejimi",
+    "guardianSubtitle": "Etibarlı insanlarla konteksti paylaşın.",
+    "emergencyTitle": "Fövqəladə rejim",
+    "emergencySubtitle": "Beş toxunuş SOS və qoruyucu xəbərdarlıqlarına çevrilə bilər.",
+    "excuseTitle": "Bağışlayın",
+    "excuseSubtitle": "Narahat vəziyyətdən çıxmaq üçün zərif bir səbəb yarat.",
+    "safetyCallTitle": "Təhlükəsizlik çağırışı",
+    "safetyCallSubtitle": "Dəstəyə ehtiyacınız olduqda real vaxtda yoldaş zəngi başlayın.",
+    "practiceTitle": "Məşq səhnəsi",
+    "practiceSubtitle": "Aşağı təzyiqli demoda təhlükəsizlik axınlarını yoxlayın."
+  },
+  "jewelry": {
+    "pairTitle": "Cüt NorthStar",
+    "pairSubtitle": "Zinət əşyalarını yaxınlıqda saxlayın və skan edin.",
+    "scan": "Cihazların skan edilməsi",
+    "scanning": "Yaxınlıqda skan edirəm...",
+    "noDevices": "Yaxınlıqda hələ NorthStar cihaz tapılmayıb.",
+    "scanStartFailed": "Bluetooth skan başlaya bilmədi. Zəhmət olmasa, yenidən cəhd edin.",
+    "scanFailed": "Yaxınlıqda zinət əşyaları tapa bilmədik. Bluetooth yoxlayın, NorthStar yaxın saxlayın və yenidən cəhd edin.",
+    "scanAccessFailed": "Bluetooth skan başlaya bilmədi. Bluetooth girişini yoxlayın və yenidən cəhd edin.",
+    "permissionDenied": "Yaxınlıqdakı cihazlara giriş söndürülüb. Ayarlarda Bluetooth girişə icazə verin, sonra yenidən cəhd edin.",
+    "connectTimeout": "NorthStar əlaqə qurmaq üçün çox gec vaxt aldı. Yaxınlaşdırın və yenidən cəhd edin.",
+    "connectFailed": "Biz NorthStar ilə əlaqə qura bilmədik. Şarj olunduğunu və yaxınlıqda olduğunu yoxlayın, sonra yenidən cəhd edin.",
+    "emptyTitle": "Hələ yaxınlıqda heç bir cihaz yoxdur",
+    "emptyMessage": "NorthStar dolu və bu telefonun yaxınlığında saxlayın, sonra yenidən skan edin.",
+    "searchingMessage": "Yaxınlıqda NorthStar cihaz axtarıram..."
+  },
+  "home": {
+    "subtitle": "Təhlükəsizlik yoldaşı paneli",
+    "modeStatus": "%{mode} REJIMI",
+    "companionReady": "%{name} hazırdır",
+    "readyBody": "Səs, xəritə, zinət əşyaları və qoruyucular bir toxunuş məsafəsindədir.",
+    "safetyCall": "Təhlükəsizlik çağırışı",
+    "northStarDevice": "NorthStar cihazı",
+    "deviceConnected": "%{name} qoşuldu · %{battery}%",
+    "noDevice": "Heç bir cihaz qoşulmayıb",
+    "manageDevice": "Cihazı idarə et",
+    "mode": "Rejim",
+    "modes": {
+      "home": "Ev",
+      "guardian": "Guardian",
+      "emergency": "Təcili vəziyyət"
+    }
+  },
+  "map": {
+    "finding": "Yerini tapmaq...",
+    "retry": "Yenidən cəhd yeri",
+    "title": "Təhlükəsizlik xəritəsi",
+    "previewSubtitle": "Expo Go önizləməsi; Mapbox inkişaf versiyasında render olunur.",
+    "preview": "Xəritə önizləməsi",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Yeniləmə məkanı",
+    "refreshing": "Yer tapmaq...",
+    "updateFailed": "Yerinizi yeniləyə bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "notRequested": "Məkan üçün giriş tələb olunmadı. Sonra Ayarlardan aktivləşdirə bilərsiniz.",
+    "permissionOff": "Məkan girişi söndürülüb. Ayarlarda aktiv edin ki, təhlükəsizlik xəritəsini özünüzə yönəldəsiniz.",
+    "timeout": "Sizin yeriniz gözləniləndən daha uzun çəkir. Daha aydın siqnal olan bir yerə keç və yenidən cəhd et.",
+    "savedTitle": "Saxlanılan yerlər",
+    "savedEmptyTitle": "Hələ saxlanılan yerlər yoxdur",
+    "savedEmptyMessage": "Yadda saxladığınız etibarlı yerlər burada görünəcək ki, tez bir zamanda əldə olunsun.",
+    "zones": {
+      "crowding": "Gecə sıxlığı",
+      "lowLighting": "Aşağı işıqlandırma sahəsi"
+    },
+    "risks": {
+      "low": "aşağı",
+      "medium": "Medium",
+      "high": "yüksək"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Qoşulur...",
+    "offlineCompanion": "Offline yoldaş",
+    "offline": "Oflayn",
+    "connected": "Qoşuldu",
+    "interrupted": "Əlaqə kəsildi",
+    "ready": "Qoşulmağa hazıram",
+    "connectingSecurely": "Səs yoldaşına təhlükəsiz qoşulmaq...",
+    "messagesWaiting": {
+      "one": "%{count} mesaj göndərilməyə hazır",
+      "other": "%{count} göndərilməyə hazır mesajlar"
+    },
+    "useOffline": "Offline companion-dan istifadə et",
+    "reconnect": "Səsə yenidən qoşulun AI",
+    "typePlaceholder": "Əgər danışmaq çətindirsə, tip",
+    "endCall": "Çağırış bitdi",
+    "startCall": "Zəngi başlat",
+    "emptyTitle": "Söhbətiniz buradan başlayır",
+    "emptyMessage": "Zəngi başla və ya hazır olanda mesaj yaz."
+  },
+  "chat": {
+    "waiting": "Bağlantı gözləyir",
+    "notSent": "Mesaj göndərilməyib.",
+    "retryAccessibility": "Mesaj göndərməyə yenidən cəhd et"
+  },
+  "history": {
+    "clearTitle": "Aydın söhbət tarixçəsi?",
+    "clearMessage": "Bu, cihazdan saxlanılan AI yoldaş mesajları silinir.",
+    "deleteTitle": "Bu söhbəti silmək?",
+    "cannotUndo": "Bunu geri qaytarmaq mümkün deyil.",
+    "title": "Söhbət tarixi",
+    "subtitle": "AI bu cihazda saxlanılan yoldaş mesajları var.",
+    "empty": "Hələ heç bir söhbət yaddaşda saxlanılmayıb.",
+    "emptyTitle": "Hələ heç bir söhbət yoxdur",
+    "emptyMessage": "AI yoldaş söhbətləriniz ilk zənginizdən sonra burada görünəcək.",
+    "loadFailed": "Söhbət tarixçəsini yükləyə bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "clearFailed": "Söhbət tarixçəsini aydınlaşdıra bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "deleteFailed": "Biz o söhbəti silə bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "aiCompanion": "AI yoldaş",
+    "resume": "Tərcümeyi-hal",
+    "clearAll": "Bütün tarixi təmizləyin",
+    "roles": {
+      "assistant": "Yoldaş",
+      "user": "sən"
+    }
+  },
+  "voices": {
+    "title": "Mənim təhlükəsizlik zənglərim səsləri",
+    "subtitle": "Eşitmək üçün uyğun olan yoldaş səsi seçin.",
+    "test": "Test səsi",
+    "stop": "Stop nümunəsi",
+    "selectionFailedTitle": "Seçim yadda saxlanmadı",
+    "selectionFailedMessage": "Zəhmət olmasa, səsi yenidən seçməyə çalışın.",
+    "sampleFailedTitle": "Nümunə mövcud deyil",
+    "sampleFailedMessage": "Bu səs nümunəsi səsləndirilə bilmirdi. Zəhmət olmasa, yenidən cəhd edin.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Yumşaq, sakit, möhkəmləndirici"
+      },
+      "bestie": {
+        "name": "Ən yaxşı dost",
+        "description": "Parlaq, təsəlliverici, söhbət"
+      },
+      "boyfriend": {
+        "name": "Sevgili",
+        "description": "sabit, mehriban, mövcud"
+      },
+      "muscleMan": {
+        "name": "Əzələli",
+        "description": "özünə güvənən, qoruyucu, motivasiyaedici"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Səs",
+    "changeVoice": "Səsi dəyiş",
+    "showCompanion": "Şou yoldaşı",
+    "offlineMode": "Oflayn rejim",
+    "offlineModeSubtitle": "Şəbəkə və ya Hume etimadnamələri əlçatan olmadıqda paketli yoldaş cavablardan istifadə edin.",
+    "privacyData": "Məxfilik və məlumat",
+    "privacyBody": "Bu cihazda saxlanılan yerli məlumatları ixrac edin və ya silin.",
+    "preparingExport": "İxrac hazırlığı...",
+    "exportData": "Məlumatlarımı ixrac et",
+    "privacyPolicy": "Məxfilik siyasəti",
+    "deleting": "Silirəm...",
+    "deleteAll": "Bütün yerli məlumatları sil",
+    "deviceManagement": "Cihaz idarəetməsi",
+    "emergencyContacts": "Təcili əlaqələr",
+    "signOut": "Çıxış",
+    "exportFailedTitle": "İxrac uğursuz oldu",
+    "exportFailedMessage": "Hazırda məlumatlarınızı ixrac etmək mümkün deyil.",
+    "deleteConfirmTitle": "Bütün yerli məlumatları silmək?",
+    "deleteConfirmMessage": "Bu, profilinizi, ayarlarınızı, təcili əlaqə məlumatlarınızı, söhbət tarixçənizi, icazə xatırlatmalarınızı və lokal autentifikasiya sessiyanızı bu cihazdan silir.",
+    "deleteEverything": "Hər şeyi sil",
+    "deleteFailedTitle": "Silinmə uğursuz oldu",
+    "deleteFailedMessage": "Hazırda yerli məlumatları silə bilmirəm.",
+    "linkFailed": "Bağlantı açılmadı",
+    "sections": {
+      "language": "Dil",
+      "languageSubtitle": "İnterfeys və sistem icazəsi dili",
+      "companion": "Yoldaş",
+      "companionSubtitle": "Səs və oflayn üstünlüklər",
+      "deviceSafety": "Qurğular və təhlükəsizlik",
+      "deviceSafetySubtitle": "NorthStar, qoruyucular və təcili əlaqə şəxsləri",
+      "privacy": "Məxfilik və məlumatlar",
+      "privacySubtitle": "Tarix, ixrac, silinmə və siyasət",
+      "account": "Hesab",
+      "accountSubtitle": "Hazırkı VeryLoving sessiyanız"
+    },
+    "updateFailedTitle": "Mühit yadda saxlanmayıb",
+    "updateFailedMessage": "Bu üstünlüyü xilas edə bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "signOutFailedTitle": "Çıxış edə bilmədim",
+    "signOutFailedMessage": "Sessiyanız hələ də aktivdir. Zəhmət olmasa, yenidən cəhd edin."
+  },
+  "contacts": {
+    "title": "Təcili əlaqələr",
+    "subtitle": "Təhlükəsizlik axınları zamanı etibarlı insanlar mövcuddur.",
+    "addTitle": "Təcili əlaqə əlavə edin",
+    "name": "Ad",
+    "namePlaceholder": "Əlaqə adı",
+    "phone": "Əlaqə telefon nömrəsi",
+    "add": "Əlaqə əlavə et",
+    "empty": "Hələ təcili əlaqə əlavə olunmayıb.",
+    "emptyTitle": "Hələ təcili əlaqə yoxdur",
+    "emptyMessage": "Etibar etdiyin birini əlavə et ki, təhlükəsizlik axını lazım olanda hazır olsun.",
+    "removeTitle": "%{name} çıxarmaq?",
+    "removeMessage": "Bu şəxs artıq təcili axarınızda görünməyəcək.",
+    "nameRequired": "Əlaqənin adını daxil edin.",
+    "saveFailedTitle": "Əlaqə saxlanılmadı",
+    "saveFailedMessage": "Bu əlaqəni xilas edə bilmədik. Detalları yoxlayın və yenidən cəhd edin.",
+    "removeFailedTitle": "Əlaqə silinməyib",
+    "removeFailedMessage": "Bu əlaqəni aradan qaldıra bilmədik. Zəhmət olmasa, yenidən cəhd edin.",
+    "callAccessibility": "Zəng %{name}",
+    "removeAccessibility": "Silinin %{name}"
+  },
+  "device": {
+    "title": "Cihaz idarəetməsi",
+    "subtitle": "NorthStar cihazınızı idarə edin.",
+    "connected": "Əlaqəlidir · %{battery}% batareya",
+    "none": "Heç bir cihaz qoşulmayıb",
+    "disconnect": "Ayırma cihazı",
+    "connect": "Cihazın qoşulması"
+  },
+  "friends": {
+    "title": "Dostlar",
+    "subtitle": "Qəyyumlar, tələblər və təcili vəziyyət qrafiki.",
+    "addDemo": "Demo dostunu əlavə et",
+    "emptyTitle": "Sənin təhlükəsizlik dairən boşdur",
+    "emptyMessage": "Etibarlı dostlar və qoruyucular əlavə olunduqdan sonra burada görünəcək.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Gözləmə"
+    }
+  },
+  "emergency": {
+    "title": "Təcili SOS",
+    "subtitle": "Yalnız dərhal dəstəyə ehtiyacınız olduqda vəziyyəti artırın.",
+    "body": "Bu, təhlükəsizlik axınınızı xəbərdar edəcək və təcili əlaqələri hazırlayacaq.",
+    "activate": "Aktiv SOS",
+    "callCompanion": "Yoldaşa AI çağır",
+    "notificationTitle": "SOS aktivləşdirildi",
+    "notificationBody": "Təcili axınınız hazırdır.",
+    "readyTitle": "SOS hazır",
+    "callContact": "Zəng %{name}?",
+    "addContact": "Ayarlarda təcili əlaqə əlavə edin.",
+    "quickShareTitle": "Tez paylaş",
+    "quickShareMessage": "Yer paylaşımı stub hazırdır. Backend paylaşım nöqtəsini qoşaraq canlı bağlantılar göndərin."
+  },
+  "quickShare": {
+    "title": "Tez paylaş",
+    "subtitle": "Məkan paylaşımı axını hazırdır."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Təhlükəsizlik portağalı NorthStar üçün iki dəfə vurun.",
+    "body": "Gesture marşrutu BLE event wireing üçün hazırdır."
+  },
+  "debug": {
+    "title": "VeryLoving debug səhifəsi",
+    "subtitle": "Yalnız inkişaf marşrutu."
+  },
+  "errors": {
+    "voiceOffline": "Sən offline görünürsən. Mesajınız yenidən qoşulduqda göndəriləcək.",
+    "voiceQueued": "Mesaj yadda qaldı. Səs yoldaşı yenidən qoşulduqda göndəriləcək.",
+    "voiceRetrying": "Mesajını yenidən göndərməyə çalışırsan...",
+    "voiceConnecting": "Səs yoldaşına təhlükəsiz qoşulmaq...",
+    "microphone": "Səsli zənglər üçün mikrofon girişi tələb olunur. Bunu Parametrlərdən aktiv edə və ya mesaj yaza bilərsiniz.",
+    "billing": "Onlayn səs yoldaşı müvəqqəti olaraq əlçatan deyil. Offline yoldaşla davam edə bilərsiniz.",
+    "authentication": "Səs yoldaşı bu sessiyanı təsdiqləyə bilmədi. Yenidən daxil olun və ya hələlik offline companion-dan istifadə edin.",
+    "timeout": "Səs yoldaşı cavab verməkdə çox gecikdi. Bağlantınızı yoxlayın və yenidən cəhd edin.",
+    "network": "Səs yoldaşına çata bilmədik. Bağlantınızı yoxlayın, sonra yenidən cəhd edin və ya offline davam edin.",
+    "genericVoice": "Səsli zəngi nəsə kəsdi. Yenidən cəhd edin, ya da offline companion ilə davam edin."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving məlumat ixracı"
+  },
+  "notifications": {
+    "channelName": "Təhlükəsizlik xəbərdarlıqları"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving təhlükəsizlik və yoldaş zəngləri AI üçün mikrofon girişinə ehtiyac duyur.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving təhlükəsizlik xəritəsi və yaxınlıqdakı təhlükəsizlik xüsusiyyətləri üçün sizin yerinizdən istifadə edir.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sizin yerinizdən təhlükəsiz gəliş və təcili axınları dəstəkləmək üçün istifadə edir.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving təhlükəsiz gəliş və yaxınlıqdakı təhlükəli zona xüsusiyyətləri üçün fon mövqeyindən istifadə edir.",
+      "NSCameraUsageDescription": "VeryLoving kameradan yalnız profil və ya təhlükəsizlik fotosu çəkmək istəyəndə istifadə edir.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving yalnız profil və ya təhlükəsizlik şəkli seçdiyiniz zaman foto kitabxananızdan istifadə edir.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth istifadə edərək NorthStar təhlükəsizlik zinət əşyalarına qoşulur.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth istifadə edərək NorthStar təhlükəsizlik zinət əşyalarına qoşulur."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

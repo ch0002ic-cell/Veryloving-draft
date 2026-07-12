@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Tagasi",
+    "call": "Helista",
+    "cancel": "Tühista",
+    "clear": "Selge",
+    "close": "Sulge",
+    "connect": "Ühenda",
+    "connecting": "Ühendamine...",
+    "continue": "Jätka",
+    "delete": "Kustuta",
+    "finish": "Lõpp",
+    "friends": "Sõbrad",
+    "google": "Google",
+    "home": "Kodu",
+    "loading": "Laadin...",
+    "map": "Kaart",
+    "notNow": "Mitte praegu",
+    "remove": "Eemalda",
+    "retry": "Uuesti proovimine",
+    "retrying": "Uuesti proovimine",
+    "save": "Salvesta",
+    "selected": "Valitud",
+    "send": "Saada",
+    "settings": "Keskkonnad",
+    "skip": "Jäta vahele",
+    "skipForNow": "Jäta praegu vahele",
+    "skipTutorial": "Vahele jäta õpetus",
+    "sos": "SOS",
+    "unknown": "Teadmata",
+    "user": "VeryLoving kasutaja",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Keel",
+    "subtitle": "Vali rakenduses kasutatav keel.",
+    "system": "Süsteemi vaikimisi",
+    "search": "Otsingukeeled",
+    "noResults": "Ükski keel ei vasta sinu otsingule.",
+    "english": "Inglise keel",
+    "spanish": "Hispaania keel",
+    "french": "Prantsuse keel",
+    "chineseSimplified": "Hiina keel (lihtsustatud)"
+  },
+  "phone": {
+    "label": "Telefoninumber",
+    "placeholder": "Telefoninumber",
+    "selectCountry": "Valitud riik või piirkond",
+    "searchCountry": "Otsi riik, kood või valimisprefiks",
+    "noCountries": "Ükski riik ei vasta sinu otsingule.",
+    "countryButton": "Muuda riiki, praegu %{country} pluss %{callingCode}",
+    "inputAccessibility": "Telefoninumber %{country}",
+    "required": "Sisesta telefoninumber.",
+    "tooShort": "See telefoninumber on liiga lühike.",
+    "tooLong": "See telefoninumber on liiga pikk.",
+    "invalid": "Sisesta valitud riigi kehtiv telefoninumber.",
+    "valid": "Kehtiv rahvusvaheline telefoninumber"
+  },
+  "auth": {
+    "onboardingTagline": "Isiklik turvakaaslane hetkedeks \"Mul on kõik korras\" ja \"Mul on abi vaja\" vahel.",
+    "createAccount": "Loo konto",
+    "continueOnboarding": "Jätka sisseelamist",
+    "createSubtitle": "Vali sisselogimise meetod, et kaitsta oma ohutusgraafikut.",
+    "phoneVerification": "Telefonikinnitus",
+    "sendCode": "Saada kood",
+    "sendingCode": "Saadan koodi...",
+    "verifyCode": "Kontrolli koodi",
+    "sentTo": "Saadetud %{phone}",
+    "yourPhone": "Sinu telefon",
+    "verificationCode": "Verifitseerimiskood",
+    "verify": "Kontrolli",
+    "verifying": "Kontrollin...",
+    "invalidCode": "Sisesta kinnituskood.",
+    "signInFailedTitle": "Sisselogimine katkestatud",
+    "signInFailedMessage": "Me ei saanud sisselogimist lõpule viia. Kontrolli oma ühendust ja proovi uuesti.",
+    "googleUnavailableTitle": "Google Sisselogimine pole saadaval",
+    "googleUnavailableMessage": "Kasutades kohalikku arendussessiooni. Native Google Sign-In töötab arendusversioonis.",
+    "northStarTitle": "NorthStar ehted",
+    "northStarSubtitle": "Ühenda nüüd või jätka ja lisa hiljem.",
+    "northStarBody": "VL01 kantav seade võib käivitada ohutusvoo koputuste ja pikkade vajutuste abil.",
+    "setupJewelry": "Paigalda ehted",
+    "meetCapybear": "Tutvu Capybear",
+    "meetCapybearSubtitle": "Sinu õrn turvakaaslane kaardil ja kõnedes.",
+    "capybearBody": "Capybear saab aidata kodurežiimi, valvuri režiimi, hädaolukorra režiimi, vabanduskõnede ja häältoega.",
+    "chooseVoice": "Vali hääl",
+    "capybearReminder": "Capybear meeldetuletus",
+    "remindersReady": "Õrnad meeldetuletused on valmis."
+  },
+  "permissions": {
+    "locationTitle": "Asukoha ohutus",
+    "locationSubtitle": "Kasutatakse kaardi, ohtlike tsoonide, turvalise saabumise ja SOS konteksti jaoks.",
+    "locationBody": "VeryLoving küsib asukohta, et eestkostjad mõistaksid, kus abi võib vaja minna. Seda saad hiljem Seadetes muuta.",
+    "allowLocation": "Luba asukoht",
+    "notificationsTitle": "Ohutushoiatused",
+    "notificationsSubtitle": "Teavitused toetavad check-in'e ja hädaolukorra juhtumeid.",
+    "notificationsBody": "Me kasutame teavitusi ainult ohutusülesannete, hädaolukorra uuenduste ja meeldetuletuste jaoks, mida sa lubad.",
+    "enableNotifications": "Luba teavitused",
+    "locationRationaleTitle": "Asukoht hoiab ohutuskonteksti täpsena",
+    "locationRationaleMessage": "VeryLoving kasutab sinu asukohta ohutuskaardi, ohtlike tsoonide, kiire jagamise ja SOS konteksti jaoks. Seda saad hiljem Seadetes muuta.",
+    "notificationsRationaleTitle": "Ohutusteavitused vajavad teavitusi",
+    "notificationsRationaleMessage": "VeryLoving saadab sisse registreerimise meeldetuletusi, hädaolukorra uuendusi ja ohutusteateid, mida sa lubad. Me ei kasuta reklaamide jaoks teavitusi.",
+    "microphoneRationaleTitle": "Mikrofon toidab ohutuskõnesid",
+    "microphoneRationaleMessage": "VeryLoving kasutab mikrofoni ainult siis, kui alustad AI kaaslase või turvakõnega.",
+    "bluetoothRationaleTitle": "Bluetooth ühendab sinu kantava seadme",
+    "bluetoothRationaleMessage": "VeryLoving kasutab Bluetooth NorthStar ehetega ühendamiseks, ühenduse oleku lugemiseks ja kantava seadme ohutusvoogude käivitamiseks.",
+    "cameraRationaleTitle": "Kaamera on valikuline",
+    "cameraRationaleMessage": "VeryLoving kasutab kaamerat ainult siis, kui otsustad teha profiilifoto või jagada turvapilti."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving hoiab selle voolu kättesaadavana seadetest ja armatuurlaualt.",
+    "chooseVoiceTitle": "Vali oma hääl",
+    "chooseVoiceSubtitle": "Vali kaaslase hääl, mis tundub kõige turvalisem kuulda.",
+    "homeTitle": "Kodurežiim",
+    "homeSubtitle": "Vaikne jälgimine igapäevase ohutuse tagamiseks.",
+    "guardianTitle": "Guardian-režiim",
+    "guardianSubtitle": "Jaga konteksti usaldusväärsete inimestega.",
+    "emergencyTitle": "Hädaolukorra režiim",
+    "emergencySubtitle": "Viis puudutust võib eskaleeruda SOS ja valvurite hoiatusteks.",
+    "excuseTitle": "Vabandus",
+    "excuseSubtitle": "Loo väärikas põhjus ebamugavast olukorrast lahkumiseks.",
+    "safetyCallTitle": "Ohutuskõne",
+    "safetyCallSubtitle": "Alusta reaalajas kaaslase kõnet, kui vajad tuge.",
+    "practiceTitle": "Harjutusstseen",
+    "practiceSubtitle": "Proovi ohutusvooge madalrõhu demomasinas."
+  },
+  "jewelry": {
+    "pairTitle": "Pane NorthStar",
+    "pairSubtitle": "Hoia ehteid lähedal, kui skaneerid.",
+    "scan": "Seadmete skaneerimine",
+    "scanning": "Skaneerin lähedal...",
+    "noDevices": "Läheduses pole veel NorthStar seadet leitud.",
+    "scanStartFailed": "Bluetooth skaneerimine ei saanud alata. Palun proovi uuesti.",
+    "scanFailed": "Me ei leidnud lähedal ehteid. Kontrolli Bluetooth, hoia NorthStar lähedal ja proovi uuesti.",
+    "scanAccessFailed": "Bluetooth skaneerimine ei saanud alata. Kontrolli Bluetooth ligipääsu ja proovi uuesti.",
+    "permissionDenied": "Ligipääs lähedal olevatele seadmetele on välja lülitatud. Luba Bluetooth ligipääs seadetes ja proovi uuesti.",
+    "connectTimeout": "NorthStar võttis ühenduse loomiseks liiga kaua aega. Liiguta lähemale ja proovi uuesti.",
+    "connectFailed": "Me ei suutnud NorthStar-ga ühendust saada. Kontrolli, et see on laetud ja lähedal, siis proovi uuesti.",
+    "emptyTitle": "Läheduses pole veel ühtegi seadet",
+    "emptyMessage": "Hoia NorthStar laetuna ja telefoni lähedal, siis skaneeri uuesti.",
+    "searchingMessage": "Otsin lähedal NorthStar seadmeid..."
+  },
+  "home": {
+    "subtitle": "Ohutuse kaaslase armatuurlaud",
+    "modeStatus": "%{mode} REŽIIM",
+    "companionReady": "%{name} on valmis",
+    "readyBody": "Hääl, kaart, ehted ja valvurid on ühe puudutuse kaugusel.",
+    "safetyCall": "Ohutuskõne",
+    "northStarDevice": "NorthStar seade",
+    "deviceConnected": "%{name} ühendatud · %{battery}%",
+    "noDevice": "Seadet pole ühendatud",
+    "manageDevice": "Halda seadet",
+    "mode": "Režiim",
+    "modes": {
+      "home": "Kodu",
+      "guardian": "Valvur",
+      "emergency": "Erakorralise"
+    }
+  },
+  "map": {
+    "finding": "Asukoha leidmine...",
+    "retry": "Uuesti proovimise koht",
+    "title": "Ohutuskaart",
+    "previewSubtitle": "Expo Go eelvaade; Mapbox renderdatakse arendusversioonis.",
+    "preview": "Kaardi eelvaade",
+    "risk": "Risk: %{risk} · Raadius %{radius}m",
+    "refresh": "Värskenda asukoht",
+    "refreshing": "Asukoha leidmine...",
+    "updateFailed": "Me ei saanud teie asukohta uuendada. Palun proovi uuesti.",
+    "notRequested": "Asukoha ligipääsu ei taotletud. Hiljem saad selle sisse lülitada seadetest.",
+    "permissionOff": "Asukoha ligipääs on välja lülitatud. Luba see seadetes, et turvakaart keskenduks endale.",
+    "timeout": "Sinu asukoht võtab oodatust kauem aega. Liigu kuhugi, kus on selgem signaal, ja proovi uuesti.",
+    "savedTitle": "Päästetud kohad",
+    "savedEmptyTitle": "Salvestatud kohti pole veel",
+    "savedEmptyMessage": "Usaldusväärsed kohad, mida salvestad, ilmuvad siia kiireks ligipääsuks.",
+    "zones": {
+      "crowding": "Hilisõhtune rahvamass",
+      "lowLighting": "Madala valgusega ala"
+    },
+    "risks": {
+      "low": "madal",
+      "medium": "Keskkond",
+      "high": "kõrge"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ühendamine...",
+    "offlineCompanion": "Võrguühenduseta kaaslane",
+    "offline": "Võrguühenduseta",
+    "connected": "Ühendatud",
+    "interrupted": "Ühendus katkestatud",
+    "ready": "Valmis ühendamiseks",
+    "connectingSecurely": "Ühendus kindlalt oma häälekaaslasega...",
+    "messagesWaiting": {
+      "one": "%{count} sõnum, mis ootab saatmist",
+      "other": "%{count} sõnumid, mis ootavad saatmist"
+    },
+    "useOffline": "Kasuta võrguühenduseta kaaslast",
+    "reconnect": "Ühendu uuesti häälega AI",
+    "typePlaceholder": "Kui rääkimine on keeruline, tüüp",
+    "endCall": "Lõppkõne",
+    "startCall": "Alusta kõnet",
+    "emptyTitle": "Teie vestlus algab siit",
+    "emptyMessage": "Alusta kõnet või kirjuta sõnum, kui oled valmis."
+  },
+  "chat": {
+    "waiting": "Ootan ühendust",
+    "notSent": "Sõnum ei saadetud.",
+    "retryAccessibility": "Proovi uuesti sõnumi saatmist"
+  },
+  "history": {
+    "clearTitle": "Selge vestluste ajalugu?",
+    "clearMessage": "See eemaldab sellest seadmest salvestatud AI kaassõnumid.",
+    "deleteTitle": "Kustutada see vestlus?",
+    "cannotUndo": "Seda ei saa tagasi pöörata.",
+    "title": "Vestluste ajalugu",
+    "subtitle": "AI sellel seadmel salvestatud kaassõnumid.",
+    "empty": "Vestlusi pole veel salvestatud.",
+    "emptyTitle": "Vestlusi veel pole",
+    "emptyMessage": "Sinu AI kaaslaste vestlused ilmuvad siia pärast esimest kõnet.",
+    "loadFailed": "Me ei saanud vestlusajalugu laadida. Palun proovi uuesti.",
+    "clearFailed": "Me ei suutnud vestluste ajalugu kustutada. Palun proovi uuesti.",
+    "deleteFailed": "Me ei saanud seda vestlust kustutada. Palun proovi uuesti.",
+    "aiCompanion": "AI kaaslane",
+    "resume": "CV",
+    "clearAll": "Puhasta kogu ajalugu",
+    "roles": {
+      "assistant": "Kaaslane",
+      "user": "sina"
+    }
+  },
+  "voices": {
+    "title": "Minu turvakõne hääled",
+    "subtitle": "Vali kaashääl, mis tundub õige kuulda.",
+    "test": "Testhääl",
+    "stop": "Stop-sample",
+    "selectionFailedTitle": "Valik ei salvestatud",
+    "selectionFailedMessage": "Palun proovi uuesti häält valida.",
+    "sampleFailedTitle": "Näidis puudub",
+    "sampleFailedMessage": "Seda häälenäidist ei saanud mängida. Palun proovi uuesti.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Pehme, rahulik, maandav"
+      },
+      "bestie": {
+        "name": "Parim sõber",
+        "description": "Helge, rahustav, vestluslik"
+      },
+      "boyfriend": {
+        "name": "Poiss-sõber",
+        "description": "stabiilne, hell, kohal"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "enesekindel, kaitsev, motiveeriv"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Hääl",
+    "changeVoice": "Muuda häält",
+    "showCompanion": "Saate kaaslane",
+    "offlineMode": "Võrguühenduseta režiim",
+    "offlineModeSubtitle": "Kasutage kaasas olevaid vastuseid siis, kui võrk või Hume mandaadid pole saadaval.",
+    "privacyData": "Privaatsus ja andmed",
+    "privacyBody": "Ekspordi või kustuta sellel seadmel salvestatud kohalikud andmed.",
+    "preparingExport": "Ekspordi ettevalmistamine...",
+    "exportData": "Ekspordi minu andmed",
+    "privacyPolicy": "Privaatsuspoliitika",
+    "deleting": "Kustutan...",
+    "deleteAll": "Kustuta kõik kohalikud andmed",
+    "deviceManagement": "Seadmehaldus",
+    "emergencyContacts": "Hädaolukorra kontaktid",
+    "signOut": "Logi välja",
+    "exportFailedTitle": "Eksport ebaõnnestus",
+    "exportFailedMessage": "Praegu ei saa oma andmeid eksportida.",
+    "deleteConfirmTitle": "Kustutada kõik kohalikud andmed?",
+    "deleteConfirmMessage": "See eemaldab sinu profiili, seaded, hädaabikontaktid, vestluste ajaloo, lubade meeldetuletused ja kohaliku autentimise sessiooni sellest seadmest.",
+    "deleteEverything": "Kustuta kõik",
+    "deleteFailedTitle": "Kustutamine ebaõnnestus",
+    "deleteFailedMessage": "Hetkel ei saa kohalikke andmeid kustutada.",
+    "linkFailed": "Ei suuda linki avada",
+    "sections": {
+      "language": "Keel",
+      "languageSubtitle": "Liidese ja süsteemi õiguste keel",
+      "companion": "Kaaslane",
+      "companionSubtitle": "Hääl- ja võrguühenduseta eelistused",
+      "deviceSafety": "Seadmed ja ohutus",
+      "deviceSafetySubtitle": "NorthStar, eestkostjad ja hädaabikontaktid",
+      "privacy": "Privaatsus ja andmed",
+      "privacySubtitle": "Ajalugu, eksport, kustutamine ja poliitika",
+      "account": "Konto",
+      "accountSubtitle": "Sinu praegune VeryLoving sessioon"
+    },
+    "updateFailedTitle": "Seade pole salvestatud",
+    "updateFailedMessage": "Me ei saanud seda eelistust päästa. Palun proovi uuesti.",
+    "signOutFailedTitle": "Ei saanud välja logida",
+    "signOutFailedMessage": "Sinu sessioon on endiselt aktiivne. Palun proovi uuesti."
+  },
+  "contacts": {
+    "title": "Hädaolukorra kontaktid",
+    "subtitle": "Usaldusväärsed inimesed on ohutuse ajal kättesaadavad.",
+    "addTitle": "Lisa hädaolukorra kontakt",
+    "name": "Nimi",
+    "namePlaceholder": "Kontaktnimi",
+    "phone": "Kontakttelefon",
+    "add": "Lisa kontakt",
+    "empty": "Hädaolukorra kontakte veel ei lisatud.",
+    "emptyTitle": "Hädaolukorra kontakte veel pole.",
+    "emptyMessage": "Lisa keegi, keda usaldad, et ta oleks valmis, kui turvavoog neid vajab.",
+    "removeTitle": "%{name} eemaldada?",
+    "removeMessage": "See inimene ei ilmu enam sinu hädaolukorra voos.",
+    "nameRequired": "Sisesta kontakti nimi.",
+    "saveFailedTitle": "Kontakt pole salvestatud",
+    "saveFailedMessage": "Me ei suutnud seda kontakti päästa. Kontrolli detaile ja proovi uuesti.",
+    "removeFailedTitle": "Kontakt ei eemaldatud",
+    "removeFailedMessage": "Me ei saanud seda kontakti eemaldada. Palun proovi uuesti.",
+    "callAccessibility": "Helista %{name}",
+    "removeAccessibility": "Eemalda %{name}"
+  },
+  "device": {
+    "title": "Seadmehaldus",
+    "subtitle": "Halda oma NorthStar seadet.",
+    "connected": "Ühendatud · %{battery}% aku",
+    "none": "Ühtegi seadet pole ühendatud",
+    "disconnect": "Ühendusseade",
+    "connect": "Ühenda seade"
+  },
+  "friends": {
+    "title": "Sõbrad",
+    "subtitle": "Eestkostjad, taotlused ja hädaolukorra graafik.",
+    "addDemo": "Lisa demo sõber",
+    "emptyTitle": "Sinu turvaring on tühi",
+    "emptyMessage": "Usaldusväärsed sõbrad ja eestkostjad ilmuvad siia, kui nad on lisatud.",
+    "newGuardian": "Uus Valvur",
+    "statuses": {
+      "guardian": "Valvur",
+      "pending": "Ootel"
+    }
+  },
+  "emergency": {
+    "title": "Hädaolukorra SOS",
+    "subtitle": "Eskaleeri olukorda ainult siis, kui vajad kohest tuge.",
+    "body": "See teavitab teie ohutusvoogu ja valmistab hädaolukorra kontaktid.",
+    "activate": "Aktiveeri SOS",
+    "callCompanion": "Kutsu AI kaaslane",
+    "notificationTitle": "SOS aktiveeritud",
+    "notificationBody": "Sinu hädaolukorra vool on valmis.",
+    "readyTitle": "SOS valmis",
+    "callContact": "Helistada %{name}?",
+    "addContact": "Lisa hädaolukorra kontakt seadetesse.",
+    "quickShareTitle": "Kiire jagamine",
+    "quickShareMessage": "Asukohajagamise stub on valmis. Ühenda backendi jagamise lõpp-punkt, et saata reaalajas lingid."
+  },
+  "quickShare": {
+    "title": "Kiire jagamine",
+    "subtitle": "Asukoha jagamise voog on valmis."
+  },
+  "capybearTap": {
+    "title": "Capybear kraan",
+    "subtitle": "Topeltkoputa oma NorthStar, et kukutada ohutusapelsin.",
+    "body": "Žestimarsruut on valmis BLE sündmuste juhtmestamiseks."
+  },
+  "debug": {
+    "title": "VeryLoving silumisleht",
+    "subtitle": "Ainult arendusele suunatud marsruut."
+  },
+  "errors": {
+    "voiceOffline": "Sa tundud võrguühenduseta. Sinu sõnum saadetakse, kui ühendud uuesti.",
+    "voiceQueued": "Sõnum salvestatud. See saadetakse, kui häälkaaslane uuesti ühendub.",
+    "voiceRetrying": "Püüad su sõnumit uuesti saata...",
+    "voiceConnecting": "Ühendus kindlalt oma häälekaaslasega...",
+    "microphone": "Mikrofoni ligipääs on vajalik häälkõnede jaoks. Saad selle sisse lülitada seadetes või kirjutada sõnumi.",
+    "billing": "Veebipõhine häälkaaslane on ajutiselt kättesaamatu. Võid jätkata offline-kaaslasega.",
+    "authentication": "Häälkaaslane ei suutnud seda sessiooni kinnitada. Logi uuesti sisse või kasuta praegu võrguühenduseta kaaslast.",
+    "timeout": "Häälekaaslane võttis vastamiseks liiga kaua aega. Kontrolli oma ühendust ja proovi uuesti.",
+    "network": "Me ei jõudnud häälekaaslaseni. Kontrolli oma ühendust, proovi uuesti või jätka võrguühenduseta.",
+    "genericVoice": "Midagi katkestas häälkõne. Proovi uuesti või jätka võrguühenduseta kaaslasega."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving andmete eksport"
+  },
+  "notifications": {
+    "channelName": "Ohutushoiatused"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving vajab mikrofoni ligipääsu turvalisuse ja AI kaaslaste kõnede jaoks.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving kasutab sinu asukohta ohutuskaardi ja lähedal asuvate turvafunktsioonide jaoks.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving kasutab sinu asukohta turvalise saabumise ja hädaolukorra voogude toetamiseks.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving kasutab turvalise saabumise ja lähedal asuvate ohtlike tsoonide jaoks tausta asukohta.",
+      "NSCameraUsageDescription": "VeryLoving kasutab kaamerat ainult siis, kui valid profiili või ohutusfoto.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving kasutab sinu fototeeki ainult siis, kui valid profiili või turvapildi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving kasutab Bluetooth, et ühendada sinu NorthStar ohutusehetega.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving kasutab Bluetooth, et ühendada sinu NorthStar ohutusehetega."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

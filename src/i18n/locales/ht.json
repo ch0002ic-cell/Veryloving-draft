@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ajoute",
+    "apple": "Apple",
+    "back": "Do",
+    "call": "Rele",
+    "cancel": "Anile",
+    "clear": "Klè",
+    "close": "Fèmen",
+    "connect": "Konekte",
+    "connecting": "Konekte...",
+    "continue": "Kontinye",
+    "delete": "Efase",
+    "finish": "Fini",
+    "friends": "Zanmi yo",
+    "google": "Google",
+    "home": "Kay",
+    "loading": "Chaje ...",
+    "map": "Kat jeyografik",
+    "notNow": "Pa kounye-a",
+    "remove": "Retire",
+    "retry": "Reeseye",
+    "retrying": "Reeseye",
+    "save": "Sove",
+    "selected": "Chwazi",
+    "send": "Voye",
+    "settings": "Anviwònman yo",
+    "skip": "Sote",
+    "skipForNow": "Sote pou kounye a",
+    "skipTutorial": "Sote leson patikilye",
+    "sos": "SOS",
+    "unknown": "Enkoni",
+    "user": "VeryLoving itilizatè",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lang",
+    "subtitle": "Chwazi lang ki itilize nan tout app a.",
+    "system": "Sistèm default",
+    "search": "Rechèch lang yo",
+    "noResults": "Pa gen lang ki matche ak rechèch ou an.",
+    "english": "Angle",
+    "spanish": "Panyòl",
+    "french": "Franse",
+    "chineseSimplified": "Chinwa (Senplifye)"
+  },
+  "phone": {
+    "label": "Nimewo telefòn",
+    "placeholder": "Nimewo telefòn",
+    "selectCountry": "Chwazi peyi oswa rejyon",
+    "searchCountry": "Rechèch peyi, kòd oswa konpoze prefiks",
+    "noCountries": "Pa gen peyi matche ak rechèch ou an",
+    "countryButton": "Chanje peyi, kounye a %{country} plis %{callingCode}",
+    "inputAccessibility": "Nimewo telefòn pou %{country}",
+    "required": "Antre yon nimewo telefòn",
+    "tooShort": "Nimewo telefòn sa a twò kout",
+    "tooLong": "Nimewo telefòn sa a twò lontan",
+    "invalid": "Antre yon nimewo telefòn valab pou peyi a chwazi.",
+    "valid": "Valid nimewo telefòn entènasyonal"
+  },
+  "auth": {
+    "onboardingTagline": "Yon konpayon sekirite pèsonèl pou moman sa yo ant \"mwen byen\" ak \"mwen bezwen èd\"",
+    "createAccount": "Kreye kont",
+    "continueOnboarding": "Kontinye ak bor",
+    "createSubtitle": "Chwazi yon metòd siyen pou pwoteje graf sekirite ou.",
+    "phoneVerification": "Verifikasyon telefòn",
+    "sendCode": "Voye kòd",
+    "sendingCode": "Voye kòd...",
+    "verifyCode": "Verifye kòd",
+    "sentTo": "Voye bay %{phone}",
+    "yourPhone": "Telefòn ou",
+    "verificationCode": "Kòd verifikasyon an",
+    "verify": "Verifye",
+    "verifying": "Verifye...",
+    "invalidCode": "Antre kòd verifikasyon an.",
+    "signInFailedTitle": "Siyen nan entèripsyon",
+    "signInFailedMessage": "Nou pa t 'kapab ranpli siyen an Tcheke koneksyon ou epi eseye ankò.",
+    "googleUnavailableTitle": "Google Siyen an pa disponib",
+    "googleUnavailableMessage": "Sèvi ak yon sesyon devlopman lokal Natif Google Siyen nan travay nan yon bati devlopman.",
+    "northStarTitle": "NorthStar bijou",
+    "northStarSubtitle": "Pè kounye a oswa kontinye epi ajoute li pita.",
+    "northStarBody": "Wearable VL01 ka deklanche koule sekirite ak tiyo ak jès laprès long.",
+    "setupJewelry": "Mete kanpe bijou",
+    "meetCapybear": "Rankontre Capybear",
+    "meetCapybearSubtitle": "Konpayon sekirite dousman ou sou kat jeyografik la ak nan apèl",
+    "capybearBody": "Capybear ka ede ak mòd kay, mòd gadyen, mòd ijans, apèl eskiz ak sipò vwa.",
+    "chooseVoice": "Chwazi yon vwa",
+    "capybearReminder": "Capybear rapèl",
+    "remindersReady": "Rapèl dou pare"
+  },
+  "permissions": {
+    "locationTitle": "Sekirite kote yo ye",
+    "locationSubtitle": "Itilize pou kat jeyografik la, zòn danje, arive san danje ak SOS kontèks.",
+    "locationBody": "VeryLoving mande pou kote pou gadyen ka konprann ki kote èd ka bezwen. Ou ka chanje sa a pita nan Anviwònman.",
+    "allowLocation": "Pèmèt kote",
+    "notificationsTitle": "Alèt sekirite",
+    "notificationsSubtitle": "Notifikasyon sipòte chèk-an ak evènman ijans.",
+    "notificationsBody": "Nou sèlman itilize notifikasyon pou èd memwa sekirite, dènye ijans ak rapèl ou pèmèt.",
+    "enableNotifications": "Pèmèt notifikasyon yo",
+    "locationRationaleTitle": "Kote kenbe kontèks sekirite egzat",
+    "locationRationaleMessage": "VeryLoving itilize kote ou ye pou kat sekirite a, zòn danje, pataje rapid ak SOS kontèks la. Ou ka chanje sa a pita nan Anviwònman.",
+    "notificationsRationaleTitle": "Alèt sekirite bezwen notifikasyon",
+    "notificationsRationaleMessage": "VeryLoving voye rapèl chèk-an, dènye ijans ak èd memwa sekirite ou pèmèt. Nou pa sèvi ak notifikasyon pou anons",
+    "microphoneRationaleTitle": "Mikwofòn pouvwa apèl sekirite",
+    "microphoneRationaleMessage": "VeryLoving itilize mikwofòn ou sèlman lè ou kòmanse yon konpayon AI oswa apèl sekirite.",
+    "bluetoothRationaleTitle": "Bluetooth konekte wearable ou",
+    "bluetoothRationaleMessage": "VeryLoving sèvi ak Bluetooth yo pè ak NorthStar bijou, li estati koneksyon ak deklanche koule sekirite soti nan wearable la.",
+    "cameraRationaleTitle": "Kamera se si ou vle",
+    "cameraRationaleMessage": "VeryLoving itilize kamera a sèlman lè ou chwazi pou pran yon foto pwofil oswa pataje yon imaj sekirite."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving kenbe koule sa a disponib nan Anviwònman ak tablodbò a.",
+    "chooseVoiceTitle": "Chwazi vwa ou",
+    "chooseVoiceSubtitle": "Chwazi vwa konpayon ki pi an sekirite pou tande.",
+    "homeTitle": "Kay mòd",
+    "homeSubtitle": "Siveyans trankil pou sekirite chak jou",
+    "guardianTitle": "Gadyen mòd",
+    "guardianSubtitle": "Pataje kontèks ak moun ki fè konfyans",
+    "emergencyTitle": "Mòd ijans",
+    "emergencySubtitle": "Senk tiyo ka ogmante nan SOS ak alèt gadyen.",
+    "excuseTitle": "Eskize apèl",
+    "excuseSubtitle": "Kreye yon rezon grasyeuz pou kite yon sitiyasyon alèz.",
+    "safetyCallTitle": "Rele sekirite",
+    "safetyCallSubtitle": "Kòmanse yon apèl konpayon an tan reyèl lè ou bezwen sipò.",
+    "practiceTitle": "Pratike sèn",
+    "practiceSubtitle": "Eseye koule yo sekirite nan yon Demo presyon ki ba."
+  },
+  "jewelry": {
+    "pairTitle": "Pè NorthStar",
+    "pairSubtitle": "Kenbe bijou yo tou pre pandan y ap eskane.",
+    "scan": "Eskane pou aparèy",
+    "scanning": "Eskane tou pre...",
+    "noDevices": "Pa gen aparèy NorthStar ki tou pre yo te jwenn ankò.",
+    "scanStartFailed": "Bluetooth l' pa t 'kapab kòmanse Tanpri eseye ankò.",
+    "scanFailed": "Nou pa t 'kapab jwenn bijou ki tou pre. Tcheke Bluetooth, kenbe NorthStar fèmen epi eseye ankò.",
+    "scanAccessFailed": "Bluetooth l' pa t 'kapab kòmanse Tcheke Bluetooth aksè epi eseye ankò.",
+    "permissionDenied": "Aksè aparèy ki tou pre se koupe Pèmèt Bluetooth aksè nan Anviwònman, Lè sa a, eseye ankò.",
+    "connectTimeout": "NorthStar te pran twò lontan yo konekte. Deplase li pi pre epi eseye ankò.",
+    "connectFailed": "Nou pa t 'kapab konekte ak NorthStar. Tcheke ke li se chaje ak tou pre, Lè sa a, eseye ankò.",
+    "emptyTitle": "Pa gen aparèy ki tou pre ankò",
+    "emptyMessage": "Kenbe NorthStar chaje ak tou pre telefòn sa a, Lè sa a, eskane ankò.",
+    "searchingMessage": "Kap chèche NorthStar aparèy ki tou pre..."
+  },
+  "home": {
+    "subtitle": "Sekirite konpayon tablodbò",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} pare",
+    "readyBody": "Vwa, kat, bijou, ak gadyen yo se yon sèl tiyo lwen.",
+    "safetyCall": "Rele sekirite",
+    "northStarDevice": "NorthStar aparèy",
+    "deviceConnected": "%{name} konekte · %{battery}%",
+    "noDevice": "Pa gen aparèy ki konekte",
+    "manageDevice": "Jere aparèy",
+    "mode": "Mòd",
+    "modes": {
+      "home": "Kay",
+      "guardian": "Gadyen legal",
+      "emergency": "Ijans"
+    }
+  },
+  "map": {
+    "finding": "Jwenn kote ou ye ...",
+    "retry": "Reeseye kote",
+    "title": "Kat Sekirite",
+    "previewSubtitle": "Expo Go preview; Mapbox rann nan yon bati devlopman",
+    "preview": "Preview kat jeyografik",
+    "risk": "Risk: %{risk} · Reyon %{radius}m",
+    "refresh": "Rafrechi kote",
+    "refreshing": "Jwenn kote...",
+    "updateFailed": "Nou pa t 'kapab mete ajou kote ou ye. Tanpri eseye ankò.",
+    "notRequested": "Aksè kote yo pa te mande Ou ka pèmèt li pita nan Anviwònman.",
+    "permissionOff": "Aksè kote se koupe Pèmèt li nan Anviwònman sant kat jeyografik sekirite a sou ou.",
+    "timeout": "Kote ou pran pi lontan pase espere Deplase yon kote ak yon siyal pi klè epi eseye ankò.",
+    "savedTitle": "Kote sove",
+    "savedEmptyTitle": "Pa gen kote sove ankò",
+    "savedEmptyMessage": "Kote ou fè konfyans ou sove ap parèt isit la pou aksè rapid.",
+    "zones": {
+      "crowding": "Anreta lannwit foul",
+      "lowLighting": "Ba zòn ekleraj"
+    },
+    "risks": {
+      "low": "ba",
+      "medium": "mwayen",
+      "high": "segondè"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Konekte...",
+    "offlineCompanion": "Offline konpayon",
+    "offline": "Offline",
+    "connected": "Konekte",
+    "interrupted": "Koneksyon koupe",
+    "ready": "Pare pou konekte",
+    "connectingSecurely": "Konekte byen nan konpayon vwa ou ...",
+    "messagesWaiting": {
+      "one": "%{count} mesaj ap tann yo voye",
+      "other": "%{count} mesaj ap tann yo voye"
+    },
+    "useOffline": "Sèvi ak konpayon offline",
+    "reconnect": "Rekonekte nan vwa AI",
+    "typePlaceholder": "Kalite si pale difisil",
+    "endCall": "Fen apèl",
+    "startCall": "Kòmanse apèl",
+    "emptyTitle": "Konvèsasyon ou kòmanse isit la",
+    "emptyMessage": "Kòmanse apèl la oswa tape yon mesaj lè ou pare."
+  },
+  "chat": {
+    "waiting": "Ap tann pou koneksyon",
+    "notSent": "Mesaj pa voye.",
+    "retryAccessibility": "Reeseye voye mesaj"
+  },
+  "history": {
+    "clearTitle": "Klè istwa konvèsasyon?",
+    "clearMessage": "Sa retire mesaj konpayon AI sove nan aparèy sa a.",
+    "deleteTitle": "Efase konvèsasyon sa a?",
+    "cannotUndo": "Sa a pa ka defèt.",
+    "title": "Istwa konvèsasyon",
+    "subtitle": "AI mesaj konpayon sove sou aparèy sa a.",
+    "empty": "Pa gen okenn konvèsasyon sove ankò.",
+    "emptyTitle": "Pa gen konvèsasyon ankò",
+    "emptyMessage": "Ou AI konvèsasyon konpayon ap parèt isit la apre premye apèl ou.",
+    "loadFailed": "Nou pa t 'kapab chaje istwa konvèsasyon Tanpri eseye ankò.",
+    "clearFailed": "Nou pa t 'kapab klè istwa konvèsasyon Tanpri eseye ankò.",
+    "deleteFailed": "Nou pa t kapab efase konvèsasyon sa a. Tanpri eseye ankò.",
+    "aiCompanion": "AI konpayon",
+    "resume": "Rezime",
+    "clearAll": "Netwaye tout istwa",
+    "roles": {
+      "assistant": "konpayon",
+      "user": "ou"
+    }
+  },
+  "voices": {
+    "title": "Vwa apèl sekirite mwen an",
+    "subtitle": "Chwazi vwa konpayon ki santi l bon tande.",
+    "test": "Tès vwa",
+    "stop": "Sispann echantiyon",
+    "selectionFailedTitle": "Seleksyon pa sove",
+    "selectionFailedMessage": "Tanpri, eseye chwazi vwa a ankò.",
+    "sampleFailedTitle": "Egzanp pa disponib",
+    "sampleFailedMessage": "Echantiyon vwa sa a pa t 'kapab jwe. Tanpri eseye ankò.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mou, kalm, tè"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "klere, rasire konvèsasyon"
+      },
+      "boyfriend": {
+        "name": "Mennaj",
+        "description": "fiks, tandr, prezan"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "konfyans, pwoteksyon, motive"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Vwa",
+    "changeVoice": "Chanje vwa",
+    "showCompanion": "Montre konpayon",
+    "offlineMode": "Offline mòd",
+    "offlineModeSubtitle": "Itilize repons konpayon pake lè rezo a oswa kalifikasyon Hume yo pa disponib.",
+    "privacyData": "Enfòmasyon prive & done",
+    "privacyBody": "Ekspòtasyon oswa efase done lokal yo ki estoke sou aparèy sa a.",
+    "preparingExport": "Prepare ekspòtasyon...",
+    "exportData": "Ekspòte done mwen yo",
+    "privacyPolicy": "Règleman sou enfòmasyon prive",
+    "deleting": "Efase ...",
+    "deleteAll": "Efase tout done lokal yo",
+    "deviceManagement": "Jesyon aparèy",
+    "emergencyContacts": "Kontak ijans",
+    "signOut": "Siyen soti",
+    "exportFailedTitle": "Ekspòtasyon echwe",
+    "exportFailedMessage": "Pa ka ekspòte done ou kounye a.",
+    "deleteConfirmTitle": "Efase tout done lokal yo?",
+    "deleteConfirmMessage": "Sa a retire pwofil ou, anviwònman, kontak ijans, istwa konvèsasyon, rapèl pèmisyon ak sesyon auth lokal soti nan aparèy sa a.",
+    "deleteEverything": "Efase tout bagay",
+    "deleteFailedTitle": "Efase echwe",
+    "deleteFailedMessage": "Pa kapab efase done lokal kounye a.",
+    "linkFailed": "Pa kapab louvri lyen",
+    "sections": {
+      "language": "Lang",
+      "languageSubtitle": "Entèfas ak sistèm pèmisyon lang",
+      "companion": "Konpayon",
+      "companionSubtitle": "Vwa ak offline preferans",
+      "deviceSafety": "Aparèy ak sekirite",
+      "deviceSafetySubtitle": "NorthStar, gadyen ak kontak ijans",
+      "privacy": "Konfidansyalite ak done",
+      "privacySubtitle": "Istwa, ekspòtasyon, efase ak politik",
+      "account": "Kont",
+      "accountSubtitle": "Sesyon VeryLoving ou kounye a"
+    },
+    "updateFailedTitle": "Anviwònman pa sove",
+    "updateFailedMessage": "Nou pa t 'kapab sove preferans sa a. Tanpri eseye ankò.",
+    "signOutFailedTitle": "Pa t 'kapab siyen soti",
+    "signOutFailedMessage": "Sesyon ou toujou aktif. Tanpri eseye ankò."
+  },
+  "contacts": {
+    "title": "Kontak ijans",
+    "subtitle": "Moun ki fè konfyans ki disponib pandan koule sekirite",
+    "addTitle": "Ajoute kontak ijans",
+    "name": "Fe-apel",
+    "namePlaceholder": "Non kontak",
+    "phone": "Nimewo telefòn kontak",
+    "add": "Ajoute kontak",
+    "empty": "Pa gen kontak ijans ajoute ankò.",
+    "emptyTitle": "Pa gen kontak ijans ankò",
+    "emptyMessage": "Ajoute yon moun ou fè konfyans pou yo pare lè yon koule sekirite bezwen yo.",
+    "removeTitle": "Retire %{name}?",
+    "removeMessage": "Moun sa a pap parèt nan koule ijans ou ankò.",
+    "nameRequired": "Antre non kontak la",
+    "saveFailedTitle": "Kontak pa sove",
+    "saveFailedMessage": "Nou pa t kapab sove kontak sa a. Tcheke detay yo epi eseye ankò.",
+    "removeFailedTitle": "Kontak pa retire",
+    "removeFailedMessage": "Nou pa t kapab retire kontak sa a. Tanpri eseye ankò.",
+    "callAccessibility": "Rele %{name}",
+    "removeAccessibility": "Retire %{name}"
+  },
+  "device": {
+    "title": "Jesyon aparèy",
+    "subtitle": "Jere aparèy NorthStar ou",
+    "connected": "Konekte · %{battery}% batri",
+    "none": "Pa gen aparèy ki konekte",
+    "disconnect": "Dekonekte aparèy",
+    "connect": "Konekte aparèy"
+  },
+  "friends": {
+    "title": "Zanmi yo",
+    "subtitle": "Gadyen, demann ak graf ijans",
+    "addDemo": "Ajoute zanmi Demo",
+    "emptyTitle": "Sèk sekirite ou vid",
+    "emptyMessage": "Zanmi ou fè konfyans ak gadyen yo ap parèt isit la yon fwa yo te ajoute.",
+    "newGuardian": "Nouvo gadyen legal",
+    "statuses": {
+      "guardian": "Gadyen legal",
+      "pending": "Annatant"
+    }
+  },
+  "emergency": {
+    "title": "Ijans SOS",
+    "subtitle": "Eskalye sèlman lè ou bezwen sipò imedyat.",
+    "body": "Sa a pral notifye koule sekirite ou ak prepare kontak ijans.",
+    "activate": "Aktive SOS",
+    "callCompanion": "Rele AI konpayon",
+    "notificationTitle": "SOS aktive",
+    "notificationBody": "Koule ijans ou pare.",
+    "readyTitle": "SOS pare",
+    "callContact": "Rele %{name}?",
+    "addContact": "Ajoute yon kontak ijans nan Anviwònman",
+    "quickShareTitle": "Pataje rapid",
+    "quickShareMessage": "Kote pataje souch se pare Konekte ekstremite pataje backend la voye lyen ap viv"
+  },
+  "quickShare": {
+    "title": "Pataje rapid",
+    "subtitle": "Kote pataje koule se pare"
+  },
+  "capybearTap": {
+    "title": "Capybear tiyo",
+    "subtitle": "Double tape NorthStar ou a lage yon zoranj sekirite.",
+    "body": "Jès wout se pare pou BLE evènman fil elektrik"
+  },
+  "debug": {
+    "title": "VeryLoving debug paj",
+    "subtitle": "Devlopman sèlman wout"
+  },
+  "errors": {
+    "voiceOffline": "Ou sanble offline. Mesaj ou a pral voye lè ou rekonekte.",
+    "voiceQueued": "Mesaj sove Li pral voye lè vwa konpayon an rekonekte.",
+    "voiceRetrying": "Eseye voye mesaj ou ankò ...",
+    "voiceConnecting": "Konekte byen nan konpayon vwa ou ...",
+    "microphone": "Aksè mikwofòn ki nesesè pou apèl vwa Ou ka pèmèt li nan Anviwònman, oswa tape yon mesaj olye.",
+    "billing": "Vwa konpayon sou entènèt la tanporèman pa disponib. Ou ka kontinye ak konpayon an offline",
+    "authentication": "Konpayon vwa a pa t 'kapab verifye sesyon sa a. Siyen nan ankò oswa sèvi ak konpayon an offline pou kounye a.",
+    "timeout": "Konpayon vwa a te pran twò lontan pou reponn. Tcheke koneksyon ou epi eseye ankò.",
+    "network": "Nou pa t kapab rive jwenn vwa konpayon an. Tcheke koneksyon ou, Lè sa a, eseye ankò oswa kontinye offline.",
+    "genericVoice": "Yon bagay entèwonp apèl la vwa Eseye ankò, oswa kontinye ak offline konpayon an."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving done ekspòtasyon"
+  },
+  "notifications": {
+    "channelName": "Alèt sekirite"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving bezwen aksè mikwofòn pou sekirite ak apèl konpayon AI",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving sèvi ak kote ou ye pou kat jeyografik la sekirite ak karakteristik sekirite ki tou pre.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving itilize kote ou ye pou sipòte arive san danje ak koule ijans.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving itilize kote background pou arive san danje ak karakteristik zòn danje ki tou pre.",
+      "NSCameraUsageDescription": "VeryLoving itilize kamera a sèlman lè ou chwazi pou pran yon pwofil oswa foto sekirite.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving itilize bibliyotèk foto ou sèlman lè ou chwazi yon pwofil oswa imaj sekirite.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

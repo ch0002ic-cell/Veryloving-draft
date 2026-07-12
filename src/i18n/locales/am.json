@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "አክል",
+    "apple": "Apple",
+    "back": "ወደኋላ",
+    "call": "ይደውሉ",
+    "cancel": "ተወው",
+    "clear": "አጽዳ",
+    "close": "ይዝጉ",
+    "connect": "ይገናኙ",
+    "connecting": "በመገናኘት ላይ ...",
+    "continue": "ቀጥል",
+    "delete": "ማጥፊያ",
+    "finish": "ጨርስ",
+    "friends": "ጓደኞች",
+    "google": "Google",
+    "home": "መግቢያ ገፅ",
+    "loading": "በመጫን ላይ ...",
+    "map": "ካርታ",
+    "notNow": "አሁን አይሆንም",
+    "remove": "አስወግድ",
+    "retry": "እንደገና ሞክር",
+    "retrying": "እንደገና መሞከር",
+    "save": "አስቀምጥ",
+    "selected": "ተመርጧል",
+    "send": "ላክ",
+    "settings": "ማሰናጃዎች",
+    "skip": "ዝለል",
+    "skipForNow": "ለአሁን ዘልለው ይሂዱ",
+    "skipTutorial": "አጋዥ ስልጠና ዝለል",
+    "sos": "SOS",
+    "unknown": "ያልታወቀ",
+    "user": "VeryLoving ተጠቃሚ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "የጣቢያ ካርታ",
+    "subtitle": "በመተግበሪያው ውስጥ ጥቅም ላይ የዋለውን ቋንቋ ይምረጡ።",
+    "system": "የስርዓት ነባር",
+    "search": "የፍለጋ ቋንቋዎች",
+    "noResults": "ከፍለጋዎ ጋር የሚዛመዱ ቋንቋዎች የሉም።",
+    "english": "እንግሊዝኛ",
+    "spanish": "ስፓኒሽኛ",
+    "french": "ፈረንሳይኛ",
+    "chineseSimplified": "ቻይንኛ (ቀለል ያለ)"
+  },
+  "phone": {
+    "label": "ስልክ ቁጥር",
+    "placeholder": "ስልክ ቁጥር",
+    "selectCountry": "ሀገር ወይም ክልል ይምረጡ",
+    "searchCountry": "ፈልግ ሀገር፣ ኮድ ወይም መደወያ ቅድመ ቅጥያ",
+    "noCountries": "ከፍለጋዎ ጋር የሚዛመዱ አገሮች የሉም።",
+    "countryButton": "ሀገርን ይቀይሩ፣ በአሁኑ ጊዜ %{country} ሲደመር %{callingCode}",
+    "inputAccessibility": "ለ %{country} ስልክ ቁጥር",
+    "required": "ስልክ ቁጥር ያስገቡ።",
+    "tooShort": "ይህ ስልክ ቁጥር በጣም አጭር ነው።",
+    "tooLong": "ይህ ስልክ ቁጥር በጣም ረጅም ነው።",
+    "invalid": "ለተመረጠው ሀገር የሚሰራ ስልክ ቁጥር ያስገቡ።",
+    "valid": "የሚሰራ ዓለም አቀፍ ስልክ ቁጥር"
+  },
+  "auth": {
+    "onboardingTagline": "\"ደህና ነኝ\" እና \"እርዳታ እፈልጋለሁ\" መካከል ላሉት ጊዜያት የግል ደህንነት ጓደኛ።",
+    "createAccount": "መለያ ፍጠር",
+    "continueOnboarding": "በመሳፈር ይቀጥሉ",
+    "createSubtitle": "የደህንነት ግራፍዎን ለመጠበቅ የመግቢያ ዘዴን ይምረጡ።",
+    "phoneVerification": "የስልክ ማረጋገጫ",
+    "sendCode": "ኮድ ላክ",
+    "sendingCode": "ኮድ በመላክ ላይ...",
+    "verifyCode": "ኮድ አረጋግጥ",
+    "sentTo": "ወደ %{phone} ተልኳል",
+    "yourPhone": "ስልክዎ",
+    "verificationCode": "የማረጋገጫ ኮድ",
+    "verify": "አረጋግጥ",
+    "verifying": "በማረጋገጥ ላይ ...",
+    "invalidCode": "የማረጋገጫ ኮዱን ያስገቡ።",
+    "signInFailedTitle": "መግባት ተቋርጧል",
+    "signInFailedMessage": "መግቢያውን ማጠናቀቅ አልቻልንም። ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
+    "googleUnavailableTitle": "Google መግባት አይገኝም።",
+    "googleUnavailableMessage": "የአካባቢ ልማት ክፍለ ጊዜን በመጠቀም. ቤተኛ Google መግቢያ በልማት ግንባታ ውስጥ ይሰራል።",
+    "northStarTitle": "NorthStar ጌጣጌጥ",
+    "northStarSubtitle": "አሁን ያጣምሩ ወይም ይቀጥሉ እና በኋላ ያክሉት።",
+    "northStarBody": "VL01 ተለባሽ የደህንነት ፍሰቶችን በቧንቧዎች እና በረዥም የፕሬስ ምልክቶች ሊያስነሳ ይችላል።",
+    "setupJewelry": "ጌጣጌጦችን ያዘጋጁ",
+    "meetCapybear": "ከ Capybear ጋር ይተዋወቁ",
+    "meetCapybearSubtitle": "በካርታው ላይ እና በጥሪዎች ላይ የዋህ የደህንነት ጓደኛዎ።",
+    "capybearBody": "Capybear በቤት ሁነታ፣ በአሳዳጊ ሁነታ፣ በአደጋ ጊዜ ሁነታ፣ በሰበብ ጥሪዎች እና በድምጽ ድጋፍ ሊረዳ ይችላል።",
+    "chooseVoice": "ድምጽ ይምረጡ",
+    "capybearReminder": "Capybear ማሳሰቢያ",
+    "remindersReady": "ረጋ ያሉ ማሳሰቢያዎች ዝግጁ ናቸው።"
+  },
+  "permissions": {
+    "locationTitle": "የአካባቢ ደህንነት",
+    "locationSubtitle": "ለካርታው፣ ለአደጋ ዞኖች፣ ለአስተማማኝ መድረሻ እና SOS አውድ ጥቅም ላይ ይውላል።",
+    "locationBody": "VeryLoving አሳዳጊዎች እርዳታ የት እንደሚያስፈልግ እንዲረዱ ቦታን ይጠይቃል። ይህንን በኋላ በቅንብሮች ውስጥ መቀየር ይችላሉ።",
+    "allowLocation": "አካባቢን ፍቀድ",
+    "notificationsTitle": "የደህንነት ማንቂያዎች",
+    "notificationsSubtitle": "ማሳወቂያዎች ተመዝግቦ መግባትን እና የአደጋ ጊዜ ክስተቶችን ይደግፋሉ።",
+    "notificationsBody": "ማሳወቂያዎችን የምንጠቀመው ለደህንነት ጥያቄዎች፣ የአደጋ ጊዜ ዝመናዎች እና እርስዎ ለሚያነቁት አስታዋሾች ብቻ ነው።",
+    "enableNotifications": "ማሳወቂያዎችን አንቃ",
+    "locationRationaleTitle": "አካባቢ የደህንነት አውድ ትክክለኛ ያደርገዋል",
+    "locationRationaleMessage": "VeryLoving አካባቢዎን ለደህንነት ካርታ፣ ለአደጋ ዞኖች፣ ለፈጣን ማጋራት እና SOS አውድ ይጠቀማል። ይህንን በኋላ በቅንብሮች ውስጥ መቀየር ይችላሉ።",
+    "notificationsRationaleTitle": "የደህንነት ማንቂያዎች ማሳወቂያዎች ያስፈልጋቸዋል",
+    "notificationsRationaleMessage": "VeryLoving የመግቢያ አስታዋሾችን፣ የአደጋ ጊዜ ዝመናዎችን እና የደህንነት ጥያቄዎችን ይልካል። ለማስታወቂያዎች ማሳወቂያዎችን አንጠቀምም።",
+    "microphoneRationaleTitle": "ማይክሮፎን የደህንነት ጥሪዎችን ያጠናቅቃል",
+    "microphoneRationaleMessage": "VeryLoving ማይክሮፎንዎን የሚጠቀመው AI ጓደኛ ወይም የደህንነት ጥሪ ሲጀምሩ ብቻ ነው።",
+    "bluetoothRationaleTitle": "Bluetooth ተለባሽዎን ያገናኛል",
+    "bluetoothRationaleMessage": "VeryLoving ከጌጣጌጥ NorthStar ጋር ለማጣመር፣ የግንኙነት ሁኔታን ለማንበብ እና ከተለባበሰው የደህንነት ፍሰቶችን ለመቀስቀስ Bluetooth ይጠቀማል።",
+    "cameraRationaleTitle": "ካሜራ አማራጭ ነው",
+    "cameraRationaleMessage": "VeryLoving ካሜራውን የሚጠቀመው የመገለጫ ፎቶ ለማንሳት ወይም የደህንነት ምስል ለማጋራት ሲመርጡ ብቻ ነው።"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ይህንን ፍሰት ከቅንብሮች እና ከዳሽቦርዱ እንዲገኝ ያደርገዋል።",
+    "chooseVoiceTitle": "ድምጽህን ምረጥ",
+    "chooseVoiceSubtitle": "ለመስማት በጣም ደህንነቱ የተጠበቀ ስሜት የሚሰማውን ተጓዳኝ ድምጽ ይምረጡ።",
+    "homeTitle": "የቤት ሁነታ",
+    "homeSubtitle": "ለዕለታዊ ደህንነት ጸጥ ያለ ክትትል።",
+    "guardianTitle": "የአሳዳጊ ሁነታ",
+    "guardianSubtitle": "ዐውደ-ጽሑፍን ከታመኑ ሰዎች ጋር ያካፍሉ።",
+    "emergencyTitle": "የአደጋ ጊዜ ሁነታ",
+    "emergencySubtitle": "አምስት ቧንቧዎች ወደ SOS እና አሳዳጊ ማንቂያዎች ሊሸጋገሩ ይችላሉ።",
+    "excuseTitle": "ይቅርታ ጥሪ",
+    "excuseSubtitle": "የማይመች ሁኔታን ለመተው የሚያምር ምክንያት ይፍጠሩ.",
+    "safetyCallTitle": "የደህንነት ጥሪ",
+    "safetyCallSubtitle": "ድጋፍ በሚፈልጉበት ጊዜ የእውነተኛ ጊዜ ጓደኛ ጥሪ ይጀምሩ።",
+    "practiceTitle": "የልምምድ ትዕይንት",
+    "practiceSubtitle": "በዝቅተኛ ግፊት ማሳያ ውስጥ የደህንነት ፍሰቶችን ይሞክሩ።"
+  },
+  "jewelry": {
+    "pairTitle": "ጥንድ NorthStar",
+    "pairSubtitle": "በሚቃኙበት ጊዜ ጌጣጌጦቹን በአቅራቢያው ያስቀምጡት።",
+    "scan": "መሣሪያዎችን ይቃኙ",
+    "scanning": "በአቅራቢያ መቃኘት...",
+    "noDevices": "በአቅራቢያ ያሉ NorthStar መሳሪያዎች እስካሁን አልተገኙም።",
+    "scanStartFailed": "Bluetooth ቅኝት ሊጀመር አልቻለም። እባክዎ ዳግም ይሞክሩ.",
+    "scanFailed": "በአቅራቢያው ያሉ ጌጣጌጦችን ማግኘት አልቻልንም። Bluetooth ያረጋግጡ፣ NorthStar ይዝጉ እና እንደገና ይሞክሩ።",
+    "scanAccessFailed": "Bluetooth ቅኝት ሊጀመር አልቻለም። Bluetooth መዳረሻን ያረጋግጡ እና እንደገና ይሞክሩ።",
+    "permissionDenied": "በአቅራቢያ ያለው የመሣሪያ መዳረሻ ጠፍቷል። በቅንብሮች ውስጥ Bluetooth መዳረሻን ፍቀድ፣ ከዚያ እንደገና ይሞክሩ።",
+    "connectTimeout": "NorthStar ለመገናኘት በጣም ረጅም ጊዜ ወስዷል። ወደ ቅርበት ያንቀሳቅሱት እና እንደገና ይሞክሩ።",
+    "connectFailed": "ከ NorthStar ጋር መገናኘት አልቻልንም። መሙላቱን እና በአቅራቢያ መሆኑን ያረጋግጡ፣ ከዚያ እንደገና ይሞክሩ።",
+    "emptyTitle": "እስካሁን ምንም በአቅራቢያ ያሉ መሳሪያዎች የሉም",
+    "emptyMessage": "NorthStar ቻርጅ ያድርጉ እና ወደዚህ ስልክ ይዝጉ እና ከዚያ እንደገና ይቃኙ።",
+    "searchingMessage": "በአቅራቢያ ያሉ NorthStar መሳሪያዎችን በመፈለግ ላይ..."
+  },
+  "home": {
+    "subtitle": "የደህንነት ጓደኛ ዳሽቦርድ",
+    "modeStatus": "%{mode} ሁነታ",
+    "companionReady": "%{name} ዝግጁ ነው",
+    "readyBody": "ድምጽ፣ ካርታ፣ ጌጣጌጥ እና አሳዳጊዎች አንድ መታ ይደርሳሉ።",
+    "safetyCall": "የደህንነት ጥሪ",
+    "northStarDevice": "NorthStar መሣሪያ",
+    "deviceConnected": "%{name} ተገናኝቷል · %{battery}%",
+    "noDevice": "ምንም መሣሪያ አልተገናኘም",
+    "manageDevice": "መሣሪያን ያስተዳድሩ",
+    "mode": "ሞድ",
+    "modes": {
+      "home": "መግቢያ ገፅ",
+      "guardian": "ሞግዚት",
+      "emergency": "አስቸኳይ ሁኔታ"
+    }
+  },
+  "map": {
+    "finding": "አካባቢዎን በማግኘት ላይ...",
+    "retry": "አካባቢን እንደገና ይሞክሩ",
+    "title": "የደህንነት ካርታ",
+    "previewSubtitle": "Expo Go ቅድመ እይታ; Mapbox በልማት ግንባታ ውስጥ ያቀርባል።",
+    "preview": "የካርታ ቅድመ እይታ",
+    "risk": "አደጋ %{risk} · ራዲየስ %{radius}m",
+    "refresh": "ቦታን አድስ",
+    "refreshing": "አካባቢን በማግኘት ላይ...",
+    "updateFailed": "አካባቢዎን ማዘመን አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "notRequested": "የአካባቢ መዳረሻ አልተጠየቀም። በኋላ ከቅንብሮች ውስጥ ማንቃት ይችላሉ።",
+    "permissionOff": "የአካባቢ መዳረሻ ጠፍቷል። የደህንነት ካርታውን በእርስዎ ላይ መሃል ለማድረግ በቅንብሮች ውስጥ ያንቁት።",
+    "timeout": "አካባቢዎ ከተጠበቀው በላይ ጊዜ እየወሰደ ነው። ግልጽ በሆነ ምልክት ወደ አንድ ቦታ ይሂዱ እና እንደገና ይሞክሩ።",
+    "savedTitle": "የተቀመጡ ቦታዎች",
+    "savedEmptyTitle": "እስካሁን ምንም የተቀመጡ ቦታዎች የሉም",
+    "savedEmptyMessage": "የሚያስቀምጧቸው የታመኑ ቦታዎች ለፈጣን መዳረሻ እዚህ ይታያሉ።",
+    "zones": {
+      "crowding": "የሌሊት መጨናነቅ",
+      "lowLighting": "ዝቅተኛ የብርሃን አካባቢ"
+    },
+    "risks": {
+      "low": "ዝቅተኛ",
+      "medium": "ትሩንግ ቢንህ",
+      "high": "ከፍ ያለ"
+    }
+  },
+  "safetyCall": {
+    "connecting": "በመገናኘት ላይ ...",
+    "offlineCompanion": "ከመስመር ውጭ ጓደኛ",
+    "offline": "ከመስመር ውጭ",
+    "connected": "ተገናኝቷል",
+    "interrupted": "ግንኙነቱ ተቋርጧል",
+    "ready": "ለመገናኘት ዝግጁ",
+    "connectingSecurely": "ከድምጽ ጓደኛዎ ጋር ደህንነቱ በተጠበቀ ሁኔታ መገናኘት...",
+    "messagesWaiting": {
+      "one": "ለመላክ በመጠባበቅ ላይ ያለ መልእክት %{count}",
+      "other": "ለመላክ የሚጠብቁ መልዕክቶች %{count}"
+    },
+    "useOffline": "ከመስመር ውጭ ጓደኛን ተጠቀም",
+    "reconnect": "ከድምጽ AI ጋር እንደገና ይገናኙ",
+    "typePlaceholder": "መናገር ከባድ ከሆነ ይተይቡ",
+    "endCall": "ጥሪን ጨርስ",
+    "startCall": "ጥሪ ጀምር",
+    "emptyTitle": "ውይይትዎ እዚህ ይጀምራል",
+    "emptyMessage": "ዝግጁ ሲሆኑ ጥሪውን ይጀምሩ ወይም መልእክት ይተይቡ።"
+  },
+  "chat": {
+    "waiting": "ግንኙነትን በመጠበቅ ላይ",
+    "notSent": "መልእክት አልተላከም።",
+    "retryAccessibility": "መልእክት ለመላክ እንደገና ይሞክሩ"
+  },
+  "history": {
+    "clearTitle": "የውይይት ታሪክን አጽዳ?",
+    "clearMessage": "ይህ የተቀመጡ AI ተጓዳኝ መልዕክቶችን ከዚህ መሳሪያ ያስወግዳል።",
+    "deleteTitle": "ይህን ውይይት ሰርዝ?",
+    "cannotUndo": "ይህ ሊቀለበስ አይችልም።",
+    "title": "የውይይት ታሪክ",
+    "subtitle": "AI ተጓዳኝ መልዕክቶች በዚህ መሣሪያ ላይ ተቀምጠዋል።",
+    "empty": "እስካሁን ምንም ውይይቶች አልተቀመጡም።",
+    "emptyTitle": "እስካሁን ምንም ውይይቶች የሉም",
+    "emptyMessage": "የእርስዎ AI ተጓዳኝ ንግግሮች ከመጀመሪያው ጥሪዎ በኋላ እዚህ ይታያሉ።",
+    "loadFailed": "የውይይት ታሪክን መጫን አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "clearFailed": "የውይይት ታሪክን ማጽዳት አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "deleteFailed": "ያንን ውይይት መሰረዝ አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "aiCompanion": "AI ጓደኛ",
+    "resume": "ማጠቃለያ",
+    "clearAll": "ሁሉንም ታሪክ አጽዳ",
+    "roles": {
+      "assistant": "ጓደኛ",
+      "user": "አንተ"
+    }
+  },
+  "voices": {
+    "title": "የእኔ የደህንነት ጥሪ ድምፆች",
+    "subtitle": "ለመስማት ትክክል የሚሰማውን ተጓዳኝ ድምጽ ይምረጡ።",
+    "test": "የሙከራ ድምጽ",
+    "stop": "ናሙና አቁም",
+    "selectionFailedTitle": "ምርጫው አልተቀመጠም",
+    "selectionFailedMessage": "እባክዎ ድምፁን እንደገና ለመምረጥ ይሞክሩ።",
+    "sampleFailedTitle": "ናሙና አይገኝም",
+    "sampleFailedMessage": "ይህ የድምጽ ናሙና መጫወት አልተቻለም። እባክዎ ዳግም ይሞክሩ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ለስላሳ ፣ የተረጋጋ ፣ መሬት ላይ"
+      },
+      "bestie": {
+        "name": "ቤስቲ",
+        "description": "ብሩህ ፣ የሚያረጋጋ ፣ የውይይት"
+      },
+      "boyfriend": {
+        "name": "የወንድ ጓደኛ",
+        "description": "የተረጋጋ፣ አፍቃሪ፣ አሁን"
+      },
+      "muscleMan": {
+        "name": "ጡንቻማን",
+        "description": "በራስ መተማመን, መከላከያ, አበረታች"
+      }
+    }
+  },
+  "settings": {
+    "voice": "ድምጽ",
+    "changeVoice": "ድምጽ ይቀይሩ",
+    "showCompanion": "ጓደኛ አሳይ",
+    "offlineMode": "ከመስመር ውጭ ሁነታ",
+    "offlineModeSubtitle": "አውታረ መረቡ ወይም Hume ምስክርነቶች በማይገኙበት ጊዜ የተጣመሩ ተጓዳኝ ምላሾችን ይጠቀሙ።",
+    "privacyData": "ግላዊነት እና ውሂብ",
+    "privacyBody": "በዚህ መሣሪያ ላይ የተከማቸውን የአካባቢ ውሂብ ወደ ውጭ ይላኩ ወይም ይሰርዙ።",
+    "preparingExport": "ወደ ውጭ መላክ በማዘጋጀት ላይ...",
+    "exportData": "የእኔን ውሂብ ወደ ውጪ ላክ",
+    "privacyPolicy": "የ ግል የሆነ",
+    "deleting": "በመሰረዝ ላይ...",
+    "deleteAll": "ሁሉንም የአካባቢ ውሂብ ማጥፊያ",
+    "deviceManagement": "የመሣሪያ አስተዳደር",
+    "emergencyContacts": "የአደጋ ጊዜ እውቂያዎች",
+    "signOut": "ዝውጡ",
+    "exportFailedTitle": "ወደ ውጪ መላክ አልተሳካም",
+    "exportFailedMessage": "አሁን የእርስዎን ውሂብ ወደ ውጭ መላክ አልተቻለም።",
+    "deleteConfirmTitle": "ሁሉንም የአካባቢ ውሂብ ሰርዝ?",
+    "deleteConfirmMessage": "ይህ የእርስዎን መገለጫ፣ ቅንብሮች፣ የአደጋ ጊዜ እውቂያዎች፣ የውይይት ታሪክ፣ የፍቃድ አስታዋሾች እና የአካባቢ ማረጋገጫ ክፍለ ጊዜ ከዚህ መሳሪያ ያስወግዳል።",
+    "deleteEverything": "ሁሉንም ሰርዝ",
+    "deleteFailedTitle": "ስረዛ አልተሳካም",
+    "deleteFailedMessage": "አሁን የአካባቢ ውሂብን መሰረዝ አልተቻለም።",
+    "linkFailed": "አገናኝ መክፈት አልተቻለም",
+    "sections": {
+      "language": "የጣቢያ ካርታ",
+      "languageSubtitle": "በይነገጽ እና የስርዓት ፍቃድ ቋንቋ",
+      "companion": "አጃቢ",
+      "companionSubtitle": "የድምጽ እና ከመስመር ውጭ ምርጫዎች",
+      "deviceSafety": "መሳሪያዎች እና ደህንነት",
+      "deviceSafetySubtitle": "NorthStar፣ አሳዳጊዎች እና የአደጋ ጊዜ እውቂያዎች",
+      "privacy": "ግላዊነት እና ውሂብ",
+      "privacySubtitle": "ታሪክ፣ ወደ ውጭ መላክ፣ መሰረዝ እና ፖሊሲ",
+      "account": "መለያ",
+      "accountSubtitle": "የአሁኑ VeryLoving ክፍለ ጊዜዎ"
+    },
+    "updateFailedTitle": "ቅንብር አልተቀመጠም",
+    "updateFailedMessage": "ያንን ምርጫ ማዳን አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "signOutFailedTitle": "ዘግቶ መውጣት አልተቻለም",
+    "signOutFailedMessage": "ክፍለ ጊዜዎ አሁንም ንቁ ነው። እባክዎ ዳግም ይሞክሩ."
+  },
+  "contacts": {
+    "title": "የአደጋ ጊዜ እውቂያዎች",
+    "subtitle": "በደህንነት ፍሰቶች ወቅት የሚገኙ የታመኑ ሰዎች።",
+    "addTitle": "የአደጋ ጊዜ እውቂያ ያክሉ",
+    "name": "ስም",
+    "namePlaceholder": "የእውቂያ ስም",
+    "phone": "የእውቂያ ስልክ ቁጥር",
+    "add": "እውቂያ ያክሉ",
+    "empty": "እስካሁን ምንም የአደጋ ጊዜ እውቂያዎች አልተጨመሩም።",
+    "emptyTitle": "እስካሁን ምንም የአደጋ ጊዜ እውቂያዎች የሉም",
+    "emptyMessage": "የደህንነት ፍሰት በሚፈልግበት ጊዜ ዝግጁ እንዲሆኑ የሚያምኑትን ሰው ያክሉ።",
+    "removeTitle": "%{name} አስወግድ?",
+    "removeMessage": "ይህ ሰው ከአሁን በኋላ በእርስዎ የአደጋ ጊዜ ፍሰት ውስጥ አይታይም።",
+    "nameRequired": "የእውቂያውን ስም ያስገቡ።",
+    "saveFailedTitle": "እውቂያ አልተቀመጠም",
+    "saveFailedMessage": "ይህንን ግንኙነት ማዳን አልቻልንም። ዝርዝሩን ይመልከቱ እና እንደገና ይሞክሩ።",
+    "removeFailedTitle": "እውቂያ አልተወገደም",
+    "removeFailedMessage": "ይህንን ግንኙነት ማስወገድ አልቻልንም። እባክዎ ዳግም ይሞክሩ.",
+    "callAccessibility": "ይደውሉ %{name}",
+    "removeAccessibility": "%{name} አስወግድ"
+  },
+  "device": {
+    "title": "የመሣሪያ አስተዳደር",
+    "subtitle": "NorthStar መሣሪያዎን ያስተዳድሩ።",
+    "connected": "ተገናኝቷል · %{battery}% ባትሪ",
+    "none": "ምንም መሳሪያዎች አልተገናኙም",
+    "disconnect": "መሣሪያውን ያላቅቁ",
+    "connect": "መሣሪያን ያገናኙ"
+  },
+  "friends": {
+    "title": "ጓደኞች",
+    "subtitle": "አሳዳጊዎች፣ ጥያቄዎች እና የአደጋ ጊዜ ግራፍ።",
+    "addDemo": "የማሳያ ጓደኛ ያክሉ",
+    "emptyTitle": "የደህንነት ክበብዎ ባዶ ነው",
+    "emptyMessage": "የታመኑ ጓደኞች እና አሳዳጊዎች አንዴ ከተጨመሩ በኋላ እዚህ ይታያሉ።",
+    "newGuardian": "አዲስ ሞግዚት",
+    "statuses": {
+      "guardian": "ሞግዚት",
+      "pending": "በመጠባበቅ ላይ"
+    }
+  },
+  "emergency": {
+    "title": "የአደጋ ጊዜ SOS",
+    "subtitle": "አፋጣኝ ድጋፍ ሲፈልጉ ብቻ ይጨምሩ።",
+    "body": "ይህ የደህንነት ፍሰትዎን ያሳውቃል እና የአደጋ ጊዜ እውቂያዎችን ያዘጋጃል።",
+    "activate": "SOS ያግብሩ",
+    "callCompanion": "AI ጓደኛ ይደውሉ",
+    "notificationTitle": "SOS ገብሯል",
+    "notificationBody": "የአደጋ ጊዜ ፍሰትዎ ዝግጁ ነው።",
+    "readyTitle": "SOS ዝግጁ",
+    "callContact": "%{name} ይደውሉ?",
+    "addContact": "በቅንብሮች ውስጥ የአደጋ ጊዜ እውቂያ ያክሉ።",
+    "quickShareTitle": "ፈጣን ማጋራት",
+    "quickShareMessage": "የአካባቢ መጋራት ገለባ ዝግጁ ነው። የቀጥታ አገናኞችን ለመላክ የጀርባውን መጋራት የመጨረሻ ነጥብ ያገናኙ።"
+  },
+  "quickShare": {
+    "title": "ፈጣን ማጋራት",
+    "subtitle": "የአካባቢ መጋራት ፍሰት ዝግጁ ነው።"
+  },
+  "capybearTap": {
+    "title": "Capybear መታ ያድርጉ",
+    "subtitle": "የደህንነት ብርቱካን ለመጣል NorthStar ሁለቴ መታ ያድርጉ።",
+    "body": "የእጅ ምልክት መንገድ ለ BLE ክስተት ሽቦ ዝግጁ ነው።"
+  },
+  "debug": {
+    "title": "VeryLoving የማረም ገጽ",
+    "subtitle": "ልማት-ብቻ መንገድ."
+  },
+  "errors": {
+    "voiceOffline": "ከመስመር ውጭ ትመስላለህ። እንደገና ሲገናኙ መልእክትዎ ይላካል።",
+    "voiceQueued": "መልእክት ተቀምጧል። የድምጽ ጓደኛው እንደገና ሲገናኝ ይላካል።",
+    "voiceRetrying": "መልእክትዎን እንደገና ለመላክ እየሞከሩ ነው...",
+    "voiceConnecting": "ከድምጽ ጓደኛዎ ጋር ደህንነቱ በተጠበቀ ሁኔታ መገናኘት...",
+    "microphone": "ለድምጽ ጥሪዎች የማይክሮፎን መዳረሻ ያስፈልጋል። በቅንብሮች ውስጥ ማንቃት ወይም በምትኩ መልእክት መተየብ ይችላሉ።",
+    "billing": "የመስመር ላይ የድምጽ ጓደኛ ለጊዜው አይገኝም። ከመስመር ውጭ ጓደኛ መቀጠል ይችላሉ።",
+    "authentication": "የድምጽ ጓደኛው ይህንን ክፍለ ጊዜ ማረጋገጥ አልቻለም። እንደገና ይግቡ ወይም ለአሁኑ ከመስመር ውጭ ጓደኛውን ይጠቀሙ።",
+    "timeout": "የድምፅ ጓደኛው ምላሽ ለመስጠት በጣም ረጅም ጊዜ ወስዷል። ግንኙነትዎን ያረጋግጡ እና እንደገና ይሞክሩ።",
+    "network": "የድምፅ ጓደኛውን ማግኘት አልቻልንም። ግንኙነትዎን ያረጋግጡ፣ ከዚያ እንደገና ይሞክሩ ወይም ከመስመር ውጭ ይቀጥሉ።",
+    "genericVoice": "የሆነ ነገር የድምጽ ጥሪውን አቋረጠ። እንደገና ይሞክሩ ወይም ከመስመር ውጭ ጓደኛ ጋር ይቀጥሉ።"
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ውሂብ ወደ ውጭ መላክ"
+  },
+  "notifications": {
+    "channelName": "የደህንነት ማንቂያዎች"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ለደህንነት እና ለተጓዳኝ ጥሪዎች AI የማይክሮፎን መዳረሻ ያስፈልገዋል።",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving አካባቢዎን ለደህንነት ካርታ እና በአቅራቢያ ላሉ የደህንነት ባህሪያት ይጠቀማል።",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ደህንነቱ የተጠበቀ መድረሻ እና የአደጋ ጊዜ ፍሰቶችን ለመደገፍ አካባቢዎን ይጠቀማል።",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ለአስተማማኝ መድረሻ እና በአቅራቢያ ላሉ የአደጋ ቀጠና ባህሪያት የጀርባ ቦታን ይጠቀማል።",
+      "NSCameraUsageDescription": "VeryLoving ካሜራውን የሚጠቀመው መገለጫ ወይም የደህንነት ፎቶ ለማንሳት ሲመርጡ ብቻ ነው።",
+      "NSPhotoLibraryUsageDescription": "VeryLoving የእርስዎን የፎቶ ቤተ-መጽሐፍት የሚጠቀመው ግለ ማህደር ወይም የደህንነት ምስል ሲመርጡ ብቻ ነው።",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ከእርስዎ NorthStar የደህንነት ጌጣጌጦች ጋር ለመገናኘት Bluetooth ይጠቀማል።",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ከእርስዎ NorthStar የደህንነት ጌጣጌጦች ጋር ለመገናኘት Bluetooth ይጠቀማል።"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

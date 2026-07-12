@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Hátra",
+    "call": "Hívás",
+    "cancel": "Törlés",
+    "clear": "Tiszta",
+    "close": "Zárt",
+    "connect": "Kapcsolódj",
+    "connecting": "Kapcsolódunk...",
+    "continue": "Folytatás",
+    "delete": "Törlés",
+    "finish": "Befejezés",
+    "friends": "Barátok",
+    "google": "Google",
+    "home": "Otthon",
+    "loading": "Betöltés...",
+    "map": "Térkép",
+    "notNow": "Most nem",
+    "remove": "Távolítsd el",
+    "retry": "Újrapróbálkozás",
+    "retrying": "Újra próbálkoznak",
+    "save": "Mentés",
+    "selected": "Válogatott",
+    "send": "Elküldöm",
+    "settings": "Helyszínek",
+    "skip": "Átugorás",
+    "skipForNow": "Most ugorj",
+    "skipTutorial": "Hagyd ki a tutorialt",
+    "sos": "SOS",
+    "unknown": "Ismeretlen",
+    "user": "VeryLoving felhasználó",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Nyelv",
+    "subtitle": "Válaszd ki az alkalmazásban használt nyelvet.",
+    "system": "Rendszer alapértelmezett",
+    "search": "Keresési nyelvek",
+    "noResults": "Nincs nyelv, ami a keresésedhez igazod.",
+    "english": "angol",
+    "spanish": "spanyol",
+    "french": "francia",
+    "chineseSimplified": "Kínai (egyszerűsítve)"
+  },
+  "phone": {
+    "label": "Telefonszám",
+    "placeholder": "Telefonszám",
+    "selectCountry": "Kiválasztott ország vagy régió",
+    "searchCountry": "Keresés országra, kódra vagy tárcsázási előtagra",
+    "noCountries": "Egyetlen ország sem illik a keresésedhez.",
+    "countryButton": "Országváltás, jelenleg %{country} plusz %{callingCode}",
+    "inputAccessibility": "Telefonszám %{country}",
+    "required": "Írj be egy telefonszámot.",
+    "tooShort": "Ez a telefonszám túl rövid.",
+    "tooLong": "Ez a telefonszám túl hosszú.",
+    "invalid": "Írj meg egy érvényes telefonszámot a kiválasztott országhoz.",
+    "valid": "Érvényes nemzetközi telefonszám"
+  },
+  "auth": {
+    "onboardingTagline": "Személyes biztonsági társ azokra a pillanatokra, amikor \"jól vagyok\" és \"segítségre van szükségem\" között.",
+    "createAccount": "Fiók létrehozása",
+    "continueOnboarding": "Folytasd a beilleszkedést",
+    "createSubtitle": "Válassz bejelentkezési módszert, hogy megvédd a biztonsági grafikonodat.",
+    "phoneVerification": "Telefonos ellenőrzés",
+    "sendCode": "Kód küldése",
+    "sendingCode": "Kódot küldök...",
+    "verifyCode": "Kód ellenőrzése",
+    "sentTo": "Küldve %{phone}",
+    "yourPhone": "a telefonod",
+    "verificationCode": "Ellenőrző kód",
+    "verify": "Ellenőrizd",
+    "verifying": "Ellenőrizve...",
+    "invalidCode": "Adja be a hitelesítési kódot.",
+    "signInFailedTitle": "Bejelentkezés megszakítva",
+    "signInFailedMessage": "Nem tudtuk befejezni a bejelentkezést. Ellenőrizd a kapcsolatodat, és próbáld újra.",
+    "googleUnavailableTitle": "Google Bejelentkezés nem elérhető",
+    "googleUnavailableMessage": "Helyi fejlesztési szekció használata. A Native Google Sign-In működik egy fejlesztő buildben.",
+    "northStarTitle": "NorthStar ékszerek",
+    "northStarSubtitle": "Párosítsd most, vagy folytasd, és később add hozzá.",
+    "northStarBody": "A VL01 viselhető eszköz kopogásokkal és hosszú nyomásmozdulatokkal képes biztonsági hullámokat indítani.",
+    "setupJewelry": "Ékszerek beállítása",
+    "meetCapybear": "Ismerd meg Capybear",
+    "meetCapybearSubtitle": "A gyengéd biztonsági társad a térképen és a hívásokban.",
+    "capybearBody": "Capybear segíthetnek az otthoni módban, őrző módban, vészhelyzeti módban, kifogásos hívásokban és hangtámogatásban.",
+    "chooseVoice": "Válassz hangot",
+    "capybearReminder": "Capybear emlékeztető",
+    "remindersReady": "Gyengéd emlékeztetők készen állnak."
+  },
+  "permissions": {
+    "locationTitle": "Helyszínbiztonság",
+    "locationSubtitle": "A térképhez, veszélyzónákhoz, biztonságos érkezéshez és SOS kontextushoz használják.",
+    "locationBody": "VeryLoving helyet kér, hogy a gyámok megértsék, hol lehet szükség segítségre. Ezt később a Beállításokban módosíthatod.",
+    "allowLocation": "Engedélyezett hely",
+    "notificationsTitle": "Biztonsági figyelmeztetések",
+    "notificationsSubtitle": "Az értesítések támogatják a bejelentkezéseket és vészhelyzeteket.",
+    "notificationsBody": "Csak biztonsági felhívásokhoz, vészhelyzeti frissítésekhez és az Ön által engedélyezett emlékeztetőkhöz használjuk az értesítéseket.",
+    "enableNotifications": "Kapcsold be az értesítéseket",
+    "locationRationaleTitle": "A helyszín pontos biztonsági kontextust biztosít",
+    "locationRationaleMessage": "VeryLoving a helyedet használja a biztonsági térképhez, a veszélyzónákhoz, a gyors megosztáshoz és SOS kontextushoz. Ezt később a Beállításokban módosíthatod.",
+    "notificationsRationaleTitle": "A biztonsági riasztásokhoz értesítést kell",
+    "notificationsRationaleMessage": "VeryLoving bejelentkező emlékeztetőket, vészhelyzeti frissítéseket és biztonsági utasításokat küld, amelyeket engedélyeznek. Nem használunk értesítéseket hirdetésekhez.",
+    "microphoneRationaleTitle": "Mikrofon működteti a biztonsági hívásokat",
+    "microphoneRationaleMessage": "VeryLoving csak akkor használja a mikrofonodat, amikor AI kísérőt vagy biztonsági hívást indítasz.",
+    "bluetoothRationaleTitle": "Bluetooth összekapcsolja a viselhető eszközedet",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth használja NorthStar ékszerrel való párosításra, a kapcsolat állapotának olvasására, és a hordható eszközből kiváltó biztonsági folyamatokat indítsa el.",
+    "cameraRationaleTitle": "A kamera opcionális",
+    "cameraRationaleMessage": "VeryLoving csak akkor használja a kamerát, ha profilképet készítesz vagy biztonsági képet osztasz."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ezt a folyamatot elérhetővé teszi a beállításoktól és a műfalon.",
+    "chooseVoiceTitle": "Válaszd a hangodat",
+    "chooseVoiceSubtitle": "Válaszd ki azt a kísérő hangot, ami a legbiztonságosabbnak érzi magát.",
+    "homeTitle": "Otthoni mód",
+    "homeSubtitle": "Csendes megfigyelés a napi biztonság érdekében.",
+    "guardianTitle": "Guardian mód",
+    "guardianSubtitle": "Ossza meg a kontextust megbízható emberekkel.",
+    "emergencyTitle": "Vészhelyzeti mód",
+    "emergencySubtitle": "Öt érintés SOS és guardian riasztásokká is vezethet.",
+    "excuseTitle": "Elnézést kérek",
+    "excuseSubtitle": "Teremts egy méltó indokot, hogy elhagyd a kényelmetlen helyzetet.",
+    "safetyCallTitle": "Biztonsági hívás",
+    "safetyCallSubtitle": "Indíts el valós idejű társhívást, ha segítségre van szükséged.",
+    "practiceTitle": "Gyakorló jelenet",
+    "practiceSubtitle": "Próbáld ki a biztonsági folyamatokat egy alacsony nyomású bemutatóban."
+  },
+  "jewelry": {
+    "pairTitle": "Páros NorthStar",
+    "pairSubtitle": "Tartsd a közelben az ékszereket a szkennelés közben.",
+    "scan": "Eszközök szkennelése",
+    "scanning": "Közelben szkennelve...",
+    "noDevices": "Még nem találtak NorthStar eszközt a közelben.",
+    "scanStartFailed": "Bluetooth a szkennelés nem indult el. Kérlek, próbáld meg újra.",
+    "scanFailed": "Nem találtunk a közelben lévő ékszereket. Nézd meg Bluetooth, tartsd NorthStar közel, majd próbáld újra.",
+    "scanAccessFailed": "Bluetooth a szkennelés nem indult el. Ellenőrizd Bluetooth hozzáférést, és próbáld újra.",
+    "permissionDenied": "A közeli eszközök hozzáférése ki van kapcsolva. Engedélyezd Bluetooth hozzáférést a Beállításokban, majd próbáld újra.",
+    "connectTimeout": "NorthStar túl sokáig tartott, mire kapcsolódtak. Közelebb mozdítsd, és próbáld újra.",
+    "connectFailed": "Nem tudtunk kapcsolódni NorthStar-hez. Ellenőrizd, hogy a gép feltöltve van-e és közel van, majd próbáld újra.",
+    "emptyTitle": "Még nincsenek közeli eszközök",
+    "emptyMessage": "Tartsd NorthStar feltöltve és közel a telefonhoz, majd újra beszkenneld.",
+    "searchingMessage": "A közelben NorthStar eszközöket keresek..."
+  },
+  "home": {
+    "subtitle": "Biztonsági társ műszerfal",
+    "modeStatus": "%{mode} MÓD",
+    "companionReady": "%{name} készen áll",
+    "readyBody": "Hang, térkép, ékszerek és őrök egy érintésre vannak.",
+    "safetyCall": "Biztonsági hívás",
+    "northStarDevice": "NorthStar eszköz",
+    "deviceConnected": "%{name} kapcsolódva · %{battery}%",
+    "noDevice": "Nincs csatlakoztatva eszköz.",
+    "manageDevice": "Eszközkezelés",
+    "mode": "Mód",
+    "modes": {
+      "home": "Otthon",
+      "guardian": "Guardian",
+      "emergency": "Vészhelyzet"
+    }
+  },
+  "map": {
+    "finding": "Megtalálni a helyedet...",
+    "retry": "Újrapróbálkozási helyszín",
+    "title": "Biztonsági térkép",
+    "previewSubtitle": "Expo Go előzetes; Mapbox renderel egy fejlesztő buildben.",
+    "preview": "Térkép előzetes",
+    "risk": "Kockázat: %{risk} · Sugar%{radius}m",
+    "refresh": "Frissítési helyszín",
+    "refreshing": "Helyet keresni...",
+    "updateFailed": "Nem tudtuk frissíteni a tartózkodási helyét. Kérlek, próbáld meg újra.",
+    "notRequested": "A helyszíni hozzáférést nem kérték. Később engedélyezheted a Beállításokból.",
+    "permissionOff": "A helyszíni hozzáférés nem működik. Engedélyezd a beállításokban, hogy a biztonsági térkép rád középüljön.",
+    "timeout": "A helyed tovább tart, mint vártad. Menj valahova, ahol tisztább jel van, és próbáld újra.",
+    "savedTitle": "Megmentett helyek",
+    "savedEmptyTitle": "Még nincs megmentett hely",
+    "savedEmptyMessage": "A megbízható helyek, amelyeket elmentel, itt jelennek meg a gyors hozzáférés érdekében.",
+    "zones": {
+      "crowding": "Késő esti zsúfoltság",
+      "lowLighting": "Alacsony fényviszonyú terület"
+    },
+    "risks": {
+      "low": "alacsony",
+      "medium": "Közeg.",
+      "high": "Magas"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kapcsolódunk...",
+    "offlineCompanion": "Offline társ",
+    "offline": "Offline",
+    "connected": "Kapcsolt",
+    "interrupted": "Kapcsolat megszakítva",
+    "ready": "Készen állok a csatlakozásra",
+    "connectingSecurely": "Biztonságosan csatlakozni a hangtársaddhoz...",
+    "messagesWaiting": {
+      "one": "%{count} üzenet vár a küldésre",
+      "other": "%{count} üzenetek küldésre várnak"
+    },
+    "useOffline": "Használj offline társat",
+    "reconnect": "Csatlakozz újra a hanghoz AI",
+    "typePlaceholder": "Típus, ha nehéz beszélni",
+    "endCall": "Záró hívás",
+    "startCall": "Kezdje a hívást",
+    "emptyTitle": "A beszélgetésed itt kezdődik",
+    "emptyMessage": "Kezdd el a hívást vagy írj üzenetet, amikor készen állsz."
+  },
+  "chat": {
+    "waiting": "A kapcsolatra várok",
+    "notSent": "Üzenet nem küldött el.",
+    "retryAccessibility": "Próbáld meg újra üzenetet küldeni"
+  },
+  "history": {
+    "clearTitle": "Tiszta beszélgetéstörténet?",
+    "clearMessage": "Ez eltávolítja a mentett AI kísérő üzeneteket az eszközről.",
+    "deleteTitle": "Törölni ezt a beszélgetést?",
+    "cannotUndo": "Ezt nem lehet visszafordítani.",
+    "title": "Beszélgetéstörténet",
+    "subtitle": "AI kísérő üzeneteket ezen az eszközön tárolva.",
+    "empty": "Még nincs mentett beszélgetés.",
+    "emptyTitle": "Még nincs beszélgetés",
+    "emptyMessage": "A AI társi beszélgetések itt jelennek meg az első hívásod után.",
+    "loadFailed": "Nem tudtuk betölteni a beszélgetéstörténetet. Kérlek, próbáld meg újra.",
+    "clearFailed": "Nem tudtuk tisztázni a beszélgetéstörténetet. Kérlek, próbáld meg újra.",
+    "deleteFailed": "Nem tudtuk törölni azt a beszélgetést. Kérlek, próbáld meg újra.",
+    "aiCompanion": "AI társ",
+    "resume": "Önéletrajz",
+    "clearAll": "Tisztítsd ki az összes történelmet",
+    "roles": {
+      "assistant": "társ",
+      "user": "Te"
+    }
+  },
+  "voices": {
+    "title": "A biztonsági hívásaim hangjai",
+    "subtitle": "Válaszd ki azt a kísérő hangot, ami helyesnek tűnik.",
+    "test": "Teszthang",
+    "stop": "Megállító mintavétel",
+    "selectionFailedTitle": "A választás nem mentve",
+    "selectionFailedMessage": "Kérlek, próbáld meg újra kiválasztani a hangot.",
+    "sampleFailedTitle": "Példa nem elérhető",
+    "sampleFailedMessage": "Ezt a hangmintát nem lehetett lejátszani. Kérlek, próbáld meg újra.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "lágy, nyugodt, megnyugtató"
+      },
+      "bestie": {
+        "name": "Legjobb barát",
+        "description": "Élénk, megnyugtató, beszélgetős"
+      },
+      "boyfriend": {
+        "name": "Barát",
+        "description": "Nyugodt, szeretetteljes, jelen"
+      },
+      "muscleMan": {
+        "name": "Izomember",
+        "description": "magabiztos, védelmező, motiváló"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Hang",
+    "changeVoice": "Hangot váltsunk",
+    "showCompanion": "Műsortárs",
+    "offlineMode": "Offline mód",
+    "offlineModeSubtitle": "Használj csomagolt kísérő válaszokat, ha a hálózat vagy Hume jogosultsága nem elérhető.",
+    "privacyData": "Adatvédelem és adatok",
+    "privacyBody": "Exportálni vagy törölni az eszközön tárolt helyi adatokat.",
+    "preparingExport": "Exportot készítünk...",
+    "exportData": "Exportálom az adataimat",
+    "privacyPolicy": "Adatvédelmi szabályzat",
+    "deleting": "Törlés...",
+    "deleteAll": "Minden helyi adat törlése",
+    "deviceManagement": "Eszközkezelés",
+    "emergencyContacts": "Vészhelyzeti kapcsolattartók",
+    "signOut": "Kijelentkezz",
+    "exportFailedTitle": "Export sikertelen",
+    "exportFailedMessage": "Jelenleg nem tudom exportálni az adataidat.",
+    "deleteConfirmTitle": "Minden helyi adatot törölni?",
+    "deleteConfirmMessage": "Ez eltávolítja a profilodat, beállításaidat, vészhelyzeti elérhetőségeidet, beszélgetéselőzményeidet, engedélyemlékeztetőidet és helyi hitelesítési ülésedet erről az eszközről.",
+    "deleteEverything": "Törölj mindent",
+    "deleteFailedTitle": "Törlés sikertelen",
+    "deleteFailedMessage": "Jelenleg nem tudom törölni a helyi adatokat.",
+    "linkFailed": "Nem lehet megnyitni a linket",
+    "sections": {
+      "language": "Nyelv",
+      "languageSubtitle": "Interfész és rendszerengedély nyelv",
+      "companion": "Társ",
+      "companionSubtitle": "Hang- és offline preferenciák",
+      "deviceSafety": "Eszközök és biztonság",
+      "deviceSafetySubtitle": "NorthStar, gyámok és vészhelyzeti kapcsolattartók",
+      "privacy": "Adatvédelem és adatok",
+      "privacySubtitle": "Történelem, export, törlés és szabályzat",
+      "account": "Fiók",
+      "accountSubtitle": "A jelenlegi VeryLoving alkalom"
+    },
+    "updateFailedTitle": "Beállítás nincs elmentve",
+    "updateFailedMessage": "Ezt a preferenciát nem tudtuk megmenteni. Kérlek, próbáld meg újra.",
+    "signOutFailedTitle": "Nem tudtam kijelentkezni",
+    "signOutFailedMessage": "A te ülésed még mindig aktív. Kérlek, próbáld meg újra."
+  },
+  "contacts": {
+    "title": "Vészhelyzeti kapcsolattartók",
+    "subtitle": "Megbízható emberek elérhetők a biztonsági folyamatok során.",
+    "addTitle": "Hozzáadni vészhelyzeti kapcsolatot",
+    "name": "Név",
+    "namePlaceholder": "Kapcsolati név",
+    "phone": "Kapcsolattartó telefonszám",
+    "add": "Kapcsolat hozzáadása",
+    "empty": "Még nem kerültek hozzá vészhelyzeti kontaktusok.",
+    "emptyTitle": "Még nincsenek sürgősségi kontaktok",
+    "emptyMessage": "Vegyél hozzá valakit, akiben megbízol, hogy készen álljon, amikor egy biztonsági folyamat szükséges.",
+    "removeTitle": "Eltávolítani %{name}?",
+    "removeMessage": "Ez a személy többé nem jelenik meg a vészhelyzeti folyamatban.",
+    "nameRequired": "Írja be a kapcsolat nevét.",
+    "saveFailedTitle": "A kapcsolat nem mentve",
+    "saveFailedMessage": "Ezt a kapcsolatot nem tudtuk megmenteni. Nézd meg a részleteket, és próbáld újra.",
+    "removeFailedTitle": "A kontakt nem távol maradt",
+    "removeFailedMessage": "Nem tudtuk eltávolítani ezt a kapcsolatot. Kérlek, próbáld meg újra.",
+    "callAccessibility": "Hívd %{name}",
+    "removeAccessibility": "Távolítsd %{name}"
+  },
+  "device": {
+    "title": "Eszközkezelés",
+    "subtitle": "Kezeld a NorthStar eszközödet.",
+    "connected": "Kapcsolt · %{battery}% akkumulátor",
+    "none": "Nincsenek csatlakoztatva eszközöket",
+    "disconnect": "Leválasztó eszköz",
+    "connect": "Csatlakoztatni az eszközt"
+  },
+  "friends": {
+    "title": "Barátok",
+    "subtitle": "Őrzők, kérések és vészhelyzeti grafikon.",
+    "addDemo": "Demó barát hozzáadása",
+    "emptyTitle": "A biztonsági köröd üres",
+    "emptyMessage": "Megbízható barátok és gondviselők jelennek meg, amint hozzáadják őket.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Függőben"
+    }
+  },
+  "emergency": {
+    "title": "Vészhelyzeti SOS",
+    "subtitle": "Csak akkor emeld az állást, ha azonnali támogatásra van szükséged.",
+    "body": "Ez értesíti a biztonsági rendszert, és előkészíti a vészhelyzeti kontaktokat.",
+    "activate": "Aktiváld SOS",
+    "callCompanion": "Hívd AI társat",
+    "notificationTitle": "SOS aktiválva",
+    "notificationBody": "A vészhelyzeti áramlásod készen áll.",
+    "readyTitle": "SOS készen",
+    "callContact": "Hívni %{name}?",
+    "addContact": "Hozzáadj vészhelyzeti kapcsolatot a Beállításokban.",
+    "quickShareTitle": "Gyors megosztás",
+    "quickShareMessage": "A helymegosztó csonk készen áll. Csatlakoztasd a backend share végpontot, hogy élő linkeket küldj."
+  },
+  "quickShare": {
+    "title": "Gyors megosztás",
+    "subtitle": "A helyszínmegosztási folyamat készen áll."
+  },
+  "capybearTap": {
+    "title": "Capybear csapás",
+    "subtitle": "Kopogtasd meg a NorthStar dupla koppintását, hogy eldobj egy biztonsági narancsot.",
+    "body": "A gesztusútvonal készen áll a BLE esemény kábelezésre."
+  },
+  "debug": {
+    "title": "VeryLoving hibakeresési oldal",
+    "subtitle": "Csak fejlesztési útvonal."
+  },
+  "errors": {
+    "voiceOffline": "Offline vagy. Az üzeneted akkor érkezik, amikor újra csatlakozol.",
+    "voiceQueued": "Az üzenet mentve. Akkor küldik el, amikor a hangtárs újra csatlakozik.",
+    "voiceRetrying": "Újra próbálod elküldeni az üzeneted...",
+    "voiceConnecting": "Biztonságosan csatlakozni a hangtársaddhoz...",
+    "microphone": "Mikrofon hozzáférés szükséges a hanghívásokhoz. Engedélyezheted a Beállításokban, vagy írhatsz üzenetet.",
+    "billing": "Az online hangkísérő ideiglenesen nem elérhető. Folytathatod az offline társat.",
+    "authentication": "A hangtárs nem tudta megerősíteni ezt az ülést. Jelentkezz be újra, vagy használd az offline társat egyelőre.",
+    "timeout": "A hangtárs túl sokáig válaszolt. Ellenőrizd a kapcsolatodat, és próbáld újra.",
+    "network": "Nem értük el a hangtársat. Ellenőrizd a kapcsolatodat, majd próbáld újra, vagy folytasd offline.",
+    "genericVoice": "Valami megszakította a hanghívást. Próbáld újra, vagy folytasd az offline társsal."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving adatexportja"
+  },
+  "notifications": {
+    "channelName": "Biztonsági figyelmeztetések"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving mikrofon hozzáférésre van szüksége a biztonság érdekében, és AI kísérőhívásokat kap.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving a helyedet használja a biztonsági térképhez és a közeli biztonsági funkciókhoz.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving a helyedet használja a biztonságos érkezés és vészhelyzeti folyamatok támogatására.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving háttérhelyzetet használ a biztonságos érkezéshez és a közeli veszélyzóna jellemzőihez.",
+      "NSCameraUsageDescription": "VeryLoving csak akkor használja a kamerát, ha profil- vagy biztonsági fotót készítesz.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving csak akkor használja a fotókönyvtárat, ha profilt vagy biztonsági képet választasz.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth segítségével csatlakozik NorthStar biztonsági ékszerekhez.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth segítségével csatlakozik NorthStar biztonsági ékszerekhez."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

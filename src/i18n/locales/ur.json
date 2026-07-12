@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "شامل کریں",
+    "apple": "Apple",
+    "back": "واپس",
+    "call": "کال",
+    "cancel": "منسوخ کریں",
+    "clear": "صاف",
+    "close": "بند",
+    "connect": "کنیکٹ",
+    "connecting": "کنیکٹ کر رہا ہوں...",
+    "continue": "جاری رکھیں",
+    "delete": "حذف کریں",
+    "finish": "اختتام",
+    "friends": "دوست",
+    "google": "Google",
+    "home": "گھر",
+    "loading": "لوڈ ہو رہا ہے...",
+    "map": "نقشہ",
+    "notNow": "ابھی نہیں",
+    "remove": "ہٹا دیا جائے",
+    "retry": "دوبارہ کوشش",
+    "retrying": "دوبارہ کوشش",
+    "save": "سیو",
+    "selected": "منتخب",
+    "send": "بھیجیں",
+    "settings": "سیٹنگز",
+    "skip": "چھوڑ دو",
+    "skipForNow": "ابھی کے لیے چھوڑ دیں",
+    "skipTutorial": "ٹیوٹوریل چھوڑیں",
+    "sos": "SOS",
+    "unknown": "نامعلوم",
+    "user": "VeryLoving صارف",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "زبان",
+    "subtitle": "ایپ میں استعمال ہونے والی زبان منتخب کریں۔",
+    "system": "سسٹم ڈیفالٹ",
+    "search": "سرچ لینگویجز",
+    "noResults": "کوئی زبان آپ کی تلاش سے میل نہیں کھاتی۔",
+    "english": "انگریزی",
+    "spanish": "ہسپانوی",
+    "french": "فرانسیسی",
+    "chineseSimplified": "چینی (سادہ)"
+  },
+  "phone": {
+    "label": "فون نمبر",
+    "placeholder": "فون نمبر",
+    "selectCountry": "منتخب ملک یا علاقہ",
+    "searchCountry": "ملک، کوڈ، یا ڈائلنگ پری فکس تلاش کریں",
+    "noCountries": "کوئی ملک آپ کی تلاش سے میل نہیں کھاتا۔",
+    "countryButton": "ملک بدلنا، اس وقت %{country} اور %{callingCode}",
+    "inputAccessibility": "فون نمبر %{country}",
+    "required": "ایک فون نمبر درج کریں۔",
+    "tooShort": "یہ فون نمبر بہت چھوٹا ہے۔",
+    "tooLong": "یہ فون نمبر بہت لمبا ہے۔",
+    "invalid": "منتخب ملک کے لیے درست فون نمبر درج کریں۔",
+    "valid": "درست بین الاقوامی فون نمبر"
+  },
+  "auth": {
+    "onboardingTagline": "\"میں ٹھیک ہوں\" اور \"مجھے مدد چاہیے\" کے درمیان کے لمحات کے لیے ایک ذاتی حفاظتی ساتھی تھا۔",
+    "createAccount": "اکاؤنٹ بنائیں",
+    "continueOnboarding": "آن بورڈنگ جاری رکھیں",
+    "createSubtitle": "اپنے سیفٹی گراف کی حفاظت کے لیے سائن ان طریقہ منتخب کریں۔",
+    "phoneVerification": "فون کی تصدیق",
+    "sendCode": "کوڈ بھیجیں",
+    "sendingCode": "کوڈ بھیج رہا ہوں...",
+    "verifyCode": "کوڈ کی تصدیق کریں",
+    "sentTo": "بھیجا گیا %{phone}",
+    "yourPhone": "تمہارا فون",
+    "verificationCode": "تصدیقی کوڈ",
+    "verify": "تصدیق کریں",
+    "verifying": "تصدیق کر رہا ہوں...",
+    "invalidCode": "تصدیقی کوڈ درج کریں۔",
+    "signInFailedTitle": "سائن ان میں خلل",
+    "signInFailedMessage": "ہم سائن ان مکمل نہیں کر سکے۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    "googleUnavailableTitle": "Google سائن ان دستیاب نہیں",
+    "googleUnavailableMessage": "مقامی ترقیاتی سیشن کا استعمال کرتے ہوئے۔ نیٹو Google سائن ان ڈیولپمنٹ بلڈ میں کام کرتا ہے۔",
+    "northStarTitle": "NorthStar زیورات",
+    "northStarSubtitle": "ابھی جوڑیں یا جاری رکھیں اور بعد میں شامل کریں۔",
+    "northStarBody": "یہ VL01 پہننے والا آلہ تھپتھپانے اور لمبے پریس اشاروں کے ذریعے حفاظتی بہاؤ کو متحرک کر سکتا ہے۔",
+    "setupJewelry": "زیورات کا انتظام",
+    "meetCapybear": "ملیں Capybear",
+    "meetCapybearSubtitle": "نقشے پر اور کالز میں آپ کا نرم حفاظتی ساتھی۔",
+    "capybearBody": "Capybear ہوم موڈ، گارڈین موڈ، ایمرجنسی موڈ، بہانے والی کالز اور وائس سپورٹ میں مدد کر سکتے ہیں۔",
+    "chooseVoice": "آواز منتخب کریں",
+    "capybearReminder": "Capybear یاد دہانی",
+    "remindersReady": "نرمی سے یاد دہانیاں تیار ہیں۔"
+  },
+  "permissions": {
+    "locationTitle": "مقام کی حفاظت",
+    "locationSubtitle": "نقشہ، خطرے کے زونز، محفوظ آمد، اور SOS سیاق و سباق کے لیے استعمال ہوتا ہے۔",
+    "locationBody": "VeryLoving مقام پوچھتا ہے تاکہ سرپرست سمجھ سکیں کہ کہاں مدد کی ضرورت ہو سکتی ہے۔ آپ اسے بعد میں سیٹنگز میں تبدیل کر سکتے ہیں۔",
+    "allowLocation": "مقام کی اجازت دیں",
+    "notificationsTitle": "حفاظتی انتباہات",
+    "notificationsSubtitle": "نوٹیفیکیشنز چیک ان اور ہنگامی واقعات کی حمایت کرتی ہیں۔",
+    "notificationsBody": "ہم صرف سیفٹی پرامپٹس، ایمرجنسی اپ ڈیٹس، اور آپ کی فعال کردہ یاددہانیوں کے لیے نوٹیفیکیشنز استعمال کرتے ہیں۔",
+    "enableNotifications": "نوٹیفیکیشنز فعال کریں",
+    "locationRationaleTitle": "مقام حفاظتی سیاق و سباق کو درست رکھتا ہے",
+    "locationRationaleMessage": "VeryLoving آپ کی لوکیشن کو سیفٹی میپ، خطرے کے زونز، فوری شیئر اور SOS سیاق و سباق کے لیے استعمال کرتا ہے۔ آپ اسے بعد میں سیٹنگز میں تبدیل کر سکتے ہیں۔",
+    "notificationsRationaleTitle": "سیفٹی الرٹس کے لیے نوٹیفیکیشنز درکار ہیں",
+    "notificationsRationaleMessage": "VeryLoving چیک ان یاد دہانیاں، ہنگامی اپ ڈیٹس، اور حفاظتی پرامپٹس بھیجتا ہے جو آپ کو فعال کرتے ہیں۔ ہم اشتہارات کے لیے نوٹیفکیشنز استعمال نہیں کرتے۔",
+    "microphoneRationaleTitle": "مائیکروفون سیفٹی کالز کو طاقت دیتا ہے",
+    "microphoneRationaleMessage": "VeryLoving آپ کا مائیکروفون صرف اس وقت استعمال کرتا ہے جب آپ AI ساتھی یا سیفٹی کال شروع کریں۔",
+    "bluetoothRationaleTitle": "Bluetooth آپ کے ویئرایبل کو جوڑتا ہے",
+    "bluetoothRationaleMessage": "VeryLoving NorthStar زیورات کے ساتھ جوڑنے، کنکشن کی حالت پڑھنے، اور پہننے والے سے سیفٹی فلو کو متحرک کرنے کے لیے Bluetooth استعمال کرتا ہے۔",
+    "cameraRationaleTitle": "کیمرہ اختیاری ہے",
+    "cameraRationaleMessage": "VeryLoving کیمرہ صرف اس وقت استعمال کرتا ہے جب آپ پروفائل فوٹو لیتے ہیں یا سیفٹی امیج شیئر کرتے ہیں۔"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving اس بہاؤ کو سیٹنگز اور ڈیش بورڈ سے دستیاب رکھتا ہے۔",
+    "chooseVoiceTitle": "اپنی آواز منتخب کریں",
+    "chooseVoiceSubtitle": "وہ ساتھی آواز منتخب کریں جو سننے میں سب سے زیادہ محفوظ محسوس ہو۔",
+    "homeTitle": "ہوم موڈ",
+    "homeSubtitle": "روزانہ کی حفاظت کے لیے خاموش نگرانی۔",
+    "guardianTitle": "گارڈین موڈ",
+    "guardianSubtitle": "قابل اعتماد لوگوں کے ساتھ سیاق و سباق شیئر کریں۔",
+    "emergencyTitle": "ایمرجنسی موڈ",
+    "emergencySubtitle": "پانچ ٹیپس SOS اور گارڈین الرٹس تک بڑھ سکتی ہیں۔",
+    "excuseTitle": "معذرت کال",
+    "excuseSubtitle": "ایک مناسب وجہ بنائیں کہ آپ کسی غیر آرام دہ صورتحال سے نکل سکیں۔",
+    "safetyCallTitle": "سیفٹی کال",
+    "safetyCallSubtitle": "جب آپ کو مدد کی ضرورت ہو تو ریئل ٹائم کمپینین کال شروع کریں۔",
+    "practiceTitle": "پریکٹس سین",
+    "practiceSubtitle": "کم دباؤ والے ڈیمو میں سیفٹی فلو آزما کر دیکھیں۔"
+  },
+  "jewelry": {
+    "pairTitle": "جوڑا NorthStar",
+    "pairSubtitle": "اسکیننگ کے دوران زیورات کو قریب رکھیں۔",
+    "scan": "ڈیوائسز کے لیے اسکین کریں",
+    "scanning": "قریب ہی اسکین کر رہا ہوں...",
+    "noDevices": "ابھی تک کوئی قریبی NorthStar ڈیوائس نہیں ملی۔",
+    "scanStartFailed": "Bluetooth اسکیننگ شروع نہیں ہو سکی۔ براہ کرم دوبارہ کوشش کریں۔",
+    "scanFailed": "ہم قریب ہی زیورات نہیں ڈھونڈ سکے۔ Bluetooth چیک کریں، NorthStar قریب رکھیں، اور دوبارہ کوشش کریں۔",
+    "scanAccessFailed": "Bluetooth اسکیننگ شروع نہیں ہو سکی۔ رسائی Bluetooth چیک کریں اور دوبارہ کوشش کریں۔",
+    "permissionDenied": "قریبی ڈیوائس تک رسائی بند ہے۔ سیٹنگز میں Bluetooth رسائی کی اجازت دیں، پھر دوبارہ کوشش کریں۔",
+    "connectTimeout": "NorthStar جڑنے میں بہت وقت لگا۔ اسے قریب لے جاؤ اور دوبارہ کوشش کرو۔",
+    "connectFailed": "ہم NorthStar سے جڑ نہیں سکے۔ چیک کریں کہ یہ چارج ہے اور قریب ہے، پھر دوبارہ کوشش کریں۔",
+    "emptyTitle": "ابھی تک کوئی قریبی ڈیوائس نہیں ہے",
+    "emptyMessage": "NorthStar کو چارج اور اس فون کے قریب رکھیں، پھر دوبارہ اسکین کریں۔",
+    "searchingMessage": "قریب NorthStar ڈیوائسز تلاش کر رہا ہوں..."
+  },
+  "home": {
+    "subtitle": "سیفٹی کمپینین ڈیش بورڈ",
+    "modeStatus": "%{mode} موڈ",
+    "companionReady": "%{name} تیار ہے",
+    "readyBody": "آواز، نقشہ، زیورات، اور محافظ ایک ٹیپ کی دوری پر ہیں۔",
+    "safetyCall": "سیفٹی کال",
+    "northStarDevice": "NorthStar ڈیوائس",
+    "deviceConnected": "%{name} جڑا ہوا · %{battery}٪",
+    "noDevice": "کوئی ڈیوائس کنیکٹ نہیں ہوئی",
+    "manageDevice": "ڈیوائس کو منظم کریں",
+    "mode": "موڈ",
+    "modes": {
+      "home": "گھر",
+      "guardian": "گارڈین",
+      "emergency": "ہنگامی صورتحال"
+    }
+  },
+  "map": {
+    "finding": "تمہاری جگہ تلاش کرنا...",
+    "retry": "دوبارہ کوشش کرنے کی جگہ",
+    "title": "حفاظتی نقشہ",
+    "previewSubtitle": "Expo Go پیش نظارہ؛ Mapbox ڈیولپمنٹ بلڈ میں رینڈر کرتا ہے۔",
+    "preview": "نقشہ پیش نظارہ",
+    "risk": "خطرہ: %{risk} · رداس %{radius}m",
+    "refresh": "ریفریش مقام",
+    "refreshing": "مقام تلاش کرنا...",
+    "updateFailed": "ہم آپ کی لوکیشن اپ ڈیٹ نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "notRequested": "مقام تک رسائی کی درخواست نہیں کی گئی۔ آپ بعد میں سیٹنگز سے اسے فعال کر سکتے ہیں۔",
+    "permissionOff": "مقام تک رسائی بند ہے۔ اسے سیٹنگز میں فعال کریں تاکہ سیفٹی میپ آپ پر مرکوز ہو جائے۔",
+    "timeout": "آپ کی جگہ توقع سے زیادہ وقت لے رہی ہے۔ ایسی جگہ جائیں جہاں سگنل زیادہ واضح ہو اور دوبارہ کوشش کریں۔",
+    "savedTitle": "محفوظ شدہ مقامات",
+    "savedEmptyTitle": "ابھی تک کوئی محفوظ شدہ جگہ نہیں",
+    "savedEmptyMessage": "وہ قابل اعتماد جگہیں جو آپ محفوظ کرتے ہیں یہاں ظاہر ہوں گی تاکہ فوری رسائی حاصل کی جا سکے۔",
+    "zones": {
+      "crowding": "رات گئے بھیڑ",
+      "lowLighting": "کم روشنی والا علاقہ"
+    },
+    "risks": {
+      "low": "کم",
+      "medium": "میڈیم",
+      "high": "اونچا"
+    }
+  },
+  "safetyCall": {
+    "connecting": "کنیکٹ کر رہا ہوں...",
+    "offlineCompanion": "آف لائن ساتھی",
+    "offline": "آف لائن",
+    "connected": "کنیکٹڈ",
+    "interrupted": "کنکشن منقطع ہو گیا",
+    "ready": "کنیکٹ کرنے کے لیے تیار",
+    "connectingSecurely": "اپنے وائس ساتھی سے محفوظ طریقے سے جڑنا...",
+    "messagesWaiting": {
+      "one": "%{count} پیغام بھیجنے کا انتظار کر رہا ہے",
+      "other": "%{count} پیغامات بھیجنے کے انتظار میں ہیں"
+    },
+    "useOffline": "آف لائن ساتھی استعمال کریں",
+    "reconnect": "وائس AI",
+    "typePlaceholder": "اگر بولنا مشکل ہے تو ٹائپ کریں",
+    "endCall": "کال ختم",
+    "startCall": "کال شروع کریں",
+    "emptyTitle": "آپ کی گفتگو یہاں سے شروع ہوتی ہے",
+    "emptyMessage": "جب آپ تیار ہوں تو کال شروع کریں یا پیغام ٹائپ کریں۔"
+  },
+  "chat": {
+    "waiting": "رابطے کا انتظار",
+    "notSent": "پیغام نہیں بھیجا گیا۔",
+    "retryAccessibility": "پیغام بھیجنے کی کوشش دوبارہ کریں"
+  },
+  "history": {
+    "clearTitle": "کیا بات چیت کی تاریخ واضح ہے؟",
+    "clearMessage": "یہ اس ڈیوائس سے محفوظ AI ساتھی پیغامات ہٹا دیتا ہے۔",
+    "deleteTitle": "کیا یہ گفتگو ڈیلیٹ کر دوں؟",
+    "cannotUndo": "یہ واپس نہیں لیا جا سکتا۔",
+    "title": "گفتگو کی تاریخ",
+    "subtitle": "AI ساتھی پیغامات اس ڈیوائس پر محفوظ ہیں۔",
+    "empty": "ابھی تک کوئی بات چیت محفوظ نہیں ہوئی۔",
+    "emptyTitle": "ابھی تک کوئی بات چیت نہیں ہوئی",
+    "emptyMessage": "آپ کی AI ساتھی گفتگو آپ کی پہلی کال کے بعد یہاں ظاہر ہوگی۔",
+    "loadFailed": "ہم گفتگو کی تاریخ لوڈ نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "clearFailed": "ہم گفتگو کی تاریخ صاف نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "deleteFailed": "ہم اس گفتگو کو حذف نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "aiCompanion": "AI ساتھی",
+    "resume": "ریزیومے",
+    "clearAll": "تمام تاریخ صاف کریں",
+    "roles": {
+      "assistant": "ساتھی",
+      "user": "تم"
+    }
+  },
+  "voices": {
+    "title": "میری سیفٹی کال آوازیں",
+    "subtitle": "وہ ساتھی آواز منتخب کریں جو سننے کے لیے مناسب محسوس ہو۔",
+    "test": "ٹیسٹ وائس",
+    "stop": "اسٹاپ سیمپل",
+    "selectionFailedTitle": "انتخاب محفوظ نہیں کیا گیا",
+    "selectionFailedMessage": "براہ کرم دوبارہ آواز منتخب کرنے کی کوشش کریں۔",
+    "sampleFailedTitle": "نمونہ دستیاب نہیں",
+    "sampleFailedMessage": "یہ وائس سیمپل چلایا نہیں جا سکا۔ براہ کرم دوبارہ کوشش کریں۔",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "نرم، پرسکون، زمین سے جڑا ہوا"
+      },
+      "bestie": {
+        "name": "بیسٹی",
+        "description": "روشن، تسلی بخش، گفتگو کرنے والا"
+      },
+      "boyfriend": {
+        "name": "بوائے فرینڈ",
+        "description": "مستحکم، محبت بھرا، موجود"
+      },
+      "muscleMan": {
+        "name": "مسل مین",
+        "description": "پراعتماد، محافظ، متحرک"
+      }
+    }
+  },
+  "settings": {
+    "voice": "آواز",
+    "changeVoice": "آواز بدلیں",
+    "showCompanion": "شو کمپینین",
+    "offlineMode": "آف لائن موڈ",
+    "offlineModeSubtitle": "جب نیٹ ورک یا Hume کی اسناد دستیاب نہ ہوں تو بنڈل ساتھی جوابات استعمال کریں۔",
+    "privacyData": "پرائیویسی اور ڈیٹا",
+    "privacyBody": "اس ڈیوائس پر محفوظ مقامی ڈیٹا ایکسپورٹ یا حذف کریں۔",
+    "preparingExport": "برآمد کی تیاری کر رہا ہوں...",
+    "exportData": "میرا ڈیٹا ایکسپورٹ کریں",
+    "privacyPolicy": "پرائیویسی پالیسی",
+    "deleting": "حذف کر رہا ہوں...",
+    "deleteAll": "تمام مقامی ڈیٹا حذف کریں",
+    "deviceManagement": "ڈیوائس مینجمنٹ",
+    "emergencyContacts": "ہنگامی رابطے",
+    "signOut": "سائن آؤٹ کریں",
+    "exportFailedTitle": "برآمد ناکام ہو گئی",
+    "exportFailedMessage": "اس وقت آپ کا ڈیٹا ایکسپورٹ نہیں کر پا رہا۔",
+    "deleteConfirmTitle": "تمام مقامی ڈیٹا ڈیلیٹ کر دوں؟",
+    "deleteConfirmMessage": "اس سے آپ کی پروفائل، سیٹنگز، ایمرجنسی کانٹیکٹس، گفتگو کی تاریخ، پرمیشن ریمائنڈرلز، اور لوکل آوتھ سیشن اس ڈیوائس سے ہٹا دی جاتی ہے۔",
+    "deleteEverything": "سب کچھ ڈیلیٹ کر دو",
+    "deleteFailedTitle": "حذف ناکام",
+    "deleteFailedMessage": "اس وقت مقامی ڈیٹا ڈیلیٹ نہیں کر پا رہا۔",
+    "linkFailed": "لنک کھول نہیں پا رہا",
+    "sections": {
+      "language": "زبان",
+      "languageSubtitle": "انٹرفیس اور سسٹم پرمیشن لینگویج",
+      "companion": "ساتھی",
+      "companionSubtitle": "آواز اور آف لائن ترجیحات",
+      "deviceSafety": "آلات اور حفاظت",
+      "deviceSafetySubtitle": "NorthStar، سرپرست، اور ہنگامی رابطے",
+      "privacy": "پرائیویسی اور ڈیٹا",
+      "privacySubtitle": "تاریخ، برآمد، حذف اور پالیسی",
+      "account": "اکاؤنٹ",
+      "accountSubtitle": "آپ کا موجودہ VeryLoving سیشن"
+    },
+    "updateFailedTitle": "سیٹنگ محفوظ نہیں کی گئی",
+    "updateFailedMessage": "ہم اس ترجیح کو محفوظ نہیں کر سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "signOutFailedTitle": "سائن آؤٹ نہیں ہو سکا",
+    "signOutFailedMessage": "آپ کا سیشن ابھی بھی فعال ہے۔ براہ کرم دوبارہ کوشش کریں۔"
+  },
+  "contacts": {
+    "title": "ہنگامی رابطے",
+    "subtitle": "محفوظ بہاؤ کے دوران قابل اعتماد لوگ دستیاب ہیں۔",
+    "addTitle": "ایمرجنسی رابطہ شامل کریں",
+    "name": "نام",
+    "namePlaceholder": "رابطہ نام",
+    "phone": "رابطہ فون نمبر",
+    "add": "رابطہ شامل کریں",
+    "empty": "ابھی تک کوئی ایمرجنسی کانٹیکٹس شامل نہیں کیے گئے۔",
+    "emptyTitle": "ابھی تک کوئی ہنگامی رابطہ نہیں",
+    "emptyMessage": "کسی ایسے شخص کو شامل کریں جس پر آپ بھروسہ کرتے ہیں تاکہ جب سیفٹی فلو کی ضرورت ہو تو وہ تیار ہو۔",
+    "removeTitle": "ہٹانے %{name}؟",
+    "removeMessage": "یہ شخص اب آپ کے ایمرجنسی فلو میں نظر نہیں آئے گا۔",
+    "nameRequired": "رابطے کا نام درج کریں۔",
+    "saveFailedTitle": "رابطہ محفوظ نہیں کیا گیا",
+    "saveFailedMessage": "ہم اس رابطے کو بچا نہیں سکے۔ تفصیلات چیک کریں اور دوبارہ کوشش کریں۔",
+    "removeFailedTitle": "رابطہ ہٹایا نہیں گیا",
+    "removeFailedMessage": "ہم اس رابطے کو ہٹا نہیں سکے۔ براہ کرم دوبارہ کوشش کریں۔",
+    "callAccessibility": "کال %{name}",
+    "removeAccessibility": "ہٹا %{name}"
+  },
+  "device": {
+    "title": "ڈیوائس مینجمنٹ",
+    "subtitle": "اپنے NorthStar ڈیوائس کو منظم کریں۔",
+    "connected": "کنیکٹڈ · %{battery}٪ بیٹری",
+    "none": "کوئی ڈیوائس کنیکٹ نہیں ہوئی",
+    "disconnect": "ڈیوائس کو منقطع کر دیں",
+    "connect": "کنیکٹ ڈیوائس"
+  },
+  "friends": {
+    "title": "دوست",
+    "subtitle": "گارڈینز، درخواستیں، اور ایمرجنسی گراف۔",
+    "addDemo": "ڈیمو فرینڈ شامل کریں",
+    "emptyTitle": "تمہارا حفاظتی دائرہ خالی ہے",
+    "emptyMessage": "قابل اعتماد دوست اور سرپرست یہاں شامل ہونے کے بعد ظاہر ہوں گے۔",
+    "newGuardian": "نیو گارڈین",
+    "statuses": {
+      "guardian": "گارڈین",
+      "pending": "زیر التواء"
+    }
+  },
+  "emergency": {
+    "title": "ایمرجنسی SOS",
+    "subtitle": "صرف اس وقت معاملہ بڑھائیں جب آپ کو فوری مدد کی ضرورت ہو۔",
+    "body": "یہ آپ کی حفاظتی صورتحال کو مطلع کرے گا اور ایمرجنسی رابطوں کو تیار کرے گا۔",
+    "activate": "ایکٹیویٹ SOS",
+    "callCompanion": "ساتھی AI کال کریں",
+    "notificationTitle": "SOS فعال ہو گیا",
+    "notificationBody": "آپ کا ایمرجنسی فلو تیار ہے۔",
+    "readyTitle": "SOS تیار",
+    "callContact": "کال %{name}؟",
+    "addContact": "سیٹنگز میں ایمرجنسی کانٹیکٹ شامل کریں۔",
+    "quickShareTitle": "فوری شیئر",
+    "quickShareMessage": "لوکیشن شیئرنگ اسٹب تیار ہے۔ بیک اینڈ شیئر اینڈ پوائنٹ کو کنیکٹ کریں تاکہ لائیو لنکس بھیج سکیں۔"
+  },
+  "quickShare": {
+    "title": "فوری شیئر",
+    "subtitle": "لوکیشن شیئر فلو تیار ہے۔"
+  },
+  "capybearTap": {
+    "title": "Capybear ٹیپ",
+    "subtitle": "اپنے NorthStar کو ڈبل ٹیپ کریں تاکہ ایک سیفٹی اورنج گر جائے۔",
+    "body": "جیسچر روٹ BLE ایونٹ وائرنگ کے لیے تیار ہے۔"
+  },
+  "debug": {
+    "title": "VeryLoving ڈیبگ صفحہ",
+    "subtitle": "صرف ترقیاتی راستہ۔"
+  },
+  "errors": {
+    "voiceOffline": "آپ آف لائن لگ رہے ہیں۔ جب آپ دوبارہ رابطہ کریں گے تو آپ کا پیغام بھیج دیا جائے گا۔",
+    "voiceQueued": "پیغام محفوظ کر لیا گیا۔ یہ اس وقت بھیج دی جائے گی جب وائس ساتھی دوبارہ کنیکٹ ہوگا۔",
+    "voiceRetrying": "آپ کا پیغام دوبارہ بھیجنے کی کوشش کر رہے ہیں...",
+    "voiceConnecting": "اپنے وائس ساتھی سے محفوظ طریقے سے جڑنا...",
+    "microphone": "وائس کالز کے لیے مائیکروفون تک رسائی ضروری ہے۔ آپ اسے سیٹنگز میں فعال کر سکتے ہیں، یا اس کے بجائے کوئی پیغام ٹائپ کر سکتے ہیں۔",
+    "billing": "آن لائن وائس کمپینین عارضی طور پر دستیاب نہیں ہے۔ آپ آف لائن ساتھی کے ساتھ جاری رکھ سکتے ہیں۔",
+    "authentication": "وائس ساتھی اس سیشن کی تصدیق نہیں کر سکا۔ فی الحال دوبارہ سائن ان کریں یا آف لائن ساتھی استعمال کریں۔",
+    "timeout": "آواز والے ساتھی نے جواب دینے میں بہت دیر کی۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    "network": "ہم آواز والے ساتھی تک نہیں پہنچ سکے۔ اپنا کنکشن چیک کریں، پھر دوبارہ کوشش کریں یا آف لائن جاری رکھیں۔",
+    "genericVoice": "کچھ آواز کی آواز میں خلل ڈالا۔ دوبارہ کوشش کریں، یا آف لائن ساتھی کے ساتھ جاری رکھیں۔"
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ڈیٹا ایکسپورٹ"
+  },
+  "notifications": {
+    "channelName": "حفاظتی انتباہات"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving کو حفاظت AIاور ساتھی کالز کے لیے مائیکروفون تک رسائی کی ضرورت ہوتی ہے۔",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving آپ کی لوکیشن کو سیفٹی میپ اور قریبی حفاظتی خصوصیات کے لیے استعمال کرتا ہے۔",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving آپ کی جگہ کو محفوظ آمد اور ہنگامی بہاؤ کی حمایت کے لیے استعمال کرتا ہے۔",
+      "NSLocationAlwaysUsageDescription": "VeryLoving محفوظ آمد اور قریبی خطرے کے زون کی خصوصیات کے لیے پس منظر کی جگہ استعمال کرتا ہے۔",
+      "NSCameraUsageDescription": "VeryLoving کیمرہ صرف اس وقت استعمال کرتا ہے جب آپ پروفائل یا سیفٹی فوٹو لینے کا انتخاب کرتے ہیں۔",
+      "NSPhotoLibraryUsageDescription": "VeryLoving آپ کی فوٹو لائبریری صرف اس وقت استعمال کرتا ہے جب آپ پروفائل یا سیفٹی امیج منتخب کریں۔",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth کو آپ کی NorthStar حفاظتی زیورات سے جوڑنے کے لیے استعمال کرتا ہے۔",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth کو آپ کی NorthStar حفاظتی زیورات سے جوڑنے کے لیے استعمال کرتا ہے۔"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

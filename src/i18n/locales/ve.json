@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Engedza",
+    "apple": "Apple",
+    "back": "Murahu",
+    "call": "Fonani",
+    "cancel": "Khantsela",
+    "clear": "U bvisa",
+    "close": "Vhalani",
+    "connect": "U ṱumanya",
+    "connecting": "U ṱumanya...",
+    "continue": "Kha phanda",
+    "delete": "Phumula",
+    "finish": "fhedza",
+    "friends": "Khonani",
+    "google": "Google",
+    "home": "Hayani",
+    "loading": "U khou ḓadza...",
+    "map": "Mapa",
+    "notNow": "A si zwino",
+    "remove": "Bvisa",
+    "retry": "Lingedza hafhu",
+    "retrying": "U lingedza hafhu",
+    "save": "Vhulunga",
+    "selected": "Yo khethiwaho",
+    "send": "Rumela",
+    "settings": "Zwishumiswa",
+    "skip": "U pfuka",
+    "skipForNow": "Kha zwa zwino",
+    "skipTutorial": "U pfuka thuthoriala",
+    "sos": "SOS",
+    "unknown": "A zwi ḓivhei",
+    "user": "VeryLoving mushumisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Luambo",
+    "subtitle": "Khethani luambo lune lwa shumiswa kha app yoṱhe.",
+    "system": "Tshivhumbeo tsha sisiṱeme",
+    "search": "Nyambo dza u ṱoḓa",
+    "noResults": "A hu na nyambo dzine dza tshimbilelana na ṱhoḓisiso yaṋu.",
+    "english": "Tshivenda",
+    "spanish": "Tshipania",
+    "french": "Lufura",
+    "chineseSimplified": "Tshaina (Tsho Leludzwaho)"
+  },
+  "phone": {
+    "label": "Nomboro ya luṱingo",
+    "placeholder": "Nomboro ya luṱingo",
+    "selectCountry": "Khethani shango kana dzingu",
+    "searchCountry": "Setsha shango, khoudu, kana ṱhoho ya u daela",
+    "noCountries": "A hu na mashango a fanaho na ṱhoḓisiso yaṋu.",
+    "countryButton": "Tshandukisa shango, zwa zwino %{country} na %{callingCode}",
+    "inputAccessibility": "Nomboro ya luṱingo ya %{country}",
+    "required": "Ṅwalani nomboro ya luṱingo.",
+    "tooShort": "Nomboro iyi ya luṱingo ndi pfufhi vhukuma.",
+    "tooLong": "Nomboro iyi ya luṱingo ndi ndapfu vhukuma.",
+    "invalid": "Ṅwalani nomboro ya luṱingo i shumaho ya shango ḽo khethiwaho.",
+    "valid": "Nomboro ya luṱingo ya dzitshaka i shumaho"
+  },
+  "auth": {
+    "onboardingTagline": "Mufarisi wa tsireledzo ya muthu nga eṱhe kha zwifhinga zwi re vhukati ha “Ndi khwine” na “Ndi ṱoḓa thuso.”",
+    "createAccount": "Kha vha ite akhaunthu",
+    "continueOnboarding": "Isa phanda na u dzhena kha tshikepe",
+    "createSubtitle": "Khethani nḓila ya u dzhena u itela u tsireledza girafu yaṋu ya tsireledzo.",
+    "phoneVerification": "Vhukhwaṱhisedzo ha luṱingo",
+    "sendCode": "Rumela khoudu",
+    "sendingCode": "U rumela khoudu...",
+    "verifyCode": "Kha vha khwaṱhisedze khoudu",
+    "sentTo": "Yo rumelwa kha %{phone}",
+    "yourPhone": "founu yavho",
+    "verificationCode": "Khoudu ya u khwaṱhisedza",
+    "verify": "Kha vha khwaṱhisedze",
+    "verifying": "U khwaṱhisedza...",
+    "invalidCode": "Ṅwalani khoudu ya u khwaṱhisedza.",
+    "signInFailedTitle": "U dzhena zwo thithiswa",
+    "signInFailedMessage": "A ro ngo kona u fhedza u dzhena. Sedzani vhukwamani haṋu nahone ni lingedze hafhu.",
+    "googleUnavailableTitle": "Google U dzhena a hu wanali",
+    "googleUnavailableMessage": "U shumisa sesheni ya mveledziso yapo. Native Google Sign-In i shuma kha u fhaṱa ha mveledziso.",
+    "northStarTitle": "NorthStar zwithu zwa u ḓiṱama",
+    "northStarSubtitle": "Pair zwino kana ni bvele phanḓa na u engedza nga murahu.",
+    "northStarBody": "The VL01 wearable i nga bveledza u elela ha tsireledzo nga dzipompo na zwiga zwa u tsitsa zwilapfu.",
+    "setupJewelry": "U dzudzanya zwithu zwa u ḓiṱama",
+    "meetCapybear": "Kha vha tangane Capybear",
+    "meetCapybearSubtitle": "Mufarisi waṋu wa tsireledzo wa vhulenda kha mapa na kha dzifounu.",
+    "capybearBody": "Capybear i nga thusa kha moudu wa hayani, moudu wa muṱhogomeli, moudu wa shishi, u founa ha tshiitisi, na thikhedzo ya ipfi.",
+    "chooseVoice": "Khethani izwi",
+    "capybearReminder": "Capybear khumbudzo",
+    "remindersReady": "Khumbudzo dza vhulenda dzo lugela."
+  },
+  "permissions": {
+    "locationTitle": "Tshitsireledzo tsha fhethu",
+    "locationSubtitle": "I shumiswa kha mapa, fhethu ha khombo, u swika ho tsireledzeaho, na SOS nyimele.",
+    "locationBody": "VeryLoving i humbela fhethu uri vhaṱhogomeli vha kone u pfesesa hune thuso ya nga ṱoḓea hone. Ni nga shandula zwenezwi nga murahu kha Zwishumiswa.",
+    "allowLocation": "Tendelani fhethu",
+    "notificationsTitle": "Tsivhudzo dza tsireledzo",
+    "notificationsSubtitle": "Nḓivhadzo dzi tikedza u ṱola na zwiitea zwa shishi.",
+    "notificationsBody": "Ri shumisa fhedzi nḓivhadzo dza ṱhuṱhuwedzo dza tsireledzo, mvelaphanḓa dza shishi, na khumbudzo dzine na dzi tendela.",
+    "enableNotifications": "Khonisa nḓivhadzo",
+    "locationRationaleTitle": "Fhethu hu ita uri nyimele ya tsireledzo i dzule yo tea",
+    "locationRationaleMessage": "VeryLoving i shumisa fhethu haṋu kha mapa wa tsireledzo, fhethu ha khombo, u kovhelana nga u ṱavhanya, na SOS vhuimo. Ni nga shandula zwenezwi nga murahu kha Zwishumiswa.",
+    "notificationsRationaleTitle": "Nḓivhadzo dza tsireledzo dzi ṱoḓa nḓivhadzo",
+    "notificationsRationaleMessage": "VeryLoving i rumela khumbudzo dza u dzhena, mvelaphanḓa dza shishi, na ṱhuṱhuwedzo dza tsireledzo dzine na dzi tendela. A ri shumisi nḓivhadzo dza u ḓivhadza.",
+    "microphoneRationaleTitle": "Maikrofoni i ṋea maanḓa kha u vhidzelela ha tsireledzo",
+    "microphoneRationaleMessage": "VeryLoving u shumisa maikrofoni yaṋu fhedzi musi ni tshi thoma AI khonani kana luṱingo lwa tsireledzo.",
+    "bluetoothRationaleTitle": "Bluetooth i ṱumanya zwiambaro zwaṋu",
+    "bluetoothRationaleMessage": "VeryLoving i shumisa Bluetooth u ṱanganya na NorthStar zwithu zwa u ḓiṱama, u vhala tshiimo tsha vhuṱumani, na u ṱuṱuwedza u elela ha tsireledzo u bva kha zwiambaro.",
+    "cameraRationaleTitle": "Khamera ndi ya u nanga",
+    "cameraRationaleMessage": "VeryLoving i shumisa khamera fhedzi musi ni tshi nanga u dzhia tshinepe tsha phurofaili kana u kovhelana tshifanyiso tsha tsireledzo."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving i ita uri u elela uhu hu dzule hu hone u bva kha Zwiṱirathedzhi na kha dashibodo.",
+    "chooseVoiceTitle": "Khethani ipfi ḽaṋu .",
+    "chooseVoiceSubtitle": "Khethani ipfi ḽa khonani ḽine ḽa pfa ḽo tsireledzea u ḽi pfa.",
+    "homeTitle": "Moudu wa hayani",
+    "homeSubtitle": "U monithara ho dzikaho u itela tsireledzo ya ḓuvha ḽiṅwe na ḽiṅwe.",
+    "guardianTitle": "Moudu wa mulindi",
+    "guardianSubtitle": "U kovhelana vhubvo na vhathu vhane vha vha fulufhela.",
+    "emergencyTitle": "Moudu wa shishi",
+    "emergencySubtitle": "Pompo ṱhanu dzi nga gonya dza swika kha SOS na tsivhudzo dza vhalindi.",
+    "excuseTitle": "Pfarelo luṱingo",
+    "excuseSubtitle": "U sika tshiitisi tsha vhulenda tsha u ṱutshela nyimele i sa takadzi.",
+    "safetyCallTitle": "Lutingo lwa tsireledzo",
+    "safetyCallSubtitle": "Thomani luṱingo lwa khonani lwa tshifhinga tsha vhukuma musi ni tshi ṱoḓa thikhedzo.",
+    "practiceTitle": "Tshiṱori tsha u ḓiḓowedza",
+    "practiceSubtitle": "Lingedzani u elela ha tsireledzo kha demo ya mutsiko wa fhasi."
+  },
+  "jewelry": {
+    "pairTitle": "Vhavhili NorthStar",
+    "pairSubtitle": "Vheani zwithu zwa u ḓiṱama tsini musi ni tshi khou ṱola.",
+    "scan": "Skenani zwishumiswa",
+    "scanning": "U ṱola tsini...",
+    "noDevices": "A hu athu wanala zwishumiswa zwa tsini NorthStar.",
+    "scanStartFailed": "Bluetooth u ṱola a zwo ngo kona u thoma. Ndi khou humbela uri ni lingedze hafhu.",
+    "scanFailed": "A ro ngo wana zwithu zwa u ḓiṱama tsini. Sedzani Bluetooth, ni dzule no vala NorthStar, ni lingedze hafhu.",
+    "scanAccessFailed": "Bluetooth u ṱola a zwo ngo kona u thoma. Sedzani Bluetooth access ni lingedze hafhu.",
+    "permissionDenied": "Tswikelelo ya tshishumiswa tsha tsini yo dzimiwa. Tendelani Bluetooth u swikelela kha Zwiṱirathedzhi, nga murahu ni lingedze hafhu.",
+    "connectTimeout": "NorthStar zwo dzhia tshifhinga tshilapfu u ṱangana. I sendedzeni tsini ni lingedze hafhu.",
+    "connectFailed": "A ro ngo kona u ṱangana na NorthStar. Sedzani uri yo chargeiwa nahone i tsini, ni lingedze hafhu.",
+    "emptyTitle": "A hu athu vha na zwishumiswa zwa tsini",
+    "emptyMessage": "Dzulani no NorthStar no charge na tsini na founu iyi, ni kone u dovha na scan.",
+    "searchingMessage": "Ndi khou toda NorthStar zwishumiswa tsini..."
+  },
+  "home": {
+    "subtitle": "Dashibodo ya khonani ya tsireledzo",
+    "modeStatus": "%{mode} MOUDE",
+    "companionReady": "%{name} yo lugela",
+    "readyBody": "Ipfi, mapa, zwithu zwa u ḓiṱama, na vhalindi zwi kule nga pompo nthihi.",
+    "safetyCall": "Lutingo lwa tsireledzo",
+    "northStarDevice": "NorthStar tshishumiswa",
+    "deviceConnected": "%{name} yo ṱumana · %{battery}%",
+    "noDevice": "A hu na tshishumiswa tsho ṱumanaho",
+    "manageDevice": "Langula tshishumiswa",
+    "mode": "Moudu",
+    "modes": {
+      "home": "Hayani",
+      "guardian": "Mulindi",
+      "emergency": "Tshiimo tsha shishi"
+    }
+  },
+  "map": {
+    "finding": "U wana vhupo havho...",
+    "retry": "Lingedza hafhu fhethu",
+    "title": "Mapa wa tsireledzo",
+    "previewSubtitle": "Expo Go ṱhoḓisiso; Mapbox i ṋea kha mveledziso ya u fhaṱa.",
+    "preview": "Thombo ya mapa",
+    "risk": "Khombo: %{risk} · Radiasi %{radius}m",
+    "refresh": "U vusuludza fhethu",
+    "refreshing": "U wana fhethu...",
+    "updateFailed": "A ro ngo kona u ḓivhadza vhupo haṋu. Ndi khou humbela uri ni lingedze hafhu.",
+    "notRequested": "U swikelela fhethu a zwo ngo humbelwa. Ni nga i vula nga murahu u bva kha Settings.",
+    "permissionOff": "U swikelela fhethu ho dzima. I tendeleni kha Settings u itela u vhea mapa wa tsireledzo vhukati ha inwi.",
+    "timeout": "Fhethu hune na vha hone hu khou dzhia tshifhinga tshilapfu u fhira zwe zwa vha zwo lavhelelwa. Sudzuluwani fhethu hune ha vha na tshiga tshi vhonalaho nahone ni lingedze hafhu.",
+    "savedTitle": "Fhethu ho vhulungwaho",
+    "savedEmptyTitle": "A hu athu vhulungea fhethu ho vhulungwaho",
+    "savedEmptyMessage": "Fhethu hune ha fulufhedzea hune na vhulunga hu ḓo bvelela hafha u itela u ṱavhanya u swikelela.",
+    "zones": {
+      "crowding": "U ḓala ha vhathu vhusiku vhuhulu",
+      "lowLighting": "Fhethu hune ha vha na tshedza tshiṱuku"
+    },
+    "risks": {
+      "low": "fhasi",
+      "medium": "vhukati",
+      "high": "nṱha"
+    }
+  },
+  "safetyCall": {
+    "connecting": "U ṱumanya...",
+    "offlineCompanion": "Mufarisi a siho kha inthanethe",
+    "offline": "A siho kha inthanethe",
+    "connected": "Zwo ṱumana",
+    "interrupted": "Khonekheni yo khakhiswa",
+    "ready": "Ro lugela u ṱangana",
+    "connectingSecurely": "u ṱumana zwavhuḓi na khonani yaṋu ya ipfi...",
+    "messagesWaiting": {
+      "one": "%{count} mulaedza wo lindelaho u rumelwa",
+      "other": "%{count} milaedza yo lindelaho u rumelwa"
+    },
+    "useOffline": "Shumisani khonani i siho kha inthanethe",
+    "reconnect": "U ṱumanya hafhu na ipfi AI",
+    "typePlaceholder": "Type arali u amba zwi tshi konḓa .",
+    "endCall": "U fhelisa lutingo",
+    "startCall": "Thomani lutingo",
+    "emptyTitle": "Nyambedzano yavho i thoma henefha .",
+    "emptyMessage": "Thomani luṱingo kana ni ṅwale mulaedza musi no no ḓilugisela."
+  },
+  "chat": {
+    "waiting": "Ro lindela vhuṱumani",
+    "notSent": "Mulaedza a wo ngo rumelwa.",
+    "retryAccessibility": "Lingedzani hafhu u rumela mulaedza"
+  },
+  "history": {
+    "clearTitle": "U bvisa ḓivhazwakale ya nyambedzano?",
+    "clearMessage": "Izwi zwi bvisa milaedza ya khonani yo vhulungwaho ya AI kha tshishumiswa itshi.",
+    "deleteTitle": "U phumula nyambedzano iyi?",
+    "cannotUndo": "Hezwi a zwi nga ḓo vhuyedzedzwa murahu.",
+    "title": "Ḓivhazwakale ya nyambedzano",
+    "subtitle": "AI milaedza ya khonani yo vhulungwaho kha tshishumiswa itshi.",
+    "empty": "A hu athu vhulungwa nyambedzano.",
+    "emptyTitle": "A hu athu vha na nyambedzano",
+    "emptyMessage": "Nyambedzano dzaṋu dza AI dza khonani dzi ḓo bvelela hafha nga murahu ha u founa haṋu ha u thoma.",
+    "loadFailed": "A ro ngo kona u dzhia ḓivhazwakale ya nyambedzano. Ndi khou humbela uri ni lingedze hafhu.",
+    "clearFailed": "A ro ngo kona u bvisa ḓivhazwakale ya nyambedzano. Ndi khou humbela uri ni lingedze hafhu.",
+    "deleteFailed": "A ro ngo kona u phumula nyambedzano yeneyo. Ndi khou humbela uri ni lingedze hafhu.",
+    "aiCompanion": "AI khonani",
+    "resume": "Dzhia",
+    "clearAll": "Fhumula ḓivhazwakale yoṱhe",
+    "roles": {
+      "assistant": "mufarisi",
+      "user": "inwi"
+    }
+  },
+  "voices": {
+    "title": "Maipfi anga a u vhidzelela a tsireledzo",
+    "subtitle": "Khethani ipfi ḽa khonani ḽine na pfa ḽo tea u ḽi pfa.",
+    "test": "Izwi zwa mulingo",
+    "stop": "Imisa tsumbo",
+    "selectionFailedTitle": "Khetho a yo ngo vhulungwa",
+    "selectionFailedMessage": "Ndi khou humbela uri ni lingedze u nanga ipfi hafhu.",
+    "sampleFailedTitle": "Tsumbo a i wanali",
+    "sampleFailedMessage": "Tsumbo iyi ya ipfi a yo ngo kona u lidziwa. Ndi khou humbela uri ni lingedze hafhu.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "yo dzikaho, yo dzikaho, yo khwaṱhaho"
+      },
+      "bestie": {
+        "name": "Khonani",
+        "description": "u penya, u khwaṱhisedza, nyambedzano"
+      },
+      "boyfriend": {
+        "name": "Muthannga",
+        "description": "u dzika, lufuno, u vha hone"
+      },
+      "muscleMan": {
+        "name": "Munna wa misipha",
+        "description": "u ḓifulufhela, u tsireledza, u ṱuṱuwedza"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Izwi",
+    "changeVoice": "Tshandukisa ipfi",
+    "showCompanion": "Sumbedza khonani",
+    "offlineMode": "Moudu wa u sa vha kha inthanethe",
+    "offlineModeSubtitle": "Shumisani phindulo dza khonani dzo ṱanganaho musi nethiweke kana Hume zwidodombedzwa zwi siho.",
+    "privacyData": "Tshiphiri & datha",
+    "privacyBody": "Export kana u phumula data yapo yo vhulungwaho kha tshishumiswa itshi.",
+    "preparingExport": "U lugisela u rumela nnḓa...",
+    "exportData": "Rumela nnḓa data yanga",
+    "privacyPolicy": "Mbekanyamaitele ya tshiphiri",
+    "deleting": "U phumula...",
+    "deleteAll": "Phumula data yothe yapo",
+    "deviceManagement": "Ndangulo ya tshishumiswa",
+    "emergencyContacts": "Vhukwamani ha shishi",
+    "signOut": "Kha vha bve",
+    "exportFailedTitle": "U rumela nnḓa zwo kundelwa",
+    "exportFailedMessage": "A vha koni u rumela data yavho nnḓa zwa zwino.",
+    "deleteConfirmTitle": "U phumula data yothe yapo?",
+    "deleteConfirmMessage": "Izwi zwi bvisa phrofaili yaṋu, zwishumiswa, vhukwamani ha shishi, ḓivhazwakale ya nyambedzano, khumbudzo dza thendelo, na sesheni ya vhuṱanzi hapo kha tshishumiswa itshi.",
+    "deleteEverything": "Phumula zwothe",
+    "deleteFailedTitle": "U phumula zwo kundelwa",
+    "deleteFailedMessage": "A zwi koni u thutha data yapo zwa zwino.",
+    "linkFailed": "A thi koni u vula vhuṱumani",
+    "sections": {
+      "language": "Luambo",
+      "languageSubtitle": "Luambo lwa vhukwamani na thendelo ya sisiṱeme",
+      "companion": "Mufarisi",
+      "companionSubtitle": "Ipfi na zwine na zwi takalela zwi siho kha inthanethe",
+      "deviceSafety": "Zwishumiswa na tsireledzo .",
+      "deviceSafetySubtitle": "NorthStar, vhaṱhogomeli, na vhukwamani ha shishi",
+      "privacy": "Tshiphiri na datha",
+      "privacySubtitle": "Ḓivhazwakale, u rumela nnḓa, u phumula, na mbekanyamaitele",
+      "account": "Akhaunthu",
+      "accountSubtitle": "Sesheni yaṋu ya zwino ya VeryLoving"
+    },
+    "updateFailedTitle": "Setting a yo ngo vhulungwa",
+    "updateFailedMessage": "A ro ngo kona u vhulunga zwenezwo zwine ra zwi takalela. Ndi khou humbela uri ni lingedze hafhu.",
+    "signOutFailedTitle": "A ri koni u bva",
+    "signOutFailedMessage": "Sesheni yaṋu i kha ḓi shuma. Ndi khou humbela uri ni lingedze hafhu."
+  },
+  "contacts": {
+    "title": "Vhukwamani ha shishi",
+    "subtitle": "Vhathu vha fulufhedzeaho vhane vha vha hone nga tshifhinga tsha u elela ha tsireledzo.",
+    "addTitle": "Engedza vhukwamani ha shishi",
+    "name": "Dzina",
+    "namePlaceholder": "Dzina ḽa vhukwamani",
+    "phone": "Nomboro ya luṱingo ya u kwama",
+    "add": "Engedza vhukwamani",
+    "empty": "A hu athu engedzwa vhukwamani ha shishi.",
+    "emptyTitle": "A hu athu vha na vhukwamani ha shishi",
+    "emptyMessage": "Engedzani muthu ane na mu fulufhela uri vha vhe vho lugela musi safety flow i tshi vha ṱoḓa.",
+    "removeTitle": "U bvisa %{name}?",
+    "removeMessage": "Muthu uyu ha tsha ḓo bvelela kha u elela haṋu ha shishi.",
+    "nameRequired": "Ṅwalani dzina ḽa vhukwamani.",
+    "saveFailedTitle": "Vhukwamani a ho ngo vhulungwa",
+    "saveFailedMessage": "A ro ngo kona u vhulunga vhukwamani uhu. Sedzani zwidodombedzwa nahone ni lingedze hafhu.",
+    "removeFailedTitle": "Vhukwamani a ho ngo bviswa",
+    "removeFailedMessage": "A ro ngo kona u bvisa vhukwamani uhu. Ndi khou humbela uri ni lingedze hafhu.",
+    "callAccessibility": "Founelani %{name}",
+    "removeAccessibility": "U bvisa %{name}"
+  },
+  "device": {
+    "title": "Ndangulo ya tshishumiswa",
+    "subtitle": "Langulani tshishumiswa tshaṋu tsha NorthStar.",
+    "connected": "Yo ṱanganywa · %{battery}% ya beṱiri",
+    "none": "A hu na zwishumiswa zwo ṱumanaho",
+    "disconnect": "Bvisani tshishumiswa",
+    "connect": "Vhuṱumanya tshishumiswa"
+  },
+  "friends": {
+    "title": "Khonani",
+    "subtitle": "Vhaṱhogomeli, khumbelo, na girafu ya shishi.",
+    "addDemo": "Engedza khonani ya demo",
+    "emptyTitle": "Tshidimela tsha tsireledzo yavho a tshi na tshithu",
+    "emptyMessage": "Khonani dzi fulufhedzeaho na vhaṱhogomeli vha ḓo bvelela hafha musi vho no engedzwa.",
+    "newGuardian": "Mulindi Muswa",
+    "statuses": {
+      "guardian": "Mulindi",
+      "pending": "Zwo lindela"
+    }
+  },
+  "emergency": {
+    "title": "Tshiimo tsha shishi SOS",
+    "subtitle": "Escalate fhedzi musi ni tshi ṱoḓa thikhedzo nga u ṱavhanya.",
+    "body": "Hezwi zwi ḓo ḓivhadza u elela haṋu ha tsireledzo na u lugisela vhukwamani ha shishi.",
+    "activate": "U shumisa SOS",
+    "callCompanion": "Founelani AI khonani",
+    "notificationTitle": "SOS yo shumiswa",
+    "notificationBody": "U elela haṋu ha shishi ho no lugela.",
+    "readyTitle": "SOS yo lugela",
+    "callContact": "Founela %{name}?",
+    "addContact": "Engedza vhukwamani ha shishi kha Zwiṱirathedzhi.",
+    "quickShareTitle": "U kovhekana nga u ṱavhanya",
+    "quickShareMessage": "Stub ya u kovhelana fhethu yo lugela. Kha vha ṱume backend ya u kovhelana endpoint u rumela vhuṱumani vhu tshilaho."
+  },
+  "quickShare": {
+    "title": "U kovhelana nga u ṱavhanya",
+    "subtitle": "U elela ha mukovhe wa fhethu ho lugela."
+  },
+  "capybearTap": {
+    "title": "Capybear pompo",
+    "subtitle": "Kha vha ṱoḓe luvhili NorthStar yavho u itela u wisela muṱokola wa tsireledzo.",
+    "body": "Nḓila ya zwanḓa yo lugela u ṱanganya dzithambo dza zwiitea zwa BLE."
+  },
+  "debug": {
+    "title": "VeryLoving siaṱari ḽa u khakhulula",
+    "subtitle": "Nḓila ya mveledziso fhedzi."
+  },
+  "errors": {
+    "voiceOffline": "U vhonala a siho kha inthanethe. Mulaedza waṋu u ḓo rumelwa musi ni tshi dovha na ṱangana.",
+    "voiceQueued": "Mulaedza wo vhulungea. I ḓo rumelwa musi khonani ya ipfi i tshi dovha ya ṱangana.",
+    "voiceRetrying": "Ndi khou lingedza u rumela mulaedza wavho hafhu...",
+    "voiceConnecting": "U ṱumanya zwavhuḓi na khonani yaṋu ya ipfi...",
+    "microphone": "U swikelela maikrofoni zwi a ṱoḓea kha u founa nga ipfi. Ni nga i vula kha Settings, kana na ṅwala mulaedza nṱhani hazwo.",
+    "billing": "Mufarisi wa ipfi wa inthanethe ha wanali lwa tshifhinganyana. U nga bvela phanḓa na khonani i siho kha inthanethe.",
+    "authentication": "Mufarisi wa ipfi ha ngo kona u khwaṱhisedza sesheni iyi. Kha vha saine hafhu kana vha shumise khonani i siho kha inthanethe zwa zwino.",
+    "timeout": "Mufarisi wa ipfi o dzhia tshifhinga tshilapfu u fhindula. Sedzani vhukwamani haṋu nahone ni lingedze hafhu.",
+    "network": "Ro vha ri sa koni u swikelela khonani ya ipfi. Sedzani vhukwamani haṋu, ni lingedze hafhu kana ni bvele phanḓa ni si kha inthanethe.",
+    "genericVoice": "Hu na tshithu tsho thithisaho luṱingo lwa ipfi. Lingedzani hafhu, kana ni bvele phanḓa na khonani i siho kha inthanethe."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving u rumela nnḓa data"
+  },
+  "notifications": {
+    "channelName": "Tsivhudzo dza tsireledzo"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving i ṱoḓa tswikelelo ya maikrofoni u itela tsireledzo na AI dzifounu dza khonani.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving u shumisa fhethu haṋu kha mapa wa tsireledzo na zwishumiswa zwa tsireledzo zwa tsini.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving i shumisa fhethu haṋu u tikedza u swika ho tsireledzeaho na u elela ha tshomedzo.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving i shumisa fhethu ha murahu ha u swika ho tsireledzeaho na zwivhumbeo zwa tsini zwa fhethu ha khombo.",
+      "NSCameraUsageDescription": "VeryLoving u shumisa khamera fhedzi musi o nanga u dzhia tshinepe tsha phurofaili kana tsha tsireledzo.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving i shumisa laiburari ya zwifanyiso zwaṋu fhedzi musi ni tshi nanga phrofaili kana tshifanyiso tsha tsireledzo.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving i shumisa Bluetooth u ṱumanya na NorthStar yaṋu ya tsireledzo ya zwithu zwa u ḓiṱama.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving i shumisa Bluetooth u ṱumanya na NorthStar yaṋu ya tsireledzo ya zwithu zwa u ḓiṱama."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

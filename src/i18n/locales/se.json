@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Lasihit",
+    "apple": "Apple",
+    "back": "Ruovttoluotta",
+    "call": "Telefonhállan",
+    "cancel": "Bisset",
+    "clear": "Čielggas",
+    "close": "Lahka",
+    "connect": "Goallustit",
+    "connecting": "Oktavuohta...",
+    "continue": "Joatkit",
+    "delete": "Duššadit",
+    "finish": "Geargat",
+    "friends": "Ustibat",
+    "google": "Google",
+    "home": "Ruoktu",
+    "loading": "Lasta...",
+    "map": "Kárta",
+    "notNow": "ii dál",
+    "remove": "Jávkadit",
+    "retry": "Geahččal ođđasit",
+    "retrying": "Geahččalan fas",
+    "save": "Seastit",
+    "selected": "Válljejuvvon",
+    "send": "Sáddet",
+    "settings": "Ásahusat",
+    "skip": "Hilgut",
+    "skipForNow": "Váldde eret dál",
+    "skipTutorial": "Váldde eret oahpponeavvu",
+    "sos": "SOS",
+    "unknown": "Dovdameahttun",
+    "user": "VeryLoving geavaheaddji",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Giella",
+    "subtitle": "Vállje giela mii geavahuvvo olles áppas.",
+    "system": "Systema standárda",
+    "search": "Ohcat gielaid",
+    "noResults": "Ii oktage giella heive du ohcamii.",
+    "english": "eaŋgalsgiella",
+    "spanish": "spánskkagiella",
+    "french": "Fránskkagiella",
+    "chineseSimplified": "Kiinnágiella (álkiduvvon)"
+  },
+  "phone": {
+    "label": "Telefovdnanummir",
+    "placeholder": "Telefovdnanummir",
+    "selectCountry": "Vállje riikka dahje guovllu",
+    "searchCountry": "Ohcat riikka, koda dahje riŋgenprefiksa",
+    "noCountries": "Ii oktage riika heive du ohcamii.",
+    "countryButton": "Rievdat riikka, dál %{country} lassin %{callingCode}",
+    "inputAccessibility": "Telefovdnanummir %{country}",
+    "required": "Čále telefovdnanummira.",
+    "tooShort": "Dát telefovdnanummir lea menddo oanehis.",
+    "tooLong": "Dát telefovdnanummir lea menddo guhkki.",
+    "invalid": "Čále dohkálaš telefovdnanummira válljejuvvon riikii.",
+    "valid": "Dohkálaš riikkaidgaskasaš telefovdnanummir"
+  },
+  "auth": {
+    "onboardingTagline": "Persovnnalaš sihkarvuođaveahkki daid áiggiid gaskal “mun lean buorre” ja “mun dárbbašan veahki.”",
+    "createAccount": "Ásahit konto",
+    "continueOnboarding": "Joatkit sisaváldima",
+    "createSubtitle": "Vállje sisaloggenvuogi vai beasat suodjalit du sihkarvuođagráfa.",
+    "phoneVerification": "Telefovdnaduođaštus",
+    "sendCode": "Sádde koda",
+    "sendingCode": "Sádden koda...",
+    "verifyCode": "Dárkkis koda",
+    "sentTo": "Sáddejuvvon %{phone}",
+    "yourPhone": "du telefovdna",
+    "verificationCode": "Duođaštuskoda",
+    "verify": "Duođaštit",
+    "verifying": "Duođaštit...",
+    "invalidCode": "Čále duođaštuskoda.",
+    "signInFailedTitle": "Sisaloggen bissehuvvui",
+    "signInFailedMessage": "Mii eat nagodan čađahit sisaloggema. Dárkkis oktavuođa ja geahččal fas.",
+    "googleUnavailableTitle": "Google Sisaloggen ii leat fálaldat",
+    "googleUnavailableMessage": "Báikkálaš ovddidansešuvnna geavaheapmi. Native Google Sign-In doaibmá ovdánahttinbuvttadeamis.",
+    "northStarTitle": "NorthStar juvllat",
+    "northStarSubtitle": "Ovttastahttit dál dahje joatkke ja lasit dan maŋŋelabbos.",
+    "northStarBody": "VL01 geavahanrusttet sáhttá álggahit sihkarvuođavuođuid čuohppamiin ja guhkes čuohppamiiguin.",
+    "setupJewelry": "Ásahit juvllaid",
+    "meetCapybear": "Deaivvadit Capybear",
+    "meetCapybearSubtitle": "Du ráfálaš sihkarvuođaguoibmi kárttas ja riŋgemiin.",
+    "capybearBody": "Capybear sáhttá veahkehit ruovttumodeallas, gádjunmodeallas, heahtemodeallas, ákkastallantelefovnnain ja jietnadoarjagis.",
+    "chooseVoice": "Vállje jiena",
+    "capybearReminder": "Capybear muittuhus",
+    "remindersReady": "Váilevaš muittuhusat leat gárvásat."
+  },
+  "permissions": {
+    "locationTitle": "Báikedorvvolašvuohta",
+    "locationSubtitle": "Geavahuvvo kártii, váralaš guovlluide, dorvvolaš boahtimii ja SOS konteavsttas.",
+    "locationBody": "VeryLoving jearrá báikki vai fuolaheaddjit sáhttet ipmirdit gos veahki sáhttá dárbbašit. Sáhtát rievdadit dán maŋŋelabbos Settings:as.",
+    "allowLocation": "Dohkkehit báikki",
+    "notificationsTitle": "Sihkkarvuođadieđáhusat",
+    "notificationsSubtitle": "Dieđiheamit dorjot sisačáliheami ja heahtediliid.",
+    "notificationsBody": "Mii geavahit dušše dieđiheami sihkarvuođadieđáhusaide, heahteođasmahttimiidda ja muittuhusaide maid leat álggahan.",
+    "enableNotifications": "Doaibma dieđiheami",
+    "locationRationaleTitle": "Báiki doallá sihkarvuođakonteavstta dárkilis",
+    "locationRationaleMessage": "VeryLoving geavaha du báikki dorvvolašvuođakártii, váralaš guovlluide, jođánit juogadeapmái ja SOS konteavsttas. Sáhtát rievdadit dán maŋŋelabbos Settings:as.",
+    "notificationsRationaleTitle": "Sihkkarvuođadieđáhusat dárbbašit dieđiheami",
+    "notificationsRationaleMessage": "VeryLoving sádde sisačáliheami muittuhusaid, heahteođasmahttima ja dorvvolašvuođadieđuid maid leat álggahan. Mii eat geavat dieđiheami reklámaid várás.",
+    "microphoneRationaleTitle": "Mikrofovdna fállá sihkarvuođatelefovnnaid",
+    "microphoneRationaleMessage": "VeryLoving geavaha du mikrofovnna dušše dalle go álggahat AI ovttasbargoguoimmi dahje sihkarvuođatelefovnna.",
+    "bluetoothRationaleTitle": "Bluetooth čatná du geavahanrusttega",
+    "bluetoothRationaleMessage": "VeryLoving geavaha Bluetooth ovttastahttit NorthStar juvllaiguin, lohkat oktavuođa stáhtusa ja álggahit sihkarvuođavuođuid geavahanrusttegis.",
+    "cameraRationaleTitle": "Govvenrusttet lea válljejuvvon",
+    "cameraRationaleMessage": "VeryLoving geavaha govvenrusttega dušše dalle go válljet govvet profiilagova dahje juohkit sihkarvuođagova."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving doallá dán vuođu olámuttos njuolggadusain ja dávvirtávvalis.",
+    "chooseVoiceTitle": "Vállje iežat jiena",
+    "chooseVoiceSubtitle": "Vállje dan ovttasbargojiena mii lea sihkkareamos gullat.",
+    "homeTitle": "Ruovttumodealla",
+    "homeSubtitle": "Hilgut čuovvoleapmi beaivválaš sihkarvuođa várás.",
+    "guardianTitle": "Várrehusmodealla",
+    "guardianSubtitle": "Juogat konteavstta luohtehahtti olbmuiguin.",
+    "emergencyTitle": "Heahtedili",
+    "emergencySubtitle": "Vihtta čuohppama sáhttet sturrot SOS ja gádjunváruhusat.",
+    "excuseTitle": "Ándagassii",
+    "excuseSubtitle": "Luohte čáppa siva heaitit eahpesihkkaris dilis.",
+    "safetyCallTitle": "Sihkkarvuođačujuhus",
+    "safetyCallSubtitle": "Álggat áigeguovdilis ovttasbargoguoimmi go dárbbašat doarjaga.",
+    "practiceTitle": "Hárjehallanbáiki",
+    "practiceSubtitle": "Geahččal sihkarvuođavuođuid alla čáhcedási čájáhusas."
+  },
+  "jewelry": {
+    "pairTitle": "Párra NorthStar",
+    "pairSubtitle": "Doala juvllaid lahka go skáhppot.",
+    "scan": "Geahča rusttegiid",
+    "scanning": "Skannen lahka...",
+    "noDevices": "Eai leat vuos gávdnon lagas NorthStar rusttegat.",
+    "scanStartFailed": "Bluetooth iskkadeapmi ii sáhttán álggahuvvot. Geahččal fas.",
+    "scanFailed": "Mii eat gávdnan lahka juvllaid. Dárkkis Bluetooth, doala NorthStar gitta ja geahččal fas.",
+    "scanAccessFailed": "Bluetooth iskkadeapmi ii sáhttán álggahuvvot. Dárkkis Bluetooth sisabeassama ja geahččal fas.",
+    "permissionDenied": "Lagamus rusttegiid sisabeassan lea heaittihuvvon. Atte Bluetooth sisabeassama Settings:ii, de geahččal fas.",
+    "connectTimeout": "NorthStar ádjánii menddo guhkes áigi čatnat oktavuođa. Sirdde dan lagabui ja geahččal fas.",
+    "connectFailed": "Mii eat sáhttán čatnat oktavuođa NorthStar:ii. Dárkkis ahte lea láddejuvvon ja lahka, de geahččal fas.",
+    "emptyTitle": "Ii leat vuos lagaš rusttet",
+    "emptyMessage": "Doala NorthStar láddejuvvon ja lahka dán telefovnna, de skánne fas.",
+    "searchingMessage": "Ohcamin NorthStar rusttegiid lahka..."
+  },
+  "home": {
+    "subtitle": "Sihkkarvuođaguoibmi dávvirvuorkká",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} lea gárvvis",
+    "readyBody": "Jietna, kárta, juvllat ja gádjunveahkit leat ovtta čuoggás eret.",
+    "safetyCall": "Sihkkarvuođačujuhus",
+    "northStarDevice": "NorthStar rusttet",
+    "deviceConnected": "%{name} čadnojuvvon · %{battery}%",
+    "noDevice": "Ii oktage rusttet leat čadnojuvvon",
+    "manageDevice": "Hálddaš rusttegiid",
+    "mode": "Modealla",
+    "modes": {
+      "home": "Ruoktu",
+      "guardian": "Várrejeaddji",
+      "emergency": "Heahti"
+    }
+  },
+  "map": {
+    "finding": "Gávdnan báikki...",
+    "retry": "Geahččal ođđasit báikki",
+    "title": "Sihkkarvuođakárta",
+    "previewSubtitle": "Expo Go ovdagovva; Mapbox govvida ovdánahttinbuvttadeamis.",
+    "preview": "Kártta ovdagovva",
+    "risk": "Riska: %{risk} · Radius %{radius}m",
+    "refresh": "Ođasmahttit báikki",
+    "refreshing": "Gávdnan báikki...",
+    "updateFailed": "Mii eat nagodan ođasmahttit du báikki. Geahččal fas.",
+    "notRequested": "Báikebeassan ii lean bivdojuvvon. Sáhtát dan álggahit maŋŋelabbos Settings bokte.",
+    "permissionOff": "Báikebeassan lea eret. Aktivere dan Settings:as vai sihkarvuođakárta lea du guovddážis.",
+    "timeout": "Du báiki bistá guhkit go vuordán. Sirdde muhtin sajis gos lea čielgaseabbo signála ja geahččal fas.",
+    "savedTitle": "Seailluhuvvon báikkit",
+    "savedEmptyTitle": "Eai leat vuos vurkejuvvon sajit",
+    "savedEmptyMessage": "Luohtehahtti báikkit maid vurket bohtet ovdan dáppe vai beasat jođánit beassat sisa.",
+    "zones": {
+      "crowding": "Maŋŋit ija čoahkkaneapmi",
+      "lowLighting": "Guovlu gos lea unnán čuovga"
+    },
+    "risks": {
+      "low": "vuollegaš",
+      "medium": "gaskaoapmi",
+      "high": "allat"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Oktavuohta...",
+    "offlineCompanion": "Offline-ovttasbargoguoibmi",
+    "offline": "Offline",
+    "connected": "Oktavuođas",
+    "interrupted": "Oktavuohta bissehuvvui",
+    "ready": "Gearggus čatnat oktavuođa",
+    "connectingSecurely": "Oktavuohta sihkkarit jietnaguoibmái...",
+    "messagesWaiting": {
+      "one": "%{count} diehtu vuordá sáddejuvvot",
+      "other": "%{count} dieđut mat vuorddet sáddejuvvot"
+    },
+    "useOffline": "Geavat offline-ovttasbargoguoimmi",
+    "reconnect": "Ođđasit čatnat jiena AI",
+    "typePlaceholder": "Čále jus hállat lea váttis",
+    "endCall": "Loahpa riŋget",
+    "startCall": "Álggat riŋgema",
+    "emptyTitle": "Du ságastallan álgá dáppe",
+    "emptyMessage": "Álggat riŋgema dahje čále dieđu go leat gearggus."
+  },
+  "chat": {
+    "waiting": "Vuordit oktavuođa",
+    "notSent": "Diehtu ii sáddejuvvon.",
+    "retryAccessibility": "Geahččal fas sáddet dieđu"
+  },
+  "history": {
+    "clearTitle": "Čielga ságastallanhistorjá?",
+    "clearMessage": "Dát váldá eret vurkejuvvon AI searvedieđuid dán rusttegis.",
+    "deleteTitle": "Slette dán ságastallama?",
+    "cannotUndo": "Dát ii sáhte nuppástuhttojuvvot.",
+    "title": "Ságastallanhistorjá",
+    "subtitle": "AI searvedieđut vurkejuvvon dán rusttegii.",
+    "empty": "Eai vuos vurkejuvvon ságastallamat.",
+    "emptyTitle": "Ii leat vuos ságastallan",
+    "emptyMessage": "Du AI searvevuođaságastallamat oidnojit dás maŋŋel vuosttaš riŋgema.",
+    "loadFailed": "Mii eat nagodan bidjat sisa ságastallanhistorjjá. Geahččal fas.",
+    "clearFailed": "Mii eat nagodan čielggadit ságastallanhistorjjá. Geahččal fas.",
+    "deleteFailed": "Mii eat sáhttán sihkkut dan ságastallama. Geahččal fas.",
+    "aiCompanion": "AI ovttasbargoguoibmi",
+    "resume": "Joatkit",
+    "clearAll": "Buhtte buot historjjá",
+    "roles": {
+      "assistant": "olmmái",
+      "user": "don"
+    }
+  },
+  "voices": {
+    "title": "Mu sihkarvuođatelefovdnajienat",
+    "subtitle": "Vállje dan ovttasbargojiena mii lea riekta gullat.",
+    "test": "Geahččalanjietna",
+    "stop": "Stohpo ovdamearkka",
+    "selectionFailedTitle": "Válljen ii leat vurkejuvvon",
+    "selectionFailedMessage": "Geahččal fas válljet jiena.",
+    "sampleFailedTitle": "Ovdamearka ii gávdno",
+    "sampleFailedMessage": "Dát jietnaovdamearka ii sáhttán čuojahuvvot. Geahččal fas.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "njuovžilis, čoaskkis, eatnama alde"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "čáppa, luohtehahtti, ságastallan"
+      },
+      "boyfriend": {
+        "name": "Irgi",
+        "description": "bissovaš, ráhkis, dálá"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "luohtehahtti, suodjaleaddji, movttiidahtti"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Jietna",
+    "changeVoice": "Rievdat jiena",
+    "showCompanion": "Čájet ovttasbargoguoimmi",
+    "offlineMode": "Offline-modealla",
+    "offlineModeSubtitle": "Geavat čohkkejuvvon ovttasbargovástádusaid go neahtta dahje Hume duođaštusat eai leat gávdnamis.",
+    "privacyData": "Persovnnalašvuohta ja dieđut",
+    "privacyBody": "Eksportere dahje deaddilat báikkálaš dieđuid mat leat vurkejuvvon dán rusttegii.",
+    "preparingExport": "Válmmaštallan viežžamii...",
+    "exportData": "Viežže mu dieđuid",
+    "privacyPolicy": "Persovdnasuodjaluspolitihkka",
+    "deleting": "Slette...",
+    "deleteAll": "Deaddilat buot báikkálaš dieđuid",
+    "deviceManagement": "Rávdnjehálddašeapmi",
+    "emergencyContacts": "Heahteoktavuođat",
+    "signOut": "Loga eret",
+    "exportFailedTitle": "Eksporteren ii lihkostuvvan",
+    "exportFailedMessage": "Ii sáhte viežžat dieđuid dál.",
+    "deleteConfirmTitle": "Slette buot báikkálaš dieđuid?",
+    "deleteConfirmMessage": "Dát váldá eret du profiilla, njuolggadusaid, heahteoktavuođaid, ságastallanhistorjjá, lobiid muittuhusaid ja báikkálaš duođaštussešuvnna dán rusttegis.",
+    "deleteEverything": "Slette visot",
+    "deleteFailedTitle": "Sihkku ii lihkostuvvan",
+    "deleteFailedMessage": "Ii sáhte sihkkut báikkálaš dieđuid dál.",
+    "linkFailed": "Ii sáhte rahpat liŋkka",
+    "sections": {
+      "language": "Giella",
+      "languageSubtitle": "Gráda- ja ortnega lohpegiella",
+      "companion": "Olmmái",
+      "companionSubtitle": "Jietna- ja offline-miellaguottut",
+      "deviceSafety": "Rávdnjerusttegat ja sihkarvuohta",
+      "deviceSafetySubtitle": "NorthStar, fuolaheaddjit, ja heahteoktavuođat",
+      "privacy": "Persovdnasuodjalus ja dieđut",
+      "privacySubtitle": "Historjá, viežžan, sihkkun ja njuolggadusat",
+      "account": "Konto",
+      "accountSubtitle": "Du dálá VeryLoving sešuvdna"
+    },
+    "updateFailedTitle": "Ásahus ii leat vurkejuvvon",
+    "updateFailedMessage": "Mii eat nagodan seailluhit dan ovdamunni. Geahččal fas.",
+    "signOutFailedTitle": "Ii sáhttán logget eret",
+    "signOutFailedMessage": "Du sešuvdna lea ain aktiiva. Geahččal fas."
+  },
+  "contacts": {
+    "title": "Heahteoktavuođat",
+    "subtitle": "Luohtehahtti olbmot leat fárus sihkarvuođavuođuid áigge.",
+    "addTitle": "Lasit heahteoktavuođa",
+    "name": "Namma",
+    "namePlaceholder": "Oktavuođanamma",
+    "phone": "Oktavuođatelefovdnanummir",
+    "add": "Lasit oktavuođa",
+    "empty": "Eai leat vuos lasihan heahteoktavuođaid.",
+    "emptyTitle": "Eai leat vuos heahteoktavuođat",
+    "emptyMessage": "Lasit muhtima geasa luohtát nu ahte son lea gearggus go sihkarvuođavuođđu dárbbaša su.",
+    "removeTitle": "Váldde eret %{name}?",
+    "removeMessage": "Dát olmmoš ii šat boađe ovdan du heahteveahkkeprográmmas.",
+    "nameRequired": "Čále oktavuođaolbmo nama.",
+    "saveFailedTitle": "Oktavuohta ii vurkejuvvon",
+    "saveFailedMessage": "Eat nagodan vurket dán oktavuođa. Dárkkis dieđuid ja geahččal fas.",
+    "removeFailedTitle": "Oktavuohta ii váldojuvvon eret",
+    "removeFailedMessage": "Mii eat nagodan váldit eret dán oktavuođa. Geahččal fas.",
+    "callAccessibility": "Riŋge %{name}",
+    "removeAccessibility": "Váldde eret %{name}"
+  },
+  "device": {
+    "title": "Rávdnjehálddašeapmi",
+    "subtitle": "Hálddaš iežat NorthStar -fierpmádaga.",
+    "connected": "Čatnon · %{battery}% batteriija",
+    "none": "Ii oktage rusttet čadnojuvvon",
+    "disconnect": "Váldde eret fierpmádaga",
+    "connect": "Čatnet rusttegiid"
+  },
+  "friends": {
+    "title": "Ustibat",
+    "subtitle": "Fuolaheaddjit, gáibádusat ja heahteveahkkegráfa.",
+    "addDemo": "Lasit demo-skihpára",
+    "emptyTitle": "Du sihkarvuođasirkel lea rabas",
+    "emptyMessage": "Luohtehahtti skihpárat ja fuolaheaddjit bohtet ovdan dáppe go leat lasihuvvon.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Várrejeaddji",
+      "pending": "Čoavdemeahttun"
+    }
+  },
+  "emergency": {
+    "title": "Heahtedilli SOS",
+    "subtitle": "Eskalere dušše dalle go dárbbašat jođánit doarjaga.",
+    "body": "Dát dieđiha du sihkarvuođavuogádahkii ja ráhkada heahteoktavuođaid.",
+    "activate": "Aktivere SOS",
+    "callCompanion": "Riŋge AI ovttasbargoguoibmái",
+    "notificationTitle": "SOS aktiverejuvvon",
+    "notificationBody": "Du heahteveahkki lea gárvvis.",
+    "readyTitle": "SOS gárvvis",
+    "callContact": "Riŋget %{name}?",
+    "addContact": "Lasit heahteoktavuođa Settings:ii.",
+    "quickShareTitle": "Jođánit juohkit",
+    "quickShareMessage": "Báikejuohkinčuokkis lea gárvvis. Čuovvut backend-juogadeami loahppačuoggá vai sáhtát sáddet njuolggosáddagiid."
+  },
+  "quickShare": {
+    "title": "Jođánit juohkit",
+    "subtitle": "Báikejuohkinvuogádat lea gárvvis."
+  },
+  "capybearTap": {
+    "title": "Capybear čuohppat",
+    "subtitle": "Duppal deaddilat NorthStar vai oaččut sihkarvuođaoránša.",
+    "body": "Geažusjohtolat lea gárvvis BLE-dáhpáhusjohtolahkii."
+  },
+  "debug": {
+    "title": "VeryLoving vealaheami siidu",
+    "subtitle": "Dušše ovdánahttinvuohki."
+  },
+  "errors": {
+    "voiceOffline": "Don leat offline. Du diehtu sáddejuvvo go fas čatnat oktavuođa.",
+    "voiceQueued": "Diehtu vurkejuvvon. Dat sáddejuvvo go jietnaguoibmi fas čatná oktii.",
+    "voiceRetrying": "Geahččalan fas sáddet dieđu...",
+    "voiceConnecting": "Oktavuohta sihkkarit jietnaguoibmái...",
+    "microphone": "Jietnačujuhusaid várás dárbbašuvvo mikrofovdna. Sáhtát dan álggahit Settings:as, dahje čállit dieđu dan sadjái.",
+    "billing": "Neahttajietnaveahkki ii leat gaskaboddosaččat olámuttos. Sáhtát joatkit offline-ovttasbargoguoimmiin.",
+    "authentication": "Jietnaovttasbargoguoibmi ii nagodan duođaštit dán sešuvnna. Logge sisa fas dahje geavat offline-ovttasbargoguoimmi dál.",
+    "timeout": "Jietnaguoibmi válddii menddo guhká vástidit. Dárkkis oktavuođa ja geahččal fas.",
+    "network": "Mii eat nagodan olahit jietnaguoimmi. Dárkkis oktavuođa, de geahččal fas dahje joatkke offline.",
+    "genericVoice": "Juoga bissehii jietnačujuhusa. Geahččal fas, dahje joatkke offline-ovttasbargoguoimmiin."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving dieđuid viežžan"
+  },
+  "notifications": {
+    "channelName": "Sihkkarvuođadieđáhusat"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving dárbbaša mikrofovdnabeassama sihkarvuođa dihte ja AI ovttasbargoguoimmiid riŋgemiid dihte.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving geavaha du báikki dorvvolašvuođakártii ja lagaš dorvvolašvuođadoaimmaide.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving geavaha du báikki doarjut dorvvolaš boahtima ja heahtedili.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving geavaha bagadallanbáikki dorvvolaš boahtimii ja lagaš váralaš guovllu funkšuvnnaide.",
+      "NSCameraUsageDescription": "VeryLoving geavaha govvenrusttega dušše dalle go válljet govvet profiilla dahje sihkarvuođagova.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving geavaha du govvagirjerádjosa dušše dalle go válljet profiilla dahje sihkarvuođagova.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving geavaha Bluetooth čatnat du NorthStar sihkarvuođajuvllaide.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving geavaha Bluetooth čatnat du NorthStar sihkarvuođajuvllaide."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

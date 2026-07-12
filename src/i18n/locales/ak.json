@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Fa ka ho",
+    "apple": "Apple",
+    "back": "Akyire",
+    "call": "Frɛ",
+    "cancel": "Twam",
+    "clear": "Wann",
+    "close": "To mu",
+    "connect": "Fa ka ho",
+    "connecting": "Nkitahodi a ɛwɔ...",
+    "continue": "Toa so",
+    "delete": "Pepa",
+    "finish": "Wie",
+    "friends": "Ayɔnkofoɔ",
+    "google": "Google",
+    "home": "Fie",
+    "loading": "Loading...",
+    "map": "Asase mfonini",
+    "notNow": "Nyɛ seesei",
+    "remove": "Yi",
+    "retry": "San bɔ mmɔden bio",
+    "retrying": "Sɛ woresan abɔ mmɔden bio",
+    "save": "Kora",
+    "selected": "Wɔapaw no",
+    "send": "Mane",
+    "settings": "Nsiesiei a Wɔde Yɛ Adwuma",
+    "skip": "Bɔ tra",
+    "skipForNow": "Twa so mprempren",
+    "skipTutorial": "Skip nkyerɛkyerɛ no",
+    "sos": "SOS",
+    "unknown": "Nnim",
+    "user": "VeryLoving ɔdefoɔ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Kasa",
+    "subtitle": "Paw kasa a wode bedi dwuma wɔ app no ​​nyinaa mu.",
+    "system": "System default",
+    "search": "Hwehwɛ kasa horow mu",
+    "noResults": "Kasa biara nni hɔ a ɛne wo hwehwɛ no hyia.",
+    "english": "Borɔfo",
+    "spanish": "Spanish",
+    "french": "Franse kasa",
+    "chineseSimplified": "China kasa (Wɔayɛ no mmerɛw) ."
+  },
+  "phone": {
+    "label": "Telefon nɔma",
+    "placeholder": "Telefon nɔma",
+    "selectCountry": "Paw ɔman anaa ɔmantam",
+    "searchCountry": "Hwehwɛ ɔman, koodu, anaa dialing prefix",
+    "noCountries": "Aman biara nni hɔ a ɛne wo hwehwɛ no hyia.",
+    "countryButton": "Sesa ɔman, mprempren %{country} ka ho %{callingCode}",
+    "inputAccessibility": "Tɛlɛfon nɔma ma %{country}",
+    "required": "Hyehyɛ telefon nɔma bi.",
+    "tooShort": "Saa telefon nɔma yi yɛ tiaa dodo.",
+    "tooLong": "Saa telefon nɔma yi ware dodo.",
+    "invalid": "Hyehyɛ telefon nɔma a ɛfata ma ɔman a woapaw no.",
+    "valid": "Amanaman ntam telefon nɔma a ɛfata"
+  },
+  "auth": {
+    "onboardingTagline": "Ankorankoro ahobammɔ hokafo ma mmere a ɛda “Me ho ye” ne “Mehia mmoa” ntam.",
+    "createAccount": "Yɛ akontaabu",
+    "continueOnboarding": "Kɔ so yɛ onboarding",
+    "createSubtitle": "Paw ɔkwan a wobɛfa so akɔ mu de abɔ wo ahobammɔ graph no ho ban.",
+    "phoneVerification": "Telefon so adansedi krataa",
+    "sendCode": "Fa koodu mena",
+    "sendingCode": "Sending code...",
+    "verifyCode": "Hwɛ sɛ koodu no yɛ nokware",
+    "sentTo": "Wɔde kɔmaa %{phone}",
+    "yourPhone": "wo fon so",
+    "verificationCode": "Verification code",
+    "verify": "Si no pi",
+    "verifying": "Sɛ yɛrehwɛ sɛ...",
+    "invalidCode": "Hyehyɛ verification code no mu.",
+    "signInFailedTitle": "Wɔtwaa Sign-in mu",
+    "signInFailedMessage": "Yɛantumi anwie sign-in no. Hwɛ wo nkitahodi no na sɔ hwɛ bio.",
+    "googleUnavailableTitle": "Google Nkɔmmɔbɔ no ntumi nyɛ adwuma",
+    "googleUnavailableMessage": "Mpɔtam hɔ nkɔso nhyiam a wɔde bedi dwuma. Native Google Sign-In yɛ adwuma wɔ nkɔsoɔ dan mu.",
+    "northStarTitle": "NorthStar agude",
+    "northStarSubtitle": "Pair mprempren anaa toa so na fa ka ho akyiri yi.",
+    "northStarBody": "VL01 wearable no betumi akanyan ahobammɔ nsu a ɛsen denam tap ne press gestures tenten so.",
+    "setupJewelry": "Fa agude sisi hɔ",
+    "meetCapybear": "Hwɛ Capybear",
+    "meetCapybearSubtitle": "Wo ahobammɔ hokafo a odwo wɔ asase mfonini so ne frɛ mu.",
+    "capybearBody": "Capybear betumi aboa wɔ fie tebea, ɔwɛmfo tebea, ntɛmpɛ tebea, anoyi frɛ, ne nne mmoa mu.",
+    "chooseVoice": "Paw ɛnne bi",
+    "capybearReminder": "Capybear nkaeɛ",
+    "remindersReady": "Nkaebɔ a ɛyɛ brɛoo ayɛ krado."
+  },
+  "permissions": {
+    "locationTitle": "Beae ahobammɔ",
+    "locationSubtitle": "Wɔde di dwuma ma asase mfonini, asiane mmeae, ahobammɔ a ɛba, ne SOS nsɛm a ɛfa ho.",
+    "locationBody": "VeryLoving bisa beaeɛ sɛdeɛ ɛbɛyɛ a ahwɛfoɔ bɛtumi ate baabi a mmoa bɛtumi ahia ase. Wubetumi asesa eyi akyiri yi wɔ Settings mu.",
+    "allowLocation": "Ma kwan ma beae a wowɔ",
+    "notificationsTitle": "Ahobammɔ ho kɔkɔbɔ ahorow",
+    "notificationsSubtitle": "Amanneɛbɔ ahorow boa check-ins ne nsɛm a egye ntɛmpɛ.",
+    "notificationsBody": "Yɛde amanneɛbɔ di dwuma ma ahobammɔ ho nsɛm, ntɛmpɛ mu nsɛm foforo, ne nkaebɔ a woama ayɛ adwuma nkutoo.",
+    "enableNotifications": "Ma amanneɛbɔ ahorow nyɛ adwuma",
+    "locationRationaleTitle": "Beae a ɛwɔ no ma ahobammɔ ho nsɛm a ɛfa ho no yɛ nokware",
+    "locationRationaleMessage": "VeryLoving de wo beaeɛ di dwuma ma ahobanbɔ map, asiane mmeaeɛ, kyɛfa ntɛmntɛm, ne SOS nsɛm a ɛfa ho. Wubetumi asesa eyi akyiri yi wɔ Settings mu.",
+    "notificationsRationaleTitle": "Ahobammɔ ho kɔkɔbɔ hia sɛ wɔbɔ amanneɛ",
+    "notificationsRationaleMessage": "VeryLoving de nkaeɛbɔ a ɛfa check-in, ntɛmpɛ ho nsɛm foforɔ, ne ahobanbɔ ho nsɛm a woahyɛ mu den mena. Yɛmfa amanneɛbɔ nni dwuma mma dawurubɔ ahorow.",
+    "microphoneRationaleTitle": "Microphone ma ahobammɔ frɛ ahorow ahoɔden",
+    "microphoneRationaleMessage": "VeryLoving de wo microphone di dwuma bere a woafi ase AI hokafo anaa ahobammɔ frɛ nkutoo.",
+    "bluetoothRationaleTitle": "Bluetooth na ɛka wo wearable no bom",
+    "bluetoothRationaleMessage": "VeryLoving de Bluetooth di dwuma de bɔ NorthStar agude, kenkan nkitahodi tebea, na ɛkanyan ahobammɔ nsu a ɛsen fi nea wɔhyɛ no mu.",
+    "cameraRationaleTitle": "Camera yɛ nea obi betumi apaw",
+    "cameraRationaleMessage": "VeryLoving de kamera no di dwuma bere a wopaw sɛ wobɛtwe profile mfonini anaasɛ wobɛkyɛ ahobammɔ mfonini nkutoo."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ma saa nsuo yi kɔ so firi Nsiesiei ne dashboard no so.",
+    "chooseVoiceTitle": "Paw wo nne",
+    "chooseVoiceSubtitle": "Paw ɔhokafo nne a ɛte nka sɛ ahobammɔ wom sen biara sɛ wobɛte.",
+    "homeTitle": "Ofie mode a ɛwɔ hɔ",
+    "homeSubtitle": "Hwɛ a wɔyɛ komm de hwɛ ahobammɔ da biara da.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Ka nsɛm a ɛfa ho kyerɛ nnipa a wogye wɔn di.",
+    "emergencyTitle": "Nneɛma a egye ntɛmpɛ",
+    "emergencySubtitle": "Tap anum betumi akɔ soro akodu SOS ne ɔwɛmfo kɔkɔbɔ ahorow.",
+    "excuseTitle": "Fa kyɛw frɛ",
+    "excuseSubtitle": "Bɔ ntease a ɛyɛ fɛ a enti wubefi tebea bi a ɛnyɛ dɛ mu.",
+    "safetyCallTitle": "Ahobammɔ frɛ",
+    "safetyCallSubtitle": "Fi ase frɛ ɔhokafo frɛ wɔ bere ankasa mu bere a wuhia mmoa no.",
+    "practiceTitle": "Fa scene di dwuma",
+    "practiceSubtitle": "Sɔ ahobammɔ nsuo a ɛsen wɔ low-pressure demo mu hwɛ."
+  },
+  "jewelry": {
+    "pairTitle": "Nnipa baanu NorthStar",
+    "pairSubtitle": "Fa agude no sie baabi a ɛbɛn wo bere a woreyɛ scan no.",
+    "scan": "Scan hwehwɛ mfiri ahorow",
+    "scanning": "Scanning a ɛbɛn hɔ...",
+    "noDevices": "Wonhuu NorthStar mfiri biara a ɛbɛn hɔ.",
+    "scanStartFailed": "Bluetooth scanning no antumi amfi ase. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "scanFailed": "Yɛantumi anhu agude a ɛbɛn hɔ. Hwɛ Bluetooth , ma NorthStar nkɔ, na sɔ hwɛ bio.",
+    "scanAccessFailed": "Bluetooth scanning no antumi amfi ase. Hwɛ Bluetooth kwan na sɔ hwɛ bio.",
+    "permissionDenied": "Nearby-device access no adum. Ma Bluetooth kwan ma ɔkɔ mu wɔ Nsiesiei mu, afei sɔ hwɛ bio.",
+    "connectTimeout": "NorthStar gyee bere tenten dodo sɛ ɛbɛka ho. Fa bɛn no na bɔ mmɔden bio.",
+    "connectFailed": "Yɛantumi ankɔ NorthStar so. Hwɛ sɛ wɔabɔ ho ka na ɛbɛn hɔ, afei sɔ hwɛ bio.",
+    "emptyTitle": "Mfiri biara nni hɔ a ɛbɛn hɔ de besi nnɛ",
+    "emptyMessage": "Ma NorthStar charged na bɛn fon yi, afei scan bio.",
+    "searchingMessage": "Worehwehwɛ NorthStar mfiri a ɛbɛn wo..."
+  },
+  "home": {
+    "subtitle": "Ahobammɔ hokafo dashboard",
+    "modeStatus": "%{mode} NKYERƐKYERƐMU",
+    "companionReady": "%{name} ayɛ krado",
+    "readyBody": "Ɛnne, asase mfonini, agude, ne awɛmfo yɛ tap biako.",
+    "safetyCall": "Ahobammɔ frɛ",
+    "northStarDevice": "NorthStar afiri",
+    "deviceConnected": "%{name} abɔ · %{battery} % .",
+    "noDevice": "Mfiri biara nni hɔ a wɔde abɔ mu",
+    "manageDevice": "Hwɛ mfiri no so",
+    "mode": "Ɔkwan a wɔfa so yɛ",
+    "modes": {
+      "home": "Fie",
+      "guardian": "Ɔwɛmfo",
+      "emergency": "Putupuru"
+    }
+  },
+  "map": {
+    "finding": "Hwehwɛ wo beae...",
+    "retry": "San sɔ beae a wowɔ no hwɛ",
+    "title": "Ahobammɔ ho asase mfonini",
+    "previewSubtitle": "Expo Go nhwɛsoɔ; Mapbox renders wɔ nkɔsoɔ dan mu.",
+    "preview": "Asase mfonini no ho nhwɛso",
+    "risk": "Asiane: %{risk} · Radius %{radius} m",
+    "refresh": "Fa beae a wɔyɛ no foforo",
+    "refreshing": "Beae a wobɛhwehwɛ...",
+    "updateFailed": "Yɛantumi anyɛ beae a wowɔ no foforo. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "notRequested": "Wɔammisa beae a wɔbɛkɔ no. Wubetumi ama ayɛ adwuma akyiri yi afi Settings so.",
+    "permissionOff": "Beae a wɔde kɔ hɔ no yɛ off. Ma no nyɛ adwuma wɔ Settings mu na ɛnyɛ ahobammɔ map no mfinimfini wɔ wo so.",
+    "timeout": "Beae a wowɔ no regye bere tenten sen sɛnea na wɔhwɛ kwan. Tu kɔ baabi a ɛwɔ sɛnkyerɛnne a emu da hɔ na bɔ mmɔden bio.",
+    "savedTitle": "Mmeae a wɔakora so",
+    "savedEmptyTitle": "Mmeae biara nni hɔ a wɔakora so de besi nnɛ",
+    "savedEmptyMessage": "Mmeae a wugye di a wode sie no bɛda adi wɔ ha na ama woatumi akɔ hɔ ntɛm.",
+    "zones": {
+      "crowding": "Nnipa a wɔdɔɔso anadwo dasum",
+      "lowLighting": "Beae a kanea sua"
+    },
+    "risks": {
+      "low": "fam",
+      "medium": "kwan",
+      "high": "soro"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Nkitahodi a ɛwɔ...",
+    "offlineCompanion": "Ɔhokafo a ɔnyɛ offline",
+    "offline": "Ɛnyɛ Intanɛt so",
+    "connected": "Nkitahodi",
+    "interrupted": "Nkitahodi no twaa mu",
+    "ready": "Wɔasiesie wo ho sɛ wobɛka ho",
+    "connectingSecurely": "Nkitahodi a ahobammɔ wom ne wo nne hokafo...",
+    "messagesWaiting": {
+      "one": "%{count} nkra a ɛretwɛn sɛ wɔde bɛmena",
+      "other": "%{count} nkrasɛm a ɛretwɛn sɛ wɔde bɛmena"
+    },
+    "useOffline": "Fa offline companion di dwuma",
+    "reconnect": "San fa wo ho to nne so AI",
+    "typePlaceholder": "Type sɛ kasa yɛ den a",
+    "endCall": "End frɛ no",
+    "startCall": "Fi ase frɛ",
+    "emptyTitle": "Wo nkɔmmɔbɔ no fi ase wɔ ha",
+    "emptyMessage": "Fi ase frɛ no anaa kyerɛw nkra bere a woasiesie wo ho no."
+  },
+  "chat": {
+    "waiting": "Twɛn sɛ wobenya nkitahodi",
+    "notSent": "Nkrasɛm a wɔmfa nkɔma.",
+    "retryAccessibility": "San bɔ mmɔden sɛ wode nkra bɛmena"
+  },
+  "history": {
+    "clearTitle": "Nkɔmmɔbɔ abakɔsɛm a emu da hɔ?",
+    "clearMessage": "Wei yi AI ɔhokafoɔ nkrasɛm a wɔakora so firi saa afiri yi so.",
+    "deleteTitle": "Popa nkɔmmɔbɔ yi?",
+    "cannotUndo": "Wɔrentumi nsan nyɛ eyi.",
+    "title": "Nkɔmmɔbɔ abakɔsɛm",
+    "subtitle": "AI ahokafoɔ nkrasɛm a wɔakora so wɔ saa afiri yi so.",
+    "empty": "Nkɔmmɔbɔ biara nni hɔ a wɔankora so de besi nnɛ.",
+    "emptyTitle": "Nkɔmmɔbɔ biara nni hɔ de besi nnɛ",
+    "emptyMessage": "Wo AI hokafoɔ nkɔmmɔbɔ bɛpue ha wɔ wo frɛ a ɛdi kan no akyi.",
+    "loadFailed": "Yɛantumi anhyɛ nkɔmmɔbɔ abakɔsɛm mu. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "clearFailed": "Yɛantumi ansiesie nkɔmmɔbɔ abakɔsɛm. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "deleteFailed": "Yɛantumi mpopa saa nkɔmmɔbɔ no. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "aiCompanion": "AI ɔhokafoɔ",
+    "resume": "Hyɛ aseɛ",
+    "clearAll": "Popa abakɔsɛm nyinaa mu",
+    "roles": {
+      "assistant": "yɔnkoɔ",
+      "user": "wo"
+    }
+  },
+  "voices": {
+    "title": "Me ahobammɔ frɛ nne ahorow",
+    "subtitle": "Paw ɔhokafo nne a ɛte nka sɛ ɛfata sɛ wote.",
+    "test": "Sɔ nne hwɛ",
+    "stop": "Gyae nhwɛsode",
+    "selectionFailedTitle": "Selection no nkora so",
+    "selectionFailedMessage": "Yɛsrɛ sɛ bɔ mmɔden sɛ wobɛpaw ɛnne no bio.",
+    "sampleFailedTitle": "Nhwɛsode a enni hɔ",
+    "sampleFailedMessage": "Wɔantumi anbɔ saa nne nhwɛsode yi. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "brɛoo, ɛyɛ komm, ɛyɛ fam"
+      },
+      "bestie": {
+        "name": "Bestie na ɔkyerɛwee",
+        "description": "a ɛhyerɛn, ɛma awerɛhyem, ɛyɛ nkɔmmɔbɔ"
+      },
+      "boyfriend": {
+        "name": "Mpena",
+        "description": "steady, ɔdɔ, nea ɛwɔ hɔ"
+      },
+      "muscleMan": {
+        "name": "Ntini mu nipa",
+        "description": "ahotoso, ahobammɔ, nkannyan"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ɛnne",
+    "changeVoice": "Sesa nne",
+    "showCompanion": "Kyerɛ ɔhokafo",
+    "offlineMode": "Offline mode a ɛwɔ hɔ",
+    "offlineModeSubtitle": "Fa bundled companion responses di dwuma bere a network anaa Hume credentials no nni hɔ.",
+    "privacyData": "Kokoam nsɛm & data",
+    "privacyBody": "Fa local data a wɔde asie wɔ device yi so no kɔ amannɔne anaa popa.",
+    "preparingExport": "Woresiesie nneɛma a wɔde bɛkɔ amannɔne...",
+    "exportData": "Fa me data no kɔ amannɔne",
+    "privacyPolicy": "Kokoam nsɛm ho nhyehyɛe",
+    "deleting": "Worepopa...",
+    "deleteAll": "Popa mpɔtam hɔ data nyinaa",
+    "deviceManagement": "Mfiri a wɔde di dwuma ho nhyehyɛe",
+    "emergencyContacts": "Nkitahodi ahorow a egye ntɛmpɛ",
+    "signOut": "Fa wo nsa hyɛ ase",
+    "exportFailedTitle": "Export no antumi anyɛ yiye",
+    "exportFailedMessage": "Wontumi mfa wo data nkɔ amannɔne mprempren.",
+    "deleteConfirmTitle": "Popa mpɔtam hɔ data nyinaa?",
+    "deleteConfirmMessage": "Wei yi wo profael, nhyehyɛe, nkitahodi a egye ntɛmpɛ, nkɔmmɔbɔ abakɔsɛm, tumi krataa, ne mpɔtam hɔ auth session fi saa afiri yi so.",
+    "deleteEverything": "Popa biribiara",
+    "deleteFailedTitle": "Deletion no antumi anyɛ yiye",
+    "deleteFailedMessage": "Entumi mpopa local data mprempren.",
+    "linkFailed": "Entumi mmue link no",
+    "sections": {
+      "language": "Kasa",
+      "languageSubtitle": "Interface ne system kwan kasa",
+      "companion": "Yɔnkoɔ",
+      "companionSubtitle": "Ɛnne ne offline a wɔpɛ",
+      "deviceSafety": "Mfiri ne ahobammɔ",
+      "deviceSafetySubtitle": "NorthStar , ahwɛfoɔ, ne wɔn a wɔne wɔn di nkitaho wɔ ntɛmpɛ mu",
+      "privacy": "Kokoam nsɛm ne data",
+      "privacySubtitle": "Abakɔsɛm, nneɛma a wɔde kɔ amannɔne, nea wɔpopa, ne nhyehyɛe",
+      "account": "Akawnso",
+      "accountSubtitle": "Wo mprempren VeryLoving nhyiamu"
+    },
+    "updateFailedTitle": "Setting a wɔankora so",
+    "updateFailedMessage": "Yɛantumi ankora saa nea yɛpɛ no so. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "signOutFailedTitle": "Wantumi amfa ne nsa anhyɛ ase",
+    "signOutFailedMessage": "Wo session no da so ara yɛ adwuma. Yɛsrɛ sɛ sɔ hwɛ bio."
+  },
+  "contacts": {
+    "title": "Nkitahodi ahorow a egye ntɛmpɛ",
+    "subtitle": "Nnipa a wogye wɔn di a wɔwɔ hɔ bere a ahobammɔ retu.",
+    "addTitle": "Fa nkitahodi a egye ntɛmpɛ ka ho",
+    "name": "Din",
+    "namePlaceholder": "Edin a wɔde di nkitaho",
+    "phone": "Telefon nɔma a wo ne no di nkitaho",
+    "add": "Fa nkitahodi ka ho",
+    "empty": "Wɔamfa nkitahodi biara a ɛfa ntɛmpɛ ho nka ho de besi nnɛ.",
+    "emptyTitle": "Nkitahodi biara nni hɔ a ɛfa ntɛmpɛ ho de besi nnɛ",
+    "emptyMessage": "Fa obi a wowɔ ne mu ahotoso ka ho sɛnea ɛbɛyɛ a obesiesie ne ho bere a ahobammɔ nsu a ɛsen biara hia no.",
+    "removeTitle": "Yi %{name} fi hɔ ?",
+    "removeMessage": "Saa onipa yi renpue bio wɔ wo ntɛmpɛ nsuo no mu.",
+    "nameRequired": "Hyehyɛ nea wo ne no di nkitaho no din.",
+    "saveFailedTitle": "Wɔankora nkitahodi so",
+    "saveFailedMessage": "Yɛantumi ankora saa nkitahodi yi so. Hwɛ nsɛm no mu nsɛm no mu na sɔ hwɛ bio.",
+    "removeFailedTitle": "Wɔannyi nkitahodi amfi hɔ",
+    "removeFailedMessage": "Yɛantumi ayi saa nkitahodi yi mfi hɔ. Yɛsrɛ sɛ sɔ hwɛ bio.",
+    "callAccessibility": "Frɛ %{name}",
+    "removeAccessibility": "Yi %{name} no fi hɔ."
+  },
+  "device": {
+    "title": "Mfiri a wɔde di dwuma ho nhyehyɛe",
+    "subtitle": "Hwɛ wo NorthStar mfiri no so.",
+    "connected": "Nkitahodi · %{battery} % batere",
+    "none": "Mfiri biara nni hɔ a wɔde abɔ mu",
+    "disconnect": "Twa afiri no mu",
+    "connect": "Fa afiri no bata ho"
+  },
+  "friends": {
+    "title": "Ayɔnkofoɔ",
+    "subtitle": "Awɛmfo, abisade ahorow, ne ntɛmpɛ ho mfonini.",
+    "addDemo": "Fa demo adamfo ka ho",
+    "emptyTitle": "Wo ahobammɔ kurukuruwa no da mpan",
+    "emptyMessage": "Nnamfo ne ahwɛfo a wogye wɔn di bɛba ha bere a wɔde wɔn aka ho no.",
+    "newGuardian": "Ɔwɛmfo Foforo",
+    "statuses": {
+      "guardian": "Ɔwɛmfo",
+      "pending": "Retwɛn"
+    }
+  },
+  "emergency": {
+    "title": "Ntɛmntɛm SOS",
+    "subtitle": "Escalate bere a wuhia mmoa ntɛm ara nkutoo.",
+    "body": "Eyi bɛma woabɔ wo ahobammɔ ho amanneɛ na asiesie nkitahodi ahorow a egye ntɛmpɛ.",
+    "activate": "Fa SOS yɛ adwuma.",
+    "callCompanion": "Frɛ AI ɔhokafoɔ",
+    "notificationTitle": "SOS ayɛ adwuma",
+    "notificationBody": "Wo ntɛmpɛ nsuo no ayɛ krado.",
+    "readyTitle": "SOS ayɛ krado",
+    "callContact": "Frɛ %{name} ?",
+    "addContact": "Fa ntɛmpɛ nkitahodi bi ka ho wɔ Settings mu.",
+    "quickShareTitle": "Kyɛfa ntɛmntɛm",
+    "quickShareMessage": "Beae a wɔkyɛ stub no ayɛ krado. Fa backend share endpoint no bata ho na fa live links mena."
+  },
+  "quickShare": {
+    "title": "Kyɛfa ntɛmntɛm",
+    "subtitle": "Beae kyɛfa nsuo no ayɛ krado."
+  },
+  "capybearTap": {
+    "title": "Capybear abɔ so",
+    "subtitle": "Klik wo NorthStar mprenu na fa ahobammɔ borɔdɔma bi to fam.",
+    "body": "Gesture kwan no ayɛ krado ama BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug krataafa no",
+    "subtitle": "Ɔkwan a wɔfa so nya nkɔso nkutoo."
+  },
+  "errors": {
+    "voiceOffline": "Ɛte sɛ nea wo nni intanɛt so. Wɔde wo nkrasɛm no bɛmena bere a woasan akɔka wo ho no.",
+    "voiceQueued": "Nkrasɛm a wɔakora so. Wɔde bɛmena bere a ɛnne hokafo no asan abɔ mu no.",
+    "voiceRetrying": "Worebɔ mmɔden sɛ wode wo nkra no bɛsan akɔma bio...",
+    "voiceConnecting": "Nkitahodi a ahobammɔ wom ne wo nne hokafo...",
+    "microphone": "Microphone a wɔde di dwuma ho hia na wɔde nne frɛ. Wubetumi ama ayɛ adwuma wɔ Settings mu, anaasɛ wobɛkyerɛw nkra mmom.",
+    "billing": "Intanɛt so nne hokafo no nni hɔ bere tiaa bi. Wubetumi akɔ so ne offline hokafo no.",
+    "authentication": "Ɛnne hokafo no antumi ankyerɛ sɛ saa nhyiam yi yɛ nokware. Sign in bio anaa fa offline companion no di dwuma mprempren.",
+    "timeout": "Ɛnne hokafo no gyee bere tenten dodo ansa na ɔrebua. Hwɛ wo nkitahodi no na sɔ hwɛ bio.",
+    "network": "Yɛantumi ankɔ nne hokafo no nkyɛn. Hwɛ wo nkitahodi no, afei sɔ hwɛ bio anaa kɔ so wɔ offline.",
+    "genericVoice": "Biribi twaa nne frɛ no mu. Sɔ hwɛ bio, anaa toa so ne ofline hokafo no."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data a wɔde kɔ amannɔne"
+  },
+  "notifications": {
+    "channelName": "Ahobammɔ ho kɔkɔbɔ ahorow"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hia microphone kwan ma ahobanbɔ ne AI ɔhokafoɔ frɛ.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving de wo beaeɛ di dwuma ma ahobanbɔ asase mfonini ne ahobanbɔ nneɛma a ɛbɛn hɔ.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving de wo beaeɛ di dwuma de boa safe-arrival ne ntɛmpɛ nsuo.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving de akyi beae di dwuma ma ahobammɔ-aba ne asiane-beae a ɛbɛn nneɛma.",
+      "NSCameraUsageDescription": "VeryLoving de kamera no di dwuma bere a wopaw sɛ wobɛtwe profael anaa ahobammɔ mfonini nkutoo.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving de wo mfonini nhomakorabea di dwuma bere a woapaw profael anaa ahobammɔ mfonini nkutoo.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving de Bluetooth di dwuma de ka wo NorthStar ahobanbɔ agude no ho.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving de Bluetooth di dwuma de ka wo NorthStar ahobanbɔ agude no ho."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

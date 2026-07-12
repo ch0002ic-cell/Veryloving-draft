@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Koba",
+    "apple": "Apple",
+    "back": "Liklok",
+    "call": "Kūr",
+    "cancel": "Jolok",
+    "clear": "Meram",
+    "close": "Kiili",
+    "connect": "Koneek",
+    "connecting": "Kōppeļaak...",
+    "continue": "Woñmaanlok",
+    "delete": "Jeere",
+    "finish": "Ededelok",
+    "friends": "Ro mōttam",
+    "google": "Google",
+    "home": "Mweo",
+    "loading": "Loading...",
+    "map": "Map",
+    "notNow": "Ejab kiō",
+    "remove": "Jolok",
+    "retry": "Bar kajeoñ",
+    "retrying": "Bar kajeoñ",
+    "save": "Kakwōne",
+    "selected": "Kar kālete",
+    "send": "Jilkinlok",
+    "settings": "Kōttōpar ko",
+    "skip": "Kajeon",
+    "skipForNow": "Jolok ñan kiõ",
+    "skipTutorial": "Jolok katak eo",
+    "sos": "SOS",
+    "unknown": "Jab jelā",
+    "user": "VeryLoving user",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Kajin",
+    "subtitle": "Kālet kajin eo rej kōjerbale ilo app eo.",
+    "system": "System default",
+    "search": "Pukot kajin ko",
+    "noResults": "Ejelok kajin ko rej errā ippān pukōt eo am.",
+    "english": "Belle",
+    "spanish": "Kajin Spanish",
+    "french": "French",
+    "chineseSimplified": "Chinese (Simplified)"
+  },
+  "phone": {
+    "label": "Nōmba in talboon",
+    "placeholder": "Nōmba in talboon",
+    "selectCountry": "Kālet aelōñ ak jikin",
+    "searchCountry": "Pukot aelõñ, code, ak dial prefix",
+    "noCountries": "Ejelok ailiñ ko rej errā ippān pukōt eo am.",
+    "countryButton": "Oktak aelõñ, kiõ %{country} kobalok %{callingCode}",
+    "inputAccessibility": "Nōmba in talboon ñan %{country}",
+    "required": "Likūt juon nōm̧ba in talboon.",
+    "tooShort": "Nōmba in talboon in edik.",
+    "tooLong": "Nōmba in talboon in elap an aitok.",
+    "invalid": "Likūt juon nōm̧ba in talboon eo ejimwe ñan aelōñ eo kwar kālete.",
+    "valid": "Nōmba in talboon eo ejimwe an ailiñ ko jet"
+  },
+  "auth": {
+    "onboardingTagline": "Juon ri kejbarok ñan ien ko ikōtaan “Ij emman” im “Ij aikuj jibañ.”",
+    "createAccount": "Kōmman akaun",
+    "continueOnboarding": "Wōnm̧aanļo̧k wōt kōn onboarding",
+    "createSubtitle": "Kālet juon wewein deloñ ñan kejbãrok pija in kejbãrok eo am.",
+    "phoneVerification": "Kamool ilo talboon",
+    "sendCode": "Jilkintok kōd",
+    "sendingCode": "Jilkintok code...",
+    "verifyCode": "Kamool code eo",
+    "sentTo": "Kar jilkintok ñan %{phone}",
+    "yourPhone": "taḷboon eo aṃ",
+    "verificationCode": "Koot in kamool",
+    "verify": "Kamool",
+    "verifying": "Kamool...",
+    "invalidCode": "Kōllaajrake code in kamool eo.",
+    "signInFailedTitle": "Sign-in ear bōjrak",
+    "signInFailedMessage": "Kōm kar jab maroñ in kadedelok am sign-in. Lale koneek eo am im bar kajeoñ.",
+    "googleUnavailableTitle": "Google Sign-In unavailable",
+    "googleUnavailableMessage": "Kōjerbal juon iien kōkōm̧anm̧anļo̧k ilo jikin eo. Native Google Sign-In ej jerbal ilo juon development build.",
+    "northStarTitle": "NorthStar kein tōrejab",
+    "northStarSubtitle": "Kobaik kiõ ak wōnmanlok im kobaiktok tokelik.",
+    "northStarBody": "VL01 wearable emaron kōmman bwe en wor safety flow ko ilo am tap im press gesture ko reaitok.",
+    "setupJewelry": "Kōmman jewelry ko",
+    "meetCapybear": "Ioon Capybear",
+    "meetCapybearSubtitle": "Ripālele eo am ilo map eo im ilo call ko.",
+    "capybearBody": "Capybear emaron jibañ ilo home mode, guardian mode, emergency mode, excuse calls, im voice support.",
+    "chooseVoice": "Kālet juon ainikien",
+    "capybearReminder": "Capybear kein kōkememej",
+    "remindersReady": "Kakememej ko rejimwe rej pojak."
+  },
+  "permissions": {
+    "locationTitle": "Kōjparok jikin",
+    "locationSubtitle": "Kar kōjerbale ñan map eo, jikin ko rekauwōtata, jikin ko rejimwe, im SOS context.",
+    "locationBody": "VeryLoving ej kajitõk kin jikin eo bwe ri lale ro ren maroñ melele ia eo emaroñ aikuj jibañ ie. Kwomaroñ ukōte tokelik ilo Settings.",
+    "allowLocation": "Kōtlok jikin",
+    "notificationsTitle": "Naan in kakkōl ko kin kejbãrok",
+    "notificationsSubtitle": "Kōjjelā ko rej jibañ check-in ko im ien ko rebin.",
+    "notificationsBody": "Jej kōjerbal wōt kōjjelā ko ñan kōjjeļā ko kōn kōjparok, kōkāāl ko ilo jorrāān, im kakeememej ko kwoj kōtlok.",
+    "enableNotifications": "Kōtlok kōjjelā ko",
+    "locationRationaleTitle": "Jikin eo ej kejbãrok bwe en jimwe",
+    "locationRationaleMessage": "VeryLoving ej kōjerbal jikin eo am ñan mep in kejbãrok, jikin ko rebin, kwalok ilo mõkaj, im SOS context. Kwomaroñ ukōte tokelik ilo Settings.",
+    "notificationsRationaleTitle": "Naan in kakkōl ko rej aikuj kōjjeļā ko",
+    "notificationsRationaleMessage": "VeryLoving ej jilkintok nan in kakememej ko ñan check-in, melele ko kin ien ko rebin, im melele ko kin kejbãrok eo kwoj kōmmane. Jejjab kōjerbal kōjjelā ko ñan ad ko.",
+    "microphoneRationaleTitle": "Maikrophone ej kōmman bwe en maroñ in call ko ñan kejbãrok",
+    "microphoneRationaleMessage": "VeryLoving ej kajerbal microphone eo am wōt ñe kwoj jino juon AI call ñan ro mōttam ak safety call.",
+    "bluetoothRationaleTitle": "Bluetooth ej kobaik wearable eo am",
+    "bluetoothRationaleMessage": "VeryLoving ej kōjerbal Bluetooth ñan koba ippān NorthStar jewelry, riiti jekjek in koneek eo, im kōmman an safety flow ko jen wearable eo.",
+    "cameraRationaleTitle": "Camera ejjab aikuj",
+    "cameraRationaleMessage": "VeryLoving ej kōjerbal camera eo wot ñe kwoj kōnaan bōk juon pija in profile ak kwalok juon pija in kejbãrok."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ej kōjparok flow in jen Settings im dashboard eo.",
+    "chooseVoiceTitle": "Kālet ainikien eo am",
+    "chooseVoiceSubtitle": "Kālet ainikien eo m̧ōttam̧ eo em̧m̧an tata n̄an ron̄jake.",
+    "homeTitle": "Mode in mweo",
+    "homeSubtitle": "Lale eo edik ñan kejbãrok raan otemjej.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Kwalok melele ko ñan armij ro kwoj liki ir.",
+    "emergencyTitle": "Emergency mode",
+    "emergencySubtitle": "Lalem tap ko remaroñ wōnmanlok ñan SOS im guardian alerts.",
+    "excuseTitle": "Jouj im call",
+    "excuseSubtitle": "Kōmman juon un eo emman ñan am etal jen juon jikin eo ejjab emman.",
+    "safetyCallTitle": "Kir in kejbãrok",
+    "safetyCallSubtitle": "Jino juon call in mōttam ilo ien eo emol ñe kwoj aikuj jibañ.",
+    "practiceTitle": "Kōmman ikkure",
+    "practiceSubtitle": "Kajeoñ wāween ko ñan kōjparok ilo juon demo eo edik an kajoor."
+  },
+  "jewelry": {
+    "pairTitle": "Pea NorthStar",
+    "pairSubtitle": "Kōjparok jewelry eo iturin ilo ien eo kwoj scan.",
+    "scan": "Scan ñan device ko",
+    "scanning": "Ej lale iturin...",
+    "noDevices": "Ejelok NorthStar device ko rej bed iturin.",
+    "scanStartFailed": "Bluetooth scanning ear jab maroñ jinoe. Jouj im bar kajeoñ.",
+    "scanFailed": "Kōm kar jab maroñ loe jewelry ko iturin. Lale Bluetooth, kōjparok NorthStar epaak, innem bar kajeoñ.",
+    "scanAccessFailed": "Bluetooth scanning ear jab maroñ jinoe. Lale Bluetooth access im bar kajeoñ.",
+    "permissionDenied": "Nearby-device access ej bōjrak. Kōtlok bwe Bluetooth en deloñ ilo Settings, innem bar kajeoñ.",
+    "connectTimeout": "NorthStar ear bōk ien ñan an maroñ in kone. Kōmman bwe en epaaklok im bar kajeoñ.",
+    "connectFailed": "Jejjab maroñ in kone ñan NorthStar. Lale elañe emōj an charge im epaak, innem bar kajeoñ.",
+    "emptyTitle": "Ejelok kein jerbal ko iturin kiiō",
+    "emptyMessage": "Kōmman bwe NorthStar en charge im epaak ñan phone in, innem bar scan.",
+    "searchingMessage": "Ij pukot NorthStar device ko iturin..."
+  },
+  "home": {
+    "subtitle": "Safety companion dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ej pojak",
+    "readyBody": "Ainikien, map, jewelry, im guardian rej juon wōt tap ettol.",
+    "safetyCall": "Kir in kejbãrok",
+    "northStarDevice": "NorthStar kein jerbal kapeel in raan kein",
+    "deviceConnected": "%{name} connected · %{battery}%",
+    "noDevice": "Ejelok kein jerbal ej kone",
+    "manageDevice": "Lale kein jerbal eo",
+    "mode": "Mode",
+    "modes": {
+      "home": "Mweo",
+      "guardian": "Rikōjparok",
+      "emergency": "Imjerjenji"
+    }
+  },
+  "map": {
+    "finding": "Pukot jikin eo am...",
+    "retry": "Bar kajeoñ jikin eo",
+    "title": "Map in kejbãrok",
+    "previewSubtitle": "Expo Go preview; Mapbox ej kwalok ilo juon development build.",
+    "preview": "Map preview",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Kōkāāl jikin eo",
+    "refreshing": "Pukot jikin...",
+    "updateFailed": "Jejjab maroñ in kōkāāl jikin eo am. Jouj im bar kajeoñ.",
+    "notRequested": "Ear jab kajjitōk ñan bōk jikin. Kwomaroñ kōmmane tokelik jen Settings.",
+    "permissionOff": "Ej bōjrak an maroñ in bōk jikin. Kōmman bwe en jerbal ilo Settings ñan an maroñ in kōmman bwe en wor safety map eo ion yuk.",
+    "timeout": "Jikin eo kwoj bed ie ej bōk ien jen kar kōtmene kake. Etal ñan juon jikin eo ewōr juon signal ealikar im bar kajeoñ.",
+    "savedTitle": "Jikin ko kar kōjparoki",
+    "savedEmptyTitle": "Ejelok jikin ko emōj kōjparoki kiiō",
+    "savedEmptyMessage": "Jikin ko rejimwe kwoj kejbãrok renaj walok ijin ñan an maroñ in mõkaj am maroñ in bōk.",
+    "zones": {
+      "crowding": "Elōñ armij ilo boñ",
+      "lowLighting": "Jikin eo edik meram ie"
+    },
+    "risks": {
+      "low": "ettā",
+      "medium": "joñan eo iolab",
+      "high": "utiej"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kōppeļaak...",
+    "offlineCompanion": "Offline companion",
+    "offline": "Ejelok online",
+    "connected": "Eṃōj kōppeḷḷọk",
+    "interrupted": "Kōtaan eo ear bōjrak",
+    "ready": "Pojak in kone",
+    "connectingSecurely": "Kōppeļaak ilo jimwe ñan rikōmman ainikien eo am...",
+    "messagesWaiting": {
+      "one": "%{count} ennaan ej kōttar an jilkintok",
+      "other": "%{count} ennaan ko rej kōttar in jilkintok"
+    },
+    "useOffline": "Kōjerbal offline companion",
+    "reconnect": "Bar kōppeļaak ñan ainikien AI",
+    "typePlaceholder": "Taip elañe ej bin am konono",
+    "endCall": "Jemlok call eo",
+    "startCall": "Jino call",
+    "emptyTitle": "Bwebwenato eo am ej jino ijin",
+    "emptyMessage": "Jino call eo ak type juon ennaan ñe kwoj pojak."
+  },
+  "chat": {
+    "waiting": "Kōttar ñan koneek",
+    "notSent": "Ejjab jilkintok ennaan eo.",
+    "retryAccessibility": "Bar kajjioñ jilkintok ennaan"
+  },
+  "history": {
+    "clearTitle": "Ealikar bwebwenato in bwebwenato eo?",
+    "clearMessage": "Menin ej jolok AI ennaan ko jen device in.",
+    "deleteTitle": "Jolok bwebwenato in ke?",
+    "cannotUndo": "Men in ejjab maroñ in bar kōmmane.",
+    "title": "Bwebwenato in bwebwenato",
+    "subtitle": "AI ennaan ko an ro mōttam kar kōjparoki ilo device in.",
+    "empty": "Ejelok bwebwenato ko kar kejbãrok kiõ.",
+    "emptyTitle": "Ejelok bwebwenato kiiō",
+    "emptyMessage": "AI bwebwenato ko am renaj walok ijin elikin am kar call moktata.",
+    "loadFailed": "Kōm kar jab maroñ in bōktok bwebwenato in bwebwenato eo. Jouj im bar kajeoñ.",
+    "clearFailed": "Kōm kar jab maroñ in karreoik bwebwenato in bwebwenato eo. Jouj im bar kajeoñ.",
+    "deleteFailed": "Kōm kar jab maroñ in jolok bwebwenato eo. Jouj im bar kajeoñ.",
+    "aiCompanion": "AI mōtta",
+    "resume": "Bar jinoe",
+    "clearAll": "Jolok aolep bwebwenato ko",
+    "roles": {
+      "assistant": "mōtta",
+      "user": "kwe"
+    }
+  },
+  "voices": {
+    "title": "Ainikien call in kejbãrok eo ao",
+    "subtitle": "Kālet ainikien eo ej mōñā eo ej emman am roñjake.",
+    "test": "Ainikien test",
+    "stop": "Bōjrak sample eo",
+    "selectionFailedTitle": "Kālet eo ejjab kōjparok",
+    "selectionFailedMessage": "Jouj im bar kajeoñ in kālet ainikien eo.",
+    "sampleFailedTitle": "Ejjab maroñ in walok",
+    "sampleFailedMessage": "Voice sample in ear jab maroñ in al. Jouj im bar kajeoñ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "emera, kalmenlokjen, ejmourur"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "meram, kaenōmōn, kōnono"
+      },
+      "boyfriend": {
+        "name": "Laddik eo jerā",
+        "description": "niknik, yokwe, bed"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "liki, kejbãrok, im kōketak"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ainikien",
+    "changeVoice": "Ukōt ainikien",
+    "showCompanion": "Kwalok ro mōttam",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Kōjerbal uwaak ko an ro mōttam ñe network eo ak Hume credentials rejjab maroñ in jerbal.",
+    "privacyData": "Privacy & data",
+    "privacyBody": "Kōtlok ak jolok melele ko ilo device in.",
+    "preparingExport": "Kōppopo ñan wiakake...",
+    "exportData": "Kōtlok melele ko ao",
+    "privacyPolicy": "Kien in kōjparok melele ko",
+    "deleting": "Jolok...",
+    "deleteAll": "Jolok aolep melele ko ilo jikin eo",
+    "deviceManagement": "Kōjparok kein jerbal ko",
+    "emergencyContacts": "Rikōnono ro ilo ien jorrāān",
+    "signOut": "Diwōjtok",
+    "exportFailedTitle": "Ear jab maroñ jilkinlok",
+    "exportFailedMessage": "Ejjab maroñ in jilkinlok melele ko am kiõ.",
+    "deleteConfirmTitle": "Jolok aolep melele ko ilo jikin eo?",
+    "deleteConfirmMessage": "Menin ej jolok profile eo am, setting ko, emergency call ko, bwebwenato in bwebwenato ko, permission reminder ko, im local auth session jen device in.",
+    "deleteEverything": "Jolok aolep men ko",
+    "deleteFailedTitle": "Ear jab maroñ jolok",
+    "deleteFailedMessage": "Ejjab maroñ in jolok melele ko ilo jikin eo kiõ.",
+    "linkFailed": "Ejjab maroñ in kōpeļļo k link eo",
+    "sections": {
+      "language": "Kajin",
+      "languageSubtitle": "Interface im system permission language",
+      "companion": "Mōtta",
+      "companionSubtitle": "Ainikien im men ko rejjab online",
+      "deviceSafety": "Kein jerbal ko im kejbãrok",
+      "deviceSafetySubtitle": "NorthStar, ri-lale ro, im ri-kōmmanwa ro ilo ien jorrāān",
+      "privacy": "Privacy im data",
+      "privacySubtitle": "Bwebwenato, jilkinlok, jolok, im kakien",
+      "account": "Akkoun",
+      "accountSubtitle": "VeryLoving session eo am kiõ"
+    },
+    "updateFailedTitle": "Ejjab kōjparok",
+    "updateFailedMessage": "Kōm kar jab maroñ in kōjparok kōttōpar eo. Jouj im bar kajeoñ.",
+    "signOutFailedTitle": "Ejjab maroñ in diwōjtok",
+    "signOutFailedMessage": "Session eo am ej jerbal wōt. Jouj im bar kajeoñ."
+  },
+  "contacts": {
+    "title": "Rikōnono ro ilo ien jorrāān",
+    "subtitle": "Armej ro retiljek rej bed ilo ien ko rej etal ñan kejbãrok.",
+    "addTitle": "Kobaik juon kōtaan ilo ien jorrāān",
+    "name": "Etan",
+    "namePlaceholder": "Etan armij eo",
+    "phone": "Namba in talboon eo",
+    "add": "Kobaik kōtaan eo",
+    "empty": "Ejelok call in emergency kar kobaiktok kiõ.",
+    "emptyTitle": "Ejelok armij in kepaak ilo ien jorrāān kiiō",
+    "emptyMessage": "Kobaik juon eo kwoj liki bwe ren pojak ñe juon jikin kejbãrok ej aikuji ir.",
+    "removeTitle": "Jolok %{name}?",
+    "removeMessage": "Armej in ejamin bar walok ilo emergency flow eo am.",
+    "nameRequired": "Likūt etan armej eo.",
+    "saveFailedTitle": "Kōtaan eo ejjab kōjparok",
+    "saveFailedMessage": "Kōm kar jab maroñ in kōjparok kōtaan in. Lale melele ko im bar kajeoñ.",
+    "removeFailedTitle": "Ejjab jolok kōtaan eo",
+    "removeFailedMessage": "Kōm kar jab maroñ in jolok kōtaan in. Jouj im bar kajeoñ.",
+    "callAccessibility": "Kūr %{name}",
+    "removeAccessibility": "Jolok %{name}"
+  },
+  "device": {
+    "title": "Kōjparok kein jerbal ko",
+    "subtitle": "Lale NorthStar device eo am.",
+    "connected": "Connected · %{battery}% battery",
+    "none": "Ejelok kein jerbal ko rej kone",
+    "disconnect": "Kōjepel kein jerbal eo",
+    "connect": "Kobaik kein jerbal eo"
+  },
+  "friends": {
+    "title": "Ro mōttam",
+    "subtitle": "Ri lale ro, kajjitōk ko, im pija in jorrāān.",
+    "addDemo": "Kobaik demo eo mōttam",
+    "emptyTitle": "Jikin kōjparok eo am ejjelok armij ie",
+    "emptyMessage": "Ro mōttam im ro rej lale er renaj walok ijin ñe rej kobaiktok.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Rikōjparok",
+      "pending": "Kattar"
+    }
+  },
+  "emergency": {
+    "title": "Imjerjenji SOS",
+    "subtitle": "Kōmman wōt ñe kwoj aikuj jibañ ilo ien eo wot.",
+    "body": "Menin enaj kōjjelāik wāween am kōjparok im kōpooj rikōnono ro ilo jorrāān.",
+    "activate": "Kōjerbal SOS",
+    "callCompanion": "Call AI companion",
+    "notificationTitle": "SOS kar jerbal",
+    "notificationBody": "Emergency flow eo am emoj an pojak.",
+    "readyTitle": "SOS bojak",
+    "callContact": "Kūr %{name}?",
+    "addContact": "Kobaik juon contact in emergency ilo Settings.",
+    "quickShareTitle": "Mōkaj in kwalok",
+    "quickShareMessage": "Stub in kwalok jikin ko emoj an pojak. Kobaik backend share endpoint eo ñan jilkinlok live link ko."
+  },
+  "quickShare": {
+    "title": "Mōkaj in kwalok",
+    "subtitle": "Location share flow emoj an pojak."
+  },
+  "capybearTap": {
+    "title": "Capybear kein kajo",
+    "subtitle": "Double-tap NorthStar eo am ñan jolok juon safety orange.",
+    "body": "Gesture route ej pojak ñan BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Ial in eddeklok wōt."
+  },
+  "errors": {
+    "voiceOffline": "Kwoj einwot jab online. Enaj jilkintok ennan eo am ñe kwoj bar kone.",
+    "voiceQueued": "Emoj kōjparok ennaan eo. Enaj jilkintok ñe voice companion eo ej bar kobalok.",
+    "voiceRetrying": "Ij kajeoñ in bar jilkintok ennan eo am...",
+    "voiceConnecting": "Kōppeļaak ilo jimwe ñan rikōmman ainikien eo am...",
+    "microphone": "Ej aikuj in wōr microphone ñan call ko. Kwomaroñ kōmmane ilo Settings, ak type juon message ilo jikin eo.",
+    "billing": "Online voice companion eo ejjab maroñ in jerbal. Kwomaroñ wōnmanlok wōt ippān eo ejjab online.",
+    "authentication": "Rikōmman ainikien eo ear jab maroñ in kamool ien in. Bar deloñ ak kajerbal offline companion eo ñan kiõ.",
+    "timeout": "Rikōnono eo ear bōk ien ñan an uwaak. Lale koneek eo am im bar kajeoñ.",
+    "network": "Kōm kar jab maroñ in tōpar rikōnono eo. Lale koneek eo am, innem bar kajeoñ ak wōnmanlok ilo am jab online.",
+    "genericVoice": "Juon men ear bōbrae ainikien eo. Bar kajeoñ, ak wōnmanlok wōt ippān eo ejjab online."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data export"
+  },
+  "notifications": {
+    "channelName": "Naan in kakkōl ko kin kejbãrok"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ej aikuj in maroñ in bōk microphone ñan kejbãrok im AI call ko an ro mōttan.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ej kōjerbal jikin eo am ñan mep in kejbãrok eo im kein kejbãrok ko iturin.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ej kōjerbal jikin eo am ñan jibañ ro rej itok ilo jimwe im ilo ien ko rebin.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ej kōjerbal jikin ko itulik ñan jikin ko rejimwe im jikin ko rebin.",
+      "NSCameraUsageDescription": "VeryLoving ej kōjerbal camera eo wot ñe kwoj kōnaan bōk juon pija in profile ak pija in kejbãrok.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ej kōjerbal jikin pija ko am wōt ñe kwoj kālet juon pija in pija ak pija in kōjparok.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

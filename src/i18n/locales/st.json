@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Eketsa",
+    "apple": "Apple",
+    "back": "Ka morao",
+    "call": "Letsetsa",
+    "cancel": "Hlakola",
+    "clear": "Hlakile",
+    "close": "Close",
+    "connect": "Khokahanya",
+    "connecting": "Ho hokahanya ...",
+    "continue": "Tsoela pele",
+    "delete": "Hlakola",
+    "finish": "Qetella",
+    "friends": "Metsoalle",
+    "google": "Google",
+    "home": "Lehae",
+    "loading": "Loading ...",
+    "map": "'Mapa",
+    "notNow": "Eseng hona jwale",
+    "remove": "Tlosa",
+    "retry": "Leka hape",
+    "retrying": "Ho leka hape",
+    "save": "Boloka",
+    "selected": "E khethiloeng",
+    "send": "Romella",
+    "settings": "Litlhophiso",
+    "skip": "Tlola",
+    "skipForNow": "Skip bakeng sa hona joale",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "E sa tsejoeng",
+    "user": "VeryLoving mosebelisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Puo",
+    "subtitle": "Khetha puo e sebelisoang ho pholletsa le sesebelisoa.",
+    "system": "Tsamaiso e sa sebetseng",
+    "search": "Lipuo tsa ho batla",
+    "noResults": "Ha ho na lipuo tse lumellanang le patlo ea hau.",
+    "english": "Sekgowa",
+    "spanish": "Sepanishe",
+    "french": "Sefora",
+    "chineseSimplified": "Sechaena (se nolofalitsoeng)"
+  },
+  "phone": {
+    "label": "Nomoro ea mohala",
+    "placeholder": "Nomoro ea mohala",
+    "selectCountry": "Khetha naha kapa sebaka",
+    "searchCountry": "Batla naha, khoutu kapa sehlomathiso sa ho letsetsa",
+    "noCountries": "Ha ho linaha tse lumellanang le patlo ea hau.",
+    "countryButton": "Phetoho ea naha, hona joale %{country} %{callingCode}",
+    "inputAccessibility": "Nomoro ea mohala bakeng sa %{country}",
+    "required": "Kenya nomoro ea mohala.",
+    "tooShort": "Nomoro ea mohala e khuts'oane haholo.",
+    "tooLong": "Nomoro ea mohala e telele haholo.",
+    "invalid": "Kenya nomoro ea mohala e nepahetseng bakeng sa naha eo u e khethileng.",
+    "valid": "Nomoro ea mohala e nepahetseng ea machabeng"
+  },
+  "auth": {
+    "onboardingTagline": "Motsoalle oa ts'ireletso ea botho bakeng sa linako lipakeng tsa \"Ke lokile\" le \"Ke hloka thuso.\"",
+    "createAccount": "Theha ak'haonte",
+    "continueOnboarding": "Tsoela pele ka ho kenya",
+    "createSubtitle": "Khetha mokhoa oa ho saena ho sireletsa graph ea hau ea polokeho.",
+    "phoneVerification": "Netefatso ea mohala",
+    "sendCode": "Romella khoutu",
+    "sendingCode": "Ho romella khoutu ...",
+    "verifyCode": "Netefatsa khoutu",
+    "sentTo": "E rometsoe ho %{phone}",
+    "yourPhone": "Mohala oa hau",
+    "verificationCode": "Khoutu ea netefatso",
+    "verify": "Netefatsa",
+    "verifying": "Ho netefatsa...",
+    "invalidCode": "Kenya khoutu ea netefatso.",
+    "signInFailedTitle": "Ho saena ho sitisoa",
+    "signInFailedMessage": "Re ne re sitoa ho tlatsa ho saena. Sheba khokahano ea hau ebe u leka hape.",
+    "googleUnavailableTitle": "Google Ho kena ha ho fumanehe",
+    "googleUnavailableMessage": "Ho sebelisa seboka sa nts'etsopele ea lehae. Native Google Sign-In e sebetsa mohahong oa nts'etsopele.",
+    "northStarTitle": "NorthStar mabenyane",
+    "northStarSubtitle": "Kopanya hona joale kapa tsoela pele ebe u e eketsa hamorao.",
+    "northStarBody": "Ho apara VL01 ho ka baka phallo ea polokeho ka lipompo le boits'oaro bo bolelele ba tobetsa.",
+    "setupJewelry": "Lokisetsa mabenyane",
+    "meetCapybear": "Kopana le Capybear",
+    "meetCapybearSubtitle": "Motsoalle oa hau ea bonolo oa polokeho 'mapeng le mehala.",
+    "capybearBody": "Capybear ka thusa ka mokhoa oa lapeng, mokhoa oa mohlokomeli, mokhoa oa tšohanyetso, mehala ea tšoarelo le tšehetso ea lentsoe.",
+    "chooseVoice": "Khetha lentsoe",
+    "capybearReminder": "Capybear khopotso",
+    "remindersReady": "Likhopotso tse bonolo li se li loketse."
+  },
+  "permissions": {
+    "locationTitle": "Polokeho ea sebaka",
+    "locationSubtitle": "E sebelisetsoa 'mapa, libaka tse kotsi, ho fihla ka mokhoa o sireletsehileng le moelelo SOS.",
+    "locationBody": "VeryLoving kopa sebaka e le hore bahlokomeli ba tsebe hore na thuso e ka hlokahala kae. U ka e fetola hamorao ho li-setting.",
+    "allowLocation": "Lumella sebaka",
+    "notificationsTitle": "Litlhokomeliso tsa polokeho",
+    "notificationsSubtitle": "Litsebiso li tšehetsa ho kena le liketsahalo tsa tšohanyetso.",
+    "notificationsBody": "Re sebelisa feela litsebiso bakeng sa likhothaletso tsa polokeho, liapdeite tsa tšohanyetso le likhopotso tseo u li lumellang.",
+    "enableNotifications": "Nolofalletsa litsebiso",
+    "locationRationaleTitle": "Sebaka se boloka moelelo oa polokeho o nepahetse",
+    "locationRationaleMessage": "VeryLoving sebelisa sebaka sa hau bakeng sa 'mapa oa polokeho, libaka tse kotsi, ho arolelana kapele le moelelo oa SOS. U ka e fetola hamorao ho li-setting.",
+    "notificationsRationaleTitle": "Litlhokomeliso tsa polokeho li hloka tsebiso",
+    "notificationsRationaleMessage": "VeryLoving romella likhopotso tsa ho kena, lintlafatso tsa maemo a tšohanyetso le likhothaletso tsa polokeho tseo u li lumellang. Ha re sebelise litsebiso bakeng sa lipapatso.",
+    "microphoneRationaleTitle": "Microphone e matlafatsa mehala ea polokeho",
+    "microphoneRationaleMessage": "VeryLoving sebelisa maekrofono ea hau feela ha u qala mohala oa AI kapa mohala oa polokeho.",
+    "bluetoothRationaleTitle": "Bluetooth e hokahanya liaparo tsa hau",
+    "bluetoothRationaleMessage": "VeryLoving sebelisa Bluetooth ho kopanya le mabenyane a NorthStar, ho bala boemo ba khokahano, le ho baka phallo ea polokeho ho tsoa ho wearable.",
+    "cameraRationaleTitle": "Khamera ke ea boikhethelo",
+    "cameraRationaleMessage": "VeryLoving sebelisa kh'amera feela ha u khetha ho nka foto ea profil kapa ho arolelana setšoantšo sa polokeho."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving boloka phallo ena e fumaneha ho tsoa ho Litlhophiso le dashboard.",
+    "chooseVoiceTitle": "Khetha lentsoe la hau",
+    "chooseVoiceSubtitle": "Khetha lentsoe la motsoalle le utloang le sireletsehile ho le utloa.",
+    "homeTitle": "Mokhoa oa lehae",
+    "homeSubtitle": "Ts'ireletso e khutsitseng bakeng sa polokeho ea letsatsi le letsatsi.",
+    "guardianTitle": "Mokhoa oa Guardian",
+    "guardianSubtitle": "Arolelana moelelo le batho ba tšepahalang.",
+    "emergencyTitle": "Mokhoa oa tšohanyetso",
+    "emergencySubtitle": "Lipompo tse hlano li ka nyolohela ho litlhokomeliso tsa SOS le Guardian.",
+    "excuseTitle": "Tšoarelo",
+    "excuseSubtitle": "Fana ka lebaka le utloahalang la ho tlohela boemo bo sa phutholoheng.",
+    "safetyCallTitle": "Pitso ea polokeho",
+    "safetyCallSubtitle": "Qala mohala oa nako ea 'nete ha o hloka tšehetso.",
+    "practiceTitle": "Sebaka sa boikoetliso",
+    "practiceSubtitle": "Leka ho kenya ts'ireletso ea ts'ireletso ea ts'ireletso ea"
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Boloka mabenyane a le haufi ha a ntse a scanning.",
+    "scan": "Scan bakeng sa lisebelisoa",
+    "scanning": "Ho Scan Close",
+    "noDevices": "Ha ho na lisebelisoa tse haufi tsa NorthStar tse fumanoeng.",
+    "scanStartFailed": "Bluetooth scanning e ne e sa khone ho qala. Ka kopo leka hape.",
+    "scanFailed": "Re ne re sitoa ho fumana mabenyane a haufi. Sheba Bluetooth, lula NorthStar haufi, ebe u leka hape.",
+    "scanAccessFailed": "Bluetooth scanning e ne e sa khone ho qala. Sheba phihlello Bluetooth ebe o leka hape.",
+    "permissionDenied": "Sesebelisoa se haufi se felile. Lumella phihlello Bluetooth ho Litlhophiso, ebe u leka hape.",
+    "connectTimeout": "NorthStar nkile nako e telele haholo ho ikopanya. Ka mor'a moo, lokela ho atamela haufi ebe o leka hape.",
+    "connectFailed": "Re ne re sitoa ho ikopanya le NorthStar. Etsa bonnete ba hore e lefisoa ebile e haufi, ebe u leka hape.",
+    "emptyTitle": "Ha ho na lisebelisoa tse haufi",
+    "emptyMessage": "Boloka NorthStar qosoa 'me u be haufi le fono ena, ebe u skena hape.",
+    "searchingMessage": "Ho batla lisebelisoa tse NorthStar haufi le ..."
+  },
+  "home": {
+    "subtitle": "Dashboard ea Ts'ireletso ea Ts'ireletso",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} se e loketse",
+    "readyBody": "Lentsoe, 'mapa, mabenyane le bahlokomeli ke pompo e le 'ngoe.",
+    "safetyCall": "Pitso ea polokeho",
+    "northStarDevice": "NorthStar Sesebelisoa",
+    "deviceConnected": "%{name} hokahane · %{battery}%",
+    "noDevice": "Ha ho na sesebelisoa se hokahaneng",
+    "manageDevice": "Laola sesebelisoa",
+    "mode": "Mokhoa",
+    "modes": {
+      "home": "Lehae",
+      "guardian": "Mohlokomeli",
+      "emergency": "Maemo a tšohanyetso"
+    }
+  },
+  "map": {
+    "finding": "Ho fumana sebaka sa hau sa marang-rang ...",
+    "retry": "Sebaka sa ho leka hape",
+    "title": "'Mapa oa polokeho",
+    "previewSubtitle": "Expo Go preview; Mapbox etsa hore sebaka sa marang-rang se sebetse ka mokhoa o ts'oanang.",
+    "preview": "Ponelopele ea 'mapa",
+    "risk": "Kotsi: %{risk} · Radius %{radius}m",
+    "refresh": "Sebaka sa khatholla",
+    "refreshing": "Ho fumana sebaka ...",
+    "updateFailed": "Re ne re sitoa ho ntlafatsa sebaka sa hau sa marang-rang. Ka kopo leka hape.",
+    "notRequested": "Phihlello ea sebaka ha ea ka ea kopuoa. U ka e lumella hamorao ho tsoa ho li-setting.",
+    "permissionOff": "Sebaka sa marang-rang se felile. E lumelle ho Litlhophiso ho tsepamisa 'mapa oa polokeho ho uena.",
+    "timeout": "Sebaka sa hau sa marang-rang se nka nako e telele ho feta kamoo ho neng ho lebelletsoe. Tsamaea sebakeng se seng ka lets'oao le hlakileng ebe u leka hape.",
+    "savedTitle": "Libaka tse bolokiloeng",
+    "savedEmptyTitle": "Ha ho na libaka tse bolokiloeng",
+    "savedEmptyMessage": "Libaka tse tšepahalang tseo u li bolokang li tla hlaha mona bakeng sa phihlello e potlakileng.",
+    "zones": {
+      "crowding": "Ho Late Night Crowding",
+      "lowLighting": "Sebaka se tlase sa mabone"
+    },
+    "risks": {
+      "low": "Tlaase",
+      "medium": "Mahareng",
+      "high": "Phahameng"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ho hokahanya ...",
+    "offlineCompanion": "Motsoalle oa offline",
+    "offline": "Offline",
+    "connected": "E hokahane",
+    "interrupted": "Khokahano e sitisoa",
+    "ready": "Itokiselitse ho hokahanya",
+    "connectingSecurely": "Ho ikopanya ka mokhoa o sireletsehileng le motsoalle oa hau oa lentsoe",
+    "messagesWaiting": {
+      "one": "%{count} Molaetsa o emetse ho romelloa",
+      "other": "%{count} melaetsa e emetse ho romelloa"
+    },
+    "useOffline": "Sebelisa motsoalle oa offline",
+    "reconnect": "Ho Voice AI",
+    "typePlaceholder": "Mofuta haeba ho thata ho bua",
+    "endCall": "Qetellong ea pitso",
+    "startCall": "Qala mohala",
+    "emptyTitle": "Moqoqo oa hau o qala mona",
+    "emptyMessage": "Qala ho letsetsa kapa ho thaepa molaetsa ha u se u loketse."
+  },
+  "chat": {
+    "waiting": "Ho emela khokahano",
+    "notSent": "Molaetsa ha o romelloe.",
+    "retryAccessibility": "Leka hape ho romella molaetsa"
+  },
+  "history": {
+    "clearTitle": "Pale e hlakileng ea moqoqo?",
+    "clearMessage": "Sena se tlosa melaetsa e bolokiloeng AI molekane ho tsoa sesebelisoa sena.",
+    "deleteTitle": "Delete moqoqo ona?",
+    "cannotUndo": "Sena se ke ke sa tlosoa.",
+    "title": "Nalane ea moqoqo",
+    "subtitle": "AI melaetsa e bolokiloeng ho sesebelisoa sena.",
+    "empty": "Ha ho na lipuisano tse bolokiloeng.",
+    "emptyTitle": "Ha ho na lipuisano",
+    "emptyMessage": "Lipuisano tsa hau tsa AI li tla hlaha mona kamora mohala oa hau oa pele.",
+    "loadFailed": "Re ne re sitoa ho jara nalane ea moqoqo. Ka kopo leka hape.",
+    "clearFailed": "Re ne re sitoa ho hlakisa pale ea moqoqo. Ka kopo leka hape.",
+    "deleteFailed": "Re ne re sitoa ho hlakola moqoqo oo. Ka kopo leka hape.",
+    "aiCompanion": "AI motsoalle",
+    "resume": "Qala hape",
+    "clearAll": "Hlakola nalane eohle",
+    "roles": {
+      "assistant": "Motsoalle",
+      "user": "Uena"
+    }
+  },
+  "voices": {
+    "title": "Polokeho ea ka ea Ts'ireletso ea Ts'ireletso",
+    "subtitle": "Khetha lentsoe le utloahalang le nepahetse ho le utloa.",
+    "test": "Lentsoe la teko",
+    "stop": "Emisa sampole",
+    "selectionFailedTitle": "Khetho ha e bolokoe",
+    "selectionFailedMessage": "Ka kopo leka ho khetha lentsoe hape.",
+    "sampleFailedTitle": "Mohlala ha o fumanehe",
+    "sampleFailedMessage": "Lentsoe lena le ne le ke ke la bapaloa. Ka kopo leka hape.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "E bonolo, e khutsitseng, e tsitsitseng"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Ho Hoodie Hoodie Hoo"
+      },
+      "boyfriend": {
+        "name": "Mohlankana",
+        "description": "Lerato, Lerato, Lerato"
+      },
+      "muscleMan": {
+        "name": "Monna oa mesifa",
+        "description": "Ho itšepa, ho itšireletsa, ho khothatsa"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Lentsoe",
+    "changeVoice": "Fetola lentsoe",
+    "showCompanion": "Show companion",
+    "offlineMode": "Mokhoa o sa sebetseng",
+    "offlineModeSubtitle": "Sebelisa likarabo tse kopaneng ha marang-rang kapa mangolo a Hume a sa fumanehe.",
+    "privacyData": "Lekunutu le data",
+    "privacyBody": "Tlosa kapa hlakola data ea lehae e bolokiloeng sesebelisoa sena.",
+    "preparingExport": "Ho lokisetsa ho romelloa kantle ho naha ...",
+    "exportData": "Export data ea ka",
+    "privacyPolicy": "Leano la lekunutu",
+    "deleting": "Ho tlosa ...",
+    "deleteAll": "Delete all local data",
+    "deviceManagement": "Taolo ea lisebelisoa",
+    "emergencyContacts": "Lipuisano tsa maemo a tšohanyetso",
+    "signOut": "Sign out",
+    "exportFailedTitle": "Export e hlōlehile",
+    "exportFailedMessage": "Ha e khone ho romella data ea hau hona joale.",
+    "deleteConfirmTitle": "Delete all local data?",
+    "deleteConfirmMessage": "Sena se tlosa profil ea hau, litlhophiso, mabitso a tšohanyetso, nalane ea moqoqo, likhopotso tsa tumello, le seboka sa auth sa lehae ho sesebelisoa sena.",
+    "deleteEverything": "Hlakola ntho e 'ngoe le e' ngoe",
+    "deleteFailedTitle": "Ho hlakoloa ho hlōlehile",
+    "deleteFailedMessage": "Ha e khone ho hlakola data ea lehae hona joale.",
+    "linkFailed": "Ha e khone ho bula khokahano",
+    "sections": {
+      "language": "Puo",
+      "languageSubtitle": "Sebopeho sa segokanyimmediamentsi sa sebolokigolo le puo ea tumello ea sisti",
+      "companion": "Motsoalle",
+      "companionSubtitle": "Likhetho tsa lentsoe le tse sa sebetseng",
+      "deviceSafety": "Lisebelisoa le polokeho",
+      "deviceSafetySubtitle": "NorthStar, bahlokomeli le lipuisano tsa maemo a tšohanyetso",
+      "privacy": "Boinotšing le data",
+      "privacySubtitle": "Histori, ho rekisa kantle ho naha, ho hlakoloa le leano",
+      "account": "Ak'haonte",
+      "accountSubtitle": "Seboka sa hau sa hajoale sa VeryLoving"
+    },
+    "updateFailedTitle": "Setting ha e bolokoe",
+    "updateFailedMessage": "Re ne re ke ke ra boloka khetho eo. Ka kopo leka hape.",
+    "signOutFailedTitle": "Ha e khone ho saena",
+    "signOutFailedMessage": "Seboka sa hau se ntse se le mafolofolo. Ka kopo leka hape."
+  },
+  "contacts": {
+    "title": "Lipuisano tsa maemo a tšohanyetso",
+    "subtitle": "Batho ba tšepahalang ba fumanehang nakong ea ts'ireletso ea ts'ireletso.",
+    "addTitle": "Eketsa puisano ea tšohanyetso",
+    "name": "Lebitso",
+    "namePlaceholder": "Lebitso la ho ikopanya",
+    "phone": "Nomoro ea mohala",
+    "add": "Eketsa ho ikopanya",
+    "empty": "Ha ho na lipuisano tsa tšohanyetso tse ekelitsoeng.",
+    "emptyTitle": "Ha ho na lipuisano tsa tšohanyetso",
+    "emptyMessage": "Eketsa motho eo u mo tšepang e le hore ba itokisetse ha phallo ea polokeho e ba hloka.",
+    "removeTitle": "Tlosa %{name}?",
+    "removeMessage": "Motho enoa ha a sa tla hlola a hlaha ka har'a phallo ea hau ea tšohanyetso.",
+    "nameRequired": "Kenya lebitso la motho eo u ka ikopanyang le eena.",
+    "saveFailedTitle": "Puisano ha e bolokiloe",
+    "saveFailedMessage": "Re ne re sitoa ho boloka khokahano ena. Sheba lintlha tse qaqileng ebe u leka hape.",
+    "removeFailedTitle": "Puisano ha e tlosoe",
+    "removeFailedMessage": "Re ne re sitoa ho tlosa khokahano ena. Ka kopo leka hape.",
+    "callAccessibility": "Bitsa %{name}",
+    "removeAccessibility": "Tlosa %{name}"
+  },
+  "device": {
+    "title": "Taolo ea lisebelisoa",
+    "subtitle": "Laola sesebelisoa sa hau sa NorthStar",
+    "connected": "E hokahane · %{battery}% ea betri",
+    "none": "Ha ho na lisebelisoa tse hokahaneng",
+    "disconnect": "Sesebelisoa sa ho khaola",
+    "connect": "Sesebelisoa sa ho hokahanya"
+  },
+  "friends": {
+    "title": "Metsoalle",
+    "subtitle": "Bahlokomeli, likopo le graph ea tšohanyetso.",
+    "addDemo": "Eketsa motsoalle oa demo",
+    "emptyTitle": "Sebaka sa hau sa polokeho ha se na letho",
+    "emptyMessage": "Metsoalle le bahlokomeli ba tšepahalang ba tla hlaha mona hang ha ba ekelitsoe.",
+    "newGuardian": "Mohlokomeli e mocha",
+    "statuses": {
+      "guardian": "Mohlokomeli",
+      "pending": "E emetse"
+    }
+  },
+  "emergency": {
+    "title": "Maemo a tšohanyetso SOS",
+    "subtitle": "Eketsa feela haeba u hloka tšehetso e potlakileng.",
+    "body": "Sena se tla tsebisa phallo ea hau ea polokeho le ho lokisetsa mabitso a tšohanyetso.",
+    "activate": "Kenya tšebetsong SOS",
+    "callCompanion": "Bitsa motsoalle oa AI",
+    "notificationTitle": "SOS e sebelisitsoe",
+    "notificationBody": "Boemo ba hau ba tšohanyetso bo se bo loketse.",
+    "readyTitle": "SOS itokiselitse",
+    "callContact": "Letsetsa %{name}?",
+    "addContact": "Eketsa mohanyetsi oa tšohanyetso ho Litlhophiso.",
+    "quickShareTitle": "Ho arolelana ka potlako",
+    "quickShareMessage": "Sebaka sa ho arolelana sebaka se se se se loketse. Hokela backend share endpoint ho romella lihokela tse phelang."
+  },
+  "quickShare": {
+    "title": "Ho arolelana ka potlako",
+    "subtitle": "Sebaka sa marang-rang se se se loketse."
+  },
+  "capybearTap": {
+    "title": "Capybear tobetsa",
+    "subtitle": "Tobetsa habeli NorthStar ea hau ho lahla lamunu ea polokeho.",
+    "body": "Tsela ea boits'oaro e loketse wiring ea ketsahalo ea BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Tsela ea nts'etsopele feela."
+  },
+  "errors": {
+    "voiceOffline": "U shebahala u le kantle ho marang-rang. Molaetsa oa hau o tla romelloa ha o kopanya hape.",
+    "voiceQueued": "Molaetsa o bolokiloeng. E tla romelloa ha motsoalle oa lentsoe a hokahana hape.",
+    "voiceRetrying": "Leka ho romella molaetsa oa hau hape ...",
+    "voiceConnecting": "Ho ikopanya ka mokhoa o sireletsehileng le motsoalle oa hau oa lentsoe",
+    "microphone": "Ho hlokahala hore ho be le maekrofono bakeng sa mehala ea lentsoe. U ka e nolofalletsa ho Litlhophiso, kapa ua thaepa molaetsa ho e-na le hoo.",
+    "billing": "Motsoalle oa lentsoe oa inthanete ha a fumanehe ka nakoana. U ka tsoelapele ka motsoalle oa hau.",
+    "authentication": "Motsoalle oa lentsoe o ne a sa khone ho netefatsa seboka sena. Kena hape kapa u sebelise motsoalle oa offline hona joale.",
+    "timeout": "Motsoalle oa lentsoe o ile a nka nako e telele haholo ho araba. Sheba khokahano ea hau ebe u leka hape.",
+    "network": "Re ne re sitoa ho fihlela motsoalle oa lentsoe. Lekola khokahano ea hau, ebe u leka hape kapa u tsoele pele kantle ho marang-rang.",
+    "genericVoice": "Ho na le ho hong ho ileng ha sitisa mohala oa lentsoe. Leka hape kapa u tsoele pele ka motsoalle oa offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ho romelloa ha data"
+  },
+  "notifications": {
+    "channelName": "Litlhokomeliso tsa polokeho"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hloka phihlello ea maekrofono bakeng sa polokeho le AI mehala ea motsoalle.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving sebelisa sebaka sa hau bakeng sa 'mapa oa polokeho le likarolo tsa polokeho tse haufi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sebelisa sebaka sa hau sa marang-rang ho ts'ehetsa phallo e sireletsehileng le ea tšohanyetso.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving e sebelisa sebaka se ka morao bakeng sa ho fihla ka mokhoa o sireletsehileng le likarolo tse haufi tsa sebaka sa kotsi.",
+      "NSCameraUsageDescription": "VeryLoving sebelisa kh'amera feela ha u khetha ho nka profil kapa foto ea polokeho.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving sebelisa laeborari ea hau ea lifoto feela ha u khetha profil kapa setšoantšo sa polokeho.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sebelisa Bluetooth ho hokahanya mabenyane a hau a polokeho ea NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving sebelisa Bluetooth ho hokahanya mabenyane a hau a polokeho ea NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

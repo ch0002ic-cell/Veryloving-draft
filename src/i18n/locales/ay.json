@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Yapxataña",
+    "apple": "Apple",
+    "back": "Qhipa",
+    "call": "Jawsaña",
+    "cancel": "Kansilaña",
+    "clear": "Qhana",
+    "close": "Jist'antaña",
+    "connect": "Kuniktasiña",
+    "connecting": "Ukax mä...",
+    "continue": "Sarantaña",
+    "delete": "Phiskhsuña",
+    "finish": "Tukuña",
+    "friends": "Masinaka",
+    "google": "Google",
+    "home": "Uta",
+    "loading": "Ukax mä...",
+    "map": "Mapa",
+    "notNow": "janiw jichhaxa",
+    "remove": "Unxtayaña",
+    "retry": "Wasitat yantʼañamawa",
+    "retrying": "Wasitat yant’aña",
+    "save": "Imaña",
+    "selected": "Ajllitanaka",
+    "send": "Apayaña",
+    "settings": "Ukax mä juk’a pachanakanwa",
+    "skip": "Willikipaña",
+    "skipForNow": "Jichhax jaytañani",
+    "skipTutorial": "Yatichäwi jaytaña",
+    "sos": "SOS",
+    "unknown": "Jani uñt'ata",
+    "user": "VeryLoving apnaqiri",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Aru",
+    "subtitle": "Taqi app ukan apnaqat aru ajlliñamawa.",
+    "system": "Sistema ukax default ukhamawa",
+    "search": "Arunak thaqhaña",
+    "noResults": "Janiw kuna arunakas thaqhañampix kikipäkiti.",
+    "english": "inklisa",
+    "spanish": "ispañula",
+    "french": "Francés aru",
+    "chineseSimplified": "Chino (Simplificado) ukat juk’ampinaka."
+  },
+  "phone": {
+    "label": "Teléfono ukan jakhupa",
+    "placeholder": "Teléfono ukan jakhupa",
+    "selectCountry": "Marka jan ukaxa suyu ajlliñani",
+    "searchCountry": "Marka, código jan ukax prefijo de marcación ukar thaqhañamawa",
+    "noCountries": "Janiw kuna markanakas thaqhañampix kikipäkiti.",
+    "countryButton": "Marka mayjt’ayaña, jichhaxa %{country} ukatxa %{callingCode}",
+    "inputAccessibility": "Teléfono ukax %{country} ukatakiw.",
+    "required": "Mä teléfono numero qillqt’aña.",
+    "tooShort": "Aka teléfono jakhüwix wali jisk’akiwa.",
+    "tooLong": "Aka teléfono jakhüwix wali jach’awa.",
+    "invalid": "Ajllit markatakix mä chiqap teléfono jakhu qillqt’aña.",
+    "valid": "Teléfono internacional ukaxa wali askiwa"
+  },
+  "auth": {
+    "onboardingTagline": "Mä compañero de seguridad personal “walikïsktwa” ukat “yanapt’añaw munta” uka pachanakataki.",
+    "createAccount": "Cuenta luraña",
+    "continueOnboarding": "Onboarding ukampi sarantaskakiwa",
+    "createSubtitle": "Mä qillqañ thakhi ajlliñamawa seguridad gráfico ukar jark’aqañataki.",
+    "phoneVerification": "Telefono tuqi chiqañchaña",
+    "sendCode": "Ukax mä codigo apayani",
+    "sendingCode": "Ukax mä código apayani...",
+    "verifyCode": "Codigo chiqapa uñakipaña",
+    "sentTo": "Ukax %{phone} ukar apayatawa.",
+    "yourPhone": "teléfono tuqi",
+    "verificationCode": "Código de verificación ukaxa",
+    "verify": "Uñakipaña",
+    "verifying": "Uñakipt’añataki...",
+    "invalidCode": "Uka chiqapa uñakipaña chimpu qillqt’aña.",
+    "signInFailedTitle": "Uñt’ayasiñatakix jark’atawa",
+    "signInFailedMessage": "Janiw qillqantañ tukuyañjamäkänti. Conexión uñakipt’aña ukat mayamp yant’aña.",
+    "googleUnavailableTitle": "Google Uñt’ayawix janiw utjkiti",
+    "googleUnavailableMessage": "Mä sesión de desarrollo local ukamp apnaqaña. Nativo Google Uñt’ayawix mä lurañ lurawin irnaqaski.",
+    "northStarTitle": "NorthStar joyanaka",
+    "northStarSubtitle": "Jichhax pariar jan ukax sarantaskakiwa ukat qhipat yapxatañamawa.",
+    "northStarBody": "VL01 wearable ukax grifos ukat jaya prensa gestos ukanakamp seguridad flujos ukanakaruw sartayaspa.",
+    "setupJewelry": "Joyas ukanaka utt’ayaña",
+    "meetCapybear": "Uñt’añataki Capybear",
+    "meetCapybearSubtitle": "Mapan ukat jawsatanakan llamp’u chuyman seguridad masimax.",
+    "capybearBody": "Capybear ukax utar modalidad, guardian modalidad, emergencia modalidad, excusa jawsaña, ukat arut yanapt’añ yanapt’aspawa.",
+    "chooseVoice": "Mä aru ajlliñamawa",
+    "capybearReminder": "Capybear amtawi",
+    "remindersReady": "Llamp’u chuyman amtañanakax wakicht’atawa."
+  },
+  "permissions": {
+    "locationTitle": "Uka chiqanx seguridad ukax utjiwa",
+    "locationSubtitle": "Mapa, zonas de peligro, jan kuna usun puriñ, ukat SOS contexto ukatakiw apnaqasi.",
+    "locationBody": "VeryLoving ukax kawkhans jikxatasi uk mayi, ukhamat uñjirinakax kawkhans yanapt’añax wakisispa uk amuyapxañapataki. Ukax qhipharux Configuración ukan mayjt’ayatarakispawa.",
+    "allowLocation": "Ukax kawkhans utji uk jaysaña",
+    "notificationsTitle": "Seguridad tuqit yatiyawinak",
+    "notificationsSubtitle": "Yatiyawinakax check-ins ukat emergencias ukanakar yanapt’i.",
+    "notificationsBody": "Jiwasax yatiyawinakakiw apnaqapxta, jan kuna jan walt’äwinakax utjañapataki, jan walt’äwinak utjkipan machaqar tukuyañataki, ukat amtawinak ch’amanchañataki.",
+    "enableNotifications": "Yatiyawinak ch’amanchaña",
+    "locationRationaleTitle": "Uka chiqanx seguridad contexto ukax chiqaparuw uñji",
+    "locationRationaleMessage": "VeryLoving ukax kawkhantix jikxataskta ukax seguridad mapa, zonas de peligro, jank’ak chikancht’asiñ, ukat SOS contexto ukatakiw apnaqi. Ukax qhipharux Configuración ukan mayjt’ayatarakispawa.",
+    "notificationsRationaleTitle": "Alertas de seguridad ukax yatiyawinakaw wakisi",
+    "notificationsRationaleMessage": "VeryLoving ukax ch’amanchañ amtawinak apayani, jan walt’awinak mayjt’ayañataki, ukat jan kuna jan walt’äwinakax utjañapataki. Jiwasax janiw yatiyawinakax anuncios ukanakatakix apnaqktanti.",
+    "microphoneRationaleTitle": "Micrófono ukax seguridad jawsatanakar ch’amañchi",
+    "microphoneRationaleMessage": "VeryLoving ukax micrófono ukax AI compañero jan ukax seguridad jawsañ qalltañkamakiwa.",
+    "bluetoothRationaleTitle": "Bluetooth ukax wearable ukaruw uñt’ayi",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth apnaqi NorthStar joyas ukamp chikt’añataki, conexión estado ukar uñakipañataki, ukat seguridad flujos ukar wearable ukar ch’amanchañataki.",
+    "cameraRationaleTitle": "Camara ukax opcional ukhamawa",
+    "cameraRationaleMessage": "VeryLoving ukax cámara ukax kunapachatix perfil foto apsuñ jan ukax seguridad ukan uñacht’äwip uñt’ayañ amtkta ukhakiw apnaqi."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ukax aka jawirax Configuración ukat tablón de instrumentos ukanakat utjañapatakiw uñji.",
+    "chooseVoiceTitle": "Aruma ajlliñamawa",
+    "chooseVoiceSubtitle": "Kawkïr compañero arutï istʼañatakejj jukʼamp seguro jikjjataski uk ajlliñamawa.",
+    "homeTitle": "Uta lurañ modalidad",
+    "homeSubtitle": "Sapa uru jan kuna usunïñatakixa amukt’aña uñjaña.",
+    "guardianTitle": "Modo Guardian ukax mä jach’a uñacht’äwiwa",
+    "guardianSubtitle": "Contexto ukax atiniskañ jaqinakampiw yatiyasi.",
+    "emergencyTitle": "Modo de emergencia ukaxa mä juk’a pachanakwa lurasi",
+    "emergencySubtitle": "Phisqa grifos ukax SOS ukat guardian alertas ukaruw escalaspa.",
+    "excuseTitle": "Disculpa jawsaña",
+    "excuseSubtitle": "Mä jan wali situación jaytañatakix mä gracioso razón uñstayañamawa.",
+    "safetyCallTitle": "Seguridad ukat jawsaña",
+    "safetyCallSubtitle": "Chiqpach pachan compañero jawsañ qalltañamawa kunapachatix yanapt’a munapk ukhaxa.",
+    "practiceTitle": "Escena de practicaña",
+    "practiceSubtitle": "Mä demostración de baja presión ukan seguridad flujos ukanakamp yant’apxam."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar ukax mä juk’a pachanakanwa.",
+    "pairSubtitle": "Uka joyanakax jak’ankxañamawa, escanear sarañkama.",
+    "scan": "Dispositivonak uñakipt’aña",
+    "scanning": "Uka jak’anx escanear...",
+    "noDevices": "Janiw uka jak’ankir NorthStar dispositivos ukanakax jikxataskiti.",
+    "scanStartFailed": "Bluetooth uñakipañax janiw qalltañjamäkiti. Ukhamaraki, mayampi yant’apxañani.",
+    "scanFailed": "Uka jakʼanjja, janiw joyanak jikjjatapkti. Bluetooth uñakipt’aña, NorthStar jak’achasiña, ukatxa mayampi yant’aña.",
+    "scanAccessFailed": "Bluetooth uñakipañax janiw qalltañjamäkiti. Bluetooth ukar mantañ uñakipt’aña ukat mayamp yant’aña.",
+    "permissionDenied": "Jak’a-dispositivo ukar mantañax jist’antatawa. Bluetooth ukar Configuración ukan mantañapatak jaysaña, ukatx mayamp yant’aña.",
+    "connectTimeout": "NorthStar ukax wali jaya pachaw uñt’ayasi. Uka jak’achasiña ukat mayamp yant’aña.",
+    "connectFailed": "Jiwasax janiw NorthStar ukarux mantañjamäkiti. Uñakipt’añani cargado ukat jak’ankpachati janicha, ukatsti mayamp yant’añani.",
+    "emptyTitle": "Janiw jak’ankir dispositivonakax utjkiti",
+    "emptyMessage": "NorthStar cargado ukat aka teléfono ukar jak’achasiña, ukatx mayamp escanear.",
+    "searchingMessage": "Uka jak’anx NorthStar dispositivos ukanakaw thaqhatäski..."
+  },
+  "home": {
+    "subtitle": "Seguridad compañero tablón de mando",
+    "modeStatus": "%{mode} MODO ukax mä juk’a pachanakanwa",
+    "companionReady": "%{name} ukax wakicht’atawa",
+    "readyBody": "Voz, mapa, joyas ukat guardianes ukanakax mä grifo ukch’akiwa.",
+    "safetyCall": "Seguridad ukat jawsaña",
+    "northStarDevice": "NorthStar ukax mä dispositivo ukhamawa",
+    "deviceConnected": "%{name} ukaxa · %{battery} % .",
+    "noDevice": "Janiw kuna dispositivos ukanakas utjkiti",
+    "manageDevice": "Dispositivo apnaqaña",
+    "mode": "Modo ukax mä juk’a pachanakanwa",
+    "modes": {
+      "home": "Uta",
+      "guardian": "Guardian ukax mä jach’a uñacht’äwiwa",
+      "emergency": "Akatjamata"
+    }
+  },
+  "map": {
+    "finding": "Ukax kawkhantix jikxataskta uk jikxataña...",
+    "retry": "Kawkhantï utjki uk wasitat yantʼañamawa",
+    "title": "Seguridad ukat mapa",
+    "previewSubtitle": "Expo Go nayrïr uñakipaña; Mapbox ukax mä desarrollo lurawin uñacht’ayi.",
+    "preview": "Mapa uñacht’ayaña",
+    "risk": "Riesgo: %{risk} · Radio %{radius} m",
+    "refresh": "Refresco ukan utjatapa",
+    "refreshing": "Uka chiqa jikxataña...",
+    "updateFailed": "Janiw kawkhans jikxataskta ukx machaqar tukuyirjamäkti. Ukhamaraki, mayampi yant’apxañani.",
+    "notRequested": "Uka chiqar mantañax janiw mayitäkänti. Qhipharux Configuración ukanx ch’amanchasispawa.",
+    "permissionOff": "Uka chiqar mantañax jist’antatawa. Configuración ukan ch’amanchañamawa, ukhamat seguridad mapa ukax jumar chika taypin utjañapataki.",
+    "timeout": "Kawkhantï jikxataskta ukax suyt’atapat sipan juk’amp pachaw saraski. Mä chiqaru juk’ampi qhana señalampi sarxataña ukatxa mayampi yant’aña.",
+    "savedTitle": "Qhispiyat chiqanaka",
+    "savedEmptyTitle": "Janiw kuna qhispiyat chiqanakas utjkiti",
+    "savedEmptyMessage": "Confiable chiqanakax imatäki ukanakax akan uñstaniw jank’ak mantañataki.",
+    "zones": {
+      "crowding": "Qhipa arumax jaqinakax walpun tantachasipxi",
+      "lowLighting": "Jisk’a qhananchawi chiqa"
+    },
+    "risks": {
+      "low": "jask'a",
+      "medium": "chika",
+      "high": "jach'a"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ukax mä...",
+    "offlineCompanion": "Offline ukampi chikt’ata",
+    "offline": "Jan Internetan utjki uka",
+    "connected": "Ukax mä juk’a pachanakanwa",
+    "interrupted": "Conexión ukax jark’atawa",
+    "ready": "Conectasiñatakix wakicht’atawa",
+    "connectingSecurely": "Arut masimar jan kuna usun conectasiña...",
+    "messagesWaiting": {
+      "one": "%{count} yatiyawix apayaniñ suyt’aski",
+      "other": "%{count} yatiyawinakax apayaniñ suyt’aski"
+    },
+    "useOffline": "Ukax mä compañero offline ukampiw apnaqasi",
+    "reconnect": "Arumpi mayampi mayachaña AI",
+    "typePlaceholder": "Arsuñax ch’amakïchi ukhax qillqt’añamawa",
+    "endCall": "Tukuyañatakix jawsaña",
+    "startCall": "Jark’aña qalltaña",
+    "emptyTitle": "Juman aruskipäwimax akan qalltawayi",
+    "emptyMessage": "Llamayu qalltaña jan ukax mä mensaje qillqt’aña kunapachatix wakicht’atäki ukhaxa."
+  },
+  "chat": {
+    "waiting": "Conexión ukar suyt’aña",
+    "notSent": "Yatiyawix janiw khithatäkiti.",
+    "retryAccessibility": "Yatiyawi apayaniñataki mayampi yant’aña"
+  },
+  "history": {
+    "clearTitle": "¿Qhana aruskipäwi sarnaqäwi?",
+    "clearMessage": "Ukax aka dispositivo ukan qhispiyat AI masi yatiyawinak apsu.",
+    "deleteTitle": "¿Aka aruskipäw chhaqtayañati?",
+    "cannotUndo": "Ukajj janiw mayjtʼayatäkaspati.",
+    "title": "Arsuñ sarnaqäwi",
+    "subtitle": "AI masi yatiyawinakax aka dispositivo ukan imatäxiwa.",
+    "empty": "Janiw kuna aruskipäwinakas qhispiyatäkiti.",
+    "emptyTitle": "Janiw kuna aruskipäwinakas jichhakamax utjkiti",
+    "emptyMessage": "AI masi aruskipäwinakamax nayrïr jawsañ tukuyatat aka chiqan uñstani.",
+    "loadFailed": "Janiw historial de conversación ukax cargañjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "clearFailed": "Janiw parltʼasiñ sarnaqäwip qʼomachañjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "deleteFailed": "Uka aruskipäwix janiw chhaqtayañjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "aiCompanion": "AI ukampi chikt’ata",
+    "resume": "Juk'aptayaña",
+    "clearAll": "Taqi sarnaqäwinak q’umachañamawa",
+    "roles": {
+      "assistant": "masi",
+      "user": "juma"
+    }
+  },
+  "voices": {
+    "title": "Nayan seguridad jawsañ arunakaja",
+    "subtitle": "Kawkïr compañero arutï istʼañatakejj askïki uk ajlliñamawa.",
+    "test": "Aru yant’aña",
+    "stop": "Sayt’aña muestra",
+    "selectionFailedTitle": "Ajlliwixa janiwa qhispiyatäkiti",
+    "selectionFailedMessage": "Ukhamaraki, mayampi aru ajlliñ yant’apxañani.",
+    "sampleFailedTitle": "Muestra ukax janiw utjkiti",
+    "sampleFailedMessage": "Aka aru muestra ukax janiw phust’añjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "llamp’u, samaraña, uraqiru ch’allt’aña"
+      },
+      "bestie": {
+        "name": "Bestie kullakajj ukham luräna",
+        "description": "qhana, chuymacht’iri, aruskipt’iri"
+      },
+      "boyfriend": {
+        "name": "Munata",
+        "description": "suma sayt’ata, munasiñampi, utjki uka"
+      },
+      "muscleMan": {
+        "name": "Musculos ukan irnaqiri",
+        "description": "confianza, jark’aqasiña, ch’amanchaña"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Aru",
+    "changeVoice": "Aru mayjt’ayaña",
+    "showCompanion": "Compañero uñacht’ayaña",
+    "offlineMode": "Modo offline ukax mä juk’a pachanakanwa",
+    "offlineModeSubtitle": "Bundled compañero jaysawinak apnaqaña kunawsatix red jan ukax Hume credenciales ukax jan utjki ukhaxa.",
+    "privacyData": "Privacidad & datos ukanak uñt’ayaña",
+    "privacyBody": "Aka dispositivo ukan imatäki uka local datos ukanaka apsuña jan ukax chhaqtayaña.",
+    "preparingExport": "Exportación wakicht’aña...",
+    "exportData": "Nayan datos ukanakax exportación ukankiwa",
+    "privacyPolicy": "Privacidad tuqit kamachi",
+    "deleting": "Chhaqtayaña...",
+    "deleteAll": "Taqi uka local datos ukanaka chhaqtayaña",
+    "deviceManagement": "Dispositivo apnaqaña",
+    "emergencyContacts": "Jan walt’awinakax utjki ukanak uñt’ayaña",
+    "signOut": "Uñt’ayasiñataki",
+    "exportFailedTitle": "Exportación ukax janiw phuqhaskiti",
+    "exportFailedMessage": "Jichhax janiw datos ukanak apsuñjamäkiti.",
+    "deleteConfirmTitle": "Taqi uka local datos ukanaka chhaqtayaña?",
+    "deleteConfirmMessage": "Ukax perfil, configuración, emergencia contactos, historial de conversación, permiso amtawi, ukat sesión local de auth ukanak aka dispositivo ukanx apsu.",
+    "deleteEverything": "Taqi kuna chhaqtayaña",
+    "deleteFailedTitle": "Chhaqtayañax janiw phuqhaskänti",
+    "deleteFailedMessage": "Jichhax janiw local datos chhaqtayañjamäkiti.",
+    "linkFailed": "Janiw link jist’arañjamakiti",
+    "sections": {
+      "language": "Aru",
+      "languageSubtitle": "Interfaz ukat sistema permiso aru",
+      "companion": "Masi",
+      "companionSubtitle": "Aru ukat jan internetan munañanakapa",
+      "deviceSafety": "Dispositivos ukat seguridad ukanak luraña",
+      "deviceSafetySubtitle": "NorthStar , uñjirinaka, ukat jan walt’äwin uñjasirinaka",
+      "privacy": "Privacidad ukatxa datos ukanaka",
+      "privacySubtitle": "Sarnaqäwi, exportación, chhaqtayaña, ukat política ukanaka",
+      "account": "Kuñta",
+      "accountSubtitle": "Jichhax VeryLoving sesión ukax utjiwa"
+    },
+    "updateFailedTitle": "Setting ukax janiw qhispiyatäkiti",
+    "updateFailedMessage": "Uka munañax janiw qhispiyañjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "signOutFailedTitle": "Janiw uñt’ayañjamäkänti",
+    "signOutFailedMessage": "Sesión ukax wali ch’amanchatawa. Ukhamaraki, mayampi yant’apxañani."
+  },
+  "contacts": {
+    "title": "Jan walt’awinakax utjki ukanak uñt’ayaña",
+    "subtitle": "Confiable jaqinakax seguridad flujos ukan utji.",
+    "addTitle": "Ukaxa mä emergencia contacto ukampiwa yapxataña",
+    "name": "Chacha",
+    "namePlaceholder": "Uñt’ayañataki suti",
+    "phone": "Uka telefono numerompiw jawstʼasiñama",
+    "add": "Contacto ukar yapxataña",
+    "empty": "Janiw kuna contactos de emergencias ukanakas jichhakamax yapxatatäkiti.",
+    "emptyTitle": "Janiw kuna emergencia contactos ukanakas jichhakamax utjkiti",
+    "emptyMessage": "Khitirus atiniskta uk yapxatañamawa ukhamat wakicht’atäñapataki kunapachatix mä flujo de seguridad ukax jupanakarux munaski ukhaxa.",
+    "removeTitle": "Ukax %{name} ?",
+    "removeMessage": "Aka jaqix janiw flujo de emergencia ukanx uñstxaniti.",
+    "nameRequired": "Uka contacto ukan sutip qillqt’aña.",
+    "saveFailedTitle": "Contacto ukax janiw qhispiyatäkiti",
+    "saveFailedMessage": "Janiw uka contacto qhispiyañjamäkänti. Uka detalles uñakipt’aña ukat mayamp yant’aña.",
+    "removeFailedTitle": "Contacto ukax janiw apsutäkiti",
+    "removeFailedMessage": "Uka contactojj janiw apsuñjamäkänti. Ukhamaraki, mayampi yant’apxañani.",
+    "callAccessibility": "Ukax %{name} ukaruw jawst’ata.",
+    "removeAccessibility": "Ukax %{name} satawa."
+  },
+  "device": {
+    "title": "Dispositivo apnaqaña",
+    "subtitle": "NorthStar uka dispositivo apnaqaña.",
+    "connected": "Ukax · %{battery} % pila",
+    "none": "Janiw kuna dispositivos ukanakas utjkiti",
+    "disconnect": "Dispositivo ukax mä juk’a pachanakanwa",
+    "connect": "Dispositivo ukar uñt’ayaña"
+  },
+  "friends": {
+    "title": "Masinaka",
+    "subtitle": "Guardians, mayiwinaka, ukhamaraki gráfico de emergencia ukanaka.",
+    "addDemo": "Uñacht’ayaña demo amigo",
+    "emptyTitle": "Uka seguridad muyuxa ch’usakiwa",
+    "emptyMessage": "Confiable amigonaka ukat guardianes ukanakax aka chiqan uñstapxaniw mä kutix yapxatatäni ukhaxa.",
+    "newGuardian": "Machaq Guardian",
+    "statuses": {
+      "guardian": "Guardian ukax mä jach’a uñacht’äwiwa",
+      "pending": "Manqha"
+    }
+  },
+  "emergency": {
+    "title": "Jan walt’awix SOS",
+    "subtitle": "Kunapachatï jankʼak yanaptʼa munaski ukhakiw jukʼamp chʼamañchtʼasiñama.",
+    "body": "Ukhamatwa seguridad flujo ukar yatiyani ukat emergencia ukan contactonak wakicht’arakini.",
+    "activate": "SOS ukar ch’amanchaña.",
+    "callCompanion": "AI compañero ukar jawst’añamawa",
+    "notificationTitle": "SOS ch’amanchatawa",
+    "notificationBody": "Uka emergencia flujo ukax wakicht’atawa.",
+    "readyTitle": "SOS wakicht’atawa",
+    "callContact": "Ukaxa %{name} satawa?",
+    "addContact": "Mä emergencia contacto ukar Configuración ukan yapxatañamawa.",
+    "quickShareTitle": "Jank’akiw uñt’ayasi",
+    "quickShareMessage": "Uka chiqanx uñt’ayasiñ stub ukax wakicht’atawa. Backend share tukuyañ chiqarux jakkir links ukanakar apañatakix uñt’ayañamawa."
+  },
+  "quickShare": {
+    "title": "Jank’akiw uñt’ayasi",
+    "subtitle": "Uka chiqanx compartir flujo ukax wakicht’atawa."
+  },
+  "capybearTap": {
+    "title": "Capybear ukaruw ch’iqt’añama",
+    "subtitle": "Pä kutiw NorthStar ukar ch’iqt’añama, ukhamat mä seguridad naranja ukar jaquntañataki.",
+    "body": "Ruta de gestos ukax cableado evento BLE ukatakix wakicht’atawa."
+  },
+  "debug": {
+    "title": "VeryLoving ukax mä chimpuwa",
+    "subtitle": "Desarrollo-ukaki thakhi."
+  },
+  "errors": {
+    "voiceOffline": "Jumax jan internetan jikxataskasmas ukhamawa. Uka yatiyawix kunapachatix wasitat uñt’ayatäni ukhax apayanitäniwa.",
+    "voiceQueued": "Yatiyawix qhispiyatawa. Ukax kunapachatix arupamp chikt’atäni ukhax apayanitäni.",
+    "voiceRetrying": "Yatiyawinak mayamp apayaniñ yant'askta...",
+    "voiceConnecting": "Arut masimar jan kuna usun conectasiña...",
+    "microphone": "Micrófono ukar mantañax arut jawsañatakix wakisiwa. Ukax Configuración ukan ch’amanchasispawa, jan ukax uka lantix mä yatiyaw qillqt’asispa.",
+    "billing": "Internet tuqin aru masix mä juk’a pachatakix janiw utjkiti. Uka jan internetan sarnaqir masipampix sarantaskakismawa.",
+    "authentication": "Arut masix janiw aka sesión ukar chiqanchañ atkänti. Wasitat mantam jan ukax jichhax jan internetan compañero apnaqañamawa.",
+    "timeout": "Aru masipax wali jaya pachaw jaysañatakix munasïna. Conexión uñakipt’aña ukat mayamp yant’aña.",
+    "network": "Janiw uka aru masipar puriñjamäkänti. Conexión uñakipt’aña, ukatx mayamp yant’aña jan ukax jan internetan sarantaskaña.",
+    "genericVoice": "Kunas uka aru jawsañ jarkʼäna. Mayampi yant’am, jan ukax jan internetan masipampix sarantaskakim."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving yatiyawi apsuña"
+  },
+  "notifications": {
+    "channelName": "Seguridad tuqit yatiyawinak"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ukax micrófono ukar mantañapawa seguridad ukat AI compañero jawsañataki.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ukax kawkhantix jikxataskta ukax seguridad mapa ukat jak’ankir seguridad ukanakatakiw apnaqi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ukax kawkhantix jikxataskta ukx apnaqi, jan kuna usun puriñ ukhamarak jan walt’äwinak utjki ukanakar yanapt’añataki.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ukax qhipa uñtawi apnaqi, jan kuna usun puriñapataki ukhamarak jak’a jan walt’äw zona ukan lurawinakapataki.",
+      "NSCameraUsageDescription": "VeryLoving ukax cámara ukax kunapachatix perfil jan ukax seguridad foto apsuñ amtki ukhakiw apnaqasi.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ukax foto biblioteca uka apnaqi, kunapachatix perfil jan ukax seguridad uñacht’awinak ajllktan ukhakiw apnaqasi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

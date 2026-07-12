@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "추가",
+    "apple": "Apple",
+    "back": "뒤로",
+    "call": "울음소리",
+    "cancel": "취소",
+    "clear": "비켜",
+    "close": "닫습니다",
+    "connect": "연결해",
+    "connecting": "연결 중...",
+    "continue": "계속",
+    "delete": "삭제",
+    "finish": "마감",
+    "friends": "친구들",
+    "google": "Google",
+    "home": "홈",
+    "loading": "로딩 중...",
+    "map": "지도",
+    "notNow": "지금은 안 돼",
+    "remove": "제거",
+    "retry": "재도전",
+    "retrying": "재도전",
+    "save": "저장",
+    "selected": "선정된",
+    "send": "보내세요",
+    "settings": "설정",
+    "skip": "건너뛰기",
+    "skipForNow": "일단 건너뛰자.",
+    "skipTutorial": "튜토리얼 건너뛰기",
+    "sos": "SOS",
+    "unknown": "미상",
+    "user": "VeryLoving 사용자",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "언어",
+    "subtitle": "앱 전반에 걸쳐 사용되는 언어를 선택하세요.",
+    "system": "시스템 기본 설정",
+    "search": "검색 언어",
+    "noResults": "검색하신 언어와 일치하는 언어는 없습니다.",
+    "english": "영어",
+    "spanish": "스페인어",
+    "french": "프랑스어",
+    "chineseSimplified": "중국어 (간체)"
+  },
+  "phone": {
+    "label": "전화번호",
+    "placeholder": "전화번호",
+    "selectCountry": "국가 또는 지역을 선택해",
+    "searchCountry": "국가, 코드 또는 다이얼링 접두사 검색",
+    "noCountries": "검색 결과와 일치하는 국가는 없습니다.",
+    "countryButton": "국가를 바꾸고 현재 %{country} %{callingCode}",
+    "inputAccessibility": "%{country} 전화번호",
+    "required": "전화번호를 입력하세요.",
+    "tooShort": "이 전화번호는 너무 짧아요.",
+    "tooLong": "이 전화번호가 너무 길어.",
+    "invalid": "선택한 국가의 유효한 전화번호를 입력하세요.",
+    "valid": "유효한 국제 전화번호"
+  },
+  "auth": {
+    "onboardingTagline": "\"괜찮아\"와 \"도움이 필요해\" 사이의 순간들을 위한 개인 안전 동반자.",
+    "createAccount": "계정 생성",
+    "continueOnboarding": "온보딩 계속하세요",
+    "createSubtitle": "안전 그래프를 보호하기 위해 로그인 방식을 선택하세요.",
+    "phoneVerification": "전화 인증",
+    "sendCode": "코드 전송",
+    "sendingCode": "코드 전송 중...",
+    "verifyCode": "코드 검증",
+    "sentTo": "%{phone}로 보내졌다",
+    "yourPhone": "네 전화",
+    "verificationCode": "검증 코드",
+    "verify": "검증",
+    "verifying": "확인 중...",
+    "invalidCode": "인증 코드를 입력하세요.",
+    "signInFailedTitle": "로그인 중단",
+    "signInFailedMessage": "로그인이 완료되지 않았습니다. 연결을 확인하고 다시 시도해 보세요.",
+    "googleUnavailableTitle": "Google 로그인 불가입니다",
+    "googleUnavailableMessage": "지역 개발 세션을 이용하세요. 네이티브 Google 로그인은 개발 빌드에서 작동합니다.",
+    "northStarTitle": "NorthStar 주얼리",
+    "northStarSubtitle": "지금 페어링하거나 나중에 추가하세요.",
+    "northStarBody": "VL01 웨어러블은 탭과 긴 누르기 동작으로 안전 흐름을 작동시킬 수 있습니다.",
+    "setupJewelry": "보석 세팅",
+    "meetCapybear": "만나Capybear",
+    "meetCapybearSubtitle": "지도와 통화 시 당신의 부드러운 안전 동반자.",
+    "capybearBody": "Capybear 홈 모드, 가디언 모드, 비상 모드, 변명 전화, 음성 지원 등을 도와드릴 수 있습니다.",
+    "chooseVoice": "목소리를 선택해",
+    "capybearReminder": "Capybear 상기시켜 드립니다",
+    "remindersReady": "부드러운 알림이 준비되었습니다."
+  },
+  "permissions": {
+    "locationTitle": "위치 안전",
+    "locationSubtitle": "지도, 위험 구역, 안전 도착, SOS 맥락에 사용됩니다.",
+    "locationBody": "VeryLoving 보호자들이 어디에 도움이 필요한지 이해할 수 있도록 위치를 묻습니다. 나중에 설정에서 변경할 수 있습니다.",
+    "allowLocation": "위치 허용",
+    "notificationsTitle": "안전 경보",
+    "notificationsSubtitle": "알림은 체크인과 긴급 상황을 지원합니다.",
+    "notificationsBody": "저희는 안전 알림, 긴급 업데이트, 그리고 활성화한 알림에만 사용합니다.",
+    "enableNotifications": "알림 활성화",
+    "locationRationaleTitle": "위치는 안전 맥락을 정확히 유지합니다",
+    "locationRationaleMessage": "VeryLoving 안전 지도, 위험 구역, 빠른 공유, SOS 상황 정보를 위해 당신의 위치를 사용합니다. 나중에 설정에서 변경할 수 있습니다.",
+    "notificationsRationaleTitle": "안전 경보에는 알림이 필요합니다",
+    "notificationsRationaleMessage": "VeryLoving 체크인 알림, 긴급 업데이트, 그리고 활성화할 수 있는 안전 알림을 보냅니다. 광고 알림은 사용하지 않습니다.",
+    "microphoneRationaleTitle": "마이크 전원 안전 호출",
+    "microphoneRationaleMessage": "VeryLoving AI 동반자나 안전 호출을 시작할 때만 마이크를 사용합니다.",
+    "bluetoothRationaleTitle": "Bluetooth 웨어러블을 연결해 줍니다",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth를 사용해 NorthStar 주얼리와 페어링하고, 연결 상태를 읽으며, 웨어러블에서 안전 흐름을 트리거합니다.",
+    "cameraRationaleTitle": "카메라는 선택 사항입니다",
+    "cameraRationaleMessage": "VeryLoving 프로필 사진을 찍거나 안전 사진을 공유할 때만 카메라를 사용합니다."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving 이 흐름은 설정과 대시보드에서 계속 사용할 수 있게 해줍니다.",
+    "chooseVoiceTitle": "목소리를 선택하세요",
+    "chooseVoiceSubtitle": "가장 안전하게 들리는 동반자의 목소리를 선택하세요.",
+    "homeTitle": "홈 모드",
+    "homeSubtitle": "일상적인 안전을 위한 조용한 모니터링.",
+    "guardianTitle": "가디언 모드",
+    "guardianSubtitle": "신뢰할 수 있는 사람들과 맥락을 공유하세요.",
+    "emergencyTitle": "비상 모드",
+    "emergencySubtitle": "다섯 번 탭하면 SOS 및 보호자 경고로 확대될 수 있습니다.",
+    "excuseTitle": "실례 전화",
+    "excuseSubtitle": "불편한 상황에서 벗어날 우아한 이유를 만들어 주세요.",
+    "safetyCallTitle": "안전 호출",
+    "safetyCallSubtitle": "도움이 필요할 때 실시간 동반자 통화를 시작하세요.",
+    "practiceTitle": "연습 장면",
+    "practiceSubtitle": "저압 데모에서 안전 흐름을 시도해 보세요."
+  },
+  "jewelry": {
+    "pairTitle": "페어NorthStar",
+    "pairSubtitle": "스캔할 때 보석을 가까이 두세요.",
+    "scan": "기기 탐색",
+    "scanning": "근처를 스캔 중...",
+    "noDevices": "아직 근처에 NorthStar 장치는 발견되지 않았습니다.",
+    "scanStartFailed": "Bluetooth 스캔이 시작되지 않았다. 다시 시도해 주세요.",
+    "scanFailed": "근처에서 보석을 찾을 수 없었어요. Bluetooth 확인하고 가NorthStar 붙이고 다시 시도하세요.",
+    "scanAccessFailed": "Bluetooth 스캔이 시작되지 않았다. 접근 Bluetooth 확인하고 다시 시도하세요.",
+    "permissionDenied": "근처 기기 접근이 꺼져 있습니다. 설정에서 Bluetooth 접근 권한을 허용한 후 다시 시도하세요.",
+    "connectTimeout": "NorthStar 연결하는 데 너무 오래 걸렸어요. 더 가까이 옮겨서 다시 시도해보세요.",
+    "connectFailed": "우리는 NorthStar와 연결할 수 없었다. 충전되어 있고 근처에 있는지 확인한 후 다시 시도하세요.",
+    "emptyTitle": "아직 근처에 장치는 없습니다",
+    "emptyMessage": "NorthStar 충전기를 계속 유지하고 이 폰 가까이에 두었다가 다시 스캔하세요.",
+    "searchingMessage": "근처에 NorthStar 기기 찾고 있어..."
+  },
+  "home": {
+    "subtitle": "안전 동반자 대시보드",
+    "modeStatus": "%{mode} 모드",
+    "companionReady": "%{name} 준비됐어",
+    "readyBody": "음성, 지도, 보석, 가디언 모두 한 번의 탭으로 가능합니다.",
+    "safetyCall": "안전 호출",
+    "northStarDevice": "NorthStar 장치",
+    "deviceConnected": "%{name} 연결 · %{battery}%",
+    "noDevice": "기기 연결 안 됨",
+    "manageDevice": "장치 관리",
+    "mode": "모드",
+    "modes": {
+      "home": "홈",
+      "guardian": "가디언",
+      "emergency": "비상 상황"
+    }
+  },
+  "map": {
+    "finding": "위치 찾기...",
+    "retry": "재시도 위치",
+    "title": "안전 지도",
+    "previewSubtitle": "Expo Go 미리보기; Mapbox 개발 빌드에서 렌더링됩니다.",
+    "preview": "지도 미리보기",
+    "risk": "위험도: %{risk} · 반경 %{radius}m",
+    "refresh": "리프레시 위치",
+    "refreshing": "위치 찾기...",
+    "updateFailed": "위치 정보를 업데이트할 수 없었습니다. 다시 시도해 주세요.",
+    "notRequested": "위치 접근은 요청되지 않았습니다. 나중에 설정에서 활성화할 수 있습니다.",
+    "permissionOff": "위치 접근이 꺼져 있습니다. 설정에서 안전 지도가 본인 중심에 위치하도록 활성화하세요.",
+    "timeout": "위치가 예상보다 오래 걸리고 있어요. 신호가 더 맑은 곳으로 이동해서 다시 시도하세요.",
+    "savedTitle": "저장된 장소",
+    "savedEmptyTitle": "아직 저장된 장소는 없습니다",
+    "savedEmptyMessage": "저장한 신뢰할 수 있는 장소가 여기에 나타나 빠르게 접근할 수 있습니다.",
+    "zones": {
+      "crowding": "늦은 밤 혼잡함",
+      "lowLighting": "저조도 구역"
+    },
+    "risks": {
+      "low": "낮게",
+      "medium": "중간",
+      "high": "하이"
+    }
+  },
+  "safetyCall": {
+    "connecting": "연결 중...",
+    "offlineCompanion": "오프라인 동반자",
+    "offline": "오프라인",
+    "connected": "연결",
+    "interrupted": "연결 중단",
+    "ready": "연결 준비 완료",
+    "connectingSecurely": "음성 동반자와 안전하게 연결됩니다...",
+    "messagesWaiting": {
+      "one": "%{count} 메시지 전송 대기 중",
+      "other": "전송 대기 중인 %{count} 메시지"
+    },
+    "useOffline": "오프라인 동반자 사용",
+    "reconnect": "음성 AI 다시 연결해",
+    "typePlaceholder": "말하기가 어렵다면 타자",
+    "endCall": "통화 종료",
+    "startCall": "호출 시작",
+    "emptyTitle": "대화는 여기서 시작됩니다",
+    "emptyMessage": "준비가 되면 전화를 시작하거나 메시지를 입력하세요."
+  },
+  "chat": {
+    "waiting": "연결을 기다리며",
+    "notSent": "메시지가 전송되지 않음.",
+    "retryAccessibility": "메시지 전송 재시도"
+  },
+  "history": {
+    "clearTitle": "대화 기록이 명확한가요?",
+    "clearMessage": "이 장치는 저장된 AI 동반 메시지를 제거합니다.",
+    "deleteTitle": "이 대화를 삭제할까요?",
+    "cannotUndo": "이것은 되돌릴 수 없습니다.",
+    "title": "대화 기록",
+    "subtitle": "AI 동반 메시지들이 이 기기에 저장되어 있습니다.",
+    "empty": "아직 대화 저장이 없어요.",
+    "emptyTitle": "아직 대화는 없었다",
+    "emptyMessage": "첫 통화 후 AI 동반자 대화가 여기에 표시됩니다.",
+    "loadFailed": "대화 기록을 불러올 수 없었어요. 다시 시도해 주세요.",
+    "clearFailed": "대화 기록을 지울 수 없었어요. 다시 시도해 주세요.",
+    "deleteFailed": "우리는 그 대화를 삭제할 수 없었다. 다시 시도해 주세요.",
+    "aiCompanion": "AI 동반자",
+    "resume": "이력서",
+    "clearAll": "모든 역사를 지워라",
+    "roles": {
+      "assistant": "동반자",
+      "user": "너"
+    }
+  },
+  "voices": {
+    "title": "내 안전의 목소리",
+    "subtitle": "듣기 편한 동반자 목소리를 선택하세요.",
+    "test": "테스트 보이스",
+    "stop": "정지 샘플",
+    "selectionFailedTitle": "선택이 저장되지 않음",
+    "selectionFailedMessage": "다시 한 번 목소리를 선택해 보세요.",
+    "sampleFailedTitle": "샘플 제공 불가",
+    "sampleFailedMessage": "이 음성 샘플은 재생할 수 없었다. 다시 시도해 주세요.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "부드럽고, 차분하며, 안정감을 주는 사람"
+      },
+      "bestie": {
+        "name": "베스티",
+        "description": "밝고, 안심이 되고, 대화 같은 느낌이었다"
+      },
+      "boyfriend": {
+        "name": "남자친구",
+        "description": "안정적이고, 다정하며, 현재에 집중하는 모습"
+      },
+      "muscleMan": {
+        "name": "머슬맨",
+        "description": "자신감 있고, 보호적이며, 동기부여가 됩니다"
+      }
+    }
+  },
+  "settings": {
+    "voice": "음성",
+    "changeVoice": "목소리 변화",
+    "showCompanion": "쇼 동반자",
+    "offlineMode": "오프라인 모드",
+    "offlineModeSubtitle": "네트워크나 Hume 자격 증명이 불가능할 때는 번들된 동반 응답을 사용하세요.",
+    "privacyData": "개인정보 보호 및 데이터",
+    "privacyBody": "이 장치에 저장된 로컬 데이터를 내보내거나 삭제하세요.",
+    "preparingExport": "수출 준비 중...",
+    "exportData": "내 데이터를 내보내기",
+    "privacyPolicy": "개인정보처리방침",
+    "deleting": "삭제 중...",
+    "deleteAll": "모든 로컬 데이터를 삭제하세요",
+    "deviceManagement": "장치 관리",
+    "emergencyContacts": "비상 연락처",
+    "signOut": "로그아웃",
+    "exportFailedTitle": "수출 실패",
+    "exportFailedMessage": "현재 데이터를 내보낼 수 없습니다.",
+    "deleteConfirmTitle": "모든 로컬 데이터를 삭제해야 하나요?",
+    "deleteConfirmMessage": "이 장치는 프로필, 설정, 긴급 연락처, 대화 기록, 권한 알림, 로컬 인증 세션을 제거합니다.",
+    "deleteEverything": "모든 것을 삭제하세요",
+    "deleteFailedTitle": "삭제 실패",
+    "deleteFailedMessage": "현재 로컬 데이터를 삭제할 수 없습니다.",
+    "linkFailed": "링크를 열 수 없습니다",
+    "sections": {
+      "language": "언어",
+      "languageSubtitle": "인터페이스 및 시스템 권한 언어",
+      "companion": "동반자",
+      "companionSubtitle": "음성 및 오프라인 환경설정",
+      "deviceSafety": "장치 및 안전성",
+      "deviceSafetySubtitle": "NorthStar, 보호자, 긴급 연락처",
+      "privacy": "개인정보 보호 및 데이터",
+      "privacySubtitle": "역사, 수출, 삭제 및 정책",
+      "account": "계정",
+      "accountSubtitle": "현재 진행 중인 VeryLoving 세션"
+    },
+    "updateFailedTitle": "설정이 저장되지 않음",
+    "updateFailedMessage": "우리는 그 선호도를 지킬 수 없었다. 다시 시도해 주세요.",
+    "signOutFailedTitle": "로그아웃이 안 됐어요",
+    "signOutFailedMessage": "세션은 아직 활성 상태입니다. 다시 시도해 주세요."
+  },
+  "contacts": {
+    "title": "비상 연락처",
+    "subtitle": "안전 흐름 동안 신뢰할 수 있는 사람들이 대기 중입니다.",
+    "addTitle": "긴급 연락처 추가하세요",
+    "name": "이름",
+    "namePlaceholder": "연락처 이름",
+    "phone": "연락처 전화번호",
+    "add": "연락처 추가",
+    "empty": "아직 비상 연락처는 추가되지 않았어요.",
+    "emptyTitle": "아직 비상 연락처는 없습니다",
+    "emptyMessage": "안전 흐름이 필요할 때 신뢰할 수 있는 사람을 추가하세요.",
+    "removeTitle": "%{name} 제거하라고?",
+    "removeMessage": "이 사람은 더 이상 비상 절차에 나타나지 않습니다.",
+    "nameRequired": "연락처 이름을 입력하세요.",
+    "saveFailedTitle": "연락처가 저장되지 않음",
+    "saveFailedMessage": "우리는 이 연락을 구할 수 없었다. 세부 사항을 확인하고 다시 시도하세요.",
+    "removeFailedTitle": "연락이 끊기지 않음",
+    "removeFailedMessage": "우리는 이 접촉을 제거할 수 없었다. 다시 시도해 주세요.",
+    "callAccessibility": "전화해%{name}",
+    "removeAccessibility": "제거%{name}"
+  },
+  "device": {
+    "title": "장치 관리",
+    "subtitle": "NorthStar 기기를 관리하세요.",
+    "connected": "연결 · 배터리 %{battery}%",
+    "none": "연결된 기기가 없습니다",
+    "disconnect": "분리 장치",
+    "connect": "연결 장치"
+  },
+  "friends": {
+    "title": "친구들",
+    "subtitle": "가디언, 요청, 그리고 긴급 표.",
+    "addDemo": "데모 친구 추가하세요",
+    "emptyTitle": "네 안전 원은 비어 있어",
+    "emptyMessage": "신뢰하는 친구와 보호자들이 추가되면 이곳에 나타날 것입니다.",
+    "newGuardian": "뉴 가디언",
+    "statuses": {
+      "guardian": "가디언",
+      "pending": "대기 중입니다"
+    }
+  },
+  "emergency": {
+    "title": "긴급 SOS",
+    "subtitle": "즉각적인 지원이 필요할 때만 문제를 제기하세요.",
+    "body": "이 과정에서 안전 흐름을 알리고 비상 연락처를 준비할 수 있습니다.",
+    "activate": "활성화SOS",
+    "callCompanion": "동반자를 불AI",
+    "notificationTitle": "SOS 활성화됨",
+    "notificationBody": "비상 유입 준비 완료.",
+    "readyTitle": "SOS 준비됐어",
+    "callContact": "전화할%{name}?",
+    "addContact": "설정에서 비상 연락처를 추가하세요.",
+    "quickShareTitle": "빠른 공유",
+    "quickShareMessage": "위치 공유 스텁이 준비되었습니다. 백엔드 공유 엔드포인트를 연결해 라이브 링크를 전송하세요."
+  },
+  "quickShare": {
+    "title": "빠른 공유",
+    "subtitle": "위치 공유 흐름이 준비되었습니다."
+  },
+  "capybearTap": {
+    "title": "Capybear 탭",
+    "subtitle": "NorthStar을 두 번 눌러 안전 오렌지를 떨어뜨리세요.",
+    "body": "제스처 경로는 BLE 이벤트 배선에 준비가 완료되었습니다."
+  },
+  "debug": {
+    "title": "VeryLoving 디버그 페이지",
+    "subtitle": "개발 전용 경로입니다."
+  },
+  "errors": {
+    "voiceOffline": "너 거의 오프라인 같아. 다시 연결할 때 메시지가 전송될 것입니다.",
+    "voiceQueued": "메시지 저장됨. 음성 동반자가 다시 연결될 때 전송될 것입니다.",
+    "voiceRetrying": "다시 메시지를 보내려고 하는 중인데...",
+    "voiceConnecting": "음성 동반자와 안전하게 연결됩니다...",
+    "microphone": "음성 통화에는 마이크 접근이 필요합니다. 설정에서 활성화하거나 메시지를 입력할 수 있습니다.",
+    "billing": "온라인 음성 동반자는 일시적으로 사용할 수 없습니다. 오프라인 동료로 계속 진행할 수 있습니다.",
+    "authentication": "음성 동반자는 이 세션을 확인할 수 없었다. 다시 로그인하거나 당분간 오프라인 동반자를 사용하세요.",
+    "timeout": "음성 동료는 대답하는 데 너무 오래 걸렸다. 연결을 확인하고 다시 시도해 보세요.",
+    "network": "음성 동반자와 연락이 닿지 않았습니다. 연결을 확인한 후 다시 시도하거나 오프라인으로 계속 진행하세요.",
+    "genericVoice": "무언가가 음성 통화를 끊었다. 다시 시도하거나 오프라인 동료로 계속 진행하세요."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving 데이터 내보내기"
+  },
+  "notifications": {
+    "channelName": "안전 경보"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving 안전을 위해 마이크 접근과 AI 동반 통화가 필요합니다.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving 안전 지도와 인근 안전 기능을 위해 당신의 위치를 사용합니다.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving 귀하의 위치를 활용해 안전한 도착과 긴급 상황 흐름을 지원합니다.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving 안전한 도착 및 인근 위험 구역 기능을 위해 배경 위치를 사용합니다.",
+      "NSCameraUsageDescription": "VeryLoving 프로필 사진이나 안전 사진을 찍을 때만 카메라를 사용합니다.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving 프로필이나 안전 이미지를 선택할 때만 사진 라이브러리를 사용합니다.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth 사용해 NorthStar 안전 주얼리에 연결됩니다.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth 사용해 NorthStar 안전 주얼리에 연결됩니다."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

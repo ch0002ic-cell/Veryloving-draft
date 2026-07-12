@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Aghjunghje",
+    "apple": "Apple",
+    "back": "Torna",
+    "call": "Chjama",
+    "cancel": "Annulà",
+    "clear": "Chjara",
+    "close": "Chiudi",
+    "connect": "Cunnette",
+    "connecting": "Connessione...",
+    "continue": "Cuntinuà",
+    "delete": "Sguassà",
+    "finish": "Fini",
+    "friends": "Amici",
+    "google": "Google",
+    "home": "Casa",
+    "loading": "Caricamentu...",
+    "map": "Mappa",
+    "notNow": "Micca avà",
+    "remove": "Elimine",
+    "retry": "Riprova",
+    "retrying": "Riprova",
+    "save": "Salvà",
+    "selected": "Selettu",
+    "send": "Mandate",
+    "settings": "Configurazione",
+    "skip": "Saltà",
+    "skipForNow": "Salta per avà",
+    "skipTutorial": "Salta tutoriale",
+    "sos": "SOS",
+    "unknown": "Inconnu",
+    "user": "VeryLoving utilizatori",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lingua",
+    "subtitle": "Sceglite a lingua aduprata in tutta l'app.",
+    "system": "U sistema predeterminatu",
+    "search": "Ricerca lingue",
+    "noResults": "Nisuna lingua currisponde à a vostra ricerca.",
+    "english": "Inglese",
+    "spanish": "Spagnolu",
+    "french": "Francese",
+    "chineseSimplified": "Cinese (simplificatu)"
+  },
+  "phone": {
+    "label": "Numeru di telefunu",
+    "placeholder": "Numeru di telefunu",
+    "selectCountry": "Selezziunà u paese o a regione",
+    "searchCountry": "Cerca un paese, codice o prefissu di marcatura",
+    "noCountries": "Nisun paese currisponde à a vostra ricerca.",
+    "countryButton": "Cambia paese, attualmente %{country} plus %{callingCode}",
+    "inputAccessibility": "Numeru di telefunu per %{country}",
+    "required": "Inserite un numeru di telefunu.",
+    "tooShort": "Stu numeru di telefunu hè troppu cortu.",
+    "tooLong": "Stu numeru di telefunu hè troppu longu.",
+    "invalid": "Inserite un numeru di telefunu validu per u paese sceltu.",
+    "valid": "Numeru di telefunu internaziunale validu"
+  },
+  "auth": {
+    "onboardingTagline": "Un cumpagnu di sicurità persunale per i mumenti trà \"Sò bè\" è \"Aghju bisognu d'aiutu\".",
+    "createAccount": "Crea un contu",
+    "continueOnboarding": "Cuntinuà cù l'imbarcu",
+    "createSubtitle": "Sceglite un metudu di login per prutege u vostru graficu di sicurità.",
+    "phoneVerification": "Verificazione di u telefunu",
+    "sendCode": "Mandate u codice",
+    "sendingCode": "Invia u codice...",
+    "verifyCode": "Verificate u codice",
+    "sentTo": "Mandatu à %{phone}",
+    "yourPhone": "u vostru telefunu",
+    "verificationCode": "Codice di verificazione",
+    "verify": "Verificà",
+    "verifying": "Verificà...",
+    "invalidCode": "Inserite u codice di verificazione.",
+    "signInFailedTitle": "Connessione interrotta",
+    "signInFailedMessage": "Ùn pudemu micca cumplettà l'accessu. Verificate a vostra cunnessione è pruvate di novu.",
+    "googleUnavailableTitle": "Google Sign-in ùn hè micca dispunibule",
+    "googleUnavailableMessage": "Usendu una sessione di sviluppu lucale. Native Google Sign-In travaglia in una custruzione di sviluppu.",
+    "northStarTitle": "NorthStar gioielli",
+    "northStarSubtitle": "Coppia avà o cuntinueghja è aghjunghje dopu.",
+    "northStarBody": "U VL01 wearable pò attivà flussi di sicurezza cù taps è gesti di pressa longa.",
+    "setupJewelry": "Fighjate i ghjuvelli",
+    "meetCapybear": "Incontru Capybear",
+    "meetCapybearSubtitle": "U vostru gentile cumpagnu di sicurità nantu à a mappa è in e chjama.",
+    "capybearBody": "Capybear pò aiutà cù u modu di casa, u modu di guardianu, u modu d'emergenza, e chjama di scusa è u supportu di voce.",
+    "chooseVoice": "Sceglite una voce",
+    "capybearReminder": "Capybear ricordu",
+    "remindersReady": "I ricordi gentili sò pronti."
+  },
+  "permissions": {
+    "locationTitle": "Sicurezza di u locu",
+    "locationSubtitle": "Adupratu per a mappa, i zoni di periculu, l'arrivu sicuru, è u cuntestu SOS.",
+    "locationBody": "VeryLoving dumanda u locu per chì i guardiani ponu capisce induve l'aiutu pò esse necessariu. Pudete cambià questu più tardi in Settings.",
+    "allowLocation": "Permette u locu",
+    "notificationsTitle": "Avisi di sicurità",
+    "notificationsSubtitle": "Notifiche supportanu check-in è avvenimenti d'emergenza.",
+    "notificationsBody": "Usemu solu notifiche per avvisi di sicurità, aghjurnamenti d'emergenza è ricordi chì attivate.",
+    "enableNotifications": "Attivà e notificazioni",
+    "locationRationaleTitle": "U locu mantene u cuntestu di sicurità precisu",
+    "locationRationaleMessage": "VeryLoving usa a vostra situazione per a mappa di sicurità, e zone di periculu, sparta rapida è SOS cuntestu. Pudete cambià questu più tardi in Settings.",
+    "notificationsRationaleTitle": "L'alerte di sicurezza necessitanu notificazioni",
+    "notificationsRationaleMessage": "VeryLoving manda promemoria di check-in, aghjurnamenti d'emergenza è avvisi di sicurezza chì attivate. Ùn usemu micca notificazioni per l'annunzii.",
+    "microphoneRationaleTitle": "Microfonu alimenta e chjama di sicurità",
+    "microphoneRationaleMessage": "VeryLoving usa u vostru microfonu solu quandu cuminciate un cumpagnu AI o una chjama di salvezza.",
+    "bluetoothRationaleTitle": "Bluetooth cunnetta u vostru wearable",
+    "bluetoothRationaleMessage": "VeryLoving usa Bluetooth per accoppià cù NorthStar gioielli, leghje u statu di cunnessione, è attivà flussi di sicurezza da u wearable.",
+    "cameraRationaleTitle": "La fotocamera è opzionale",
+    "cameraRationaleMessage": "VeryLoving usa a camera solu quandu sceglite di piglià una foto di prufilu o di sparte una maghjina di sicurità."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving mantene stu flussu dispunibule da Settings è dashboard.",
+    "chooseVoiceTitle": "Sceglite a vostra voce",
+    "chooseVoiceSubtitle": "Scegli a voce di u cumpagnu chì si senti più sicura per sente.",
+    "homeTitle": "Modu di casa",
+    "homeSubtitle": "Surveglianza tranquilla per a sicurità di ogni ghjornu.",
+    "guardianTitle": "Modu Guardian",
+    "guardianSubtitle": "Sparte u cuntestu cù persone di fiducia.",
+    "emergencyTitle": "Modu d'emergenza",
+    "emergencySubtitle": "Cinque taps ponu scalate à SOS è avvisi di guardianu.",
+    "excuseTitle": "Scusa chjama",
+    "excuseSubtitle": "Crea una ragione grazia per lascià una situazione incòmoda.",
+    "safetyCallTitle": "Chjama di sicurità",
+    "safetyCallSubtitle": "Inizià una chjama di cumpagnu in tempu reale quandu avete bisognu di supportu.",
+    "practiceTitle": "Scena di pratica",
+    "practiceSubtitle": "Pruvate i flussi di sicurezza in una demo di bassa pressione."
+  },
+  "jewelry": {
+    "pairTitle": "Coppiu NorthStar",
+    "pairSubtitle": "Mantene i ghjuvelli vicinu durante a scansione.",
+    "scan": "Scan per i dispositi",
+    "scanning": "Scanning vicinu...",
+    "noDevices": "Nisun dispositivu vicinu NorthStar trovu ancora.",
+    "scanStartFailed": "Bluetooth scanning ùn pudia principià. Per piacè pruvate di novu.",
+    "scanFailed": "Ùn pudemu micca truvà ghjuvelli vicinu. Verificate Bluetooth, mantene NorthStar vicinu, è pruvate di novu.",
+    "scanAccessFailed": "Bluetooth scanning ùn pudia principià. Verificate Bluetooth accessu è pruvate di novu.",
+    "permissionDenied": "L'accessu à u dispositivu vicinu hè disattivatu. Permette l'accessu à Bluetooth in Settings, poi pruvate di novu.",
+    "connectTimeout": "NorthStar hà pigliatu troppu tempu per cunnette. Avvicinallu è pruvate di novu.",
+    "connectFailed": "Ùn pudemu micca cunnette à NorthStar. Verificate chì hè carica è vicinu, poi pruvate di novu.",
+    "emptyTitle": "Nisun dispositivu vicinu",
+    "emptyMessage": "Mantene NorthStar carichi è vicinu à stu telefunu, poi scansa di novu.",
+    "searchingMessage": "Cerchendu NorthStar dispusitivi vicinu..."
+  },
+  "home": {
+    "subtitle": "Dashboard di cumpagnia di sicurità\nMODE",
+    "modeStatus": "%{mode}",
+    "companionReady": "%{name} hè pronta",
+    "readyBody": "A voce, a mappa, i ghjuvelli è i guardiani sò un toccu di distanza.",
+    "safetyCall": "Chjama di sicurità",
+    "northStarDevice": "NorthStar dispusitivu",
+    "deviceConnected": "%{name} cunnessu · %{battery}%",
+    "noDevice": "Nisun dispositivu cunnessu",
+    "manageDevice": "Gestisce u dispusitivu",
+    "mode": "Mode",
+    "modes": {
+      "home": "Casa",
+      "guardian": "Guardian",
+      "emergency": "Urgenza"
+    }
+  },
+  "map": {
+    "finding": "Truvà u vostru locu...",
+    "retry": "Riprova u locu",
+    "title": "Mappa di sicurità",
+    "previewSubtitle": "Expo Go anteprima; Mapbox rende in una custruzione di sviluppu.",
+    "preview": "Anteprima di a mappa",
+    "risk": "Risicu : %{risk} · Raiu %{radius}m",
+    "refresh": "Fresh location",
+    "refreshing": "Truvà u locu...",
+    "updateFailed": "Ùn pudemu micca aghjurnà a vostra situazione. Per piacè pruvate di novu.",
+    "notRequested": "L'accessu à u locu ùn hè micca statu dumandatu. Pudete attivà più tardi da Settings.",
+    "permissionOff": "L'accessu à u locu hè disattivatu. Attivatelu in Settings per centru a mappa di sicurità nantu à voi.",
+    "timeout": "U vostru locu pigghia più di l'aspettu. Spostate in un locu cun un signalu più chjaru è pruvate di novu.",
+    "savedTitle": "Lochi salvati",
+    "savedEmptyTitle": "Nisun locu salvatu ancora",
+    "savedEmptyMessage": "I posti di fiducia chì salvate appariscenu quì per un accessu rapidu.",
+    "zones": {
+      "crowding": "L'affollamentu di a tarda notte",
+      "lowLighting": "Zona di poca illuminazione"
+    },
+    "risks": {
+      "low": "bassu",
+      "medium": "mediu",
+      "high": "altu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Connessione...",
+    "offlineCompanion": "Compagne offline",
+    "offline": "Offline",
+    "connected": "Cunnessu",
+    "interrupted": "Connessione interrotta",
+    "ready": "Pronta per cunnette",
+    "connectingSecurely": "Collegamentu in modu sicuru à u vostru cumpagnu di voce...",
+    "messagesWaiting": {
+      "one": "%{count} missaghju in attesa di mandà",
+      "other": "%{count} missaghji in attesa di mandà"
+    },
+    "useOffline": "Usà un cumpagnu offline",
+    "reconnect": "Riconnettate à a voce AI",
+    "typePlaceholder": "Digitate se parlà hè difficiule",
+    "endCall": "Fine a chjama",
+    "startCall": "Inizià a chjama",
+    "emptyTitle": "A vostra conversazione principia quì",
+    "emptyMessage": "Inizià a chjama o scrivite un missaghju quandu site prontu."
+  },
+  "chat": {
+    "waiting": "Aspittendu a cunnessione",
+    "notSent": "Missaghju micca mandatu.",
+    "retryAccessibility": "Riprova à mandà u messagiu"
+  },
+  "history": {
+    "clearTitle": "Clumisce a storia di cunversazione?",
+    "clearMessage": "Questu sguassate AI i missaghji di cumpagnie salvati da stu dispusitivu.",
+    "deleteTitle": "Eliminate sta conversazione?",
+    "cannotUndo": "Questu ùn pò micca esse annullatu.",
+    "title": "Storia di a conversazione",
+    "subtitle": "AI missaghji di cumpagnie salvati nantu à stu dispusitivu.",
+    "empty": "Nisuna conversazione salvata ancora.",
+    "emptyTitle": "Nisuna conversazione ancora",
+    "emptyMessage": "E vostre AI cunversazione in cumpagnia appariscenu quì dopu a vostra prima chjamata.",
+    "loadFailed": "Ùn pudemu micca carricà a storia di cunversazione. Per piacè pruvate di novu.",
+    "clearFailed": "Ùn pudemu micca sguassà a storia di cunversazione. Per piacè pruvate di novu.",
+    "deleteFailed": "Ùn pudemu micca sguassà quella conversazione. Per piacè pruvate di novu.",
+    "aiCompanion": "AI cumpagnu",
+    "resume": "Riprendi",
+    "clearAll": "Sguassà tutta a storia",
+    "roles": {
+      "assistant": "cumpagnu",
+      "user": "tu"
+    }
+  },
+  "voices": {
+    "title": "E mo voci di chjama di salvezza",
+    "subtitle": "Sceglite a voce cumpagna chì si senti ghjustu à sente.",
+    "test": "Prova a voce",
+    "stop": "Stop sample",
+    "selectionFailedTitle": "Selezzione micca salvata",
+    "selectionFailedMessage": "Per piacè pruvate à sceglie a voce di novu.",
+    "sampleFailedTitle": "Sample ùn hè micca dispunibule",
+    "sampleFailedMessage": "Questu sample di voce ùn pò micca esse ghjucatu. Per piacè pruvate di novu.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "dolu, calmu, in terra"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "brillante, rassicurante, cunversazione"
+      },
+      "boyfriend": {
+        "name": "Fidanzatu",
+        "description": "fermu, affettuosu, presente"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "confidenti, protettivi, motivanti"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Voce",
+    "changeVoice": "Cambia voce",
+    "showCompanion": "Mostra u cumpagnu",
+    "offlineMode": "Modu offline",
+    "offlineModeSubtitle": "Utilizà risposti cumpagnati in bundle quandu a rete o i credenziali Hume ùn sò micca dispunibili.",
+    "privacyData": "Privacy è dati",
+    "privacyBody": "Esportate o sguassate i dati lucali almacenati in stu dispusitivu.",
+    "preparingExport": "Preparazione di l'esportazione...",
+    "exportData": "Sporta i mo dati",
+    "privacyPolicy": "Politica di privacy",
+    "deleting": "Cancellazione...",
+    "deleteAll": "Eliminate tutti i dati lucali",
+    "deviceManagement": "Gestione di i dispositi",
+    "emergencyContacts": "Contatti d'emergenza",
+    "signOut": "Ignora",
+    "exportFailedTitle": "L'esportazione hà fiascatu",
+    "exportFailedMessage": "Incapace di esportà i vostri dati avà.",
+    "deleteConfirmTitle": "Eliminate tutti i dati lucali?",
+    "deleteConfirmMessage": "Questu sguassate u vostru prufilu, i paràmetri, i cuntatti d'emergenza, a storia di cunversazione, i ricordi di permessu è a sessione di auth local da stu dispusitivu.",
+    "deleteEverything": "Eliminate tuttu",
+    "deleteFailedTitle": "L'eliminazione hà fiascatu",
+    "deleteFailedMessage": "Impussibule di sguassà i dati lucali avà.",
+    "linkFailed": "Impossibile apre u ligame",
+    "sections": {
+      "language": "Lingua",
+      "languageSubtitle": "Lingua di permessu di l'interfaccia è di u sistema",
+      "companion": "Cumpagnia",
+      "companionSubtitle": "Preferenze di voce è offline",
+      "deviceSafety": "Dispositivi è sicurità",
+      "deviceSafetySubtitle": "NorthStar, guardiani, è cuntatti d'emergenza",
+      "privacy": "Privacy è dati",
+      "privacySubtitle": "Storia, esportazione, eliminazione è pulitica",
+      "account": "Contu",
+      "accountSubtitle": "A vostra VeryLoving sessione attuale"
+    },
+    "updateFailedTitle": "Setting micca salvatu",
+    "updateFailedMessage": "Ùn pudemu micca salvà quella preferenza. Per piacè pruvate di novu.",
+    "signOutFailedTitle": "Ùn pudia micca firmà",
+    "signOutFailedMessage": "A vostra sessione hè sempre attiva. Per piacè pruvate di novu."
+  },
+  "contacts": {
+    "title": "Contatti d'emergenza",
+    "subtitle": "E persone di fiducia dispunibili durante i flussi di sicurezza.",
+    "addTitle": "Aghjunghje un cuntattu d'emergenza",
+    "name": "Nome",
+    "namePlaceholder": "Nome di cuntattu",
+    "phone": "Cuntattate u numeru di telefunu",
+    "add": "Aghjunghje cuntattu",
+    "empty": "Nisun cuntatti d'emergenza aghjuntu ancu.",
+    "emptyTitle": "Nisun cuntatti d'emergenza ancora",
+    "emptyMessage": "Aghjunghje una persona di fiducia in modu chì sia prontu quandu un flussu di sicurezza ne hà bisognu.",
+    "removeTitle": "Eliminà %{name}?",
+    "removeMessage": "Sta persona ùn apparirà più in u vostru flussu di emergenza.",
+    "nameRequired": "Inserite u nome di u cuntattu.",
+    "saveFailedTitle": "Contattu micca salvatu",
+    "saveFailedMessage": "Ùn pudemu micca salvà stu cuntattu. Verificate i dettagli è pruvate di novu.",
+    "removeFailedTitle": "U cuntattu ùn hè micca eliminatu",
+    "removeFailedMessage": "Ùn pudemu micca sguassà stu cuntattu. Per piacè pruvate di novu.",
+    "callAccessibility": "Chjama %{name}",
+    "removeAccessibility": "Elimina %{name}"
+  },
+  "device": {
+    "title": "Gestione di i dispositi",
+    "subtitle": "Gestisce u vostru dispositivu NorthStar.",
+    "connected": "Connessu · %{battery}% batterie",
+    "none": "Nisun dispositivu cunnessu",
+    "disconnect": "Disconnect u dispusitivu",
+    "connect": "Cunnette u dispusitivu"
+  },
+  "friends": {
+    "title": "Amici",
+    "subtitle": "Guardiani, dumande è graficu d'emergenza.",
+    "addDemo": "Aghjunghje un amicu demo",
+    "emptyTitle": "U vostru circulu di sicurità hè viotu",
+    "emptyMessage": "Amici è guardiani di fiducia appariscenu quì una volta chì sò aghjuntu.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Pendente"
+    }
+  },
+  "emergency": {
+    "title": "Urgenza SOS",
+    "subtitle": "Scalate solu quandu avete bisognu di sustegnu immediatu.",
+    "body": "Questu avviserà u vostru flussu di sicurità è prepararà i cuntatti d'emergenza.",
+    "activate": "Attiva SOS",
+    "callCompanion": "Chjama AI cumpagnu",
+    "notificationTitle": "SOS attivatu",
+    "notificationBody": "U vostru flussu d'emergenza hè prontu.",
+    "readyTitle": "SOS pronta",
+    "callContact": "Chjama %{name}?",
+    "addContact": "Aggiungi un cuntattu d'emergenza in Settings.",
+    "quickShareTitle": "Sparte rapida",
+    "quickShareMessage": "Lo stub di spartera di u locu hè prontu. Cunnette l'endpoint di sparte backend per mandà ligami in diretta."
+  },
+  "quickShare": {
+    "title": "Parte prestu",
+    "subtitle": "U flussu di sparte di locu hè prontu."
+  },
+  "capybearTap": {
+    "title": "Capybear tocca",
+    "subtitle": "Toccate duie volte u vostru NorthStar per caccià un aranciu di sicurezza.",
+    "body": "A strada di gestu hè pronta per u cablaggio di l'eventi BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pagina di debug",
+    "subtitle": "Percorsu solu per u sviluppu."
+  },
+  "errors": {
+    "voiceOffline": "Sembra offline. U vostru missaghju serà mandatu quandu vi ricollegate.",
+    "voiceQueued": "Messagiu salvatu. Serà mandatu quandu u cumpagnu di voce si ricollega.",
+    "voiceRetrying": "Provendu à mandà u vostru messagiu di novu...",
+    "voiceConnecting": "Connessione sicura à u vostru cumpagnu di voce...",
+    "microphone": "L'accessu à u microfonu hè necessariu per e chjama di voce. Pudete attivà in Settings, o scrive un missaghju invece.",
+    "billing": "U cumpagnu di voce in linea hè temporaneamente indisponibile. Pudete cuntinuà cù u cumpagnu offline.",
+    "authentication": "U cumpagnu di voce ùn pudia micca verificà sta sessione. Entra di novu o aduprate u cumpagnu offline per avà.",
+    "timeout": "U cumpagnu di voce hà pigliatu troppu tempu per risponde. Verificate a vostra cunnessione è pruvate di novu.",
+    "network": "Ùn pudemu micca ghjunghje à u cumpagnu di voce. Verificate a vostra cunnessione, dopu pruvate di novu o cuntinuà offline.",
+    "genericVoice": "Qualcosa hà interrottu a chjama di voce. Pruvate di novu, o cuntinueghja cù u cumpagnu offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving esportazione di dati"
+  },
+  "notifications": {
+    "channelName": "Avvisi di sicurità"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hà bisognu d'accessu à u microfonu per a sicurità è AI chjama di cumpagnie.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving usa a vostra situazione per a mappa di sicurezza è e funzioni di sicurezza vicinu.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving usa u vostru locu per sustene l'arrivu sicuru è i flussi d'emergenza.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving usa u locu di fondo per l'arrivu sicuru è e funzioni di zona di periculu vicinu.",
+      "NSCameraUsageDescription": "VeryLoving usa a camera solu quandu sceglite di piglià un prufilu o una foto di sicurità.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving usa a vostra libreria di foto solu quandu sceglite un prufilu o una maghjina di sicurità.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving usa Bluetooth per cunnette cù i vostri NorthStar ghjuvelli di sicurità.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving usa Bluetooth per cunnette cù i vostri NorthStar ghjuvelli di sicurità."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

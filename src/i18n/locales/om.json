@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Dabala",
+    "apple": "Apple",
+    "back": "Duuba",
+    "call": "Bilbila",
+    "cancel": "Haquu",
+    "clear": "Qulqulleessuu",
+    "close": "Cufi",
+    "connect": "Walqabsiisuu",
+    "connecting": "Walqabsiisuu...",
+    "continue": "Itti fufa",
+    "delete": "Haquu",
+    "finish": "Xumura",
+    "friends": "Hiriyyoota",
+    "google": "Google",
+    "home": "Mana",
+    "loading": "Fa'aa jira...",
+    "map": "Kaartaa",
+    "notNow": "Amma miti",
+    "remove": "Buqqisuu",
+    "retry": "Irra deebi’ii yaali",
+    "retrying": "Irra deebiin yaaluun",
+    "save": "Qusachuu",
+    "selected": "Filatamaadha",
+    "send": "Ergi",
+    "settings": "Sajoo",
+    "skip": "Daluu",
+    "skipForNow": "Ammaaf darbi",
+    "skipTutorial": "Barnoota darbuu",
+    "sos": "SOS",
+    "unknown": "Hin beekamu",
+    "user": "VeryLoving fayyadamaa",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Afaan",
+    "subtitle": "Afaan guutummaa appii keessatti fayyadamtu filadhu.",
+    "system": "Durtii sirnaa",
+    "search": "Afaanota barbaadi",
+    "noResults": "Afaan barbaacha kee wajjin walsimu hin jiru.",
+    "english": "Afaan Oromoo",
+    "spanish": "Afaan Ispeen",
+    "french": "Afaan Faransaayii",
+    "chineseSimplified": "Afaan Chaayinaa (Salphaa) ."
+  },
+  "phone": {
+    "label": "Lakkoofsa bilbilaa",
+    "placeholder": "Lakkoofsa bilbilaa",
+    "selectCountry": "Biyya ykn naannoo filadhu",
+    "searchCountry": "Biyya, koodii, ykn durtii bilbilaa barbaadi",
+    "noCountries": "Biyyoonni barbaacha kee wajjin walsimu hin jiru.",
+    "countryButton": "Biyya jijjiiri, yeroo ammaa %{country} dabalataan %{callingCode}",
+    "inputAccessibility": "Lakkoofsa bilbilaa %{country} .",
+    "required": "Lakkoofsa bilbilaa galchuu.",
+    "tooShort": "Lakkoofsi bilbilaa kun baay’ee gabaabaa dha.",
+    "tooLong": "Lakkoofsi bilbilaa kun baay’ee dheeraa dha.",
+    "invalid": "Lakkoofsa bilbilaa sirrii biyya filatameef galchi.",
+    "valid": "Lakkoofsa bilbilaa idil-addunyaa sirrii ta’e"
+  },
+  "auth": {
+    "onboardingTagline": "Yeroowwan “Nagaa dha” fi “Gargaarsa barbaada” gidduu jiruuf hiriyyaa nageenya dhuunfaa.",
+    "createAccount": "Akkaawuntii uumuu",
+    "continueOnboarding": "Onboarding itti fufaa",
+    "createSubtitle": "Giraafii nageenya kee eeguuf mala galmee filadhu.",
+    "phoneVerification": "Mirkaneessa bilbilaa",
+    "sendCode": "Koodii erguu",
+    "sendingCode": "Koodii erguu...",
+    "verifyCode": "Koodii mirkaneessuu",
+    "sentTo": "Gara %{phone} tti ergame.",
+    "yourPhone": "bilbila keessan",
+    "verificationCode": "Koodii mirkaneessuu",
+    "verify": "Mirkaneessi",
+    "verifying": "Mirkaneessaa...",
+    "invalidCode": "Koodii mirkaneessuu galchi.",
+    "signInFailedTitle": "Sal-in addaan cite",
+    "signInFailedMessage": "Mallattoo xumuruu hin dandeenye. Walitti hidhamiinsa kee ilaalii irra deebi'ii yaali.",
+    "googleUnavailableTitle": "Google Galmeen hin jiru",
+    "googleUnavailableMessage": "Kutaa misooma naannoo fayyadamuu. Native Google Sign-In ijaarsa misoomaa keessatti hojjeta.",
+    "northStarTitle": "NorthStar faaya",
+    "northStarSubtitle": "Amma wal-qabsiisi ykn itti fufii booda itti dabali.",
+    "northStarBody": "VL01 kan uffatamu taphoota fi sochii dhiibbaa dheeraatiin dhangala’aa nageenyaa kakaasuu danda’a.",
+    "setupJewelry": "Faaya qopheessuu",
+    "meetCapybear": "Capybear waliin wal arguu",
+    "meetCapybearSubtitle": "Hiriyaa nageenyaa kee lallaafaan kaartaa irratti fi bilbila keessatti.",
+    "capybearBody": "Capybear haala manaa, haala eegduu, haala hatattamaa, bilbila sababa, fi deeggarsa sagalee gargaaruu danda'a.",
+    "chooseVoice": "Sagalee filadhu",
+    "capybearReminder": "Capybear yaadachiisa",
+    "remindersReady": "Yaadannoowwan lallaafoon qophaa’aniiru."
+  },
+  "permissions": {
+    "locationTitle": "Nageenya bakka",
+    "locationSubtitle": "Kaartaa, naannoo balaa, dhufaatii nageenya qabu, fi SOS haala jiruuf kan oolu.",
+    "locationBody": "VeryLoving eegdonni bakka gargaarsi barbaachisuu akka danda’u hubachuu akka danda’aniif bakka gaafata. Kana booda Sajoo keessatti jijjiiruu dandeessa.",
+    "allowLocation": "Iddoo itti argamu hayyamuu",
+    "notificationsTitle": "Akeekkachiisa nageenyaa",
+    "notificationsSubtitle": "Beeksisni galmee fi taateewwan hatattamaa ni deeggara.",
+    "notificationsBody": "Nuti beeksisa kan fayyadamnu gaaffii nageenyaa, fooyya’iinsa hatattamaa, fi yaadachiisa ati dandeessifte qofaaf.",
+    "enableNotifications": "Beeksisoota dandeessisi",
+    "locationRationaleTitle": "Iddoon haala nageenyaa sirrii ta’ee eega",
+    "locationRationaleMessage": "VeryLoving bakka kee kaartaa nageenyaa, naannoo balaa, qooda ariifataa, fi SOS haalataaf fayyadama. Kana booda Sajoo keessatti jijjiiruu dandeessa.",
+    "notificationsRationaleTitle": "Akeekkachiisni nageenyaa beeksisa barbaachisa",
+    "notificationsRationaleMessage": "VeryLoving yaadachiisa galmee, fooyya'iinsa hatattamaa, fi gaaffii nageenyaa ati dandeessifte erga. Beeksisaaf beeksisa hin fayyadamnu.",
+    "microphoneRationaleTitle": "Maayikiroofooniin bilbila nageenyaa humna kenna",
+    "microphoneRationaleMessage": "VeryLoving maaykiroofoonii kee kan fayyadamu yeroo AI hiriyyaa ykn bilbila nageenyaa jalqabdu qofa.",
+    "bluetoothRationaleTitle": "Bluetooth kan uffatamu kee walitti hidha",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth fayyadama faaya NorthStar waliin wal-qabsiisuuf, haala walqabsiisaa dubbisuuf, fi dhangala'aa nageenyaa kan uffatamu irraa kakaasuuf.",
+    "cameraRationaleTitle": "Kaameeraan filannoodha",
+    "cameraRationaleMessage": "VeryLoving kaameraa kan fayyadamu yeroo suuraa piroofaayilii kaasuu ykn suuraa nageenyaa qooduu filattan qofa."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving dhangala'aa kana Sajoo fi daashboordii irraa akka argamu taasisa.",
+    "chooseVoiceTitle": "Sagalee kee filadhu",
+    "chooseVoiceSubtitle": "Sagalee hiriyyaa dhaga’uuf nageenyi itti dhaga’amu filadhu.",
+    "homeTitle": "Haala manaa",
+    "homeSubtitle": "Nageenya guyyaa guyyaadhaaf callisee hordofuu.",
+    "guardianTitle": "Haala eegduu",
+    "guardianSubtitle": "Namoota amanamoo ta’aniif haala dubbii qooduu.",
+    "emergencyTitle": "Haala balaa tasaa",
+    "emergencySubtitle": "Taappeen shan gara SOS fi akeekkachiisa eegduutti ol guddachuu danda’a.",
+    "excuseTitle": "Waamicha dhiifama",
+    "excuseSubtitle": "Haala mijataa hin taane keessaa ba’uuf sababa ayyaanaa uumuu.",
+    "safetyCallTitle": "Waamicha nageenyaa",
+    "safetyCallSubtitle": "Yeroo deeggarsa barbaaddu bilbila hiriyyaa yeroo dhugaa jalqabi.",
+    "practiceTitle": "Mul’ata shaakala",
+    "practiceSubtitle": "Dhangala’iinsa nageenyaa demoo dhiibbaa gadi aanaa keessatti yaali."
+  },
+  "jewelry": {
+    "pairTitle": "Lamaan NorthStar .",
+    "pairSubtitle": "Yeroo scan gootu faaya naannoo kee kaa’i.",
+    "scan": "Meeshaalee barbaaduu",
+    "scanning": "Skanning naannoo...",
+    "noDevices": "Meeshaaleen NorthStar dhiyoo jiran hanga ammaatti hin argamne.",
+    "scanStartFailed": "Bluetooth scanning jalqabuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "scanFailed": "Faaya dhiyoo jiru argachuu hin dandeenye. Bluetooth mallatteessi, NorthStar cufi, irra deebi'ii yaali.",
+    "scanAccessFailed": "Bluetooth scanning jalqabuu hin dandeenye. Bluetooth qaqqabummaa ilaaliitii irra deebi'ii yaali.",
+    "permissionDenied": "Qabeenyi meeshaa dhiyoo jiru cufaadha. Sajoo keessatti Bluetooth qaqqabummaa hayyami, sana booda irra deebi'ii yaali.",
+    "connectTimeout": "NorthStar wal qunnamsiisuuf yeroo dheeraa fudhate. Itti dhiheessii irra deebi'ii yaali.",
+    "connectFailed": "NorthStar waliin wal qunnamsiisuu hin dandeenye. Chaarjii fi dhiyoo ta'uu isaa mirkaneessi, sana booda irra deebi'ii yaali.",
+    "emptyTitle": "Hanga ammaatti meeshaaleen dhiyoo hin jiran",
+    "emptyMessage": "NorthStar chaarjii fi bilbila kanaaf dhihoo ta'aa, sana booda irra deebi'aa scan godhaa.",
+    "searchingMessage": "Meeshaalee NorthStar naannoo keessan jiran barbaadaa jirtu..."
+  },
+  "home": {
+    "subtitle": "Daashboordii hiriyyaa nageenyaa",
+    "modeStatus": "%{mode} HAALA",
+    "companionReady": "%{name} qophaa'eera",
+    "readyBody": "Sagalee, kaartaan, faaya, fi eegdonni tapha tokko fagaatu.",
+    "safetyCall": "Waamicha nageenyaa",
+    "northStarDevice": "NorthStar meeshaa",
+    "deviceConnected": "%{name} walitti hidhame · %{battery}%",
+    "noDevice": "Meeshaan hin hidhamne",
+    "manageDevice": "Meeshaalee bulchuu",
+    "mode": "Haala",
+    "modes": {
+      "home": "Mana",
+      "guardian": "Eegduu",
+      "emergency": "Yeroo muddamaa"
+    }
+  },
+  "map": {
+    "finding": "Iddoo jirtu argachuu...",
+    "retry": "Iddoo irra deebi'ii yaali",
+    "title": "Kaartaa nageenyaa",
+    "previewSubtitle": "Expo Go dursee ilaaluu; Mapbox ijaarsa guddinaa keessatti agarsiisa.",
+    "preview": "Kaartaa dursee ilaaluu",
+    "risk": "Balaa: %{risk} · Raadiyaasii %{radius}m",
+    "refresh": "Iddoo haaromsuu",
+    "refreshing": "Iddoo argachuu...",
+    "updateFailed": "Iddoo keessan haaromsuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "notRequested": "Bakka argachuun hin gaafatamin ture. Booda Sajoo irraa dandeessisuun ni danda'ama.",
+    "permissionOff": "Bakka itti argamu cufaadha. Kaartaa nageenyaa si irratti akka giddu galeessa godhatu Sajoo keessatti dandeessisi.",
+    "timeout": "Iddoon kee kan eegame caalaa yeroo dheeraa fudhachaa jira. Mallattoo ifa ta'een bakka tokkotti socho'ii irra deebi'ii yaali.",
+    "savedTitle": "Iddoowwan qusataman",
+    "savedEmptyTitle": "Hanga ammaatti bakka qusatame hin jiru",
+    "savedEmptyMessage": "Iddoowwan amanamoo ati qusatte saffisaan argachuuf asitti ni mul’atu.",
+    "zones": {
+      "crowding": "Halkan gara galgalaatti namaan guutamuu",
+      "lowLighting": "Iddoo ibsaa gadi aanaa qabu"
+    },
+    "risks": {
+      "low": "gadi aanaa",
+      "medium": "giddu galeessa",
+      "high": "ol’aanaa"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Walqabsiisuu...",
+    "offlineCompanion": "Hiriyaa sarara ala",
+    "offline": "Toora irraa ala",
+    "connected": "Walqabsiise",
+    "interrupted": "Walqabsiisni addaan cite",
+    "ready": "Walqabsiisuuf qophiidha",
+    "connectingSecurely": "Hiriyaa sagalee keessanii wajjin haala gaariin wal qunnamsiisuu...",
+    "messagesWaiting": {
+      "one": "%{count} ergaan erguuf eegaa jira",
+      "other": "%{count} ergaawwan erguuf eegaa jiran"
+    },
+    "useOffline": "Hiriyaa sarara ala fayyadamuu",
+    "reconnect": "Sagalee AI waliin irra deebi'ii walqabsiisi.",
+    "typePlaceholder": "Yoo dubbachuun ulfaataa ta’e barreessi",
+    "endCall": "Waamicha xumuruu",
+    "startCall": "Bilbila jalqabuu",
+    "emptyTitle": "Haasaan kee asirraa eegala",
+    "emptyMessage": "Yeroo qophooftu bilbila jalqabi ykn ergaa barreessi."
+  },
+  "chat": {
+    "waiting": "Walqabsiisa eeguu",
+    "notSent": "Ergaa hin ergamne.",
+    "retryAccessibility": "Ergaa erguuf irra deebi'ii yaali"
+  },
+  "history": {
+    "clearTitle": "Seenaa haasawa qulqulluu?",
+    "clearMessage": "Kun ergaawwan hiriyyaa AI kuufaman meeshaa kana irraa ni haqa.",
+    "deleteTitle": "Haasaa kana haquu?",
+    "cannotUndo": "Kun duubatti deebi’uu hin danda’u.",
+    "title": "Seenaa haasawa",
+    "subtitle": "AI ergaawwan hiriyyaa meeshaa kana irratti kuufamaniiru.",
+    "empty": "Hanga ammaatti haasawa hin qusanne.",
+    "emptyTitle": "Hanga ammaatti haasawa hin jiru",
+    "emptyMessage": "Haasaan hiriyyaa AI kee bilbila jalqabaa booda asitti ni mul’ata.",
+    "loadFailed": "Seenaa haasawa fe'uu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "clearFailed": "Seenaa haasawa qulqulleessuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "deleteFailed": "Haasaa sana haquu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "aiCompanion": "AI hiriyyaa",
+    "resume": "Irra deebi'ii jalqabuu",
+    "clearAll": "Seenaa hunda qulqulleessi",
+    "roles": {
+      "assistant": "hiriyyaa",
+      "user": "ati"
+    }
+  },
+  "voices": {
+    "title": "Sagaleewwan waamicha nageenya koo",
+    "subtitle": "Sagalee hiriyyaa dhaga’uuf sirrii ta’ee itti dhaga’amu filadhu.",
+    "test": "Sagalee qoradhu",
+    "stop": "Saamuda dhaabuu",
+    "selectionFailedTitle": "Filannoon hin qusatamne",
+    "selectionFailedMessage": "Maaloo sagalee sana irra deebi'ii filachuuf yaali.",
+    "sampleFailedTitle": "Saamuda hin argamne",
+    "sampleFailedMessage": "Saamuda sagalee kun taphatamuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "lallaafaa, tasgabbaa’aa, lafa kan qabu"
+      },
+      "bestie": {
+        "name": "Bestii jedhamuun beekama",
+        "description": "ifaa, nama tasgabbeessu, kan haasa’u"
+      },
+      "boyfriend": {
+        "name": "Jaalallee jaalallee",
+        "description": "dhaabbataa, jaalala kan qabu, kan argamu"
+      },
+      "muscleMan": {
+        "name": "Nama maashaa",
+        "description": "ofitti amanamummaa kan qabu, kan eegu, kan nama kakaasu"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Sagalee",
+    "changeVoice": "Sagalee jijjiiri",
+    "showCompanion": "Hiriyaa agarsiisi",
+    "offlineMode": "Haala sarara ala",
+    "offlineModeSubtitle": "Yeroo mirkaneessi neetworkiin ykn Hume hin jirretti deebii hiriyyaa walitti qabame fayyadami.",
+    "privacyData": "Icciitii fi daataa",
+    "privacyBody": "Deetaa naannoo meeshaa kana irratti kuufame erguu ykn haquu.",
+    "preparingExport": "Al-ergii qopheessuu...",
+    "exportData": "Daataa koo al-ergi",
+    "privacyPolicy": "Imaammata dhuunfaa",
+    "deleting": "Haquu...",
+    "deleteAll": "Deetaa naannoo hunda haqi",
+    "deviceManagement": "Bulchiinsa meeshaa",
+    "emergencyContacts": "Qunnamtii hatattamaa",
+    "signOut": "Mallatteessi",
+    "exportFailedTitle": "Al-ergiin hin milkoofne",
+    "exportFailedMessage": "Yeroo ammaa kana deetaa kee erguu hin dandeenye.",
+    "deleteConfirmTitle": "Deetaa naannoo hunda haquu?",
+    "deleteConfirmMessage": "Kun piroofaayilii kee, qindaa'inoota, quunnamtii hatattamaa, seenaa haasawa, yaadachiisa hayyamaa, fi turtii mirkaneessuu naannoo kee meeshaa kana irraa haqa.",
+    "deleteEverything": "Waan hunda haqi",
+    "deleteFailedTitle": "Haquun hin milkoofne",
+    "deleteFailedMessage": "Yeroo ammaa kana deetaa naannoo haquu hin dandeenye.",
+    "linkFailed": "Link banachuu hin dandeenye",
+    "sections": {
+      "language": "Afaan",
+      "languageSubtitle": "Afaan hayyama interfeesii fi sirnaa",
+      "companion": "Hiriyaa",
+      "companionSubtitle": "Filannoo sagalee fi sarara ala",
+      "deviceSafety": "Meeshaalee fi nageenya",
+      "deviceSafetySubtitle": "NorthStar, eegdota, fi quunnamtii hatattamaa",
+      "privacy": "Icciitii fi daataa",
+      "privacySubtitle": "Seenaa, al-ergii, haquu, fi imaammata",
+      "account": "Akkaawuntii",
+      "accountSubtitle": "Kutaa VeryLoving kee ammaa"
+    },
+    "updateFailedTitle": "Setting hin qusatamne",
+    "updateFailedMessage": "Filannoo sana qusachuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "signOutFailedTitle": "Mallattoo bahuu hin dandeenye",
+    "signOutFailedMessage": "Kutaan kee ammallee sochiirra jira. Mee irra deebi'ii yaalaa."
+  },
+  "contacts": {
+    "title": "Qunnamtii hatattamaa",
+    "subtitle": "Yeroo dhangala’aa nageenyaa namoota amanamoo ta’an ni argamu.",
+    "addTitle": "Qunnamtii hatattamaa dabaluu",
+    "name": "Maqaa",
+    "namePlaceholder": "Maqaa quunnamtii",
+    "phone": "Lakkoofsa bilbilaa qunnamaa",
+    "add": "Qunnamtii dabaluu",
+    "empty": "Hanga ammaatti quunnamtiin hatattamaa hin dabalamne.",
+    "emptyTitle": "Hanga ammaatti quunnamtiin hatattamaa hin jiru",
+    "emptyMessage": "Yeroo dhangala’aan nageenyaa isaan barbaadu qophaa’aa akka ta’uuf nama itti amantu itti dabali.",
+    "removeTitle": "%{name} haquu?",
+    "removeMessage": "Namni kun kana booda dhangala’aa hatattamaa keessan keessatti hin mul’atu.",
+    "nameRequired": "Maqaa quunnamtii galchi.",
+    "saveFailedTitle": "Qunnamtiin hin qusatamne",
+    "saveFailedMessage": "Qunnamtii kana qusachuu hin dandeenye. Bal'ina isaa ilaalaa irra deebi'aa yaalaa.",
+    "removeFailedTitle": "Qunnamtiin hin haqamne",
+    "removeFailedMessage": "Qunnamtii kana balleessuu hin dandeenye. Mee irra deebi'ii yaalaa.",
+    "callAccessibility": "Bibila %{name} .",
+    "removeAccessibility": "%{name} haquu ."
+  },
+  "device": {
+    "title": "Bulchiinsa meeshaa",
+    "subtitle": "Meesha NorthStar kee bulchi.",
+    "connected": "Walqabsiise · %{battery}% baatirii",
+    "none": "Meeshaalee hin hidhamne",
+    "disconnect": "Meeshaalee addaan kutuu",
+    "connect": "Meeshaalee walitti hidhu"
+  },
+  "friends": {
+    "title": "Hiriyyoota",
+    "subtitle": "Eegdota, gaaffii, fi giraafii balaa tasaa.",
+    "addDemo": "Hiriyaa demo itti dabali",
+    "emptyTitle": "Geengoon nageenya kee duwwaa dha",
+    "emptyMessage": "Hiriyoonni fi eegdonni amanamoo ta’an erga dabalamanii booda asitti ni mul’atu.",
+    "newGuardian": "Eegduu Haaraa",
+    "statuses": {
+      "guardian": "Eegduu",
+      "pending": "Eeggamaa jira"
+    }
+  },
+  "emergency": {
+    "title": "Yeroo muddamaa SOS .",
+    "subtitle": "Yeroo deeggarsa hatattamaa barbaaddu qofa guddifadhu.",
+    "body": "Kun dhangala’aa nageenya keessanii ni beeksisa, quunnamtii hatattamaa ni qopheessa.",
+    "activate": "SOS sochoosuu .",
+    "callCompanion": "Hiriyaa AI bilbili",
+    "notificationTitle": "SOS hojiirra oole",
+    "notificationBody": "Dhangala’aan balaa tasaa keessan qophaa’eera.",
+    "readyTitle": "SOS qophaa'aa dha",
+    "callContact": "%{name} bilbiluu?",
+    "addContact": "Sajoo keessatti quunnamtii hatattamaa dabaluu.",
+    "quickShareTitle": "Shariidhaan qoodaa",
+    "quickShareMessage": "Stab qoodinsa iddoo qophaa'eera. Hidhamtoota kallattiin erguuf qabxii xumura qooda duubaa walqabsiisi."
+  },
+  "quickShare": {
+    "title": "Shariidhaan qoodaa",
+    "subtitle": "Dhangala’aan qooda bakka qophaa’eera."
+  },
+  "capybearTap": {
+    "title": "Capybear tuqi",
+    "subtitle": "Burtukaana nageenyaa gadi dhiisuuf NorthStar kee dachaa lama tuqi.",
+    "body": "Daandiin sochii qaamaa waayirii taatee BLE tiif qophaa’eera."
+  },
+  "debug": {
+    "title": "VeryLoving fuula sirreeffama",
+    "subtitle": "Daandii misooma qofaaf ta’u."
+  },
+  "errors": {
+    "voiceOffline": "Ati sarara ala fakkaatta. Ergaan keessan yeroo deebitee wal qunnamtan ni ergama.",
+    "voiceQueued": "Ergaa qusatameera. Yeroo hiriyyaan sagalee deebi'ee wal qunnamu ni ergama.",
+    "voiceRetrying": "Irra deebi'ee ergaa kee erguuf yaalaa jirta...",
+    "voiceConnecting": "Hiriyaa sagalee keessanii wajjin haala gaariin wal qunnamsiisuu...",
+    "microphone": "Bilbila sagaleedhaaf maaykiroofooniin barbaachisaadha. Sajoo keessatti dandeessisuun ni danda'ama, ykn bakka isaa ergaa barreessuu dandeessa.",
+    "billing": "Hiriyaan sagalee toora interneetii yeroodhaaf hin argamu. Hiriyaa sarara ala jiru waliin itti fufuu dandeessu.",
+    "authentication": "Hiriyaan sagalee turtii kana mirkaneessuu hin dandeenye. Ammas galmaa'i ykn ammaaf hiriyyaa sarara ala jiru fayyadamaa.",
+    "timeout": "Hiriyaan sagalee deebii kennuudhaaf yeroo dheeraa fudhate. Walitti hidhamiinsa kee ilaalii irra deebi'ii yaali.",
+    "network": "Hiriyaa sagalee bira gahuu hin dandeenye. Walitti hidhamiinsa kee ilaali, sana booda irra deebi'ii yaali ykn sarara ala itti fufi.",
+    "genericVoice": "Wanti tokko bilbila sagalee addaan kute. Irra deebi'ii yaali, ykn hiriyyaa sarara ala jiruun itti fufi."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving al-ergii deetaa"
+  },
+  "notifications": {
+    "channelName": "Akeekkachiisa nageenyaa"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving nageenyaaf maaykiroofooniin fayyadamuu fi AI bilbila hiriyyaa barbaada.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving bakka jirtu kaartaa nageenyaa fi amaloota nageenya dhiyoo jiraniif fayyadama.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving bakka jirtu fayyadamuun dhangala’aa nageenya-dhufaatii fi hatattamaa deeggara.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving amaloota nageenya-dhufaatii fi naannoo balaa dhiyoo ta'aniif bakka duubaa fayyadama.",
+      "NSCameraUsageDescription": "VeryLoving kaameraa kan fayyadamu yeroo piroofaayilii ykn suuraa nageenyaa kaasuu filattan qofa.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving mana kitaabaa suuraa kee kan fayyadamu yeroo piroofaayilii ykn fakkii nageenyaa filattu qofa.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

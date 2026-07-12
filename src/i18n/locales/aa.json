@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Osiyya",
+    "apple": "Apple",
+    "back": "Wadir",
+    "call": "Seec",
+    "cancel": "Bayis",
+    "clear": "Qaddos",
+    "close": "Alif",
+    "connect": "Xakbis",
+    "connecting": "Angaaraw...",
+    "continue": "Bisoh inxic",
+    "delete": "Bayis",
+    "finish": "Gaba kal",
+    "friends": "Kataysiisi",
+    "google": "Google",
+    "home": "Buxa",
+    "loading": "quuki...",
+    "map": "nokorta",
+    "notNow": "away hinna",
+    "remove": "Kal",
+    "retry": "Qagitaak gibbata",
+    "retrying": "Qagitaak gibbataanam",
+    "save": "Wadiyya",
+    "selected": "Doorimeh",
+    "send": "Ruubiyya",
+    "settings": "guddaaqa",
+    "skip": "Tatur",
+    "skipForNow": "Away kaqit",
+    "skipTutorial": "Aydakaakan kaqit",
+    "sos": "SOS",
+    "unknown": "Amixxigewaytaama",
+    "user": "VeryLoving xoqoysima",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Afa yaaba",
+    "subtitle": "assabaltal edde xoqoysiman af doorita.",
+    "system": "maknay sugte",
+    "search": "Afitte gorrisa",
+    "noResults": "Wali afitte ku goranah ramad mali.",
+    "english": "engliiz afa",
+    "spanish": "Esbeen afa",
+    "french": "Faransaawi",
+    "chineseSimplified": "Chaynah af (Sahlisen)"
+  },
+  "phone": {
+    "label": "Telfoon casri",
+    "placeholder": "Telfoon casri",
+    "selectCountry": "Baaxo akkek rakaakay doorita",
+    "searchCountry": "baaxo gorris, mudenta, akkek kalluuwusiyyi qimmo",
+    "noCountries": "Faxe baaxooxa ku goranah ramad mali.",
+    "countryButton": "baaxo milaag, %{callingCode} %{country}",
+    "inputAccessibility": "Silki %{country}",
+    "required": "Silki casri culus.",
+    "tooShort": "Ta silkih casri kaxxam uxxih.",
+    "tooLong": "Ta silkih casri kaxxam xeerih.",
+    "invalid": "Dooren baaxoh gitah tan silkih casri culus.",
+    "valid": "Massat yan baad silkih casri"
+  },
+  "auth": {
+    "onboardingTagline": "cankah amaan waklentit fanat yan uddur \" anu nagay an\" kee \" anu cato faxa.\"",
+    "createAccount": "akkaawonti hadla",
+    "continueOnboarding": "bordittel bisoh ixxic",
+    "createSubtitle": "isi nagaytaniinah muuci dacrissuh culmah cogda door.",
+    "phoneVerification": "Telfoon diggoyso",
+    "sendCode": "mudenta ruuba",
+    "sendingCode": "mudenta ruubaama...",
+    "verifyCode": "mudenta ceda",
+    "sentTo": "%{phone} fanah ruuben",
+    "yourPhone": "ku silki",
+    "verificationCode": "Diggoysiyyi bedu",
+    "verify": "Ixmiq",
+    "verifying": "Diggoosaanam...",
+    "invalidCode": "Diggoysiyyi bedu culus.",
+    "signInFailedTitle": "Culmah culma garuqteh",
+    "signInFailedMessage": "Nanu culma duudusnam madudna. isi angaaraw cubbussa hayteh qagitaak gibbat.",
+    "googleUnavailableTitle": "Google -culma mageytimta",
+    "googleUnavailableMessage": "baaxoh addah dadalih waktit doqaysimaanama. Baaxo baxiini Google -culmah daddos xisneh addat taamitta.",
+    "northStarTitle": "NorthStar bila",
+    "northStarSubtitle": "away nammay akkek bisoh edde inxic sarra edde osis.",
+    "northStarBody": "VL01 sartan amaan le cayxih uguugus kee xer matbaqatih asta.",
+    "setupJewelry": "Bila massoosa",
+    "meetCapybear": "ongoorow Capybear",
+    "meetCapybearSubtitle": "kok xabcinuk amaan le waklenta kartal kee seecoh addat.",
+    "capybearBody": "Capybear buxah addah caalat, dacrise caalat, sissik catoh caalat, qafuuta seecoo kee xongoloh qokol catam duudah.",
+    "chooseVoice": "xongolo doorita",
+    "capybearReminder": "Capybear kassiisi",
+    "remindersReady": "Sahlin kassiisitte gulguluh tan."
+  },
+  "permissions": {
+    "locationTitle": "Arac nagaytaniina",
+    "locationSubtitle": "kartat duqaysimak, qawwalaylah rasitte, amaan le gufne, kee SOS kutbeyta.",
+    "locationBody": "VeryLoving esser arac tonnal dacrisa edde radduh cato faxxam mankel. Atu tah sarra milaagtam duuddah guddaaqah addat.",
+    "allowLocation": "Mohoodo idnis",
+    "notificationsTitle": "Amaan le maabitina",
+    "notificationsSubtitle": "Maysaxxagoogi cubbusso kee sissik catoh tekkooka qokolta.",
+    "notificationsBody": "Nanu dubuk maysaxxagoogi nantifiqem amaan le esseroorah, sissik uddurtiinoo kee kassiisittey atu xiqsissa.",
+    "enableNotifications": "Maysaxxagoogi ugsaanam",
+    "locationRationaleTitle": "Mohoodo nagaytaniinâ caalat gitah dacrisa",
+    "locationRationaleMessage": "VeryLoving ku aracat duqaysimak amaan le kartal, qawwalaylah rasitte, sissik tabaatabsa, kee SOS kutbeyta. Atu tah sarra milaagtam duuddah guddaaqah addat.",
+    "notificationsRationaleTitle": "Amaan le maabitina maysaxxagoogi faxxa",
+    "notificationsRationaleMessage": "VeryLoving ruuba cubbusso kassiisitte, sissik uddurtiino kee amaan esseroora atu xiqsissa. Nanu maysaxxagoogi madoqaysimna.",
+    "microphoneRationaleTitle": "maykorofoon cayla amaan le seecooca",
+    "microphoneRationaleMessage": "VeryLoving maykarafoon dubuk atu qimmissa AI waklenta akkek amaan seeco.",
+    "bluetoothRationaleTitle": "Bluetooth ku sarittam tasgoorowe",
+    "bluetoothRationaleMessage": "VeryLoving nammay takkoh Bluetooth bila, fantaaxaw caalat NorthStar , kee uguugus amaan cayxi sartan.",
+    "cameraRationaleTitle": "Kaameera dooriti",
+    "cameraRationaleMessage": "VeryLoving kaameerat duqaysimtam dubuk atu porofaayil taswiir beytam doorte wak hinnay amaan taswiir tabissa wak."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ta cayxi dacrissa farmoomaa kee dashborxi.",
+    "chooseVoiceTitle": "door isi xongolo",
+    "chooseVoiceSubtitle": "door waklentit xongolo too amaan le cuso ankacisuh.",
+    "homeTitle": "Buxah caalat",
+    "homeSubtitle": "Ayrook ayroh amaanah tibba le lowsis.",
+    "guardianTitle": "Dacayri caalat",
+    "guardianSubtitle": "kutbeyta taamine mara lih tabis.",
+    "emergencyTitle": "Qawwalaylah caalat",
+    "emergencySubtitle": "koona xagnitte fayyatam duuddah SOS kee dacrise maabitina.",
+    "excuseTitle": "Qafuuta seeco",
+    "excuseSubtitle": "sahha sinni caalat cabtuh meqe sabab hadla.",
+    "safetyCallTitle": "Amaan seeco",
+    "safetyCallSubtitle": "Qokol faxxa wak nummah uddur waklentih seeco qemmis.",
+    "practiceTitle": "Gibbati arac",
+    "practiceSubtitle": "addah tan gutqoh mayballah addat amaan le cayxi gibbat."
+  },
+  "jewelry": {
+    "pairTitle": "nammay NorthStar",
+    "pairSubtitle": "ixxoh uddur bila xayikkel hayis.",
+    "scan": "Mansoofah ixxo",
+    "scanning": "xayikket ixxo...",
+    "noDevices": "xayikkel matan NorthStar yahaadal mageytiminna.",
+    "scanStartFailed": "Bluetooth ixxo qimbisam maduuda. Ku maganak qagitaak gibbat.",
+    "scanFailed": "Nanu xayikkel tan bila geynam madudna. cubbus Bluetooth , dacris NorthStar alif, kee qagitak gibbat.",
+    "scanAccessFailed": "Bluetooth ixxo qimbisam maduuda. cubbus Bluetooth wadba kee qagitak gibbat.",
+    "permissionDenied": "xayikket yan yahaaz gufne alfimteh. idnis Bluetooth guddaaqa guddaaqa, lakal qagitak gibbat.",
+    "connectTimeout": "NorthStar yangoorowoonuh kaxxam der uddur beyta. Xayyoysay qagitaak gibbat.",
+    "connectFailed": "Nanu nangoorowem madudna NorthStar . cubbus too is kibbimtem kee xayikkel, tokkeek qagitak gibbat.",
+    "emptyTitle": "Uxih xayikkel tan mansoofa matan",
+    "emptyMessage": "dacris NorthStar kibim kee ta silkit alif, lakal qagitak ixxoysa.",
+    "searchingMessage": "gorris NorthStar yahaadal xayikket..."
+  },
+  "home": {
+    "subtitle": "Amaan le waklentit dashborxi",
+    "modeStatus": "%{mode}",
+    "companionReady": "%{name} gulguluh yan",
+    "readyBody": "Xongolo, karta, bilaali kee dacrisa mari inki xabaxak iroh yanin.",
+    "safetyCall": "Amaan seeco",
+    "northStarDevice": "NorthStar yahaaz",
+    "deviceConnected": "%{name} garayte · %{battery} %",
+    "noDevice": "Wali yahaaz mayangala",
+    "manageDevice": "Mansaf xiinisa",
+    "mode": "Caalat",
+    "modes": {
+      "home": "Buxa",
+      "guardian": "Dacayri",
+      "emergency": "Qawwalayla"
+    }
+  },
+  "map": {
+    "finding": "isi arac gorrisaanam...",
+    "retry": "Mohoodo qagitaak gibbata",
+    "title": "Amaan karta",
+    "previewSubtitle": "Expo Go naharsi mabul; Mapbox daddos xisneh addat xayyoosa.",
+    "preview": "Kartak naharsi mabul",
+    "risk": "Qawwalayla: %{radius} %{risk}",
+    "refresh": "Mohoodo uqusbus",
+    "refreshing": "Mohoodo gorrisaanam...",
+    "updateFailed": "Nanu ku arac tasqussubem madudna. Ku maganak qagitaak gibbat.",
+    "notRequested": "Mohoodo gufne mafaxximta. Atu sarra guddaaqak ugussam duuddah.",
+    "permissionOff": "Mohoodo wadba alfimteh. guddaaqah addat xiqsis amaan le nokorta kol fan haytuh.",
+    "timeout": "Ku arac qammalsimak muxxi wakti beya. qado asta luk aracak teyna gexay qagitak gibbat.",
+    "savedTitle": "daanimte arooca",
+    "savedEmptyTitle": "Uxih daanimte arooca matan",
+    "savedEmptyMessage": "Atu daagissah tan taamineh tan arooca sissik gufneh akkel tanbulle.",
+    "zones": {
+      "crowding": "udurrutte bar qoxxo",
+      "lowLighting": "Dago ifih araca"
+    },
+    "risks": {
+      "low": "dagom",
+      "medium": "fantiimi",
+      "high": "fayya"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Angaaraw...",
+    "offlineCompanion": "Gitaak iroh yan waklenta",
+    "offline": "Gitak iroh",
+    "connected": "Angaaraw le",
+    "interrupted": "Angaaraw garuq le",
+    "ready": "yangoorowoonuh gulguluh nan",
+    "connectingSecurely": "ku xongoloh waklentit nagay yangooroweenim...",
+    "messagesWaiting": {
+      "one": "%{count} farmo ruubaanam qambalta",
+      "other": "%{count} ruuboonuh qambalta"
+    },
+    "useOffline": "Gitak iroh yan waklentat doqaysima",
+    "reconnect": "xongolot qagitaak ongoorow AI",
+    "typePlaceholder": "Yab gibduk yenek qaynat",
+    "endCall": "Seeco illacabo",
+    "startCall": "Seeco qemmis",
+    "emptyTitle": "Ku walal akkel qimbisele",
+    "emptyMessage": "Atu gulguluh gacta way seeco qemmis akkek farmo uktub."
+  },
+  "chat": {
+    "waiting": "Angaaraw qammaala",
+    "notSent": "Farmo maruubinna.",
+    "retryAccessibility": "Farmo ruubaanam qagitaak gibbat"
+  },
+  "history": {
+    "clearTitle": "Qado walal aydaadu?",
+    "clearMessage": "tah duugteh daanimte AI agle farmooma ta yahaazak.",
+    "deleteTitle": "Ta walal duugaa?",
+    "cannotUndo": "Taham gacissam madudda.",
+    "title": "Walal aydaadu",
+    "subtitle": "AI farmooma agleh ta yahaazal daanimte.",
+    "empty": "Uxih wali walal daanimeh mayana.",
+    "emptyTitle": "Uxih walal mayana",
+    "emptyMessage": "kok AI waklentit walalitte takkel tanbulleem kok naharsi seecook lakal.",
+    "loadFailed": "Nanu walal aydaadu quukam madudna. Ku maganak qagitaak gibbat.",
+    "clearFailed": "Nanu walal aydaadu qaddosnam madudna. Ku maganak qagitaak gibbat.",
+    "deleteFailed": "Nanu woo walal baynam madudna. Ku maganak qagitaak gibbat.",
+    "aiCompanion": "AI waklenta",
+    "resume": "Fanak qemmis",
+    "clearAll": "inkih tan aydaadu duuga",
+    "roles": {
+      "assistant": "kataysa",
+      "user": "atu"
+    }
+  },
+  "voices": {
+    "title": "Yi nagaytaniinah seecoh xongoloola",
+    "subtitle": "door waklentit xongolo too nummaak cussutta ankacsuh.",
+    "test": "Xongolo gibbati",
+    "stop": "Qaynata soolis",
+    "selectionFailedTitle": "Dooro daanisinna",
+    "selectionFailedMessage": "Ku maganak anay qagitak dooraanam gibbat.",
+    "sampleFailedTitle": "Qaynata mageytimta",
+    "sampleFailedMessage": "Ta xongoloh ceelallo digirtam madudda. Ku maganak qagitaak gibbat.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Xabciniih, sabhalal leeh, ardil"
+      },
+      "bestie": {
+        "name": "Besti",
+        "description": "Diifuleeh, yasmiteemi, walal"
+      },
+      "boyfriend": {
+        "name": "Mereyta",
+        "description": "sabhalal le, kacni, yan wargu"
+      },
+      "muscleMan": {
+        "name": "Aliiba numu",
+        "description": "isil kibal, kalalu, uguugus"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Xomgol",
+    "changeVoice": "Xongolo milaag",
+    "showCompanion": "waklenta uybulluy",
+    "offlineMode": "Gitak iroh caalat",
+    "offlineModeSubtitle": "retteemat akkek Hume sumaaqitte mageytimta way axawah tan waklentit gacsittet xoqoysima.",
+    "privacyData": "Cankiinoo kee oyti",
+    "privacyBody": "Ta yahaazal kobxisen baaxoh addah oytih iroh ruubaanam akkek baysaanama.",
+    "preparingExport": "Iroh yawqih gulgulusso...",
+    "exportData": "Yi oyta iroh ruuba",
+    "privacyPolicy": "Cankâ pooliisi",
+    "deleting": "Baysiyyi...",
+    "deleteAll": "inkih tan baaxoh addah oyta duuga",
+    "deviceManagement": "Mansaf xiinissoh",
+    "emergencyContacts": "Qawwalaylah uddur angaarawitte",
+    "signOut": "Asta eyyeq",
+    "exportFailedTitle": "Iroh yawqi radeh",
+    "exportFailedMessage": "away ku oyta iroh yayyaaqeenim maduudunta.",
+    "deleteConfirmTitle": "inkih tan baaxoh addah oyta duugaa?",
+    "deleteConfirmMessage": "Tah ku porofaayil, farmooma, sissik angaaraw, walal aydaadu, idni kassiisittee kee dariifah asmat le wakti ta yahaazak duuga.",
+    "deleteEverything": "Kullim duuga",
+    "deleteFailedTitle": "Duugiyyi radeh",
+    "deleteFailedMessage": "away baaxoh addah oyta baysaanam maduudunta.",
+    "linkFailed": "Yasgaarawi fakam maduuda",
+    "sections": {
+      "language": "Afa yaaba",
+      "languageSubtitle": "fooca kee maknay idinih af",
+      "companion": "Kataysa",
+      "companionSubtitle": "Xongolo kee gitak iroh doorititte",
+      "deviceSafety": "Mansoofaa kee nagaytaniina",
+      "deviceSafetySubtitle": "NorthStar , dacrisa maraa kee sissik catoh angaarawitte",
+      "privacy": "Cankiinuu kee oyti",
+      "privacySubtitle": "Aydaadu, iroh ruuba, baysiyya kee pooliisi",
+      "account": "Cisab loowo",
+      "accountSubtitle": "Kok awayih uddur VeryLoving wakti"
+    },
+    "updateFailedTitle": "farmo daaniminna",
+    "updateFailedMessage": "Nanu woo doorit daagisnam madudna. Ku maganak qagitaak gibbat.",
+    "signOutFailedTitle": "Asta tawqem maduudumta",
+    "signOutFailedMessage": "Ku wakti uxih taamita. Ku maganak qagitaak gibbat."
+  },
+  "contacts": {
+    "title": "Qawwalaylah uddur angaarawitte",
+    "subtitle": "Amaan le cayxih uddur Aamanti le mari geytima.",
+    "addTitle": "Qawwalaylah uddur angaaraw osis",
+    "name": "Migaq",
+    "namePlaceholder": "angaaraw migaq",
+    "phone": "silki casrit ongoorow",
+    "add": "angaaraw osis",
+    "empty": "Wali sissik catoh angaaraw awakâ fanah ossimeh mayana.",
+    "emptyTitle": "awakâ fanah sissik catoh angaaraw mayana",
+    "emptyMessage": "atu taamineh tan num edde osis tonnal oson gulguluh yanin amaan le cayxi keenih faxxa wak.",
+    "removeTitle": "%{name} ?",
+    "removeMessage": "Ta num kok sissik catoh addat mangom mayambulla.",
+    "nameRequired": "angaaraw migaq culus.",
+    "saveFailedTitle": "angaaraw daanisinna",
+    "saveFailedMessage": "Nanu tama angaaraw daanisnam madudna. Addatino cubbussa hayteh qagitaak gibbat.",
+    "removeFailedTitle": "angaaraw maduuguminna",
+    "removeFailedMessage": "Nanu ta angaaraw duugaanam maduudinno. Ku maganak qagitaak gibbat.",
+    "callAccessibility": "Seeco %{name}",
+    "removeAccessibility": "%{name}"
+  },
+  "device": {
+    "title": "Mansaf xiinissoh",
+    "subtitle": "isi xiinis NorthStar yahaaz.",
+    "connected": "yangoorowe · %{battery} % baatari",
+    "none": "Wali yahaaz mayan",
+    "disconnect": "yargiqih yahaaz",
+    "connect": "Mansafat osgoorow"
+  },
+  "friends": {
+    "title": "Kataysiisi",
+    "subtitle": "Dacayri, esserooraa kee sissik catoh muuci.",
+    "addDemo": "Mayballah kataysa osis",
+    "emptyTitle": "Kok amaan maroyta foyyah yan",
+    "emptyMessage": "Taamineh tan kataysis kee dacrisa mari inki adda ossimteh takkel tanbulle.",
+    "newGuardian": "Qusba dacrise",
+    "statuses": {
+      "guardian": "Dacayri",
+      "pending": "Takkare kalah yaniinim"
+    }
+  },
+  "emergency": {
+    "title": "SOS",
+    "subtitle": "sissik qokol faxxa wak dubuk fayya hayis.",
+    "body": "tah ku nagaytaniinah cayxi taysixxigem kee sissik catoh angaaraw massoysele.",
+    "activate": "taamita SOS",
+    "callCompanion": "Seeco AI waklenta",
+    "notificationTitle": "SOS taamiteh",
+    "notificationBody": "Kok sissik catoh cayxi gulguluh tan.",
+    "readyTitle": "SOS gulguluh yan",
+    "callContact": "%{name} ?",
+    "addContact": "farmo addat sissik catoh angaaraw osis.",
+    "quickShareTitle": "Sissik tabaatabi",
+    "quickShareMessage": "Mohoodo tabaatabsih exxa gulguluh tan. Saanih yasgaarawitte ruuboonuh wadirsi tabaatabsih ellecabo ximmot ongoorow."
+  },
+  "quickShare": {
+    "title": "Sissik tabaatabi",
+    "subtitle": "Mohoodo tabaatabsih cayxi gulguluh tan."
+  },
+  "capybearTap": {
+    "title": "Capybear xag",
+    "subtitle": "namma adda xag isik NorthStar amaan le burtukaan tiffoosuh.",
+    "body": "Asta giti gulguluh yan BLE tekkookah akat."
+  },
+  "debug": {
+    "title": "VeryLoving massos gali",
+    "subtitle": "Daddos- dubuk gita."
+  },
+  "errors": {
+    "voiceOffline": "Atu suuquntak iroh tanim celta. Atu qagitaak tangoorowe wak ku farmo koh ruubele.",
+    "voiceQueued": "Farmo daanimteh. toh ruubelon anay waklenti qagitak yangoorowe wak.",
+    "voiceRetrying": "Farmo qagitaak ruubam gabbata...",
+    "voiceConnecting": "ku xongoloh waklentit nagay yangooroweenim...",
+    "microphone": "Xongoloh seecoh maykorofoon wadba faxximta. Atu guddaaqah addat taamittam duuddah, akkek farmo uktub.",
+    "billing": "Suuqunti xongoloh waklenti elle sugah mageytima. Atu gitak iroh yan waklenta lih bisoh intam duuddah.",
+    "authentication": "Xongoloh agle ta wakti diggoysam maduuda. Qagitaak cul hinnay suuquntal ane sinni waklentat xoqoysim away.",
+    "timeout": "Xongoloh waklenti gacsa yacoonuh kaxxam der uddur bee. isi angaaraw cubbussa hayteh qagitaak gibbat.",
+    "network": "Nanu xongoloh waklenta gufnam madudna. isi angaaraw cubbus, tokkeek qagitak gibbat hinnay suuquntak iroh bisoh inxic.",
+    "genericVoice": "tukteena xongoloh seeco soolisseh. Qagitaak gibbat, akkek suuquntal ane sinni waklenta lih bisoh inxic."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving oyti iroh ruuba"
+  },
+  "notifications": {
+    "channelName": "Amaan le maabitina"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving maykorofoon gufneh amaan kee AI waklentit seecooca.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ku aracat duqaysimak amaan le karta kee xayikket tan amaan weeloola.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ku aracat duqaysimak amaan le gufne kee sissik catoh cayxi qokolta.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving aydaadi aracat duqaysimak amaan le gufne kee xayi qawwalaylah rasih weeloola.",
+      "NSCameraUsageDescription": "VeryLoving kaameerat duqaysimtam dubuk atu porofaayil akkek amaan le muuci beytam doorte wak.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ku muucih kitoobah buxat dubuk atu porofaayil akkek amaan le muuci doorta wak xoqoysimta.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

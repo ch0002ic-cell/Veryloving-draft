@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Okwongerako",
+    "apple": "Apple",
+    "back": "Edda emabega",
+    "call": "Kuba essimu",
+    "cancel": "Okusazaamu",
+    "clear": "Okulongoosa",
+    "close": "Ggalawo",
+    "connect": "Okugatta",
+    "connecting": "Okuyunga...",
+    "continue": "Weeyongereyo",
+    "delete": "Ssazaamu",
+    "finish": "Okumaliriza",
+    "friends": "Mikwano gyaffe",
+    "google": "Google",
+    "home": "Awaka",
+    "loading": "Okutikka...",
+    "map": "Maapu",
+    "notNow": "Si kati",
+    "remove": "Ggyawo",
+    "retry": "Ddamu okugezaako",
+    "retrying": "Okuddamu okugezaako",
+    "save": "Okutereka",
+    "selected": "Erondeddwa",
+    "send": "Wereza",
+    "settings": "Enteekateka",
+    "skip": "Buuka",
+    "skipForNow": "Buuka kati",
+    "skipTutorial": "Buuka okuyigiriza",
+    "sos": "SOS",
+    "unknown": "Tekimanyiddwa",
+    "user": "VeryLoving omukozesa",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Olulimi",
+    "subtitle": "Londa olulimi olukozesebwa mu app yonna.",
+    "system": "Enkola esookera ddala",
+    "search": "Noonya ennimi",
+    "noResults": "Tewali nnimi zikwatagana na kunoonya kwo.",
+    "english": "Luganda",
+    "spanish": "Olusipeyini",
+    "french": "Olufaransa",
+    "chineseSimplified": "Oluchina (Ekyangu) ."
+  },
+  "phone": {
+    "label": "Ennamba y’essimu",
+    "placeholder": "Ennamba y’essimu",
+    "selectCountry": "Londa ensi oba ekitundu",
+    "searchCountry": "Noonya ensi, koodi, oba entandikwa y’okukuba essimu",
+    "noCountries": "Tewali nsi ezikwatagana n’okunoonya kwo.",
+    "countryButton": "Kyuusa ensi, mu kiseera kino %{country} kwogasse %{callingCode}",
+    "inputAccessibility": "Ennamba y’essimu ya %{country}",
+    "required": "Yinga ennamba y’essimu.",
+    "tooShort": "Ennamba y’essimu eno nnyimpi nnyo.",
+    "tooLong": "Ennamba y’essimu eno mpanvu nnyo.",
+    "invalid": "Ssaamu ennamba y’essimu entuufu ey’ensi gy’olonze.",
+    "valid": "Ennamba y’essimu ey’ensi yonna entuufu"
+  },
+  "auth": {
+    "onboardingTagline": "Omubeezi ow’obukuumi ku bubwe mu biseera ebiri wakati wa “Ndi bulungi” ne “Nneetaaga obuyambi.”",
+    "createAccount": "Tondawo akawunti",
+    "continueOnboarding": "Weeyongere n’okulinnya ku mmeeri",
+    "createSubtitle": "Londa enkola y’okuyingira okukuuma giraafu yo ey’obukuumi.",
+    "phoneVerification": "Okukakasa ku ssimu",
+    "sendCode": "Wereza koodi",
+    "sendingCode": "Okusindika koodi...",
+    "verifyCode": "Kakasa koodi",
+    "sentTo": "Eweerezeddwa ku %{phone}",
+    "yourPhone": "essimu yo",
+    "verificationCode": "Koodi y’okukakasa",
+    "verify": "Kakasa",
+    "verifying": "Okukakasa...",
+    "invalidCode": "Ssaamu koodi y’okukakasa.",
+    "signInFailedTitle": "Okuyingira kusasika",
+    "signInFailedMessage": "Tetwasobodde kumaliriza kuyingira. Kebera omukago gwo era ogezeeko nate.",
+    "googleUnavailableTitle": "Google Okuyingira tekuliiwo",
+    "googleUnavailableMessage": "Okukozesa olutuula lw’enkulaakulana y’ekitundu. Native Google Sign-In ekola mu kuzimba enkulaakulana.",
+    "northStarTitle": "NorthStar eby’okwewunda",
+    "northStarSubtitle": "Pair kati oba genda mu maaso n’okugattako oluvannyuma.",
+    "northStarBody": "Eky’okwambala VL01 kisobola okuleeta okutambula kw’obukuumi nga kiriko ttaapu n’obubonero obuwanvu obw’okunyiga.",
+    "setupJewelry": "Teekawo eby’okwewunda",
+    "meetCapybear": "Sisinkana Capybear",
+    "meetCapybearSubtitle": "Munne ow’obukuumi omukkakkamu ku maapu ne mu kuyita.",
+    "capybearBody": "Capybear esobola okuyamba ku mbeera y’awaka, mode y’omukuumi, mode ey’amangu, okuyita mu kwekwasa, n’okuwagira eddoboozi.",
+    "chooseVoice": "Londa eddoboozi",
+    "capybearReminder": "Capybear okujjukiza",
+    "remindersReady": "Ebijjukiza ebigonvu byetegefu."
+  },
+  "permissions": {
+    "locationTitle": "Obukuumi bw’ekifo",
+    "locationSubtitle": "Ekozesebwa ku maapu, ebifo eby’akabi, okutuuka mu ngeri ey’obukuumi, ne SOS embeera.",
+    "locationBody": "VeryLoving asaba ekifo abakuumi basobole okutegeera obuyambi we buyinza okwetaagisa. Kino osobola okukikyusa oluvannyuma mu Settings.",
+    "allowLocation": "Kiriza ekifo",
+    "notificationsTitle": "Okulabula ku by’okwerinda",
+    "notificationsSubtitle": "Ebimanyisibwa biwagira okukebera n’ebintu eby’amangu.",
+    "notificationsBody": "Tukozesa okumanyisibwa kwokka ku kukubwa obukuumi, okulongoosa mu bwangu, n’okujjukiza kw’osobozesa.",
+    "enableNotifications": "Ssobozesa okumanyisibwa",
+    "locationRationaleTitle": "Ekifo kikuuma embeera y’obukuumi nga ntuufu",
+    "locationRationaleMessage": "VeryLoving ekozesa ekifo kyo ku maapu y’obukuumi, ebitundu eby’akabi, okugabana amangu, ne SOS embeera. Kino osobola okukikyusa oluvannyuma mu Settings.",
+    "notificationsRationaleTitle": "Okulabula ku by’okwerinda kwetaaga okutegeezebwa",
+    "notificationsRationaleMessage": "VeryLoving esindika okujjukiza okuyingira, okutereeza mu mbeera ez’amangu, n’okukusaba obukuumi bw’osobozesa. Tetukozesa kumanyisibwa ku birango.",
+    "microphoneRationaleTitle": "Microphone ewa amaanyi amasimu g’obukuumi",
+    "microphoneRationaleMessage": "VeryLoving ekozesa akazindaalo ko nga otandise AI omubeezi oba okukuba essimu ey’obukuumi.",
+    "bluetoothRationaleTitle": "Bluetooth egatta eky’okwambala kyo",
+    "bluetoothRationaleMessage": "VeryLoving ekozesa Bluetooth okugatta n’amajolobero NorthStar, okusoma embeera y’okuyungibwa, n’okutandika okukulukuta kw’obukuumi okuva mu by’okwambala.",
+    "cameraRationaleTitle": "Kkamera ya kwesalirawo",
+    "cameraRationaleMessage": "VeryLoving ekozesa kkamera yokka ng’osazeewo okukuba ekifaananyi kya profile oba okugabana ekifaananyi ky’obukuumi."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ekuuma okutambula kuno okuva ku Settings ne dashboard.",
+    "chooseVoiceTitle": "Londa eddoboozi lyo",
+    "chooseVoiceSubtitle": "Londa eddoboozi ly’omubeezi erisinga okuwulira ng’olina obukuumi okuwulira.",
+    "homeTitle": "Engeri y’awaka",
+    "homeSubtitle": "Okulondoola mu kasirise olw’obukuumi bwa buli lunaku.",
+    "guardianTitle": "Engeri y’omukuumi",
+    "guardianSubtitle": "Gabana embeera n’abantu abeesigika.",
+    "emergencyTitle": "Engeri ey’amangu",
+    "emergencySubtitle": "Taapu ttaano zisobola okulinnya okutuuka ku SOS n’okulabula kw’omukuumi.",
+    "excuseTitle": "Okuyita okwetonda",
+    "excuseSubtitle": "Tonda ensonga ennungi okuva mu mbeera etali nnungi.",
+    "safetyCallTitle": "Essimu y’obukuumi",
+    "safetyCallSubtitle": "Tandika okukuba essimu y’omubeezi mu kiseera ekituufu nga weetaaga obuyambi.",
+    "practiceTitle": "Ekifo eky’okwegezangamu",
+    "practiceSubtitle": "Gezaako okukulukuta kw’obukuumi mu demo ya puleesa entono."
+  },
+  "jewelry": {
+    "pairTitle": "Ekipapula NorthStar",
+    "pairSubtitle": "Eby’okwewunda bikuume okumpi ng’osika.",
+    "scan": "Sika ebyuma",
+    "scanning": "Okusika okumpi...",
+    "noDevices": "Tewali byuma NorthStar ebiriraanyewo bizuuliddwa n’okutuusa kati.",
+    "scanStartFailed": "Bluetooth okusika tekwasobodde kutandika. Nsaba oddemu ogezeeko.",
+    "scanFailed": "Tetwasobodde kusangayo by’okwewunda ebiriraanyewo. Kebera Bluetooth, kuuma NorthStar kumpi, era ogezeeko nate.",
+    "scanAccessFailed": "Bluetooth okusika tekwasobodde kutandika. Kebera Bluetooth access era ogezeeko nate.",
+    "permissionDenied": "Okuyingira mu kyuma ekiri okumpi kuzikiddwa. Kiriza Bluetooth okuyingira mu Settings, olwo ogezeeko nate.",
+    "connectTimeout": "NorthStar kyatwala ekiseera kiwanvu nnyo okuyunga. Kisembeze era oddemu ogezeeko.",
+    "connectFailed": "Tetwasobola kuyungibwa ku NorthStar. Kebera nti ecaajinga era eri kumpi, olwo oddemu ogezeeko.",
+    "emptyTitle": "Tewali byuma ebiriraanyewo n’okutuusa kati",
+    "emptyMessage": "Kuuma NorthStar ng’olina chajingi era ng’oli kumpi n’essimu eno, olwo oddemu okusika.",
+    "searchingMessage": "Onoonya ebyuma NorthStar okumpi..."
+  },
+  "home": {
+    "subtitle": "Dashboard ekwatagana n’obukuumi",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} yeetegese",
+    "readyBody": "Eddoboozi, maapu, eby’okwewunda, n’abakuumi biri ku ttaapu emu.",
+    "safetyCall": "Essimu y’obukuumi",
+    "northStarDevice": "NorthStar ekyuma",
+    "deviceConnected": "%{name} eyungiddwa · %{battery}% .",
+    "noDevice": "Tewali kyuma kiyungiddwa",
+    "manageDevice": "Dukanya ekyuma",
+    "mode": "Engeri y’okukola",
+    "modes": {
+      "home": "Awaka",
+      "guardian": "Omukuumi",
+      "emergency": "Eby’amangu"
+    }
+  },
+  "map": {
+    "finding": "Okuzuula ekifo kyo...",
+    "retry": "Ddamu ogezeeko ekifo",
+    "title": "Maapu y’obukuumi",
+    "previewSubtitle": "Expo Go okusooka; Mapbox ekola mu kuzimba enkulaakulana.",
+    "preview": "Okusooka okulaba maapu",
+    "risk": "Obulabe: %{risk} · Radius %{radius}m",
+    "refresh": "Ekifo eky’okuzza obuggya",
+    "refreshing": "Okuzuula ekifo...",
+    "updateFailed": "Tetusobodde kulongoosa kifo kyo. Nsaba oddemu ogezeeko.",
+    "notRequested": "Okuyingira mu kifo tekwasabiddwa. Osobola okugisobozesa oluvannyuma okuva ku Settings.",
+    "permissionOff": "Okuyingira mu kifo kuggaddwa. Kisobozesa mu Settings okuteeka maapu y’obukuumi wakati ku ggwe.",
+    "timeout": "Ekifo kyo kitwala ekiseera ekiwanvu okusinga bwe kyali kisuubirwa. Tambula awalala ng’olina akabonero akatangaavu era oddemu ogezeeko.",
+    "savedTitle": "Ebifo ebiterekeddwa",
+    "savedEmptyTitle": "Tewali bifo biterekeddwa n’okutuusa kati",
+    "savedEmptyMessage": "Ebifo ebyesigika by’otereka bijja kulabika wano okusobola okubifuna amangu.",
+    "zones": {
+      "crowding": "Omujjuzo mu kiro ekikeesezza olwaleero",
+      "lowLighting": "Ekifo ekirimu amataala amatono"
+    },
+    "risks": {
+      "low": "wansi",
+      "medium": "eky’omu makkati",
+      "high": "waggulu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Okuyunga...",
+    "offlineCompanion": "Omubeezi atali ku mutimbagano",
+    "offline": "Okutali ku mutimbagano",
+    "connected": "Eyungiddwa",
+    "interrupted": "Okuyungibwa kusasika",
+    "ready": "Mwetegefu okuyunga",
+    "connectingSecurely": "Okuyunga obulungi ku munno ow’eddoboozi...",
+    "messagesWaiting": {
+      "one": "%{count} obubaka obulindiridde okusindika",
+      "other": "%{count} obubaka obulindiridde okusindika"
+    },
+    "useOffline": "Kozesa omubeezi atali ku mutimbagano",
+    "reconnect": "Ddamu okuyunga ku ddoboozi AI",
+    "typePlaceholder": "Ewandiika singa okwogera kiba kizibu",
+    "endCall": "Komekkereza okuyita",
+    "startCall": "Tandika okuyita",
+    "emptyTitle": "Emboozi yo etandikira wano",
+    "emptyMessage": "Tandika essimu oba wandiika obubaka nga weetegese."
+  },
+  "chat": {
+    "waiting": "Okulinda okuyungibwa",
+    "notSent": "Obubaka tebuweerezeddwa.",
+    "retryAccessibility": "Ddamu gezaako okuweereza obubaka"
+  },
+  "history": {
+    "clearTitle": "Ebyafaayo by’emboozi ebitangaavu?",
+    "clearMessage": "Kino kiggyawo obubaka AI obubeezi obuterekeddwa okuva ku kyuma kino.",
+    "deleteTitle": "Sazaamu emboozi eno?",
+    "cannotUndo": "Kino tekiyinza kuddibwamu.",
+    "title": "Ebyafaayo by’emboozi",
+    "subtitle": "AI obubaka obw’omukwano obuterekeddwa ku kyuma kino.",
+    "empty": "Tewali mboozi ziterekeddwa n’okutuusa kati.",
+    "emptyTitle": "Tewali mboozi n’okutuusa kati",
+    "emptyMessage": "Emboozi AI munno zijja kulabika wano oluvannyuma lw’okukubira essimu yo esooka.",
+    "loadFailed": "Tetwasobola kutikka byafaayo bya mboozi. Nsaba oddemu ogezeeko.",
+    "clearFailed": "Tetwasobola kulongoosa byafaayo bya mboozi. Nsaba oddemu ogezeeko.",
+    "deleteFailed": "Tetwasobola kusazaamu mboozi eyo. Nsaba oddemu ogezeeko.",
+    "aiCompanion": "AI omubeezi",
+    "resume": "Ddamu okutandika",
+    "clearAll": "Okulongoosa ebyafaayo byonna",
+    "roles": {
+      "assistant": "omubeezi",
+      "user": "gwe"
+    }
+  },
+  "voices": {
+    "title": "Amaloboozi gange ag’okuyita mu by’okwerinda",
+    "subtitle": "Londa eddoboozi ly’omubeezi eriwulira nga lituufu okuwulira.",
+    "test": "Okugezesa eddoboozi",
+    "stop": "Komya sampuli",
+    "selectionFailedTitle": "Okulonda tekuterekeddwa",
+    "selectionFailedMessage": "Nsaba ogezeeko okuddamu okulonda eddoboozi.",
+    "sampleFailedTitle": "Sampuli temanyiddwa",
+    "sampleFailedMessage": "Sampuli eno ey’eddoboozi teyasobodde kukubwa. Nsaba oddemu ogezeeko.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "omugonvu, omukkakkamu, ogukwata ku ttaka"
+      },
+      "bestie": {
+        "name": "Bestie, omusajja omulala",
+        "description": "omutangaavu, agumya, ow’emboozi"
+      },
+      "boyfriend": {
+        "name": "Muganzi we",
+        "description": "omutebenkevu, ow’omukwano, aliwo"
+      },
+      "muscleMan": {
+        "name": "Omusawo w’ebinywa",
+        "description": "okwesiga, okukuuma, okukubiriza"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Eddoboozi",
+    "changeVoice": "Kyusa eddoboozi",
+    "showCompanion": "Laga omubeezi",
+    "offlineMode": "Engeri etali ku mutimbagano",
+    "offlineModeSubtitle": "Kozesa eby’okuddamu by’ababeezi ebikuŋŋaanyiziddwa nga omukutu oba Hume ebiwandiiko ebikakasa tebiriiwo.",
+    "privacyData": "Eby’ekyama & data",
+    "privacyBody": "Fuula oba okusazaamu data y’omu kitundu eterekeddwa ku kyuma kino.",
+    "preparingExport": "Okuteekateeka okutunda ebweru w’eggwanga...",
+    "exportData": "Efulumya data yange",
+    "privacyPolicy": "Enkola y’eby’ekyama",
+    "deleting": "Okusazaamu...",
+    "deleteAll": "Ssaawo data yonna ey’omu kitundu",
+    "deviceManagement": "Okuddukanya ebyuma",
+    "emergencyContacts": "Abakwatagana mu mbeera ez’amangu",
+    "signOut": "Wewandiise okuvaayo",
+    "exportFailedTitle": "Okufulumya ebweru kulemereddwa",
+    "exportFailedMessage": "Tesobola kufulumya data yo mu kiseera kino.",
+    "deleteConfirmTitle": "Sazaamu data yonna ey’omu kitundu?",
+    "deleteConfirmMessage": "Kino kiggyawo pulofayilo yo, ensengeka, abantu b’okwatagana nabo mu bwangu, ebyafaayo by’emboozi, okujjukiza olukusa, n’olutuula lw’okukakasa mu kitundu okuva ku kyuma kino.",
+    "deleteEverything": "Sazaamu buli kimu",
+    "deleteFailedTitle": "Okusazaamu kulemereddwa",
+    "deleteFailedMessage": "Tekisoboka kusazaamu data ya wano mu kiseera kino.",
+    "linkFailed": "Tekisoboka kuggulawo link",
+    "sections": {
+      "language": "Olulimi",
+      "languageSubtitle": "Olulimi lw’olukusa lw’enkolagana n’enkola",
+      "companion": "Omubeezi",
+      "companionSubtitle": "Eddoboozi n’ebitali ku mutimbagano by’oyagala",
+      "deviceSafety": "Ebyuma n’obukuumi",
+      "deviceSafetySubtitle": "NorthStar, abakuumi, n’abatuukirira mu mbeera ez’amangu",
+      "privacy": "Eby’ekyama ne data",
+      "privacySubtitle": "Ebyafaayo, okutunda ebweru, okusazaamu, n’enkola",
+      "account": "Akawunti",
+      "accountSubtitle": "Olutuula lwo VeryLoving oluliwo kati"
+    },
+    "updateFailedTitle": "Okuteekawo tekuterekeddwa",
+    "updateFailedMessage": "Tetwasobola kutereka kwettanira okwo. Nsaba oddemu ogezeeko.",
+    "signOutFailedTitle": "Teyasobodde kufuluma",
+    "signOutFailedMessage": "Olusoma lwo lukyakola. Nsaba oddemu ogezeeko."
+  },
+  "contacts": {
+    "title": "Abakwatagana mu mbeera ez’amangu",
+    "subtitle": "Abantu abeesigika abaliwo mu biseera by’okutambula kw’obukuumi.",
+    "addTitle": "Okwongerako okukwatagana okw’amangu",
+    "name": "Erinnya",
+    "namePlaceholder": "Erinnya ly’okutuukirira",
+    "phone": "Ennamba y’essimu ey’okutuukirira",
+    "add": "Okwongerako okukwatagana",
+    "empty": "Tewali muntu wa mangu ayongerwako n’okutuusa kati.",
+    "emptyTitle": "Tewali muntu yenna akwatagana na mangu",
+    "emptyMessage": "Yongerako omuntu gwe weesiga abeere mwetegefu ng’omugga gw’obukuumi gwetaaga.",
+    "removeTitle": "Ggyawo %{name}?",
+    "removeMessage": "Omuntu ono tajja kuddamu kulabika mu flow yo ey’amangu.",
+    "nameRequired": "Ssaamu erinnya ly’omuntu gw’okwatagana naye.",
+    "saveFailedTitle": "Okukwatagana tekuterekeddwa",
+    "saveFailedMessage": "Tetwasobola kutereka kukwatagana kuno. Kebera ebikwata ku nsonga eno oddemu ogezeeko.",
+    "removeFailedTitle": "Okukwatagana tekuggiddwawo",
+    "removeFailedMessage": "Tetwasobola kuggyawo kukwatagana kuno. Nsaba oddemu ogezeeko.",
+    "callAccessibility": "Kuba essimu %{name}",
+    "removeAccessibility": "Ggyawo %{name}"
+  },
+  "device": {
+    "title": "Okuddukanya ebyuma",
+    "subtitle": "Dkanya ekyuma kyo NorthStar.",
+    "connected": "Eyungiddwa · %{battery}% bbaatule",
+    "none": "Tewali byuma biyungiddwa",
+    "disconnect": "Ggyako ekyuma",
+    "connect": "Yunga ekyuma"
+  },
+  "friends": {
+    "title": "Mikwano gyaffe",
+    "subtitle": "Abakuumi, okusaba, ne giraafu y’embeera ez’amangu.",
+    "addDemo": "Okwongerako mukwano gwa demo",
+    "emptyTitle": "Enkulungo yo ey’obukuumi terimu kintu kyonna",
+    "emptyMessage": "Mikwano n’abakuumi abeesigika bajja kulabika wano nga bamaze okugattibwako.",
+    "newGuardian": "Omukuumi omupya",
+    "statuses": {
+      "guardian": "Omukuumi",
+      "pending": "Erindirira"
+    }
+  },
+  "emergency": {
+    "title": "Eby’amangu SOS",
+    "subtitle": "Escalate yokka nga weetaaga obuyambi obw’amangu.",
+    "body": "Kino kijja kutegeeza enkola yo ey’obukuumi n’okuteekateeka abantu b’okwatagana nabo mu bwangu.",
+    "activate": "Okukola SOS",
+    "callCompanion": "Kuba AI munno",
+    "notificationTitle": "SOS ekoleddwa",
+    "notificationBody": "Okukulukuta kwo okw’amangu kwetegefu.",
+    "readyTitle": "SOS nga mwetegefu",
+    "callContact": "Kuba %{name}?",
+    "addContact": "Ongerako omuntu gw’okwatagana naye mu bwangu mu Settings.",
+    "quickShareTitle": "Okugabana okw’amangu",
+    "quickShareMessage": "Ekitundu ky’okugabana ebifo kyetegefu. Gatta backend share endpoint okusindika live links."
+  },
+  "quickShare": {
+    "title": "Okugabana okw’amangu",
+    "subtitle": "Okutambula kw’okugabana kw’ekifo kwetegefu."
+  },
+  "capybearTap": {
+    "title": "Capybear ttaapu",
+    "subtitle": "Kuba emirundi ebiri NorthStar yo okusuula emicungwa egy’obukuumi.",
+    "body": "Ekkubo ly’obubonero (Gesture route) lyetegefu okukola waya z’omukolo gwa BLE."
+  },
+  "debug": {
+    "title": "VeryLoving omuko gw’okulongoosa",
+    "subtitle": "Ekkubo ery’enkulaakulana yokka."
+  },
+  "errors": {
+    "voiceOffline": "Olabika nga tolina mukutu. Obubaka bwo bujja kusindikibwa nga ozzeemu okuyungibwa.",
+    "voiceQueued": "Obubaka buterekeddwa. Kijja kusindikibwa nga munne ow’eddoboozi azzeemu okuyungibwa.",
+    "voiceRetrying": "Ogezaako okuddamu okuweereza obubaka bwo...",
+    "voiceConnecting": "Okuyunga obulungi ku munno ow’eddoboozi...",
+    "microphone": "Okukozesa microphone kwetaagibwa okukuba essimu mu ddoboozi. Osobola okugisobozesa mu Settings, oba okuwandiika obubaka mu kifo ky'ekyo.",
+    "billing": "Omubeezi w’eddoboozi ku yintaneeti tasobola kubeerawo okumala akaseera. Osobola okugenda mu maaso ne munno atali ku mukutu.",
+    "authentication": "Omubeezi w’eddoboozi teyasobola kukakasa lutuula luno. Ddamu oyingire oba kozesa munno atali ku mukutu kati.",
+    "timeout": "Munne ow’eddoboozi yatwala ekiseera kiwanvu nnyo okuddamu. Kebera omukago gwo era ogezeeko nate.",
+    "network": "Tetwasobola kutuuka ku mubeezi w’eddoboozi. Kebera omukutu gwo, olwo ddamu ogezeeko oba genda mu maaso nga tolina mukutu.",
+    "genericVoice": "Waliwo ekyasalako okuyita mu ddoboozi. Gezaako nate, oba genda mu maaso ne munno atali ku mukutu."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving okufulumya amawulire"
+  },
+  "notifications": {
+    "channelName": "Okulabula ku by’okwerinda"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving yeetaaga okuyingira mu mayirofooni olw’obukuumi n’okukuba essimu AI omubeezi.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ekozesa ekifo kyo ku maapu y’obukuumi n’ebintu eby’obukuumi ebiriraanyewo.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ekozesa ekifo kyo okuwagira okutambula okw’obukuumi-okutuuka n’okutambula okw’amangu.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ekozesa ekifo eky’emabega ku bifaananyi eby’okutuuka mu ngeri ey’obukuumi n’ebifo eby’akabi ebiriraanyewo.",
+      "NSCameraUsageDescription": "VeryLoving ekozesa kamera yokka nga osazeewo okukuba ekifaananyi kya profile oba eky’obukuumi.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ekozesa etterekero lyo ery’ebifaananyi ng’olonze ekifaananyi ky’ebifaananyi oba eky’obukuumi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

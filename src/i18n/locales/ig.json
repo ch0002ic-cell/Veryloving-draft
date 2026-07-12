@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tinye",
+    "apple": "Apple",
+    "back": "Azụ",
+    "call": "Kpọọ",
+    "cancel": "Kagbuo",
+    "clear": "Doro anya",
+    "close": "Nso",
+    "connect": "Banye",
+    "connecting": "Jikọọ...",
+    "continue": "Gaa n'ihu",
+    "delete": "Hichaa",
+    "finish": "Emecha",
+    "friends": "Ndị enyi",
+    "google": "Google",
+    "home": "Ebe obibi",
+    "loading": "Loading ...",
+    "map": "Maapụ",
+    "notNow": "Ọbụghị ugbu a",
+    "remove": "Hichaa",
+    "retry": "Gbalịa ọzọ",
+    "retrying": "Ntughari",
+    "save": "Chekwaa",
+    "selected": "Họrọ",
+    "send": "Zipu",
+    "settings": "Ntọala",
+    "skip": "Na-awụlikwa elu",
+    "skipForNow": "Skip maka ugbu a",
+    "skipTutorial": "Skip nkuzi",
+    "sos": "SOS",
+    "unknown": "Amaghị ama",
+    "user": "VeryLoving onye ọrụ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Asụsụ",
+    "subtitle": "Họrọ asụsụ a na-eji na saịtị ahụ dum.",
+    "system": "Usoro nfụụ",
+    "search": "Chọọ asụsụ",
+    "noResults": "Enweghị asụsụ dabara na ọchụchọ gị.",
+    "english": "Asụsụ Bekee",
+    "spanish": "Asụsụ Spanish",
+    "french": "Asụsụ French",
+    "chineseSimplified": "Chinedu (nke a na-eme ka ọ dị mfe)"
+  },
+  "phone": {
+    "label": "Nọmba ekwentị",
+    "placeholder": "Nọmba ekwentị",
+    "selectCountry": "Họrọ mba ma ọ bụ mpaghara",
+    "searchCountry": "Chọọ mba, koodu, ma ọ bụ ịpị prefix",
+    "noCountries": "Ọ dịghị mba kwekọrọ na ọchụchọ gị.",
+    "countryButton": "Gbanwee mba, ugbu a %{country} gbakwunyere %{callingCode}",
+    "inputAccessibility": "Nọmba ekwentị maka %{country}",
+    "required": "Tinye nọmba ekwentị.",
+    "tooShort": "Nọmba ekwentị a dị mkpụmkpụ.",
+    "tooLong": "Nọmba ekwentị a dị ogologo.",
+    "invalid": "Tinye nọmba ekwentị dị irè maka mba ahọpụtara.",
+    "valid": "Nọmba ekwentị mba ụwa dị irè"
+  },
+  "auth": {
+    "onboardingTagline": "Onye na-ahụ maka nchekwa onwe onye maka oge dị n'etiti \"Adị m mma\" na \"Achọrọ m enyemaka.\"",
+    "createAccount": "Mepụta akaụntụ",
+    "continueOnboarding": "Gaa n'ihu na onboarding",
+    "createSubtitle": "Họrọ usoro nbanye iji chebe eserese eserese gị.",
+    "phoneVerification": "Nkwenye ekwentị",
+    "sendCode": "Zipu koodu",
+    "sendingCode": "Zipu koodu ...",
+    "verifyCode": "Nyochaa koodu",
+    "sentTo": "Zigara %{phone}",
+    "yourPhone": "Ekwentị gị",
+    "verificationCode": "Koodu nkwenye",
+    "verify": "Nyochaa",
+    "verifying": "Nyochaa ...",
+    "invalidCode": "Tinye koodu nkwenye.",
+    "signInFailedTitle": "Nbanye na-akwụsị",
+    "signInFailedMessage": "Anyị enweghị ike ịbanye. Lelee njikọ gị wee nwaa ọzọ.",
+    "googleUnavailableTitle": "Google Ntinye anaghị adị",
+    "googleUnavailableMessage": "Iji nnọkọ mmepe mpaghara. Native Google Sign-In na-arụ ọrụ na ụlọ mmepe.",
+    "northStarTitle": "NorthStar ọla",
+    "northStarSubtitle": "Jikọọ ugbu a ma ọ bụ gaa n'ihu ma gbakwunye ya mgbe e mesịrị.",
+    "northStarBody": "The VL01 wearable nwere ike ịkpalite nchekwa eruba na taps na ogologo pịa mmegharị.",
+    "setupJewelry": "Hazie ọla edo",
+    "meetCapybear": "Zute Capybear",
+    "meetCapybearSubtitle": "Gị nwayọọ nchekwa enyi na map na na oku.",
+    "capybearBody": "Capybear nwere ike inyere aka na ọnọdụ ụlọ, ọnọdụ onye nlekọta, ọnọdụ mberede, oku ngọpụ, na nkwado olu.",
+    "chooseVoice": "Họrọ olu",
+    "capybearReminder": "Capybear ncheta",
+    "remindersReady": "Ihe ncheta dị nro dị njikere."
+  },
+  "permissions": {
+    "locationTitle": "Nchekwa ebe",
+    "locationSubtitle": "A na-eji ya maka map, mpaghara ihe ize ndụ, mbata nchekwa, na ọnọdụ SOS.",
+    "locationBody": "VeryLoving na-arịọ maka ebe ndị nlekọta nwere ike ịghọta ebe enyemaka nwere ike ịchọ. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Ntọala.",
+    "allowLocation": "Ebe ebe",
+    "notificationsTitle": "Ịdọ aka ná ntị nchekwa",
+    "notificationsSubtitle": "Ịma ọkwa na-akwado nlele na ihe omume mberede.",
+    "notificationsBody": "Anyị na-eji ọkwa naanị maka mkpali nchekwa, mmelite mberede, na ihe ncheta ị na-enye.",
+    "enableNotifications": "Rụere ebe ọmụma-ọmụma",
+    "locationRationaleTitle": "Ọnọdụ na-eme ka ọnọdụ nchekwa dị mma",
+    "locationRationaleMessage": "VeryLoving na-eji ọnọdụ gị maka maapụ nchekwa, mpaghara ihe ize ndụ, ịkekọrịta ngwa ngwa, na ọnọdụ SOS. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Ntọala.",
+    "notificationsRationaleTitle": "Safety alerts mkpa ọkwa",
+    "notificationsRationaleMessage": "VeryLoving na-eziga ihe ncheta, mmelite mberede, na ihe nchebe ị na-enye. Anyị anaghị eji ọkwa maka mgbasa ozi.",
+    "microphoneRationaleTitle": "Igwe okwu na-eme ka oku nchekwa",
+    "microphoneRationaleMessage": "VeryLoving na-eji igwe okwu gị naanị mgbe ị na-amalite enyi AI ma ọ bụ oku nchekwa.",
+    "bluetoothRationaleTitle": "Bluetooth jikọọ gị wearable",
+    "bluetoothRationaleMessage": "VeryLoving na-eji Bluetooth jikọtara ya na ọla NorthStar, gụọ ọnọdụ njikọ, ma kpalite nchekwa nchebe site na wearable.",
+    "cameraRationaleTitle": "Igwefoto bụ nhọrọ",
+    "cameraRationaleMessage": "VeryLoving na-eji igwefoto naanị mgbe ị na-ahọrọ ịse foto profaịlụ ma ọ bụ kesaa foto nchekwa."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving na-eme ka usoro a dị site na Ntọala na dashboard.",
+    "chooseVoiceTitle": "Họrọ olu gị",
+    "chooseVoiceSubtitle": "Họrọ olu enyi nke na-eche na ọ dị nchebe ịnụ.",
+    "homeTitle": "Ọnọdụ ebe obibi",
+    "homeSubtitle": "A na-eji nlekọta dị jụụ maka nchebe kwa ụbọchị.",
+    "guardianTitle": "Ọnọdụ Guardian",
+    "guardianSubtitle": "Soro ndị tụkwasịrị obi kerịta ihe gbara ya gburugburu.",
+    "emergencyTitle": "Ọnọdụ mberede",
+    "emergencySubtitle": "Tap ise nwere ike ịbawanye na SOS na Guardian alerts.",
+    "excuseTitle": "Mgbaghara oku",
+    "excuseSubtitle": "Mepụta ezigbo ihe mere ị ga-eji hapụ ọnọdụ na-adịghị mma.",
+    "safetyCallTitle": "Safety oku",
+    "safetyCallSubtitle": "Kpọọ ezigbo oge ma ọ bụrụ na ịchọrọ nkwado.",
+    "practiceTitle": "Omume idaha",
+    "practiceSubtitle": "Gbalịa nchebe na-aga n'ihu na a ala-nrụgide demo."
+  },
+  "jewelry": {
+    "pairTitle": "Di na nwunye NorthStar",
+    "pairSubtitle": "Debe ọla dị nso mgbe ị na-enyocha ya.",
+    "scan": "Iṅomi maka ngwaọrụ",
+    "scanning": "Scanning dị nso",
+    "noDevices": "Achọpụtabeghị ngwaọrụ NorthStar dị nso.",
+    "scanStartFailed": "Bluetooth scanning enweghị ike ịmalite. Biko nwaa ọzọ.",
+    "scanFailed": "Anyị enweghị ike ịchọta ọla dị nso. Lelee Bluetooth, jide NorthStar nso ma nwaa ọzọ.",
+    "scanAccessFailed": "Bluetooth scanning enweghị ike ịmalite. Lelee Bluetooth nweta ma nwàá ọzọ.",
+    "permissionDenied": "Ngwaọrụ dị nso na-agbanyụ. Kwe ka Bluetooth nweta na Ntọala, wee nwaa ọzọ.",
+    "connectTimeout": "NorthStar were ogologo oge iji jikọọ. Mee ka ọ dịkwuo nso ma nwaa ọzọ.",
+    "connectFailed": "Anyị enweghị ike ijikọ NorthStar. Jide n'aka na a na-akwụ ya ụgwọ ma dị nso, wee nwaa ọzọ.",
+    "emptyTitle": "Enwebeghị ngwaọrụ dị nso",
+    "emptyMessage": "Jide NorthStar ebubo ma dị nso na ekwentị a, wee nyochaa ọzọ.",
+    "searchingMessage": "Chọọ NorthStar ngwaọrụ ndị dị nso ..."
+  },
+  "home": {
+    "subtitle": "Safety enyi dashboard",
+    "modeStatus": "%{mode} ỌNỌDỤ",
+    "companionReady": "%{name} dị njikere.",
+    "readyBody": "Olu olu, map, ọla, na ndị nlekọta bụ otu mgbata.",
+    "safetyCall": "Safety oku",
+    "northStarDevice": "NorthStar ngwaọrụ",
+    "deviceConnected": "%{name} jikọtara · %{battery}%",
+    "noDevice": "Enweghị ngwaọrụ ejikọrọ",
+    "manageDevice": "Gosi ngwaọrụ",
+    "mode": "Ọnọdụ",
+    "modes": {
+      "home": "Ebe obibi",
+      "guardian": "Onye nlekọta",
+      "emergency": "Ọnọdụ mberede"
+    }
+  },
+  "map": {
+    "finding": "Chọta ebe ị na-aga...",
+    "retry": "Megharịa ebe",
+    "title": "Maapụ nchekwa",
+    "previewSubtitle": "Expo Go preview; Mapbox na-eme ka ọ bụrụ na ị na-eme ka ọ bụrụ na",
+    "preview": "Map preview",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Nweta ume ebe",
+    "refreshing": "Chọta ebe ...",
+    "updateFailed": "Anyị enweghị ike imelite ọnọdụ gị. Biko nwaa ọzọ.",
+    "notRequested": "Achọghị ka e nweta ebe. Ị nwere ike ime nke a mgbe e mesịrị site na ntọala.",
+    "permissionOff": "Ohere ebe a gbanyụọla. Mee ka ọ dị na Ntọala iji mee ka map nchekwa dị n'ebe ị nọ.",
+    "timeout": "Ọnọdụ gị na-ewe ogologo oge karịa ka a tụrụ anya ya. Gaa ebe na mgbaàmà doro anya ma nwaa ọzọ.",
+    "savedTitle": "Ebe a na-echekwa",
+    "savedEmptyTitle": "Enweghị ebe a zọpụtara",
+    "savedEmptyMessage": "Ebe ndị a tụkwasịrị obi ị na-echekwa ga-apụta ebe a maka nnweta ngwa ngwa.",
+    "zones": {
+      "crowding": "Late Night Bike",
+      "lowLighting": "Mpaghara ọkụ dị ala"
+    },
+    "risks": {
+      "low": "ala",
+      "medium": "Ọkara",
+      "high": "Elu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Jikọọ...",
+    "offlineCompanion": "Ibe gị na-anọghị n'ịntanetị",
+    "offline": "Ọ na-anọghị n'ịntanetị",
+    "connected": "Ejikọtara",
+    "interrupted": "A kwụsịrị njikọ",
+    "ready": "Daalụ maka ijikọ",
+    "connectingSecurely": "Jikọọ na onye na-ege gị ntị n'enweghị nsogbu.",
+    "messagesWaiting": {
+      "one": "%{count} ozi na-echere izipu",
+      "other": "%{count} ozi na-echere izipu"
+    },
+    "useOffline": "Jiri ibe na-anọrịghị n'ịntanetị",
+    "reconnect": "Jikọọ na Voice AI",
+    "typePlaceholder": "Ụdị ma ọ bụrụ na ikwu okwu siri ike",
+    "endCall": "Ọgwụgwụ oku",
+    "startCall": "Malite oku",
+    "emptyTitle": "Mkparịta ụka gị na-amalite ebe a",
+    "emptyMessage": "Malite ịkpọ oku ma ọ bụ pịnye ozi mgbe ị dị njikere."
+  },
+  "chat": {
+    "waiting": "iche-maka njikọ",
+    "notSent": "Eziteghị ozi.",
+    "retryAccessibility": "Malitegharịa izipu ozi"
+  },
+  "history": {
+    "clearTitle": "Dọrọ anya akụkọ mkparịta ụka?",
+    "clearMessage": "Nke a na-ewepụ ozi enyi AI echekwara site na ngwaọrụ a.",
+    "deleteTitle": "Hichaa mkparịta ụka a?",
+    "cannotUndo": "A pụghị iwepu nke a.",
+    "title": "Akụkọ mkparịta ụka",
+    "subtitle": "AI ozi ndị enyi echekwara na ngwaọrụ a.",
+    "empty": "Enweghị mkparịta ụka a zọpụtara.",
+    "emptyTitle": "Enweghị mkparịta ụka",
+    "emptyMessage": "Mkparịta ụka AI gị ga-apụta ebe a mgbe oku mbụ gị gasịrị.",
+    "loadFailed": "Anyị enweghị ike ibudata akụkọ mkparịta ụka. Biko nwaa ọzọ.",
+    "clearFailed": "Anyị enweghị ike ịkọwapụta akụkọ mkparịta ụka. Biko nwaa ọzọ.",
+    "deleteFailed": "Anyị enweghị ike ihichapụ mkparịta ụka ahụ. Biko nwaa ọzọ.",
+    "aiCompanion": "AI enyi",
+    "resume": "Malitegharịa",
+    "clearAll": "D_ata akụkọ ihe mere eme",
+    "roles": {
+      "assistant": "Onye Mmekọ",
+      "user": "Gị"
+    }
+  },
+  "voices": {
+    "title": "Olu m na-akpọ oku",
+    "subtitle": "Họrọ olu enyi nke na-eche na ọ dị mma ịnụ.",
+    "test": "Nwalee olu",
+    "stop": "Kwụsị sample",
+    "selectionFailedTitle": "Echekwaghị nhọrọ",
+    "selectionFailedMessage": "Biko gbalịa ịhọrọ olu ọzọ.",
+    "sampleFailedTitle": "Ihe nlele adịghị adị",
+    "sampleFailedMessage": "Enweghi ike igwu egwu olu a. Biko nwaa ọzọ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Nwayọọ, dị jụụ, ala"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Mkparịta ụka, na-akpali akpali, na-akparịta ụka"
+      },
+      "boyfriend": {
+        "name": "Ezigbo enyi nwoke",
+        "description": "Ịhụnanya, ịhụnanya, Ịhụnanya"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "Ntụkwasị obi, nchekwa, na-akpali akpali"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Olu",
+    "changeVoice": "Gbanwee olu",
+    "showCompanion": "Gosi enyi",
+    "offlineMode": "Ọnọdụ na-anọghị n'ịntanetị",
+    "offlineModeSubtitle": "Jiri nzaghachi ndị enyi jikọtara ọnụ mgbe netwọk ma ọ bụ nzere Hume adịghị.",
+    "privacyData": "Nzuzo na data",
+    "privacyBody": "Mbupụ ma ọ bụ hichapụ data mpaghara echekwara na ngwaọrụ a.",
+    "preparingExport": "Na-akwadebe ya na Bupụ...",
+    "exportData": "Bupụ data m",
+    "privacyPolicy": "Iwu nzuzo",
+    "deleting": "Hichapụ...",
+    "deleteAll": "Hichaa data mpaghara niile",
+    "deviceManagement": "Njikwa ngwaọrụ",
+    "emergencyContacts": "Kọntaktị mberede",
+    "signOut": "Banye na",
+    "exportFailedTitle": "Bupụ dara ada",
+    "exportFailedMessage": "Enweghị ike ibupụ data gị ugbu a.",
+    "deleteConfirmTitle": "Hichaa data mpaghara niile?",
+    "deleteConfirmMessage": "Nke a na-ewepu profaịlụ gị, ntọala, kọntaktị mberede, akụkọ mkparịta ụka, ncheta ikike, na nnọkọ mpaghara site na ngwaọrụ a.",
+    "deleteEverything": "Hichaa ihe niile",
+    "deleteFailedTitle": "Nhichapụ dara ada",
+    "deleteFailedMessage": "Enweghị ike ihichapụ data mpaghara ugbu a.",
+    "linkFailed": "Gaa n'ihu imepenike ụzọ njikọ",
+    "sections": {
+      "language": "Asụsụ",
+      "languageSubtitle": "Interface na usoro ikikere asụsụ",
+      "companion": "Enyi",
+      "companionSubtitle": "Olu na nchọchọ na-anọghị n'ịntanetị",
+      "deviceSafety": "Ngwaọrụ na nchekwa",
+      "deviceSafetySubtitle": "NorthStar, ndị nlekọta, na kọntaktị mberede",
+      "privacy": "Nzuzo na data",
+      "privacySubtitle": "Akụkọ ihe mere eme, mbupụ, nhichapụ, na iwu",
+      "account": "Akaụntụ",
+      "accountSubtitle": "Oge mmem VeryLoving gị ugbu a"
+    },
+    "updateFailedTitle": "Ịtọ adịghị echekwa",
+    "updateFailedMessage": "Anyị enweghị ike ịchekwa nhọrọ ahụ. Biko nwaa ọzọ.",
+    "signOutFailedTitle": "Enweghị ike ịbanye n'èzí",
+    "signOutFailedMessage": "Nzukọ gị ka na-arụsi ọrụ ike. Biko nwaa ọzọ."
+  },
+  "contacts": {
+    "title": "Kọntaktị mberede",
+    "subtitle": "Ndị mmadụ tụkwasịrị obi dị n'oge nchekwa.",
+    "addTitle": "Tinye kọntaktị mberede",
+    "name": "Aha",
+    "namePlaceholder": "Aha kọntaịkọrọ",
+    "phone": "Kpọtụrụ nọmba ekwentị",
+    "add": "Tinye kọntaktị",
+    "empty": "Enweghị kọntaktị mberede agbakwunyere.",
+    "emptyTitle": "Enwebeghị kọntaktị mberede",
+    "emptyMessage": "Tinye onye ị tụkwasịrị obi ka ha wee dị njikere mgbe nchekwa chọrọ ha.",
+    "removeTitle": "Hichapụ %{name}?",
+    "removeMessage": "Onye a agaghịzi apụta na mberede mberede gị.",
+    "nameRequired": "Tinye aha kọntaktị ahụ.",
+    "saveFailedTitle": "Kọntaktị echekwaghị",
+    "saveFailedMessage": "Anyị enweghị ike ịchekwa kọntaktị a. Lelee nkọwa zuru ezu ma nwaa ọzọ.",
+    "removeFailedTitle": "Ewepụghị kọntantaị",
+    "removeFailedMessage": "Anyị enweghị ike ihichapụ kọntaktị a. Biko nwaa ọzọ.",
+    "callAccessibility": "Kpọọ %{name}",
+    "removeAccessibility": "Hichaa %{name}"
+  },
+  "device": {
+    "title": "Njikwa ngwaọrụ",
+    "subtitle": "Jikwaa ngwaọrụ NorthStar gị",
+    "connected": "Njikọ · %{battery}% batrị batrị",
+    "none": "Enweghị ngwaọrụ ejikọrọ",
+    "disconnect": "Gbanyụọ ngwaọrụ",
+    "connect": "Banye ngwaọrụ"
+  },
+  "friends": {
+    "title": "Ndị enyi",
+    "subtitle": "Ndị nlekọta, arịrịọ, na eserese mberede.",
+    "addDemo": "Tinye demo enyi",
+    "emptyTitle": "Ebe nchekwa gị tọgbọ chako.",
+    "emptyMessage": "Ndị enyi na ndị nlekọta tụkwasịrị obi ga-apụta ebe a ozugbo agbakwunyere ha.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Onye nlekọta",
+      "pending": "Na-echere"
+    }
+  },
+  "emergency": {
+    "title": "Ọnọdụ mberede SOS",
+    "subtitle": "Mee ka ọ dị elu naanị ma ọ bụrụ na ịchọrọ nkwado ozugbo.",
+    "body": "Nke a ga-eme ka nchekwa gị mara ma kwadebe kọntaktị mberede.",
+    "activate": "Rụọwa SOS",
+    "callCompanion": "Kpọọ onye AI gị",
+    "notificationTitle": "SOS na-arụ ọrụ",
+    "notificationBody": "Usoro mberede gị dị njikere.",
+    "readyTitle": "SOS dị njikere.",
+    "callContact": "Kpọọ %{name}?",
+    "addContact": "Tinye kọntaktị mberede na Ntọala.",
+    "quickShareTitle": "Ndenye òkè",
+    "quickShareMessage": "Ebe a na-ekerịta stub dị njikere. Jikọọ backend share endpoint iji zipu njikọ dị ndụ."
+  },
+  "quickShare": {
+    "title": "Ndenye òkè",
+    "subtitle": "Ebe a na-ekere òkè dị njikere."
+  },
+  "capybearTap": {
+    "title": "Capybear kpatụ",
+    "subtitle": "Pịa okpukpu abụọ NorthStar gị iji dobe oroma nchekwa.",
+    "body": "Ụzọ mmegharị ahụ dị njikere maka wiring ihe omume BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Ụzọ mmepe naanị."
+  },
+  "errors": {
+    "voiceOffline": "O yiri ka ị na-anọghị n'ịntanetị. A ga-eziga ozi gị mgbe ị na-ejikọta.",
+    "voiceQueued": "Ozi a zọpụtara. A ga-eziga ya mgbe onye na-ahụ maka olu na-ejikọta.",
+    "voiceRetrying": "Daalụ maka izipu ozi gị ọzọ.",
+    "voiceConnecting": "Jikọọ na onye na-ege gị ntị n'enweghị nsogbu.",
+    "microphone": "Igwe okwu dị mkpa maka oku olu. Ị nwere ike ime ya na Ntọala, ma ọ bụ pịnye ozi kama.",
+    "billing": "A naghị eji ụda olu eme ihe n'ịntanetị nwa oge. Ị nwere ike ịga n'ihu na onye na-anọghị n'ịntanetị.",
+    "authentication": "Onye ọrụ olu ahụ enweghị ike inyocha nnọkọ a. Banye ọzọ ma ọ bụ jiri onye na-anọghị n'ịntanetị maka ugbu a.",
+    "timeout": "Onye na-ekwu okwu na-ewe ogologo oge iji zaghachi. Lelee njikọ gị wee nwaa ọzọ.",
+    "network": "Anyị enweghị ike ịbịakwute onye na-akpakọrịta olu. Lelee njikọ gị, wee nwaa ọzọ ma ọ bụ gaa n'ihu na-anọghị n'ịntanetị.",
+    "genericVoice": "Ihe kwụsịrị oku olu ahụ. Gbalịa ọzọ, ma ọ bụ gaa n'ihu na onye na-anọghị n'ịntanetị."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving mbupụ data"
+  },
+  "notifications": {
+    "channelName": "Ịdọ aka ná ntị nchekwa"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving chọrọ ohere igwe okwu maka nchekwa na AI oku ndị enyi.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving na-eji ọnọdụ gị maka map nchekwa na atụmatụ nchekwa dị nso.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving na-eji ọnọdụ gị iji kwado ọbịbịa na mberede.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving na-eji ọnọdụ ndabere maka mbata nchekwa na mpaghara ihe ize ndụ dị nso.",
+      "NSCameraUsageDescription": "VeryLoving na-eji igwefoto naanị mgbe ị na-ahọrọ ịse profaịlụ ma ọ bụ foto nchekwa.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving na-eji ọbá akwụkwọ foto gị naanị mgbe ị na-ahọrọ profaịlụ ma ọ bụ ihe oyiyi nchekwa.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving na-eji Bluetooth iji jikọọ na ọla nchekwa NorthStar gị.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving na-eji Bluetooth iji jikọọ na ọla nchekwa NorthStar gị."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

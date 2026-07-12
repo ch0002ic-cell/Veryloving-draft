@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Orqaga",
+    "call": "Qo'ng'iroq qiling",
+    "cancel": "Bekor qilish",
+    "clear": "Toza",
+    "close": "Yaqin",
+    "connect": "Ulanish",
+    "connecting": "Ulanish...",
+    "continue": "Davom et",
+    "delete": "O'chirish",
+    "finish": "Yakun",
+    "friends": "Do'stlar",
+    "google": "Google",
+    "home": "Uy",
+    "loading": "Yuklanmoqda...",
+    "map": "Xarita",
+    "notNow": "Hozir emas",
+    "remove": "Olib tashlang",
+    "retry": "Qayta urinish",
+    "retrying": "Qayta urinib ko'rish",
+    "save": "Saqlash",
+    "selected": "Tanlanganlar",
+    "send": "Yubor",
+    "settings": "Sozlamalar",
+    "skip": "Skip",
+    "skipForNow": "Hozircha o'tkazib yubor",
+    "skipTutorial": "Darslikni o'tkazib yubor",
+    "sos": "SOS",
+    "unknown": "Noma'lum",
+    "user": "VeryLoving foydalanuvchisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Til",
+    "subtitle": "Ilova bo'ylab ishlatiladigan tilni tanlang.",
+    "system": "Tizim standarti",
+    "search": "Qidiruv tillari",
+    "noResults": "Qidiruvingizga mos keladigan tillar yo'q.",
+    "english": "Ingliz tili",
+    "spanish": "Ispan tili",
+    "french": "Fransuz tili",
+    "chineseSimplified": "Xitoycha (Soddalashtirilgan)"
+  },
+  "phone": {
+    "label": "Telefon raqami",
+    "placeholder": "Telefon raqami",
+    "selectCountry": "Tanlangan mamlakat yoki mintaqa",
+    "searchCountry": "Mamlakat, kod yoki terish prefiksini qidiring",
+    "noCountries": "Qidiruvingizga mos keladigan mamlakatlar yo'q.",
+    "countryButton": "Mamlakatni o'zgartiring, hozirda %{country} va %{callingCode}",
+    "inputAccessibility": "Telefon raqami %{country}",
+    "required": "Telefon raqamini kiriting.",
+    "tooShort": "Bu telefon raqami juda qisqa.",
+    "tooLong": "Bu telefon raqami juda uzun.",
+    "invalid": "Tanlangan mamlakat uchun haqiqiy telefon raqamini kiriting.",
+    "valid": "Amal qiluvchi xalqaro telefon raqami"
+  },
+  "auth": {
+    "onboardingTagline": "\"Men yaxshiman\" va \"Menga yordam kerak\" orasidagi lahzalar uchun shaxsiy xavfsizlik hamrohi.",
+    "createAccount": "Hisob yarat",
+    "continueOnboarding": "Onboardingni davom ettiring",
+    "createSubtitle": "Xavfsizlik grafikangizni himoya qilish uchun kirish usulini tanlang.",
+    "phoneVerification": "Telefon tekshiruvi",
+    "sendCode": "Kod yuborish",
+    "sendingCode": "Kod yuborilmoqda...",
+    "verifyCode": "Kodni tekshirish",
+    "sentTo": "Yuborildi %{phone}",
+    "yourPhone": "Telefoning",
+    "verificationCode": "Tekshirish kodi",
+    "verify": "Tekshir",
+    "verifying": "Tekshiryapman...",
+    "invalidCode": "Tasdiqlash kodini kiriting.",
+    "signInFailedTitle": "Kirish to'xtatildi",
+    "signInFailedMessage": "Biz ro'yxatdan o'tishni yakunlay olmadik. Ulanishingizni tekshiring va yana urinib ko'ring.",
+    "googleUnavailableTitle": "Google Kirish mavjud emas",
+    "googleUnavailableMessage": "Mahalliy rivojlanish sessiyasidan foydalanish. Native Google Sign-In rivojlanish qurilmasida ishlaydi.",
+    "northStarTitle": "NorthStar zargarlik buyumlari",
+    "northStarSubtitle": "Hozir juftlang yoki davom ettiring va keyinroq qo'shing.",
+    "northStarBody": "VL01 kiyiladigan apparat xavfsizlik harakatlarini bosish va uzoq bosish harakatlari orqali ishga tushira oladi.",
+    "setupJewelry": "Zargarlik buyumlarini o'rnatish",
+    "meetCapybear": "Tanishing Capybear",
+    "meetCapybearSubtitle": "Xaritada va qo'ng'iroqlarda sizning muloyim xavfsizlik hamrohingiz.",
+    "capybearBody": "Capybear uy rejimi, qo'riqchi rejimi, favqulodda holat, bahona qo'ng'iroqlari va ovozli qo'llab-quvvatlash bo'yicha yordam bera oladi.",
+    "chooseVoice": "Ovoz tanlang",
+    "capybearReminder": "Capybear eslatma",
+    "remindersReady": "Muloyim eslatmalar tayyor."
+  },
+  "permissions": {
+    "locationTitle": "Joylashuv xavfsizligi",
+    "locationSubtitle": "Xarita, xavfli zonalar, xavfsiz yetib kelish va SOS kontekst uchun ishlatiladi.",
+    "locationBody": "VeryLoving joylashuvni so'raydi, shunda qo'riqchilar qayerda yordam kerakligini tushunishadi. Buni keyinroq Settings bo'limida o'zgartirishingiz mumkin.",
+    "allowLocation": "Joylashuvga ruxsat berish",
+    "notificationsTitle": "Xavfsizlik ogohlantirishlari",
+    "notificationsSubtitle": "Bildirishnomalar ro'yxatdan o'tish va favqulodda holatlarni qo'llab-quvvatlaydi.",
+    "notificationsBody": "Biz bildirishnomalarni faqat xavfsizlik so'rovlari, favqulodda yangilanishlar va siz yoqadigan eslatmalar uchun ishlatamiz.",
+    "enableNotifications": "Bildirishnomalarni yoqish",
+    "locationRationaleTitle": "Joylashuv xavfsizlik kontekstini aniq ta'minlaydi",
+    "locationRationaleMessage": "VeryLoving sizning joylashuvingizni xavfsizlik xaritasi, xavf zonalari, tez ulashish va kontekst SOS uchun ishlatadi. Buni keyinroq Settings bo'limida o'zgartirishingiz mumkin.",
+    "notificationsRationaleTitle": "Xavfsizlik ogohlantirishlari uchun xabarlar kerak",
+    "notificationsRationaleMessage": "VeryLoving sizga ro'yxatdan o'tish eslatmalari, favqulodda yangilanishlar va xavfsizlik ko'rsatmalarini yuboradi. Biz reklama uchun bildirishnomalardan foydalanmaymiz.",
+    "microphoneRationaleTitle": "Mikrofon xavfsizlik chaqiruvlarini kuchaytiradi",
+    "microphoneRationaleMessage": "VeryLoving mikrofoningizni faqat AI hamroh yoki xavfsizlik chaqirig'ini boshlaganingizda ishlatadi.",
+    "bluetoothRationaleTitle": "Bluetooth kiyiladigan qurilmangizni bog'laydi",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth yordamida zargarlik buyumlari bilan NorthStar, ulanish holatini o'qish va kiyiladigan qurilmadan xavfsizlik oqimlarini ishga tushiradi.",
+    "cameraRationaleTitle": "Kamera ixtiyoriy",
+    "cameraRationaleMessage": "VeryLoving faqat profil suratini olish yoki xavfsizlik tasvirini ulashishni tanlaganingizda kameradan foydalanadi."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving bu oqimni Sozlamalar va paneldan ochiq saqlaydi.",
+    "chooseVoiceTitle": "Ovozingizni tanlang",
+    "chooseVoiceSubtitle": "Eng xavfsiz eshitiladigan hamroh ovozni tanlang.",
+    "homeTitle": "Uy rejimi",
+    "homeSubtitle": "Kunlik xavfsizlik uchun jim monitoring.",
+    "guardianTitle": "Guardian rejimi",
+    "guardianSubtitle": "Ishonchli odamlar bilan kontekstni bo'lishing.",
+    "emergencyTitle": "Favqulodda rejim",
+    "emergencySubtitle": "Besh marta bosish SOS va guardian ogohlantirishlariga o'tishi mumkin.",
+    "excuseTitle": "Kechirasiz",
+    "excuseSubtitle": "Noqulay vaziyatni tark etish uchun yaxshi sabab yarating.",
+    "safetyCallTitle": "Xavfsizlik chaqirig'i",
+    "safetyCallSubtitle": "Yordam kerak bo'lganda real vaqtda hamroh qo'ng'irog'ini boshlang.",
+    "practiceTitle": "Mashq sahnasi",
+    "practiceSubtitle": "Xavfsizlik oqimlarini past bosimli demoda sinab ko'ring."
+  },
+  "jewelry": {
+    "pairTitle": "Juft NorthStar",
+    "pairSubtitle": "Zargarlik buyumlarini yaqin atrofda saqlab, skanerlash.",
+    "scan": "Qurilmalarni skanerlash",
+    "scanning": "Yaqin atrofda skanerlash...",
+    "noDevices": "Yaqin atrofda NorthStar qurilmalar hali topilmadi.",
+    "scanStartFailed": "Bluetooth skanerlash boshlana olmadi. Iltimos, yana urinib ko'ring.",
+    "scanFailed": "Yaqin atrofda zargarlik topa olmadik. Bluetooth tekshir, NorthStar yaqin tut va yana urinib ko'r.",
+    "scanAccessFailed": "Bluetooth skanerlash boshlana olmadi. Bluetooth kirishni tekshiring va yana urinib ko'ring.",
+    "permissionDenied": "Yaqin atrofdagi qurilmalarga kirish o'chirilgan. Sozlamalarda Bluetooth kirishga ruxsat bering, keyin yana urinib ko'ring.",
+    "connectTimeout": "NorthStar ulanish uchun juda ko'p vaqt ketdi. Yaqinroq suring va yana urinib ko'ring.",
+    "connectFailed": "Biz NorthStar ulana olmadik. Zaryadlangan va yaqin atrofda ekanligini tekshiring, keyin yana urinib ko'ring.",
+    "emptyTitle": "Yaqin atrofda hali hech qanday qurilma yo'q",
+    "emptyMessage": "NorthStar zaryadlangan va telefonni yaqin tuting, keyin yana skanerlash.",
+    "searchingMessage": "Yaqin atrofda NorthStar qurilmalarni qidiryapman..."
+  },
+  "home": {
+    "subtitle": "Xavfsizlik hamroh paneli",
+    "modeStatus": "%{mode} REJIMI",
+    "companionReady": "%{name} tayyor",
+    "readyBody": "Ovoz, xarita, zargarlik buyumlari va qo'riqchilar bir bosish masofasida.",
+    "safetyCall": "Xavfsizlik chaqirig'i",
+    "northStarDevice": "NorthStar qurilmasi",
+    "deviceConnected": "%{name} bog'langan · %{battery}%",
+    "noDevice": "Qurilma ulangan emas",
+    "manageDevice": "Qurilmani boshqarish",
+    "mode": "Rejim",
+    "modes": {
+      "home": "Uy",
+      "guardian": "Qo'riqchi",
+      "emergency": "Favqulodda holat"
+    }
+  },
+  "map": {
+    "finding": "Joylashuvingni topish...",
+    "retry": "Qayta urinish joyi",
+    "title": "Xavfsizlik xaritasi",
+    "previewSubtitle": "Expo Go oldindan ko'rish; Mapbox rivojlanish qurilmasida render qilinadi.",
+    "preview": "Xarita oldindan ko'rish",
+    "risk": "Xavf: %{risk} · Radius %{radius}m",
+    "refresh": "Joylashuvni yangilash",
+    "refreshing": "Joylashuvni topish...",
+    "updateFailed": "Joylashuvingizni yangilay olmadik. Iltimos, yana urinib ko'ring.",
+    "notRequested": "Joylashuvga kirish so'ralmadi. Keyinroq Sozlamalardan yoqishingiz mumkin.",
+    "permissionOff": "Joylashuvga kirish o'chirilgan. Sozlamalarda xavfsizlik xaritasini o'zingizga markazlash uchun yoqing.",
+    "timeout": "Joylashuvingiz kutilganidan ko'proq vaqt olmoqda. Aniqroq signal beradigan joyga ko'chib o'ting va yana urinib ko'ring.",
+    "savedTitle": "Saqlangan joylar",
+    "savedEmptyTitle": "Hali saqlangan joylar yo'q",
+    "savedEmptyMessage": "Ishonchli joylarni saqlash uchun tez kirish uchun shu yerda ko'rsatiladi.",
+    "zones": {
+      "crowding": "Kechasi gavjum",
+      "lowLighting": "Past yorug'lik hududi"
+    },
+    "risks": {
+      "low": "past",
+      "medium": "O'rta",
+      "high": "baland"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ulanish...",
+    "offlineCompanion": "Offline hamroh",
+    "offline": "Oflayn rejimda",
+    "connected": "Ulangan",
+    "interrupted": "Ulanish uzildi",
+    "ready": "Ulanishga tayyor",
+    "connectingSecurely": "Ovoz hamrohingizga xavfsiz ulanish...",
+    "messagesWaiting": {
+      "one": "%{count} xabar yuborilishni kutmoqda",
+      "other": "%{count} yuborishni kutayotgan xabarlar"
+    },
+    "useOffline": "Offline hamrohlikdan foydalaning",
+    "reconnect": "Ovozli tizimga qayta ulanAI",
+    "typePlaceholder": "Agar gapirish qiyin bo'lsa, tur",
+    "endCall": "Qo'ng'iroq tugadi",
+    "startCall": "Qo'ng'iroqni boshlang",
+    "emptyTitle": "Suhbatingiz shu yerda boshlanadi",
+    "emptyMessage": "Qo'ng'iroqni boshlang yoki tayyor bo'lganingizda xabar yozing."
+  },
+  "chat": {
+    "waiting": "Ulanishni kutmoqda",
+    "notSent": "Xabar yuborilmagan.",
+    "retryAccessibility": "Xabar yuborishga yana urinib ko'ring"
+  },
+  "history": {
+    "clearTitle": "Aniq suhbat tarixi?",
+    "clearMessage": "Bu qurilmadan saqlangan AI hamroh xabarlarni olib tashlaydi.",
+    "deleteTitle": "Bu suhbatni o'chirib tashlaymizmi?",
+    "cannotUndo": "Buni bekor qilib bo'lmaydi.",
+    "title": "Suhbat tarixi",
+    "subtitle": "AI ushbu qurilmada saqlangan hamroh xabarlar.",
+    "empty": "Hali suhbatlar saqlanmagan.",
+    "emptyTitle": "Hali suhbat yo'q",
+    "emptyMessage": "Sizning AI hamroh suhbatlaringiz birinchi qo'ng'iroqingizdan keyin shu yerda paydo bo'ladi.",
+    "loadFailed": "Suhbat tarixini yuklay olmadik. Iltimos, yana urinib ko'ring.",
+    "clearFailed": "Suhbat tarixini tozalay olmadik. Iltimos, yana urinib ko'ring.",
+    "deleteFailed": "Biz o'sha suhbatni o'chirib tashlay olmadik. Iltimos, yana urinib ko'ring.",
+    "aiCompanion": "AI hamrohi",
+    "resume": "Rezyume",
+    "clearAll": "Barcha tarixni tozalang",
+    "roles": {
+      "assistant": "Hamroh",
+      "user": "Sen"
+    }
+  },
+  "voices": {
+    "title": "Mening xavfsizlik qo'ng'irog'im ovozlari",
+    "subtitle": "To'g'ri eshitiladigan hamroh ovozni tanlang.",
+    "test": "Test ovozi",
+    "stop": "Stop namunasi",
+    "selectionFailedTitle": "Tanlov saqlanmadi",
+    "selectionFailedMessage": "Iltimos, ovozni yana tanlab ko'ring.",
+    "sampleFailedTitle": "Namuna mavjud emas",
+    "sampleFailedMessage": "Bu ovoz namunasi ijro etilmadi. Iltimos, yana urinib ko'ring.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "yumshoq, tinch, mustahkam"
+      },
+      "bestie": {
+        "name": "Eng yaqin do'st",
+        "description": "Yorqin, ishonchli, suhbatdosh"
+      },
+      "boyfriend": {
+        "name": "Yaxshi ko'rgan yigiti",
+        "description": "barqaror, mehribon, hozir"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "ishonchli, himoyachi, motivatsion"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ovoz",
+    "changeVoice": "Ovozni o'zgartir",
+    "showCompanion": "Ko'rsatuv hamrohi",
+    "offlineMode": "Oflayn rejim",
+    "offlineModeSubtitle": "Tarmoq yoki Hume ma'lumotlari mavjud bo'lmaganda birga kelgan hamroh javoblardan foydalaning.",
+    "privacyData": "Maxfiylik va ma'lumotlar",
+    "privacyBody": "Ushbu qurilmada saqlangan mahalliy ma'lumotlarni eksport qilish yoki o'chirish.",
+    "preparingExport": "Eksportga tayyorlanmoqda...",
+    "exportData": "Mening ma'lumotlarimni eksport qiling",
+    "privacyPolicy": "Maxfiylik siyosati",
+    "deleting": "O'chirilmoqda...",
+    "deleteAll": "Barcha mahalliy ma'lumotlarni o'chirish",
+    "deviceManagement": "Qurilma boshqaruvi",
+    "emergencyContacts": "Favqulodda aloqalar",
+    "signOut": "Chiqish",
+    "exportFailedTitle": "Eksport muvaffaqiyatsiz tugadi",
+    "exportFailedMessage": "Hozircha ma'lumotlaringizni eksport qila olmayapman.",
+    "deleteConfirmTitle": "Barcha mahalliy ma'lumotlarni o'chirish?",
+    "deleteConfirmMessage": "Bu sizning profilingiz, sozlamalaringiz, favqulodda kontaktlaringiz, suhbat tarixi, ruxsatnoma eslatmalari va mahalliy autentifikatsiya sessiyangizni ushbu qurilmadan olib tashlaydi.",
+    "deleteEverything": "Hammasini o'chir",
+    "deleteFailedTitle": "O'chirish muvaffaqiyatsiz bo'ldi",
+    "deleteFailedMessage": "Hozircha mahalliy ma'lumotlarni o'chirib bo'lmaydi.",
+    "linkFailed": "Havolani ochish imkoni bo'lmadi",
+    "sections": {
+      "language": "Til",
+      "languageSubtitle": "Interfeys va tizim ruxsat tili",
+      "companion": "Hamroh",
+      "companionSubtitle": "Ovoz va oflayn sozlamalar",
+      "deviceSafety": "Qurilmalar va xavfsizlik",
+      "deviceSafetySubtitle": "NorthStar, qo'riqchilar va favqulodda aloqalar",
+      "privacy": "Maxfiylik va ma'lumotlar",
+      "privacySubtitle": "Tarix, eksport, o'chirish va siyosat",
+      "account": "Hisob",
+      "accountSubtitle": "Sizning hozirgi VeryLoving sessiyangiz"
+    },
+    "updateFailedTitle": "Sozlama saqlanmadi",
+    "updateFailedMessage": "Biz bu afzallikni saqlab qololmadik. Iltimos, yana urinib ko'ring.",
+    "signOutFailedTitle": "Chiqish imkoni bo'lmadi",
+    "signOutFailedMessage": "Sizning sessiyangiz hali faol. Iltimos, yana urinib ko'ring."
+  },
+  "contacts": {
+    "title": "Favqulodda aloqalar",
+    "subtitle": "Xavfsizlik jarayonlarida ishonchli odamlar mavjud.",
+    "addTitle": "Favqulodda aloqani qo'shing",
+    "name": "Nomi",
+    "namePlaceholder": "Aloqa nomi",
+    "phone": "Aloqa telefon raqami",
+    "add": "Kontaktni qo'shish",
+    "empty": "Favqulodda aloqalar hali qo'shilmadi.",
+    "emptyTitle": "Favqulodda aloqalar hali yo'q",
+    "emptyMessage": "Ishonchli odamni qo'shing, shunda u xavfsizlik oqimi kerak bo'lganda tayyor bo'ladi.",
+    "removeTitle": "%{name}?",
+    "removeMessage": "Bu odam endi sizning favqulodda jarayoningizda ko'rinmaydi.",
+    "nameRequired": "Kontaktning ismini kiriting.",
+    "saveFailedTitle": "Aloqa saqlanmadi",
+    "saveFailedMessage": "Bu aloqani saqlab qololmadik. Tafsilotlarni tekshiring va yana urinib ko'ring.",
+    "removeFailedTitle": "Aloqa olib tashlanmadi",
+    "removeFailedMessage": "Biz bu aloqani olib tashlay olmadik. Iltimos, yana urinib ko'ring.",
+    "callAccessibility": "Qo'ng'iroq %{name}",
+    "removeAccessibility": "Olib %{name}"
+  },
+  "device": {
+    "title": "Qurilma boshqaruvi",
+    "subtitle": "O'z NorthStar qurilmangizni boshqaring.",
+    "connected": "Ulangan · %{battery}% batareya",
+    "none": "Hech qanday qurilma ulangan emas",
+    "disconnect": "Uzish qurilmasi",
+    "connect": "Qurilmani ulanish qurilmasi"
+  },
+  "friends": {
+    "title": "Do'stlar",
+    "subtitle": "Qo'riqchilar, so'rovlar va favqulodda holatlar grafikasi.",
+    "addDemo": "Demo do'stni qo'shing",
+    "emptyTitle": "Sizning xavfsizlik doirasingiz bo'sh",
+    "emptyMessage": "Ishonchli do'stlar va qo'riqchilar qo'shilgach, bu yerda paydo bo'ladi.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Qo'riqchi",
+      "pending": "Kutilayotgan holat"
+    }
+  },
+  "emergency": {
+    "title": "Favqulodda SOS",
+    "subtitle": "Faqat zudlik bilan yordam kerak bo'lganda kuchaytiring.",
+    "body": "Bu sizning xavfsizlik oqimingizni xabardor qiladi va favqulodda aloqalarni tayyorlaydi.",
+    "activate": "FaollashtirSOS",
+    "callCompanion": "Hamrohni chaqirAI",
+    "notificationTitle": "SOS faollashtirildi",
+    "notificationBody": "Favqulodda oqim tayyor.",
+    "readyTitle": "SOS tayyor",
+    "callContact": "Qo%{name}ng'iroq qilaymi?",
+    "addContact": "Favqulodda aloqani Sozlamalarga qo'shing.",
+    "quickShareTitle": "Tez ulashish",
+    "quickShareMessage": "Joylashuvni bo'lishish stubi tayyor. Jonli havolalarni yuborish uchun backend share endpointni ulaning."
+  },
+  "quickShare": {
+    "title": "Tez ulashish",
+    "subtitle": "Joylashuvni bo'lishish jarayoni tayyor."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Xavfsiz apelsin tushirish uchun NorthStar ikki marta uring.",
+    "body": "Gesture yo'nalishi BLE tadbir simlari uchun tayyor."
+  },
+  "debug": {
+    "title": "VeryLoving debug sahifasi",
+    "subtitle": "Faqat rivojlanish yo'nalishi."
+  },
+  "errors": {
+    "voiceOffline": "Siz offline ko'rinasiz. Xabaringiz qayta ulanganingizda yuboriladi.",
+    "voiceQueued": "Xabar saqlandi. Ovozli hamroh qayta ulanganda yuboriladi.",
+    "voiceRetrying": "Yana xabaringni yuborishga harakat qilyapsan...",
+    "voiceConnecting": "Ovoz hamrohingizga xavfsiz ulanish...",
+    "microphone": "Ovozli qo'ng'iroqlar uchun mikrofon orqali kirish talab qilinadi. Siz uni Sozlamalardan yoqishingiz yoki xabar yozishingiz mumkin.",
+    "billing": "Onlayn ovozli hamroh vaqtincha mavjud emas. Siz offline hamroh bilan davom etishingiz mumkin.",
+    "authentication": "Ovoz hamrohi ushbu sessiyani tasdiqlay olmadi. Hozircha yana tizimga kiring yoki oflayn hamrohlikdan foydalaning.",
+    "timeout": "Ovoz hamrohi javob berishda juda ko'p vaqt oldi. Ulanishingizni tekshiring va yana urinib ko'ring.",
+    "network": "Ovozli hamrohga yetib bora olmadik. Ulanishingizni tekshiring, keyin yana urinib ko'ring yoki oflayn davom eting.",
+    "genericVoice": "Nimadir ovozli qo'ng'iroqni to'xtatdi. Yana urinib ko'ring yoki offline hamroh bilan davom eting."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ma'lumotlarni eksport qilish"
+  },
+  "notifications": {
+    "channelName": "Xavfsizlik ogohlantirishlari"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving xavfsizlik va hamroh qo'ng'iroqlari uchun mikrofon AI kerak.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving sizning joylashuvingizni xavfsizlik xaritasi va yaqin atrofdagi xavfsizlik xususiyatlari uchun ishlatadi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sizning joylashuvingizdan xavfsiz yetib kelish va favqulodda harakatlarni qo'llab-quvvatlash uchun foydalanadi.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving xavfsiz yetib kelish va yaqin atrofdagi xavfli zonalar uchun fon joylashuvidan foydalanadi.",
+      "NSCameraUsageDescription": "VeryLoving faqat profil yoki xavfsizlik fotosuratini tanlaganingizda kameradan foydalanadi.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving faqat profil yoki xavfsizlik tasvirini tanlaganingizda sizning fotosurat kutubxonangizdan foydalanadi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth yordamida sizning NorthStar xavfsizlik zargarlik buyumlaringizga ulanadi.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth yordamida sizning NorthStar xavfsizlik zargarlik buyumlaringizga ulanadi."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

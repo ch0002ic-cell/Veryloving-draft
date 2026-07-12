@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Legg afturat",
+    "apple": "Apple",
+    "back": "Aftur",
+    "call": "Kalla",
+    "cancel": "Avlýsa",
+    "clear": "Klárt",
+    "close": "Lat aftur",
+    "connect": "Knýt teg",
+    "connecting": "At knýta seg til...",
+    "continue": "Halda fram",
+    "delete": "Strika",
+    "finish": "Endi",
+    "friends": "Vinir",
+    "google": "Google",
+    "home": "Heim",
+    "loading": "Laddi...",
+    "map": "Kort",
+    "notNow": "Ikki nú",
+    "remove": "Taka burtur",
+    "retry": "Endurroynd",
+    "retrying": "Roysir aftur",
+    "save": "Goym",
+    "selected": "Úrval",
+    "send": "Send",
+    "settings": "Umhvørvi",
+    "skip": "Slepp",
+    "skipForNow": "Slepp fyri nú",
+    "skipTutorial": "Slepp vegleiðingini",
+    "sos": "SOS",
+    "unknown": "Ókent",
+    "user": "VeryLoving brúkari",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Mál",
+    "subtitle": "Vel málið, sum verður brúkt í allari appini.",
+    "system": "Sjálvvirkandi skipan",
+    "search": "Leitimál",
+    "noResults": "Einki mál samsvarar við tína leiting.",
+    "english": "Enskt",
+    "spanish": "Spanskt",
+    "french": "Franskt",
+    "chineseSimplified": "Kinesiskt (einfalt)"
+  },
+  "phone": {
+    "label": "Telefonnummar",
+    "placeholder": "Telefonnummar",
+    "selectCountry": "Vel land ella øki",
+    "searchCountry": "Leita eftir landi, kóða ella ringiforstavi",
+    "noCountries": "Einki land samsvarar við tína leiting.",
+    "countryButton": "Skift land, %{country} í løtuni og %{callingCode}",
+    "inputAccessibility": "Telefonnummar til %{country}",
+    "required": "Skriva inn eitt telefonnummar.",
+    "tooShort": "Hetta telefonnummarið er ov stutt.",
+    "tooLong": "Hetta telefonnummarið er ov langt.",
+    "invalid": "Skriva inn eitt galdandi telefonnummar fyri valda landið.",
+    "valid": "Gilt altjóða telefonnummar"
+  },
+  "auth": {
+    "onboardingTagline": "Ein persónligur trygdarfelagi fyri løturnar millum \"Eg havi tað gott\" og \"Eg havi brúk fyri hjálp.\"",
+    "createAccount": "Stovna konto",
+    "continueOnboarding": "Halda fram við onboarding",
+    "createSubtitle": "Vel eina innskráningarmáta fyri at verja tína trygdargraf.",
+    "phoneVerification": "Telefonváttan",
+    "sendCode": "Send kóða",
+    "sendingCode": "Sendi kóða...",
+    "verifyCode": "Vátta kóðan",
+    "sentTo": "Sendur til %{phone}",
+    "yourPhone": "Tín telefon",
+    "verificationCode": "Váttanarkoda",
+    "verify": "Vátta",
+    "verifying": "Staðfesti...",
+    "invalidCode": "Skriva inn váttanarkotuna.",
+    "signInFailedTitle": "Innritan avbrotin",
+    "signInFailedMessage": "Vit kundu ikki fullføra innritanina. Kanna sambandið og royn aftur.",
+    "googleUnavailableTitle": "Google Innritan ikki tøk",
+    "googleUnavailableMessage": "Við at brúka eina staðbundna menningarfund. Native Google Sign-In virkar í eini menningarútgávu.",
+    "northStarTitle": "NorthStar smykkum",
+    "northStarSubtitle": "Par nú ella hald fram og legg tað afturat seinni.",
+    "northStarBody": "VL01 burðartólið kann seta trygdarflæði í gongd við trýstum og langum trýstirørslum.",
+    "setupJewelry": "Set upp smykkir",
+    "meetCapybear": "Hitt Capybear",
+    "meetCapybearSubtitle": "Tín blíða trygdarfelagi á kortinum og í útkallum.",
+    "capybearBody": "Capybear kann hjálpa við heima-ham, guardian-ham, neyðstøðu, undanførslu-uppringingum og røddarstuðli.",
+    "chooseVoice": "Vel eina rødd",
+    "capybearReminder": "Capybear áminning",
+    "remindersReady": "Mildar áminningar eru klárar."
+  },
+  "permissions": {
+    "locationTitle": "Staðseting trygd",
+    "locationSubtitle": "Brúkt til kortið, vandasvæði, trygga komu og SOS samanhang.",
+    "locationBody": "VeryLoving biður um staðseting, so verjar kunnu skilja, hvar hjálp kann vera neyðug. Tú kanst broyta hetta seinni í Stillingum.",
+    "allowLocation": "Loyva staðseting",
+    "notificationsTitle": "Trygdarávaringar",
+    "notificationsSubtitle": "Fráboðanir stuðla innskrivingum og neyðartilburðum.",
+    "notificationsBody": "Vit brúka bert fráboðanir til trygdarboð, neyðuppdateringar og áminningar, sum tú kanst virkja.",
+    "enableNotifications": "Virkja boð",
+    "locationRationaleTitle": "Staðsetingin tryggjar trygdarsamanhangin rætt",
+    "locationRationaleMessage": "VeryLoving brúkar staðsetingina tína til trygdarkort, vandasvæði, skjótdeiling og SOS samanhang. Tú kanst broyta hetta seinni í Stillingum.",
+    "notificationsRationaleTitle": "Trygdarávaringar krevja fráboðanir",
+    "notificationsRationaleMessage": "VeryLoving sendir áminningar um innritan, neyðarboð og trygdarboð, sum tú kanst virkja. Vit brúka ikki fráboðanir til lýsingar.",
+    "microphoneRationaleTitle": "Mikrofonin gevur trygdarkall til orku",
+    "microphoneRationaleMessage": "VeryLoving brúkar mikrofonina bara, tá tú byrjar eina AI companion ella trygdarkall.",
+    "bluetoothRationaleTitle": "Bluetooth knýtir tín bæritól saman",
+    "bluetoothRationaleMessage": "VeryLoving brúkar Bluetooth til at para NorthStar smykkur, lesa sambandsstøðu og seta trygdarflæði frá klæðunum í gongd.",
+    "cameraRationaleTitle": "Myndatól er valfrítt",
+    "cameraRationaleMessage": "VeryLoving brúkar myndatólið bert, tá tú velur at taka eina profilmynd ella deila eina trygdarmynd."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving heldur hendan flóðið tøkt frá Stillingum og dashboardinum.",
+    "chooseVoiceTitle": "Vel tína rødd",
+    "chooseVoiceSubtitle": "Vel tann fylgisrødd, sum kennist tryggast at hoyra.",
+    "homeTitle": "Heimaháttur",
+    "homeSubtitle": "Friðarlig eftirlit fyri dagliga trygd.",
+    "guardianTitle": "Verjari háttur",
+    "guardianSubtitle": "Deil samanhang við álítandi fólk.",
+    "emergencyTitle": "Neyðstøða",
+    "emergencySubtitle": "Fimm trýst kunnu føra til SOS og verju ávaringar.",
+    "excuseTitle": "Fyrigev at ringja",
+    "excuseSubtitle": "Skapa eina virðiliga orsøk at fara úr eini óbehagiligari støðu.",
+    "safetyCallTitle": "Trygdarkall",
+    "safetyCallSubtitle": "Byrja eina samrøðu við fylgjaran í rauntíð, tá tú hevur tørv á stuðli.",
+    "practiceTitle": "Venjingarsena",
+    "practiceSubtitle": "Roys trygdarfløgurnar í einum lágtrýstsdemo."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Halt smykkini nær við meðan tú skanna.",
+    "scan": "Skanna eftir tólum",
+    "scanning": "Skannar nærhendis...",
+    "noDevices": "Einki NorthStar tól funnin í nærhendis enn.",
+    "scanStartFailed": "Bluetooth skanning kundi ikki byrja. Vinarliga royn aftur.",
+    "scanFailed": "Vit kundu ikki finna smykkir nærhendis. Kanna Bluetooth, halt NorthStar nær, og royn aftur.",
+    "scanAccessFailed": "Bluetooth skanning kundi ikki byrja. Kanna Bluetooth atgongd og royn aftur.",
+    "permissionDenied": "Atgongd til nærliggjandi tól er sløkt. Lat Bluetooth atgongd í Stillingum, og royn so aftur.",
+    "connectTimeout": "NorthStar tók ov langa tíð at fáa samband. Flyt tað nærri og royn aftur.",
+    "connectFailed": "Vit kundu ikki fáa samband við NorthStar. Kanna at tað er løtt og nærhendis, og royn so aftur.",
+    "emptyTitle": "Einki nærhendis tól enn",
+    "emptyMessage": "Halt NorthStar lødda og tætt at telefonini, og skanna so aftur.",
+    "searchingMessage": "Leiti eftir NorthStar tólum nærhendis..."
+  },
+  "home": {
+    "subtitle": "Trygdarfelaga instrumentpanelið",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} er klárur",
+    "readyBody": "Rødd, kort, smykkur og verjar eru bert eitt trýst burtur.",
+    "safetyCall": "Trygdarkall",
+    "northStarDevice": "NorthStar tól",
+    "deviceConnected": "%{name} knýtt · %{battery}%",
+    "noDevice": "Einki tól knýtt",
+    "manageDevice": "Stýra tólum",
+    "mode": "Mode",
+    "modes": {
+      "home": "Heim",
+      "guardian": "Verjari",
+      "emergency": "Bráðfeingis"
+    }
+  },
+  "map": {
+    "finding": "At finna staðsetingina hjá tær...",
+    "retry": "Endurroyndarstaðseting",
+    "title": "Trygdarkort",
+    "previewSubtitle": "Expo Go forsmakk; Mapbox renderar í eini menningarútgávu.",
+    "preview": "Kortforsýning",
+    "risk": "Váði: %{risk} · Radius %{radius}m",
+    "refresh": "Endurnýggjastaðseting",
+    "refreshing": "At finna staðið...",
+    "updateFailed": "Vit kundu ikki dagføra staðsetingina hjá tær. Vinarliga royn aftur.",
+    "notRequested": "Atgongd til staðseting varð ikki biðin um. Tú kanst virkja tað seinni frá Stillingum.",
+    "permissionOff": "Atgongdin til staðsetingina er sløkt. Virkja tað í Stillingum fyri at miðsavna trygdarkortið um teg.",
+    "timeout": "Tín staðseting tekur longri tíð enn væntað. Flyt teg til eitt stað við greiðari signal og royn aftur.",
+    "savedTitle": "Goymd støð",
+    "savedEmptyTitle": "Einki goymt pláss enn",
+    "savedEmptyMessage": "Álítandi staðir, tú goymir, síggjast her fyri skjóta atgongd.",
+    "zones": {
+      "crowding": "Seint á kvøldi trýst",
+      "lowLighting": "Lágt ljós øki"
+    },
+    "risks": {
+      "low": "Lágt",
+      "medium": "Medium",
+      "high": "høgt"
+    }
+  },
+  "safetyCall": {
+    "connecting": "At knýta seg til...",
+    "offlineCompanion": "Offline fylgisveinur",
+    "offline": "Offline",
+    "connected": "Tengdur",
+    "interrupted": "Samband avbrotið",
+    "ready": "Klárur at knýta samband",
+    "connectingSecurely": "At knýta seg trygt til tín røddarfelaga...",
+    "messagesWaiting": {
+      "one": "%{count} boð, sum bíðar eftir at verða send",
+      "other": "%{count} boð, sum bíða eftir at verða send"
+    },
+    "useOffline": "Brúka offline companion",
+    "reconnect": "Knýt aftur til rødd AI",
+    "typePlaceholder": "Týpa um at tosa er torført",
+    "endCall": "Endakall",
+    "startCall": "Start call",
+    "emptyTitle": "Samrøðan byrjar her",
+    "emptyMessage": "Byrja samtaluna ella skriva eina boð, tá tú ert klárur."
+  },
+  "chat": {
+    "waiting": "Bíðar eftir sambandi",
+    "notSent": "Boð ikki sent.",
+    "retryAccessibility": "Roys at senda boð aftur"
+  },
+  "history": {
+    "clearTitle": "Greið samtalusøga?",
+    "clearMessage": "Hetta tekur burtur goymdar AI fylgisveinaboð frá hesum tólinum.",
+    "deleteTitle": "Strika hesa samrøðuna?",
+    "cannotUndo": "Hetta kann ikki gerast aftur.",
+    "title": "Samtalusøga",
+    "subtitle": "AI fylgjaraboð goymd á hesum tólinum.",
+    "empty": "Einki samrøður eru goymdar enn.",
+    "emptyTitle": "Enn eru eingir samrøður",
+    "emptyMessage": "Tínar AI fylgisveinasamrøður koma fram her eftir fyrsta samtalið.",
+    "loadFailed": "Vit kundu ikki lata samtalusøguna inn. Vinarliga royn aftur.",
+    "clearFailed": "Vit kundu ikki rudda samrøðusøguna. Vinarliga royn aftur.",
+    "deleteFailed": "Vit kundu ikki strika ta samrøðuna. Vinarliga royn aftur.",
+    "aiCompanion": "AI fylgisveinur",
+    "resume": "Lívsrensl",
+    "clearAll": "Strika alla søgu",
+    "roles": {
+      "assistant": "Fylgisveinur",
+      "user": "Tú"
+    }
+  },
+  "voices": {
+    "title": "Míni trygdarkall ljóða",
+    "subtitle": "Vel tann fylgisrødd, sum følist rætt at hoyra.",
+    "test": "Royndarrødd",
+    "stop": "Stop-dømi",
+    "selectionFailedTitle": "Val ikki bjargað",
+    "selectionFailedMessage": "Vinarliga royn at velja røddina aftur.",
+    "sampleFailedTitle": "Dømi ikki tøkt",
+    "sampleFailedMessage": "Hetta røddardømi kundi ikki spælast. Vinarliga royn aftur.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mjúk, rólig, jarðbundin"
+      },
+      "bestie": {
+        "name": "Besti vinur",
+        "description": "Ljós, tryggjandi, samrøðulig"
+      },
+      "boyfriend": {
+        "name": "Sjeikur",
+        "description": "støðugur, kærleiksfullur, nærverandi"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "sjálvsikker, verjandi, motiverandi"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Rødd",
+    "changeVoice": "Broyt rødd",
+    "showCompanion": "Sýningarfylgisveinur",
+    "offlineMode": "Offline-máti",
+    "offlineModeSubtitle": "Brúka pakkaðar fylgisvar, tá netverkið ella Hume ikki eru tøkar.",
+    "privacyData": "Privatlívsvernd og dátur",
+    "privacyBody": "Eksportera ella strika lokal dátur, sum eru goymdar á hesum tólinum.",
+    "preparingExport": "Fyrireikar útflutning...",
+    "exportData": "Útflutningur av mínum dátum",
+    "privacyPolicy": "Privatlívspolitikkur",
+    "deleting": "Strika...",
+    "deleteAll": "Strika øll lokal data",
+    "deviceManagement": "Tólstýring",
+    "emergencyContacts": "Neyðarkontaktir",
+    "signOut": "Logga út",
+    "exportFailedTitle": "Útflutningurin miseydnaðist",
+    "exportFailedMessage": "Eg kann ikki flyta út tínar dátur nú.",
+    "deleteConfirmTitle": "Strika øll lokal data?",
+    "deleteConfirmMessage": "Hetta tekur burtur tín profil, innstillingar, neyðarkontaktir, samrøðusøgu, loyvisáminningar og lokal auth-sessión frá hesum tólinum.",
+    "deleteEverything": "Strika alt",
+    "deleteFailedTitle": "Strikingin miseydnaðist",
+    "deleteFailedMessage": "Eg kann ikki strika lokal data í løtuni.",
+    "linkFailed": "Ber ikki til at opna leinkjuna",
+    "sections": {
+      "language": "Mál",
+      "languageSubtitle": "Samskiftis- og skipanarloyvismál",
+      "companion": "Fylgisveinur",
+      "companionSubtitle": "Rødd og offline-innstillingar",
+      "deviceSafety": "Útgerð og trygd",
+      "deviceSafetySubtitle": "NorthStar, verjar og neyðarkontaktir",
+      "privacy": "Privatlív og dátur",
+      "privacySubtitle": "Søga, útflutningur, striking og politikkur",
+      "account": "Konta",
+      "accountSubtitle": "Tín núverandi VeryLoving sessión"
+    },
+    "updateFailedTitle": "Stilling ikki goymd",
+    "updateFailedMessage": "Vit kundu ikki bjarga hesum ynski. Vinarliga royn aftur.",
+    "signOutFailedTitle": "Kundi ikki logga út",
+    "signOutFailedMessage": "Tín session er framvegis virkin. Vinarliga royn aftur."
+  },
+  "contacts": {
+    "title": "Neyðarkontaktir",
+    "subtitle": "Álítandi fólk tøk undir trygdargongdum.",
+    "addTitle": "Legg til neyðkontakt",
+    "name": "Navn",
+    "namePlaceholder": "Sambandsnavn",
+    "phone": "Sambandstelefonnummar",
+    "add": "Legg kontakt afturat",
+    "empty": "Eingin neyðkontaktur lagdur afturat enn.",
+    "emptyTitle": "Einki neyðarsamband enn",
+    "emptyMessage": "Legg onkran afturat, tú hevur álit á, so tey eru klár, tá trygdarflóðið hevur tørv á teimum.",
+    "removeTitle": "Taka %{name}?",
+    "removeMessage": "Hesin persónur fer ikki longur at síggjast í tínum neyðartilfari.",
+    "nameRequired": "Skriva navnið á kontaktinum.",
+    "saveFailedTitle": "Samband ikki goymt",
+    "saveFailedMessage": "Vit kundu ikki bjarga hesum sambandi. Kanna smálutirnar og royn aftur.",
+    "removeFailedTitle": "Samband ikki tikið burtur",
+    "removeFailedMessage": "Vit kundu ikki taka hesa kontaktina burtur. Vinarliga royn aftur.",
+    "callAccessibility": "Ring %{name}",
+    "removeAccessibility": "Tak %{name}"
+  },
+  "device": {
+    "title": "Tólstýring",
+    "subtitle": "Stýr tínum NorthStar tólum.",
+    "connected": "Knýtt · %{battery}% battarí",
+    "none": "Einki tól knýtt",
+    "disconnect": "Frákoplingartól",
+    "connect": "Knýt tól"
+  },
+  "friends": {
+    "title": "Vinir",
+    "subtitle": "Verjar, ynski og neyðgrafur.",
+    "addDemo": "Legg demo-vin afturat",
+    "emptyTitle": "Trygdarringurin tín er tómur",
+    "emptyMessage": "Álítandi vinir og verjar koma fram her, tá teir verða lagdir afturat.",
+    "newGuardian": "Nýggi Verjari",
+    "statuses": {
+      "guardian": "Verjari",
+      "pending": "Bíðar"
+    }
+  },
+  "emergency": {
+    "title": "Bráðfeingis SOS",
+    "subtitle": "Eskalera bert tá tú hevur brúk fyri skjótum stuðli.",
+    "body": "Hetta boðar frá trygdargongdini hjá tær og fyrireikar neyðkontaktir.",
+    "activate": "Virkja SOS",
+    "callCompanion": "Kalla AI fylgisvein",
+    "notificationTitle": "SOS aktiverað",
+    "notificationBody": "Tín neyðarstreymur er klárur.",
+    "readyTitle": "SOS klárur",
+    "callContact": "Ringja %{name}?",
+    "addContact": "Legg ein neyðarkontakt til í Stillingum.",
+    "quickShareTitle": "Skjótt deil",
+    "quickShareMessage": "Staðsetingardeilingarstubbin er klárur. Knýt backend share-endapunktið til at senda livandi leinkjur."
+  },
+  "quickShare": {
+    "title": "Skjótt deil",
+    "subtitle": "Staðsetingardeilingarflóðið er klárt."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tvítrýst á NorthStar fyri at sleppa einari trygdarappelsin.",
+    "body": "Gestture route er klár til BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug-síða",
+    "subtitle": "Bert menningarleið."
+  },
+  "errors": {
+    "voiceOffline": "Tú sær út til at vera offline. Tín boðskapur verður sendur, tá tú knýtir samband aftur.",
+    "voiceQueued": "Boðskapurin er goymdur. Tað verður sent, tá røddarfylgisveinurin knýtir seg aftur.",
+    "voiceRetrying": "Roysir at senda boðini aftur...",
+    "voiceConnecting": "At knýta seg trygt til tín røddarfelaga...",
+    "microphone": "Mikrofonatgongd er neyðug til røddarsamtøl. Tú kanst virkja tað í Stillingum, ella skriva eina boð í staðin.",
+    "billing": "Online røddarfylgisveinurin er brádliga ikki tøkur. Tú kanst halda fram við offline companion.",
+    "authentication": "Røddarvinurin kundi ikki vátta hesa sessiónina. Rita inn aftur ella brúka offline fylgisveinin fyri nú.",
+    "timeout": "Røddarvinurin tók ov langa tíð at svara. Kanna sambandið og royn aftur.",
+    "network": "Vit kundu ikki fáa samband við røddarfelagan. Kanna sambandið, royn so aftur ella halda fram offline.",
+    "genericVoice": "Okkurt avbrot røddina. Rokna aftur, ella halda fram við offline companion."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving dátuútflutningur"
+  },
+  "notifications": {
+    "channelName": "Trygdarávaringar"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hevur brúk fyri mikrofonatgongd fyri trygd og AI samrøður við fylgisveinar.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving brúkar staðsetingina hjá tær til trygdarkortið og nærliggjandi trygdarfunktiónir.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving brúkar tína staðseting til at stuðla tryggum komu og neyðartilfari.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving brúkar bakgrundarstaðseting til trygga komu og nærliggjandi vandasvæði.",
+      "NSCameraUsageDescription": "VeryLoving brúkar myndatólið bert, tá tú velur at taka profil- ella trygdarmynd.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving brúkar myndasavnið títt bert, tá tú velur eina profil ella trygdarmynd.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving brúkar Bluetooth til at knýta seg til tínar NorthStar trygdarsmykkur.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving brúkar Bluetooth til at knýta seg til tínar NorthStar trygdarsmykkur."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

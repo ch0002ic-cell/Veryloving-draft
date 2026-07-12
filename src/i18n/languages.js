@@ -1,33 +1,13 @@
 'use strict';
 
+const languageRegistry = require('./language-registry');
+
 module.exports = [
   {
     code: 'system',
     translationKey: 'languages.system',
+    englishName: 'System default',
     nativeName: 'System'
   },
-  {
-    code: 'en',
-    translationKey: 'languages.english',
-    nativeName: 'English',
-    messages: require('./locales/en.json')
-  },
-  {
-    code: 'es',
-    translationKey: 'languages.spanish',
-    nativeName: 'Español',
-    messages: require('./locales/es.json')
-  },
-  {
-    code: 'fr',
-    translationKey: 'languages.french',
-    nativeName: 'Français',
-    messages: require('./locales/fr.json')
-  },
-  {
-    code: 'zh',
-    translationKey: 'languages.chineseSimplified',
-    nativeName: '简体中文',
-    messages: require('./locales/zh.json')
-  }
+  ...languageRegistry
 ];

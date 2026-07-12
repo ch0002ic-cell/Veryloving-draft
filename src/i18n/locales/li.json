@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Aanvulle",
+    "apple": "Apple",
+    "back": "Teruuk",
+    "call": "Belle",
+    "cancel": "Annulere",
+    "clear": "Helder",
+    "close": "Sjleete",
+    "connect": "Verbinge",
+    "connecting": "Verbinde...",
+    "continue": "Doorgoon",
+    "delete": "Verwijdere",
+    "finish": "Eindsjtreep",
+    "friends": "Vrung",
+    "google": "Google",
+    "home": "Thoeës",
+    "loading": "Laden...",
+    "map": "Kaart",
+    "notNow": "Neet noe",
+    "remove": "Weghoole",
+    "retry": "Probeer nog ummer",
+    "retrying": "Herprobere",
+    "save": "Opsjloon",
+    "selected": "Geselecteerd",
+    "send": "Sjture",
+    "settings": "Instellinge",
+    "skip": "Euversjloon",
+    "skipForNow": "Slaag noe euver",
+    "skipTutorial": "Sjlaag de tutorial euver",
+    "sos": "SOS",
+    "unknown": "Onbekind",
+    "user": "VeryLoving gebruker",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Taal",
+    "subtitle": "Kies de taal die in de ganse app weurt gebruuk.",
+    "system": "Systeem standaard",
+    "search": "Zoek taole",
+    "noResults": "Gein taole euvereinkomme mit eur zeuktoch.",
+    "english": "Ingelsj",
+    "spanish": "Sjpaans",
+    "french": "Frans",
+    "chineseSimplified": "Sjinees (vereenvoudig)"
+  },
+  "phone": {
+    "label": "Telefoonnummer",
+    "placeholder": "Telefoonnummer",
+    "selectCountry": "Kies land of regio",
+    "searchCountry": "Zoek nao land, code of kiesveurvoogsel",
+    "noCountries": "Geen len euvereinkomme mit eur zeuktoch.",
+    "countryButton": "Verander land, momenteel %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefoonnummer veur %{country}",
+    "required": "Voer un tillefoonnummer in.",
+    "tooShort": "Dit telefoonnummer is te kort.",
+    "tooLong": "Dit telefoonnummer is te lank.",
+    "invalid": "Voer un geldig telefoonnummer in veur ut geselecteerde land.",
+    "valid": "Geldig internationaal tillefoonnummer"
+  },
+  "auth": {
+    "onboardingTagline": "‘n Persoonlike veiligheidsmetgezel veur de mominte tusse “Ich bin good” en “Ich höb hulp nuudig.”",
+    "createAccount": "Rekening make",
+    "continueOnboarding": "Gaon door mit onboarding",
+    "createSubtitle": "Kies un aanmeldmethode um eur veiligheidsgrafiek te besjerme.",
+    "phoneVerification": "Telefooncontrole",
+    "sendCode": "Stuur code",
+    "sendingCode": "Code sjikke...",
+    "verifyCode": "Controleer de code",
+    "sentTo": "Verstuurd nao %{phone}",
+    "yourPhone": "eur tillefoon",
+    "verificationCode": "Verificatiecode",
+    "verify": "Verifiëre",
+    "verifying": "Verifiëre...",
+    "invalidCode": "Voer de verificatiecode in.",
+    "signInFailedTitle": "Aonmelde oonderbroke",
+    "signInFailedMessage": "We kooste neet voltooie aanmelde. Controleer eur verbinding en probeer nog ummer.",
+    "googleUnavailableTitle": "Google Aonmelde neet besjikbaar",
+    "googleUnavailableMessage": "‘n Lokale ontwikkelingssessie gebruke. Native Google Sign-In werkt in un ontwikkelingsbuild.",
+    "northStarTitle": "NorthStar juweele",
+    "northStarSubtitle": "Koppel noe of gaon door en voeg ‘t later touw.",
+    "northStarBody": "De VL01 wearable kin veiligheidsstrome activere mit tikke en lang drukgebare.",
+    "setupJewelry": "Stel juwele op",
+    "meetCapybear": "Ontmoete Capybear",
+    "meetCapybearSubtitle": "Uw zachte veiligheidsmetgezel op de kaart en in oproepe.",
+    "capybearBody": "Capybear kin helpe mit thoesmodus, bewakermodus, noodmodus, excuusgesprekke en spraokondersteuning.",
+    "chooseVoice": "Kies un stum",
+    "capybearReminder": "Capybear herinnering",
+    "remindersReady": "Zachte herinneringe zien klaor."
+  },
+  "permissions": {
+    "locationTitle": "Locatieveiligheid",
+    "locationSubtitle": "Gebruuk veur de kaart, gevaarzones, veilige aankoms en SOS context.",
+    "locationBody": "VeryLoving vraog um locatie zodat voogde kinne begriepe boe hulp nuudig kin zien. Geer kin dit later in Insjtèllinge verandere.",
+    "allowLocation": "Locatie touwsjtaon",
+    "notificationsTitle": "Veiligheidswarninge",
+    "notificationsSubtitle": "Meldingen ondersteune check-ins en noodgebeurtenisse.",
+    "notificationsBody": "Ver gebruke allein meldingen veur veiligheidsvraoge, noodupdates en herinneringe die geer insjtèlt.",
+    "enableNotifications": "Sjakel meldinge in",
+    "locationRationaleTitle": "Locatie houdt de veiligheidscontext nauwkeurig",
+    "locationRationaleMessage": "VeryLoving gebruuk eur locatie veur de veiligheidskaart, gevaarzones, snel deile en SOS cónteks. Geer kin dit later in Insjtèllinge verandere.",
+    "notificationsRationaleTitle": "Veiligheidswaarsjuwinge höbbe notificaties nuudig",
+    "notificationsRationaleMessage": "VeryLoving sjik incheckherinneringe, noodupdates en veiligheidsvraoge die geer heet ingesjtèld. Ver gebruke gein notificaties veur advertenties.",
+    "microphoneRationaleTitle": "Microfoon zörg veur veiligheidsoproepe",
+    "microphoneRationaleMessage": "VeryLoving gebruuk eur microfoon allein es geej un AI metgezel of veiligheidsoproep begint.",
+    "bluetoothRationaleTitle": "Bluetooth verbint eur draagbare apparaat",
+    "bluetoothRationaleMessage": "VeryLoving gebruuk Bluetooth um te koppele mit NorthStar juwele, de status vaan de verbinding te leze en veiligheidsstrouminge vaan de wearable te activere.",
+    "cameraRationaleTitle": "De camera is optioneel",
+    "cameraRationaleMessage": "VeryLoving gebruuk de camera allein es ge d’r veur kiest um ‘n profielfoto te make of ‘n veiligheidsfoto te deile."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving houdt deze flow besjikbaar vaan Instellinge en ‘t dashboard.",
+    "chooseVoiceTitle": "Kies eur stum",
+    "chooseVoiceSubtitle": "Kies de metgezelstum dee ‘t veiligste veult um te heure.",
+    "homeTitle": "Homemodus",
+    "homeSubtitle": "Rustig bewaking veur dagelekse veiligheid.",
+    "guardianTitle": "Bewakermodus",
+    "guardianSubtitle": "Deil de cónteks mit vertrouwde lui.",
+    "emergencyTitle": "Noodmodus",
+    "emergencySubtitle": "Vijf tikke kinne escalere nao SOS en waarsjouwinge.",
+    "excuseTitle": "Excuse oproep",
+    "excuseSubtitle": "Maak ‘n gracieuze reie um ‘n ongemakkelike situatie te verlaote.",
+    "safetyCallTitle": "Veiligheidsoproep",
+    "safetyCallSubtitle": "Begin un real-time companion-oproep es geer ondersteuning nuudig heet.",
+    "practiceTitle": "Oefeningsscène",
+    "practiceSubtitle": "Probeer de veiligheidsstroume in un demo mit laagdrök."
+  },
+  "jewelry": {
+    "pairTitle": "Paar NorthStar",
+    "pairSubtitle": "Hool de juwele in de buurt onderwieles dat ge scant.",
+    "scan": "Scan veur apparate",
+    "scanning": "Scannen in de buurt...",
+    "noDevices": "Nog gein NorthStar-apparate in de buurt gevoonde.",
+    "scanStartFailed": "Bluetooth scanne koos neet beginne. Probeer nog ummer.",
+    "scanFailed": "Ver kooste gein juwele in de buurt vinde. Vink Bluetooth, houw NorthStar dich en probeer nog ‘ns.",
+    "scanAccessFailed": "Bluetooth scanne koos neet beginne. Vink Bluetooth toegang aan en probeer nog ummer.",
+    "permissionDenied": "Toegang tot apparate in de buurt is oet. Laot Bluetooth toegang in Insjtellinge toe en perbeer daonao nog ummer.",
+    "connectTimeout": "NorthStar doerde te lank um te verbinde. Verplaats ‘t dichterbij en probeer ‘t nog ‘ns.",
+    "connectFailed": "Ver kooste neet verbinde mit NorthStar. Controleer of ‘t opgelaod is en in de buurt is, en probeer daan nog ‘ns.",
+    "emptyTitle": "Nog gein apparate in de buurt",
+    "emptyMessage": "Houw NorthStar opgelaod en kortbij deze tillefoon, en scan daonao weer.",
+    "searchingMessage": "Op zeuk nao NorthStar apparate in de buurt..."
+  },
+  "home": {
+    "subtitle": "Veiligheidsmetgezel dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} is klaor",
+    "readyBody": "Stum, kaart, juwele en voogde zien op ein tik weg.",
+    "safetyCall": "Veiligheidsoproep",
+    "northStarDevice": "NorthStar apparaat",
+    "deviceConnected": "%{name} verboonde · %{battery}%",
+    "noDevice": "Gein apparaat verboonde",
+    "manageDevice": "Apparaat behere",
+    "mode": "Modus",
+    "modes": {
+      "home": "Thoeës",
+      "guardian": "Guardian",
+      "emergency": "Sjpoodgeval"
+    }
+  },
+  "map": {
+    "finding": "Eur locatie vinde...",
+    "retry": "Probeer locatie opnuuj",
+    "title": "Veiligheidskaart",
+    "previewSubtitle": "Expo Go veurbeeld; Mapbox weergief in un ontwikkelingsbuild.",
+    "preview": "Kaartveurbeeld",
+    "risk": "Risico: %{risk} · Straol %{radius}m",
+    "refresh": "Locatie vernuie",
+    "refreshing": "Locatie vinde...",
+    "updateFailed": "Ver kooste eur locatie neet bijwerke. Probeer nog ummer.",
+    "notRequested": "Toegang tot locatie is neet gevraog. Geer kin ‘t later insjtèlle via Insjtellinge.",
+    "permissionOff": "Toegang tot locatie is oet. Sjakel ‘t in Instellinge in um de veiligheidskaart op uch te centrere.",
+    "timeout": "Uw locatie duurt langer es verwach. Verplaats ergens mit un dudeliker signaal en probeer nog ummer.",
+    "savedTitle": "Opgeslage plaatse",
+    "savedEmptyTitle": "Nog gein opgeslage plekke",
+    "savedEmptyMessage": "Vertrouwde plaatse die geer opsjlaot zulle hei versjiene veur snel toegang.",
+    "zones": {
+      "crowding": "Late nach drukte",
+      "lowLighting": "Gebied mit weinig leech"
+    },
+    "risks": {
+      "low": "liejeg",
+      "medium": "méédium",
+      "high": "hoeëg"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Verbinde...",
+    "offlineCompanion": "Offline metgezel",
+    "offline": "Offline",
+    "connected": "Verboonde",
+    "interrupted": "Verbinding is oonderbroke",
+    "ready": "Klaar um te verbinde",
+    "connectingSecurely": "Veilige verbinding mit eur stumgenoot...",
+    "messagesWaiting": {
+      "one": "%{count} beriech wacht um te verzende",
+      "other": "%{count} boodsjappe wachte um te verzende"
+    },
+    "useOffline": "Gebruuk offline companion",
+    "reconnect": "Verbind weer mit de stum AI",
+    "typePlaceholder": "Typ es praote lesteg is",
+    "endCall": "Oproep beëindige",
+    "startCall": "Begin oproep",
+    "emptyTitle": "Hei begint eur gesprek",
+    "emptyMessage": "Begin de oproep of typ un beriech es geer klaor zit."
+  },
+  "chat": {
+    "waiting": "Wachte op verbinding",
+    "notSent": "Beriech neet verstuurd.",
+    "retryAccessibility": "Probeer ‘n boodsjap nog ‘ns te sjikke"
+  },
+  "history": {
+    "clearTitle": "Gesprekgesjiedenis wis?",
+    "clearMessage": "Dit verwijdert opgeslage AI bijbehurende boodsjappe vaan dit apparaat.",
+    "deleteTitle": "Wis dit gesprek?",
+    "cannotUndo": "Dit kin neet weure ongedaon.",
+    "title": "Gesprekgesjiedenis",
+    "subtitle": "AI bijbehurende beriechte opgeslage op dit apparaat.",
+    "empty": "Nog gein gesprekke opgeslage.",
+    "emptyTitle": "Nog gein gesprekke",
+    "emptyMessage": "Eur AI metgezelsgesprekke versjiene hei nao eur ierste oproep.",
+    "loadFailed": "Ver kooste gein gesprekgesjiedenis lade. Probeer nog ummer.",
+    "clearFailed": "Ver kooste de gespreksgesjiedenis neet wissen. Probeer nog ummer.",
+    "deleteFailed": "Ver kooste det gesprek neet verwijdere. Probeer nog ummer.",
+    "aiCompanion": "AI mitgezel",
+    "resume": "Hervatte",
+    "clearAll": "Wies alle gesjiedenis",
+    "roles": {
+      "assistant": "mitgezel",
+      "user": "doe"
+    }
+  },
+  "voices": {
+    "title": "Mien veiligheidsoproepe",
+    "subtitle": "Kies de metgezelstum dee good veult um te hure.",
+    "test": "Teststum",
+    "stop": "Stop steekproef",
+    "selectionFailedTitle": "Selèctie neet opgeslage",
+    "selectionFailedMessage": "Probeer de stum nog ‘nmaol te keze.",
+    "sampleFailedTitle": "Steekproef neet besjikbaar",
+    "sampleFailedMessage": "Dit stummonster koos neet weure afgesjpeeld. Probeer nog ummer.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "zacht, kalm, aard"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "helder, geruststellend, gespreksgebonde"
+      },
+      "boyfriend": {
+        "name": "Vrund",
+        "description": "stabiel, liefdevol, aanwezig"
+      },
+      "muscleMan": {
+        "name": "Spierman",
+        "description": "zelfverzekerd, besjermend, motiverend"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Sjtum",
+    "changeVoice": "Verander de stum",
+    "showCompanion": "Toon metgezel",
+    "offlineMode": "Offline modus",
+    "offlineModeSubtitle": "Gebruik gebundelde metgezelsantwoorde es ‘t netwerk of de Hume-geloufsbrieve neet besjikbaar zien.",
+    "privacyData": "Privacy & data",
+    "privacyBody": "Exporteer of verwijder de lokale data die op dit apparaat zien opgeslage.",
+    "preparingExport": "Export veurbereie...",
+    "exportData": "Exporteer mien data",
+    "privacyPolicy": "Privacybeleid",
+    "deleting": "Verwijdere...",
+    "deleteAll": "Wis alle lokale data",
+    "deviceManagement": "Apparaatbeheer",
+    "emergencyContacts": "Noodkontakte",
+    "signOut": "Meld oet",
+    "exportFailedTitle": "Export is mislök",
+    "exportFailedMessage": "Ik kin eur data noe neet exportere.",
+    "deleteConfirmTitle": "Wisse alle lokale data?",
+    "deleteConfirmMessage": "Dit verwijdert eur profiel, insjtellinge, noodcontacte, gespreksgesjiedenis, toestummingsherinneringe en lokale authenticatiesessie vaan dit apparaat.",
+    "deleteEverything": "Wis alles",
+    "deleteFailedTitle": "Verwijdering is mislök",
+    "deleteFailedMessage": "Lokale data kin noe neet verwijdere.",
+    "linkFailed": "De link neet kinne opene",
+    "sections": {
+      "language": "Taal",
+      "languageSubtitle": "Interface- en systeemtoestummingstaal",
+      "companion": "Mitgezel",
+      "companionSubtitle": "Voorkeure veur stum en offline",
+      "deviceSafety": "Apparate en veiligheid",
+      "deviceSafetySubtitle": "NorthStar, voogde en noodkontakte",
+      "privacy": "Privacy en data",
+      "privacySubtitle": "Gesjiedenis, export, verwijdering en beleid",
+      "account": "Rekening",
+      "accountSubtitle": "Uw huidige VeryLoving sessie"
+    },
+    "updateFailedTitle": "Instellinge neet opgeslage",
+    "updateFailedMessage": "Ver kooste dee veurkäör neet opsjlaon. Probeer nog ummer.",
+    "signOutFailedTitle": "Kon neet oetmelde",
+    "signOutFailedMessage": "Uw sessie is nog steeds actief. Probeer nog ummer."
+  },
+  "contacts": {
+    "title": "Noodkontakte",
+    "subtitle": "Vertrouwde lui besjikbaar tijdens veiligheidsstrome.",
+    "addTitle": "Voeg noodkontak toe",
+    "name": "Naam",
+    "namePlaceholder": "Contactnaom",
+    "phone": "Telefoonnummer",
+    "add": "Voeg kontak toe",
+    "empty": "Nog gein noodkontakte toegeveug.",
+    "emptyTitle": "Nog gein noodkontakte",
+    "emptyMessage": "Voeg iemes toe die geer vertrouwt zodat ze klaor zien es ‘n veiligheidsstroum ze nuudig heet.",
+    "removeTitle": "Weghoole %{name}?",
+    "removeMessage": "Dees persoen zal neet langer versjiene in eur noodhulp.",
+    "nameRequired": "Voer de naam vaan ‘t kontak in.",
+    "saveFailedTitle": "Contact neet opgeslage",
+    "saveFailedMessage": "Ver kooste dit kontak neet opsjlaon. Controleer de details en probeer nog ummer.",
+    "removeFailedTitle": "Contact neet verwijderd",
+    "removeFailedMessage": "Ver kooste dit kontak neet eweghaole. Probeer nog ummer.",
+    "callAccessibility": "Belle %{name}",
+    "removeAccessibility": "Weghoole %{name}"
+  },
+  "device": {
+    "title": "Apparaatbeheer",
+    "subtitle": "Beheer eur NorthStar-apparaat.",
+    "connected": "Verboonde · %{battery}% accu",
+    "none": "Geen apparate verboonde",
+    "disconnect": "Verbind apparaat los",
+    "connect": "Verbind apparaat"
+  },
+  "friends": {
+    "title": "Vrung",
+    "subtitle": "Voogde, verzeuke en noodgrafiek.",
+    "addDemo": "Voeg demo-vrund toe",
+    "emptyTitle": "Uw veiligheidscirkel is leeg",
+    "emptyMessage": "Vertrouwde vrun en voogde zulle hei versjiene zodra ze zien touwgevoog.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "In aafwachting"
+    }
+  },
+  "emergency": {
+    "title": "Sjpoodgeval SOS",
+    "subtitle": "Escaleer allein es geer onmiddellijke ondersteuning nuudig heet.",
+    "body": "Dit zal eur veiligheidsstroum op de hoogte bringe en noodkontakte veurbereide.",
+    "activate": "Activeer SOS",
+    "callCompanion": "Bel AI metgezel",
+    "notificationTitle": "SOS geactiveerd",
+    "notificationBody": "Uw noodstroum is klaor.",
+    "readyTitle": "SOS kloar",
+    "callContact": "Belle %{name}?",
+    "addContact": "Voeg un noodkontak toe in Insjtellinge.",
+    "quickShareTitle": "Snel deile",
+    "quickShareMessage": "Locatie-deilingsstub is klaor. Verbind ut backend share endpoint um live links te sjikke."
+  },
+  "quickShare": {
+    "title": "Snel deile",
+    "subtitle": "Locatie-deilstroum is klaor."
+  },
+  "capybearTap": {
+    "title": "Capybear kraan",
+    "subtitle": "Dubbelk op eur NorthStar um un veiligheidssinaasappel te laote valle.",
+    "body": "Gebaarroute is klaor veur BLE-gebeurtenisbedrading."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Allein ontwikkelingsroute."
+  },
+  "errors": {
+    "voiceOffline": "Ge liekes offline. Uw bericht weurt verstuurd es u weer verboonde zit.",
+    "voiceQueued": "Bericht opgeslage. ‘t Weurt gestuurd es de stumcompanion weer verbindt.",
+    "voiceRetrying": "Probeer eur bericht weer te sjikke...",
+    "voiceConnecting": "Veilige verbinding mit eur stumgenoot...",
+    "microphone": "Veur spraakgesprekke is touwgaank tot microfoon nuudig. Geer kin ‘t in Insjtellinge insjtèlle of in plaats daovan un beriech type.",
+    "billing": "De online stumgezel is tijdelek neet besjikbaar. Geer kin doorgaon mit de offline metgezel.",
+    "authentication": "De stumgezel koos dees sessie neet verifiëre. Meld weer aan of gebruuk de offline metgezel veur noe.",
+    "timeout": "De stummetgezel doerde te lank um te reagere. Controleer eur verbinding en probeer nog ummer.",
+    "network": "Ver kooste de stumgezel neet bereike. Controleer de verbinding, probeer daan nog ‘ns of gaon door offline.",
+    "genericVoice": "Get heet de stumgesprek oonderbroke. Probeer nog ‘nmaol, of gaon door mit de offline metgezel."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data export"
+  },
+  "notifications": {
+    "channelName": "Veiligheidswarninge"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving heet microfoontoegang nuudig veur veiligheid en AI metgezelsgesprekke.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving gebruuk eur locatie veur de veiligheidskaart en veiligheidsfuncties in de buurt.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving gebruuk eur locatie um veilege aankomst- en noodgevalle te ondersteune.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving gebruuk achtergroondlocatie veur veilige aankoms en gevaarzone-functies in de buurt.",
+      "NSCameraUsageDescription": "VeryLoving gebruuk de camera allein es ge d’r veur kiest um ‘n profiel- of veiligheidsfoto te make.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving gebruuk eur fotobibliotheek allein es geer un profiel of veiligheidsbeeld kies.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving gebruuk Bluetooth um te verbinde mit eur NorthStar veiligheidsjuwele.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving gebruuk Bluetooth um te verbinde mit eur NorthStar veiligheidsjuwele."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

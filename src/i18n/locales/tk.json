@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ekle",
+    "apple": "Apple",
+    "back": "Yzky",
+    "call": "Jaň etmek",
+    "cancel": "Ýatyrmak",
+    "clear": "Aýdyň",
+    "close": "Ýapmak",
+    "connect": "Baglanyşyk",
+    "connecting": "Baglanyşdyrmak...",
+    "continue": "Dowam etmek",
+    "delete": "Sil",
+    "finish": "Bitirmek",
+    "friends": "Dostlarym",
+    "google": "Google",
+    "home": "Öý",
+    "loading": "Ýüklenýär...",
+    "map": "Karta",
+    "notNow": "Häzir däl",
+    "remove": "Aýyrmak",
+    "retry": "Ýene-de synanyşmak",
+    "retrying": "Ýene-de synanyşmak",
+    "save": "Gaýd etmek",
+    "selected": "Saýlanan",
+    "send": "Ibermek",
+    "settings": "Şertler",
+    "skip": "Skip",
+    "skipForNow": "Häzirlikçe geç",
+    "skipTutorial": "Okuwy geç",
+    "sos": "SOS",
+    "unknown": "Nätanyş",
+    "user": "VeryLoving ulanyjy",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Dil",
+    "subtitle": "Programmanyň dowamynda ulanylýan dili saýlaň.",
+    "system": "Sistemiň öň bellenen",
+    "search": "Dilleri agtar",
+    "noResults": "Hiç bir dil siziň gözlegiňize gabat gelmeýär.",
+    "english": "Iňlis dili",
+    "spanish": "Ispan dili",
+    "french": "Fransuz dili",
+    "chineseSimplified": "Hytaý (sadalaşdyrylan)"
+  },
+  "phone": {
+    "label": "Telefon belgisi",
+    "placeholder": "Telefon belgisi",
+    "selectCountry": "Ýurdy ýa-da regiony saýlaň",
+    "searchCountry": "Ýurduň, kodyň ýa-da jaň prefiksiniň gözleginde",
+    "noCountries": "Hiç bir ýurt siziň gözlegiňize gabat gelmeýär.",
+    "countryButton": "Ýurdy üýtget, häzirki %{country} %{callingCode}",
+    "inputAccessibility": "Telefon belgisi %{country}",
+    "required": "Telefon belgisini giriň.",
+    "tooShort": "Bu telefon belgisi gaty gysga.",
+    "tooLong": "Bu telefon belgisi gaty uzyn.",
+    "invalid": "Saýlanan ýurduň telefon belgisini giriň.",
+    "valid": "Geçerli halkara telefon belgisi"
+  },
+  "auth": {
+    "onboardingTagline": "«Men gowy» bilen «maňa kömege mätäç» diýen pursatlar üçin howpsuzlyk ýoldaşy.",
+    "createAccount": "Hasabat döret",
+    "continueOnboarding": "Onboardingi dowam ediň",
+    "createSubtitle": "Howpsuzlyk grafigiňizi goramak üçin giriş usulyny saýlaň.",
+    "phoneVerification": "Telefon arkaly tassyklamak",
+    "sendCode": "Kod ibermek",
+    "sendingCode": "Kod ibermek...",
+    "verifyCode": "Kody barla",
+    "sentTo": "Iberilen %{phone}",
+    "yourPhone": "telefonyň",
+    "verificationCode": "Tassyklama kody",
+    "verify": "Tassykla",
+    "verifying": "Tassyklanýar...",
+    "invalidCode": "Tassyklama koduny giriň.",
+    "signInFailedTitle": "Giriş kesildi",
+    "signInFailedMessage": "Biz girişi tamamlap bilmedik. Baglaýjyňyzy barlap ýene-de synanyşyň.",
+    "googleUnavailableTitle": "Google Giriş elýeterli däl",
+    "googleUnavailableMessage": "Ýerli ösüş meýilnamasyny ulanmak. Native Google Sign-In ösüş gurluşynda işleýär.",
+    "northStarTitle": "NorthStar şaý-sepleri",
+    "northStarSubtitle": "Häzir jübütleşdiriň ýa-da dowam ediň we soň goşuň.",
+    "northStarBody": "VL01 geýilýän enjam howpsuzlyk akymyny tapmak we uzyn basmak hereketleri bilen başlatyp bilýär.",
+    "setupJewelry": "Şaý-sepleri taýýarlaň",
+    "meetCapybear": "Tanyş Capybear",
+    "meetCapybearSubtitle": "Kartada we jaňlarda siziň ýumşak howpsuzlyk ýoldaşyňyz.",
+    "capybearBody": "Capybear öý modu, garawul modu, çykgynsyz ýagdaý modu, bahana jaňlary we ses goldawy bilen kömek edip biler.",
+    "chooseVoice": "Ses saýlaň",
+    "capybearReminder": "Capybear ýatlatma",
+    "remindersReady": "Ýumşak ýatlatmalar taýýar."
+  },
+  "permissions": {
+    "locationTitle": "Ýerleşýän ýeriň howpsuzlygy",
+    "locationSubtitle": "Karta, howply zonalar, howpsuz barmak we SOS üçin ulanylýar.",
+    "locationBody": "VeryLoving garawullaryň nirede kömege mätäçdigini biler ýaly, olaryň ýerleşýän ýerini soraýar. Muny soň Settings bölüminde üýtgedip bilersiňiz.",
+    "allowLocation": "Ýerleşmäge rugsat et",
+    "notificationsTitle": "Howpsuzlyk duýduryşlary",
+    "notificationsSubtitle": "Bildirişler check-in we garaşylmadyk ýagdaýlary goldaýar.",
+    "notificationsBody": "Biz bildirişleri diňe howpsuzlyk duýduryşlary, gyssagly täzelikler we ýatlatmalar üçin ulanýarys.",
+    "enableNotifications": "Bildirişleri etkinleştir",
+    "locationRationaleTitle": "Ýerleşýän ýeri howpsuzlyk kontekstini dogry saklaýar",
+    "locationRationaleMessage": "VeryLoving siziň ýerleşýän ýeriňizi howpsuzlyk kartasy, howply zonalar, çalt paýlaşmak we SOS üçin ulanýar. Muny soň Settings bölüminde üýtgedip bilersiňiz.",
+    "notificationsRationaleTitle": "Howpsuzlyk duýduryşlary barada habar bermeli",
+    "notificationsRationaleMessage": "VeryLoving size check-in ýatlatmalaryny, gyssagly täzelikleri we howpsuzlyk duýduryşlaryny iberýär. Biz reklamalar üçin bildirişleri ulanmaýarys.",
+    "microphoneRationaleTitle": "Mikrofon howpsuzlyk jaňlaryny güýçlendirýär",
+    "microphoneRationaleMessage": "VeryLoving mikrofony diňe ýoldaş ýa-da howpsuzlyk jaňyny başlatanyňyzda AI ulanýar.",
+    "bluetoothRationaleTitle": "Bluetooth geýilýän enjamyňyzy birikdirýär",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth şaý-sepler bilen birikdirmek, baglanyşygyň ýagdaýyny okamak we geýilýän enjamdan howpsuzlyk akymyny başlatmak üçin NorthStar ulanýar.",
+    "cameraRationaleTitle": "Kamera hökman däl",
+    "cameraRationaleMessage": "VeryLoving kamerany diňe profil suratyny çekeniňizde ýa-da howpsuzlyk suratyny paýlaşanyňyzda ulanýar."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving bu akymy Sazlamalardan we dashboarddan elýeterli edýär.",
+    "chooseVoiceTitle": "Sesiňizi saýlaň",
+    "chooseVoiceSubtitle": "Özüňizi has howpsuz duýýan ýoldaş sesi saýlaň.",
+    "homeTitle": "Öý mod",
+    "homeSubtitle": "Gündelik howpsuzlyk üçin sessiz monitoring.",
+    "guardianTitle": "Guardian modu",
+    "guardianSubtitle": "Ynamdar adamlar bilen konteksti paýlaşyň.",
+    "emergencyTitle": "Garaşylmadyk ýagdaý",
+    "emergencySubtitle": "Bäş basyş SOS we garawul duýduryşlaryna öwrülip biler.",
+    "excuseTitle": "Ötünç soramak",
+    "excuseSubtitle": "Oňaýsyz ýagdaýdan gitmek üçin gowy sebäp dörediň.",
+    "safetyCallTitle": "Howpsuzlyk çagyryşy",
+    "safetyCallSubtitle": "Kömege mätäç wagtyňyz ýoldaş jaň edip başlaň.",
+    "practiceTitle": "Türgenleşik sahnasy",
+    "practiceSubtitle": "Pes basyşly demoda howpsuzlyk akymlaryny synap görüň."
+  },
+  "jewelry": {
+    "pairTitle": "Jübüt NorthStar",
+    "pairSubtitle": "Skan edeniňizde şaý-sepleri golaýda saklaň.",
+    "scan": "Enjamlary skan ediň",
+    "scanning": "Golaýda skaner edilýär...",
+    "noDevices": "Golaýda NorthStar enjam heniz tapylmady.",
+    "scanStartFailed": "Bluetooth skan edip bilmedi. Haýyş edýärin, ýene-de synanyşyň.",
+    "scanFailed": "Biz golaýda şaý-sepleri tapyp bilmedik. Bluetooth barlaň, NorthStar ýakyn saklaň we ýene-de synanyşyň.",
+    "scanAccessFailed": "Bluetooth skan edip bilmedi. Girişi Bluetooth barlaň we ýene-de synanyşyň.",
+    "permissionDenied": "Golaýdaky enjamlara girmek öçürilýär. Settings Bluetooth girmäge rugsat beriň, soňra ýene synanyşyň.",
+    "connectTimeout": "NorthStar birikdirmek üçin köp wagt gerek boldy. Ýakynlaşdyryp, ýene-de synanyşyň.",
+    "connectFailed": "Biz onuň bilen baglanyşyp NorthStar. Onuň şarjlydygyny we golaýdygyny barlaň, soňra ýene-de synanyşyň.",
+    "emptyTitle": "Golaýda heniz enjamlar ýok",
+    "emptyMessage": "Telefony şarjly NorthStar saklaň, soňra ýene-de skan ediň.",
+    "searchingMessage": "Golaýda NorthStar enjamlary gözleýärin..."
+  },
+  "home": {
+    "subtitle": "Howpsuzlyk ýoldaş paneli",
+    "modeStatus": "%{mode} MODU",
+    "companionReady": "%{name} taýýar",
+    "readyBody": "Ses, karta, şaý-sepler we garawullar bir dokunuş uzaklykda.",
+    "safetyCall": "Howpsuzlyk çagyryşy",
+    "northStarDevice": "NorthStar",
+    "deviceConnected": "%{name} baglanyşykly · %{battery}%",
+    "noDevice": "Enjam birikdirilmeýär",
+    "manageDevice": "Enjamy dolandyrmak",
+    "mode": "Mod",
+    "modes": {
+      "home": "Öý",
+      "guardian": "Guardian",
+      "emergency": "Garaşylmadyk ýagdaý"
+    }
+  },
+  "map": {
+    "finding": "Ýaşaýan ýeriňi tapmak...",
+    "retry": "Ýene-de synanyşmak ýeri",
+    "title": "Howpsuzlyk kartasy",
+    "previewSubtitle": "Expo Go önizleme; Mapbox ösüş gurluşynda render edýär.",
+    "preview": "Karta önizleme",
+    "risk": "Howply: %{risk} · Radius %{radius}m",
+    "refresh": "Ýeri täzele.",
+    "refreshing": "Ýer tapmak...",
+    "updateFailed": "Biz siziň ýerleşýän ýeriňizi täzeläp bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "notRequested": "Ýerleşýän ýere girmek haýyş edilmedi. Siz ony soň Settings bölüminden etkinleştirip bilersiňiz.",
+    "permissionOff": "Ýerleşýän ýere girmek ýok. Howpsuzlyk kartasyny özüňize ortalamak üçin Settings bölüminde etkinleştiriň.",
+    "timeout": "Siziň ýaşaýan ýeriňiz garaşylmadyk wagtdan köp wagt alýar. Has aýdyň yşarat bilen bir ýere göçüň we ýene-de synanyşyň.",
+    "savedTitle": "Saklanan ýerler",
+    "savedEmptyTitle": "Heniz halas edilen ýer ýok",
+    "savedEmptyMessage": "Çalt girmek üçin bu ýerde saklaýan ynamdar ýerleriňiz peýda bolar.",
+    "zones": {
+      "crowding": "Gijäniň ýarynda märeke",
+      "lowLighting": "Az ýagtylyk meýdançasy"
+    },
+    "risks": {
+      "low": "pes",
+      "medium": "orta",
+      "high": "ýokary"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Baglanyşdyrmak...",
+    "offlineCompanion": "Offline ýoldaş",
+    "offline": "Offline",
+    "connected": "Baglanyşykly",
+    "interrupted": "Baglanyşyk kesildi",
+    "ready": "Birikdirmäge taýýar",
+    "connectingSecurely": "Sesli ýoldaşyňyza howpsuz birikdirmek...",
+    "messagesWaiting": {
+      "one": "%{count} ibermäge garaşýan habar",
+      "other": "%{count} ibermäge garaşýan habarlar"
+    },
+    "useOffline": "Offline ýoldaşy ulanyň",
+    "reconnect": "Sesli enjamlara ýene-de AI",
+    "typePlaceholder": "Geplemek kyn bolsa, ýazyp bilersiň",
+    "endCall": "Jaňy bes etmek",
+    "startCall": "Jaňy başlat",
+    "emptyTitle": "Siziň söhbetdeşligiňiz şu ýerden başlanýar",
+    "emptyMessage": "Taýýar bolanyňyzda jaň edip başlaň ýa-da habar ýazyň."
+  },
+  "chat": {
+    "waiting": "Baglanyşyga garaşýarys",
+    "notSent": "Habar iberilmedi.",
+    "retryAccessibility": "Habar ibermegi ýene-de synanyş"
+  },
+  "history": {
+    "clearTitle": "Gürrüňdeşlik taryhy aýdyňmy?",
+    "clearMessage": "Bu enjamdan saklanan AI ýoldaş habarlary aýyrýar.",
+    "deleteTitle": "Bu söhbetdeşligi aýyrmalymy?",
+    "cannotUndo": "Muny yzyna gaýtaryp bolmaýar.",
+    "title": "Söhbetdeşlik taryhy",
+    "subtitle": "AI bu enjamda saklanan ýoldaş habarlar.",
+    "empty": "Heniz hiç hili gürrüňdeşlik saklanmady.",
+    "emptyTitle": "Heniz hiç hili gürrüňdeşlik ýok",
+    "emptyMessage": "Ilkinji jaňyňyzdan soň AI ýoldaş söhbetdeşligiňiz bu ýerde peýda bolar.",
+    "loadFailed": "Biz söhbetdeşlik taryhyny ýükläp bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "clearFailed": "Biz söhbetdeşligiň taryhyny arassalap bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "deleteFailed": "Biz bu gürrüňi aýryp bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "aiCompanion": "AI ýoldaş",
+    "resume": "Резюме",
+    "clearAll": "Ähli taryhy arassala",
+    "roles": {
+      "assistant": "ýoldaş",
+      "user": "sen"
+    }
+  },
+  "voices": {
+    "title": "Meniň howpsuzlyk jaňlarym sesleri",
+    "subtitle": "Dogry eşidilýän ýoldaş sesi saýlaň.",
+    "test": "Sesi barlap gör",
+    "stop": "Nusga dur",
+    "selectionFailedTitle": "Saýlama gaýd edilmedi",
+    "selectionFailedMessage": "Haýyş edýärin, ýene-de sesi saýlaň.",
+    "sampleFailedTitle": "Nusga elýeterli däl",
+    "sampleFailedMessage": "Bu ses nusgasyny çalyp bolmady. Haýyş edýärin, ýene-de synanyşyň.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ýumşak, rahat, ýerlikli"
+      },
+      "bestie": {
+        "name": "Besti",
+        "description": "zehinli, göwünlik beriji we gepleşik"
+      },
+      "boyfriend": {
+        "name": "Söýgüli yigit",
+        "description": "durnukly, mähirli, häzirki"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "özüne ynamly, goraýan, höweslendiriji"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ses",
+    "changeVoice": "Sesi üýtget",
+    "showCompanion": "Ýoldaşy görkez",
+    "offlineMode": "Offline mod",
+    "offlineModeSubtitle": "Network ýa-da Hume maglumaty bolmasa, bilelikde ýoldaş jogaplary ulanyň.",
+    "privacyData": "Gizlinlik we maglumat",
+    "privacyBody": "Bu enjamda saklanýan ýerli maglumatlary eksport ediň ýa-da aýyryň.",
+    "preparingExport": "Eksporta taýýarlyk görýäris...",
+    "exportData": "Maglumatlarymy eksport et",
+    "privacyPolicy": "Gizlinlik syýasaty",
+    "deleting": "Silinýär...",
+    "deleteAll": "Ähli ýerli maglumatlary aýyr",
+    "deviceManagement": "Enjamlary dolandyrmak",
+    "emergencyContacts": "Gyssagly ýagdaýda habarlaşýanlar",
+    "signOut": "Çykmak",
+    "exportFailedTitle": "Eksport başa barmady",
+    "exportFailedMessage": "Şu wagt maglumatlaryňyzy eksport edip bilmeýärin.",
+    "deleteConfirmTitle": "Ähli ýerli maglumatlary aýyrmalymy?",
+    "deleteConfirmMessage": "Bu siziň profiliňizi, sazlamalaryňyzy, gyssagly kontaktlaryňyzy, söhbetdeşlik taryhyňyzy, rugsat ýatlatmalaryňyzy we ýerli autentlik seansyňyzy aýyrýar.",
+    "deleteEverything": "Hemmesini sil",
+    "deleteFailedTitle": "Silmek başa barmady",
+    "deleteFailedMessage": "Şu wagt ýerli maglumaty aýryp bolmaýar.",
+    "linkFailed": "Baglaýyş açylyp bilmedi",
+    "sections": {
+      "language": "Dil",
+      "languageSubtitle": "Interfeýs we sistema rugsat dili",
+      "companion": "Ýoldaş",
+      "companionSubtitle": "Ses we offline tercihler",
+      "deviceSafety": "Enjamlar we howpsuzlyk",
+      "deviceSafetySubtitle": "NorthStar, garawullar we gyssagly ýagdaýda habarlaşýanlar",
+      "privacy": "Gizlinlik we maglumat",
+      "privacySubtitle": "Taryh, eksport, aýyrma we syýasat",
+      "account": "Hasabat",
+      "accountSubtitle": "Siziň häzirki VeryLoving"
+    },
+    "updateFailedTitle": "Düzüm gaýd edilmedi",
+    "updateFailedMessage": "Biz ony halas edip bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "signOutFailedTitle": "Çykyp bilmedi",
+    "signOutFailedMessage": "Siziň seansyňyz henizem hereketli. Haýyş edýärin, ýene-de synanyşyň."
+  },
+  "contacts": {
+    "title": "Gyssagly ýagdaýda habarlaşýanlar",
+    "subtitle": "Howpsuzlyk akymlary döwründe ynamdar adamlar.",
+    "addTitle": "Gyssagly kontakty goş",
+    "name": "Ady",
+    "namePlaceholder": "Habarlaşma ady",
+    "phone": "Telefon belgisi",
+    "add": "Kontakt ekle",
+    "empty": "Heniz gyssagly kontaktlar goşulmady.",
+    "emptyTitle": "Heniz gyssagly ýagdaýda habarlaşylmady",
+    "emptyMessage": "Howpsuzlyk gerek wagty taýýar bolar ýaly, ynanýan adamlaryňyzy goşuň.",
+    "removeTitle": "Aýyrmak %{name}?",
+    "removeMessage": "Bu adam indi siziň gyssagly ýagdaýyňyzda görünmez.",
+    "nameRequired": "Kontaktyň adyny giriň.",
+    "saveFailedTitle": "Kontakt gaýd edilmedi",
+    "saveFailedMessage": "Biz bu aragatnaşygy halas edip bilmedik. Jikme-jiklikleri barlap ýene-de synanyşyň.",
+    "removeFailedTitle": "Kontakt aýrylmady",
+    "removeFailedMessage": "Biz bu aragatnaşygy aýryp bilmedik. Haýyş edýärin, ýene-de synanyşyň.",
+    "callAccessibility": "Jaň %{name}",
+    "removeAccessibility": "Aýyr %{name}"
+  },
+  "device": {
+    "title": "Enjamlary dolandyrmak",
+    "subtitle": "Enjamyňyzy NorthStar ediň.",
+    "connected": "Baglanyşykly · %{battery}% akkumulýator",
+    "none": "Hiç hili enjam birikdirilmeýär",
+    "disconnect": "Baglaýjy enjam",
+    "connect": "Enjamy birikdirmek"
+  },
+  "friends": {
+    "title": "Dostlarym",
+    "subtitle": "Goragçylar, haýyşlar we çykgynsyz ýagdaý grafikasy.",
+    "addDemo": "Demo dost ekle",
+    "emptyTitle": "Siziň howpsuzlyk çemberiňiz boş",
+    "emptyMessage": "Ynamdar dostlar we garawullar goşulandan soň bu ýerde peýda bolarlar.",
+    "newGuardian": "Täze garawul",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Garaşylýan"
+    }
+  },
+  "emergency": {
+    "title": "Garaşylmadyk ýagdaý SOS",
+    "subtitle": "Diňe haýal etmän kömege mätäç bolanyňyzda güýçlendiriň.",
+    "body": "Bu siziň howpsuzlyk akymyňyza habar berer we gyssagly ýagdaýda habarlaşmaga kömek eder.",
+    "activate": "Akkredite SOS",
+    "callCompanion": "Ýoldaş AI jaň ediň",
+    "notificationTitle": "SOS herekete girdi",
+    "notificationBody": "Siziň gyssagly akymy taýýar.",
+    "readyTitle": "SOS taýýar",
+    "callContact": "Jaň %{name}?",
+    "addContact": "Settings bölümine gyssagly kontakt goşuň.",
+    "quickShareTitle": "Çalt paýlaş",
+    "quickShareMessage": "Ýer paýlaşma stub taýýar. Diri baglaýyşlary ibermek üçin backend share uç noktasyny birikdiriň."
+  },
+  "quickShare": {
+    "title": "Çalt paýlaş",
+    "subtitle": "Ýer paýlaşma akymy taýýar."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Howpsuzlyk portakalyny düşürmek üçin NorthStar iki gezek basyň.",
+    "body": "Hereketleriň ýoly BLE waka kabelleri üçin taýýar."
+  },
+  "debug": {
+    "title": "VeryLoving hata hata sahypasy",
+    "subtitle": "Diňe ösüş ýoly."
+  },
+  "errors": {
+    "voiceOffline": "Siz offline ýaly görünýärsiňiz. Ýene-de birikeniňizde habaryňyz iberiler.",
+    "voiceQueued": "Habar saklandy. Sesli ýoldaş ýene-de birikende iberiler.",
+    "voiceRetrying": "Ýene-de habaryňyzy iberjek bolýarsyňyz...",
+    "voiceConnecting": "Sesli ýoldaşyňyza howpsuz birikdirmek...",
+    "microphone": "Sesli jaňlar üçin mikrofon gerek. Siz ony Settings bölüminde etkinleştirip ýa-da onuň ýerine habar ýazyp bilersiňiz.",
+    "billing": "Online ses ýoldaşy wagtlaýynça elýeterli däl. Siz offline ýoldaş bilen dowam edip bilersiňiz.",
+    "authentication": "Sesli ýoldaş bu seansy barlap bilmedi. Ýene-de giriň ýa-da offline ýoldaşy ulanyň.",
+    "timeout": "Sesli ýoldaş jogap bermek üçin köp wagt gerek boldy. Baglaýjyňyzy barlap ýene-de synanyşyň.",
+    "network": "Biz sesli ýoldaşa ýetip bilmedik. Baglaýjyňyzy barlaň, soňra ýene-de synanyşyň ýa-da offline dowam ediň.",
+    "genericVoice": "Sesli jaňy bir zat böldi. Ýene-de synanyşyň ýa-da offline ýoldaş bilen dowam ediň."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving eksporty"
+  },
+  "notifications": {
+    "channelName": "Howpsuzlyk duýduryşlary"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving howpsuzlyk we ýoldaş jaňlary üçin mikrofon AI gerek.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving howpsuzlyk kartasy we golaýdaky howpsuzlyk aýratynlyklary üçin siziň ýerleşýän ýeriňizi ulanýar.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving siziň ýaşaýan ýeriňizi howpsuz we çykgynsyz ýagdaýa düşen akymlary goldamak üçin ulanýar.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving howpsuz gelmek we golaýdaky howply zonalaryň aýratynlyklary üçin arka plandaky ýeri ulanýar.",
+      "NSCameraUsageDescription": "VeryLoving kamerany diňe profil ýa-da howpsuzlyk suratyny çekeniňizde ulanýar.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving diňe profil ýa-da howpsuzlyk suratyny saýlanyňyzda surat kitaphanaňyzy ulanýar.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

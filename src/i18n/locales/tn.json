@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Oketsa",
+    "apple": "Apple",
+    "back": "Morago",
+    "call": "Letsa",
+    "cancel": "Khansela",
+    "clear": "Phepa",
+    "close": "Tswala",
+    "connect": "Kopanya",
+    "connecting": "Go golaganya...",
+    "continue": "Tswelela",
+    "delete": "Phimola",
+    "finish": "Fetsa",
+    "friends": "Ditsala",
+    "google": "Google",
+    "home": "Gae",
+    "loading": "E laisa...",
+    "map": "Mmapa",
+    "notNow": "E seng jaanong",
+    "remove": "Tlosa",
+    "retry": "Leka gape",
+    "retrying": "Go leka gape",
+    "save": "Boloka",
+    "selected": "Tlhophilwe",
+    "send": "Romela",
+    "settings": "Diseting",
+    "skip": "Tlolaka",
+    "skipForNow": "Tlola gone jaanong",
+    "skipTutorial": "Tlola thuto",
+    "sos": "SOS",
+    "unknown": "Ga e itsiwe",
+    "user": "VeryLoving modirisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Puo",
+    "subtitle": "Tlhopha puo e e dirisiwang mo tirisong yotlhe.",
+    "system": "Tsamaiso ya thulaganyetsoruri",
+    "search": "Dipuo tsa patlo",
+    "noResults": "Ga go na dipuo tse di tsamaelanang le patlo ya gago.",
+    "english": "Setswana",
+    "spanish": "Spanish",
+    "french": "Sefora",
+    "chineseSimplified": "Setšhaena (Se se nolofaditsweng)"
+  },
+  "phone": {
+    "label": "Nomoro ya mogala",
+    "placeholder": "Nomoro ya mogala",
+    "selectCountry": "Tlhopha naga kgotsa kgaolo",
+    "searchCountry": "Batla naga, khoutu, kgotsa ketapele ya go daela",
+    "noCountries": "Ga go na dinaga tse di tshwanang le patlo ya gago.",
+    "countryButton": "Fetola naga, ga jaana %{country} tlhakanya le %{callingCode}",
+    "inputAccessibility": "Nomoro ya mogala ya %{country}",
+    "required": "Tsenya nomoro ya mogala.",
+    "tooShort": "Nomoro ena ya mohala e kgutshwane haholo.",
+    "tooLong": "Nomoro ena ya mohala e telele haholo.",
+    "invalid": "Tsenya nomoro ya mogala e e dirang ya naga e e tlhophilweng.",
+    "valid": "Nomoro ya mogala ya boditšhabatšhaba e e amogelesegang"
+  },
+  "auth": {
+    "onboardingTagline": "Molekane wa pabalesego ya motho ka namana mo dinakong tse di fa gare ga “Ke siame” le “Ke tlhoka thuso.”",
+    "createAccount": "Tlhama akhaonto",
+    "continueOnboarding": "Tswelela ka go tsenngwa mo sekepeng",
+    "createSubtitle": "Tlhopha mokgwa wa go saenela go sireletsa kerafo ya gago ya pabalesego.",
+    "phoneVerification": "Netefatso ya mogala",
+    "sendCode": "Romela khoutu",
+    "sendingCode": "Go romela khoutu...",
+    "verifyCode": "Tlhomamisa khoutu",
+    "sentTo": "E rometswe go %{phone}",
+    "yourPhone": "founo ya gago",
+    "verificationCode": "Khoutu ya netefatso",
+    "verify": "Rurifatsa",
+    "verifying": "Go netefatsa...",
+    "invalidCode": "Tsenya khoutu ya netefatso.",
+    "signInFailedTitle": "Go tsena go kgoreleditswe",
+    "signInFailedMessage": "Ga re a kgona go wetsa go tsena. Tlhola kgolagano ya gago o bo o leka gape.",
+    "googleUnavailableTitle": "Google Go saenela ga go yo",
+    "googleUnavailableMessage": "Go dirisa thulaganyo ya tlhabololo ya selegae. Go Tsena ga Native Google go dira mo kagong ya tlhabololo.",
+    "northStarTitle": "NorthStar mabenyane",
+    "northStarSubtitle": "Para jaanong kgotsa tswelela o e tsenye moragonyana.",
+    "northStarBody": "Seapara sa VL01 se ka tsosa diphallo tsa polokeho ka dipompo le ditshupo tse telele tsa ho tobetsa.",
+    "setupJewelry": "Seta mabenyane",
+    "meetCapybear": "Kopana le Capybear",
+    "meetCapybearSubtitle": "Molekane wa gago yo o bonolo wa pabalesego mo mmapeng le mo megaleng.",
+    "capybearBody": "Capybear e ka thusa ka mokgwa wa lapeng, mokgwa wa mohlokomedi, mokgwa wa tshohanyetso, di-call tsa seipato, le tshehetso ya lentswe.",
+    "chooseVoice": "Tlhopha lentswe",
+    "capybearReminder": "Capybear kgopotso",
+    "remindersReady": "Dikgopotso tse bonolo di loketse."
+  },
+  "permissions": {
+    "locationTitle": "Pabalesego ya lefelo",
+    "locationSubtitle": "E dirisediwa mmapa, mafelo a a kotsi, go goroga ka pabalesego, le bokao jwa SOS.",
+    "locationBody": "VeryLoving e kopa lefelo gore batlhokomedi ba kgone go tlhaloganya gore thuso e ka tlhokega kae. O ka fetola seno moragonyana mo Diseting.",
+    "allowLocation": "Letla lefelo",
+    "notificationsTitle": "Ditsiboso tsa pabalesego",
+    "notificationsSubtitle": "Dikitsiso di tshegetsa go tsena le ditiragalo tsa tshoganyetso.",
+    "notificationsBody": "Re dirisa fela dikitsiso tsa dipotso tsa pabalesego, dintšhwafatso tsa tshoganyetso, le dikgopotso tse o di kgontshang.",
+    "enableNotifications": "Kgontsha dikitsiso",
+    "locationRationaleTitle": "Lefelo le boloka bokao jwa pabalesego bo nepagetse",
+    "locationRationaleMessage": "VeryLoving e dirisa lefelo la gago la mmapa wa pabalesego, mafelo a a kotsi, kabelano ka bonako, le bokao jwa SOS. O ka fetola seno moragonyana mo Diseting.",
+    "notificationsRationaleTitle": "Ditsiboso tsa pabalesego di tlhoka dikitsiso",
+    "notificationsRationaleMessage": "VeryLoving e romela dikgopotso tsa go tsena, dintšhwafatso tsa tshoganyetso, le dipotso tsa pabalesego tse o di kgontshang. Ga re dirise dikitsiso tsa dipapatso.",
+    "microphoneRationaleTitle": "Maekerofouno e naya dipitso tsa pabalesego maatla",
+    "microphoneRationaleMessage": "VeryLoving e dirisa maekerofouno ya gago fela fa o simolola AI molekane kgotsa mogala wa pabalesego.",
+    "bluetoothRationaleTitle": "Bluetooth e golaganya sediriswa sa gago se se aparwang",
+    "bluetoothRationaleMessage": "VeryLoving e dirisa Bluetooth go kopanya le mabenyane a NorthStar, go bala seemo sa kgolagano, le go tlhotlheletsa diphallo tsa pabalesego go tswa mo go se se aparwang.",
+    "cameraRationaleTitle": "Khemera ga se ya boikgethelo",
+    "cameraRationaleMessage": "VeryLoving e dirisa khamera fela fa o tlhopha go tsaya senepe sa porofaele kgotsa go abelana setshwantsho sa pabalesego."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving e boloka kelelo eno e le teng go tswa mo Diseting le mo dashebotong.",
+    "chooseVoiceTitle": "Tlhopha lentswe la gago",
+    "chooseVoiceSubtitle": "Tlhopha lentswe le le tsamayang le lone le le utlwalang le babalesegile go le utlwa.",
+    "homeTitle": "mokgwa wa gae",
+    "homeSubtitle": "Go ela tlhoko go go didimetseng go bona pabalesego ya letsatsi le letsatsi.",
+    "guardianTitle": "Mokgwa wa motlhokomedi",
+    "guardianSubtitle": "Abelana bokao le batho ba o ba tshepang.",
+    "emergencyTitle": "mokgwa wa tshoganyetso",
+    "emergencySubtitle": "Dipompo tse hlano di ka nyolohela ho SOS le ditsiboso tsa mohlokomedi.",
+    "excuseTitle": "Mogala wa maitshwarelo",
+    "excuseSubtitle": "Tlhama lebaka le lentle la go tlogela seemo se se sa phuthologang.",
+    "safetyCallTitle": "Pitso ya pabalesego",
+    "safetyCallSubtitle": "Simolola mogala wa molekane wa nako ya nnete fa o tlhoka tshegetso.",
+    "practiceTitle": "Tiragalo ya go ikatisa",
+    "practiceSubtitle": "Leka diphallo tsa polokeho pontshong ya kgatello e tlase."
+  },
+  "jewelry": {
+    "pairTitle": "Para NorthStar",
+    "pairSubtitle": "Boloka mabenyane a le gaufi fa o ntse o sekaseka.",
+    "scan": "Skenela didiriswa",
+    "scanning": "go sekaseka gaufi...",
+    "noDevices": "Ga go ise go bonwe didiriswa tsa NorthStar tse di gaufi.",
+    "scanStartFailed": "Bluetooth go sekaseka ga go a kgona go simolola. Tsweetswee leka gape.",
+    "scanFailed": "Ga re a bona mabenyane a a gaufi. Tlhola Bluetooth, boloka NorthStar e gaufi, o bo o leka gape.",
+    "scanAccessFailed": "Bluetooth go sekaseka ga go a kgona go simolola. Tlhola Bluetooth phitlhelelo mme o leke gape.",
+    "permissionDenied": "Phitlhelelo ya sediriswa se se gaufi e timilwe. Letla Bluetooth phitlhelelo mo Diseting, o bo o leka gape.",
+    "connectTimeout": "NorthStar e tsere nako e telele thata go golagana. E atametse mme o leke gape.",
+    "connectFailed": "Ga re a kgona go golagana le NorthStar. Tlhola gore a e tšhajilwe e bile e gaufi, o bo o leka gape.",
+    "emptyTitle": "Ga go ise go nne le didiriswa tse di gaufi",
+    "emptyMessage": "Boloka NorthStar e tšhajilwe e bile e le gaufi le founo eno, o bo o sekaseka gape.",
+    "searchingMessage": "Ke batla didiriswa tsa NorthStar tse di gaufi..."
+  },
+  "home": {
+    "subtitle": "Dasheboto ya molekane wa pabalesego",
+    "modeStatus": "%{mode} MOKGWA",
+    "companionReady": "%{name} e siame",
+    "readyBody": "Lentswe, mmapa, mabenyane, le balebedi ba pompo e le nngwe.",
+    "safetyCall": "Pitso ya pabalesego",
+    "northStarDevice": "NorthStar sediriswa",
+    "deviceConnected": "%{name} e golagantswe · %{battery}%",
+    "noDevice": "Ga go na sediriswa se se golagantsweng",
+    "manageDevice": "Laola sediriswa",
+    "mode": "Mokgwa",
+    "modes": {
+      "home": "Gae",
+      "guardian": "Motlhokomedi",
+      "emergency": "Maemo a tshoganyetso"
+    }
+  },
+  "map": {
+    "finding": "Go batla lefelo la gago...",
+    "retry": "Leka gape lefelo",
+    "title": "Mmepe wa pabalesego",
+    "previewSubtitle": "Expo Go tebopele; Mapbox e ranola mo kagong ya tlhabololo.",
+    "preview": "Tebopele ya mmapa",
+    "risk": "Kotsi: %{risk} · Radiase %{radius}m",
+    "refresh": "Ntšhwafatsa lefelo",
+    "refreshing": "Go batla lefelo...",
+    "updateFailed": "Ga re a kgona go tlhabolola lefelo la gago. Tsweetswee leka gape.",
+    "notRequested": "Location access was not requested. O ka e kgontsha moragonyana go tswa mo Diseting.",
+    "permissionOff": "Location access is off. E kgontsha mo Diseting go tsenya mmapa wa pabalesego mo gare ga gago.",
+    "timeout": "Your location is taking longer than expected. Sutela golo gongwe go go nang le letshwao le le bonalang sentle mme o leke gape.",
+    "savedTitle": "Mafelo a a bolokilweng",
+    "savedEmptyTitle": "Ga go ise go bolokwe mafelo",
+    "savedEmptyMessage": "Mafelo a a ikanyegang a o a bolokang a tla tlhagelela fano gore o kgone go a bona ka bonako.",
+    "zones": {
+      "crowding": "Go pitlagana bosigo thata",
+      "lowLighting": "Lefelo le le nang le lesedi le le kwa tlase"
+    },
+    "risks": {
+      "low": "tlase",
+      "medium": "magareng",
+      "high": "godimo"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Go golaganya...",
+    "offlineCompanion": "Molekane yo o seng mo inthaneteng",
+    "offline": "O se mo inthaneteng",
+    "connected": "Go golagantswe",
+    "interrupted": "Kgolagano e kgaogile",
+    "ready": "E siametse go golagana",
+    "connectingSecurely": "Go golagana ka pabalesego le molekane wa gago wa lentswe...",
+    "messagesWaiting": {
+      "one": "%{count} molaetsa o emetse go romelwa",
+      "other": "%{count} melaetsa e emetse go romelwa"
+    },
+    "useOffline": "Dirisa tsala ya ntle le inthanete",
+    "reconnect": "Golagana gape le lentswe AI",
+    "typePlaceholder": "Thaepa fa go bua go le thata",
+    "endCall": "Kgaotsa mogala",
+    "startCall": "Simolola mogala",
+    "emptyTitle": "Motlotlo wa lona o simolola fano",
+    "emptyMessage": "Simolola call kgotsa thaepa molaetsa fa o siametse."
+  },
+  "chat": {
+    "waiting": "Ke emetse kgolagano",
+    "notSent": "Molaetsa ga o a romelwa.",
+    "retryAccessibility": "Leka gape go romela molaetsa"
+  },
+  "history": {
+    "clearTitle": "Phimola hisitori ya motlotlo?",
+    "clearMessage": "Seno se tlosa melaetsa e e bolokilweng ya AI mo sedirisweng seno.",
+    "deleteTitle": "Phimola motlotlo ono?",
+    "cannotUndo": "Seno ga se ka ke sa dirololwa.",
+    "title": "hisitori ya motlotlo",
+    "subtitle": "AI melaetsa e e tsamayang le yone e e bolokilweng mo sedirisweng seno.",
+    "empty": "Ga go na metlotlo e e bolokilweng.",
+    "emptyTitle": "Ga go ise go nne le dipuisano",
+    "emptyMessage": "Dipuisano tsa gago tsa AI tsa molekane di tla tlhagelela fano morago ga mogala wa gago wa ntlha.",
+    "loadFailed": "Ga re a kgona go laisa hisitori ya motlotlo. Tsweetswee leka gape.",
+    "clearFailed": "Ga re a kgona go phimola hisitori ya motlotlo. Tsweetswee leka gape.",
+    "deleteFailed": "Ga re a kgona go phimola motlotlo oo. Tsweetswee leka gape.",
+    "aiCompanion": "AI molekane",
+    "resume": "Tswelela gape",
+    "clearAll": "Phimola hisetori yotlhe",
+    "roles": {
+      "assistant": "molekane",
+      "user": "wena"
+    }
+  },
+  "voices": {
+    "title": "Mantswe a me a pitso ya pabalesego",
+    "subtitle": "Tlhopha lentswe la molekane le le utlwalang le siametse go le utlwa.",
+    "test": "Lentswe la teko",
+    "stop": "Emisa sekao",
+    "selectionFailedTitle": "Tlhopho ga e a bolokwa",
+    "selectionFailedMessage": "Tsweetswee leka go tlhopha lentswe gape.",
+    "sampleFailedTitle": "Sekao ga se yo",
+    "sampleFailedMessage": "Sampole eno ya lentswe ga e a kgona go tshamekiwa. Tsweetswee leka gape.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "bonolo, ritibetse, fatshe"
+      },
+      "bestie": {
+        "name": "Tsala",
+        "description": "e e phatsimang, e e tlhomamisang, e e nang le motlotlo"
+      },
+      "boyfriend": {
+        "name": "Mosimane",
+        "description": "tlhomamo, lorato, teng"
+      },
+      "muscleMan": {
+        "name": "Monna wa mesifa",
+        "description": "go itshepa, go sireletsa, go rotloetsa"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Lentswe",
+    "changeVoice": "Fetola lentswe",
+    "showCompanion": "Bontsha molekane",
+    "offlineMode": "Mokgwa wa go tswa mo inthaneteng",
+    "offlineModeSubtitle": "Dirisa dikarabo tsa molekane tse di kopantsweng fa neteweke kgotsa dintlha tsa boitshupo tsa Hume di se teng.",
+    "privacyData": "Polophiri le tshedimosetso",
+    "privacyBody": "Romelantle kgotsa phimola tshedimosetso ya selegae e e bolokilweng mo sedirisweng seno.",
+    "preparingExport": "Go baakanyetsa thomelontle...",
+    "exportData": "Romela ntle tshedimosetso ya me",
+    "privacyPolicy": "Pholisi ya polokodiphiri",
+    "deleting": "Go phimola...",
+    "deleteAll": "Phimola tshedimosetso yotlhe ya selegae",
+    "deviceManagement": "Taolo ya sediriswa",
+    "emergencyContacts": "Bagolagani ba maemo a tshoganyetso",
+    "signOut": "Tswa",
+    "exportFailedTitle": "Thomelontle e paletswe",
+    "exportFailedMessage": "Ga e kgone go romela tshedimosetso ya gago kwa ntle gone jaanong.",
+    "deleteConfirmTitle": "Phimola tshedimosetso yotlhe ya selegae?",
+    "deleteConfirmMessage": "Seno se tlosa porofaele ya gago, diseting, mabitso a tshoganyetso, hisitori ya motlotlo, dikgopotso tsa tetlelelo, le nako ya netefatso ya selegae mo sedirisweng seno.",
+    "deleteEverything": "Phimola sengwe le sengwe",
+    "deleteFailedTitle": "Phimolo e paletswe",
+    "deleteFailedMessage": "Ga e kgone go phimola tshedimosetso ya selegae gone jaanong.",
+    "linkFailed": "Ga e kgone go bula kgokagano",
+    "sections": {
+      "language": "puo",
+      "languageSubtitle": "Segokaganyi le puo ya tetlelelo ya tsamaiso",
+      "companion": "Molekane",
+      "companionSubtitle": "Ditlhopho tsa lentswe le tsa kwa ntle ga inthanete",
+      "deviceSafety": "Didiriswa le pabalesego",
+      "deviceSafetySubtitle": "NorthStar, batlhokomedi, le batho ba ba ka ikgolaganyang le bone ka nako ya tshoganyetso",
+      "privacy": "Poraefete le tshedimosetso",
+      "privacySubtitle": "Hisitori, thomelontle, phimolo, le pholisi",
+      "account": "Akhaonto",
+      "accountSubtitle": "Nako ya gago ya ga jaana ya VeryLoving"
+    },
+    "updateFailedTitle": "Seting ga e a bolokwa",
+    "updateFailedMessage": "Ga re a kgona go boloka kgetho eo. Tsweetswee leka gape.",
+    "signOutFailedTitle": "Ga ke kgone go tswa",
+    "signOutFailedMessage": "Thulaganyo ya gago e sa ntse e dira. Tsweetswee leka gape."
+  },
+  "contacts": {
+    "title": "Magolagano a tshoganyetso",
+    "subtitle": "Batho ba ba ikanyegang ba ba leng teng ka nako ya diphallo tsa pabalesego.",
+    "addTitle": "Tsenya mogala wa tshoganyetso",
+    "name": "Leina",
+    "namePlaceholder": "Leina la kgolagano",
+    "phone": "Nomoro ya mogala",
+    "add": "Tsenya mogolagani",
+    "empty": "Ga go ise go tsenngwe mabitso a tshoganyetso.",
+    "emptyTitle": "Ga go ise go nne le magolagano a tshoganyetso",
+    "emptyMessage": "Tsenya motho yo o mo tshepang gore a nne a siametse fa kelelo ya pabalesego e mo tlhoka.",
+    "removeTitle": "Tlosa %{name}?",
+    "removeMessage": "Motho yo ga a kitla a tlhola a tlhagelela mo kelelong ya gago ya tshoganyetso.",
+    "nameRequired": "Tsenya leina la mogolagani.",
+    "saveFailedTitle": "Kgolagano ga e a bolokwa",
+    "saveFailedMessage": "Ga re a kgona go boloka kgolagano eno. Tlhola dintlha mme o leke gape.",
+    "removeFailedTitle": "Kgolagano ga e a tlosiwa",
+    "removeFailedMessage": "Ga re a kgona go tlosa kgolagano eno. Tsweetswee leka gape.",
+    "callAccessibility": "Leletsa %{name}",
+    "removeAccessibility": "Tlosa %{name}"
+  },
+  "device": {
+    "title": "Taolo ya sediriswa",
+    "subtitle": "Laola sediriswa sa gago sa NorthStar.",
+    "connected": "E golagantswe · %{battery}% ya beteri",
+    "none": "Ga go na didiriswa tse di golagantsweng",
+    "disconnect": "Kgaola sediriswa",
+    "connect": "Golaganya sediriswa"
+  },
+  "friends": {
+    "title": "Ditsala",
+    "subtitle": "Batlhokomedi, dikopo, le kerafo ya tshoganyetso.",
+    "addDemo": "Tsenya tsala ya pontsho",
+    "emptyTitle": "Sediko sa gago sa pabalesego ga se na sepe",
+    "emptyMessage": "Ditsala tse di ikanyegang le batlhokomedi ba tla tlhagelela fano fa ba sena go tsenngwa.",
+    "newGuardian": "Motlhokomedi yo Mosha",
+    "statuses": {
+      "guardian": "Motlhokomedi",
+      "pending": "E letisitswe"
+    }
+  },
+  "emergency": {
+    "title": "Maemo a tshoganyetso SOS",
+    "subtitle": "Oketsa fela fa o tlhoka tshegetso ya ka bonako.",
+    "body": "Se se tla itsise kelelo ya gago ya pabalesego le go baakanyetsa batho ba o ka ikgolaganyang le bone ka tshoganyetso.",
+    "activate": "Tsenya tirisong SOS",
+    "callCompanion": "Leletsa AI molekane",
+    "notificationTitle": "SOS e tsentswe tirisong",
+    "notificationBody": "Kelelo ya gago ya tshoganyetso e siame.",
+    "readyTitle": "SOS e siame",
+    "callContact": "Leletsa %{name}?",
+    "addContact": "Tsenya leina la tshoganyetso mo Diseting.",
+    "quickShareTitle": "Kabelano ka bonako",
+    "quickShareMessage": "Setlhogo sa go abelana lefelo se siametse go dirisiwa. Golaganya ntlha ya bofelo ya kabelano ya morago go romela dikgokagano tse di tshelang."
+  },
+  "quickShare": {
+    "title": "Kabelano ka bonako",
+    "subtitle": "Kelelo ya kabelo ya lefelo e siame."
+  },
+  "capybearTap": {
+    "title": "Capybear pompo",
+    "subtitle": "Tobetsa gabedi NorthStar ya gago go latlhela namune ya pabalesego.",
+    "body": "Tsela ya ditshupo e siametse go tsenngwa ga dithapo tsa tiragalo ya BLE."
+  },
+  "debug": {
+    "title": "VeryLoving tsebe ya go baakanya diphoso",
+    "subtitle": "Tsela ya tlhabololo fela."
+  },
+  "errors": {
+    "voiceOffline": "O lebega o se mo inthaneteng. Molaetsa wa gago o tla romelwa fa o golagana gape.",
+    "voiceQueued": "Molaetsa o bolokilwe. E tla romelwa fa molekane wa lentswe a golagana gape.",
+    "voiceRetrying": "Ke leka go romela molaetsa wa gago gape...",
+    "voiceConnecting": "Go golagana ka pabalesego le molekane wa gago wa lentswe...",
+    "microphone": "Go tlhokega go dirisa maekerofouno mo megaleng ya lentswe. O ka e kgontsha mo Diseting, kgotsa wa thaepa molaetsa boemong jwa yone.",
+    "billing": "Molekane wa lentswe wa inthanete ga a yo ka nakwana. O ka tswelela ka molekane yo o seng mo inthaneteng.",
+    "authentication": "Molekane wa lentswe ga a kgona go netefatsa thulaganyo eno. Saenela go tsena gape kgotsa dirisa molekane wa ntle le inthanete gone jaanong.",
+    "timeout": "Molekane wa lentswe o tsere nako e telele thata go araba. Tlhola kgolagano ya gago o bo o leka gape.",
+    "network": "Ga re a kgona go fitlhelela molekane wa lentswe. Tlhola kgolagano ya gago, o bo o leka gape kgotsa tswelela o se mo inthaneteng.",
+    "genericVoice": "Sengwe se ne sa kgaotsa mogala wa lentswe. Leka gape, kgotsa tswelela ka molekane yo o seng mo inthaneteng."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving thomelontle ya tshedimosetso"
+  },
+  "notifications": {
+    "channelName": "Ditsiboso tsa pabalesego"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving e tlhoka go kgona go dirisa maekerofouno go bona pabalesego le AI megala e e tsamayang le yone.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving e dirisa lefelo la gago la mmapa wa pabalesego le dikarolo tsa pabalesego tse di gaufi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving e dirisa lefelo la gago go tshegetsa diphallo tsa go goroga ka pabalesego le tsa tshoganyetso.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving e dirisa lefelo la lemorago la go goroga ka pabalesego le diponagalo tsa lefelo le le kotsi le le gaufi.",
+      "NSCameraUsageDescription": "VeryLoving e dirisa khamera fela fa o tlhopha go tsaya senepe sa porofaele kgotsa sa pabalesego.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving e dirisa laeborari ya gago ya dinepe fela fa o tlhopha porofaele kgotsa setshwantsho sa pabalesego.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

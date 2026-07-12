@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ƙara",
+    "apple": "Apple",
+    "back": "Baya",
+    "call": "Kira",
+    "cancel": "Sokewa",
+    "clear": "A bayyane",
+    "close": "Kusa",
+    "connect": "Haɗa",
+    "connecting": "Haɗawa...",
+    "continue": "Ci gaba",
+    "delete": "Delete",
+    "finish": "Gama",
+    "friends": "Abokai",
+    "google": "Google",
+    "home": "Gida",
+    "loading": "Loading ...",
+    "map": "Taswirar",
+    "notNow": "Ba yanzu ba",
+    "remove": "Cire",
+    "retry": "Sake gwadawa",
+    "retrying": "Sake gwadawa",
+    "save": "Ajiye",
+    "selected": "Zaɓaɓɓu",
+    "send": "Aika",
+    "settings": "Saituna",
+    "skip": "Tsallake",
+    "skipForNow": "Tsallake don yanzu",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Ba a sani ba",
+    "user": "VeryLoving mai amfani",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Harshe",
+    "subtitle": "Zaɓi harshen da aka yi amfani da shi a ko'ina cikin app.",
+    "system": "Tsarin tsoho",
+    "search": "Bincika harsuna",
+    "noResults": "Babu harsuna da suka dace da bincikenku.",
+    "english": "Harshen Ingilishi",
+    "spanish": "Harshen Sifaniya",
+    "french": "Harshen Faranshi",
+    "chineseSimplified": "Sinanci (mai sauki)"
+  },
+  "phone": {
+    "label": "Lambar waya",
+    "placeholder": "Lambar waya",
+    "selectCountry": "Zaɓi ƙasa ko yanki",
+    "searchCountry": "Bincika ƙasar, lambar, ko maɓallin kira",
+    "noCountries": "Babu ƙasashe da suka dace da bincikenku.",
+    "countryButton": "Canza ƙasa, a halin yanzu %{country} ƙari %{callingCode}",
+    "inputAccessibility": "Lambar waya don %{country}",
+    "required": "Shigar da lambar waya.",
+    "tooShort": "Wannan lambar wayar ta yi gajere sosai.",
+    "tooLong": "Wannan lambar wayar ta yi tsayi sosai.",
+    "invalid": "Shigar da lambar waya mai inganci don ƙasar da aka zaɓa.",
+    "valid": "Lambar waya ta kasa da kasa mai inganci"
+  },
+  "auth": {
+    "onboardingTagline": "Abokin aminci na sirri don lokuta tsakanin \"Ina lafiya\" da \"Ina bukatan taimako.\"",
+    "createAccount": "Ƙirƙirar asusu",
+    "continueOnboarding": "Ci gaba da shiga cikin jirgi",
+    "createSubtitle": "Zaɓi hanyar shiga don kare jadawalin tsaron ka.",
+    "phoneVerification": "Tabbacin waya",
+    "sendCode": "Aika lambar",
+    "sendingCode": "Aikawa da code ...",
+    "verifyCode": "Tabbatar da lambar",
+    "sentTo": "Aikawa zuwa %{phone}",
+    "yourPhone": "Wayarka",
+    "verificationCode": "Lambar tabbatarwa",
+    "verify": "Tabbatar da",
+    "verifying": "Tabbatarwa...",
+    "invalidCode": "Shigar da lambar tabbatarwa.",
+    "signInFailedTitle": "An katse sa hannu",
+    "signInFailedMessage": "Ba za mu iya kammala shigar da shi ba. Bincika haɗin ka sannan ka sake gwadawa.",
+    "googleUnavailableTitle": "Google Ba a samu rajista ba",
+    "googleUnavailableMessage": "Yin amfani da taron ci gaban gida. Native Google Sign-In yana aiki a cikin ginin ci gaba.",
+    "northStarTitle": "NorthStar kayan ado",
+    "northStarSubtitle": "Haɗa yanzu ko ci gaba kuma ƙara shi daga baya.",
+    "northStarBody": "The VL01 wearable iya haifar da aminci kwararar tare da taps da dogon latsa gestures.",
+    "setupJewelry": "Saita kayan ado",
+    "meetCapybear": "Saduwa da Capybear",
+    "meetCapybearSubtitle": "Abokin aminci mai tawali'u a kan taswirar da kuma kira.",
+    "capybearBody": "Capybear iya taimakawa tare da yanayin gida, yanayin kulawa, yanayin gaggawa, kiran uzuri, da goyon bayan murya.",
+    "chooseVoice": "Zaɓi murya",
+    "capybearReminder": "Capybear tunatarwa",
+    "remindersReady": "Tunatarwa mai kyau sun shirya."
+  },
+  "permissions": {
+    "locationTitle": "Tsaro na wuri",
+    "locationSubtitle": "An yi amfani dashi don taswira, yankunan haɗari, isowa mai aminci, da mahallin SOS.",
+    "locationBody": "VeryLoving tambayar wuri don masu kula da su su fahimci inda za a iya buƙatar taimako. Za ka iya canza wannan daga baya a cikin saituna.",
+    "allowLocation": "Ba da izinin wuri",
+    "notificationsTitle": "Gargadin tsaro",
+    "notificationsSubtitle": "Sanarwar tana tallafawa dubawa da abubuwan gaggawa.",
+    "notificationsBody": "Muna amfani da sanarwar kawai don umarnin aminci, sabuntawar gaggawa, da tunatarwa da kuka kunna.",
+    "enableNotifications": "Kunna sanarwar",
+    "locationRationaleTitle": "Wuri yana kiyaye mahallin tsaro daidai",
+    "locationRationaleMessage": "VeryLoving yana amfani da wurinka don taswirar aminci, yankunan haɗari, rabawa mai sauri, da mahallin SOS. Za ka iya canza wannan daga baya a cikin saituna.",
+    "notificationsRationaleTitle": "Faɗakarwar tsaro tana buƙatar sanarwar",
+    "notificationsRationaleMessage": "VeryLoving yana aika tunatarwa ta shiga, sabuntawar gaggawa, da umarnin aminci da kuka kunna. Ba mu amfani da sanarwar don tallace-tallace ba.",
+    "microphoneRationaleTitle": "Makirufo yana ba da ikon kiran tsaro",
+    "microphoneRationaleMessage": "VeryLoving amfani da makirufo ne kawai lokacin da ka fara AI abokin tarayya ko kiran aminci.",
+    "bluetoothRationaleTitle": "Bluetooth haɗa kayan aikin ku na kayan ado",
+    "bluetoothRationaleMessage": "VeryLoving yana amfani da Bluetooth don haɗuwa da kayan ado na NorthStar, karanta matsayin haɗi, da kuma haifar da kwararar aminci daga kayan sawa.",
+    "cameraRationaleTitle": "Kamara zaɓi ne na zaɓi",
+    "cameraRationaleMessage": "VeryLoving amfani da kyamara ne kawai idan ka zaɓi ɗaukar hoton bayanin martaba ko raba hoton aminci."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving kiyaye wannan kwararar samuwa daga saituna da dashboard.",
+    "chooseVoiceTitle": "Zaɓi muryarka",
+    "chooseVoiceSubtitle": "Zaɓi muryar abokin tarayya wanda ya fi aminci don ji.",
+    "homeTitle": "Yanayin gida",
+    "homeSubtitle": "Kula da lafiyar yau da kullun don tsaro na yau da kullun.",
+    "guardianTitle": "Yanayin Guardian",
+    "guardianSubtitle": "Raba mahallin tare da amintattun mutane.",
+    "emergencyTitle": "Yanayin gaggawa",
+    "emergencySubtitle": "Famfo biyar na iya haɓaka zuwa faɗakarwar SOS da masu kulawa.",
+    "excuseTitle": "Uzuri kira",
+    "excuseSubtitle": "Samar da dalili mai kyau don barin yanayin da ba shi da daɗi.",
+    "safetyCallTitle": "Kiran tsaro",
+    "safetyCallSubtitle": "Fara kiran abokin tarayya na ainihi lokacin da kuke buƙatar taimako.",
+    "practiceTitle": "Practice scene",
+    "practiceSubtitle": "Gwada kwararar tsaro a cikin demo mai ƙarancin matsin lamba."
+  },
+  "jewelry": {
+    "pairTitle": "Biyu NorthStar",
+    "pairSubtitle": "Ajiye kayan adon a kusa yayin scanning.",
+    "scan": "Scan don na'urori",
+    "scanning": "Scan Kusa Da Kusa",
+    "noDevices": "Har yanzu ba a gano na'urori NorthStar kusa ba.",
+    "scanStartFailed": "Bluetooth scanning ba zai iya farawa ba. Don Allah a sake gwadawa.",
+    "scanFailed": "Ba za mu iya samun kayan adon da ke kusa da su ba. Duba Bluetooth, ci gaba da NorthStar kusa, sannan ka sake gwadawa.",
+    "scanAccessFailed": "Bluetooth scanning ba zai iya farawa ba. Duba Bluetooth samun dama sannan ka sake gwadawa.",
+    "permissionDenied": "Samun damar na'urar da ke kusa da ita an kashe. Ba da izinin shiga Bluetooth a cikin saitunan, sannan ka sake gwadawa.",
+    "connectTimeout": "NorthStar ɗauki lokaci mai tsawo kafin a haɗa. Matsar da shi kusa sannan ka sake gwadawa.",
+    "connectFailed": "Ba za mu iya haɗuwa da NorthStar ba. Ka duba cewa an caje shi kuma yana kusa, sannan ka sake gwadawa.",
+    "emptyTitle": "Har yanzu babu na'urori da ke kusa",
+    "emptyMessage": "Ka ci gaba da caji NorthStar kusa da wannan wayar, sannan ka sake dubawa.",
+    "searchingMessage": "Nemo na'urori NorthStar kusa da ..."
+  },
+  "home": {
+    "subtitle": "Dashboard na Abokin Tsaro",
+    "modeStatus": "%{mode} YANAYIN",
+    "companionReady": "%{name} shirye",
+    "readyBody": "Murya, taswira, kayan ado, da masu kulawa suna da dannawa ɗaya.",
+    "safetyCall": "Kiran tsaro",
+    "northStarDevice": "NorthStar na'urar",
+    "deviceConnected": "%{name} da alaƙa · %{battery}%",
+    "noDevice": "Babu na'urar da aka haɗa",
+    "manageDevice": "Sarrafa na'urar",
+    "mode": "Yanayin",
+    "modes": {
+      "home": "Gida",
+      "guardian": "Mai kula da Guardian",
+      "emergency": "Gaggawa"
+    }
+  },
+  "map": {
+    "finding": "Gano wurin da kuka yi ...",
+    "retry": "Sake gwada wuri",
+    "title": "Taswirar tsaro",
+    "previewSubtitle": "Expo Go preview; Mapbox a cikin gine-ginen ci gaba.",
+    "preview": "Taswirar taswirar",
+    "risk": "Hadari: %{risk} · Radius %{radius}m",
+    "refresh": "Sabunta wuri",
+    "refreshing": "Nemo Wurin Da Ake Yi ...",
+    "updateFailed": "Ba za mu iya sabunta wurin ka ba. Don Allah a sake gwadawa.",
+    "notRequested": "Ba a nemi samun damar wurin ba. Za ka iya kunna shi daga baya daga saitunan.",
+    "permissionOff": "An kashe. Ka kunna shi a cikin saituna don tsakiyar taswirar tsaro a kanka.",
+    "timeout": "Wurin ka yana ɗaukar lokaci mai tsawo fiye da yadda ake tsammani. Matsar da wani wuri tare da siginar da ta fi bayyane sannan ka sake gwadawa.",
+    "savedTitle": "Wuraren da aka adana",
+    "savedEmptyTitle": "Har yanzu babu wuraren da aka ajiye",
+    "savedEmptyMessage": "Amintattun wuraren da ka ajiye za su bayyana a nan don samun dama cikin sauri.",
+    "zones": {
+      "crowding": "Late Night Crowding",
+      "lowLighting": "Yankin haske mai haske"
+    },
+    "risks": {
+      "low": "low",
+      "medium": "matsakaici",
+      "high": "Babban"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Haɗawa...",
+    "offlineCompanion": "Abokin tarayya na layi",
+    "offline": "Offline",
+    "connected": "An haɗa shi",
+    "interrupted": "Haɗin ya katse",
+    "ready": "Shirye don haɗawa",
+    "connectingSecurely": "Haɗa Abokin Hulɗa Tare da Abokin Hulɗar Ku",
+    "messagesWaiting": {
+      "one": "%{count} saƙon da ke jiran aikawa",
+      "other": "%{count} saƙonnin da ke jiran aikawa."
+    },
+    "useOffline": "Yi amfani da offline abokin tarayya",
+    "reconnect": "Sake haɗuwa da murya AI",
+    "typePlaceholder": "Irin wannan idan magana yana da wuya",
+    "endCall": "Karshen kira",
+    "startCall": "Fara kira",
+    "emptyTitle": "Tattaunawar ku ta fara a nan",
+    "emptyMessage": "Fara kira ko rubuta saƙo lokacin da kuka shirya."
+  },
+  "chat": {
+    "waiting": "Jiran haɗi",
+    "notSent": "Saƙon da ba a aika ba.",
+    "retryAccessibility": "Sake gwada aika saƙo"
+  },
+  "history": {
+    "clearTitle": "Bayyananniyar tarihin tattaunawa?",
+    "clearMessage": "Wannan yana cire saƙonnin da aka ajiye AI abokai daga wannan na'urar.",
+    "deleteTitle": "Goge wannan tattaunawar?",
+    "cannotUndo": "Ba za a iya kawar da wannan ba.",
+    "title": "Tarihin tattaunawa",
+    "subtitle": "AI saƙonnin abokin tarayya da aka adana a kan wannan na'urar.",
+    "empty": "Har yanzu babu tattaunawar da aka ajiye.",
+    "emptyTitle": "Har yanzu babu tattaunawa",
+    "emptyMessage": "Tattaunawar abokinka ta AI za ta bayyana a nan bayan kiran ku na farko.",
+    "loadFailed": "Ba za mu iya ɗora tarihin tattaunawa ba. Don Allah a sake gwadawa.",
+    "clearFailed": "Ba za mu iya share tarihin tattaunawa ba. Don Allah a sake gwadawa.",
+    "deleteFailed": "Ba za mu iya share wannan tattaunawar ba. Don Allah a sake gwadawa.",
+    "aiCompanion": "AI abokin tarayya",
+    "resume": "Ci gaba",
+    "clearAll": "Share duk tarihin",
+    "roles": {
+      "assistant": "Abokin tarayya",
+      "user": "Kai"
+    }
+  },
+  "voices": {
+    "title": "Muryoyin kiran tsaro na tsaro",
+    "subtitle": "Zaɓi muryar abokin tarayya da ke jin daɗin ji.",
+    "test": "Muryar gwajin",
+    "stop": "Dakatar da samfurin",
+    "selectionFailedTitle": "Ba a adana zaɓin ba",
+    "selectionFailedMessage": "Dan Allah ka sake gwada zaɓar muryar.",
+    "sampleFailedTitle": "Samfurin ba a samuwa ba",
+    "sampleFailedMessage": "Ba za a iya kunna wannan samfurin murya ba. Don Allah a sake gwadawa.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Kwanciyar hankali, kwanciyar hankali, ƙasa"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Haske, Kwanciyar hankali, Tattaunawa"
+      },
+      "boyfriend": {
+        "name": "Saurayi",
+        "description": "Kwanciyar hankali, soyayya, halin yanzu"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "amincewa, kariya, motsa jiki"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Murya",
+    "changeVoice": "Canza murya",
+    "showCompanion": "Show abokin tarayya",
+    "offlineMode": "Yanayin layi",
+    "offlineModeSubtitle": "Yi amfani da amsoshin abokin tarayya da aka haɗa lokacin da ba a samun takardun shaida Hume cibiyar sadarwa ko takardun shaida ba.",
+    "privacyData": "Sirri da bayanai",
+    "privacyBody": "Fitarwa ko share bayanan gida da aka adana akan wannan na'urar.",
+    "preparingExport": "Shirya fitarwa ...",
+    "exportData": "Fitar da bayanai na",
+    "privacyPolicy": "Manufofin Tsare Sirri",
+    "deleting": "Cirewa...",
+    "deleteAll": "Goge duk bayanan gida",
+    "deviceManagement": "Gudanar da na'ura",
+    "emergencyContacts": "Lambobin sadarwa na gaggawa",
+    "signOut": "Shiga",
+    "exportFailedTitle": "Fitarwa ya kasa",
+    "exportFailedMessage": "Ba za ka iya fitar da bayananka ba a yanzu.",
+    "deleteConfirmTitle": "Goge duk bayanan gida?",
+    "deleteConfirmMessage": "Wannan yana cire bayanin martabarka, saituna, lambobin sadarwa na gaggawa, tarihin tattaunawa, tunatarwa da izini, da zaman auth na gida daga wannan na'urar.",
+    "deleteEverything": "Goge komai",
+    "deleteFailedTitle": "Deletion failed",
+    "deleteFailedMessage": "Ba zan iya goge bayanan gida ba a yanzu.",
+    "linkFailed": "Ba za a iya buɗe hanyar haɗi ba",
+    "sections": {
+      "language": "Harshe",
+      "languageSubtitle": "Interface da tsarin izini harshe",
+      "companion": "Abokin tarayya",
+      "companionSubtitle": "Murya da zaɓuɓɓukan layi",
+      "deviceSafety": "Na'urori da aminci",
+      "deviceSafetySubtitle": "NorthStar, masu kulawa, da lambobin sadarwa na gaggawa",
+      "privacy": "Sirri da bayanai",
+      "privacySubtitle": "Tarihi, fitarwa, gogewa, da manufofi",
+      "account": "Asusun",
+      "accountSubtitle": "Your current VeryLoving session"
+    },
+    "updateFailedTitle": "Saitin ba a ajiye shi ba",
+    "updateFailedMessage": "Ba za mu iya ajiye wannan fifiko ba. Don Allah a sake gwadawa.",
+    "signOutFailedTitle": "Ba za a iya shiga ba",
+    "signOutFailedMessage": "Zaman ka har yanzu yana aiki. Don Allah a sake gwadawa."
+  },
+  "contacts": {
+    "title": "Lambobin sadarwa na gaggawa",
+    "subtitle": "Amintattun mutane suna samuwa yayin kwararar tsaro.",
+    "addTitle": "Ƙara tuntuɓar gaggawa",
+    "name": "Sunan",
+    "namePlaceholder": "Sunan tuntuɓar",
+    "phone": "Lambar wayar tuntuɓi",
+    "add": "Ƙara tuntuɓar",
+    "empty": "Har yanzu babu lambobin sadarwa na gaggawa da aka ƙara.",
+    "emptyTitle": "Har yanzu babu lambobin sadarwa na gaggawa",
+    "emptyMessage": "Ƙara wanda kuka amince da shi don su kasance a shirye lokacin da kwararar tsaro ta buƙaci su.",
+    "removeTitle": "Cire %{name}?",
+    "removeMessage": "Wannan mutumin ba zai ƙara bayyana a cikin kwararar gaggawa ba.",
+    "nameRequired": "Shigar da sunan mai tuntuɓar.",
+    "saveFailedTitle": "Tuntuɓi ba a adana ba",
+    "saveFailedMessage": "Ba za mu iya ajiye wannan lambobin sadarwa ba. Duba cikakkun bayanai sannan ku sake gwadawa.",
+    "removeFailedTitle": "Ba a cire tuntuɓar ba",
+    "removeFailedMessage": "Ba za mu iya cire wannan tuntuɓar ba. Don Allah a sake gwadawa.",
+    "callAccessibility": "Kira %{name}",
+    "removeAccessibility": "Cire %{name}"
+  },
+  "device": {
+    "title": "Gudanar da na'ura",
+    "subtitle": "Sarrafa na'urarka ta NorthStar",
+    "connected": "Haɗa · %{battery}% batirin",
+    "none": "Babu na'urori da aka haɗa",
+    "disconnect": "Cire na'urar",
+    "connect": "Haɗa na'urar"
+  },
+  "friends": {
+    "title": "Abokai",
+    "subtitle": "Masu kulawa, buƙatu, da jadawalin gaggawa.",
+    "addDemo": "Ƙara demo aboki",
+    "emptyTitle": "Da'irar tsaro ta ku ba komai ba ta da komai",
+    "emptyMessage": "Amintattun abokai da masu kula da su za su bayyana a nan da zarar an ƙara su.",
+    "newGuardian": "Sabon Guardian",
+    "statuses": {
+      "guardian": "Mai kula da Guardian",
+      "pending": "Jira"
+    }
+  },
+  "emergency": {
+    "title": "Gaggawa SOS",
+    "subtitle": "Yi amfani da shi kawai idan kana buƙatar taimako na gaggawa.",
+    "body": "Wannan zai sanar da kwararar amincin ku kuma shirya lambobin sadarwa na gaggawa.",
+    "activate": "Kunna SOS",
+    "callCompanion": "Kira abokin AI",
+    "notificationTitle": "SOS kunna",
+    "notificationBody": "Tafiyarku ta gaggawa ta shirya.",
+    "readyTitle": "SOS shirye",
+    "callContact": "Kira %{name}?",
+    "addContact": "Ƙara tuntuɓar gaggawa a cikin saituna.",
+    "quickShareTitle": "Raba sauri",
+    "quickShareMessage": "Location sharing stub is ready. Haɗa ƙarshen raba na baya don aika hanyoyin haɗin kai tsaye."
+  },
+  "quickShare": {
+    "title": "Raba sauri",
+    "subtitle": "Kwararar raba wuri a shirye yake."
+  },
+  "capybearTap": {
+    "title": "Capybear danna",
+    "subtitle": "Danna sau biyu NorthStar ka sauke lemu mai tsaro.",
+    "body": "Gesture route is ready for BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Hanyar haɓakawa kawai."
+  },
+  "errors": {
+    "voiceOffline": "Kuna da alama ba tare da layi ba. Za a aika saƙonku lokacin da kuka sake haɗuwa.",
+    "voiceQueued": "Saƙon da aka ajiye. Za a aika shi lokacin da abokin muryar ya sake haɗuwa.",
+    "voiceRetrying": "Sake aika saƙonnin ku ...",
+    "voiceConnecting": "Haɗa Abokin Hulɗa Tare da Abokin Hulɗar Ku",
+    "microphone": "Ana buƙatar samun makirufo don kiran murya. Za ka iya kunna shi a cikin Saituna, ko rubuta saƙo a maimakon.",
+    "billing": "Abokin muryar kan layi ba ya samuwa na ɗan lokaci. Za ka iya ci gaba tare da offline abokin tarayya.",
+    "authentication": "Abokin muryar ba zai iya tabbatar da wannan zaman ba. Ka sake shiga ko ka yi amfani da abokin tarayya mara layi a yanzu.",
+    "timeout": "Muryar ta dauki lokaci mai tsawo kafin ta amsa. Bincika haɗin ka sannan ka sake gwadawa.",
+    "network": "Ba za mu iya isa ga abokin murya ba. Bincika haɗin ka, sannan ka sake gwadawa ko ka ci gaba ba tare da layi ba.",
+    "genericVoice": "Wani abu ya katse kiran murya. Sake gwadawa, ko ci gaba da abokin tarayya mara layi."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving fitar da bayanai"
+  },
+  "notifications": {
+    "channelName": "Gargadin tsaro"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving buƙatar samun damar makirufo don aminci da kiran abokin AI.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving amfani da wurinka don taswirar tsaro da siffofin tsaro na kusa.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving amfani da wurinka don tallafawa aminci-zuwan da kwararar gaggawa.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving amfani da wuri na baya don aminci-isowa da kuma kusa da hadarin zone fasali.",
+      "NSCameraUsageDescription": "VeryLoving amfani da kyamara ne kawai lokacin da ka zaɓi ɗaukar hoto ko aminci.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving amfani da ɗakin karatu na hotunan ka ne kawai idan ka zaɓi bayanin martaba ko hoton aminci.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

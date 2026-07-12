@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ychwanegu",
+    "apple": "Apple",
+    "back": "Yn ôl",
+    "call": "Galwad",
+    "cancel": "Canslo",
+    "clear": "Clirio",
+    "close": "Cau",
+    "connect": "Cysylltu",
+    "connecting": "Cysylltu...",
+    "continue": "Parhau",
+    "delete": "Dileu",
+    "finish": "Gorffen",
+    "friends": "Ffrindiau",
+    "google": "Google",
+    "home": "Hafan",
+    "loading": "Yn Llwytho...",
+    "map": "Map",
+    "notNow": "Ddim nawr",
+    "remove": "Tynnu",
+    "retry": "Ail-geisio",
+    "retrying": "Ail-geisio",
+    "save": "Cadw",
+    "selected": "Dewiswyd",
+    "send": "Anfon",
+    "settings": "Gosodiadau",
+    "skip": "Hepgor",
+    "skipForNow": "Hepgor am y tro",
+    "skipTutorial": "Hepgor tiwtorial",
+    "sos": "SOS",
+    "unknown": "Anhysbys",
+    "user": "VeryLoving defnyddiwr",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Iaith",
+    "subtitle": "Dewiswch yr iaith a ddefnyddir drwy'r ap.",
+    "system": "Rhagosodiad system",
+    "search": "Ieithoedd chwilio",
+    "noResults": "Dim ieithoedd sy'n cyfateb i'ch chwiliad.",
+    "english": "Saesneg",
+    "spanish": "Sbaenaidd",
+    "french": "Ffrengig",
+    "chineseSimplified": "Tsieinëeg (Symleiddio)"
+  },
+  "phone": {
+    "label": "Rhif ffôn",
+    "placeholder": "Rhif ffôn",
+    "selectCountry": "Dewiswch wlad neu ranbarth",
+    "searchCountry": "Chwilio gwlad, cod, neu ragddodiad deialu",
+    "noCountries": "Dim gwledydd sy'n cyfateb i'ch chwiliad.",
+    "countryButton": "Newid gwlad, ar hyn o bryd %{country} a mwy %{callingCode}",
+    "inputAccessibility": "Rhif ffôn ar gyfer %{country}",
+    "required": "Rhowch rif ffôn.",
+    "tooShort": "Mae'r rhif ffôn hwn yn rhy fyr.",
+    "tooLong": "Mae'r rhif ffôn hwn yn rhy hir.",
+    "invalid": "Rhowch rif ffôn dilys ar gyfer y wlad a ddewiswyd.",
+    "valid": "Rhif ffôn rhyngwladol dilys"
+  },
+  "auth": {
+    "onboardingTagline": "Cydymaith diogelwch personol ar gyfer yr eiliadau rhwng \"Rwy'n iawn\" a \"Mae angen help arnaf.\"",
+    "createAccount": "Creu cyfrif",
+    "continueOnboarding": "Parhewch gydag onboarding",
+    "createSubtitle": "Dewiswch ddull mewngofnodi i amddiffyn eich graff diogelwch.",
+    "phoneVerification": "Gwirio ffôn",
+    "sendCode": "Anfon cod",
+    "sendingCode": "Wrthi'n anfon cod...",
+    "verifyCode": "Gwirio cod",
+    "sentTo": "Anfonwyd at %{phone}",
+    "yourPhone": "eich ffôn",
+    "verificationCode": "Cod dilysu",
+    "verify": "Gwirio",
+    "verifying": "Gwirio...",
+    "invalidCode": "Rhowch y cod dilysu.",
+    "signInFailedTitle": "Mewngofnodi wedi torri ar draws",
+    "signInFailedMessage": "Ni allwn gwblhau mewngofnodi. Gwiriwch eich cysylltiad a cheisiwch eto.",
+    "googleUnavailableTitle": "Google Mewngofnodi ddim ar gael",
+    "googleUnavailableMessage": "Defnyddio sesiwn datblygu lleol. Mae Native Google Sign-In yn gweithio mewn adeilad datblygu.",
+    "northStarTitle": "NorthStar gemwaith",
+    "northStarSubtitle": "Pâr nawr neu parhewch a'i ychwanegu yn nes ymlaen.",
+    "northStarBody": "Gall y gwisgadwy VL01 sbarduno llif diogelwch gyda tapiau ac ystumiau gwasg hir.",
+    "setupJewelry": "Sefydlu gemwaith",
+    "meetCapybear": "Cwrdd â Capybear",
+    "meetCapybearSubtitle": "Eich cydymaith diogelwch ysgafn ar y map ac mewn galwadau.",
+    "capybearBody": "Capybear gall helpu gyda'r modd cartref, modd gwarcheidwad, modd argyfwng, galwadau esgus, a chefnogaeth llais.",
+    "chooseVoice": "Dewiswch lais",
+    "capybearReminder": "Capybear nodyn atgoffa",
+    "remindersReady": "Mae nodiadau atgoffa ysgafn yn barod."
+  },
+  "permissions": {
+    "locationTitle": "Diogelwch lleoliad",
+    "locationSubtitle": "Defnyddir ar gyfer y map, parthau perygl, cyrraedd diogel, a chyd-destun SOS.",
+    "locationBody": "VeryLoving yn gofyn am leoliad fel y gall gwarcheidwaid ddeall lle gallai fod angen help. Gallwch newid hyn yn nes ymlaen yn y Gosodiadau.",
+    "allowLocation": "Caniatáu lleoliad",
+    "notificationsTitle": "Rhybuddion diogelwch",
+    "notificationsSubtitle": "Mae hysbysiadau yn cefnogi check-ins a digwyddiadau brys.",
+    "notificationsBody": "Rydym ond yn defnyddio hysbysiadau ar gyfer awgrymiadau diogelwch, diweddariadau brys, a nodiadau atgoffa rydych chi'n eu galluogi.",
+    "enableNotifications": "Galluogi hysbysiadau",
+    "locationRationaleTitle": "Mae lleoliad yn cadw cyd-destun diogelwch yn gywir",
+    "locationRationaleMessage": "VeryLoving yn defnyddio'ch lleoliad ar gyfer y map diogelwch, parthau perygl, rhannu cyflym, a SOS gyd-destun. Gallwch newid hyn yn nes ymlaen yn y Gosodiadau.",
+    "notificationsRationaleTitle": "Mae angen hysbysiadau ar rybuddion diogelwch",
+    "notificationsRationaleMessage": "VeryLoving'n anfon nodiadau atgoffa check-in, diweddariadau brys, ac awgrymiadau diogelwch i chi alluogi. Nid ydym yn defnyddio hysbysiadau ar gyfer hysbysebion.",
+    "microphoneRationaleTitle": "Meicroffon yn pweru galwadau diogelwch",
+    "microphoneRationaleMessage": "VeryLoving yn defnyddio'ch meicroffon dim ond pan fyddwch chi'n dechrau AI cydymaith neu alwad diogelwch.",
+    "bluetoothRationaleTitle": "Bluetooth yn cysylltu eich wearable",
+    "bluetoothRationaleMessage": "VeryLoving yn defnyddio Bluetooth i baru â gemwaith NorthStar, darllen statws cysylltiad, a sbarduno llif diogelwch o'r wearable.",
+    "cameraRationaleTitle": "Mae'r camera yn ddewisol",
+    "cameraRationaleMessage": "VeryLoving'n defnyddio'r camera dim ond pan fyddwch chi'n dewis tynnu llun proffil neu rannu delwedd ddiogelwch."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving yn cadw'r llif hwn ar gael o'r Gosodiadau a'r dangosfwrdd.",
+    "chooseVoiceTitle": "Dewiswch eich llais",
+    "chooseVoiceSubtitle": "Dewiswch y llais cydymaith sy'n teimlo'n fwyaf diogel i'w glywed.",
+    "homeTitle": "Modd cartref",
+    "homeSubtitle": "Monitro tawel ar gyfer diogelwch dyddiol.",
+    "guardianTitle": "Modd gwarcheidwad",
+    "guardianSubtitle": "Rhannwch gyd-destun gyda phobl ddibynadwy.",
+    "emergencyTitle": "Modd argyfwng",
+    "emergencySubtitle": "Gall pum tap gynyddu i rybuddion SOS a gwarcheidwad.",
+    "excuseTitle": "Galwad esgus",
+    "excuseSubtitle": "Creu rheswm gosgeiddig i adael sefyllfa anghyfforddus.",
+    "safetyCallTitle": "Galwad ddiogelwch",
+    "safetyCallSubtitle": "Dechreuwch alwad cydymaith amser real pan fydd angen cefnogaeth arnoch.",
+    "practiceTitle": "Golygfa ymarfer",
+    "practiceSubtitle": "Rhowch gynnig ar y llif diogelwch mewn demo pwysedd isel."
+  },
+  "jewelry": {
+    "pairTitle": "Pâr NorthStar",
+    "pairSubtitle": "Cadwch y gemwaith gerllaw wrth sganio.",
+    "scan": "Sganio am ddyfeisiau",
+    "scanning": "Wrthi'n sganio gerllaw...",
+    "noDevices": "Ni chanfuwyd unrhyw ddyfeisiau NorthStar gerllaw eto.",
+    "scanStartFailed": "Methwyd Bluetooth sganio gychwyn. Ceisiwch eto.",
+    "scanFailed": "Ni allwn ddod o hyd i emwaith gerllaw. Gwiriwch Bluetooth, cadwch NorthStar agos, a cheisiwch eto.",
+    "scanAccessFailed": "Methwyd Bluetooth sganio gychwyn. Gwiriwch Bluetooth fynediad a cheisiwch eto.",
+    "permissionDenied": "Mae mynediad dyfais gerllaw i ffwrdd. Caniatáu mynediad Bluetooth yn y Gosodiadau, yna ceisiwch eto.",
+    "connectTimeout": "NorthStar cymryd rhy hir i gysylltu. Symudwch ef yn agosach a cheisiwch eto.",
+    "connectFailed": "Ni allwn gysylltu â NorthStar. Gwiriwch ei fod wedi'i wefru ac gerllaw, yna ceisiwch eto.",
+    "emptyTitle": "Dim dyfeisiau cyfagos eto",
+    "emptyMessage": "Cadwch NorthStar wedi'i wefru ac yn agos at y ffôn hwn, yna sganiwch eto.",
+    "searchingMessage": "Chwilio am NorthStar dyfeisiau gerllaw..."
+  },
+  "home": {
+    "subtitle": "Dangosfwrdd cydymaith diogelwch",
+    "modeStatus": "MODD %{mode}",
+    "companionReady": "%{name} yn barod",
+    "readyBody": "Mae llais, map, gemwaith, a gwarcheidwaid un tap i ffwrdd.",
+    "safetyCall": "Galwad ddiogelwch",
+    "northStarDevice": "NorthStar ddyfais",
+    "deviceConnected": "%{name} gysylltiedig · %{battery}%",
+    "noDevice": "Dim dyfais wedi cysylltu",
+    "manageDevice": "Rheoli dyfais",
+    "mode": "Modd",
+    "modes": {
+      "home": "Hafan",
+      "guardian": "Gwarcheidwad",
+      "emergency": "Brys"
+    }
+  },
+  "map": {
+    "finding": "Wrthi'n dod o hyd i'ch lleoliad...",
+    "retry": "Lleoliad ail-geisio",
+    "title": "Map diogelwch",
+    "previewSubtitle": "Expo Go rhagolwg; Mapbox rendro mewn adeilad datblygu.",
+    "preview": "Rhagolwg map",
+    "risk": "Risg: %{risk} · Radiws %{radius}m",
+    "refresh": "Adnewyddu lleoliad",
+    "refreshing": "Wrthi'n canfod lleoliad...",
+    "updateFailed": "Ni allwn ddiweddaru eich lleoliad. Ceisiwch eto.",
+    "notRequested": "Ni ofynnwyd am fynediad am leoliad. Gallwch ei alluogi yn ddiweddarach o Gosodiadau.",
+    "permissionOff": "Mae mynediad lleoliad i ffwrdd. Gallwch ef yn Gosodiadau i ganoli'r map diogelwch arnoch chi.",
+    "timeout": "Mae eich lleoliad yn cymryd mwy o amser na'r disgwyl. Symudwch i rywle gyda signal cliriach a cheisiwch eto.",
+    "savedTitle": "Lleoedd wedi'u cadw",
+    "savedEmptyTitle": "Dim lleoedd wedi'u cadw eto",
+    "savedEmptyMessage": "Bydd lleoedd dibynadwy rydych chi'n eu cadw yn ymddangos yma er mwyn cael mynediad cyflym.",
+    "zones": {
+      "crowding": "Gorlawni yn hwyr yn y nos",
+      "lowLighting": "Ardal goleuadau isel"
+    },
+    "risks": {
+      "low": "isel",
+      "medium": "Canolig",
+      "high": "uchel"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Cysylltu...",
+    "offlineCompanion": "Cydymaith all-lein",
+    "offline": "All-lein",
+    "connected": "Wedi Cysylltu",
+    "interrupted": "Cysylltiad wedi'i dorri",
+    "ready": "Yn barod i gysylltu",
+    "connectingSecurely": "Cysylltu'n ddiogel â'ch cydymaith llais...",
+    "messagesWaiting": {
+      "one": "%{count} neges yn aros i'w hanfon",
+      "other": "%{count} negeseuon sy'n aros i'w hanfon"
+    },
+    "useOffline": "Defnyddio cydymaith all-lein",
+    "reconnect": "Ailgysylltu â AI llais",
+    "typePlaceholder": "Teipiwch os yw siarad yn anodd",
+    "endCall": "Gorffen galwad",
+    "startCall": "Dechrau galwad",
+    "emptyTitle": "Mae eich sgwrs yn dechrau yma",
+    "emptyMessage": "Cychwyn yr alwad, neu teipiwch neges pan fo ydych chi'n barod."
+  },
+  "chat": {
+    "waiting": "Aros am gysylltiad",
+    "notSent": "Neges heb ei hanfon.",
+    "retryAccessibility": "Ail-geisio anfon neges"
+  },
+  "history": {
+    "clearTitle": "Hanes sgwrs clir?",
+    "clearMessage": "Dileu negeseuon cydymaith AI sydd wedi'u cadw o'r ddyfais hon.",
+    "deleteTitle": "Dileu'r sgwrs hon?",
+    "cannotUndo": "Ni ellir dadwneud hyn.",
+    "title": "Hanes sgwrs",
+    "subtitle": "AI negeseuon cydymaith sydd wedi'u cadw ar y ddyfais hon.",
+    "empty": "Dim sgyrsiau wedi'u cadw eto.",
+    "emptyTitle": "Dim sgyrsiau eto",
+    "emptyMessage": "Bydd eich sgyrsiau cydymaith AI ymddangos yma ar ôl eich galwad gyntaf.",
+    "loadFailed": "Ni allwn lwytho hanes sgwrs. Ceisiwch eto.",
+    "clearFailed": "Ni allwn glirio hanes sgwrs. Ceisiwch eto.",
+    "deleteFailed": "Ni allwn ddileu'r sgwrs honno. Ceisiwch eto.",
+    "aiCompanion": "AI gydymaith",
+    "resume": "Ailgychwyn",
+    "clearAll": "Clirio'r holl hanes",
+    "roles": {
+      "assistant": "cydymaith",
+      "user": "chi"
+    }
+  },
+  "voices": {
+    "title": "Fy lleisiau galwad diogelwch",
+    "subtitle": "Dewiswch y llais cydymaith sy'n teimlo'n iawn i'w glywed.",
+    "test": "Llais prawf",
+    "stop": "Stopio sampl",
+    "selectionFailedTitle": "Dewis heb ei gadw",
+    "selectionFailedMessage": "Ceisiwch ddewis y llais eto.",
+    "sampleFailedTitle": "Sampl ddim ar gael",
+    "sampleFailedMessage": "Doedd dim modd chwarae'r sampl llais yma. Ceisiwch eto.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "meddal, tawel, sylfaenol"
+      },
+      "bestie": {
+        "name": "Cartref",
+        "description": "disglair, tawel, sgwrsio"
+      },
+      "boyfriend": {
+        "name": "Cariad",
+        "description": "sefydlog, serchog, yn bresennol"
+      },
+      "muscleMan": {
+        "name": "Cyhyrau",
+        "description": "hyderus, amddiffynnol, ysgogol"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Llais",
+    "changeVoice": "Newid llais",
+    "showCompanion": "Dangos cydymaith",
+    "offlineMode": "Modd all-lein",
+    "offlineModeSubtitle": "Defnyddio ymatebion cydymaith wedi'u bwndelu pan nad yw'r rhwydwaith neu Hume ar gael.",
+    "privacyData": "Preifatrwydd a data",
+    "privacyBody": "Allforio neu ddileu'r data lleol sydd wedi'i storio ar y ddyfais hon.",
+    "preparingExport": "Paratoi allforio...",
+    "exportData": "Allforio fy data",
+    "privacyPolicy": "Polisi preifatrwydd",
+    "deleting": "Wrthi'n dileu...",
+    "deleteAll": "Dileu'r holl ddata lleol",
+    "deviceManagement": "Rheoli dyfeisiau",
+    "emergencyContacts": "Cysylltiadau brys",
+    "signOut": "Allgofnodi",
+    "exportFailedTitle": "Allforio wedi methu",
+    "exportFailedMessage": "Methu allforio eich data ar hyn o bryd.",
+    "deleteConfirmTitle": "Dileu'r holl ddata lleol?",
+    "deleteConfirmMessage": "Mae hyn yn tynnu eich proffil, gosodiadau, cysylltiadau brys, hanes sgwrs, nodiadau atgoffa caniatâd, a sesiwn awdurdodi lleol o'r ddyfais hon.",
+    "deleteEverything": "Dileu popeth",
+    "deleteFailedTitle": "Methwyd dileu",
+    "deleteFailedMessage": "Methu dileu data lleol ar hyn o bryd.",
+    "linkFailed": "Methu agor y cyswllt",
+    "sections": {
+      "language": "Iaith",
+      "languageSubtitle": "Rhyngwyneb ac iaith caniatâd y system",
+      "companion": "Cydymaith",
+      "companionSubtitle": "Hoffterau llais ac all-lein",
+      "deviceSafety": "Dyfeisiau a diogelwch",
+      "deviceSafetySubtitle": "NorthStar, gwarcheidwaid a chysylltiadau brys",
+      "privacy": "Preifatrwydd a data",
+      "privacySubtitle": "Hanes, allforio, dileu, a pholisi",
+      "account": "Cyfrif",
+      "accountSubtitle": "Eich sesiwn VeryLoving bresennol"
+    },
+    "updateFailedTitle": "Gosodiad heb ei gadw",
+    "updateFailedMessage": "Ni allwn achub y dewis hwnnw. Ceisiwch eto.",
+    "signOutFailedTitle": "Methu allgofnodi",
+    "signOutFailedMessage": "Mae eich sesiwn yn dal i fod yn weithredol. Ceisiwch eto."
+  },
+  "contacts": {
+    "title": "Cysylltiadau brys",
+    "subtitle": "Pobl ddibynadwy ar gael yn ystod llif diogelwch.",
+    "addTitle": "Ychwanegu cyswllt brys",
+    "name": "Enw",
+    "namePlaceholder": "Enw cyswllt",
+    "phone": "Rhif ffôn cyswllt",
+    "add": "Ychwanegu cyswllt",
+    "empty": "Dim cysylltiadau brys wedi'u hychwanegu eto.",
+    "emptyTitle": "Dim cysylltiadau brys eto",
+    "emptyMessage": "Ychwanegwch rywun rydych chi'n ymddiried ynddo fel eu bod yn barod pan fydd eu hangen ar lif diogelwch.",
+    "removeTitle": "Dileu %{name}?",
+    "removeMessage": "Ni fydd y person hwn yn ymddangos yn eich llif brys mwyach.",
+    "nameRequired": "Rhowch enw'r cyswllt.",
+    "saveFailedTitle": "Cyswllt heb ei gadw",
+    "saveFailedMessage": "Ni allwn gadw'r cyswllt hwn. Gwiriwch y manylion a cheisiwch eto.",
+    "removeFailedTitle": "Cyswllt heb ei ddileu",
+    "removeFailedMessage": "Ni allwn gael gwared ar y cyswllt hwn. Ceisiwch eto.",
+    "callAccessibility": "Ffoniwch %{name}",
+    "removeAccessibility": "Tynnu %{name}"
+  },
+  "device": {
+    "title": "Rheoli dyfeisiau",
+    "subtitle": "Rheoli eich dyfais NorthStar.",
+    "connected": "Cysylltiedig · %{battery}% batri",
+    "none": "Dim dyfeisiau wedi cysylltu",
+    "disconnect": "Datgysylltu dyfais",
+    "connect": "Cysylltu dyfais"
+  },
+  "friends": {
+    "title": "Ffrindiau",
+    "subtitle": "Gwarcheidwaid, ceisiadau, a graff argyfwng.",
+    "addDemo": "Ychwanegu ffrind demo",
+    "emptyTitle": "Mae eich cylch diogelwch yn wag",
+    "emptyMessage": "Bydd ffrindiau a gwarcheidwaid dibynadwy yn ymddangos yma unwaith y byddant yn cael eu hychwanegu.",
+    "newGuardian": "Gwarcheidwad Newydd",
+    "statuses": {
+      "guardian": "Gwarcheidwad",
+      "pending": "Yn yr arfaeth"
+    }
+  },
+  "emergency": {
+    "title": "SOS argyfwng",
+    "subtitle": "Cynyddwch dim ond pan fydd angen cymorth ar unwaith.",
+    "body": "Bydd hyn yn hysbysu eich llif diogelwch ac yn paratoi cysylltiadau brys.",
+    "activate": "Gweithredu SOS",
+    "callCompanion": "Ffoniwch AI gydymaith",
+    "notificationTitle": "SOS wedi ei actifadu",
+    "notificationBody": "Mae eich llif brys yn barod.",
+    "readyTitle": "SOS yn barod",
+    "callContact": "Ffoniwch %{name}?",
+    "addContact": "Ychwanegu cyswllt brys yn y Gosodiadau.",
+    "quickShareTitle": "Rhannu cyflym",
+    "quickShareMessage": "Mae stwff rhannu lleoliad yn barod. Cysylltu y terfyn rhannu ochr gefn i anfon dolenni byw."
+  },
+  "quickShare": {
+    "title": "Rhannu cyflym",
+    "subtitle": "Mae llif rhannu lleoliad yn barod."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tapiwch eich NorthStar ddwywaith i ollwng oren diogelwch.",
+    "body": "Mae'r llwybr ystumiau yn barod ar gyfer gwifrau digwyddiad BLE."
+  },
+  "debug": {
+    "title": "VeryLoving dudalen datnamu",
+    "subtitle": "Llwybr datblygu yn unig."
+  },
+  "errors": {
+    "voiceOffline": "Rydych chi'n ymddangos all-lein. Bydd eich neges yn cael ei hanfon pan fyddwch yn ailgysylltu.",
+    "voiceQueued": "Neges wedi'i chadw. Bydd yn cael ei anfon pan fydd y cydymaith llais yn ailgysylltu.",
+    "voiceRetrying": "Ceisio anfon eich neges eto...",
+    "voiceConnecting": "Cysylltu'n ddiogel â'ch cydymaith llais...",
+    "microphone": "Mae angen mynediad meicroffon ar gyfer galwadau llais. Gallwch ei alluogi yn y Gosodiadau, neu deipiwch neges yn lle hynny.",
+    "billing": "Nid yw'r cydymaith llais ar-lein ar gael dros dro. Gallwch barhau gyda'r cydymaith all-lein.",
+    "authentication": "Doedd y cydymaith llais ddim yn gallu gwirio'r sesiwn hon. Mewngofnodi eto neu defnyddiwch y cydymaith all-lein am y tro.",
+    "timeout": "Cymerodd y cydymaith llais ormod o amser i ymateb. Gwiriwch eich cysylltiad a cheisiwch eto.",
+    "network": "Ni allwn gyrraedd y cydymaith llais. Gwiriwch eich cysylltiad, yna ceisiwch eto neu barhau all-lein.",
+    "genericVoice": "Torrodd rhywbeth ar draws yr alwad llais. Ceisiwch eto, neu parhewch gyda'r cydymaith all-lein."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving allforio data"
+  },
+  "notifications": {
+    "channelName": "Rhybuddion diogelwch"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving angen mynediad meicroffon ar gyfer diogelwch a galwadau cydymaith AI.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving yn defnyddio eich lleoliad ar gyfer y map diogelwch a nodweddion diogelwch cyfagos.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving yn defnyddio eich lleoliad i gefnogi cyrraedd diogel a llif brys.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving yn defnyddio lleoliad cefndir ar gyfer cyrraedd diogel a nodweddion parth perygl gerllaw.",
+      "NSCameraUsageDescription": "VeryLoving yn defnyddio'r camera dim ond pan fyddwch chi'n dewis tynnu proffil neu lun diogelwch.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving'n defnyddio eich llyfrgell ffotograffau dim ond pan fyddwch chi'n dewis proffil neu ddelwedd ddiogelwch.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yn defnyddio Bluetooth i gysylltu â'ch gemwaith diogelwch NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving yn defnyddio Bluetooth i gysylltu â'ch gemwaith diogelwch NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

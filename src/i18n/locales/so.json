@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ku dar",
+    "apple": "Apple",
+    "back": "Dib u noqo",
+    "call": "Wac",
+    "cancel": "Jooji",
+    "clear": "Nadiif",
+    "close": "Xir",
+    "connect": "Isku xir",
+    "connecting": "Isku xir...",
+    "continue": "Sii wad",
+    "delete": "Tirtir",
+    "finish": "Dhammaad",
+    "friends": "Saaxiibo",
+    "google": "Google",
+    "home": "Guriga",
+    "loading": "Soo ridaya...",
+    "map": "Khariidadda",
+    "notNow": "Hada may",
+    "remove": "Ka saar",
+    "retry": "Isku day mar kale",
+    "retrying": "Mar kale isku day",
+    "save": "Badbaadi",
+    "selected": "Xulasho",
+    "send": "Dir",
+    "settings": "Dejinta",
+    "skip": "Ka bood",
+    "skipForNow": "Hadda ka bood",
+    "skipTutorial": "Ka bood casharka",
+    "sos": "SOS",
+    "unknown": "Lama yaqaan",
+    "user": "VeryLoving isticmaale",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Luqadda",
+    "subtitle": "Dooro luqadda lagu isticmaalo app-ka.",
+    "system": "Nidaamka default",
+    "search": "Luqadaha raadinta",
+    "noResults": "Luqado ma laha raadintaada.",
+    "english": "Ingiriis",
+    "spanish": "Af-Isbaanish",
+    "french": "Faransiis",
+    "chineseSimplified": "Shiinaha (Fududeeyay)"
+  },
+  "phone": {
+    "label": "Lambarka telefoonka",
+    "placeholder": "Lambarka telefoonka",
+    "selectCountry": "Dalka ama gobol la xushay",
+    "searchCountry": "Raadi dalka, koodhka, ama horudhaca taleefanka",
+    "noCountries": "Ma jiraan dal la mid ah raadintaada.",
+    "countryButton": "Bedel dalka, hadda %{country} iyo %{callingCode}",
+    "inputAccessibility": "Lambarka telefoonka ee %{country}",
+    "required": "Geli lambarka telefoonka.",
+    "tooShort": "Lambarkan telefoonka aad buu u gaaban yahay.",
+    "tooLong": "Lambarkan telefoonka waa mid aad u dheer.",
+    "invalid": "Geli lambarka telefoonka ee saxda ah ee dalka la doortay.",
+    "valid": "Lambarka taleefanka caalamiga ah ee saxda ah"
+  },
+  "auth": {
+    "onboardingTagline": "Saaxiib badbaado shakhsi ah xilliyada u dhexeeya \"Waan fiicanahay\" iyo \"Waxaan u baahanahay caawimaad.\"",
+    "createAccount": "Abuur akoon",
+    "continueOnboarding": "Sii wad bilowga",
+    "createSubtitle": "Dooro habka gelitaanka si aad u ilaaliso jaantuskaaga badbaadada.",
+    "phoneVerification": "Xaqiijinta telefoonka",
+    "sendCode": "Dir koodhka",
+    "sendingCode": "Dirista koodhka...",
+    "verifyCode": "Xaqiiji koodhka",
+    "sentTo": "Waxaa loo diray %{phone}",
+    "yourPhone": "Telefoonkaaga",
+    "verificationCode": "Koodhka xaqiijinta",
+    "verify": "Hubi",
+    "verifying": "Xaqiijinaya...",
+    "invalidCode": "Geli koodhka xaqiijinta.",
+    "signInFailedTitle": "Diiwaangelinta waa la joojiyay",
+    "signInFailedMessage": "Ma dhammaystiri karin isdiiwaangelinta. Hubi xiriirkaaga oo mar kale isku day.",
+    "googleUnavailableTitle": "Google Gelitaanka lama heli karo",
+    "googleUnavailableMessage": "Iyadoo la adeegsanayo kal-fadhiga horumarinta maxalliga ah. Native Google Sign-In waxay ka shaqeysaa dhisme horumarineed.",
+    "northStarTitle": "NorthStar dahabka",
+    "northStarSubtitle": "Isku xidh hadda ama sii wad oo ku dar markale.",
+    "northStarBody": "Qalabka VL01 ee la xidho wuxuu kici karaa socodka badbaadada iyadoo la adeegsanayo taabasho iyo dhaqdhaqaaqyo riixid dheer.",
+    "setupJewelry": "Dejinta dahabka",
+    "meetCapybear": "La kulan Capybear",
+    "meetCapybearSubtitle": "Saaxiibkaaga badbaadada ee khariidada iyo wicitaanada.",
+    "capybearBody": "Capybear ka caawin kartaa habka guriga, habka ilaaliyaha, habka degdegga ah, wicitaannada cudurdaarsiyo, iyo taageerada codka.",
+    "chooseVoice": "Cod dooro",
+    "capybearReminder": "Capybear xusuusin",
+    "remindersReady": "Xusuusin jilicsan ayaa diyaar ah."
+  },
+  "permissions": {
+    "locationTitle": "Badbaadada goobta",
+    "locationSubtitle": "Waxaa loo isticmaalay khariidada, meelaha khatarta, imaanshaha badbaadada ah, iyo macnaha SOS.",
+    "locationBody": "VeryLoving weydiiyaa goobta si ilaaliyadu u fahmaan meesha caawimaad loo baahan karo. Waxaad beddeli kartaa tan dambe Settings-ka.",
+    "allowLocation": "Goobta la oggol yahay",
+    "notificationsTitle": "Digniino badbaado",
+    "notificationsSubtitle": "Ogeysiisyadu waxay taageeraan hubinta iyo dhacdooyinka degdegga ah.",
+    "notificationsBody": "Waxaan isticmaalnaa oo kaliya ogeysiisyada amniga, cusbooneysiinta degdegga ah, iyo xusuusinta aad awoodiso.",
+    "enableNotifications": "Hawlgeli ogeysiisyada",
+    "locationRationaleTitle": "Goobtu waxay ilaalisaa macnaha badbaadada si sax ah",
+    "locationRationaleMessage": "VeryLoving wuxuu isticmaalaa goobtaada si uu u helo khariidada badbaadada, aagagga khatarta, wadaagga degdega ah, iyo macnaha SOS. Waxaad beddeli kartaa tan dambe Settings-ka.",
+    "notificationsRationaleTitle": "Digniinaha badbaadada waxay u baahan yihiin ogeysiisyo",
+    "notificationsRationaleMessage": "VeryLoving waxay dirtaa xusuusin hubin, cusbooneysiin degdeg ah, iyo tilmaamo badbaado oo aad awoodiso. Ma isticmaalno ogeysiisyada xayaysiisyada.",
+    "microphoneRationaleTitle": "Makarafoonku wuxuu awood siiya wicitaannada badbaadada",
+    "microphoneRationaleMessage": "VeryLoving isticmaalaa makarafoonkaaga kaliya markaad bilowdo wicitaan AI saaxiib ama badbaado.",
+    "bluetoothRationaleTitle": "Bluetooth isku xiraa qalabkaaga xidhan",
+    "bluetoothRationaleMessage": "VeryLoving wuxuu isticmaalaa Bluetooth si uu ula xiriiro dahabka NorthStar, uu akhriyo xaaladda xiriirka, iyo inuu kiciyo socodka badbaadada ee qalabka la xiro.",
+    "cameraRationaleTitle": "Kamaraddu waa ikhtiyaari",
+    "cameraRationaleMessage": "VeryLoving isticmaalaa kamaradda oo kaliya markaad doorato inaad sawir profile ka qaaddo ama la wadaagto sawir badbaado ah."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ka dhigtaa socodkan mid laga heli karo Settings iyo dashboard-ka.",
+    "chooseVoiceTitle": "Dooro codkaaga",
+    "chooseVoiceSubtitle": "Dooro codka saaxiibka ah ee ugu ammaan badan in la maqlo.",
+    "homeTitle": "Habka guriga",
+    "homeSubtitle": "Kormeer aamusnaan ah oo badbaado maalinle ah.",
+    "guardianTitle": "Habka Guardian",
+    "guardianSubtitle": "La wadaag macnaha dadka lagu kalsoon yahay.",
+    "emergencyTitle": "Habka degdegga ah",
+    "emergencySubtitle": "Shan taabasho ayaa kor u kici kara digniinaha SOS iyo ilaaliyaha.",
+    "excuseTitle": "Wac raali noqo",
+    "excuseSubtitle": "Abuur sabab qurux badan oo aad uga baxdo xaalad aan raaxo lahayn.",
+    "safetyCallTitle": "Wicitaan badbaado",
+    "safetyCallSubtitle": "Bilow wicitaan saaxiib waqtiga-dhabta ah markaad u baahan tahay taageero.",
+    "practiceTitle": "Muuqaalka tababarka",
+    "practiceSubtitle": "Isku day socodka badbaadada ee demo cadaadis hoose leh."
+  },
+  "jewelry": {
+    "pairTitle": "Lammaane NorthStar",
+    "pairSubtitle": "Dahabka ag dhow ku hay inta aad baarayso.",
+    "scan": "Baadh qalabka",
+    "scanning": "Waxaan baarayaa meel u dhow...",
+    "noDevices": "Qalab NorthStar oo dhow lama helin weli.",
+    "scanStartFailed": "Bluetooth baadhistu ma bilaaban karin. Fadlan mar kale isku day.",
+    "scanFailed": "Ma aanan helin dahabka agagaarka. Hubi Bluetooth, NorthStar dhow, mar kale isku day.",
+    "scanAccessFailed": "Bluetooth baadhistu ma bilaaban karin. Hubi Bluetooth gelitaanka oo mar kale isku day.",
+    "permissionDenied": "Gelitaanka qalabka agagaarka waa la damiyay. U ogolaa Bluetooth gelitaanka Settings, ka dibna isku day mar kale.",
+    "connectTimeout": "NorthStar aad u dheerayd inaan isku xiro. U dhaqaaji meel u dhow oo mar kale isku day.",
+    "connectFailed": "Ma aanan la xiriiri karin NorthStar. Hubi in uu ku dallaco oo ag dhow yahay, markaas mar kale isku day.",
+    "emptyTitle": "Qalab dhow weli ma jiraan",
+    "emptyMessage": "NorthStar ku hay dallac oo ku dhow telefoonkan, ka dibna mar kale baar.",
+    "searchingMessage": "Waxaan raadinayaa qalab NorthStar agagaarka..."
+  },
+  "home": {
+    "subtitle": "Dashboard-ka saaxiibka badbaadada",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} diyaar yahay",
+    "readyBody": "Codka, khariidada, dahabka, iyo ilaaliyayaal hal taabasho ayaa u jirta.",
+    "safetyCall": "Wicitaan badbaado",
+    "northStarDevice": "NorthStar qalabka",
+    "deviceConnected": "%{name} ku xiran · %{battery}%",
+    "noDevice": "Qalab ma xiran yahay",
+    "manageDevice": "Maareynta qalabka",
+    "mode": "Habka",
+    "modes": {
+      "home": "Guriga",
+      "guardian": "Guardian",
+      "emergency": "Degdegga ah"
+    }
+  },
+  "map": {
+    "finding": "Helitaanka meesha aad joogto...",
+    "retry": "Goobta dib-u-tijaabada",
+    "title": "Khariidadda badbaadada",
+    "previewSubtitle": "Expo Go hordhac; Mapbox lagu soo bandhigo dhisme horumarineed.",
+    "preview": "Hordhaca khariidada",
+    "risk": "Khatarta: %{risk} · Radius %{radius}m",
+    "refresh": "Goobta Cusboonaysiinta",
+    "refreshing": "Helitaanka goobta...",
+    "updateFailed": "Ma cusboonaysiin karno goobtaada. Fadlan mar kale isku day.",
+    "notRequested": "Helitaanka goobta lama codsan. Waxaad ka hawlgelin kartaa goor dambe Settings.",
+    "permissionOff": "Helitaanka goobta waa la damiyay. Hawlgeli Settings si khariidada badbaadada kuu dhexdhexaadiso.",
+    "timeout": "Goobtaada ayaa qaadanaysa waqti ka badan sidii la filayay. U dhaqaaq meel calaamad cad oo mar kale isku day.",
+    "savedTitle": "Meelaha la badbaadiyay",
+    "savedEmptyTitle": "Meelo la badbaadiyay weli ma jiraan",
+    "savedEmptyMessage": "Meelaha lagu kalsoon yahay ee aad kaydsato ayaa halkan ka soo muuqan doonta si degdeg ah loo helo.",
+    "zones": {
+      "crowding": "Ciriiriga habeenkii dambe",
+      "lowLighting": "Aagga iftiinka hooseeya"
+    },
+    "risks": {
+      "low": "hoose",
+      "medium": "Dhexdhexaad",
+      "high": "Sare"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Isku xir...",
+    "offlineCompanion": "Saaxiib offline ah",
+    "offline": "Offline",
+    "connected": "Isku xiran",
+    "interrupted": "Xiriirka la joojiyay",
+    "ready": "Diyaar u ah in la isku xiro",
+    "connectingSecurely": "Si ammaan ah ugu xirma saaxiibkaaga codka...",
+    "messagesWaiting": {
+      "one": "%{count} fariin sugaysa in la diro",
+      "other": "%{count} farriimo sugaya in la diro"
+    },
+    "useOffline": "Isticmaal offline companion",
+    "reconnect": "Dib ugu xiro codka AI",
+    "typePlaceholder": "Nooca haddii hadalka uu adag yahay",
+    "endCall": "Wicitaanka dhammaadka",
+    "startCall": "Bilow wicitaanka",
+    "emptyTitle": "Wadahadalkaagu halkan ayuu ka bilaabmaa",
+    "emptyMessage": "Bilow wicitaanka ama fariin qor markaad diyaar tahay."
+  },
+  "chat": {
+    "waiting": "Sugaya isku xirka",
+    "notSent": "Fariin lama dirin.",
+    "retryAccessibility": "Isku day mar kale fariin dirista"
+  },
+  "history": {
+    "clearTitle": "Taariikhda wada hadalka oo cad?",
+    "clearMessage": "Tani waxay ka saartaa fariimaha la keydiyay AI saaxiib ee qalabkan.",
+    "deleteTitle": "Ma tirtiri karaa wadahadalkan?",
+    "cannotUndo": "Tani lama joojin karo.",
+    "title": "Taariikhda Wadahadalka",
+    "subtitle": "AI farriimo la socda oo lagu kaydiyay qalabkan.",
+    "empty": "Wadahadallo weli ma la keydiyay.",
+    "emptyTitle": "Weli wada hadallo ma jiro",
+    "emptyMessage": "Wadahadalladaada AI ee saaxiibada ayaa halkan ka soo muuqan doona kadib wicitaankaaga ugu horreeya.",
+    "loadFailed": "Ma aanan soo gelin karin taariikhda wada hadalka. Fadlan mar kale isku day.",
+    "clearFailed": "Taariikhda wada hadalka ma nadiifin karno. Fadlan mar kale isku day.",
+    "deleteFailed": "Ma tirtiri karno wadahadalkaas. Fadlan mar kale isku day.",
+    "aiCompanion": "AI saaxiib",
+    "resume": "Resume",
+    "clearAll": "Nadiifi taariikhda oo dhan",
+    "roles": {
+      "assistant": "Companion",
+      "user": "adiga"
+    }
+  },
+  "voices": {
+    "title": "Codadka wicitaanka badbaadada",
+    "subtitle": "Dooro codka saaxiibka ah ee saxda ah in la maqlo.",
+    "test": "Codka tijaabada",
+    "stop": "Stop sample",
+    "selectionFailedTitle": "Xulashada lama badbaadin",
+    "selectionFailedMessage": "Fadlan mar kale isku day inaad codka doorato.",
+    "sampleFailedTitle": "Muunad lama heli karo",
+    "sampleFailedMessage": "Muunaddan codka lama ciyaari karin. Fadlan mar kale isku day.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Jilicsan, deggan, dhul dhigaya"
+      },
+      "bestie": {
+        "name": "Saaxiib",
+        "description": "iftiin, kalsooni, hadal badan"
+      },
+      "boyfriend": {
+        "name": "Saaxiib",
+        "description": "deggan, kalgacal leh, diyaar"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "kalsooni, ilaalin, dhiirrigelin leh"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Cod",
+    "changeVoice": "Codka beddel",
+    "showCompanion": "Saaxiibka bandhigga",
+    "offlineMode": "Habka offline",
+    "offlineModeSubtitle": "Isticmaal jawaabaha la socda marka aqoonsiga shabakadda ama Hume aan la heli karin.",
+    "privacyData": "Asturnaanta & xogta",
+    "privacyBody": "Dhoofi ama tirtir xogta maxalliga ah ee lagu kaydiyay qalabkan.",
+    "preparingExport": "Diyaarinta dhoofinta...",
+    "exportData": "Xogtayda dhoofi",
+    "privacyPolicy": "Siyaasadda asturnaanta",
+    "deleting": "Tirtirid...",
+    "deleteAll": "Tirtir dhammaan xogta maxalliga ah",
+    "deviceManagement": "Maareynta qalabka",
+    "emergencyContacts": "Xiriirada degdegga ah",
+    "signOut": "Ka bax",
+    "exportFailedTitle": "Dhoofinta ayaa fashilmay",
+    "exportFailedMessage": "Ma awoodo in xogtaada la dhoofiyo hadda.",
+    "deleteConfirmTitle": "Dhammaan xogta maxalliga ah ma tirtiri karaa?",
+    "deleteConfirmMessage": "Tani waxay ka saartaa profile-kaaga, dejimahaaga, xiriirada degdegga ah, taariikhda wada hadalka, xusuusinta ogolaanshaha, iyo kalfadhiga aqoonsiga maxalliga ah ee qalabkan.",
+    "deleteEverything": "Tirtir wax walba",
+    "deleteFailedTitle": "Tirtiriddu way fashilantay",
+    "deleteFailedMessage": "Ma awoodo in la tirtiro xogta maxalliga ah hadda.",
+    "linkFailed": "Ma furi karo xiriirka",
+    "sections": {
+      "language": "Luqadda",
+      "languageSubtitle": "Interface-ka iyo luqadda ogolaanshaha nidaamka",
+      "companion": "Saaxiib",
+      "companionSubtitle": "Doorashooyinka codka iyo offline",
+      "deviceSafety": "Qalabka iyo badbaadada",
+      "deviceSafetySubtitle": "NorthStar, ilaaliyeyaasha, iyo xiriirada degdegga ah",
+      "privacy": "Asturnaanta iyo xogta",
+      "privacySubtitle": "Taariikhda, dhoofinta, tirtirka, iyo siyaasadda",
+      "account": "Xisaab",
+      "accountSubtitle": "Kalfadhigaaga VeryLoving ee hadda"
+    },
+    "updateFailedTitle": "Dejinta lama keydiyay",
+    "updateFailedMessage": "Ma badbaadin karno doorashadaas. Fadlan mar kale isku day.",
+    "signOutFailedTitle": "Ma awoodin inaan ka baxo",
+    "signOutFailedMessage": "Fadhigaagu weli waa mid firfircoon. Fadlan mar kale isku day."
+  },
+  "contacts": {
+    "title": "Xiriirada degdegga ah",
+    "subtitle": "Dad lagu kalsoon yahay oo diyaar u ah inta lagu jiro socodka badbaadada.",
+    "addTitle": "Ku dar xiriirka degdegga ah",
+    "name": "Magaca",
+    "namePlaceholder": "Magaca xiriirka",
+    "phone": "Lambarka taleefanka ee xiriirka",
+    "add": "Ku dar xiriirka",
+    "empty": "Xiriirro degdeg ah lama kordhin weli.",
+    "emptyTitle": "Weli xiriir degdeg ah lama hayo",
+    "emptyMessage": "Ku dar qof aad ku kalsoon tahay si uu diyaar u noqdo marka badbaado u baahan yahay.",
+    "removeTitle": "Ka saar %{name}?",
+    "removeMessage": "Qofkan mar dambe kuma soo muuqan doono socodkaaga degdegga ah.",
+    "nameRequired": "Geli magaca xiriirka.",
+    "saveFailedTitle": "Xiriirka lama keydiyay",
+    "saveFailedMessage": "Xiriirkan ma badbaadin karno. Faahfaahinta hubi oo mar kale isku day.",
+    "removeFailedTitle": "Xiriirka lama saarin",
+    "removeFailedMessage": "Xiriirkan ma ka saari karno. Fadlan mar kale isku day.",
+    "callAccessibility": "Wac %{name}",
+    "removeAccessibility": "Ka saar %{name}"
+  },
+  "device": {
+    "title": "Maareynta qalabka",
+    "subtitle": "Maamul qalabkaaga NorthStar.",
+    "connected": "Ku xiran · %{battery}% baytari",
+    "none": "Qalab ma xiran yihiin",
+    "disconnect": "Qalabka goynta",
+    "connect": "Qalabka isku xira"
+  },
+  "friends": {
+    "title": "Saaxiibo",
+    "subtitle": "Ilaaliyayaal, codsiyada, iyo jaantuska degdegga ah.",
+    "addDemo": "Ku dar demo saaxiib",
+    "emptyTitle": "Goobtaada badbaadada waa madhan tahay",
+    "emptyMessage": "Asxaabta lagu kalsoon yahay iyo ilaaliyayaal ayaa halkan ka soo muuqan doona marka la daray.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Sugaya"
+    }
+  },
+  "emergency": {
+    "title": "Degdeg SOS",
+    "subtitle": "Kordhi kaliya marka aad u baahan tahay taageero degdeg ah.",
+    "body": "Tani waxay ogeysiin doontaa socodkaaga badbaadada waxayna diyaarin doontaa xiriirada degdegga ah.",
+    "activate": "Hawlgeli SOS",
+    "callCompanion": "Wac AI saaxiib",
+    "notificationTitle": "SOS la hawlgeliyay",
+    "notificationBody": "Socodkaaga degdegga ah waa diyaar.",
+    "readyTitle": "SOS diyaar",
+    "callContact": "Wac %{name}?",
+    "addContact": "Ku dar xiriir degdeg ah Settings-ka.",
+    "quickShareTitle": "La wadaag degdeg ah",
+    "quickShareMessage": "Qaybta wadaagga goobta waa diyaar. Ku xir dhamaadka share-ka backend-ka si aad u dirto xiriirro toos ah."
+  },
+  "quickShare": {
+    "title": "La wadaag degdeg ah",
+    "subtitle": "Socodka wadaagga goobta waa diyaar."
+  },
+  "capybearTap": {
+    "title": "Capybear",
+    "subtitle": "Laba jeer taabo NorthStar si aad u tuurto liin badbaado ah.",
+    "body": "Jidka Gesture-ka waa diyaar si loogu sameeyo fiilooyinka dhacdooyinka BLE."
+  },
+  "debug": {
+    "title": "VeryLoving bogga khaladaadka",
+    "subtitle": "Waddo horumarineed oo keliya."
+  },
+  "errors": {
+    "voiceOffline": "Waxaad u muuqataa mid offline ah. Fariintaada waa la diri doonaa markaad dib isugu xirto.",
+    "voiceQueued": "Fariinta waa la badbaadiyay. Waxaa la diri doonaa marka codka saaxiibka uu dib isugu xiro.",
+    "voiceRetrying": "Mar kale isku dayaya inaad fariintaada dirto...",
+    "voiceConnecting": "Si ammaan ah ugu xirma saaxiibkaaga codka...",
+    "microphone": "Helitaanka makarafoonka ayaa loo baahan yahay wicitaannada codka. Waxaad furi kartaa Settings, ama fariin qor halkii.",
+    "billing": "Barnaamijka codka ee internetka si ku-meel-gaar ah looma heli karo. Waxaad sii wadi kartaa saaxiibka offline-ka.",
+    "authentication": "Saaxiibka codka ma xaqiijin karin fadhigan. Mar kale gal ama hadda isticmaal saaxiibka offline-ka.",
+    "timeout": "Saaxiibka codka ayaa aad u dheereeyay inuu ka jawaabo. Hubi xiriirkaaga oo mar kale isku day.",
+    "network": "Ma gaari karin codka saaxiibka. Hubi xiriirkaaga, kadibna isku day mar kale ama sii wad offline.",
+    "genericVoice": "Waxbaa carqaladeeyay wicitaanka codka. Mar kale isku day, ama sii wad saaxiibka offline-ka."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving dhoofinta xogta"
+  },
+  "notifications": {
+    "channelName": "Digniino badbaado"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving u baahan yahay marin makarafoon si ammaan ah iyo wicitaannada saaxiibka AI.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving isticmaalaa goobtaada khariidadda badbaadada iyo astaamaha badbaadada ee agagaarka.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving isticmaalaa goobtaada si ay u taageerto socodka badbaadada iyo socodka degdegga ah.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving isticmaashaa goobta asalka ah si ay u gaarto badbaado iyo astaamaha aagga khatarta ah.",
+      "NSCameraUsageDescription": "VeryLoving isticmaalaa kamaradda kaliya markaad doorato inaad sawir profile ama badbaado qaadato.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving isticmaalaa maktabaddaada sawirrada oo kaliya markaad doorato profile ama sawir badbaado ah.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Dodaj",
+    "apple": "Apple",
+    "back": "Nazaj",
+    "call": "Klic",
+    "cancel": "Prekliči",
+    "clear": "Čisto",
+    "close": "Konec",
+    "connect": "Poveži se",
+    "connecting": "Povezovanje...",
+    "continue": "Nadaljuj",
+    "delete": "Izbriši",
+    "finish": "Konec",
+    "friends": "Prijatelji",
+    "google": "Google",
+    "home": "Domov",
+    "loading": "Nalaganje...",
+    "map": "Zemljevid",
+    "notNow": "Ne zdaj",
+    "remove": "Odstranite",
+    "retry": "Ponovni poskus",
+    "retrying": "Ponovni poskus",
+    "save": "Shrani",
+    "selected": "Izbrani",
+    "send": "Pošlji",
+    "settings": "Prizorišča",
+    "skip": "Preskoči",
+    "skipForNow": "Za zdaj preskočite",
+    "skipTutorial": "Preskoči vadnico",
+    "sos": "SOS",
+    "unknown": "Neznan",
+    "user": "VeryLoving uporabnik",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Jezik",
+    "subtitle": "Izberite jezik, ki se uporablja v aplikaciji.",
+    "system": "Privzeti sistem",
+    "search": "Iskalni jeziki",
+    "noResults": "Noben jezik ne ustreza vašemu iskanju.",
+    "english": "Angleščina",
+    "spanish": "Španščina",
+    "french": "Francoščina",
+    "chineseSimplified": "Kitajščina (poenostavljeno)"
+  },
+  "phone": {
+    "label": "Telefonska številka",
+    "placeholder": "Telefonska številka",
+    "selectCountry": "Izbrana država ali regija",
+    "searchCountry": "Poiščite državo, kodo ali predpono za klicanje",
+    "noCountries": "Nobena država se ne ujema z vašim iskanjem.",
+    "countryButton": "Spremeni državo, trenutno %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefonska številka za %{country}",
+    "required": "Vnesite telefonsko številko.",
+    "tooShort": "Ta telefonska številka je prekratka.",
+    "tooLong": "Ta telefonska številka je predolga.",
+    "invalid": "Vnesite veljavno telefonsko številko za izbrano državo.",
+    "valid": "Veljavna mednarodna telefonska številka"
+  },
+  "auth": {
+    "onboardingTagline": "Osebni varnostni spremljevalec za trenutke med \"V redu sem\" in \"Potrebujem pomoč.\"",
+    "createAccount": "Ustvari račun",
+    "continueOnboarding": "Nadaljujte z uvajanjem",
+    "createSubtitle": "Izberite način prijave, da zaščitite svoj varnostni graf.",
+    "phoneVerification": "Telefonska verifikacija",
+    "sendCode": "Pošlji kodo",
+    "sendingCode": "Pošiljam kodo...",
+    "verifyCode": "Preverite kodo",
+    "sentTo": "Poslan v %{phone}",
+    "yourPhone": "tvoj telefon",
+    "verificationCode": "Preverjanje kode",
+    "verify": "Preveri",
+    "verifying": "Preverjam...",
+    "invalidCode": "Vnesite verifikacijsko kodo.",
+    "signInFailedTitle": "Prijava prekinjena",
+    "signInFailedMessage": "Prijave nismo mogli dokončati. Preverite povezavo in poskusite znova.",
+    "googleUnavailableTitle": "Google Prijava ni na voljo",
+    "googleUnavailableMessage": "Uporaba lokalne razvojne seje. Native Google Sign-In deluje v razvojni različici.",
+    "northStarTitle": "NorthStar nakit",
+    "northStarSubtitle": "Poveži zdaj ali nadaljuj in dodaj kasneje.",
+    "northStarBody": "VL01 nosljiva naprava lahko sproži varnostne tokove s tapkanjem in dolgimi pritiski.",
+    "setupJewelry": "Postavi nakit",
+    "meetCapybear": "Spoznajte Capybear",
+    "meetCapybearSubtitle": "Tvoj nežni varnostni spremljevalec na zemljevidu in v klicih.",
+    "capybearBody": "Capybear lahko pomaga pri domačem načinu, načinu skrbnika, nujnem načinu, klicih za izgovore in glasovni podpori.",
+    "chooseVoice": "Izberi glas",
+    "capybearReminder": "Capybear opomnik",
+    "remindersReady": "Nežni opomniki so pripravljeni."
+  },
+  "permissions": {
+    "locationTitle": "Varnost lokacije",
+    "locationSubtitle": "Uporablja se za zemljevid, nevarne cone, varen prihod in SOS kontekst.",
+    "locationBody": "VeryLoving zahteva lokacijo, da skrbniki razumejo, kje je potrebna pomoč. To lahko kasneje spremeniš v Nastavitvah.",
+    "allowLocation": "Dovoli lokacijo",
+    "notificationsTitle": "Varnostna opozorila",
+    "notificationsSubtitle": "Obvestila podpirajo prijave in nujne dogodke.",
+    "notificationsBody": "Obvestila uporabljamo le za varnostna opozorila, nujne posodobitve in opomnike, ki jih omogočite.",
+    "enableNotifications": "Omogočite obvestila",
+    "locationRationaleTitle": "Lokacija ohranja varnostni kontekst natančen",
+    "locationRationaleMessage": "VeryLoving uporablja vašo lokacijo za varnostni zemljevid, nevarne cone, hitro deljenje in SOS kontekst. To lahko kasneje spremeniš v Nastavitvah.",
+    "notificationsRationaleTitle": "Varnostna opozorila potrebujejo obvestila",
+    "notificationsRationaleMessage": "VeryLoving pošilja opomnike za prijavo, nujne posodobitve in varnostne opozorila, ki jih omogočite. Za oglase ne uporabljamo obvestil.",
+    "microphoneRationaleTitle": "Mikrofon napaja varnostne klice",
+    "microphoneRationaleMessage": "VeryLoving uporablja mikrofon le, ko začneš AI spremljevalca ali varnostni klic.",
+    "bluetoothRationaleTitle": "Bluetooth povezuje vaš nosljiv pripomoček",
+    "bluetoothRationaleMessage": "VeryLoving uporablja Bluetooth za povezovanje z NorthStar nakitom, prebiranje stanja povezave in varno delovanje sprožilcev iz nosljive naprave.",
+    "cameraRationaleTitle": "Kamera je opcijska",
+    "cameraRationaleMessage": "VeryLoving uporablja fotoaparat le, ko se odločite narediti profilno fotografijo ali deliti varnostno fotografijo."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ohranja ta potek dostopen iz nastavitev in nadzorne plošče.",
+    "chooseVoiceTitle": "Izberi svoj glas",
+    "chooseVoiceSubtitle": "Izberi spremljevalni glas, ki se ti zdi najbolj varen za slišati.",
+    "homeTitle": "Domači način",
+    "homeSubtitle": "Tiho spremljanje za vsakodnevno varnost.",
+    "guardianTitle": "Način varuha",
+    "guardianSubtitle": "Delite kontekst z zaupanja vrednimi ljudmi.",
+    "emergencyTitle": "Nujni način",
+    "emergencySubtitle": "Pet tapov lahko eskalira v SOS in opozorila skrbnika.",
+    "excuseTitle": "Klic za opravičilo",
+    "excuseSubtitle": "Ustvari si prijazen razlog, da zapustiš neprijetno situacijo.",
+    "safetyCallTitle": "Varnostni klic",
+    "safetyCallSubtitle": "Začnite klic spremljevalca v realnem času, ko potrebujete podporo.",
+    "practiceTitle": "Prizor vadbe",
+    "practiceSubtitle": "Preizkusite varnostne tokove v nizkotlačnem testu."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Med skeniranjem imejte nakit blizu.",
+    "scan": "Skeniranje naprav",
+    "scanning": "Skeniram v bližini...",
+    "noDevices": "V bližini še niso našli nobenih bližnjih NorthStar naprav.",
+    "scanStartFailed": "Bluetooth skeniranje se ni moglo začeti. Prosim, poskusite znova.",
+    "scanFailed": "V bližini nakita nisva našla. Preveri Bluetooth, imej NorthStar blizu in poskusi znova.",
+    "scanAccessFailed": "Bluetooth skeniranje se ni moglo začeti. Preverite Bluetooth dostop in poskusite znova.",
+    "permissionDenied": "Dostop bližnjih naprav je izklopljen. Dovoli Bluetooth dostop v Nastavitvah, nato poskusi znova.",
+    "connectTimeout": "NorthStar je trajalo predolgo, da sem se povezal. Premakni ga bližje in poskusi znova.",
+    "connectFailed": "Nismo se mogli povezati z NorthStar. Preveri, da je napolnjen in blizu, nato poskusi znova.",
+    "emptyTitle": "Še ni bližnjih naprav",
+    "emptyMessage": "Naj NorthStar napolnjen in blizu tega telefona, nato ponovno skeniraj.",
+    "searchingMessage": "Iščem NorthStar naprave v bližini..."
+  },
+  "home": {
+    "subtitle": "Nadzorna plošča varnostnega spremljevalca",
+    "modeStatus": "%{mode} NAČIN",
+    "companionReady": "%{name} je pripravljen",
+    "readyBody": "Glas, zemljevid, nakit in varuhi so oddaljeni le en dotik.",
+    "safetyCall": "Varnostni klic",
+    "northStarDevice": "NorthStar naprava",
+    "deviceConnected": "%{name} povezan · %{battery} %",
+    "noDevice": "Nobena naprava ni priključena",
+    "manageDevice": "Upravljanje naprave",
+    "mode": "Način",
+    "modes": {
+      "home": "Domov",
+      "guardian": "Guardian",
+      "emergency": "Sili"
+    }
+  },
+  "map": {
+    "finding": "Najti tvojo lokacijo...",
+    "retry": "Lokacija ponovnega poskusa",
+    "title": "Varnostni zemljevid",
+    "previewSubtitle": "Expo Go predogled; Mapbox se upodablja v razvojni različici.",
+    "preview": "Predogled zemljevida",
+    "risk": "Tveganje: %{risk} · Radij %{radius}m",
+    "refresh": "Lokacija osvežitve",
+    "refreshing": "Iskanje lokacije...",
+    "updateFailed": "Nismo mogli posodobiti vaše lokacije. Prosim, poskusite znova.",
+    "notRequested": "Dostop do lokacije ni bil zahtevan. Kasneje ga lahko omogočite v Nastavitvah.",
+    "permissionOff": "Dostop do lokacije je izklopljen. Omogočite ga v nastavitvah, da se varnostni zemljevid osredotoči na vas.",
+    "timeout": "Vaša lokacija traja dlje, kot smo pričakovali. Premakni se nekam z jasnejšim signalom in poskusi znova.",
+    "savedTitle": "Rešena mesta",
+    "savedEmptyTitle": "Še ni shranjenih mest",
+    "savedEmptyMessage": "Zaupanja vredna mesta, ki jih shranite, se bodo tukaj prikazala za hiter dostop.",
+    "zones": {
+      "crowding": "Pozno nočna gneča",
+      "lowLighting": "Območje z nizko osvetlitvijo"
+    },
+    "risks": {
+      "low": "nizko",
+      "medium": "Srednje",
+      "high": "visoko"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Povezovanje...",
+    "offlineCompanion": "Offline spremljevalec",
+    "offline": "Brez povezave",
+    "connected": "Povezano",
+    "interrupted": "Povezava prekinjena",
+    "ready": "Pripravljen na povezavo",
+    "connectingSecurely": "Varno se povežeš s svojim glasovnim spremljevalcem...",
+    "messagesWaiting": {
+      "one": "%{count} sporočilo čaka na pošiljanje",
+      "other": "%{count} sporočil, ki čakajo na pošiljanje"
+    },
+    "useOffline": "Uporabi offline spremljevalca",
+    "reconnect": "Ponovno se povežite z glasovno AI",
+    "typePlaceholder": "Tipkaj, če je govorjenje težko",
+    "endCall": "Konec klica",
+    "startCall": "Začni klic",
+    "emptyTitle": "Vaš pogovor se začne tukaj",
+    "emptyMessage": "Začnite klic ali napišite sporočilo, ko boste pripravljeni."
+  },
+  "chat": {
+    "waiting": "Čakanje na povezavo",
+    "notSent": "Sporočilo ni poslano.",
+    "retryAccessibility": "Poskusi ponovno poslati sporočilo"
+  },
+  "history": {
+    "clearTitle": "Čista zgodovina pogovorov?",
+    "clearMessage": "To odstrani shranjena AI spremljevalna sporočila s te naprave.",
+    "deleteTitle": "Izbrisati ta pogovor?",
+    "cannotUndo": "Tega ni mogoče razveljaviti.",
+    "title": "Zgodovina pogovorov",
+    "subtitle": "AI spremljevalna sporočila shranjena na tej napravi.",
+    "empty": "Pogovorov še ni bilo shranjenih.",
+    "emptyTitle": "Še ni pogovorov",
+    "emptyMessage": "Vaši AI spremljevalni pogovori se bodo pojavili tukaj po prvem klicu.",
+    "loadFailed": "Nismo mogli naložiti zgodovine pogovorov. Prosim, poskusite znova.",
+    "clearFailed": "Nismo mogli izbrisati zgodovine pogovorov. Prosim, poskusite znova.",
+    "deleteFailed": "Tega pogovora nismo mogli izbrisati. Prosim, poskusite znova.",
+    "aiCompanion": "AI spremljevalec",
+    "resume": "Življenjepis",
+    "clearAll": "Obriši vso zgodovino",
+    "roles": {
+      "assistant": "Spremljevalec",
+      "user": "Ti"
+    }
+  },
+  "voices": {
+    "title": "Moji varnostni klici",
+    "subtitle": "Izberite spremljevalni glas, ki se vam zdi pravi za slišanje.",
+    "test": "Testni glas",
+    "stop": "Stop vzorec",
+    "selectionFailedTitle": "Izbira ni shranjena",
+    "selectionFailedMessage": "Prosim, poskusi znova izbrati glas.",
+    "sampleFailedTitle": "Vzorec ni na voljo",
+    "sampleFailedMessage": "Tega glasovnega vzorca ni bilo mogoče predvajati. Prosim, poskusite znova.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mehko, mirno, prizemljujoče"
+      },
+      "bestie": {
+        "name": "Najboljši prijatelj",
+        "description": "svetla, pomirjujoča, pogovorna"
+      },
+      "boyfriend": {
+        "name": "Fant",
+        "description": "mirno, ljubeče, prisotno"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "samozavestna, zaščitniška, motivirajoča"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Glas",
+    "changeVoice": "Spremeni glas",
+    "showCompanion": "Spremljevalec oddaje",
+    "offlineMode": "Način brez povezave",
+    "offlineModeSubtitle": "Uporabite priložene spremljevalne odgovore, kadar omrežje ali Hume poverilnice niso na voljo.",
+    "privacyData": "Zasebnost in podatki",
+    "privacyBody": "Izvozite ali izbrišite lokalne podatke, shranjene na tej napravi.",
+    "preparingExport": "Pripravljam izvoz...",
+    "exportData": "Izvozi moje podatke",
+    "privacyPolicy": "Politika zasebnosti",
+    "deleting": "Brisanje...",
+    "deleteAll": "Izbriši vse lokalne podatke",
+    "deviceManagement": "Upravljanje naprav",
+    "emergencyContacts": "Nujni kontakti",
+    "signOut": "Odjavite se",
+    "exportFailedTitle": "Izvoz ni uspel",
+    "exportFailedMessage": "Trenutno ne morem izvoziti vaših podatkov.",
+    "deleteConfirmTitle": "Izbrisati vse lokalne podatke?",
+    "deleteConfirmMessage": "To odstrani vaš profil, nastavitve, nujne kontakte, zgodovino pogovorov, opomnike za dovoljenja in lokalno avtentikacijo s te naprave.",
+    "deleteEverything": "Izbriši vse",
+    "deleteFailedTitle": "Izbris ni uspel",
+    "deleteFailedMessage": "Trenutno ne morem izbrisati lokalnih podatkov.",
+    "linkFailed": "Povezave ni mogoče odpreti",
+    "sections": {
+      "language": "Jezik",
+      "languageSubtitle": "Jezik za vmesnik in sistemska dovoljenja",
+      "companion": "Spremljevalec",
+      "companionSubtitle": "Glasovne in offline nastavitve",
+      "deviceSafety": "Naprave in varnost",
+      "deviceSafetySubtitle": "NorthStar, skrbniki in kontakti za nujne primere",
+      "privacy": "Zasebnost in podatki",
+      "privacySubtitle": "Zgodovina, izvoz, izbris in politika",
+      "account": "Račun",
+      "accountSubtitle": "Vaša trenutna VeryLoving seja"
+    },
+    "updateFailedTitle": "Nastavitev ni shranjena",
+    "updateFailedMessage": "Te preference nismo mogli rešiti. Prosim, poskusite znova.",
+    "signOutFailedTitle": "Ni bilo mogoče odjaviti",
+    "signOutFailedMessage": "Tvoja seja je še vedno aktivna. Prosim, poskusite znova."
+  },
+  "contacts": {
+    "title": "Nujni kontakti",
+    "subtitle": "Zaupanja vredni ljudje so na voljo med varnostnimi tokovi.",
+    "addTitle": "Dodajte nujni kontakt",
+    "name": "Ime",
+    "namePlaceholder": "Kontaktno ime",
+    "phone": "Kontaktna telefonska številka",
+    "add": "Dodaj stik",
+    "empty": "Za nujne primere še ni bilo dodanih kontaktov.",
+    "emptyTitle": "Še ni nujnih kontaktov",
+    "emptyMessage": "Dodajte nekoga, ki mu zaupate, da bo pripravljen, ko bo varnostni tok potreben.",
+    "removeTitle": "Odstraniti %{name}?",
+    "removeMessage": "Ta oseba se ne bo več pojavila v vašem nujnem postopku.",
+    "nameRequired": "Vpišite ime kontakta.",
+    "saveFailedTitle": "Stik ni shranjen",
+    "saveFailedMessage": "Tega stika nismo mogli rešiti. Preverite podrobnosti in poskusite znova.",
+    "removeFailedTitle": "Stik ni odstranjen",
+    "removeFailedMessage": "Tega stika nismo mogli odstraniti. Prosim, poskusite znova.",
+    "callAccessibility": "Pokliči %{name}",
+    "removeAccessibility": "Odstrani %{name}"
+  },
+  "device": {
+    "title": "Upravljanje naprav",
+    "subtitle": "Upravljajte svojo NorthStar napravo.",
+    "connected": "Povezano · %{battery} % baterije",
+    "none": "Nobena naprava ni povezana",
+    "disconnect": "Naprava za odklop",
+    "connect": "Connect napravo"
+  },
+  "friends": {
+    "title": "Prijatelji",
+    "subtitle": "Varuhi, zahteve in graf za nujne primere.",
+    "addDemo": "Dodaj demo prijatelja",
+    "emptyTitle": "Tvoj varnostni krog je prazen",
+    "emptyMessage": "Zaupanja vredni prijatelji in skrbniki se bodo tukaj pojavili, ko bodo dodani.",
+    "newGuardian": "Novi Varuh",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "V teku"
+    }
+  },
+  "emergency": {
+    "title": "Nujni SOS",
+    "subtitle": "Stopnjujte le, ko potrebujete takojšnjo podporo.",
+    "body": "To bo obvestilo vaš varnostni tok in pripravilo stike za nujne primere.",
+    "activate": "Aktiviraj SOS",
+    "callCompanion": "Pokliči AI spremljevalca",
+    "notificationTitle": "SOS aktiviran",
+    "notificationBody": "Vaš nujni pretok je pripravljen.",
+    "readyTitle": "SOS pripravljen",
+    "callContact": "Poklicati %{name}?",
+    "addContact": "Dodajte nujni kontakt v Nastavitvah.",
+    "quickShareTitle": "Hitro deljenje",
+    "quickShareMessage": "Prispevek o deljenju lokacije je pripravljen. Povežite backend share endpoint za pošiljanje živih povezav."
+  },
+  "quickShare": {
+    "title": "Hitro deljenje",
+    "subtitle": "Tok deljenja lokacije je pripravljen."
+  },
+  "capybearTap": {
+    "title": "Capybear pipa",
+    "subtitle": "Dvakrat pritisnite NorthStar, da spustite varnostno pomarančo.",
+    "body": "Gesture pot je pripravljena za ožičenje BLE dogodkov."
+  },
+  "debug": {
+    "title": "VeryLoving stran za odpravljanje napak",
+    "subtitle": "Samo razvojna pot."
+  },
+  "errors": {
+    "voiceOffline": "Zdi se, da si offline. Vaše sporočilo bo poslano, ko se ponovno povežete.",
+    "voiceQueued": "Sporočilo shranjeno. Poslan bo, ko se glasovni spremljevalec ponovno poveže.",
+    "voiceRetrying": "Poskušaš spet poslati tvoje sporočilo...",
+    "voiceConnecting": "Varno se povežeš s svojim glasovnim spremljevalcem...",
+    "microphone": "Za glasovne klice je potreben dostop do mikrofona. To lahko omogočite v Nastavitvah ali pa namesto tega napišete sporočilo.",
+    "billing": "Spletni glasovni spremljevalec je začasno nedosegljiv. Lahko nadaljujete z offline spremljevalcem.",
+    "authentication": "Glasovni spremljevalec ni mogel potrditi te seje. Ponovno se prijavite ali za zdaj uporabite spremljevalca brez povezave.",
+    "timeout": "Glasovni spremljevalec je predolgo odlašal z odgovorom. Preverite povezavo in poskusite znova.",
+    "network": "Nismo mogli doseči glasovnega spremljevalca. Preverite povezavo, nato poskusite znova ali nadaljujte brez povezave.",
+    "genericVoice": "Nekaj je prekinilo glasovni klic. Poskusite znova ali nadaljujte z offline spremljevalcem."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving izvoz podatkov"
+  },
+  "notifications": {
+    "channelName": "Varnostna opozorila"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving potrebuje dostop do mikrofona za varnost in AI klice spremljevalcev.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving uporablja vašo lokacijo za varnostni zemljevid in bližnje varnostne funkcije.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving uporablja vašo lokacijo za podporo varnemu prihodu in nujnim tokovom.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving uporablja ozadje za varen prihod in bližnje značilnosti nevarne cone.",
+      "NSCameraUsageDescription": "VeryLoving uporablja fotoaparat le, ko se odločite za profilno ali varnostno fotografijo.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving uporablja vašo knjižnico fotografij le, ko izberete profilno ali varnostno sliko.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uporablja Bluetooth za povezavo z vašim NorthStar varnostnim nakitom.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving uporablja Bluetooth za povezavo z vašim NorthStar varnostnim nakitom."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

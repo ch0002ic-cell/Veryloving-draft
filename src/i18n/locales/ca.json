@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Afegeix",
+    "apple": "Apple",
+    "back": "Enrere",
+    "call": "Crida",
+    "cancel": "Cancel·la",
+    "clear": "Clar",
+    "close": "Tanca",
+    "connect": "Connecta't",
+    "connecting": "Connectant...",
+    "continue": "Continua",
+    "delete": "Esborrar",
+    "finish": "Final",
+    "friends": "Amics",
+    "google": "Google",
+    "home": "Llar",
+    "loading": "Carregant...",
+    "map": "Mapa",
+    "notNow": "Ara no",
+    "remove": "Elimina",
+    "retry": "Reintent",
+    "retrying": "Reintentant",
+    "save": "Guarda",
+    "selected": "Seleccionat",
+    "send": "Envia",
+    "settings": "Escenaris",
+    "skip": "Saltar",
+    "skipForNow": "Saltar-ho per ara",
+    "skipTutorial": "Salta el tutorial",
+    "sos": "SOS",
+    "unknown": "Desconegut",
+    "user": "VeryLoving usuari",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Llengua",
+    "subtitle": "Tria l'idioma utilitzat durant tota l'aplicació.",
+    "system": "Per defecte del sistema",
+    "search": "Llengües de cerca",
+    "noResults": "Cap idioma coincideix amb la teva cerca.",
+    "english": "Anglès",
+    "spanish": "Espanyol",
+    "french": "Francès",
+    "chineseSimplified": "Xinès (Simplificat)"
+  },
+  "phone": {
+    "label": "Número de telèfon",
+    "placeholder": "Número de telèfon",
+    "selectCountry": "Selecciona el país o la regió",
+    "searchCountry": "País de cerca, codi o prefix de marcació",
+    "noCountries": "Cap país coincideix amb la teva cerca.",
+    "countryButton": "Canvia de país, actualment %{country} més %{callingCode}",
+    "inputAccessibility": "Número de telèfon per a %{country}",
+    "required": "Introdueix un número de telèfon.",
+    "tooShort": "Aquest número de telèfon és massa curt.",
+    "tooLong": "Aquest número de telèfon és massa llarg.",
+    "invalid": "Introdueix un número de telèfon vàlid del país seleccionat.",
+    "valid": "Número de telèfon internacional vàlid"
+  },
+  "auth": {
+    "onboardingTagline": "Un company de seguretat personal per als moments entre \"Estic bé\" i \"Necessito ajuda.\"",
+    "createAccount": "Crea un compte",
+    "continueOnboarding": "Continua amb la incorporació",
+    "createSubtitle": "Tria un mètode d'inici de sessió per protegir el teu gràfic de seguretat.",
+    "phoneVerification": "Verificació telefònica",
+    "sendCode": "Codi d'enviament",
+    "sendingCode": "Enviant codi...",
+    "verifyCode": "Codi de verificació",
+    "sentTo": "Enviat a %{phone}",
+    "yourPhone": "El teu telèfon",
+    "verificationCode": "Codi de verificació",
+    "verify": "Verificar",
+    "verifying": "Verificant...",
+    "invalidCode": "Introdueix el codi de verificació.",
+    "signInFailedTitle": "Inici de sessió interromput",
+    "signInFailedMessage": "No vam poder completar l'inici de sessió. Comprova la teva connexió i torna-ho a intentar.",
+    "googleUnavailableTitle": "Google Inici de sessió no disponible",
+    "googleUnavailableMessage": "Utilitzant una sessió de desenvolupament local. Native Google Sign-In funciona en una construcció de desenvolupament.",
+    "northStarTitle": "NorthStar joies",
+    "northStarSubtitle": "Emparella ara o continua i afegeix-ho més endavant.",
+    "northStarBody": "El VL01 portàtil pot activar fluxos de seguretat amb tocs i gestos de premsa llarga.",
+    "setupJewelry": "Munta joies",
+    "meetCapybear": "Coneix Capybear",
+    "meetCapybearSubtitle": "El teu company de seguretat amable al mapa i a les trucades.",
+    "capybearBody": "Capybear pot ajudar amb el mode casa, mode guardià, mode emergència, trucades d'excusa i suport de veu.",
+    "chooseVoice": "Tria una veu",
+    "capybearReminder": "Capybear recordatori",
+    "remindersReady": "Els recordatoris suaus ja estan preparats."
+  },
+  "permissions": {
+    "locationTitle": "Seguretat de la ubicació",
+    "locationSubtitle": "S'utilitza per al mapa, zones de perill, arribada segura i SOS context.",
+    "locationBody": "VeryLoving demana la ubicació perquè els tutors puguin entendre on pot ser necessària ajuda. Pots canviar-ho més endavant a Configuració.",
+    "allowLocation": "Permetre la ubicació",
+    "notificationsTitle": "Alertes de seguretat",
+    "notificationsSubtitle": "Les notificacions donen suport a registres i esdeveniments d'emergència.",
+    "notificationsBody": "Només fem servir notificacions per a avisos de seguretat, actualitzacions d'emergència i recordatoris que tu habilitis.",
+    "enableNotifications": "Activar notificacions",
+    "locationRationaleTitle": "La ubicació manté el context de seguretat precís",
+    "locationRationaleMessage": "VeryLoving utilitza la teva ubicació per al mapa de seguretat, zones de perill, compartició ràpida i SOS context. Pots canviar-ho més endavant a Configuració.",
+    "notificationsRationaleTitle": "Les alertes de seguretat necessiten notificacions",
+    "notificationsRationaleMessage": "VeryLoving envia recordatoris de facturació, actualitzacions d'emergència i avisos de seguretat que habilites. No utilitzem notificacions per a anuncis.",
+    "microphoneRationaleTitle": "El micròfon alimenta les trucades de seguretat",
+    "microphoneRationaleMessage": "VeryLoving només utilitza el micròfon quan comences una trucada de AI company o de seguretat.",
+    "bluetoothRationaleTitle": "Bluetooth connecta el teu dispositiu portàtil",
+    "bluetoothRationaleMessage": "VeryLoving utilitza Bluetooth per combinar amb NorthStar joies, llegir l'estat de la connexió i activar els fluxos de seguretat del dispositiu portàtil.",
+    "cameraRationaleTitle": "La càmera és opcional",
+    "cameraRationaleMessage": "VeryLoving utilitza la càmera només quan decideixes fer una foto de perfil o compartir una imatge de seguretat."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving manté aquest flux disponible des de la configuració i el tauler de comandament.",
+    "chooseVoiceTitle": "Tria la teva veu",
+    "chooseVoiceSubtitle": "Tria la veu de companyia que et sembli més segura d'escoltar.",
+    "homeTitle": "Mode Home",
+    "homeSubtitle": "Monitoratge silenciós per a la seguretat diària.",
+    "guardianTitle": "Mode Guardian",
+    "guardianSubtitle": "Comparteix context amb persones de confiança.",
+    "emergencyTitle": "Mode d'emergència",
+    "emergencySubtitle": "Cinc tocs poden escalar a alertes de SOS i guardians.",
+    "excuseTitle": "Trucada d'excusa",
+    "excuseSubtitle": "Crea una raó elegant per marxar d'una situació incòmoda.",
+    "safetyCallTitle": "Crida de seguretat",
+    "safetyCallSubtitle": "Inicia una trucada d'acompanyant en temps real quan necessitis suport.",
+    "practiceTitle": "Escena d'assaig",
+    "practiceSubtitle": "Prova els fluxos de seguretat en una demostració a baixa pressió."
+  },
+  "jewelry": {
+    "pairTitle": "Parella NorthStar",
+    "pairSubtitle": "Tingues les joies a prop mentre escaneges.",
+    "scan": "Escanejar dispositius",
+    "scanning": "Escanejant a prop...",
+    "noDevices": "Encara no s'ha trobat cap dispositiu NorthStar proper.",
+    "scanStartFailed": "Bluetooth'escaneig no va poder començar. Si us plau, torna-ho a intentar.",
+    "scanFailed": "No vam poder trobar joies a prop. Comprova Bluetooth, mantingues-NorthStar a prop i torna-ho a provar.",
+    "scanAccessFailed": "Bluetooth'escaneig no va poder començar. Comprova Bluetooth accés i torna-ho a intentar.",
+    "permissionDenied": "L'accés als dispositius propers està desactivat. Permet Bluetooth accés a la configuració i torna-ho a provar.",
+    "connectTimeout": "NorthStar va trigar massa a connectar. Acosta'l i torna-ho a intentar.",
+    "connectFailed": "No podíem connectar amb NorthStar. Comprova que estigui carregat i a prop, i torna-ho a provar.",
+    "emptyTitle": "Encara no hi ha dispositius propers",
+    "emptyMessage": "Mantingues NorthStar carregat i a prop d'aquest telèfon, i després torna a escanejar.",
+    "searchingMessage": "Buscant NorthStar dispositius a prop..."
+  },
+  "home": {
+    "subtitle": "Quadre de comandament complementari de seguretat",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} està llest",
+    "readyBody": "Veu, mapa, joies i guardians estan a un toc de distància.",
+    "safetyCall": "Crida de seguretat",
+    "northStarDevice": "NorthStar dispositiu",
+    "deviceConnected": "%{name} connectat · %{battery}%",
+    "noDevice": "Cap dispositiu connectat",
+    "manageDevice": "Gestionar el dispositiu",
+    "mode": "Mode",
+    "modes": {
+      "home": "Llar",
+      "guardian": "Guardian",
+      "emergency": "Emergència"
+    }
+  },
+  "map": {
+    "finding": "Trobar la teva ubicació...",
+    "retry": "Ubicació del reintent",
+    "title": "Mapa de seguretat",
+    "previewSubtitle": "Expo Go avançament; Mapbox renderitza en una versió de desenvolupament.",
+    "preview": "Previsualització del mapa",
+    "risk": "Risc: %{risk} · Radius %{radius}m",
+    "refresh": "Ubicació de refresco",
+    "refreshing": "Trobar la ubicació...",
+    "updateFailed": "No vam poder actualitzar la teva ubicació. Si us plau, torna-ho a intentar.",
+    "notRequested": "No es va demanar accés a la ubicació. Pots activar-ho més endavant des de la configuració.",
+    "permissionOff": "L'accés a la ubicació està desactivat. Activa'l a la configuració per centrar el mapa de seguretat sobre tu.",
+    "timeout": "La teva ubicació està trigant més del que esperaves. Mou-te a un lloc amb un senyal més clar i torna-ho a provar.",
+    "savedTitle": "Places guardades",
+    "savedEmptyTitle": "Encara no hi ha places guardades",
+    "savedEmptyMessage": "Els llocs de confiança que desis apareixeran aquí per accedir-hi ràpidament.",
+    "zones": {
+      "crowding": "Massificació nocturna",
+      "lowLighting": "Zona de poca il·luminació"
+    },
+    "risks": {
+      "low": "baix",
+      "medium": "Mitjà",
+      "high": "alt"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Connectant...",
+    "offlineCompanion": "Companya fora de línia",
+    "offline": "Fora de línia",
+    "connected": "Connectat",
+    "interrupted": "Connexió interrompuda",
+    "ready": "Preparats per connectar",
+    "connectingSecurely": "Connectant-te de manera segura amb el teu company de veu...",
+    "messagesWaiting": {
+      "one": "%{count} missatge esperant enviar-se",
+      "other": "%{count} missatges esperant per enviar"
+    },
+    "useOffline": "Fes servir el company fora de línia",
+    "reconnect": "Reconnecta't a la AI de veu",
+    "typePlaceholder": "Escriu si parlar és difícil",
+    "endCall": "Final de la crida",
+    "startCall": "Inici de la crida",
+    "emptyTitle": "La vostra conversa comença aquí",
+    "emptyMessage": "Comença la trucada o escriu un missatge quan estiguis preparat."
+  },
+  "chat": {
+    "waiting": "Esperant connexió",
+    "notSent": "Missatge no enviat.",
+    "retryAccessibility": "Reintentar enviar el missatge"
+  },
+  "history": {
+    "clearTitle": "Historial de converses net?",
+    "clearMessage": "Això elimina els missatges AI companys desats d'aquest dispositiu.",
+    "deleteTitle": "Esborrar aquesta conversa?",
+    "cannotUndo": "Això no es pot desfer.",
+    "title": "Historial de converses",
+    "subtitle": "AI missatges complementaris guardats en aquest dispositiu.",
+    "empty": "Encara no s'ha salvat cap conversa.",
+    "emptyTitle": "Encara no hi ha converses",
+    "emptyMessage": "Les teves AI converses de companys apareixeran aquí després de la primera trucada.",
+    "loadFailed": "No podíem carregar l'historial de converses. Si us plau, torna-ho a intentar.",
+    "clearFailed": "No vam poder esborrar l'historial de converses. Si us plau, torna-ho a intentar.",
+    "deleteFailed": "No podíem esborrar aquella conversa. Si us plau, torna-ho a intentar.",
+    "aiCompanion": "AI company",
+    "resume": "Currículum",
+    "clearAll": "Esborra tot l'historial",
+    "roles": {
+      "assistant": "Companya",
+      "user": "Tu"
+    }
+  },
+  "voices": {
+    "title": "Les meves veus de la crida de seguretat",
+    "subtitle": "Tria la veu de companyia que et sembli adequada d'escoltar.",
+    "test": "Veu de prova",
+    "stop": "Mostra d'aturada",
+    "selectionFailedTitle": "Selecció no desada",
+    "selectionFailedMessage": "Si us plau, prova de triar la veu de nou.",
+    "sampleFailedTitle": "Mostra no disponible",
+    "sampleFailedMessage": "Aquesta mostra de veu no es podia reproduir. Si us plau, torna-ho a intentar.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "suau, calmat, arrelador"
+      },
+      "bestie": {
+        "name": "Millor amiga",
+        "description": "Brillant, tranquil·litzador, conversacional"
+      },
+      "boyfriend": {
+        "name": "Nòvio",
+        "description": "Constant, afectuós, present"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "Segur de si mateix, protector, motivador"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Veu",
+    "changeVoice": "Canvia la veu",
+    "showCompanion": "Companya de programa",
+    "offlineMode": "Mode fora de línia",
+    "offlineModeSubtitle": "Utilitza respostes complementàries agrupades quan les credencials de xarxa o Hume no estiguin disponibles.",
+    "privacyData": "Privacitat i dades",
+    "privacyBody": "Exporta o elimina les dades locals emmagatzemades en aquest dispositiu.",
+    "preparingExport": "Preparant l'exportació...",
+    "exportData": "Exporta les meves dades",
+    "privacyPolicy": "Política de privacitat",
+    "deleting": "Esborrant...",
+    "deleteAll": "Elimina totes les dades locals",
+    "deviceManagement": "Gestió de dispositius",
+    "emergencyContacts": "Contactes d'emergència",
+    "signOut": "Tanca la sessió",
+    "exportFailedTitle": "Exportació fallida",
+    "exportFailedMessage": "No puc exportar les teves dades ara mateix.",
+    "deleteConfirmTitle": "Eliminar totes les dades locals?",
+    "deleteConfirmMessage": "Això elimina el teu perfil, la configuració, els contactes d'emergència, l'historial de converses, els recordatoris de permisos i la sessió d'autenticació local d'aquest dispositiu.",
+    "deleteEverything": "Esborra-ho tot",
+    "deleteFailedTitle": "Eliminació fallida",
+    "deleteFailedMessage": "No es poden esborrar dades locals ara mateix.",
+    "linkFailed": "No es pot obrir l'enllaç",
+    "sections": {
+      "language": "Llengua",
+      "languageSubtitle": "Interfície i llenguatge de permisos del sistema",
+      "companion": "Companya",
+      "companionSubtitle": "Preferències de veu i fora de línia",
+      "deviceSafety": "Dispositius i seguretat",
+      "deviceSafetySubtitle": "NorthStar, guardians i contactes d'emergència",
+      "privacy": "Privacitat i dades",
+      "privacySubtitle": "Història, exportació, eliminació i política",
+      "account": "Compte",
+      "accountSubtitle": "La teva sessió VeryLoving actual"
+    },
+    "updateFailedTitle": "Configuració no desada",
+    "updateFailedMessage": "No vam poder salvar aquesta preferència. Si us plau, torna-ho a intentar.",
+    "signOutFailedTitle": "No he pogut signar la sortida",
+    "signOutFailedMessage": "La teva sessió encara està activa. Si us plau, torna-ho a intentar."
+  },
+  "contacts": {
+    "title": "Contactes d'emergència",
+    "subtitle": "Persones de confiança disponibles durant els fluxos de seguretat.",
+    "addTitle": "Afegeix contacte d'emergència",
+    "name": "Nom",
+    "namePlaceholder": "Nom del contacte",
+    "phone": "Número de telèfon de contacte",
+    "add": "Afegeix contacte",
+    "empty": "Encara no s'han afegit contactes d'emergència.",
+    "emptyTitle": "Encara no hi ha contactes d'emergència",
+    "emptyMessage": "Afegeix algú en qui confiïs perquè estigui preparat quan el servei de seguretat el necessiti.",
+    "removeTitle": "Treure %{name}?",
+    "removeMessage": "Aquesta persona ja no apareixerà en el teu flux d'emergència.",
+    "nameRequired": "Introdueix el nom del contacte.",
+    "saveFailedTitle": "Contacte no desat",
+    "saveFailedMessage": "No vam poder salvar aquest contacte. Comprova els detalls i torna-ho a provar.",
+    "removeFailedTitle": "Contacte no eliminat",
+    "removeFailedMessage": "No podíem eliminar aquest contacte. Si us plau, torna-ho a intentar.",
+    "callAccessibility": "Truca %{name}",
+    "removeAccessibility": "Elimina %{name}"
+  },
+  "device": {
+    "title": "Gestió de dispositius",
+    "subtitle": "Gestiona el teu dispositiu NorthStar.",
+    "connected": "Connectat · %{battery}% de bateria",
+    "none": "Cap dispositiu connectat",
+    "disconnect": "Dispositiu de desconnexió",
+    "connect": "Connecta el dispositiu"
+  },
+  "friends": {
+    "title": "Amics",
+    "subtitle": "Guardians, sol·licituds i gràfic d'emergència.",
+    "addDemo": "Afegeix un amic de demostració",
+    "emptyTitle": "El teu cercle de seguretat està buit",
+    "emptyMessage": "Aquí apareixeran amics i tutors de confiança un cop s'hi afegeixin.",
+    "newGuardian": "Nou Guardià",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Pendent"
+    }
+  },
+  "emergency": {
+    "title": "Emergència SOS",
+    "subtitle": "Escaleu només quan necessiteu suport immediat.",
+    "body": "Això notificarà el teu flux de seguretat i prepararà contactes d'emergència.",
+    "activate": "Activa SOS",
+    "callCompanion": "Truca AI company",
+    "notificationTitle": "SOS activat",
+    "notificationBody": "El teu flux d'emergència està llest.",
+    "readyTitle": "SOS preparat",
+    "callContact": "Trucar %{name}?",
+    "addContact": "Afegeix un contacte d'emergència a Configuració.",
+    "quickShareTitle": "Compartició ràpida",
+    "quickShareMessage": "L'article de compartició de localització està llest. Connecta l'endpoint de compartició del backend per enviar enllaços en directe."
+  },
+  "quickShare": {
+    "title": "Compartició ràpida",
+    "subtitle": "El flux de compartició de localització està llest."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Toca dues vegades el NorthStar per deixar caure una taronja de seguretat.",
+    "body": "La ruta de gestos està llesta per al cablejat d'esdeveniments BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pàgina de depuració",
+    "subtitle": "Ruta només de desenvolupament."
+  },
+  "errors": {
+    "voiceOffline": "Sembles desconnectat. El teu missatge s'enviarà quan et tornis a connectar.",
+    "voiceQueued": "Missatge desat. S'enviarà quan el company de veu es reconnecti.",
+    "voiceRetrying": "Intentant enviar el teu missatge una altra vegada...",
+    "voiceConnecting": "Connectant-te de manera segura amb el teu company de veu...",
+    "microphone": "Es necessita accés al micròfon per a les trucades de veu. Pots activar-ho a la configuració o escriure un missatge en comptes d'això.",
+    "billing": "El company de veu en línia està temporalment no disponible. Pots continuar amb el company fora de línia.",
+    "authentication": "El company de veu no va poder verificar aquesta sessió. Torna a iniciar sessió o utilitza el company fora de línia per ara.",
+    "timeout": "La companya de veu va trigar massa a respondre. Comprova la teva connexió i torna-ho a intentar.",
+    "network": "No vam poder contactar amb el company de veu. Comprova la teva connexió, després torna-ho a intentar o continua desconnectat.",
+    "genericVoice": "Alguna cosa va interrompre la veu. Torna-ho a provar, o continua amb el company fora de línia."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving exportació de dades"
+  },
+  "notifications": {
+    "channelName": "Alertes de seguretat"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving necessita accés al micròfon per seguretat i AI trucades de companyia.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving utilitza la teva ubicació per al mapa de seguretat i les característiques de seguretat properes.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving utilitza la teva ubicació per donar suport a l'arribada segura i als fluxos d'emergència.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving utilitza la ubicació de fons per a l'arribada segura i característiques de zones de perill properes.",
+      "NSCameraUsageDescription": "VeryLoving només utilitza la càmera quan decideixes fer una foto de perfil o de seguretat.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving utilitza la teva biblioteca de fotos només quan tries una imatge de perfil o de seguretat.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving utilitza Bluetooth per connectar-se a les teves joies de seguretat NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving utilitza Bluetooth per connectar-se a les teves joies de seguretat NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

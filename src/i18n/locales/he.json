@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "הוסף",
+    "apple": "Apple",
+    "back": "חזרה",
+    "call": "שיחה",
+    "cancel": "ביטול",
+    "clear": "נקי",
+    "close": "סגור",
+    "connect": "Connect",
+    "connecting": "מחבר...",
+    "continue": "המשך",
+    "delete": "מחק",
+    "finish": "סיום",
+    "friends": "חברים",
+    "google": "Google",
+    "home": "בית",
+    "loading": "טוען...",
+    "map": "מפה",
+    "notNow": "לא עכשיו",
+    "remove": "הסרה",
+    "retry": "ניסיון חוזר",
+    "retrying": "ניסיון חוזר",
+    "save": "שמור",
+    "selected": "נבחר",
+    "send": "שלח",
+    "settings": "הגדרות",
+    "skip": "דלג",
+    "skipForNow": "דלג לעת עתה",
+    "skipTutorial": "דלג על מדריך",
+    "sos": "SOS",
+    "unknown": "לא ידוע",
+    "user": "משתמש VeryLoving",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "שפה",
+    "subtitle": "בחר את השפה שבה משתמשים לאורך כל האפליקציה.",
+    "system": "ברירת מחדל של המערכת",
+    "search": "שפות חיפוש",
+    "noResults": "אין שפות שמתאימות לחיפוש שלך.",
+    "english": "אנגלית",
+    "spanish": "ספרדית",
+    "french": "צרפתית",
+    "chineseSimplified": "סינית (מפושטת)"
+  },
+  "phone": {
+    "label": "מספר טלפון",
+    "placeholder": "מספר טלפון",
+    "selectCountry": "מדינה או אזור נבחר",
+    "searchCountry": "חפש מדינה, קוד או קידומת חיוג",
+    "noCountries": "אין מדינות שמתאימות לחיפוש שלך.",
+    "countryButton": "משנה מדינה, כרגע %{country} פלוס %{callingCode}",
+    "inputAccessibility": "מספר טלפון %{country}",
+    "required": "הזן מספר טלפון.",
+    "tooShort": "מספר הטלפון הזה קצר מדי.",
+    "tooLong": "מספר הטלפון הזה ארוך מדי.",
+    "invalid": "הזן מספר טלפון תקף עבור המדינה הנבחרת.",
+    "valid": "מספר טלפון בינלאומי תקף"
+  },
+  "auth": {
+    "onboardingTagline": "בן לוויה אישי לביטחון ברגעים שבין \"אני בסדר\" ל\"אני צריך עזרה.\"",
+    "createAccount": "צור חשבון",
+    "continueOnboarding": "המשך בקליטה",
+    "createSubtitle": "בחר שיטת כניסה כדי להגן על גרף הבטיחות שלך.",
+    "phoneVerification": "אימות טלפוני",
+    "sendCode": "שלח קוד",
+    "sendingCode": "שולח קוד...",
+    "verifyCode": "אימות קוד",
+    "sentTo": "נשלח %{phone}",
+    "yourPhone": "הטלפון שלך",
+    "verificationCode": "קוד אימות",
+    "verify": "אמת",
+    "verifying": "מאמת...",
+    "invalidCode": "הזן את קוד האימות.",
+    "signInFailedTitle": "ההתחברות הופסקת",
+    "signInFailedMessage": "לא הצלחנו להשלים את ההרשמה. בדוק את החיבור שלך ונסה שוב.",
+    "googleUnavailableTitle": "Google התחברות לא זמינה",
+    "googleUnavailableMessage": "באמצעות מושב פיתוח מקומי. Native Google Sign-In עובד בגרסת פיתוח.",
+    "northStarTitle": "NorthStar תכשיטים",
+    "northStarSubtitle": "תחבר עכשיו או תמשיך ותווסף מאוחר יותר.",
+    "northStarBody": "ה-VL01 הלביש יכול להפעיל זרימות בטיחות באמצעות טפיחות ותנועות לחיצה ארוכות.",
+    "setupJewelry": "הקמת תכשיטים",
+    "meetCapybear": "הכירו Capybear",
+    "meetCapybearSubtitle": "הבן לוויה העדין שלך על המפה ובקריאות.",
+    "capybearBody": "Capybear יכול לעזור במצב בית, מצב שומר, מצב חירום, שיחות תירוצים ותמיכה קולית.",
+    "chooseVoice": "בחר קול",
+    "capybearReminder": "תזכורת Capybear",
+    "remindersReady": "תזכורות עדינות מוכנות."
+  },
+  "permissions": {
+    "locationTitle": "בטיחות מיקום",
+    "locationSubtitle": "משמש למפה, אזורי סכנה, הגעה בטוחה וההקשר SOS.",
+    "locationBody": "VeryLoving מבקש מיקום כדי שהאפוטרופוסים יוכלו להבין היכן ייתכן שיהיה צורך בעזרה. אתה יכול לשנות את זה מאוחר יותר בהגדרות.",
+    "allowLocation": "אפשר מיקום",
+    "notificationsTitle": "התראות בטיחות",
+    "notificationsSubtitle": "התראות תומכות בצ'ק-אין ובאירועי חירום.",
+    "notificationsBody": "אנו משתמשים בהתראות רק להנחיות בטיחות, עדכוני חירום ותזכורות שאתם מפעילים.",
+    "enableNotifications": "הפעל התראות",
+    "locationRationaleTitle": "המיקום שומר על הקשר בטיחותי מדויק",
+    "locationRationaleMessage": "VeryLoving משתמש במיקום שלך למפת הבטיחות, אזורי הסכנה, שיתוף מהיר וההקשר SOS. אתה יכול לשנות את זה מאוחר יותר בהגדרות.",
+    "notificationsRationaleTitle": "התראות בטיחות דורשות התראות",
+    "notificationsRationaleMessage": "VeryLoving שולח תזכורות לצ'ק-אין, עדכוני חירום והנחיות בטיחות שאתה מפעיל. איננו משתמשים בהתראות לפרסומות.",
+    "microphoneRationaleTitle": "המיקרופון מפעיל קריאות בטיחות",
+    "microphoneRationaleMessage": "VeryLoving משתמש במיקרופון שלך רק כשאתה מתחיל שיחת לוויין AI או שיחת בטיחות.",
+    "bluetoothRationaleTitle": "Bluetooth מחבר את הלבישה שלך",
+    "bluetoothRationaleMessage": "VeryLoving משתמש Bluetooth לשילוב עם תכשיטי NorthStar, קריאת מצב החיבור והפעלת זרמי בטיחות מהלבישה.",
+    "cameraRationaleTitle": "מצלמה היא אופציונלית",
+    "cameraRationaleMessage": "VeryLoving משתמש במצלמה רק כשאתה בוחר לצלם תמונת פרופיל או לשתף תמונת בטיחות."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving שומר על הזרימה הזו זמינה מההגדרות ומלוח המחוונים.",
+    "chooseVoiceTitle": "בחר את הקול שלך",
+    "chooseVoiceSubtitle": "בחר את הקול המלווה שמרגיש הכי בטוח לשמוע.",
+    "homeTitle": "מצב בית",
+    "homeSubtitle": "ניטור שקט לבטיחות יומיומית.",
+    "guardianTitle": "מצב שומר",
+    "guardianSubtitle": "שתפו הקשר עם אנשים מהימנים.",
+    "emergencyTitle": "מצב חירום",
+    "emergencySubtitle": "חמש הקשות יכולות לעלות להתראות SOS ו-guardian.",
+    "excuseTitle": "שיחת סליחה",
+    "excuseSubtitle": "תיצור סיבה אלגנטית לעזוב מצב לא נעים.",
+    "safetyCallTitle": "קריאת בטיחות",
+    "safetyCallSubtitle": "התחל שיחת ליווי בזמן אמת כשאתה זקוק לתמיכה.",
+    "practiceTitle": "סצנת אימון",
+    "practiceSubtitle": "נסה את זרימות הבטיחות בדמו בלחץ נמוך."
+  },
+  "jewelry": {
+    "pairTitle": "זוג NorthStar",
+    "pairSubtitle": "השאר את התכשיטים בקרבת מקום בזמן הסריקה.",
+    "scan": "סריקה למכשירים",
+    "scanning": "סורק בקרבת מקום...",
+    "noDevices": "עדיין לא נמצאו מכשירים NorthStar בקרבת מקום.",
+    "scanStartFailed": "הסריקה Bluetooth לא יכלה להתחיל. אנא נסה שוב.",
+    "scanFailed": "לא הצלחנו למצוא תכשיטים בסביבה. בדוק Bluetooth, שמור NorthStar קרוב, ונסה שוב.",
+    "scanAccessFailed": "הסריקה Bluetooth לא יכלה להתחיל. בדוק Bluetooth גישה ונסה שוב.",
+    "permissionDenied": "הגישה למכשירים קרובים כבויה. אפשר Bluetooth גישה בהגדרות, ואז נסה שוב.",
+    "connectTimeout": "לקח NorthStar יותר מדי זמן להתחבר. תתקרב ותנסה שוב.",
+    "connectFailed": "לא הצלחנו להתחבר NorthStar. בדוק שהוא טעון וקרוב, ואז נסה שוב.",
+    "emptyTitle": "עדיין אין מכשירים קרובים",
+    "emptyMessage": "תשאיר NorthStar טעון וקרוב לטלפון הזה, ואז תסרוק שוב.",
+    "searchingMessage": "מחפש מכשירים NorthStar בקרבת מקום..."
+  },
+  "home": {
+    "subtitle": "לוח מחוונים נלווה בטיחותי",
+    "modeStatus": "מצב %{mode}",
+    "companionReady": "%{name} מוכן",
+    "readyBody": "קול, מפה, תכשיטים ושומרים הם במרחק נגיעה אחת.",
+    "safetyCall": "קריאת בטיחות",
+    "northStarDevice": "מכשיר NorthStar",
+    "deviceConnected": "%{name} מחובר · %{battery}%",
+    "noDevice": "אין מכשיר מחובר",
+    "manageDevice": "ניהול מכשיר",
+    "mode": "מצב",
+    "modes": {
+      "home": "בית",
+      "guardian": "שומר",
+      "emergency": "חירום"
+    }
+  },
+  "map": {
+    "finding": "למצוא את המיקום שלך...",
+    "retry": "מיקום ניסיון חוזר",
+    "title": "מפת בטיחות",
+    "previewSubtitle": "Expo Go תצוגה מקדימה; Mapbox מרנדר בגרסת פיתוח.",
+    "preview": "תצוגה מקדימה של המפה",
+    "risk": "סיכון: %{risk} · רדיוס %{radius}m",
+    "refresh": "מיקום רענון",
+    "refreshing": "למצוא מיקום...",
+    "updateFailed": "לא הצלחנו לעדכן את מיקומך. אנא נסה שוב.",
+    "notRequested": "לא ביקש גישה למיקום. אתה יכול להפעיל את זה מאוחר יותר מההגדרות.",
+    "permissionOff": "הגישה למיקום כבויה. הפעל את זה בהגדרות כדי למרכז את מפת הבטיחות עליך.",
+    "timeout": "המיקום שלך לוקח יותר זמן מהצפוי. תזוז למקום עם אות ברור יותר ותנסה שוב.",
+    "savedTitle": "מקומות שמורים",
+    "savedEmptyTitle": "עדיין אין מקומות שמורים",
+    "savedEmptyMessage": "מקומות אמינים שתשמור יופיעו כאן לגישה מהירה.",
+    "zones": {
+      "crowding": "צפיפות לילה מאוחרת",
+      "lowLighting": "אזור תאורה נמוכה"
+    },
+    "risks": {
+      "low": "נמוך",
+      "medium": "מדיום",
+      "high": "גבוה"
+    }
+  },
+  "safetyCall": {
+    "connecting": "מחבר...",
+    "offlineCompanion": "מלווה לא מקוון",
+    "offline": "לא מקוון",
+    "connected": "מחוברים",
+    "interrupted": "החיבור הופסק",
+    "ready": "מוכן להתחבר",
+    "connectingSecurely": "מתחבר בצורה בטוחה לחבר הקול שלך...",
+    "messagesWaiting": {
+      "one": "הודעה %{count} ממתינה לשלוח",
+      "other": "הודעות %{count} שמחכות לשלוח"
+    },
+    "useOffline": "השתמש במדריך לא מקוון",
+    "reconnect": "התחבר מחדש לקול AI",
+    "typePlaceholder": "הקלד אם דיבור קשה",
+    "endCall": "סיום השיחה",
+    "startCall": "התחל שיחה",
+    "emptyTitle": "השיחה שלכם מתחילה כאן",
+    "emptyMessage": "התחילו שיחה או הקלידו הודעה כשאתם מוכנים."
+  },
+  "chat": {
+    "waiting": "מחכה לחיבור",
+    "notSent": "ההודעה לא נשלחה.",
+    "retryAccessibility": "נסה שוב לשלוח הודעה"
+  },
+  "history": {
+    "clearTitle": "היסטוריית שיחה נקייה?",
+    "clearMessage": "זה מסיר הודעות AI נלוות שנשמרו מהמכשיר הזה.",
+    "deleteTitle": "למחוק את השיחה הזו?",
+    "cannotUndo": "זה לא ניתן לביטול.",
+    "title": "היסטוריית השיחה",
+    "subtitle": "AI הודעות נלוות שנשמרו במכשיר זה.",
+    "empty": "עדיין לא נשמרו שיחות.",
+    "emptyTitle": "עדיין אין שיחות",
+    "emptyMessage": "השיחות AI עם המלווים יופיעו כאן לאחר השיחה הראשונה שלך.",
+    "loadFailed": "לא הצלחנו לטעון היסטוריית שיחות. אנא נסה שוב.",
+    "clearFailed": "לא הצלחנו לנקות את היסטוריית השיחות. אנא נסה שוב.",
+    "deleteFailed": "לא יכולנו למחוק את השיחה הזו. אנא נסה שוב.",
+    "aiCompanion": "AI לוויה",
+    "resume": "קורות חיים",
+    "clearAll": "נקה את כל ההיסטוריה",
+    "roles": {
+      "assistant": "בן לוויה",
+      "user": "אתה"
+    }
+  },
+  "voices": {
+    "title": "קולות הקריאה לבטיחות שלי",
+    "subtitle": "בחר את הקול המלווה שמרגיש נכון לשמוע.",
+    "test": "קול בדיקה",
+    "stop": "דגימת עצירה",
+    "selectionFailedTitle": "הבחירה לא נשמרה",
+    "selectionFailedMessage": "אנא נסה לבחור שוב את הקול.",
+    "sampleFailedTitle": "דגימה לא זמינה",
+    "sampleFailedMessage": "דגימת הקול הזו לא הייתה ניתנת להשמעה. אנא נסה שוב.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "רך, רגוע, מקרקע"
+      },
+      "bestie": {
+        "name": "החברה הטובה ביותר",
+        "description": "בהיר, מרגיע, שיחה"
+      },
+      "boyfriend": {
+        "name": "חבר",
+        "description": "יציב, חם, נוכח"
+      },
+      "muscleMan": {
+        "name": "מאסלמן",
+        "description": "בטוח בעצמו, מגן, מעורר מוטיבציה"
+      }
+    }
+  },
+  "settings": {
+    "voice": "קול",
+    "changeVoice": "שינוי קול",
+    "showCompanion": "בן לוויה לתוכנית",
+    "offlineMode": "מצב לא מקוון",
+    "offlineModeSubtitle": "השתמש בתגובות מלווים משולבות כאשר האישורים של הרשת או Hume אינם זמינים.",
+    "privacyData": "פרטיות ונתונים",
+    "privacyBody": "יייצא או מחק את הנתונים המקומיים המאוחסנים במכשיר זה.",
+    "preparingExport": "מכינים יצוא...",
+    "exportData": "לייצא את הנתונים שלי",
+    "privacyPolicy": "מדיניות פרטיות",
+    "deleting": "מחיקה...",
+    "deleteAll": "מחק את כל הנתונים המקומיים",
+    "deviceManagement": "ניהול התקנים",
+    "emergencyContacts": "מגעים חירום",
+    "signOut": "התנתק",
+    "exportFailedTitle": "הייצוא נכשל",
+    "exportFailedMessage": "לא מצליח לייצא את הנתונים שלך כרגע.",
+    "deleteConfirmTitle": "למחוק את כל הנתונים המקומיים?",
+    "deleteConfirmMessage": "זה מסיר את הפרופיל, ההגדרות, אנשי הקשר לשעת חירום, היסטוריית שיחות, תזכורות להרשאות וסשן אימות מקומי מהמכשיר הזה.",
+    "deleteEverything": "מחק הכל",
+    "deleteFailedTitle": "המחיקה נכשלה",
+    "deleteFailedMessage": "לא מצליח למחוק נתונים מקומיים כרגע.",
+    "linkFailed": "לא ניתן לפתוח קישור",
+    "sections": {
+      "language": "שפה",
+      "languageSubtitle": "שפת הרשאות ממשק ומערכת",
+      "companion": "בן לוויה",
+      "companionSubtitle": "העדפות קול ואופליין",
+      "deviceSafety": "מכשירים ובטיחות",
+      "deviceSafetySubtitle": "NorthStar, אפוטרופוסים ואנשי קשר לשעת חירום",
+      "privacy": "פרטיות ונתונים",
+      "privacySubtitle": "היסטוריה, יצוא, מחיקה ומדיניות",
+      "account": "חשבון",
+      "accountSubtitle": "המפגש הנוכחי שלך VeryLoving"
+    },
+    "updateFailedTitle": "הגדרה לא נשמרה",
+    "updateFailedMessage": "לא הצלחנו לשמור על ההעדפה הזו. אנא נסה שוב.",
+    "signOutFailedTitle": "לא ניתן היה להתנתק",
+    "signOutFailedMessage": "המפגש שלך עדיין פעיל. אנא נסה שוב."
+  },
+  "contacts": {
+    "title": "מגעים חירום",
+    "subtitle": "אנשים מהימנים זמינים במהלך זרימות בטיחות.",
+    "addTitle": "הוסף קשר חירום",
+    "name": "שם",
+    "namePlaceholder": "שם איש הקשר",
+    "phone": "מספר טלפון ליצירת קשר",
+    "add": "הוסף מגע",
+    "empty": "עדיין לא נוספו אנשי קשר חירום.",
+    "emptyTitle": "עדיין אין אנשי קשר חירום",
+    "emptyMessage": "הוסף מישהו שאתה סומך עליו כדי שיהיה מוכן כשזרם בטיחות ידרוש אותו.",
+    "removeTitle": "להסיר %{name}?",
+    "removeMessage": "האדם הזה כבר לא יופיע במצב החירום שלך.",
+    "nameRequired": "הזן את שם איש הקשר.",
+    "saveFailedTitle": "איש הקשר לא נשמר",
+    "saveFailedMessage": "לא הצלחנו להציל את הקשר הזה. בדוק את הפרטים ונסה שוב.",
+    "removeFailedTitle": "הקשר לא הוסר",
+    "removeFailedMessage": "לא הצלחנו להסיר את הקשר הזה. אנא נסה שוב.",
+    "callAccessibility": "תתקשר %{name}",
+    "removeAccessibility": "הסר %{name}"
+  },
+  "device": {
+    "title": "ניהול התקנים",
+    "subtitle": "נהל את המכשיר NorthStar שלך.",
+    "connected": "מחובר · %{battery}% סוללה",
+    "none": "אין מכשירים מחוברים",
+    "disconnect": "מכשיר ניתוק",
+    "connect": "התקן התחבר"
+  },
+  "friends": {
+    "title": "חברים",
+    "subtitle": "שומרים, בקשות וגרף חירום.",
+    "addDemo": "הוסף חבר להדגמה",
+    "emptyTitle": "מעגל הביטחון שלך ריק",
+    "emptyMessage": "חברים ואפוטרופוסים מהימנים יופיעו כאן לאחר שיתווספו.",
+    "newGuardian": "ניו גארדיאן",
+    "statuses": {
+      "guardian": "שומר",
+      "pending": "ממתין"
+    }
+  },
+  "emergency": {
+    "title": "SOS חירום",
+    "subtitle": "הסלים רק כשאתה צריך תמיכה מיידית.",
+    "body": "זה יידע את זרימת הבטיחות שלך ויכין מגעים לשעת חירום.",
+    "activate": "הפעל SOS",
+    "callCompanion": "התקשר לחבר AI",
+    "notificationTitle": "SOS הופעל",
+    "notificationBody": "זרם החירום שלך מוכן.",
+    "readyTitle": "SOS מוכן",
+    "callContact": "להתקשר %{name}?",
+    "addContact": "הוסף איש קשר חירום בהגדרות.",
+    "quickShareTitle": "שיתוף מהיר",
+    "quickShareMessage": "מסמך שיתוף מיקום מוכן. חבר את נקודת הקצה של שיתוף ה-backend כדי לשלוח קישורים חיים."
+  },
+  "quickShare": {
+    "title": "שיתוף מהיר",
+    "subtitle": "זרימת שיתוף המיקום מוכנה."
+  },
+  "capybearTap": {
+    "title": "Capybear ברז",
+    "subtitle": "טפח פעמיים על NorthStar שלך כדי להפיל תפוז בטיחות.",
+    "body": "נתיב המחוות מוכן לחיווט אירועי BLE."
+  },
+  "debug": {
+    "title": "VeryLoving דף ניפוי שגיאות",
+    "subtitle": "מסלול פיתוח בלבד."
+  },
+  "errors": {
+    "voiceOffline": "נראה שאתה לא מחובר. ההודעה שלך תישלח כשתתחברו מחדש.",
+    "voiceQueued": "ההודעה נשמרה. הוא יישלח כאשר הקול המלווה יתחבר מחדש.",
+    "voiceRetrying": "מנסה לשלוח את המסר שלך שוב...",
+    "voiceConnecting": "מתחבר בצורה בטוחה לחבר הקול שלך...",
+    "microphone": "גישה למיקרופון נדרשת לשיחות קוליות. אתה יכול להפעיל את זה בהגדרות, או להקליד הודעה במקום.",
+    "billing": "המלווה הקולי המקוון אינו זמין זמנית. אתה יכול להמשיך עם הלוויין הלא מקוון.",
+    "authentication": "מלווה הקול לא הצליח לאמת את הסשן הזה. התחבר שוב או השתמש במלווה הלא מקוון לעת עתה.",
+    "timeout": "בן הקול לקח יותר מדי זמן להגיב. בדוק את החיבור שלך ונסה שוב.",
+    "network": "לא הצלחנו להגיע לחבר הקול. בדוק את החיבור שלך, נסה שוב או תמשיך לא מקוון.",
+    "genericVoice": "משהו הפריע לשיחת הקול. נסה שוב, או המשך עם הלוויין הלא מקוון."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ייצוא נתונים"
+  },
+  "notifications": {
+    "channelName": "התראות בטיחות"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving זקוקה לגישה למיקרופון לצורך בטיחות ושיחות AI לשותפים.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving משתמשת במיקום שלך למפת הבטיחות ולתכונות הבטיחות הסמוכות.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving משתמש במיקומך כדי לתמוך בהגעה בטוחה ובזרימות חירום.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving משתמשת במיקום רקע להגעה בטוחה ולאזורי סכנה סמוכים.",
+      "NSCameraUsageDescription": "VeryLoving משתמש במצלמה רק כשאתה בוחר לצלם פרופיל או תמונת בטיחות.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving משתמש בספריית התמונות שלך רק כשאתה בוחר פרופיל או תמונת בטיחות.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving משתמש Bluetooth כדי להתחבר לתכשיטי הבטיחות NorthStar שלך.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving משתמש Bluetooth כדי להתחבר לתכשיטי הבטיחות NorthStar שלך."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

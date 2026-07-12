@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Yapay",
+    "apple": "Apple nisqa.",
+    "back": "Qhipa",
+    "call": "Llamay",
+    "cancel": "Cancelar",
+    "clear": "Ch’uya",
+    "close": "Wichqay",
+    "connect": "T’inkinakuy",
+    "connecting": "T'inkisqa...",
+    "continue": "Hinalla puriy",
+    "delete": "Borrar",
+    "finish": "Tukuchiy",
+    "friends": "Amigokuna",
+    "google": "Google nisqa.",
+    "home": "Wasi",
+    "loading": "Cargachkanki...",
+    "map": "Mapa",
+    "notNow": "Mana kunan",
+    "remove": "Qarquy",
+    "retry": "Kutimanta kallpachakuy",
+    "retrying": "Kutimanta kallpachakuy",
+    "save": "Waqaychay",
+    "selected": "Akllasqa",
+    "send": "Kachay",
+    "settings": "Ajustes nisqa",
+    "skip": "Salta",
+    "skipForNow": "Kunankamaqa saltay",
+    "skipTutorial": "Yachachiyta saltay",
+    "sos": "SOS nisqa.",
+    "unknown": "Mana riqsisqa",
+    "user": "VeryLoving llamk'aq",
+    "veryLoving": "VeryLoving nisqa."
+  },
+  "languages": {
+    "title": "Simi",
+    "subtitle": "Tukuy app nisqapi llamk’achisqa simita akllay.",
+    "system": "Sistema nisqamanta ruwasqa",
+    "search": "Simikunata maskay",
+    "noResults": "Mana ima simikuna maskasqaykiwan tupanchu.",
+    "english": "Inglés simipi",
+    "spanish": "Kastilla simi",
+    "french": "Francés simipi",
+    "chineseSimplified": "China simi (Simplificado) ."
+  },
+  "phone": {
+    "label": "Telefono yupay",
+    "placeholder": "Telefono yupay",
+    "selectCountry": "Llaqta utaq suyuta akllay",
+    "searchCountry": "Llaqta, código utaq waqyanapaq ñawpaq simita maskay",
+    "noCountries": "Manan ima suyukunapas maskhasqaykiwan tupanchu.",
+    "countryButton": "Llaqta tikray, kunan pacha %{country} yapasqa %{callingCode} .",
+    "inputAccessibility": "%{country} nisqapaq telefono yupay",
+    "required": "Huk telefono yupayta qillqay.",
+    "tooShort": "Kay telefono yupayqa ancha pisillam.",
+    "tooLong": "Kay telefono yupayqa ancha hatunmi.",
+    "invalid": "Akllasqa suyupaq allin telefono yupayta qillqay.",
+    "valid": "Allin internacional telefono yupay"
+  },
+  "auth": {
+    "onboardingTagline": "Huk compañero de seguridad personal “allinmi kani” hinaspa “yanapayta necesitasaq” nisqa pachakunapaq.",
+    "createAccount": "Cuenta ruway",
+    "continueOnboarding": "Onboarding nisqawan hinalla ruway",
+    "createSubtitle": "Akllay huk yaykuy ñanta seguridad graficoykita waqaychanaykipaq.",
+    "phoneVerification": "Telefonowan chiqapchay",
+    "sendCode": "Codigo apachiy",
+    "sendingCode": "Codigo apachispa...",
+    "verifyCode": "Codigo nisqa chiqapchay",
+    "sentTo": "%{phone} nisqaman apachisqa.",
+    "yourPhone": "teléfonoyki",
+    "verificationCode": "Chiqaqchaypa qillqan",
+    "verify": "Chiqapchay",
+    "verifying": "Chiqaqchay...",
+    "invalidCode": "Chiqaqchay codigo nisqa qillqay.",
+    "signInFailedTitle": "Yaykuy harkasqa",
+    "signInFailedMessage": "Manan haykuytaqa hunt’ayta atirqaykuchu. T'inkisqaykita qhaway hinaspa wakmanta kallpachakuy.",
+    "googleUnavailableTitle": "Google Yaykuna mana kanchu",
+    "googleUnavailableMessage": "Llaqta wiñariy sesión nisqawan yanapachikuspa. Nativo Google Yaykuna huk wiñachiy ruwaypi llamkan.",
+    "northStarTitle": "NorthStar joyakuna",
+    "northStarSubtitle": "Kunanqa parischay utaq qatipay hinaspa qhipaman yapay.",
+    "northStarBody": "VL01 churanapaqqa grifokunawan, unay prensawan ima, seguridad flujos nisqakunata llamk’achiyta atin.",
+    "setupJewelry": "Joyas nisqakunata churay",
+    "meetCapybear": "Capybear nisqawan tupay.",
+    "meetCapybearSubtitle": "Llampu seguridad compañeroyki mapapi hinallataq waqyakuykunapi.",
+    "capybearBody": "Capybear yanapayta atin wasi modo, guardia modo, emergencia modo, excusa waqyay, chaymanta kunka yanapakuy.",
+    "chooseVoice": "Huk kunkata akllay",
+    "capybearReminder": "Capybear yuyarichiy",
+    "remindersReady": "Llampu yuyarichiykunaqa listoñam kachkan."
+  },
+  "permissions": {
+    "locationTitle": "Maypi tarikusqanmanta mana imamanta manchakuy",
+    "locationSubtitle": "Mapapaq, peligro zonakunapaq, mana imamanta manchakuspa chayamunapaq, SOS contextopaqpas llamk’achisqa.",
+    "locationBody": "VeryLoving maypi kasqanmanta mañakun, chaynapi guardiakuna entiendenankupaq maypi yanapakuy necesitakunman. Kayta qhipaman tikrayta atikunki Ajustes kaqpi.",
+    "allowLocation": "Maypi kasqanmanta saqiy",
+    "notificationsTitle": "Alertas de seguridad",
+    "notificationsSubtitle": "Willakuykunaqa yanapanmi check-ins nisqakunata hinaspa emergencia nisqakunatapas.",
+    "notificationsBody": "Willakuykunatalla llamk'achiyku amachay mañakuykunapaq, emergencia musuqyachiykunapaq, chaymanta yuyarichiykuna atichisqaykimanta.",
+    "enableNotifications": "Willakuykunata atichiy",
+    "locationRationaleTitle": "Maypi kasqanqa seguridadpa contextonta allintam waqaychan",
+    "locationRationaleMessage": "VeryLoving maypi kasqaykita llamk'achin seguridad mapapaq, peligro zonas kaqpaq, utqaylla rakinakuypaq chaymanta SOS contexto kaqpaq. Kayta qhipaman tikrayta atikunki Ajustes kaqpi.",
+    "notificationsRationaleTitle": "Alertas de seguridad nisqakunaqa willakuykunata necesitanku",
+    "notificationsRationaleMessage": "VeryLoving yaykuy yuyarichiykunata, emergencia musuqyachiykunata, chaymanta amachay mañakuykunata atichisqayki apachin. Mana willakuykunata willakuykunapaq llamk'achiykuchu.",
+    "microphoneRationaleTitle": "Microfonoqa seguridadmanta waqyakuykunata kallpachan",
+    "microphoneRationaleMessage": "VeryLoving micrófonoykita llamk'achin AI compañero utaq seguridad waqyayta qallarinki chaylla.",
+    "bluetoothRationaleTitle": "Bluetooth nisqa churakuqniykikunata tinkuchin",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth llamk'achin NorthStar joyería kaqwan tupachiypaq, tinkinakuy estadota ñawirinapaq, chaymanta churanapaqmanta hark'ay puriykunata llamk'achin.",
+    "cameraRationaleTitle": "Cámara nisqa munasqa",
+    "cameraRationaleMessage": "VeryLoving cámarata llamk'achin mayk'aqchus akllanki huk perfil fotota utaq huk seguridad siq'ita qunakuypaq."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving kay flujota Ajustes kaqmanta chaymanta tabla de mando kaqmanta kaqta waqaychan.",
+    "chooseVoiceTitle": "Kunkanta akllay",
+    "chooseVoiceSubtitle": "Uyarinapaq aswan allin sientekuq compañero kunkata akllay.",
+    "homeTitle": "Modo de casa",
+    "homeSubtitle": "Sapa punchaw mana imamanta manchakuspa qaway.",
+    "guardianTitle": "Modo de guardia",
+    "guardianSubtitle": "Confiable runakunawan contextota rakiy.",
+    "emergencyTitle": "Modo de emergencia nisqa",
+    "emergencySubtitle": "Pichqa grifokuna SOS nisqaman yapakunman hinaspa guardia alertas nisqaman.",
+    "excuseTitle": "Disculpa waqyay",
+    "excuseSubtitle": "Mana allin situacionmanta lluqsinaykipaq huk gracioso razonta paqarichiy.",
+    "safetyCallTitle": "Seguridad waqyay",
+    "safetyCallSubtitle": "Yanapayta necesitasqaykipi chiqap pacha compañero llamkayta qallariy.",
+    "practiceTitle": "Escena de practica",
+    "practiceSubtitle": "Pisi ñit’iyniyuq demostracionpi seguridad flujos nisqakunata pruebay."
+  },
+  "jewelry": {
+    "pairTitle": "Pais NorthStar .",
+    "pairSubtitle": "Escaneachkaspa joyakunata hichpallapi waqaychay.",
+    "scan": "Aparatokunata maskay",
+    "scanning": "Chay qayllapi escanear...",
+    "noDevices": "Manaraqmi qaylla NorthStar aparatokuna tarisqachu.",
+    "scanStartFailed": "Bluetooth escaneo mana qallariyta atirqanchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "scanFailed": "Manam tarirqaykuchu qayllapi joyakunata. Bluetooth nisqapi qhaway, NorthStar nisqa wichq'asqata waqaychay, hinaspa musuqmanta kallpachakuy.",
+    "scanAccessFailed": "Bluetooth escaneo mana qallariyta atirqanchu. Bluetooth yaykuyta qhaway hinaspa musuqmanta kallpachakuy.",
+    "permissionDenied": "Hichpa-dispositivoman yaykuyqa manañam kachkan. Bluetooth yaykuyta saqiy Ajustes kaqpi, chaymanta wakmanta kallpachakuy.",
+    "connectTimeout": "NorthStar ancha unayta t’inkinapaq. Aswan asuykachiy hinaspa hukmanta kallpanchakuy.",
+    "connectFailed": "NorthStar nisqawanqa manam tinkiyta atirqaykuchu. Cargasqa kasqanmanta hinaspa hichpallanpi kasqanmanta qaway, chaymanta yapamanta kallpanchakuy.",
+    "emptyTitle": "Manaraqmi qayllapi aparatokuna kanchu",
+    "emptyMessage": "NorthStar cargasqa hinaspa kay telefonoman asuykuspa waqaychay, chaymanta yapamanta escaneay.",
+    "searchingMessage": "Maskhachkanki NorthStar aparatokunata qayllapi..."
+  },
+  "home": {
+    "subtitle": "Seguridad compañero nisqa tabla de mando",
+    "modeStatus": "%{mode} MODO nisqa",
+    "companionReady": "%{name} wakichisqa kachkan",
+    "readyBody": "Kunkan, mapa, joya, guardiakuna ima huk grifollapim kachkan.",
+    "safetyCall": "Seguridad waqyay",
+    "northStarDevice": "NorthStar apaykachana",
+    "deviceConnected": "%{name} tinkisqa · %{battery}%",
+    "noDevice": "Mana ima aparatopas tinkisqachu",
+    "manageDevice": "Dispositivo kamachiy",
+    "mode": "Modo nisqa",
+    "modes": {
+      "home": "Wasi",
+      "guardian": "Guardón nisqa",
+      "emergency": "Emergencia nisqapi"
+    }
+  },
+  "map": {
+    "finding": "Maypi kasqaykita tarispa...",
+    "retry": "Maypi kasqanmanta yapamanta kallpanchakuy",
+    "title": "Mapa de seguridad",
+    "previewSubtitle": "Expo Go ñawpaq qhaway; Mapbox wiñachiy ruwaypi ruwan.",
+    "preview": "Mapa ñawpaq qhaway",
+    "risk": "Risk’a: %{risk} · Radio %{radius}m",
+    "refresh": "Mosoqyachiy maypi kasqan",
+    "refreshing": "Maypi tariy...",
+    "updateFailed": "Mana maypi kasqaykita musuqyachiyta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "notRequested": "Maypi tarikuyman yaykuyqa manam mañasqachu karqa. Qhipaman atichiyta atikunki Ajustes kaqmanta.",
+    "permissionOff": "Maypi tarikuyman yaykuyqa manañam kachkan. Ajustes kaqpi atichiy seguridad mapa qampi chawpichaypaq.",
+    "timeout": "Maypi kasqaykiqa suyasqaykimanta aswan unaytam hapichkan. Aswan sut’i señalwan maymanpas astakuy hinaspa hukmanta kallpachakuy.",
+    "savedTitle": "Waqaychasqa sitiokuna",
+    "savedEmptyTitle": "Manaraqmi waqaychasqa sitiokuna",
+    "savedEmptyMessage": "Waqaychasqayki confiable sitiokuna kaypi rikurimunqa utqaylla yaykuypaq.",
+    "zones": {
+      "crowding": "Tuta tutamanta runakuna huñunakusqanku",
+      "lowLighting": "Pisi k’anchayniyuq kiti"
+    },
+    "risks": {
+      "low": "uray",
+      "medium": "chawpi",
+      "high": "alto"
+    }
+  },
+  "safetyCall": {
+    "connecting": "T'inkisqa...",
+    "offlineCompanion": "Mana tinkisqa compañero",
+    "offline": "Mana internetpi",
+    "connected": "T’inkisqa",
+    "interrupted": "T’inkinakuy t’inkisqa",
+    "ready": "T’inkinapaq wakichisqa",
+    "connectingSecurely": "Kunkan masiykiwan allinta tinkuchiy...",
+    "messagesWaiting": {
+      "one": "%{count} willakuy apachiyta suyaspa",
+      "other": "%{count} willakuykunata apachiyta suyaspa"
+    },
+    "useOffline": "Mana tinkisqa compañerota llamk’achiy",
+    "reconnect": "Kunkanwan musuqmanta tinkuchiy AI",
+    "typePlaceholder": "Rimay sasa kaptinqa qillqay",
+    "endCall": "Tukuchiy waqyay",
+    "startCall": "Qallariy waqyay",
+    "emptyTitle": "Kaypi rimasqaykiqa qallarin",
+    "emptyMessage": "Llamayta qallariy utaq willakuyta qillqay listoña kachkaspayki."
+  },
+  "chat": {
+    "waiting": "T’inkinakuy suyaspa",
+    "notSent": "Willakuy mana apachisqachu.",
+    "retryAccessibility": "Willakuy apachiyta wakmanta kallpachakuy"
+  },
+  "history": {
+    "clearTitle": "Ch’uya rimanakuypa historian?",
+    "clearMessage": "Kayqa waqaychasqa AI compañero willakuykunata kay dispositivomanta hurqun.",
+    "deleteTitle": "Kay rimanakuyta qulluchiy?",
+    "cannotUndo": "Kaytaqa manam kutichiyta atikunmanchu.",
+    "title": "Rimanakuymanta willakuy",
+    "subtitle": "AI compañero willakuykunata kay aparatopi waqaychasqa.",
+    "empty": "Manaraqmi rimanakuykuna waqaychasqachu.",
+    "emptyTitle": "Manaraqmi rimanakuykuna kanchu",
+    "emptyMessage": "AI compañero rimanakuyniykikuna kaypi rikurimunqa ñawpaq waqyasqaykimanta.",
+    "loadFailed": "Manan rimanakuy historiata cargayta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "clearFailed": "Manan rimanakuy historiata ch’uyanchayta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "deleteFailed": "Chay rimanakuytaqa manam chinkachiyta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "aiCompanion": "AI compañero",
+    "resume": "Qallariy",
+    "clearAll": "Llapa historiata chuyanchay",
+    "roles": {
+      "assistant": "compañero",
+      "user": "qam"
+    }
+  },
+  "voices": {
+    "title": "Seguridad waqyakuy kunkaykuna",
+    "subtitle": "Uyarinapaq hina sientekuq compañero kunkata akllay.",
+    "test": "Prueba kunka",
+    "stop": "Stop muestra",
+    "selectionFailedTitle": "Akllayqa manam waqaychasqachu",
+    "selectionFailedMessage": "Ama hina kaspa, hukmanta kunka akllayta kallpachakuy.",
+    "sampleFailedTitle": "Muestra mana kanchu",
+    "sampleFailedMessage": "Kay kunka muestrataqa manam tocayta atirqakuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear nisqapi.",
+        "description": "llamp’u, thak, allpayuq"
+      },
+      "bestie": {
+        "name": "Bestie sutiyuq warmi",
+        "description": "k’anchariq, sunqu tiyachiq, rimaq"
+      },
+      "boyfriend": {
+        "name": "Novio",
+        "description": "staki, kuyakuq, kunan"
+      },
+      "muscleMan": {
+        "name": "Aycha runa",
+        "description": "confianzayoq, amachaq, kallpachaq"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Kunkan",
+    "changeVoice": "Kunkanta tikray",
+    "showCompanion": "Compañerota rikuchiy",
+    "offlineMode": "Modo mana tinkisqa",
+    "offlineModeSubtitle": "Llika utaq Hume credenciales mana kaptinqa huñusqa compañero kutichiykunata llamk’achiy.",
+    "privacyData": "Sapalla willay & willaykunata",
+    "privacyBody": "Kay aparatopi waqaychasqa llaqta willakuykunata hawaman apachiy utaq qulluy.",
+    "preparingExport": "Huk suyukunaman apachinapaq wakichiy...",
+    "exportData": "Datoykunata hawaman apachiy",
+    "privacyPolicy": "Sapalla willaymanta kamachiy",
+    "deleting": "Borrar...",
+    "deleteAll": "Llapa llaqta willakuykunata qulluy",
+    "deviceManagement": "Dispositivokuna kamachiy",
+    "emergencyContacts": "Emergenciapi rimanakuykuna",
+    "signOut": "Qallariy",
+    "exportFailedTitle": "Hawaman apachiyqa manam atisqachu",
+    "exportFailedMessage": "Mana kunanpacha willayniykikunata hawaman apachiyta atispa.",
+    "deleteConfirmTitle": "Llapa llaqta willakuykunata qulluchiy?",
+    "deleteConfirmMessage": "Kayqa kay dispositivomanta perfilniyki, churanakuna, emergencia tinkiykuna, rimanakuy historia, permiso yuyarichiykuna chaymanta llaqta auth sesión kaqmanta hurqun.",
+    "deleteEverything": "Tukuy imata chinkachiy",
+    "deleteFailedTitle": "Borrar mana allinchu",
+    "deleteFailedMessage": "Mana kunanpacha llaqta willayta qulluyta atispa.",
+    "linkFailed": "Mana t’inki kichayta atispa",
+    "sections": {
+      "language": "Simi",
+      "languageSubtitle": "Interfaz y sistema permiso simi",
+      "companion": "Compañero",
+      "companionSubtitle": "Kunkanwan mana internetpi munasqakuna",
+      "deviceSafety": "Dispositivokuna hinaspa mana imamanta manchakuy",
+      "deviceSafetySubtitle": "NorthStar, guardianes, chaymanta emergenciapi rimanakuqkuna",
+      "privacy": "Sapalla willakuy hinaspa willakuy",
+      "privacySubtitle": "Historia, hawa llaqtakunaman apachiy, qulluy, kamachiy ima",
+      "account": "Cuenta",
+      "accountSubtitle": "Kunan VeryLoving tiyasqayki"
+    },
+    "updateFailedTitle": "Mana waqaychasqa churay",
+    "updateFailedMessage": "Chay munasqaykutaqa manam waqaychayta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "signOutFailedTitle": "Mana lluqsiyta atirqanichu",
+    "signOutFailedMessage": "Sesión nisqaykiqa llamk’achkanraqmi. Ama hina kaspa, hukmanta kallpachakuy."
+  },
+  "contacts": {
+    "title": "Emergencia nisqapi rimanakuykuna",
+    "subtitle": "Confiable runakuna kanku seguridad flujos nisqapi.",
+    "addTitle": "Emergencia contacto yapay",
+    "name": "Suti",
+    "namePlaceholder": "T’inkisqa suti",
+    "phone": "Telefono yupaywan rimanakuy",
+    "add": "Contacto yapay",
+    "empty": "Manaraqmi emergencia contactokuna yapasqachu.",
+    "emptyTitle": "Manaraqmi ima sasachakuypipas tupanchu",
+    "emptyMessage": "Pitapas yapay confiasqaykita, chaynapi listo kanankupaq, maypachachus huk flujo de seguridad necesitan.",
+    "removeTitle": "Qarquy %{name}?",
+    "removeMessage": "Kay runaqa manañam rikurinqañachu flujo de emergencia nisqapi.",
+    "nameRequired": "Contactopa sutinta qillqay.",
+    "saveFailedTitle": "Contacto mana waqaychasqachu",
+    "saveFailedMessage": "Manan kay tinkiyta waqaychayta atirqaykuchu. Detalles nisqakunata qhaway hinaspa hukmanta kallpachakuy.",
+    "removeFailedTitle": "Contacto mana hurqusqachu",
+    "removeFailedMessage": "Manan kay tupanakuytaqa horqoyta atirqaykuchu. Ama hina kaspa, hukmanta kallpachakuy.",
+    "callAccessibility": "Yapay %{name} .",
+    "removeAccessibility": "Qarquy %{name} ."
+  },
+  "device": {
+    "title": "Dispositivokuna kamachiy",
+    "subtitle": "NorthStar aparatoykita kamachiy.",
+    "connected": "T’inkisqa · %{battery}% pila",
+    "none": "Mana dispositivokuna tinkisqa",
+    "disconnect": "Dispositivomanta t’aqay",
+    "connect": "Dispositivota t’inkina"
+  },
+  "friends": {
+    "title": "Amigokuna",
+    "subtitle": "Guardiakuna, mañakuykuna, chaymanta emergencia grafico.",
+    "addDemo": "Demo amigota yapay",
+    "emptyTitle": "Seguridad muyuykiqa ch’usaqmi",
+    "emptyMessage": "Confiable amigokuna, guardianes ima kaypi rikurimunqa huk kuti yapasqa kaptinku.",
+    "newGuardian": "Musuq Waqaychaq",
+    "statuses": {
+      "guardian": "Guardia",
+      "pending": "Pendiente"
+    }
+  },
+  "emergency": {
+    "title": "Emergencia SOS nisqapi.",
+    "subtitle": "Utqaylla yanapakuyta necesitaspalla yapay.",
+    "body": "Kayqa seguridad flujoykita willanqa, chaymanta emergencia contactokunata wakichinqa.",
+    "activate": "Activar SOS .",
+    "callCompanion": "AI compañero nisqaman waqyay",
+    "notificationTitle": "SOS llamk'achisqa",
+    "notificationBody": "Emergencia flujoykiqa listoñam kachkan.",
+    "readyTitle": "SOS listoña",
+    "callContact": "¿%{name} nisqaman waqyay?",
+    "addContact": "Ajustes nisqapi huk emergencia contactota yapay.",
+    "quickShareTitle": "Utqaylla rakinakuy",
+    "quickShareMessage": "Maypi tarikuy rakinapaq qillqasqaqa listoñam kachkan. Kawsaq t'inkikunata kachanapaq qhipaman rakina tukukuyniyuqta t'inkiy."
+  },
+  "quickShare": {
+    "title": "Utqaylla rakinakuy",
+    "subtitle": "Maypi tarikuy rakinakuy flujoqa listoñam kachkan."
+  },
+  "capybearTap": {
+    "title": "Capybear ñit’iy",
+    "subtitle": "Iskay kutita NorthStar nisqapi ñit’iy huk seguridad naranja urmachinaykipaq.",
+    "body": "Gesto ñanqa listoñam kachkan BLE evento cableadopaq."
+  },
+  "debug": {
+    "title": "VeryLoving pantasqa allichay p'anqa",
+    "subtitle": "Wiñarichinalla ñan."
+  },
+  "errors": {
+    "voiceOffline": "Mana internetpichu kanki. Willakuyniykiqa wakmanta tinkisqaykipi apachisqa kanqa.",
+    "voiceQueued": "Willakuy waqaychasqa. Chayqa apachisqa kanqa kunka compañero kaqmanta tinkuptin.",
+    "voiceRetrying": "Willakuyniykita wakmanta apachiyta munaspa...",
+    "voiceConnecting": "Kunkan masiykiwan allinta tinkuchiy...",
+    "microphone": "Kunkanwan waqyanapaqqa microfono nisqaman yaykuymi necesitakun. Ajustes nisqapi atichiyta atinki, icha chaypa rantinpi willayta qillqay.",
+    "billing": "Internetpi kunka compañeroqa huk ratullapaqmi mana kanchu. Mana tinkisqa compañerowanqa hinalla ruwayta atinki.",
+    "authentication": "Kunkan compañeroqa manam kay sesión nisqataqa chiqapchayta atirqachu. Hukmanta yaykuy utaq kunankama mana tinkisqa compañerota llamk'achiy.",
+    "timeout": "Kunkan compañeroqa ancha unaytam kutichirqa. T'inkisqaykita qhaway hinaspa wakmanta kallpachakuy.",
+    "network": "Manan kunka compañeroman chayayta atirqaykuchu. T'inkisqaykita qhaway, chaymanta wakmanta kallpachakuy utaq mana tinkisqa kachkaspa puriy.",
+    "genericVoice": "Imapas kunka waqyakuytaqa hark’arqan. Hukmanta kallpachakuy, utaq mana internetpi kaq compañerowan hinalla ruway."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving willaykunata hawaman apachiy"
+  },
+  "notifications": {
+    "channelName": "Alertas de seguridad"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving nisqa.",
+      "NSMicrophoneUsageDescription": "VeryLoving micrófono yaykuyta munan mana imamanta manchachiypaq chaymanta AI compañero waqyaykunapaq.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving maypi kasqaykita llamk'achin seguridad mapapaq chaymanta qaylla seguridad ruwanakunapaq.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving maypi kasqaykita llamk'achin, mana imamanta manchachikuq-chayay chaymanta emergencia flujos yanapakuypaq.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving qhipa kitita llamk'achin mana imamanta manchachikuq-chayamuypaq chaymanta qaylla peligro-zona ruwanakunapaq.",
+      "NSCameraUsageDescription": "VeryLoving huk perfil utaq seguridad fotota hurquyta akllaptiykilla cámarata llamk'achin.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving foto bibliotecaykita llamk'achin huk perfil utaq seguridad siq'ita akllaptiykilla.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq."
+    },
+    "android": {
+      "app_name": "VeryLoving nisqa."
+    }
+  }
+}

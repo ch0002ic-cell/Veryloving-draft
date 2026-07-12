@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Yika",
+    "apple": "Apple",
+    "back": "Kuvutuka",
+    "call": "binga",
+    "cancel": "Katula",
+    "clear": "Katula",
+    "close": "Kanga",
+    "connect": "kangama",
+    "connecting": "Kuvukisa...",
+    "continue": "Landa",
+    "delete": "Kufwa",
+    "finish": "Manisa",
+    "friends": "Banduku",
+    "google": "Google",
+    "home": "Nzo",
+    "loading": "Kutula...",
+    "map": "Karte",
+    "notNow": "Ve ntangu yai",
+    "remove": "Katula",
+    "retry": "Meka diaka",
+    "retrying": "Kumeka diaka",
+    "save": "Lunda",
+    "selected": "Ya bo me pona",
+    "send": "Tinda",
+    "settings": "Baparametre",
+    "skip": "Sabuka",
+    "skipForNow": "Sambuka sambu na ntangu yai",
+    "skipTutorial": "luta malongi",
+    "sos": "SOS",
+    "unknown": "Ya me zabana ve",
+    "user": "VeryLoving nsadi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ndinga",
+    "subtitle": "Pona ndinga yina bo ke sadilaka na application ya mvimba.",
+    "system": "Nsikudukusu ya ngidika",
+    "search": "Sosa bandinga",
+    "noResults": "Ata ndinga mosi ve ke wakana ti mambu ya nge ke sosa.",
+    "english": "Kingelesi",
+    "spanish": "Kiespaniole",
+    "french": "Kifalansa",
+    "chineseSimplified": "Kishinwa (ya pete)"
+  },
+  "phone": {
+    "label": "nimero ya telefone",
+    "placeholder": "Nimero ya telefone",
+    "selectCountry": "Pona insi to kizunga",
+    "searchCountry": "Sosa insi, kode, to prefixe ya kubinga",
+    "noCountries": "Ata nsi mosi ve ke wakana ti mambu ya nge ke sosa.",
+    "countryButton": "Soba insi, sesepi %{country} yika %{callingCode}",
+    "inputAccessibility": "Nimero ya telefone sambu na %{country}",
+    "required": "Sonika nimero ya telefone.",
+    "tooShort": "Nimero yayi ya telefone kele nkufi mingi.",
+    "tooLong": "Nimero yai ya telefone kele nda mingi.",
+    "invalid": "Sonika nimero ya telefone ya mbote sambu na insi ya nge me pona.",
+    "valid": "nimero ya telefone ya bansi mingi"
+  },
+  "auth": {
+    "onboardingTagline": "Nkundi ya lutaninu ya muntu yandi mosi sambu na bantangu yina kele na kati ya “mono kele mbote” ti “mono kele na mfunu ya lusadisu.”",
+    "createAccount": "Sala konti",
+    "continueOnboarding": "Landa na kukota na maswa",
+    "createSubtitle": "Pona mutindu ya kukota sambu na kutanina graf na nge ya lutaninu.",
+    "phoneVerification": "Kuzikisa telefone",
+    "sendCode": "Tinda kode",
+    "sendingCode": "Kutinda kode...",
+    "verifyCode": "zikisa kode",
+    "sentTo": "Ya bo me tinda na %{phone}",
+    "yourPhone": "telefone na nge",
+    "verificationCode": "Kode ya kuzikisa",
+    "verify": "zikisa",
+    "verifying": "Kuzikisa...",
+    "invalidCode": "Sotisa kode ya kuzikisa.",
+    "signInFailedTitle": "Kukota me zengana",
+    "signInFailedMessage": "Beto lendaka ve kumanisa kukota. Tala connexion na nge mpi meka diaka.",
+    "googleUnavailableTitle": "Google Kukota kele ve",
+    "googleUnavailableMessage": "Kusadila kilumbu ya kutunga kisika. Native Google Kukota ke salaka na kutunga ya kutunga.",
+    "northStarTitle": "NorthStar bima ya mayaka",
+    "northStarSubtitle": "Pair ntangu yai to landa mpi yika yo na nima.",
+    "northStarBody": "E VL01 wearable ilenda tezanesa e fulu ya lutaninu ye nsongo ye sinsu yandá ya niema.",
+    "setupJewelry": "Tula bima ya mayaka",
+    "meetCapybear": "Kutana ti Capybear",
+    "meetCapybearSubtitle": "Nkundi na nge ya mawete ya lutaninu na karte mpi na ba appel.",
+    "capybearBody": "Capybear lenda sadisa na mutindu ya nzo, mutindu ya nkengidi, mutindu ya urgence, kubinga sambu na kupesa bikuma, mpi lusadisu ya ndinga.",
+    "chooseVoice": "Sola ndinga",
+    "capybearReminder": "Capybear ngibusa",
+    "remindersReady": "Bangibusa ya mawete kele ya kuyilama."
+  },
+  "permissions": {
+    "locationTitle": "Lutaninu ya kisika",
+    "locationSubtitle": "Sadila sambu na karte, bisika ya kigonsa, kukuma na lutaninu, mpi SOS contexte.",
+    "locationBody": "VeryLoving ke lomba kisika sambu bankengidi kubakisa kisika lusadisu lenda vanda na mfunu. Nge lenda soba yo na nima na Parametre.",
+    "allowLocation": "pesa nzila na kisika",
+    "notificationsTitle": "Balukebisu ya lutaninu",
+    "notificationsSubtitle": "Bansangu ke sadisaka na kukota mpi na mambu ya nswalu.",
+    "notificationsBody": "Beto ke sadilaka kaka bansangu sambu na bansangu ya lutaninu, bansangu ya mpa ya nswalu, mpi bangibusa yina nge ke pesaka nzila.",
+    "enableNotifications": "Kangula bansangu",
+    "locationRationaleTitle": "Kisika ke salaka nde mambu ya lutaninu kuvanda ya siki-siki",
+    "locationRationaleMessage": "VeryLoving ke sadila kisika na nge sambu na karte ya lutaninu, bisika ya kigonsa, kukabula nswalu, mpi SOS contexte. Nge lenda soba yo na nima na Parametre.",
+    "notificationsRationaleTitle": "Balukebisu ya lutaninu kele na mfunu ya bansangu",
+    "notificationsRationaleMessage": "VeryLoving ke tindaka bangibusa ya kukota, bansangu ya mpa ya nswalu, mpi bansangu ya lutaninu yina nge ke pesa nzila. Beto ke sadilaka ve bansangu sambu na bapiblisite.",
+    "microphoneRationaleTitle": "Microphone ke pesaka ngolo na kubinga bantu na lutaninu",
+    "microphoneRationaleMessage": "VeryLoving ke sadilaka mikro na nge kaka ntangu nge ke yantika AI nduku to kubinga ya lutaninu.",
+    "bluetoothRationaleTitle": "Bluetooth ke vukisaka bima na nge ya kulwata",
+    "bluetoothRationaleMessage": "VeryLoving ke sadilaka Bluetooth sambu na kuvukisa ti bima ya mayaka NorthStar, kutanga kisika ya nguizani, mpi kubasisa ba nzila ya lutaninu yina ke katukaka na kima ya kulwata.",
+    "cameraRationaleTitle": "Camera kele ya kupona",
+    "cameraRationaleMessage": "VeryLoving ke sadilaka kamera kaka ntangu nge ke ponaka kubaka foto ya profil to kukabula kifwanisu ya lutaninu."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ke bumbaka nzila yai na Parametre mpi na tablo ya ordinatere.",
+    "chooseVoiceTitle": "Sola ndinga na nge",
+    "chooseVoiceSubtitle": "Pona ndinga ya nduku yina ke monana mbote na kuwa.",
+    "homeTitle": "Mode ya nzo",
+    "homeSubtitle": "Kutala pima sambu na lutaninu ya konso kilumbu.",
+    "guardianTitle": "Mode ya nkengidi",
+    "guardianSubtitle": "Kabula contexte na bantu ya nge ke tudilaka ntima.",
+    "emergencyTitle": "Mode ya urgence",
+    "emergencySubtitle": "Bapompi tanu lenda tombuka tii na SOS mpi balukebisu ya bankengidi.",
+    "excuseTitle": "Nlemvuka kubinga",
+    "excuseSubtitle": "Sala kikuma ya mbote ya kubika mambu ya kukonda kiese.",
+    "safetyCallTitle": "Kubinga ya lutaninu",
+    "safetyCallSubtitle": "Yantika kubinga nduku na ntangu ya kieleka ntangu nge kele na mfunu ya lusadisu.",
+    "practiceTitle": "Scene ya kusala ngalasisi",
+    "practiceSubtitle": "Meka ba nzila ya lutaninu na demo ya pression ya fioti."
+  },
+  "jewelry": {
+    "pairTitle": "Zole NorthStar",
+    "pairSubtitle": "Lunda bima ya mayaka pene-pene ntangu nge ke sala scanner.",
+    "scan": "Scan sambu na ba apareyi",
+    "scanning": "Kutala pene-pene...",
+    "noDevices": "Ata kima mosi ve ya pene-pene ya NorthStar me monana ntete.",
+    "scanStartFailed": "Bluetooth ya kutala lenda yantika ve. Meka diaka.",
+    "scanFailed": "Beto monaka ve bima ya mayaka pene-pene. Tala Bluetooth, bumba NorthStar pene-pene, mpi meka diaka.",
+    "scanAccessFailed": "Bluetooth ya kutala lenda yantika ve. Tala Bluetooth ya kukota mpi meka diaka.",
+    "permissionDenied": "Kukota na apareyi ya pene-pene me kangama. Bika Bluetooth kukota na Parametre, na nima meka diaka.",
+    "connectTimeout": "NorthStar bakaka ntangu mingi sambu na kukangama. Pusa yo pene-pene mpi meka diaka.",
+    "connectFailed": "Beto lendaka ve kukangama na NorthStar. Tala kana yo kele ti charge mpi kana yo kele pene-pene, na nima meka diaka.",
+    "emptyTitle": "Ata apareyi mosi ve ya pene-pene",
+    "emptyMessage": "Lunda NorthStar ya kufuluka mpi pene-pene ya telefone yai, na nima sala scanner diaka.",
+    "searchingMessage": "Kusosa NorthStar ya bisadilu pene-pene..."
+  },
+  "home": {
+    "subtitle": "Tablo ya nduku ya lutaninu",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} kele ya kuyilama",
+    "readyBody": "Ndinga, karte, mayaka, mpi bankengidi kele na kitamina ya robinet mosi.",
+    "safetyCall": "Kubinga ya lutaninu",
+    "northStarDevice": "NorthStar kisadilu",
+    "deviceConnected": "%{name} me vukana · %{battery}%",
+    "noDevice": "Ata apareyi mosi ve me vukana",
+    "manageDevice": "Landa kisadilu",
+    "mode": "mode",
+    "modes": {
+      "home": "Nzo",
+      "guardian": "Nkengidi",
+      "emergency": "Mpasi"
+    }
+  },
+  "map": {
+    "finding": "Kuzwa kisika na nge...",
+    "retry": "Meka diaka kisika",
+    "title": "Mukanda ya lutaninu",
+    "previewSubtitle": "Expo Go nsangu ya ntete; Mapbox ke monisa na kutunga ya kutunga.",
+    "preview": "Kumona na ntwala ya karte",
+    "risk": "Kigonsa: %{risk} · Rayon %{radius}m",
+    "refresh": "Kuyidika kisika",
+    "refreshing": "Kusosa kisika...",
+    "updateFailed": "Beto lendaka ve kuyidika kisika na nge. Meka diaka.",
+    "notRequested": "Kukota na kisika me lombama ve. Nge lenda kangula yo na nima na nsadisa ya Parametre.",
+    "permissionOff": "Kukota na kisika me kangama. Kangula yo na Parametre sambu na kutula karte ya lutaninu na kati-kati na nge.",
+    "timeout": "Kisika na nge ke baka ntangu mingi kuluta mutindu nge vandaka kuyindula. Katuka kisika mosi ya kele ti kidimbu ya pwelele mpi meka diaka.",
+    "savedTitle": "Bisika ya bo me bumba",
+    "savedEmptyTitle": "Bisika ya bo me bumbaka ntete ve",
+    "savedEmptyMessage": "Bisika ya nge ke tudilaka ntima yina nge ke bumbaka ta monana awa sambu na kukota nswalu.",
+    "zones": {
+      "crowding": "Kufuluka ya bantu na mpimpa",
+      "lowLighting": "Kisika ya nsemo ya fioti"
+    },
+    "risks": {
+      "low": "na nsi",
+      "medium": "kati-kati",
+      "high": "ya zulu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kuvukisa...",
+    "offlineCompanion": "Nkundi ya kele ve na nzila",
+    "offline": "Kukonda nzila",
+    "connected": "me vukana",
+    "interrupted": "Kukangama me zengana",
+    "ready": "Kuyilama sambu na kukangama",
+    "connectingSecurely": "Kukangama mbote na nduku na nge ya ndinga...",
+    "messagesWaiting": {
+      "one": "%{count} nsangu ke vingila kutinda",
+      "other": "%{count} nsangu ke vingila kutinda"
+    },
+    "useOffline": "Sadila nduku yina kele ve na nzila",
+    "reconnect": "Kukangama diaka na ndinga AI",
+    "typePlaceholder": "Sonika kana kutuba kele mpasi",
+    "endCall": "Nsuka ya kubinga",
+    "startCall": "Yantika kubinga",
+    "emptyTitle": "Disolo na nge ke yantika awa",
+    "emptyMessage": "Yantika kubinga to sonika nsangu kana nge me yilama."
+  },
+  "chat": {
+    "waiting": "Kuvingila nguizani",
+    "notSent": "Nsangu me tindama ve.",
+    "retryAccessibility": "Meka diaka kutinda nsangu"
+  },
+  "history": {
+    "clearTitle": "Katula disolo ya masolo?",
+    "clearMessage": "Yau ke katula bansangu ya nduku ya AI ya bo me bumba na kisadilu yai.",
+    "deleteTitle": "Kufwa disolo yai?",
+    "cannotUndo": "Yayi lenda vutuka ve.",
+    "title": "Disolo ya masolo",
+    "subtitle": "AI nsangu ya nduku ya bo me bumba na kisadilu yai.",
+    "empty": "Ata masolo mosi ve me bumbana.",
+    "emptyTitle": "Masolo kele ntete ve",
+    "emptyMessage": "Masolo na nge ya nduku AI ta monana awa na nima ya kubinga na nge ya ntete.",
+    "loadFailed": "Beto lendaka ve kutula disolo ya masolo. Meka diaka.",
+    "clearFailed": "Beto lendaka ve kukatula disolo ya masolo. Meka diaka.",
+    "deleteFailed": "Beto lendaka ve kufwa disolo yina. Meka diaka.",
+    "aiCompanion": "AI nduku",
+    "resume": "Kuvutukila",
+    "clearAll": "Katula mambu yonso ya ntama",
+    "roles": {
+      "assistant": "nduku",
+      "user": "nge"
+    }
+  },
+  "voices": {
+    "title": "Ndinga na mono ya kubinga sambu na lutaninu",
+    "subtitle": "Pona ndinga ya nduku yina nge ke mona nde yo me fwana na kuwa.",
+    "test": "Ndinga ya kumeka",
+    "stop": "Telama mbandu",
+    "selectionFailedTitle": "Kupona me bumbana ve",
+    "selectionFailedMessage": "Meka diaka kupona ndinga.",
+    "sampleFailedTitle": "mbandu kele ve",
+    "sampleFailedMessage": "E mbandu yayi ya ndinga lendaka kubula ve. Meka diaka.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "malembe, pima, ntoto"
+      },
+      "bestie": {
+        "name": "Nkundi",
+        "description": "nsemo, ke lembika, ke solula"
+      },
+      "boyfriend": {
+        "name": "Nkundi ya bakala",
+        "description": "kukangama, zola, ntangu yai"
+      },
+      "muscleMan": {
+        "name": "Muntu ya misisa",
+        "description": "kuditudila ntima, kutanina, kupesa kikesa"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ndinga",
+    "changeVoice": "Soba ndinga",
+    "showCompanion": "Songa nduku",
+    "offlineMode": "Mode ya kukonda nzila",
+    "offlineModeSubtitle": "Sadila bamvutu ya banduku ya kimvuka ntangu réseau to Hume ya kuzaba kele ve.",
+    "privacyData": "Kinsweki & bansangu",
+    "privacyBody": "Basisa to kufwa bansangu ya bwala yina bo me bumba na apareyi yai.",
+    "preparingExport": "Kuyidika kutinda na nganda...",
+    "exportData": "Basisa bansangu na mono",
+    "privacyPolicy": "Nsiku ya kinsweki",
+    "deleting": "Kufwa...",
+    "deleteAll": "Kufwa bansangu yonso ya bwala",
+    "deviceManagement": "Kusadila bisadilu",
+    "emergencyContacts": "Bantu ya nge lenda kutana ti bo na kintulumukina",
+    "signOut": "Kubasika",
+    "exportFailedTitle": "Kubasisa me nunga ve",
+    "exportFailedMessage": "Kukonda kubasisa bansangu na nge sesepi yai.",
+    "deleteConfirmTitle": "Kufwa bansangu yonso ya bwala?",
+    "deleteConfirmMessage": "Yau ke katula profil na nge, ba parametre, ba contacts ya urgence, histoire ya masolo, ba ngibusa ya nswa, mpe session ya auth local na apareyi yayi.",
+    "deleteEverything": "Kufwa bima yonso",
+    "deleteFailedTitle": "Kufwanisa me nunga ve",
+    "deleteFailedMessage": "Kukonda kufwa bansangu ya bwala sesepi yai.",
+    "linkFailed": "Kukonda kukangula lien",
+    "sections": {
+      "language": "Ndinga",
+      "languageSubtitle": "Ndinga ya nswa ya interface mpi ya ngidika",
+      "companion": "Nkundi",
+      "companionSubtitle": "Mambu ya nge ke zolaka na ndinga mpi na nganda ya Internet",
+      "deviceSafety": "Bisadilu mpi lutaninu",
+      "deviceSafetySubtitle": "NorthStar, bankengidi, mpi bantu yina bo lenda solula ti bo na kintulumukina",
+      "privacy": "Kinsweki mpi bansangu",
+      "privacySubtitle": "Disolo, kutinda, kufwa, mpi bansiku",
+      "account": "Konti",
+      "accountSubtitle": "Kilumbu na nge ya sesepi VeryLoving"
+    },
+    "updateFailedTitle": "Parametre me bumbana ve",
+    "updateFailedMessage": "Ke tulendi lunda luzolo lwalu ko. Meka diaka.",
+    "signOutFailedTitle": "kulendaka ve kubasika",
+    "signOutFailedMessage": "Kitini na nge kele kaka na kisalu. Meka diaka."
+  },
+  "contacts": {
+    "title": "Bantu ya nge lenda kutana ti bo na kintulumukina",
+    "subtitle": "Bantu ya bo ke tudilaka ntima yina kele na ntangu ya baflux ya lutaninu.",
+    "addTitle": "Yika nsangu ya urgence",
+    "name": "Zina",
+    "namePlaceholder": "Zina ya muntu ya nge ke solula ti yandi",
+    "phone": "Nimero ya telefone ya kukutana",
+    "add": "Yika muntu",
+    "empty": "Ba nsangu ya urgence me yikama ntete ve.",
+    "emptyTitle": "Ata muntu mosi ve ya urgence",
+    "emptyMessage": "Yika muntu ya nge ke tudilaka ntima sambu yandi vanda ya kuyilama ntangu nzila ya lutaninu kele na mfunu na yandi.",
+    "removeTitle": "Katula %{name}?",
+    "removeMessage": "Muntu yayi ke monana diaka ve na nzila ya urgence na nge.",
+    "nameRequired": "Sonika zina ya muntu yina nge ke solula ti yandi.",
+    "saveFailedTitle": "Contact me bumbana ve",
+    "saveFailedMessage": "Beto lendaka ve kubumba nsangu yai. Tala mambu ya fioti-fioti mpi meka diaka.",
+    "removeFailedTitle": "Kontakti me katuka ve",
+    "removeFailedMessage": "Beto lendaka ve kukatula nsangu yai. Meka diaka.",
+    "callAccessibility": "Binga %{name}",
+    "removeAccessibility": "Katula %{name}"
+  },
+  "device": {
+    "title": "Kusadila bisadilu",
+    "subtitle": "Landa kisadilu na nge ya NorthStar.",
+    "connected": "Ya me vukana · %{battery}% ya bateri",
+    "none": "Ata apareyi mosi ve me vukana",
+    "disconnect": "Katula apareyi",
+    "connect": "Kuvukisa kisadilu"
+  },
+  "friends": {
+    "title": "Banduku",
+    "subtitle": "Bakengidi, balomba, na graf ya urgence.",
+    "addDemo": "Yika nduku ya demo",
+    "emptyTitle": "Kitini na nge ya lutaninu kele mpamba",
+    "emptyMessage": "Banduku ti bankengidi ya bo ke tudilaka ntima ta monana awa kana bo me yika bo.",
+    "newGuardian": "Nkengidi ya mpa",
+    "statuses": {
+      "guardian": "Nkengidi",
+      "pending": "ke vingila"
+    }
+  },
+  "emergency": {
+    "title": "Nswalu SOS",
+    "subtitle": "Kutombula kaka kana nge kele na mfunu ya lusadisu nswalu.",
+    "body": "Yau ta zabisa nzila na nge ya lutaninu mpi ta yidika bantu yina nge ta kutana ti bo na kintulumukina.",
+    "activate": "Kusala SOS",
+    "callCompanion": "Binga nduku ya AI",
+    "notificationTitle": "SOS me salama",
+    "notificationBody": "Flux ya urgence na nge me yilama.",
+    "readyTitle": "SOS me yilama",
+    "callContact": "Binga %{name}?",
+    "addContact": "Yika muntu ya nge lenda solula ti yandi na mbala mosi na Parametre.",
+    "quickShareTitle": "Kukabula nswalu",
+    "quickShareMessage": "Kisika ya kukabula stub me yilama. Kukangama na nsuka ya kukabula backend sambu na kutinda ba lien en direct."
+  },
+  "quickShare": {
+    "title": "Kukabula nswalu",
+    "subtitle": "Flux ya kukabula kisika me yilama."
+  },
+  "capybearTap": {
+    "title": "Capybear",
+    "subtitle": "Fina mbala zole na NorthStar na nge sambu na kulosa nsinga ya lutaninu.",
+    "body": "Nzila ya bidimbu kele ya kuyilama sambu na bansinga ya mambu ya BLE."
+  },
+  "debug": {
+    "title": "VeryLoving mukanda ya kuyidika mambu",
+    "subtitle": "Nzila ya kutunga kaka."
+  },
+  "errors": {
+    "voiceOffline": "Nge ke monana nde nge kele ve na nzila. Nsangu na nge ta tindama ntangu nge ta vukana diaka.",
+    "voiceQueued": "Nsangu me bumbana. Yo ta tindama ntangu nduku ya ndinga ta vukisa diaka.",
+    "voiceRetrying": "Kumeka kutinda diaka nsangu na nge...",
+    "voiceConnecting": "Kukangama mbote na nduku na nge ya ndinga...",
+    "microphone": "Kusadila mikro kele mfunu sambu na kubinga bantu na ndinga. Nge lenda kangula yo na Parametre, to kusonika nsangu na kisika na yo.",
+    "billing": "Nkundi ya ndinga ya internet kele ve sambu na mwa ntangu. Nge lenda landa ti nduku yina kele ve na Internet.",
+    "authentication": "Nkundi ya ndinga lendaka ve kuzikisa lukutakanu yai. Kota diaka to sadila nduku yina kele ve na Internet sambu na ntangu yai.",
+    "timeout": "Nkundi ya ndinga bakaka ntangu mingi sambu na kupesa mvutu. Tala connexion na nge mpi meka diaka.",
+    "network": "Beto lendaka ve kukutana ti nduku ya ndinga. Tala connexion na nge, na nima meka diaka to landa kukonda internet.",
+    "genericVoice": "Kima mosi me zenga ndinga ya kubinga. Meka diaka, to landa ti nduku yina kele ve na Internet."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving kubasisa bansangu"
+  },
+  "notifications": {
+    "channelName": "Balukebisu ya lutaninu"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving kele na mfunu ya kukota na mikro sambu na lutaninu mpi AI kubinga ya banduku.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ke sadilaka kisika na nge sambu na karte ya lutaninu mpi bima ya lutaninu yina kele pene-pene.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ke sadilaka kisika na nge sambu na kusadisa ba nzila ya kukwisa na lutaninu mpi ya nswalu.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ke sadilaka kisika ya nima sambu na bima ya kisika ya kigonsa ya pene-pene mpi ya kisika ya kigonsa.",
+      "NSCameraUsageDescription": "VeryLoving ke sadilaka kamera kaka ntangu nge ke ponaka kubaka foto ya kimuntu to ya lutaninu.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ke sadilaka biblioteke ya bafoto na nge kaka kana nge pona kifwanisu ya profil to ya lutaninu.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

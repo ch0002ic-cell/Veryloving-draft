@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Yongeza",
+    "apple": "Apple",
+    "back": "Ngasemva",
+    "call": "Umnxeba",
+    "cancel": "Rhoxisa",
+    "clear": "Cacisa",
+    "close": "Vala",
+    "connect": "Qhagamshela",
+    "connecting": "Ukunxulumanisa...",
+    "continue": "Qhubekeka",
+    "delete": "Cima",
+    "finish": "Ukugqiba",
+    "friends": "Abahlobo",
+    "google": "Google",
+    "home": "Ikhaya",
+    "loading": "Iyalayisha...",
+    "map": "Imephu",
+    "notNow": "Hayi ngoku",
+    "remove": "Susa",
+    "retry": "Phinda uzame",
+    "retrying": "Ukuzama kwakhona",
+    "save": "Gcina",
+    "selected": "Kukhethiwe",
+    "send": "Thumela",
+    "settings": "Izicwangciso",
+    "skip": "Tsiba",
+    "skipForNow": "Tsiba okwangoku",
+    "skipTutorial": "Tsiba isifundo",
+    "sos": "SOS",
+    "unknown": "Ayaziwa",
+    "user": "VeryLoving umsebenzisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ulwimi",
+    "subtitle": "Khetha ulwimi olusetyenzisiweyo kuyo yonke i-app.",
+    "system": "Inkqubo emiselweyo",
+    "search": "Khangela iilwimi",
+    "noResults": "Akukho lwimi luhambelana nokukhangela kwakho.",
+    "english": "IsiNgesi",
+    "spanish": "Isi-Spanish",
+    "french": "Isi-Frentshi",
+    "chineseSimplified": "IsiTshayina (Simplified Version)"
+  },
+  "phone": {
+    "label": "Inombolo yefowuni",
+    "placeholder": "Inombolo yefowuni",
+    "selectCountry": "Khetha ilizwe okanye ummandla",
+    "searchCountry": "Khangela ilizwe, ikhowudi, okanye isimaphambili sokucofa",
+    "noCountries": "Akukho mazwe ahambelana nophando lwakho.",
+    "countryButton": "Tshintsha ilizwe, okwangoku %{country} kunye %{callingCode}",
+    "inputAccessibility": "Inombolo yefowuni %{country}",
+    "required": "Ngenisa inombolo yefowuni.",
+    "tooShort": "Le nombolo yefowuni imfutshane kakhulu.",
+    "tooLong": "Le nombolo yefowuni inde kakhulu.",
+    "invalid": "Faka inombolo yefowuni esebenzayo yelizwe elikhethiweyo.",
+    "valid": "Inombolo yefowuni esebenzayo yamazwe ngamazwe"
+  },
+  "auth": {
+    "onboardingTagline": "Iqabane lokhuseleko lobuqu phakathi kwexesha eliphakathi kwe \"Ndilungile\" kunye \"Ndidinga uncedo.\"",
+    "createAccount": "Yenza i-akhawunti",
+    "continueOnboarding": "Qhubeka nokungena",
+    "createSubtitle": "Khetha indlela yokungena ukuze ukhusele igrafu yakho yokhuseleko.",
+    "phoneVerification": "Ukuqinisekiswa kwefowuni",
+    "sendCode": "Thumela ikhowudi",
+    "sendingCode": "Ukuthumela ikhowudi...",
+    "verifyCode": "Qinisekisa ikhowudi",
+    "sentTo": "Ithunyelwe kwi-%{phone}",
+    "yourPhone": "Ifowuni yakho",
+    "verificationCode": "Ikhowudi yokuqinisekisa",
+    "verify": "Qinisekisa",
+    "verifying": "Ukuqinisekisa...",
+    "invalidCode": "Ngenisa ikhowudi yokuqinisekisa.",
+    "signInFailedTitle": "Ukungena kuphazamisekile",
+    "signInFailedMessage": "Asikwazanga ukugqibezela ukubhalisa. Jonga unxulumano lwakho uze uzame kwakhona.",
+    "googleUnavailableTitle": "Google Ukungena akufumaneki",
+    "googleUnavailableMessage": "Sebenzisa intlanganiso yophuhliso lwengingqi. I-Native Google Sign-In isebenza kulwakhiwo lophuhliso.",
+    "northStarTitle": "NorthStar ubucwebe",
+    "northStarSubtitle": "Bhangqa ngoku okanye uqhubeke kwaye uyongeze kamva.",
+    "northStarBody": "Ukunxitywa VL01 kunokubangela ukuhamba kokhuseleko ngeempompo kunye nezijekulo ezide zokucinezela.",
+    "setupJewelry": "Cwangcisa ubucwebe",
+    "meetCapybear": "Dibana Capybear",
+    "meetCapybearSubtitle": "Iqabane lakho lokhuseleko elinobubele kwimephu nakwiifowuni.",
+    "capybearBody": "Capybear inokunceda kwimowudi yasekhaya, imowudi yomgcini, imowudi yongxamiseko, iifowuni zokuthethelela, kunye nenkxaso yelizwi.",
+    "chooseVoice": "Khetha ilizwi",
+    "capybearReminder": "Capybear isikhumbuzi",
+    "remindersReady": "Izikhumbuzo ezinobubele zilungile."
+  },
+  "permissions": {
+    "locationTitle": "Ukhuseleko lwendawo",
+    "locationSubtitle": "Isetyenziselwa imephu, iindawo ezinobungozi, ukufika okukhuselekileyo, kunye nomxholo SOS.",
+    "locationBody": "VeryLoving icela indawo ukuze abagcini baqonde apho uncedo lunokufuneka khona. Ungayitshintsha le nto kamva kwizicwangciso.",
+    "allowLocation": "Vumela indawo",
+    "notificationsTitle": "Izilumkiso zokhuseleko",
+    "notificationsSubtitle": "Izaziso zixhasa ukungena kunye neziganeko ezingxamisekileyo.",
+    "notificationsBody": "Sisebenzisa kuphela izaziso zokukhuthaza ukhuseleko, uhlaziyo olungxamisekileyo, kunye nezikhumbuzo ozenzayo.",
+    "enableNotifications": "Yenza ukuba isazisi sisebenze",
+    "locationRationaleTitle": "Indawo igcina imeko yokhuseleko ichanekile",
+    "locationRationaleMessage": "VeryLoving usebenzisa indawo yakho kwimephu yokhuseleko, iindawo ezinobungozi, ukwabelana ngokukhawuleza, kunye nomxholo SOS. Ungayitshintsha le nto kamva kwizicwangciso.",
+    "notificationsRationaleTitle": "Izilumkiso zokhuseleko zifuna izaziso",
+    "notificationsRationaleMessage": "VeryLoving ithumela izikhumbuzo zokungena, uhlaziyo olungxamisekileyo, kunye nemiyalelo yokhuseleko oyenzayo. Asisebenzisi izaziso kwiintengiso.",
+    "microphoneRationaleTitle": "Imakrofoni inika amandla iifowuni zokhuseleko",
+    "microphoneRationaleMessage": "VeryLoving usebenzisa imakrofoni yakho kuphela xa uqala iqabane AI okanye umnxeba wokhuseleko.",
+    "bluetoothRationaleTitle": "Bluetooth idibanisa i-wearable yakho",
+    "bluetoothRationaleMessage": "VeryLoving isebenzisa Bluetooth ukudibanisa ubucwebe NorthStar, ukufunda imeko yonxibelelwano, kunye nokubangela ukuhamba kokhuseleko kwizinto ezinxitywayo.",
+    "cameraRationaleTitle": "Ikhamera iyazikhethela",
+    "cameraRationaleMessage": "VeryLoving usebenzisa ikhamera kuphela xa ukhetha ukuthatha ifoto yeprofayile okanye wabelane ngomfanekiso wokhuseleko."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving igcina oku kuhamba kufumaneka kwiZicwangciso kunye nedeshibhodi.",
+    "chooseVoiceTitle": "Khetha ilizwi lakho",
+    "chooseVoiceSubtitle": "Khetha ilizwi leqabane eliziva likhuselekile ukuliva.",
+    "homeTitle": "Indlela yasekhaya",
+    "homeSubtitle": "Ukubeka iliso ngokuthe cwaka kukhuseleko lwemihla ngemihla.",
+    "guardianTitle": "Indlela yomgcini",
+    "guardianSubtitle": "Yabelana ngomongo nabantu abathembekileyo.",
+    "emergencyTitle": "Indlela yongxamiseko",
+    "emergencySubtitle": "Iimpompo ezintlanu zinokunyuka ziye kwi-SOS kunye ne-guardian alerts.",
+    "excuseTitle": "Uxolo umnxeba",
+    "excuseSubtitle": "Yenza isizathu esifanelekileyo sokushiya imeko engathandekiyo.",
+    "safetyCallTitle": "Umnxeba wokhuseleko",
+    "safetyCallSubtitle": "Qala umnxeba wexesha lokwenyani xa ufuna inkxaso.",
+    "practiceTitle": "Indawo yokuziqhelanisa",
+    "practiceSubtitle": "Zama ukuhambisa ukhuseleko kwidemo yoxinzelelo olusezantsi."
+  },
+  "jewelry": {
+    "pairTitle": "Isibini NorthStar",
+    "pairSubtitle": "Gcina ubucwebe busondele ngelixa uskena.",
+    "scan": "Ukuskena izixhobo",
+    "scanning": "Ukuskena okusondeleyo ...",
+    "noDevices": "Akukho zixhobo NorthStar ezikufutshane ezifunyenweyo okwangoku.",
+    "scanStartFailed": "Bluetooth skena asikwazanga ukuqalisa. Nceda uzame kwakhona.",
+    "scanFailed": "Asikwazanga ukufumana ubucwebe obukufutshane. Khangela Bluetooth, gcina NorthStar usondele, uze uzame kwakhona.",
+    "scanAccessFailed": "Bluetooth skena asikwazanga ukuqalisa. Khangela Bluetooth ufikelelo uze uzame kwakhona.",
+    "permissionDenied": "Ukufikelela kwisixhobo esikufutshane kucinyiwe. Vumela ukufikelela Bluetooth kwizicwangciso, emva koko uzame kwakhona.",
+    "connectTimeout": "NorthStar kuthathe ixesha elide ukunxibelelana. Yisondeze kwaye uzame kwakhona.",
+    "connectFailed": "Asikwazanga ukunxibelelana NorthStar. Khangela ukuba ihlawuliswe kwaye ikufuphi, emva koko uzame kwakhona.",
+    "emptyTitle": "Azikafumani zixhobo zikufutshane okwangoku",
+    "emptyMessage": "Gcina NorthStar uhlawuliswe kwaye usondele kule fowuni, emva koko uskena kwakhona.",
+    "searchingMessage": "Ukukhangela izixhobo NorthStar ezikufutshane ..."
+  },
+  "home": {
+    "subtitle": "Ideshibhodi yeqabane lokhuseleko",
+    "modeStatus": "%{mode} INDLELA",
+    "companionReady": "%{name} ilungile",
+    "readyBody": "Ilizwi, imephu, ubucwebe, kunye nabagcini zicofa enye kude.",
+    "safetyCall": "Umnxeba wokhuseleko",
+    "northStarDevice": "NorthStar isixhobo",
+    "deviceConnected": "%{name} idityanisiwe · %{battery}%",
+    "noDevice": "Akukho sixhobo siqhakamshelwe",
+    "manageDevice": "Lawula isixhobo",
+    "mode": "Imowudi",
+    "modes": {
+      "home": "Ikhaya",
+      "guardian": "Umgcini",
+      "emergency": "Imeko engxamisekileyo"
+    }
+  },
+  "map": {
+    "finding": "Ukufumana indawo ohlala kuyo ...",
+    "retry": "Zama kwakhona indawo",
+    "title": "Imephu yokhuseleko",
+    "previewSubtitle": "Expo Go umboniso; Mapbox ibonelela ngesakhiwo sophuhliso.",
+    "preview": "Ukujongwa kuqala kwemephu",
+    "risk": "Umngcipheko: %{risk} · I-Radius %{radius}m",
+    "refresh": "Hlaziya indawo ekuyo",
+    "refreshing": "Ukufumana indawo...",
+    "updateFailed": "Asikwazanga ukuhlaziya indawo yakho. Nceda uzame kwakhona.",
+    "notRequested": "Ukufikelela kwendawo akucelwanga. Ungayivumela kamva ukusuka kuseto.",
+    "permissionOff": "Ukufikelela kwendawo kucinyiwe. Yenza ukuba kuseto lubeke imephu yokhuseleko kuwe.",
+    "timeout": "Indawo yakho ithatha ixesha elide kunokuba bekulindelwe. Yiya kwenye indawo ngomqondiso ocacileyo uze uzame kwakhona.",
+    "savedTitle": "Iindawo ezigciniweyo",
+    "savedEmptyTitle": "Akusekho zindawo zigciniweyo okwangoku",
+    "savedEmptyMessage": "Iindawo ezithembekileyo ozigcinayoyo ziza kuvela apha ukufikelela ngokukhawuleza.",
+    "zones": {
+      "crowding": "Ukuxinana ebusuku",
+      "lowLighting": "Indawo yokukhanyisa ephantsi"
+    },
+    "risks": {
+      "low": "Ezantsi",
+      "medium": "Phakathi",
+      "high": "Phezulu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ukunxulumanisa...",
+    "offlineCompanion": "Iqabane elingekho kwi-intanethi",
+    "offline": "Ingekho kwi-intanethi",
+    "connected": "Idityanisiwe",
+    "interrupted": "Unxulumano luphazamisekile",
+    "ready": "Ukulungele ukunxulumana",
+    "connectingSecurely": "Ukunxibelelana ngokukhuselekileyo neqabane lakho lelizwi",
+    "messagesWaiting": {
+      "one": "%{count} umyalezo ulinde ukuthunyelwa",
+      "other": "%{count} imiyalezo elinde ukuthunyelwa"
+    },
+    "useOffline": "Sebenzisa iqabane xa ingekho kwi-intanethi",
+    "reconnect": "Phinda unxulumane nezwi AI",
+    "typePlaceholder": "Chwetheza ukuba kunzima ukuthetha",
+    "endCall": "Phelisa umnxeba",
+    "startCall": "Qala unxulumano",
+    "emptyTitle": "Incoko yakho iqala apha",
+    "emptyMessage": "Qala umnxeba okanye uchwetheze umyalezo xa ulungele."
+  },
+  "chat": {
+    "waiting": "Ulinde uxhulumaniso",
+    "notSent": "Umyalezo awuthunyelwanga.",
+    "retryAccessibility": "Phinda Zama Ukuthumela Umyalezo"
+  },
+  "history": {
+    "clearTitle": "Imbali yencoko ecacileyo?",
+    "clearMessage": "Oku kususa imiyalezo egciniweyo AI neqabane kwesi sixhobo.",
+    "deleteTitle": "Icima le ngxoxo?",
+    "cannotUndo": "Oku akunakuguqulwa.",
+    "title": "Imbali yengxoxo",
+    "subtitle": "AI imiyalezo engumhlobo egcinwe kwesi sixhobo.",
+    "empty": "Akukho ncoko igciniweyo okwangoku.",
+    "emptyTitle": "Akukho ncoko okwangoku",
+    "emptyMessage": "Iincoko zakho zeqabane AI ziya kuvela apha emva komnxeba wakho wokuqala.",
+    "loadFailed": "Asikwazanga ukufaka imbali yengxoxo. Nceda uzame kwakhona.",
+    "clearFailed": "Asikwazanga ukucacisa imbali yengxoxo. Nceda uzame kwakhona.",
+    "deleteFailed": "Asikwazanga ukuyicima loo ngxoxo. Nceda uzame kwakhona.",
+    "aiCompanion": "AI iqabane",
+    "resume": "Qalisa kwakhona",
+    "clearAll": "Cima yonke imbali",
+    "roles": {
+      "assistant": "iqabane",
+      "user": "Wena"
+    }
+  },
+  "voices": {
+    "title": "Ukhuseleko lwam lwefowuni",
+    "subtitle": "Khetha ilizwi elivakalelwa kukuba lilungile ukuliva.",
+    "test": "Ilizwi lovavanyo",
+    "stop": "Misa isampulu",
+    "selectionFailedTitle": "Okukhethiweyo akugcinwanga",
+    "selectionFailedMessage": "Nceda uzame ukukhetha ilizwi kwakhona.",
+    "sampleFailedTitle": "Isampulu ayifumaneki",
+    "sampleFailedMessage": "Le sampulu yelizwi ayikwazanga kudlalwa. Nceda uzame kwakhona.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Gentle Flooring, Flooring"
+      },
+      "bestie": {
+        "name": "I-Bestie",
+        "description": "Ingxoxo, Ingxoxo, Ingxoxo"
+      },
+      "boyfriend": {
+        "name": "Umhlobo oyinkwenkwe",
+        "description": "Zinzile, Thando, Zikho"
+      },
+      "muscleMan": {
+        "name": "I-Muscleman",
+        "description": "Ukuzithemba, ukukhusela, ukukhuthaza"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ilizwi",
+    "changeVoice": "Tshintsha ilizwi",
+    "showCompanion": "Bonisa iqabane",
+    "offlineMode": "Inkqubo engasebenzi kwi-intanethi",
+    "offlineModeSubtitle": "Sebenzisa iimpendulo zamaqabane ezidityanisiweyo xa uthungelwano Hume okanye  baqinisekisiwe bengafumaneki.",
+    "privacyData": "Ubumfihlo kunye nedatha",
+    "privacyBody": "Thumela ngaphandle okanye ucime idatha yangaphakathi egcinwe kwesi sixhobo.",
+    "preparingExport": "Ukulungiselela ukuhanjiswa kwelinye ilizwe...",
+    "exportData": "Khupha i-data yam",
+    "privacyPolicy": "Umgaqo-nkqubo wabucala",
+    "deleting": "Ukucima...",
+    "deleteAll": "Cima yonke i-data yangaphakathi",
+    "deviceManagement": "Ulawulo lwezixhobo",
+    "emergencyContacts": "Abafowunelwa bexesha likaxakeka",
+    "signOut": "Ngena ngaphandle",
+    "exportFailedTitle": "Ukuhanjiswa akuphumelelanga",
+    "exportFailedMessage": "Ayikwazi ukuthumela ngaphandle idata yakho ngoku.",
+    "deleteConfirmTitle": "Cima yonke i-data yangaphakathi?",
+    "deleteConfirmMessage": "Oku kususa inkangeleko yakho, izicwangciso, abafowunelwa abangxamisekileyo, imbali yencoko, izikhumbuzo zemvume, kunye neseshoni yogunyaziso yendawo kwesi sixhobo.",
+    "deleteEverything": "Cima yonke into",
+    "deleteFailedTitle": "Ukususwa akuphumelelanga",
+    "deleteFailedMessage": "Ayikwazi ukucima i-data yangaphakathi okwangoku.",
+    "linkFailed": "Ayinako ukuvula unxulumano",
+    "sections": {
+      "language": "Ulwimi",
+      "languageSubtitle": "Unxibelelwano kunye nolwimi lwemvume yenkqubo",
+      "companion": "Iqabane",
+      "companionSubtitle": "Izinto ezinokukhethwa kuzo kwi-Voice kunye nokusetyenziswa ungekho kwi-intanethi",
+      "deviceSafety": "Izixhobo kunye nokhuseleko",
+      "deviceSafetySubtitle": "NorthStar, abagcini kunye nabafowunelwa abangxamisekileyo",
+      "privacy": "Ubumfihlo kunye nedatha",
+      "privacySubtitle": "Imbali, ukuthumela ngaphandle, ukususwa kunye nomgaqo-nkqubo",
+      "account": "I-akhawunti",
+      "accountSubtitle": "Iseshoni yakho yangoku VeryLoving"
+    },
+    "updateFailedTitle": "Ummiselo awugcinwanga",
+    "updateFailedMessage": "Asikwazanga ukusindisa olo khetho. Nceda uzame kwakhona.",
+    "signOutFailedTitle": "Ayikwazanga ukuphuma",
+    "signOutFailedMessage": "Iseshoni yakho isasebenza. Nceda uzame kwakhona."
+  },
+  "contacts": {
+    "title": "Abafowunelwa bexesha likaxakeka",
+    "subtitle": "Abantu abathembekileyo abafumanekayo ngexesha lokuhamba kokhuseleko.",
+    "addTitle": "Yongeza uqhakamshelwano olungxamisekileyo",
+    "name": "Igama",
+    "namePlaceholder": "Igama loqhagamshelwano",
+    "phone": "Inombolo yefowuni yoqhagamshelwano",
+    "add": "Yongeza oqhagamshelana naye",
+    "empty": "Akukho zixhobo zongxamiseko ezongeziweyo okwangoku.",
+    "emptyTitle": "Abakaqhagamshelana nabo xesha likaxakeka okwangoku",
+    "emptyMessage": "Yongeza umntu omthembayo ukuze alungele xa ukuhamba kokhuseleko kuyimfuneko.",
+    "removeTitle": "Susa %{name}?",
+    "removeMessage": "Lo mntu akasayi kuphinda abonakale kwindawo yakho yongxamiseko.",
+    "nameRequired": "Ngenisa igama loqhagamshelwano.",
+    "saveFailedTitle": "Aqhagamshelana naye agcinwanga",
+    "saveFailedMessage": "Asikwazanga ukugcina olu qhakamshelwano. Jonga iinkcukacha uze uzame kwakhona.",
+    "removeFailedTitle": "Uqhagamshelwano alususwanga",
+    "removeFailedMessage": "Asikwazanga ukususa olu qhakamshelwano. Nceda uzame kwakhona.",
+    "callAccessibility": "Tsalela umnxeba %{name}",
+    "removeAccessibility": "Susa %{name}"
+  },
+  "device": {
+    "title": "Ulawulo lwezixhobo",
+    "subtitle": "Lawula isixhobo sakho NorthStar.",
+    "connected": "Idityanisiwe · %{battery}% ibhetri",
+    "none": "Akukho zixhobo ziqhagamsheliweyo",
+    "disconnect": "Cima isixhobo",
+    "connect": "Qhagamshela isixhobo"
+  },
+  "friends": {
+    "title": "Abahlobo",
+    "subtitle": "Abagcini, izicelo, kunye negrafu engxamisekileyo.",
+    "addDemo": "Yongeza umhlobo wedemo",
+    "emptyTitle": "Isangqa sakho sokhuseleko asinanto",
+    "emptyMessage": "Abahlobo abathembekileyo kunye nabagcini baya kuvela apha xa bongezwa.",
+    "newGuardian": "Umgcini omtsha",
+    "statuses": {
+      "guardian": "Umgcini",
+      "pending": "Ilindelwe"
+    }
+  },
+  "emergency": {
+    "title": "Iimeko ezingxamisekileyo SOS",
+    "subtitle": "Yenza kuphela xa ufuna uncedo olukhawulezileyo.",
+    "body": "Oku kuya kwazisa ukuhamba kwakho kokhuseleko kunye nokulungiselela abafowunelwa abangxamisekileyo.",
+    "activate": "Yenza kusebenze SOS",
+    "callCompanion": "tsalela umnxeba AI iqabane lakho",
+    "notificationTitle": "SOS isebenze",
+    "notificationBody": "Inkqubo yakho yongxamiseko ilungile.",
+    "readyTitle": "SOS ulungile",
+    "callContact": "Tsalela umnxeba %{name}?",
+    "addContact": "Yongeza umfowunelwa ongxamisekileyo kwizicwangciso.",
+    "quickShareTitle": "Ukwabelana okukhawulezayo",
+    "quickShareMessage": "I-stub yokwabelana ngendawo ilungile. Qhagamshela indawo yokwabelana ngasemva ukuthumela amakhonkco aphilayo."
+  },
+  "quickShare": {
+    "title": "Ukwabelana okukhawulezayo",
+    "subtitle": "Indawo yokwabelana ngendawo ilungile."
+  },
+  "capybearTap": {
+    "title": "Capybear cofa",
+    "subtitle": "Cofa kabini NorthStar yakho ukuze ulahle i-orenji yokhuseleko.",
+    "body": "Indlela ye-gesture ilungele i-BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving iphepha lokulungisa isiphene",
+    "subtitle": "Indlela yophuhliso kuphela."
+  },
+  "errors": {
+    "voiceOffline": "Ubonakala ungaxhunyiwe kwi-intanethi. Umyalezo wakho uya kuthunyelwa xa uqhagamshela kwakhona.",
+    "voiceQueued": "Umyalezo ugciniwe. Iya kuthunyelwa xa iqabane lizwi lidibana kwakhona.",
+    "voiceRetrying": "Zama ukuthumela umyalezo wakho kwakhona ...",
+    "voiceConnecting": "Ukunxibelelana ngokukhuselekileyo neqabane lakho lelizwi",
+    "microphone": "Ukufikelela kwimakrofoni kuyafuneka kwiifowuni zelizwi. Ungayivumela kwiUseto, okanye uchwetheze umyalezo endaweni yoko.",
+    "billing": "Iqabane lilizwi elikwi-Intanethi alifumaneki okwethutyana. Ungaqhubeka neqabane elingaxhunyiwe kwi-intanethi.",
+    "authentication": "Iqabane lizwi alikwazanga ukuqinisekisa le seshoni. Phinda ungene okanye usebenzise iqabane elingekho kwi-intanethi okwangoku.",
+    "timeout": "Umlingane welizwi wathatha ixesha elide ukuphendula. Jonga unxulumano lwakho uze uzame kwakhona.",
+    "network": "Asikwazanga ukufikelela kwiqabane elizwi. Jonga uxhulumaniso lwakho, zame kwakhona okanye uqhubeke ngaphandle kweintanethi.",
+    "genericVoice": "Into ethile yaphazamisa umnxeba welizwi. Zama kwakhona, okanye uqhubeke neqabane elingekho kwi-intanethi."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving Ukuhanjiswa kwedatha"
+  },
+  "notifications": {
+    "channelName": "Izilumkiso zokhuseleko"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ufuna ukufikelela kwimakrofoni ukuze ukhuseleko kunye AI neefowuni zeqabane.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving usebenzisa indawo yakho kwimephu yokhuseleko kunye neempawu zokhuseleko ezikufutshane.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving isebenzisa indawo yakho ukuxhasa ukufika okukhuselekileyo kunye nokuhamba okungxamisekileyo.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving isebenzisa indawo yangasemva yokufika ngokukhuselekileyo kunye neempawu zendawo eyingozi ezikufutshane.",
+      "NSCameraUsageDescription": "VeryLoving usebenzisa ikhamera kuphela xa ukhetha ukuthatha iprofayile okanye ifoto yokhuseleko.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving usebenzisa ilayibrari yakho yeefoto kuphela xa ukhetha iprofayile okanye umfanekiso wokhuseleko.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving usebenzisa Bluetooth ukudibanisa ubucwebe bakho NorthStar ukhuseleko.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving usebenzisa Bluetooth ukudibanisa ubucwebe bakho NorthStar ukhuseleko."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

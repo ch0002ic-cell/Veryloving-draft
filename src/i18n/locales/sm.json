@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Fa'aopopo",
+    "apple": "Apple",
+    "back": "Toe foi",
+    "call": "Vala'au",
+    "cancel": "Fa'alēāogāina",
+    "clear": "Manino",
+    "close": "Tapuni",
+    "connect": "Fa'afeso'ota'i",
+    "connecting": "Fa'afeso'ota'i...",
+    "continue": "Fa'aauau",
+    "delete": "Aveese",
+    "finish": "Fa'amae'aina",
+    "friends": "Uo",
+    "google": "Google",
+    "home": "Aiga",
+    "loading": "Utaina ...",
+    "map": "Fa'afanua",
+    "notNow": "E le o le taimi nei",
+    "remove": "Aveese",
+    "retry": "Toe taumafai",
+    "retrying": "Toe taumafai",
+    "save": "Sefe",
+    "selected": "Filifilia",
+    "send": "Auina atu",
+    "settings": "Tulaga",
+    "skip": "Faamisi",
+    "skipForNow": "Faamisi mo le taimi nei",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "E le iloa",
+    "user": "VeryLoving tagata fa'aaoga",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Gagana",
+    "subtitle": "Filifili le gagana o lo'o fa'aaogaina i le polokalama atoa.",
+    "system": "Faaletonu o le faiga",
+    "search": "Saili gagana",
+    "noResults": "E leai ni gagana e tutusa ma lau sailiga.",
+    "english": "Igilisi",
+    "spanish": "Gagana fa'aSipaniolo",
+    "french": "Gagana fa'aFarani",
+    "chineseSimplified": "Saina (Fa'afaigofieina)"
+  },
+  "phone": {
+    "label": "Numera o le telefoni",
+    "placeholder": "Numera o le telefoni",
+    "selectCountry": "Filifili le atunuu po o le itulagi",
+    "searchCountry": "Saili le atunuu, numera faalilolilo po o le muai viliina",
+    "noCountries": "E leai ni atunuu e tutusa ma lau sailiga.",
+    "countryButton": "Suia le atunu'u, o lo'o i ai nei %{country} plus %{callingCode}",
+    "inputAccessibility": "Numera o le telefoni mo %{country}",
+    "required": "Ulu atu i se numera telefoni.",
+    "tooShort": "O lenei numera telefoni e puupuu tele.",
+    "tooLong": "O lenei numera telefoni e umi tele.",
+    "invalid": "Ta i totonu se numera telefoni aoga mo le atunuu filifilia.",
+    "valid": "Numera o telefoni faavaomalo o loo aoga"
+  },
+  "auth": {
+    "onboardingTagline": "O se soa saogalemu patino mo taimi i le va o le \"Ou te lelei\" ma le \"Ou te mana'omia se fesoasoani.\"",
+    "createAccount": "Fausia se tala",
+    "continueOnboarding": "Fa'aauau pea ona fa'apipi'i",
+    "createSubtitle": "Filifili se metotia saini i totonu e puipuia ai lau kalafi saogalemu.",
+    "phoneVerification": "Faamaoniga o le telefoni",
+    "sendCode": "Auina atu le code",
+    "sendingCode": "Auina atu le code ...",
+    "verifyCode": "Faamaonia le numera faalilolilo",
+    "sentTo": "Auina atu i %{phone}",
+    "yourPhone": "lau telefoni",
+    "verificationCode": "Numera faalilolilo o le faamaoniga",
+    "verify": "Fa'amaonia",
+    "verifying": "Fa'amaonia...",
+    "invalidCode": "Ta i totonu le numera faalilolilo o le faamaoniga.",
+    "signInFailedTitle": "Fa'alavelaveina le saini i totonu",
+    "signInFailedMessage": "E le mafai ona matou fa'amae'aina le saini i totonu. Siaki lau feso'ota'iga ma toe taumafai.",
+    "googleUnavailableTitle": "Google E le mafai ona saini i totonu",
+    "googleUnavailableMessage": "Fa'aaogaina o se fonotaga mo atina'e i le lotoifale. Native Google Sign-In galue i se fausiaina atinae.",
+    "northStarTitle": "NorthStar mea teuteu",
+    "northStarSubtitle": "Paga nei pe faaauau pea ma faaopoopo i se taimi mulimuli ane.",
+    "northStarBody": "O le VL01 wearable e mafai ona fa'aosofia ai le saogalemu tafe ma taps ma umi fetaomi gaioiga.",
+    "setupJewelry": "Fa'apipi'i mea teuteu",
+    "meetCapybear": "Feiloai Capybear",
+    "meetCapybearSubtitle": "O lau soa saogalemu agamalu i luga o le faafanua ma i valaauga.",
+    "capybearBody": "Capybear mafai ona fesoasoani i le home mode, guardian mode, emergency mode, excuse call, ma le leo lagolago.",
+    "chooseVoice": "Filifili se leo",
+    "capybearReminder": "Capybear faamanatu",
+    "remindersReady": "Ua sauni faamanatu agamalu."
+  },
+  "permissions": {
+    "locationTitle": "Saogalemu o le nofoaga",
+    "locationSubtitle": "Fa'aaogaina mo le fa'afanua, sone lamatiaga, taunu'u saogalemu, ma SOS talaaga.",
+    "locationBody": "VeryLoving fesili mo le nofoaga ina ia mafai ai e leoleo ona malamalama i le mea e ono mana'omia ai se fesoasoani. E mafai ona e suia lenei mea mulimuli ane i le Settings.",
+    "allowLocation": "Faataga le nofoaga",
+    "notificationsTitle": "Lapataiga saogalemu",
+    "notificationsSubtitle": "O fa'asilasilaga e lagolagoina le siakiina ma fa'alavelave fa'afuase'i.",
+    "notificationsBody": "Matou te faaaogaina na o faasilasilaga mo le saogalemu, faafouga mo faalavelave faafuasei, ma faamanatu e te faagaoioia.",
+    "enableNotifications": "Mafai ona fa'afeso'ota'i",
+    "locationRationaleTitle": "O le nofoaga e tausia ai le sa'o o le saogalemu",
+    "locationRationaleMessage": "VeryLoving te fa'aaogaina lou nofoaga mo le saogalemu fa'afanua, sone lamatiaga, vave fa'asoa, ma SOS fa'amatalaga. E mafai ona e suia lenei mea mulimuli ane i le Settings.",
+    "notificationsRationaleTitle": "E manaomia ni faasilasilaga mo le saogalemu",
+    "notificationsRationaleMessage": "VeryLoving lafoina fa'amanatu siakiina, fa'afouga mo fa'alavelave fa'afuase'i, ma fa'atonuga saogalemu e te fa'aaogaina. Matou te le fa'aaogaina fa'asilasilaga mo fa'asalalauga.",
+    "microphoneRationaleTitle": "Microphone mana saogalemu valaauga",
+    "microphoneRationaleMessage": "VeryLoving te faaaogaina lau masini faaleotele leo pe a e amataina se soa AI po o se valaau mo le saogalemu.",
+    "bluetoothRationaleTitle": "Bluetooth fa'afeso'ota'i lau ofu",
+    "bluetoothRationaleMessage": "VeryLoving fa'aaogaina Bluetooth e fa'apipi'i ai ma NorthStar mea teuteu, faitau le tulaga o feso'ota'iga, ma fa'aosofia le saogalemu tafe mai le ofuina.",
+    "cameraRationaleTitle": "O le mea pu'eata e fa'atagaina",
+    "cameraRationaleMessage": "VeryLoving te fa'aaogaina le mea pu'eata pe a e filifili e pu'eina se ata fa'apitoa pe fa'asoa se ata saogalemu."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving tausia lenei tafe avanoa mai Tulaga ma le dashboard.",
+    "chooseVoiceTitle": "Filifili lou leo",
+    "chooseVoiceSubtitle": "Filifili le leo o le soa e lagona e sili ona saogalemu e faalogo i ai.",
+    "homeTitle": "Faiga i le fale",
+    "homeSubtitle": "Mata'ituina filemu mo le saogalemu i aso uma.",
+    "guardianTitle": "Faiga o le leoleo",
+    "guardianSubtitle": "Faasoa atu le talaaga i tagata faatuatuaina.",
+    "emergencyTitle": "Fa'alavelave fa'afuase'i",
+    "emergencySubtitle": "E lima taps e mafai ona fa'ateleina i SOS ma leoleo mataala.",
+    "excuseTitle": "Vala'au fa'amalie",
+    "excuseSubtitle": "Fausia se mafuaaga lelei e tuua ai se tulaga le lelei.",
+    "safetyCallTitle": "Valaau saogalemu",
+    "safetyCallSubtitle": "Amata se soa i le taimi moni pe a e mana'omia le lagolago.",
+    "practiceTitle": "Vaaiga faataitai",
+    "practiceSubtitle": "Fa'ata'ita'i le saogalemu tafe i se fa'ata'ita'iga maualalo-mamafa."
+  },
+  "jewelry": {
+    "pairTitle": "Paga NorthStar",
+    "pairSubtitle": "Taofi latalata i mea teuteu ao su'esu'eina.",
+    "scan": "Scan mo masini",
+    "scanning": "Fa'ata'ita'iga lata ane ...",
+    "noDevices": "E leai ni masini NorthStar lata ane na maua i le taimi nei.",
+    "scanStartFailed": "Bluetooth le mafai ona amataina le su'esu'ega. Faamolemole toe taumafai.",
+    "scanFailed": "Sa le mafai ona matou mauaina ni mea teuteu lata ane. Siaki Bluetooth, taofi NorthStar latalata, ma toe taumafai.",
+    "scanAccessFailed": "Bluetooth le mafai ona amataina le su'esu'ega. Siaki Bluetooth avanoa ma toe taumafai.",
+    "permissionDenied": "O le avanoa lata ane o le masini ua tape. Fa'atagaina Bluetooth avanoa i le Fa'atulagaga, ona toe taumafai.",
+    "connectTimeout": "NorthStar umi se taimi e feso'ota'i ai. Faalatalata atu i ai ma toe taumafai.",
+    "connectFailed": "E le mafai ona matou feso'ota'i ma NorthStar. Siaki pe o lo'o molia ma lata ane, ona toe taumafai lea.",
+    "emptyTitle": "E leai ni masini lata ane",
+    "emptyMessage": "Taofi NorthStar molia ma latalata i lenei telefoni, ona toe faitau vave lea.",
+    "searchingMessage": "Saili mo NorthStar masini lata ane ..."
+  },
+  "home": {
+    "subtitle": "Dashboard soa saogalemu",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ua sauni",
+    "readyBody": "Leo, fa'afanua, mea teuteu, ma leoleo e tasi le pa'i ese.",
+    "safetyCall": "Valaau saogalemu",
+    "northStarDevice": "NorthStar masini",
+    "deviceConnected": "%{name} feso'ota'iga · %{battery}%",
+    "noDevice": "E leai se masini e feso'ota'i",
+    "manageDevice": "Pulea masini",
+    "mode": "Auala",
+    "modes": {
+      "home": "Aiga",
+      "guardian": "Leoleo",
+      "emergency": "Faalavelave faafuasei"
+    }
+  },
+  "map": {
+    "finding": "Saili lou nofoaga ...",
+    "retry": "Toe taumafai nofoaga",
+    "title": "Fa'afanua saogalemu",
+    "previewSubtitle": "Expo Go muai vaai; Mapbox tuuina atu i se atinae fausiaina.",
+    "preview": "Muai vaaiga i le faafanua",
+    "risk": "Tulaga lamatia: %{risk} · Radius %{radius}m",
+    "refresh": "Fa'afouina le nofoaga",
+    "refreshing": "Sailia le nofoaga ...",
+    "updateFailed": "E le mafai ona matou fa'afouina lou nofoaga. Faamolemole toe taumafai.",
+    "notRequested": "E le'i talosagaina le ulufale atu i le nofoaga. E mafai ona e fa'aaogaina mulimuli ane mai le fa'atulagaga.",
+    "permissionOff": "Ua tape le avanoa i le nofoaga. Fa'atagaina i Tulaga e fa'atotonugalemu ai le fa'afanua saogalemu ia te oe.",
+    "timeout": "O lau 'upega tafa'ilagi e umi atu nai lo le mea na fa'amoemoeina. Alu i se mea e i ai se faailo manino ma toe taumafai.",
+    "savedTitle": "Nofoaga faasaoina",
+    "savedEmptyTitle": "E leai ni nofoaga sefe",
+    "savedEmptyMessage": "O nofoaga faatuatuaina e te sefeina o le a faaali mai iinei mo se avanoa vave.",
+    "zones": {
+      "crowding": "Tumutumu i le leva o le po",
+      "lowLighting": "Nofoaga o moli maualalo"
+    },
+    "risks": {
+      "low": "maualalo",
+      "medium": "feololo",
+      "high": "maualuga"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Fa'afeso'ota'i...",
+    "offlineCompanion": "Soa offline",
+    "offline": "Offline",
+    "connected": "Feso'ota'i",
+    "interrupted": "Feso'ota'iga motusia",
+    "ready": "Sauni e fa'afeso'ota'i",
+    "connectingSecurely": "Fa'afeso'ota'i ma le saogalemu i lau soa leo ...",
+    "messagesWaiting": {
+      "one": "%{count} savali o loo faatalitali e auina atu",
+      "other": "%{count} savali o lo'o fa'atali mo le lafoina"
+    },
+    "useOffline": "Faaaoga le soa i luga o le initoneti",
+    "reconnect": "Toe fa'afeso'ota'i le leo AI",
+    "typePlaceholder": "Ituaiga pe afai e faigata le tautala",
+    "endCall": "Fa'ai'u le vala'au",
+    "startCall": "Amata le valaauga",
+    "emptyTitle": "O lau talanoaga e amata iinei",
+    "emptyMessage": "Amata le valaau pe ta se savali pe a e sauni."
+  },
+  "chat": {
+    "waiting": "Fa'atali mo le feso'ota'iga",
+    "notSent": "E le'i auina atu le savali.",
+    "retryAccessibility": "Toe taumafai e auina atu le savali"
+  },
+  "history": {
+    "clearTitle": "Manino tala'aga o talanoaga?",
+    "clearMessage": "O lenei mea e aveesea ai savali AI soa ua sefeina mai lenei masini.",
+    "deleteTitle": "Aveese lenei talanoaga?",
+    "cannotUndo": "E le mafai ona toe fa'afo'i lenei mea.",
+    "title": "Talaaga o talanoaga",
+    "subtitle": "AI savali soa ua teuina i luga o lenei masini.",
+    "empty": "E leai ni talanoaga na faasaoina i le taimi nei.",
+    "emptyTitle": "E leai ni talanoaga",
+    "emptyMessage": "O le a faaali mai iinei au talanoaga AI soa pe a uma lau valaauga muamua.",
+    "loadFailed": "E le mafai ona matou utaina le tala'aga o talanoaga. Faamolemole toe taumafai.",
+    "clearFailed": "Sa le mafai ona matou fa'amamaina le tala'aga o talanoaga. Faamolemole toe taumafai.",
+    "deleteFailed": "Sa le mafai ona matou tapeina lena talanoaga. Faamolemole toe taumafai.",
+    "aiCompanion": "AI soa",
+    "resume": "Toe fa'aauau",
+    "clearAll": "Kilia uma le talafaasolopito",
+    "roles": {
+      "assistant": "soa",
+      "user": "oe"
+    }
+  },
+  "voices": {
+    "title": "O o'u leo o le saogalemu",
+    "subtitle": "Filifili le leo o le soa e lagona le sa'o e faalogo i ai.",
+    "test": "Su'ega leo",
+    "stop": "Taofi le fa'ata'ita'iga",
+    "selectionFailedTitle": "E le'i sefeina le filifiliga",
+    "selectionFailedMessage": "Faamolemole toe taumafai e filifili le leo.",
+    "sampleFailedTitle": "Faataitaiga e le o maua",
+    "sampleFailedMessage": "E le mafai ona taina lenei fa'ata'ita'iga leo. Faamolemole toe taumafai.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Agamalu, to'afilemu, fa'avae"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Malamalama, faamautinoa, talanoaga"
+      },
+      "boyfriend": {
+        "name": "Uō tama",
+        "description": "tumau, alofa, o le taimi nei"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "mautinoa, puipuia, faaosofia"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Leo",
+    "changeVoice": "Suia le leo",
+    "showCompanion": "Fa'aali soa",
+    "offlineMode": "Faiga offline",
+    "offlineModeSubtitle": "Faaaoga tali a soa ua tuufaatasia pe afai e le o maua ia faamaonia o le upegafesootai po o Hume.",
+    "privacyData": "Le faalauaiteleina ma fa'amatalaga",
+    "privacyBody": "Auina atu i fafo pe aveese fa'amaumauga i le lotoifale o lo'o teuina i luga o lenei masini.",
+    "preparingExport": "Sauniuniga o le auina atu i fafo ...",
+    "exportData": "Auina atu i fafo a'u faamatalaga",
+    "privacyPolicy": "Faiga Faavae e le faalauaiteleina",
+    "deleting": "Aveesea...",
+    "deleteAll": "Tape uma faamaumauga i le lotoifale",
+    "deviceManagement": "Pulega o masini",
+    "emergencyContacts": "Fesootaiga mo faalavelave faafuasei",
+    "signOut": "Saini i fafo",
+    "exportFailedTitle": "E le mafai ona auina atu i fafo",
+    "exportFailedMessage": "E le mafai ona auina atu au faamatalaga i le taimi nei.",
+    "deleteConfirmTitle": "Aveese uma fa'amaumauga i le lotoifale?",
+    "deleteConfirmMessage": "O lenei mea e aveesea ai lou talaaga otooto, faatulagaga, fesootaiga mo faalavelave faafuasei, talaaga o talanoaga, faamanatu o faatagaga, ma sauniga o le faamaoniga i le lotoifale mai lenei masini.",
+    "deleteEverything": "Aveese mea uma",
+    "deleteFailedTitle": "Tapeina le manuia",
+    "deleteFailedMessage": "E le mafai ona tapeese faamaumauga i le lotoifale i le taimi nei.",
+    "linkFailed": "E le mafai ona tatala le sootaga",
+    "sections": {
+      "language": "Gagana",
+      "languageSubtitle": "Gagana o le Ofisa ma le Faatagaga o le Polokalama",
+      "companion": "Soa",
+      "companionSubtitle": "Leo ma offline mea e fiafia i ai",
+      "deviceSafety": "Masini ma le saogalemu",
+      "deviceSafetySubtitle": "NorthStar, tagata e vaaia, ma fesootaiga mo faalavelave faafuasei",
+      "privacy": "Le faalauaiteleina ma fa'amatalaga",
+      "privacySubtitle": "Talafaasolopito, auina atu i fafo, tapeina, ma faiga faavae",
+      "account": "Teugatupe",
+      "accountSubtitle": "O lau sauniga VeryLoving i ai nei"
+    },
+    "updateFailedTitle": "E le'i sefeina le faatulagaga",
+    "updateFailedMessage": "E le mafai ona matou sefeina lena mea e fiafia i ai. Faamolemole toe taumafai.",
+    "signOutFailedTitle": "Sa le mafai ona saini i fafo",
+    "signOutFailedMessage": "O loo faagaoioia pea lau sauniga. Faamolemole toe taumafai."
+  },
+  "contacts": {
+    "title": "Fesootaiga mo faalavelave faafuasei",
+    "subtitle": "Tagata fa'atuatuaina avanoa i le taimi o le saogalemu tafe.",
+    "addTitle": "Faaopoopo le tagata e faafesootai mo faalavelave faafua",
+    "name": "Igoa",
+    "namePlaceholder": "Igoa faafesootai",
+    "phone": "Numera o le telefoni e faafesootai ai",
+    "add": "Fa'aopopo le feso'ota'iga",
+    "empty": "E leai ni fesootaiga mo faalavelave faafuasei ua faaopoopo i le taimi nei.",
+    "emptyTitle": "E leai ni feso'ota'iga fa'afuase'i",
+    "emptyMessage": "Fa'aopopo se tasi e te fa'atuatuaina ina ia latou sauni pe a mana'omia i latou e se saogalemu tafe.",
+    "removeTitle": "Aveese %{name}?",
+    "removeMessage": "O lenei tagata o le a le toe aliali mai i lau fa'alavelave fa'afuase'i.",
+    "nameRequired": "Ta i totonu le igoa o le tagata fa'afeso'ota'i.",
+    "saveFailedTitle": "Fesootaiga e le o sefeina",
+    "saveFailedMessage": "E le mafai ona matou sefeina lenei fesootaiga. Siaki auiliiliga ma toe taumafai.",
+    "removeFailedTitle": "Fesootaiga e le o aveesea",
+    "removeFailedMessage": "E le mafai ona matou ave'esea lenei feso'ota'iga. Faamolemole toe taumafai.",
+    "callAccessibility": "Vala'au %{name}",
+    "removeAccessibility": "Aveese %{name}"
+  },
+  "device": {
+    "title": "Pulega o masini",
+    "subtitle": "Pulea lau NorthStar masini.",
+    "connected": "Feso'ota'i · %{battery}% maa",
+    "none": "E leai ni masini e feso'ota'i",
+    "disconnect": "Motusia masini",
+    "connect": "Feso'ota'i masini"
+  },
+  "friends": {
+    "title": "Uo",
+    "subtitle": "Tagata e va'aia, talosaga, ma fa'alavelave fa'afuase'i.",
+    "addDemo": "Faaopoopo uo demo",
+    "emptyTitle": "Ua gaogao lau li'o saogalemu",
+    "emptyMessage": "O uo faatuatuaina ma leoleo o le a faaali mai iinei pe a faaopoopo i latou.",
+    "newGuardian": "Leoleo Fou",
+    "statuses": {
+      "guardian": "Leoleo",
+      "pending": "Fa'atali"
+    }
+  },
+  "emergency": {
+    "title": "Fa'alavelave fa'afuase'i SOS",
+    "subtitle": "Fa'atoa fa'ateleina pe a e mana'omia le lagolago vave.",
+    "body": "O lenei mea o le a logoina ai lou saogalemu ma saunia ai fesootaiga mo faalavelave faafuasei.",
+    "activate": "Fa'agaoioia SOS",
+    "callCompanion": "Valaau AI soa",
+    "notificationTitle": "SOS fa'agaoioia",
+    "notificationBody": "Ua sauni lau fa'alavelave fa'afuase'i.",
+    "readyTitle": "SOS sauni",
+    "callContact": "Valaau %{name}?",
+    "addContact": "Fa'aopopo se tagata fa'afeso'ota'i mo fa'alavelave fa'afuase'i",
+    "quickShareTitle": "Fa'asoa vave",
+    "quickShareMessage": "Ua saunia le ulu o le faasoaina o nofoaga. Fa'afeso'ota'i le backend share endpoint e auina atu ai feso'ota'iga ola."
+  },
+  "quickShare": {
+    "title": "Fa'asoa vave",
+    "subtitle": "Ua sauni le tafe o le fefaasoaa'i o nofoaga."
+  },
+  "capybearTap": {
+    "title": "Capybear pa'u",
+    "subtitle": "Fa'alua-pa'i lau NorthStar e pa'u ai se moli saogalemu.",
+    "body": "Gesture route ua sauni mo le BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving itulau debug",
+    "subtitle": "Atina'e-na'o le auala."
+  },
+  "errors": {
+    "voiceOffline": "E foliga mai e te offline. O le a lafoina lau savali pe a e toe feso'ota'i.",
+    "voiceQueued": "Savali faasaoina. O le a auina atu pe a toe fesootai le soa leo.",
+    "voiceRetrying": "Taumafai e toe lafoina lau fe'au ...",
+    "voiceConnecting": "Fa'afeso'ota'i ma le saogalemu i lau soa leo ...",
+    "microphone": "E mana'omia le fa'aaogaina o masini faaleotele leo mo vala'au leo. E mafai ona e fa'atagaina i le Settings, pe taina se fe'au nai lo lena.",
+    "billing": "E le o maua le soa leo i le initoneti mo se taimi le tumau. E mafai ona e fa'aauau pea ma le soa offline.",
+    "authentication": "E le mafai e le soa leo ona faamaonia lenei vasega. Toe saini e alu i totonu pe faaaoga le soa offline mo le taimi nei.",
+    "timeout": "Na umi se taimi na tali mai ai le soa leo. Siaki lau feso'ota'iga ma toe taumafai.",
+    "network": "Sa le mafai ona matou aapa atu i le soa leo. Siaki lau fesootaiga, ona toe taumafai lea pe faaauau i le offline.",
+    "genericVoice": "Sa i ai se mea na faalavelave i le valaau leo. Toe taumafai, pe faaauau pea i le soa offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving fa'amaumauga auina atu i fafo"
+  },
+  "notifications": {
+    "channelName": "Lapataiga saogalemu"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving te mana'omia le avanoa o masini faaleotele leo mo le saogalemu ma AI soa vala'au.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving te fa'aaogaina lou nofoaga mo le fa'afanua o le saogalemu ma vaega saogalemu lata ane.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving te fa'aaogaina lou nofoaga e lagolago ai le saogalemu taunu'u mai ma fa'alavelave fa'afuase'i.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving fa'aaogaina le nofoaga i tua mo le saogalemu taunu'u mai ma lata ane lamatiaga-sone foliga.",
+      "NSCameraUsageDescription": "VeryLoving te fa'aaogaina le mea pu'eata pe a e filifili e pu'eina se ata po'o se ata saogalemu.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving te faaaogaina lau potutusi o ata pe a e filifilia se talaaga otooto po o se ata o le saogalemu.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

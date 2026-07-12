@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Takaisin",
+    "call": "Kutsu",
+    "cancel": "Peruuta",
+    "clear": "Selvä",
+    "close": "Sulje",
+    "connect": "Yhdistä",
+    "connecting": "Yhdistäminen...",
+    "continue": "Jatka",
+    "delete": "Poista",
+    "finish": "Viimeistely",
+    "friends": "Ystävät",
+    "google": "Google",
+    "home": "Koti",
+    "loading": "Ladataan...",
+    "map": "Kartta",
+    "notNow": "Ei nyt",
+    "remove": "Poista",
+    "retry": "Uudelleenyritys",
+    "retrying": "Uudelleenyrittäminen",
+    "save": "Tallenna",
+    "selected": "Valitut",
+    "send": "Lähetä",
+    "settings": "Ympäristöt",
+    "skip": "Ohita",
+    "skipForNow": "Hyppää toistaiseksi",
+    "skipTutorial": "Ohita opetus",
+    "sos": "SOS",
+    "unknown": "Tuntematon",
+    "user": "VeryLoving käyttäjä",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Kieli",
+    "subtitle": "Valitse sovelluksessa käytetty kieli.",
+    "system": "Järjestelmän oletusarvo",
+    "search": "Hakukielet",
+    "noResults": "Mikään kieli ei vastaa hakuasi.",
+    "english": "Englanti",
+    "spanish": "Espanja",
+    "french": "Ranska",
+    "chineseSimplified": "Kiina (yksinkertaistettu)"
+  },
+  "phone": {
+    "label": "Puhelinnumero",
+    "placeholder": "Puhelinnumero",
+    "selectCountry": "Valitse maa tai alue",
+    "searchCountry": "Etsi maa, koodi tai valintaetuliite",
+    "noCountries": "Yksikään maa ei vastaa hakuasi.",
+    "countryButton": "Vaihda maata, tällä hetkellä %{country} plus %{callingCode}",
+    "inputAccessibility": "Puhelinnumero %{country}",
+    "required": "Syötä puhelinnumero.",
+    "tooShort": "Tämä puhelinnumero on liian lyhyt.",
+    "tooLong": "Tämä puhelinnumero on liian pitkä.",
+    "invalid": "Syötä valitun maan kelvollinen puhelinnumero.",
+    "valid": "Voimassa oleva kansainvälinen puhelinnumero"
+  },
+  "auth": {
+    "onboardingTagline": "Henkilökohtainen turvakumppani hetkiä \"Olen kunnossa\" ja \"Tarvitsen apua\" välillä.",
+    "createAccount": "Luo tili",
+    "continueOnboarding": "Jatka perehdytystä",
+    "createSubtitle": "Valitse kirjautumismenetelmä suojataksesi turvakaaviosi.",
+    "phoneVerification": "Puhelinvarmennus",
+    "sendCode": "Lähetä koodi",
+    "sendingCode": "Lähetän koodia...",
+    "verifyCode": "Vahvista koodi",
+    "sentTo": "Lähetetty %{phone}",
+    "yourPhone": "Puhelimesi",
+    "verificationCode": "Varmennuskoodi",
+    "verify": "Vahvista",
+    "verifying": "Varmistan...",
+    "invalidCode": "Syötä vahvistuskoodi.",
+    "signInFailedTitle": "Kirjautuminen keskeytetty",
+    "signInFailedMessage": "Emme saaneet kirjautumista päätökseen. Tarkista yhteytesi ja yritä uudelleen.",
+    "googleUnavailableTitle": "Google Kirjautuminen ei ole saatavilla",
+    "googleUnavailableMessage": "Paikallisen kehityssession käyttäminen. Native Google Sign-In toimii kehitysversiossa.",
+    "northStarTitle": "NorthStar korut",
+    "northStarSubtitle": "Yhdistä nyt tai jatka ja lisää myöhemmin.",
+    "northStarBody": "VL01 puettava laite voi laukaista turvavirrat napautuksilla ja pitkillä painalluksilla.",
+    "setupJewelry": "Korujen asettaminen",
+    "meetCapybear": "Tapaa Capybear",
+    "meetCapybearSubtitle": "Lempeä turvakumppanisi kartalla ja puheluissa.",
+    "capybearBody": "Capybear voivat auttaa kotitilassa, vartijatilassa, hätätilassa, tekopuheluissa ja äänituessa.",
+    "chooseVoice": "Valitse ääni",
+    "capybearReminder": "Capybear muistutus",
+    "remindersReady": "Lempeät muistutukset ovat valmiina."
+  },
+  "permissions": {
+    "locationTitle": "Sijaintiturvallisuus",
+    "locationSubtitle": "Käytetään karttaan, vaaravyöhykkeisiin, turvalliseen saapumiseen ja SOS kontekstiin.",
+    "locationBody": "VeryLoving kysyy sijaintia, jotta huoltajat ymmärtävät, missä apua saatetaan tarvita. Voit muuttaa tämän myöhemmin asetuksista.",
+    "allowLocation": "Salli sijainti",
+    "notificationsTitle": "Turvallisuusvaroitukset",
+    "notificationsSubtitle": "Ilmoitukset tukevat sisäänkirjautumisia ja hätätilanteita.",
+    "notificationsBody": "Käytämme ilmoituksia vain turvallisuuskehotuksiin, hätäpäivityksiin ja muistutuksiin, joita otat käyttöön.",
+    "enableNotifications": "Ota ilmoitukset käyttöön",
+    "locationRationaleTitle": "Sijainti pitää turvallisuuskontekstin tarkkana",
+    "locationRationaleMessage": "VeryLoving käyttää sijaintiasi turvakarttaan, vaaravyöhykkeisiin, nopeaan jakamiseen ja SOS kontekstiin. Voit muuttaa tämän myöhemmin asetuksista.",
+    "notificationsRationaleTitle": "Turvallisuushälytykset vaativat ilmoituksia",
+    "notificationsRationaleMessage": "VeryLoving lähettää sisäänkirjautumismuistutuksia, hätäpäivityksiä ja turvallisuusohjeita, jotka otat käyttöön. Emme käytä ilmoituksia mainoksiin.",
+    "microphoneRationaleTitle": "Mikrofoni antaa voimaa turvakutsuille",
+    "microphoneRationaleMessage": "VeryLoving käyttää mikrofonia vain, kun aloitat AI seuralaisen tai turvapuhelun.",
+    "bluetoothRationaleTitle": "Bluetooth yhdistää puettavan laitteesi",
+    "bluetoothRationaleMessage": "VeryLoving käyttää Bluetooth yhdistääkseen NorthStar koruihin, lukeakseen yhteyden tilan ja laukaistakseen turvavirrat puettavasta laitteesta.",
+    "cameraRationaleTitle": "Kamera on valinnainen",
+    "cameraRationaleMessage": "VeryLoving käyttää kameraa vain, kun valitset ottaa profiilikuvan tai jakaa turvakuvan."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving pitää tämän kulun saatavilla asetuksista ja kojelaudasta.",
+    "chooseVoiceTitle": "Valitse äänesi",
+    "chooseVoiceSubtitle": "Valitse se kumppaniääni, joka tuntuu turvallisimmalta kuulla.",
+    "homeTitle": "Kotitila",
+    "homeSubtitle": "Hiljainen valvonta päivittäisen turvallisuuden vuoksi.",
+    "guardianTitle": "Guardian-tila",
+    "guardianSubtitle": "Jaa kontekstia luotettujen ihmisten kanssa.",
+    "emergencyTitle": "Hätätila",
+    "emergencySubtitle": "Viisi napautusta voi nousta SOS- ja vartijahälytyksiin.",
+    "excuseTitle": "Anteeksipyyntö",
+    "excuseSubtitle": "Luo arvokas syy poistua epämukavasta tilanteesta.",
+    "safetyCallTitle": "Turvallisuuskutsu",
+    "safetyCallSubtitle": "Aloita reaaliaikainen seuralaispuhelu, kun tarvitset tukea.",
+    "practiceTitle": "Harjoituskohtaus",
+    "practiceSubtitle": "Kokeile turvavirtauksia matalapaineisessa demossa."
+  },
+  "jewelry": {
+    "pairTitle": "Pari NorthStar",
+    "pairSubtitle": "Pidä korut lähellä skannauksen aikana.",
+    "scan": "Laitteiden skannaus",
+    "scanning": "Skannaus lähellä...",
+    "noDevices": "Läheltä ei löytynyt NorthStar laitteita vielä.",
+    "scanStartFailed": "Bluetooth skannaus ei käynnistynyt. Ole hyvä ja yritä uudelleen.",
+    "scanFailed": "Emme löytäneet koruja läheltä. Tarkista Bluetooth, pidä NorthStar lähellä ja yritä uudelleen.",
+    "scanAccessFailed": "Bluetooth skannaus ei käynnistynyt. Tarkista Bluetooth pääsy ja yritä uudelleen.",
+    "permissionDenied": "Lähilaitteiden käyttö on pois päältä. Salli Bluetooth pääsy asetuksista ja yritä uudelleen.",
+    "connectTimeout": "NorthStar yhteyden saaminen kesti liian kauan. Siirrä se lähemmäs ja yritä uudelleen.",
+    "connectFailed": "Emme pystyneet yhdistämään NorthStar. Tarkista, että se on ladattu ja lähellä, ja yritä uudelleen.",
+    "emptyTitle": "Ei vielä lähellä olevia laitteita",
+    "emptyMessage": "Pidä NorthStar lattu ja lähellä puhelinta, sitten skannaa uudelleen.",
+    "searchingMessage": "Etsin NorthStar laitteita läheltä..."
+  },
+  "home": {
+    "subtitle": "Turvakumppanin kojelauta",
+    "modeStatus": "%{mode} TILA",
+    "companionReady": "%{name} on valmis",
+    "readyBody": "Ääni, kartta, korut ja vartijat ovat yhden napautuksen päässä.",
+    "safetyCall": "Turvallisuuskutsu",
+    "northStarDevice": "NorthStar laite",
+    "deviceConnected": "%{name} yhteydessä · %{battery} %",
+    "noDevice": "Ei laitetta kytkettynä",
+    "manageDevice": "Hallinnoi laitetta",
+    "mode": "Tila",
+    "modes": {
+      "home": "Koti",
+      "guardian": "Guardian",
+      "emergency": "Hätä"
+    }
+  },
+  "map": {
+    "finding": "Sijaintisi löytäminen...",
+    "retry": "Uusintapaikka",
+    "title": "Turvakartta",
+    "previewSubtitle": "Expo Go esikatselu; Mapbox renderöidään kehitysversiossa.",
+    "preview": "Karttaesikatselu",
+    "risk": "Riski: %{risk} · Säde %{radius}m",
+    "refresh": "Päivitä sijainti",
+    "refreshing": "Sijainnin löytäminen...",
+    "updateFailed": "Emme voineet päivittää sijaintiasi. Ole hyvä ja yritä uudelleen.",
+    "notRequested": "Sijaintitietoja ei pyydetty. Voit ottaa sen käyttöön myöhemmin asetuksista.",
+    "permissionOff": "Sijainti on pois päältä. Ota se käyttöön asetuksista, jotta turvakartta keskitetään sinuun.",
+    "timeout": "Sijaintisi kestää odotettua kauemmin. Siirry paikkaan, jossa signaali on selkeämpi, ja yritä uudelleen.",
+    "savedTitle": "Tallennetut paikat",
+    "savedEmptyTitle": "Ei vielä tallennettuja paikkoja",
+    "savedEmptyMessage": "Luotettavat paikat, joita tallennat, löytyvät täältä nopeaa pääsyä varten.",
+    "zones": {
+      "crowding": "Myöhäisillan ruuhka",
+      "lowLighting": "Hämärävalaistusalue"
+    },
+    "risks": {
+      "low": "matala",
+      "medium": "Keskiverto",
+      "high": "korkea"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Yhdistäminen...",
+    "offlineCompanion": "Offline-kumppani",
+    "offline": "Offline-tilassa",
+    "connected": "Yhdistetty",
+    "interrupted": "Yhteys katkennut",
+    "ready": "Valmiina yhdistämään",
+    "connectingSecurely": "Yhdistäen turvallisesti äänikumppaniisi...",
+    "messagesWaiting": {
+      "one": "%{count} viesti odottamassa lähetettäväksi",
+      "other": "%{count} viestejä odottamassa lähetettäväksi"
+    },
+    "useOffline": "Käytä offline-kumppania",
+    "reconnect": "Yhdistä uudelleen äänijärjestelmään AI",
+    "typePlaceholder": "Tyyppi, jos puhuminen on vaikeaa",
+    "endCall": "Puhelun loppu",
+    "startCall": "Aloita puhelu",
+    "emptyTitle": "Keskustelusi alkaa tästä",
+    "emptyMessage": "Aloita puhelu tai kirjoita viesti, kun olet valmis."
+  },
+  "chat": {
+    "waiting": "Odotan yhteyttä",
+    "notSent": "Viesti ei lähetetty.",
+    "retryAccessibility": "Yritä lähettää viesti uudelleen"
+  },
+  "history": {
+    "clearTitle": "Selvä keskusteluhistoria?",
+    "clearMessage": "Tämä poistaa tallennetut AI kumppaniviestit tältä laitteelta.",
+    "deleteTitle": "Poistaa tämä keskustelu?",
+    "cannotUndo": "Tätä ei voi perua.",
+    "title": "Keskusteluhistoria",
+    "subtitle": "AI tähän laitteeseen tallennettuja oheisviestejä.",
+    "empty": "Keskusteluja ei ole vielä tallennettu.",
+    "emptyTitle": "Ei vielä keskusteluja",
+    "emptyMessage": "AI seuralaiskeskustelusi ilmestyvät tänne ensimmäisen puhelusi jälkeen.",
+    "loadFailed": "Emme voineet ladata keskusteluhistoriaa. Ole hyvä ja yritä uudelleen.",
+    "clearFailed": "Emme pystyneet selvittämään keskusteluhistoriaa. Ole hyvä ja yritä uudelleen.",
+    "deleteFailed": "Emme voineet poistaa tuota keskustelua. Ole hyvä ja yritä uudelleen.",
+    "aiCompanion": "AI seuralainen",
+    "resume": "Ansioluettelo",
+    "clearAll": "Tyhjennä kaikki historia",
+    "roles": {
+      "assistant": "Seuralainen",
+      "user": "sinä"
+    }
+  },
+  "voices": {
+    "title": "Turvapuheluni äänet",
+    "subtitle": "Valitse kumppaniääni, joka tuntuu oikealta kuulla.",
+    "test": "Testiääni",
+    "stop": "Stop-näyte",
+    "selectionFailedTitle": "Valinta ei tallennettu",
+    "selectionFailedMessage": "Yritä valita ääni uudelleen.",
+    "sampleFailedTitle": "Näyte ei saatavilla",
+    "sampleFailedMessage": "Tätä ääninäytettä ei voitu toistaa. Ole hyvä ja yritä uudelleen.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "pehmeä, rauhallinen, maadoittava."
+      },
+      "bestie": {
+        "name": "Paras ystävä",
+        "description": "kirkas, rauhoittava, keskusteleva"
+      },
+      "boyfriend": {
+        "name": "Poikaystävä",
+        "description": "vakaa, hellä, läsnä"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "itsevarma, suojeleva, motivoiva"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ääni",
+    "changeVoice": "Vaihda ääntä",
+    "showCompanion": "Ohjelman kumppani",
+    "offlineMode": "Offline-tila",
+    "offlineModeSubtitle": "Käytä mukana olevia kumppanivastauksia, kun verkko tai Hume tunnistetiedot eivät ole käytettävissä.",
+    "privacyData": "Yksityisyys ja data",
+    "privacyBody": "Vie tai poista laitteella tallennetut paikalliset tiedot.",
+    "preparingExport": "Valmistellaan vientiä...",
+    "exportData": "Vie tietoni",
+    "privacyPolicy": "Tietosuojakäytäntö",
+    "deleting": "Poistan...",
+    "deleteAll": "Poista kaikki paikalliset tiedot",
+    "deviceManagement": "Laitehallinta",
+    "emergencyContacts": "Hätäyhteystiedot",
+    "signOut": "Kirjautuu ulos",
+    "exportFailedTitle": "Vienti epäonnistui",
+    "exportFailedMessage": "En voi viedä tietojasi tällä hetkellä.",
+    "deleteConfirmTitle": "Poistaa kaikki paikalliset tiedot?",
+    "deleteConfirmMessage": "Tämä poistaa profiilisi, asetuksesi, hätäyhteystietosi, keskusteluhistoriasi, käyttöoikeusmuistutukset ja paikallisen tunnistautumisistunnon tältä laitteelta.",
+    "deleteEverything": "Poista kaikki",
+    "deleteFailedTitle": "Poisto epäonnistui",
+    "deleteFailedMessage": "En pysty poistamaan paikallisia tietoja juuri nyt.",
+    "linkFailed": "Linkkiä ei voi avata",
+    "sections": {
+      "language": "Kieli",
+      "languageSubtitle": "Rajapinta- ja järjestelmäkäyttöoikeuskieli",
+      "companion": "Seuralainen",
+      "companionSubtitle": "Ääni- ja offline-asetukset",
+      "deviceSafety": "Laitteet ja turvallisuus",
+      "deviceSafetySubtitle": "NorthStar, huoltajat ja hätäyhteystiedot",
+      "privacy": "Yksityisyys ja data",
+      "privacySubtitle": "Historia, vienti, poisto ja politiikka",
+      "account": "Tilin",
+      "accountSubtitle": "Nykyinen VeryLoving sessiosi"
+    },
+    "updateFailedTitle": "Asetus ei tallennettu",
+    "updateFailedMessage": "Emme voineet pelastaa tuota mieltymystä. Ole hyvä ja yritä uudelleen.",
+    "signOutFailedTitle": "Ei voinut kirjautua ulos",
+    "signOutFailedMessage": "Istuntosi on edelleen aktiivinen. Ole hyvä ja yritä uudelleen."
+  },
+  "contacts": {
+    "title": "Hätäyhteystiedot",
+    "subtitle": "Luotettavat ihmiset turvavirtojen aikana.",
+    "addTitle": "Lisää hätäyhteystiedot",
+    "name": "Nimi",
+    "namePlaceholder": "Yhteyshenkilönimi",
+    "phone": "Yhteyspuhelinnumero",
+    "add": "Lisää yhteystieto",
+    "empty": "Hätäyhteystietoja ei ole vielä lisätty.",
+    "emptyTitle": "Ei hätäyhteystietoja vielä",
+    "emptyMessage": "Lisää joku, johon luotat, jotta hän on valmis, kun turvavirta tarvitsee heitä.",
+    "removeTitle": "Poista %{name}?",
+    "removeMessage": "Tämä henkilö ei enää näy hätävirrassasi.",
+    "nameRequired": "Syötä yhteyshenkilön nimi.",
+    "saveFailedTitle": "Yhteystieto ei tallennettu",
+    "saveFailedMessage": "Emme voineet tallentaa tätä kontaktia. Tarkista yksityiskohdat ja yritä uudelleen.",
+    "removeFailedTitle": "Yhteystieto ei poistettu",
+    "removeFailedMessage": "Emme voineet poistaa tätä kontaktia. Ole hyvä ja yritä uudelleen.",
+    "callAccessibility": "Soita %{name}",
+    "removeAccessibility": "Poista %{name}"
+  },
+  "device": {
+    "title": "Laitehallinta",
+    "subtitle": "Hallinnoi NorthStar laitettasi.",
+    "connected": "Yhdistetty · %{battery} % akkua",
+    "none": "Ei laitteita kytkettynä",
+    "disconnect": "Irrotuslaite",
+    "connect": "Yhdistä laite"
+  },
+  "friends": {
+    "title": "Ystävät",
+    "subtitle": "Vartijat, pyynnöt ja hätäkaavio.",
+    "addDemo": "Lisää demo ystävä",
+    "emptyTitle": "Turvapiirisi on tyhjä",
+    "emptyMessage": "Luotettavat ystävät ja huoltajat ilmestyvät tänne, kun heidät on lisätty.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Vireillä"
+    }
+  },
+  "emergency": {
+    "title": "Hätätilanne SOS",
+    "subtitle": "Eskaloi asiaa vain, kun tarvitset välitöntä tukea.",
+    "body": "Tämä ilmoittaa turvallisuusprosessistasi ja valmistaa hätäyhteystiedot.",
+    "activate": "Aktivoi SOS",
+    "callCompanion": "Kutsu AI seuralainen",
+    "notificationTitle": "SOS aktivoitu",
+    "notificationBody": "Hätävirta on valmis.",
+    "readyTitle": "SOS valmiina",
+    "callContact": "Soittaa %{name}?",
+    "addContact": "Lisää hätäyhteystieto asetuksista.",
+    "quickShareTitle": "Nopea jako",
+    "quickShareMessage": "Sijainnin jakamisen tynkä on valmis. Yhdistä backend-jaon päätepiste lähettääksesi reaaliaikaisia linkkejä."
+  },
+  "quickShare": {
+    "title": "Nopea jako",
+    "subtitle": "Sijaintien jakamisen prosessi on valmis."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Kaksoisnapauta NorthStar pudottaaksesi turvaappelsiinin.",
+    "body": "Elereitti on valmis BLE-tapahtumien johdotukseen."
+  },
+  "debug": {
+    "title": "VeryLoving debug-sivu",
+    "subtitle": "Vain kehitysreitti."
+  },
+  "errors": {
+    "voiceOffline": "Näytät olevan offline-tilassa. Viestisi lähetetään, kun yhdistät uudelleen.",
+    "voiceQueued": "Viesti tallennettu. Se lähetetään, kun äänikumppani yhdistyy uudelleen.",
+    "voiceRetrying": "Yrität lähettää viestisi uudelleen...",
+    "voiceConnecting": "Yhdistäen turvallisesti äänikumppaniisi...",
+    "microphone": "Äänipuheluihin tarvitaan mikrofoniyhteys. Voit ottaa sen käyttöön asetuksista tai kirjoittaa viestin sen sijaan.",
+    "billing": "Verkko-äänikumppani on tilapäisesti poissa käytöstä. Voit jatkaa offline-kumppanilla.",
+    "authentication": "Äänikumppani ei pystynyt vahvistamaan tätä istuntoa. Kirjaudu uudelleen sisään tai käytä offline-kumppania toistaiseksi.",
+    "timeout": "Äänikumppani vastasi liian hitaasti. Tarkista yhteytesi ja yritä uudelleen.",
+    "network": "Emme päässeet äänikumppaniin. Tarkista yhteytesi, yritä uudelleen tai jatka offline-tilassa.",
+    "genericVoice": "Jokin keskeytti äänipuhelun. Yritä uudelleen tai jatka offline-kumppanilla."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving tietojen vienti"
+  },
+  "notifications": {
+    "channelName": "Turvallisuusvaroitukset"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving tarvitsee mikrofonin käytön turvallisuuden vuoksi ja AI seuralaispuheluita.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving käyttää sijaintiasi turvakarttaan ja lähialueen turvaominaisuuksiin.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving käyttää sijaintiasi tukemaan turvallista saapumista ja hätävirtoja.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving käyttää taustasijaintia turvalliseen saapumiseen ja lähialueen vaaravyöhykkeen piirteisiin.",
+      "NSCameraUsageDescription": "VeryLoving käyttää kameraa vain, kun valitset ottaa profiilin tai turvakuvan.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving käyttää valokuvakirjastoasi vain, kun valitset profiilin tai turvakuvan.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving käyttää Bluetooth yhdistääkseen NorthStar turvakorusi.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving käyttää Bluetooth yhdistääkseen NorthStar turvakorusi."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

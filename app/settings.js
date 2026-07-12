@@ -164,6 +164,7 @@ export default function Settings() {
 }
 
 function SettingLink({ icon, title, subtitle, onPress }) {
+  const { isRTL } = useI18n();
   return (
     <Pressable
       accessibilityRole="button"
@@ -176,7 +177,7 @@ function SettingLink({ icon, title, subtitle, onPress }) {
         <Text style={styles.linkTitle}>{title}</Text>
         {subtitle ? <Text style={styles.muted}>{subtitle}</Text> : null}
       </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.inkSoft} />
+      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={colors.inkSoft} />
     </Pressable>
   );
 }

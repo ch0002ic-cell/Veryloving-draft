@@ -6,7 +6,9 @@ export const SYSTEM_LANGUAGE = 'system';
 export const translations = Object.fromEntries(
   languageCatalog.filter((language) => language.messages).map((language) => [language.code, language.messages])
 );
-export const languageOptions = languageCatalog.map(({ messages, ...language }) => language);
+export const languageOptions = languageCatalog
+  .filter((language) => language.code === SYSTEM_LANGUAGE || language.messages)
+  .map(({ messages, ...language }) => language);
 export const supportedLanguages = languageCatalog
   .filter((language) => language.messages)
   .map((language) => language.code);
@@ -33,6 +35,12 @@ export function resolveLanguage(preference = SYSTEM_LANGUAGE, locales = []) {
     if (resolved) return resolved;
   }
   return DEFAULT_LANGUAGE;
+}
+
+export function isRTLLanguage(languageTag) {
+  if (!languageTag) return false;
+  const code = String(languageTag).trim().replace(/_/g, '-').toLowerCase().split('-')[0];
+  return Boolean(languageCatalog.find((language) => language.code === code)?.isRTL);
 }
 
 export function setI18nLocale(locale) {

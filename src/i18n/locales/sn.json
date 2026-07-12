@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Wedzera",
+    "apple": "Apple",
+    "back": "Kumashure",
+    "call": "Fonera",
+    "cancel": "Kanzura",
+    "clear": "Zvakajeka",
+    "close": "Vhara",
+    "connect": "Batanidza",
+    "connecting": "Kubatanidza...",
+    "continue": "Enderera mberi",
+    "delete": "Delete",
+    "finish": "Pedzisa",
+    "friends": "Shamwari",
+    "google": "Google",
+    "home": "Kumba",
+    "loading": "Kurodha...",
+    "map": "Mepu",
+    "notNow": "Kwete ikozvino",
+    "remove": "Bvisa",
+    "retry": "Edza zvakare",
+    "retrying": "Kuedzazve",
+    "save": "Chengetedza",
+    "selected": "Yakasarudzwa",
+    "send": "Send",
+    "settings": "Settings",
+    "skip": "Skip",
+    "skipForNow": "Svetuka izvozvi",
+    "skipTutorial": "Sveturuka chidzidzo",
+    "sos": "SOS",
+    "unknown": "Hazvizivikanwe",
+    "user": "VeryLoving mushandisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Mutauro",
+    "subtitle": "Sarudza mutauro unoshandiswa muapp yese.",
+    "system": "System default",
+    "search": "Tsvaga mitauro",
+    "noResults": "Hapana mitauro inoenderana netsvakiridzo yako.",
+    "english": "Chirungu",
+    "spanish": "Spanish",
+    "french": "ChiFrench",
+    "chineseSimplified": "ChiChinese (Chakareruka)"
+  },
+  "phone": {
+    "label": "Nhamba dzenhare",
+    "placeholder": "Nhamba dzerunhare",
+    "selectCountry": "Sarudza nyika kana dunhu",
+    "searchCountry": "Tsvaga nyika, kodhi, kana chivakashure chekufona",
+    "noCountries": "Hapana nyika dzinoenderana netsvakiridzo yako.",
+    "countryButton": "Shandura nyika, parizvino %{country} kuwedzera %{callingCode}",
+    "inputAccessibility": "Nhamba dzerunhare dze%{country}",
+    "required": "Isa nhamba yefoni.",
+    "tooShort": "Nhamba dzerunhare idzi ipfupi.",
+    "tooLong": "Nhamba dzenhare iyi dzakarebesa.",
+    "invalid": "Isa nhamba dzenhare dzinoshanda kunyika yawasarudza.",
+    "valid": "Nhamba dzenhare dzepasirese dzinoshanda"
+  },
+  "auth": {
+    "onboardingTagline": "Mufambidzani wekuchengetedza pachedu wenguva dziri pakati pekuti “Ndakanaka” uye “Ndinoda rubatsiro.”",
+    "createAccount": "Gadzira account",
+    "continueOnboarding": "Ramba uchikwira",
+    "createSubtitle": "Sarudza nzira yekupinda kuti uchengetedze girafu rako rekuchengetedza.",
+    "phoneVerification": "Kuona runhare",
+    "sendCode": "Tumira kodhi",
+    "sendingCode": "Kutumira kodhi...",
+    "verifyCode": "Simbisa kodhi",
+    "sentTo": "Kutumirwa ku%{phone}",
+    "yourPhone": "foni yako",
+    "verificationCode": "Verification code",
+    "verify": "Simbisa",
+    "verifying": "Kuongorora...",
+    "invalidCode": "Isa kodhi yekusimbisa.",
+    "signInFailedTitle": "Kupinda kwavhiringwa",
+    "signInFailedMessage": "Hatina kukwanisa kupedzisa kusaina. Tarisa uone kubatana kwako woedza zvakare.",
+    "googleUnavailableTitle": "Google Saini-In haisipo",
+    "googleUnavailableMessage": "Kushandisa chirongwa chebudiriro munharaunda. Native Google Saina-In inoshanda mukuvaka kuvaka.",
+    "northStarTitle": "NorthStar zvishongo",
+    "northStarSubtitle": "Batanidza izvozvi kana kuenderera wowedzera gare gare.",
+    "northStarBody": "Iyo VL01 inopfekwa inogona kukonzeresa kuyerera kwekuchengetedza nematepi uye ma gestures ekudzvanya kwenguva refu.",
+    "setupJewelry": "Gadzira zvishongo",
+    "meetCapybear": "Sangana neCapybear",
+    "meetCapybearSubtitle": "Mufambidzani wako akapfava pamepu uye mukufona.",
+    "capybearBody": "Capybear inogona kubatsira nemaitiro epamba, muchengeti, mamiriro echimbichimbi, nhare dzekukumbira, uye kutsigira nenzwi.",
+    "chooseVoice": "Sarudza inzwi",
+    "capybearReminder": "Capybear chiyeuchidzo",
+    "remindersReady": "Zviyeuchidzo zvinyoro zvakagadzirira."
+  },
+  "permissions": {
+    "locationTitle": "Kuchengetedzeka kwenzvimbo",
+    "locationSubtitle": "Inoshandiswa semepu, nzvimbo dzine njodzi, kusvika kwakachengeteka, uye SOS mamiriro.",
+    "locationBody": "VeryLoving inokumbira nzvimbo kuitira kuti vachengeti vanzwisise panodiwa rubatsiro. Unogona kushandura izvi pave paya muZvirongwa.",
+    "allowLocation": "Bvumira nzvimbo",
+    "notificationsTitle": "Yambiro pamusoro pekuchengetedzwa",
+    "notificationsSubtitle": "Zviziviso zvinotsigira kutarisa-mukati uye zviitiko zvekukurumidzira.",
+    "notificationsBody": "Tinongoshandisa zviziviso zvekuchengetedza kuchengetedza, zvigadziriso zvechimbichimbi, uye zviyeuchidzo zvaunogonesa.",
+    "enableNotifications": "Gonesa zviziviso",
+    "locationRationaleTitle": "Nzvimbo inochengetedza mamiriro ekuchengetedza akarurama",
+    "locationRationaleMessage": "VeryLoving inoshandisa nzvimbo yako semepu yekuchengetedza, nzvimbo dzine njodzi, nekukurumidza kugovana, uye SOS mamiriro. Unogona kushandura izvi pave paya muZvirongwa.",
+    "notificationsRationaleTitle": "Yambiro yekuchengetedzwa inoda ziviso",
+    "notificationsRationaleMessage": "VeryLoving inotumira zviyeuchidzo zvekupinda, zvigadziriso zvechimbichimbi, uye zvekuchengetedza zvaunogonesa. Isu hatishandise zviziviso kune ads.",
+    "microphoneRationaleTitle": "Maikorofoni inopa simba nhare dzekuchengetedza",
+    "microphoneRationaleMessage": "VeryLoving inoshandisa maikorofoni yako chete paunotanga AI mufambidzani kana runhare rwekuchengetedza.",
+    "bluetoothRationaleTitle": "Bluetooth inobatanidza zvinopfekwa zvako",
+    "bluetoothRationaleMessage": "VeryLoving inoshandisa Bluetooth kubatanidza neNorthStar jewelry, kuverenga mamiriro ekubatanidza, uye kukonzeresa kuyerera kwekuchengetedza kubva kune zvinopfeka.",
+    "cameraRationaleTitle": "Kamera inosarudzika",
+    "cameraRationaleMessage": "VeryLoving inoshandisa kamera chete kana wasarudza kutora mufananidzo kana kugovera chengetedzo mufananidzo."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving inochengetedza kuyerera uku kunowanikwa kubva kuSettings uye dashboard.",
+    "chooseVoiceTitle": "Sarudza inzwi rako",
+    "chooseVoiceSubtitle": "Sarudza izwi reshamwari rinonzwa rakachengetedzeka kuti rinzwe.",
+    "homeTitle": "Home mode",
+    "homeSubtitle": "Kutarisisa kwakanyarara kuchengetedza zuva nezuva.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Govera mamiriro ezvinhu nevanhu vaunovimba navo.",
+    "emergencyTitle": "Emergency mode",
+    "emergencySubtitle": "Mapopi mashanu anogona kukwira kusvika paSOS uye chenjedzo.",
+    "excuseTitle": "Kuregerera kufona",
+    "excuseSubtitle": "Gadzira chikonzero chakanaka chekusiya mamiriro asina kugadzikana.",
+    "safetyCallTitle": "Kufona kwekuchengetedza",
+    "safetyCallSubtitle": "Tanga chaiyo-nguva yekufambidzana kufona kana iwe uchida rutsigiro.",
+    "practiceTitle": "Dzidzira chiitiko",
+    "practiceSubtitle": "Edza kuchengetedzwa kunoyerera mune yakaderera-kudzvanywa demo."
+  },
+  "jewelry": {
+    "pairTitle": "Paya NorthStar",
+    "pairSubtitle": "Chengeta zvishongo zviri pedyo paunenge uchitarisa.",
+    "scan": "Snaidza michina",
+    "scanning": "Kutarisa pedyo...",
+    "noDevices": "Hapana pari pedyo NorthStar zvishandiso zvawanikwa.",
+    "scanStartFailed": "Bluetooth scanning yatadza kutanga. Ndapota edza zvakare.",
+    "scanFailed": "Hatina kuwana zvishongo zviri pedyo. Tarisa Bluetooth, chengeta NorthStar pedyo, woedza zvakare.",
+    "scanAccessFailed": "Bluetooth scanner yatadza kutanga. Tarisa Bluetooth kuwana woedza zvakare.",
+    "permissionDenied": "Kusvika pamudziyo uri pedyo wakadzimwa. Bvumira Bluetooth kupinda mumaSettings, woedza zvakare.",
+    "connectTimeout": "NorthStar yakatora nguva yakareba kuti ibatane. Iswededze pedyo woedza zvakare.",
+    "connectFailed": "Hatina kukwanisa kubatana neNorthStar. Tarisa kuti yakachajiwa uye kuti iri pedyo here, woedza zvakare.",
+    "emptyTitle": "Hapana midziyo iri pedyo parizvino",
+    "emptyMessage": "Chengeta NorthStar yakachajwa uye pedyo nenhare iyi, wozoongorora zvakare.",
+    "searchingMessage": "Kutsvaga NorthStar midziyo iri pedyo..."
+  },
+  "home": {
+    "subtitle": "Safety companion dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} yagadzirira",
+    "readyBody": "Izwi, mepu, zvishongo, uye vachengeti zvinongotorwa nekupombi imwe chete.",
+    "safetyCall": "Kufona kwekuchengetedza",
+    "northStarDevice": "NorthStar mudziyo",
+    "deviceConnected": "%{name} yakabatana · %{battery}%",
+    "noDevice": "Hapana mudziyo wakabatana",
+    "manageDevice": "Tonga mudziyo",
+    "mode": "Mode",
+    "modes": {
+      "home": "Kumba",
+      "guardian": "Guardian",
+      "emergency": "Emergency"
+    }
+  },
+  "map": {
+    "finding": "Kutsvaga nzvimbo yako...",
+    "retry": "Edzazve nzvimbo",
+    "title": "Mepu yekuchengetedza",
+    "previewSubtitle": "Expo Go preview; Mapbox inopa mune yekuvandudza kuvaka.",
+    "preview": "Kutarisisa kwemepu",
+    "risk": "Njodzi: %{risk} · Radhiyasi %{radius}m",
+    "refresh": "Simudza nzvimbo",
+    "refreshing": "Kutsvaga nzvimbo...",
+    "updateFailed": "Hatina kukwanisa kugadzirisa nzvimbo yako. Ndapota edza zvakare.",
+    "notRequested": "Kupinda kwenzvimbo hakuna kukumbirwa. Unogona kuigonesa gare gare kubva kuSettings.",
+    "permissionOff": "Kupinda panzvimbo kwakadzimwa. Ibatise mumaSettings kuti pakati pemepu yekuchengetedza pauri.",
+    "timeout": "Nzvimbo yako iri kutora nguva yakareba kupfuura yaitarisirwa. Enda kune imwe nzvimbo nechiratidzo chakajeka uye edza zvakare.",
+    "savedTitle": "Nzvimbo dzakachengetwa",
+    "savedEmptyTitle": "Hapana nzvimbo dzakachengetwa parizvino",
+    "savedEmptyMessage": "Nzvimbo dzaunovimba nadzo dzaunochengeta dzichaonekwa pano kuti uwane nekukurumidza.",
+    "zones": {
+      "crowding": "Kutsvikinyidzana pakati pehusiku",
+      "lowLighting": "Nzvimbo yakaderera yemwenje"
+    },
+    "risks": {
+      "low": "pasi",
+      "medium": "pakati",
+      "high": "yakakwirira"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kubatanidza...",
+    "offlineCompanion": "Isina pamhepo shamwari",
+    "offline": "Isina Indaneti",
+    "connected": "Yakabatanidzwa",
+    "interrupted": "Kubatanidza kwakanganiswa",
+    "ready": "Yagadzirira kubatanidza",
+    "connectingSecurely": "Kubatanidza zvakachengeteka kushamwari yako yezwi...",
+    "messagesWaiting": {
+      "one": "%{count} meseji yakamirira kutumirwa",
+      "other": "%{count} mameseji akamirira kutumirwa"
+    },
+    "useOffline": "Shandisa shamwari isina Indaneti",
+    "reconnect": "Batanidzazve kuzwi AI",
+    "typePlaceholder": "Taipa kana kutaura kwakaoma",
+    "endCall": "Pedzisa kufona",
+    "startCall": "Tanga kufona",
+    "emptyTitle": "Hurukuro yako inotangira pano",
+    "emptyMessage": "Tanga kufona kana kunyora meseji kana wagadzirira."
+  },
+  "chat": {
+    "waiting": "Kumirira kubatana",
+    "notSent": "Message haina kutumirwa.",
+    "retryAccessibility": "Edzazve kutumira meseji"
+  },
+  "history": {
+    "clearTitle": "Bvisa nhoroondo yenhaurirano?",
+    "clearMessage": "Izvi zvinobvisa AI mameseji eshamwari akachengetedzwa kubva pachigadzirwa ichi.",
+    "deleteTitle": "Uchadzima nhaurirano iyi?",
+    "cannotUndo": "Izvi hazvigone kugadziriswa.",
+    "title": "Nhoroondo yenhaurirano",
+    "subtitle": "AI mameseji eshamwari akachengetwa pamudziyo uyu.",
+    "empty": "Hapana nhaurirano dzachengetwa.",
+    "emptyTitle": "Pasati pave nehurukuro",
+    "emptyMessage": "Nhaurirano dzako dzeAI dzichaonekwa pano mushure mekufona kwekutanga.",
+    "loadFailed": "Hatina kukwanisa kuburitsa nhoroondo yenhaurirano. Ndapota edza zvakare.",
+    "clearFailed": "Hatina kukwanisa kujekesa nhoroondo yenhaurirano. Ndapota edza zvakare.",
+    "deleteFailed": "Hatina kukwanisa kudzima nhaurirano iyoyo. Ndapota edza zvakare.",
+    "aiCompanion": "AI mufambidzani",
+    "resume": "Tangazve",
+    "clearAll": "Bvisa nhoroondo yese",
+    "roles": {
+      "assistant": "shamwari",
+      "user": "iwe"
+    }
+  },
+  "voices": {
+    "title": "Manzwi angu ekuchengetedza anofona",
+    "subtitle": "Sarudza izwi reshamwari rinonzwa rakakodzera kunzwa.",
+    "test": "Edza izwi",
+    "stop": "Misa muenzaniso",
+    "selectionFailedTitle": "Sarudzo haina kuchengetwa",
+    "selectionFailedMessage": "Ndapota edza kusarudza izwi zvakare.",
+    "sampleFailedTitle": "Sample haisipo",
+    "sampleFailedMessage": "Iri izwi rakatadza kuridzwa. Ndapota edza zvakare.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "yakapfava, yakadzikama, inodzika"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "kupenya, kusimbisa, kutaura"
+      },
+      "boyfriend": {
+        "name": "Mukomana",
+        "description": "yakatsiga, ine rudo, iripo"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "kuvimba, kudzivirira, kukurudzira"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Inzwi",
+    "changeVoice": "Shandura inzwi",
+    "showCompanion": "Ratidza shamwari",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Shandisa mhinduro dzakaunganidzwa kana network kana Hume zvisipo.",
+    "privacyData": "Zvakavanzika & data",
+    "privacyBody": "Tumira kunze kana kudzima data remunharaunda rakachengetwa pachigadzirwa ichi.",
+    "preparingExport": "Kugadzirira kutumira kunze...",
+    "exportData": "Tumira kunze data rangu",
+    "privacyPolicy": "Mitemo yezvakavanzika",
+    "deleting": "Kudzima...",
+    "deleteAll": "Deta data rese remunharaunda",
+    "deviceManagement": "Kutarisira mudziyo",
+    "emergencyContacts": "Mazita ekukurumidzira",
+    "signOut": "Buda kunze",
+    "exportFailedTitle": "Kutumira kunze kwatadza",
+    "exportFailedMessage": "Haukwanisi kutumira data rako kunze izvozvi.",
+    "deleteConfirmTitle": "Wadzima data yese yemuno?",
+    "deleteConfirmMessage": "Izvi zvinobvisa chimiro chako, marongero, vaunosangana navo nechimbichimbi, nhoroondo yenhaurirano, zviyeuchidzo zvemvumo, uye chikamu chevanyori vemunharaunda kubva pachigadzirwa ichi.",
+    "deleteEverything": "Bvisa zvese",
+    "deleteFailedTitle": "Kudzima kwatadza",
+    "deleteFailedMessage": "Hatikwanise kudzima data yemuno izvozvi.",
+    "linkFailed": "Hatikwanisi kuvhura link",
+    "sections": {
+      "language": "Mutauro",
+      "languageSubtitle": "Interface uye system mvumo mutauro",
+      "companion": "Mufambidzani",
+      "companionSubtitle": "Izwi uye zvaunofarira pasina Indaneti",
+      "deviceSafety": "Zvishandiso uye chengetedzo",
+      "deviceSafetySubtitle": "NorthStar, vachengeti, nevanobatika nechimbichimbi",
+      "privacy": "Kuvanzika uye data",
+      "privacySubtitle": "Nhoroondo, kutumira kunze kwenyika, kudzima, uye mutemo",
+      "account": "Akaunti",
+      "accountSubtitle": "Yako VeryLoving chikamu"
+    },
+    "updateFailedTitle": "Setting haina kuchengetwa",
+    "updateFailedMessage": "Hatina kukwanisa kuchengetedza sarudzo iyoyo. Ndapota edza zvakare.",
+    "signOutFailedTitle": "Hatina kukwanisa kubuda",
+    "signOutFailedMessage": "Chirongwa chako chichiri kushanda. Ndapota edza zvakare."
+  },
+  "contacts": {
+    "title": "Emergency contacts",
+    "subtitle": "Vanhu vanovimbwa varipo panguva yekuchengetedzwa kuyerera.",
+    "addTitle": "Wedzera kuonana nechimbichimbi",
+    "name": "Zita",
+    "namePlaceholder": "Zita rekubata",
+    "phone": "Bata nhamba yefoni",
+    "add": "Wedzera munhu",
+    "empty": "Parizvino hapasati pave nevekufonerana nechimbichimbi.",
+    "emptyTitle": "Parizvino hapasati pave nevanhu vekukurumidzira",
+    "emptyMessage": "Wedzera munhu waunovimba naye kuti agadzirire kana kuyerera kwekuchengeteka kuchida iye.",
+    "removeTitle": "Bvisa %{name}?",
+    "removeMessage": "Munhu uyu haachaoneka mukuyerera kwako kwechimbichimbi.",
+    "nameRequired": "Isa zita remunhu waunosangana naye.",
+    "saveFailedTitle": "Bata harina kuchengetwa",
+    "saveFailedMessage": "Hatina kukwanisa kuchengetedza munhu uyu. Tarisa zvese uye edza zvakare.",
+    "removeFailedTitle": "Contact haina kubviswa",
+    "removeFailedMessage": "Hatina kukwanisa kubvisa munhu uyu. Ndapota edza zvakare.",
+    "callAccessibility": "Fonera %{name}",
+    "removeAccessibility": "Bvisa %{name}"
+  },
+  "device": {
+    "title": "Kutarisira mudziyo",
+    "subtitle": "Tonga NorthStar mudziyo wako.",
+    "connected": "Yakabatanidzwa · %{battery}% bhatiri",
+    "none": "Hapana midziyo yakabatana",
+    "disconnect": "Dimbura mudziyo",
+    "connect": "Batanidza mudziyo"
+  },
+  "friends": {
+    "title": "Shamwari",
+    "subtitle": "Vachengeti, zvikumbiro, uye girafu rekukurumidzira.",
+    "addDemo": "Wedzera demo shamwari",
+    "emptyTitle": "Denderedzwa rako rekuchengetedza harina chinhu",
+    "emptyMessage": "Shamwari dzinovimbwa nevachengeti vachaonekwa pano kana vawedzerwa.",
+    "newGuardian": "Muchengeti Mutsva",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Pending"
+    }
+  },
+  "emergency": {
+    "title": "Chimbichimbi SOS",
+    "subtitle": "Kukwidza chete kana uchida rubatsiro rwekukurumidza.",
+    "body": "Izvi zvinozivisa mafambiro ako ekuchengetedza uye kugadzirira vanokufonera nechimbichimbi.",
+    "activate": "Batidza SOS",
+    "callCompanion": "Fonera AI mufambidzani",
+    "notificationTitle": "SOS yakabatidzwa",
+    "notificationBody": "Kuyerera kwako kwechimbichimbi kwagadzirira.",
+    "readyTitle": "SOS yagadzirira",
+    "callContact": "Kufonera %{name}?",
+    "addContact": "Wedzera yekuonana nechimbichimbi mumaSettings.",
+    "quickShareTitle": "Kugovana nekukasira",
+    "quickShareMessage": "Stub yekugovera nzvimbo yagadzirira. Batanidza iyo backend share endpoint kuti utumire live link."
+  },
+  "quickShare": {
+    "title": "Kugovana nekukasira",
+    "subtitle": "Kuyerera kwenzvimbo kwagadzirira."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tokonya kaviri NorthStar yako kuti udonhedze orenji yekuchengetedza.",
+    "body": "Gesture nzira yakagadzirira BLE chiitiko wiring."
+  },
+  "debug": {
+    "title": "VeryLoving debug peji",
+    "subtitle": "Development-chete nzira."
+  },
+  "errors": {
+    "voiceOffline": "Unoita seusina Indaneti. Meseji yako ichatumirwa kana wabatanidza zvakare.",
+    "voiceQueued": "Mharidzo yachengetwa. Ichatumirwa kana izwi rinofambidzana richibatanidza zvakare.",
+    "voiceRetrying": "Kuedza kutumira meseji yako zvakare...",
+    "voiceConnecting": "Kubatanidza zvakachengeteka kushamwari yako yezwi...",
+    "microphone": "Kuwana maikorofoni kunodiwa pakufona kwezwi. Unogona kuigonesa muZvirongwa, kana kunyora meseji panzvimbo.",
+    "billing": "Izwi repamhepo rinofambidzana naye parizvino harisi kuwanikwa. Unogona kuenderera mberi neshamwari isina Indaneti.",
+    "authentication": "Izwi raaperekedza haana kukwanisa kuongorora chirongwa ichi. Pinda zvakare kana kushandisa shamwari isina Indaneti parizvino.",
+    "timeout": "Izwi rinofambidzana naye rakatora nguva yakareba kuti ridaire. Tarisa uone kubatana kwako woedza zvakare.",
+    "network": "Hatina kukwanisa kusvika padivi peizwi. Tarisa uone kubatana kwako, woedza zvakare kana kuenderera mberi pasina Indaneti.",
+    "genericVoice": "Pane chimwe chinhu chakanganisa kufona kwezwi. Edza zvakare, kana kuenderera mberi neshamwari isina Indaneti."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data kunze kwenyika"
+  },
+  "notifications": {
+    "channelName": "Yambiro pamusoro pekuchengetedzwa"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving inoda kuwana maikorofoni kuti ive kuchengeteka uye AI nhare dzinofambidzana.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving inoshandisa nzvimbo yako semepu yekuchengetedza uye maficha ari pedyo.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving inoshandisa nzvimbo yako kutsigira kusvika kwakachengeteka uye kuyerera kwechimbichimbi.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving inoshandisa nzvimbo yekumashure pakusvika kwakachengeteka uye nenharaunda yengozi yepedyo.",
+      "NSCameraUsageDescription": "VeryLoving inoshandisa kamera chete kana wasarudza kutora chimiro kana foto yekuchengetedza.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving inoshandisa raibhurari yako yemifananidzo chete paunosarudza chimiro kana mufananidzo wekuchengetedza.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving inoshandisa Bluetooth kubatanidza kune NorthStar yako zvishongo zvekuchengetedza.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving inoshandisa Bluetooth kubatanidza kune NorthStar yako zvishongo zvekuchengetedza."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

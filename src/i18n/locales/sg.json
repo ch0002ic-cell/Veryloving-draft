@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Zia",
+    "apple": "Apple",
+    "back": "Na peko",
+    "call": "Iri",
+    "cancel": "Annuler",
+    "clear": "zi",
+    "close": "Kanga",
+    "connect": "bungbi",
+    "connecting": "Ti tingbi...",
+    "continue": "Ngbâ ti sara ni",
+    "delete": "Effacer",
+    "finish": "Hunzi",
+    "friends": "Akamarade",
+    "google": "Google",
+    "home": "Da",
+    "loading": "A yeke zia...",
+    "map": "Carte",
+    "notNow": "Fadeso pëpe",
+    "remove": "zi",
+    "retry": "Kiri tara",
+    "retrying": "Ti kiri ti tara ni",
+    "save": "Bata",
+    "selected": "A soro",
+    "send": "Tokua",
+    "settings": "Aparamètre",
+    "skip": "hon",
+    "skipForNow": "Skip teti fadeso",
+    "skipTutorial": "Sauté na fango ye",
+    "sos": "SOS",
+    "unknown": "A hinga ni pëpe",
+    "user": "VeryLoving zo ti kusala",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "yanga ti kodoro",
+    "subtitle": "Soro yanga ti kodoro so a yeke sara kua na ni na yâ ti application ni kue.",
+    "system": "Système ti defaut",
+    "search": "gingo ayanga ti kodoro .",
+    "noResults": "Ayanga ti kodoro oko alingbi na gingo ye ti mo pëpe.",
+    "english": "Anglais",
+    "spanish": "yanga ti Espagnol",
+    "french": "Français",
+    "chineseSimplified": "Chinois (so a leke ni kete)"
+  },
+  "phone": {
+    "label": "Numéro ti téléphone",
+    "placeholder": "Numéro ti téléphone",
+    "selectCountry": "Soro kodoro wala kodoro .",
+    "searchCountry": "Gi kodoro, kode wala kozo tënë ti pikango singa",
+    "noCountries": "Kodoro oko alingbi na gingo nda ti ye ti mo pëpe.",
+    "countryButton": "Change kodoro, fadeso %{country} plus %{callingCode}",
+    "inputAccessibility": "Numéro ti téléphone ti %{country}",
+    "required": "Sû mbeni numéro ti téléphone.",
+    "tooShort": "Numéro ti téléphone so ayeke kete mingi.",
+    "tooLong": "Numéro ti téléphone so ayo mingi.",
+    "invalid": "Sû mbeni numéro ti téléphone so ayeke na lege ni ndali ti kodoro so mo soro.",
+    "valid": "Numéro ti téléphone ti kodoro wande so ayeke na lege ni"
+  },
+  "auth": {
+    "onboardingTagline": "Mbeni mba ti batango zo mveni teti angoi so ayeke na popo ti “Mbi yeke nzoni” na “Mbi yeke na bezoin ti mungo maboko.”",
+    "createAccount": "Créer compte",
+    "continueOnboarding": "Ngbâ ti sara kua na onboarding .",
+    "createSubtitle": "Soro mbeni kode ti sû iri ti mo na mbeti ti bata na graphique ti mo.",
+    "phoneVerification": "Vérification ti téléphone",
+    "sendCode": "Tokua kode",
+    "sendingCode": "Kode ti tokuango...",
+    "verifyCode": "Vérifié kode ni .",
+    "sentTo": "A tokua ni na %{phone}",
+    "yourPhone": "téléphone ti mo",
+    "verificationCode": "Kode ti fango na gigi",
+    "verify": "Vérifié",
+    "verifying": "Ti bâ wala...",
+    "invalidCode": "Sû kode ti vérification ni.",
+    "signInFailedTitle": "A kanga lege na zo ti lï na yâ ni",
+    "signInFailedMessage": "A lingbi ti hunzi ti sû iri ti mo na mbeti pëpe. Bâ connexion ti mo na tara ni encore.",
+    "googleUnavailableTitle": "Google A lingbi ti lï na yâ ni pëpe",
+    "googleUnavailableMessage": "Salango kusala na mbeni kapa ti lekengo ye ti ndo ni. Native Google Sign-In ayeke sala kusala na yâ ti mbeni lekengo ye ti lekengo ye.",
+    "northStarTitle": "NorthStar bijou",
+    "northStarSubtitle": "Pair fadeso wala ngbâ ti zia ni na ndo ni na pekoni.",
+    "northStarBody": "VL01 so a yü ni alingbi ti sara si a-écoulement ti sécurité alondo na lege ti robinet nga na yongoro geste ti presse.",
+    "setupJewelry": "Zia bijou .",
+    "meetCapybear": "Ti tingbi na Capybear",
+    "meetCapybearSubtitle": "Azo ti batango mo na ndo ti carte nga na yâ ti a-appel.",
+    "capybearBody": "Capybear alingbi ti mû maboko na mode ti da, mode ti batango zo, mode ti urgence, a-appel ti excuse, nga na mungo maboko na go.",
+    "chooseVoice": "Soro mbeni go .",
+    "capybearReminder": "Capybear dango bê",
+    "remindersReady": "Adango bê ti zo ayeke dä."
+  },
+  "permissions": {
+    "locationTitle": "Ndo ti batango tele",
+    "locationSubtitle": "A sala kusala na ni teti carte, ando ti kpale, ndo ti singo dä nzoni, na SOS contexte.",
+    "locationBody": "VeryLoving ahunda ndo ti tene azo ti batango zo ahinga ndo so a lingbi ti hunda mungo maboko dä. Mo lingbi ti changé ni na pekoni na yâ ti Paramètres.",
+    "allowLocation": "Mû lege na ndo ni",
+    "notificationsTitle": "Asango ti batango tele",
+    "notificationsSubtitle": "Asango ayeke mû maboko na azo ti sara check-in nga na aye so asi hio.",
+    "notificationsBody": "E yeke sala kusala gi na asango teti awango ti batango tele, afini ye ti hio, nga na adango bê so mo zi lege na ni.",
+    "enableNotifications": "Zia si a-avis",
+    "locationRationaleTitle": "Ndo abata tene ti batango tele na lege ni",
+    "locationRationaleMessage": "VeryLoving a sala kusala na ndo ti mo teti carte ti batango tele, ando ti kpale, kangbingo ye hio, na SOS contexte. Mo lingbi ti changé ni na pekoni na yâ ti Paramètres.",
+    "notificationsRationaleTitle": "A-alerte ti batango tele ayeke na bezoin ti tene a fa ni",
+    "notificationsRationaleMessage": "VeryLoving atokua adango bê ti lï na yâ da, afini ye ti hio, nga na awango ti batango tele so mo zi lege na ni. A yeke sara kua pëpe na a-avis ndali ti a-annonce.",
+    "microphoneRationaleTitle": "Micro ayeke mû ngangu na a-appel ti batango tele .",
+    "microphoneRationaleMessage": "VeryLoving a sala kusala na micro ti mo gi tongana mo to nda ti mbeni AI kamarade wala mbeni iringo ndo ti batango tele.",
+    "bluetoothRationaleTitle": "Bluetooth abungbi abongo ti mo .",
+    "bluetoothRationaleMessage": "VeryLoving asala kusala na Bluetooth ti bungbi na NorthStar ti bijou, ti diko statut ti connexion, na ti sala si a-flux ti batango tele so alondo na wearable ni.",
+    "cameraRationaleTitle": "Caméra ayeke ye so zo alingbi ti soro",
+    "cameraRationaleMessage": "VeryLoving a yeke sala kusala na caméra gi tongana mo soro ti mû foto ti profil wala ti kangbi mbeni image ti batango tele."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving abata flux so ayeke na yâ ti Paramètres nga na tableau ti tableau.",
+    "chooseVoiceTitle": "Soro go ti mo .",
+    "chooseVoiceSubtitle": "Soro go ti kamarade so mo bâ so ayeke nzoni mingi ti mä ni.",
+    "homeTitle": "Mode ti da",
+    "homeSubtitle": "Monitor so ayeke kpô ti tene zo aduti nzoni lâ oko oko.",
+    "guardianTitle": "Mode ti batango",
+    "guardianSubtitle": "Fa atënë ti yâ ni na azo so mo zia bê ti mo na ala.",
+    "emergencyTitle": "Mode ti urgence",
+    "emergencySubtitle": "A-robinet oku alingbi ti gue na li ni ti si na SOS na a-alerte ti gardien.",
+    "excuseTitle": "Pardon",
+    "excuseSubtitle": "Créer mbeni raison ti grâce ti zia mbeni ye so ayeke nzoni pëpe.",
+    "safetyCallTitle": "Iri ndo ti batango tele",
+    "safetyCallSubtitle": "To nda ti sala mbeni iringo ndo ti kamarade na ngoi so mo yeke na bezoin ti mungo maboko.",
+    "practiceTitle": "Scène ti pratique",
+    "practiceSubtitle": "Tara ti sara kua na a-écoulement ti sécurité na yâ ti mbeni démonstration so ayeke na kete pression."
+  },
+  "jewelry": {
+    "pairTitle": "Paire NorthStar",
+    "pairSubtitle": "Bata bijou ni ndulu na mo na ngoi so mo yeke scanner ni.",
+    "scan": "Scan ti wara a-appareil",
+    "scanning": "Scanning so ayeke nduru...",
+    "noDevices": "A wara a-appareil ti NorthStar so ayeke nduru na mo pëpe.",
+    "scanStartFailed": "Bluetooth scanner alingbi ti to nda ni pëpe. Pardon, kiri mo tara ni.",
+    "scanFailed": "E lingbi ti wara abongo ti nginza so ayeke nduru na e pëpe. Bâ Bluetooth, bata NorthStar ndulu, na tara encore.",
+    "scanAccessFailed": "Bluetooth scanner alingbi ti to nda ni pëpe. Bâ Bluetooth access na tara ni encore.",
+    "permissionDenied": "Access ti appareil so ayeke nduru na mo. Zia si Bluetooth alï na yâ ti Paramètres, na pekoni tara encore.",
+    "connectTimeout": "NorthStar amû ngoi mingi ti tingbi. Mo gue na ni nduru na mo kiri mo tara ni.",
+    "connectFailed": "A lingbi ti tingbi na NorthStar pepe. Bâ wala a charge ni awe nga ayeke nduru na ni, na pekoni tara ni encore.",
+    "emptyTitle": "A yeke wara pëpe a-appareil so ayeke nduru na lo .",
+    "emptyMessage": "Bata NorthStar charge na ndulu na téléphone so, na pekoni kiri mo scanner ni.",
+    "searchingMessage": "Mo yeke gi NorthStar a-appareil so ayeke nduru na mo..."
+  },
+  "home": {
+    "subtitle": "Tableau ti kamarade ti batango tele",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ayeke ndulu",
+    "readyBody": "Voix, carte, bijou, na azo ti batango mo ayeke na mbeni robinet oko.",
+    "safetyCall": "Iri ndo ti batango tele",
+    "northStarDevice": "NorthStar appareil",
+    "deviceConnected": "%{name} abungbi · %{battery}%",
+    "noDevice": "A zia mbeni appareil na ndo ni pëpe",
+    "manageDevice": "Sala kusala na appareil",
+    "mode": "mode",
+    "modes": {
+      "home": "Da",
+      "guardian": "Wabatango",
+      "emergency": "Urgence"
+    }
+  },
+  "map": {
+    "finding": "Ti wara ndo ti mo...",
+    "retry": "Kiri mo tara ndo ni .",
+    "title": "Carte ti batango tele",
+    "previewSubtitle": "Expo Go ti bâ ni kozoni; Mapbox a fa na yâ ti mbeni developpement ti lekengo ni.",
+    "preview": "Azo ti bâ carte ni",
+    "risk": "Risque: %{risk} · Rayon %{radius}m",
+    "refresh": "Refresh place ni .",
+    "refreshing": "Gingo ndo...",
+    "updateFailed": "A lingbi ti sara si ndo so mo yeke dä aga fini pëpe. Pardon, kiri mo tara ni.",
+    "notRequested": "A hunda ti wara ndo ni pëpe. Mo lingbi ti zi ni na pekoni na lege ti Paramètres.",
+    "permissionOff": "Access ti ndo ni ayeke dä. Zia ni na yâ ti Paramètres ti tene carte ti sécurité ni aduti na popo ti mo.",
+    "timeout": "Ndo ti mo ayeke mû ngoi mingi ahon ti so mo ku. Gue na mbeni ndo so mbeni signal ayeke dä polele na tara encore.",
+    "savedTitle": "Ando so a bata ni",
+    "savedEmptyTitle": "A bata ando nde nde pëpe",
+    "savedEmptyMessage": "Ando so mo zia bê ti mo dä so mo bata ni ayeke sigigi ge ti tene mo wara ni hio.",
+    "zones": {
+      "crowding": "Azo ayeke bungbi na bï",
+      "lowLighting": "Ndo so lumière ayeke dä mingi pëpe"
+    },
+    "risks": {
+      "low": "na gbe ni",
+      "medium": "moyen",
+      "high": "ga"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ti tingbi...",
+    "offlineCompanion": "Kamarade so ayeke na lege ni pëpe",
+    "offline": "Na ndo ti Internet pëpe",
+    "connected": "A tingbi",
+    "interrupted": "A fâ yâ ti connexion ni",
+    "ready": "Prêt ti connecter .",
+    "connectingSecurely": "Connecter nzoni na kamarade ti go ti mo...",
+    "messagesWaiting": {
+      "one": "%{count} tokua so ayeke ku ti tokua",
+      "other": "%{count} asango so ayeke ku ti tokua"
+    },
+    "useOffline": "Lo yeke na lege ti Internet pëpe .",
+    "reconnect": "Kiri ti tingbi na go AI",
+    "typePlaceholder": "Type tongana tënë ayeke ngangu .",
+    "endCall": "Hunzi ti iringo ndo",
+    "startCall": "Komanse ti iri .",
+    "emptyTitle": "Lisoro ti e ato nda ni ge .",
+    "emptyMessage": "To nda ti iri zo wala sû mbeni message tongana mo leke ni awe."
+  },
+  "chat": {
+    "waiting": "A yeke ku ti wara connexion",
+    "notSent": "A tokua asango ni pëpe.",
+    "retryAccessibility": "Kiri tara ti tokua tokua"
+  },
+  "history": {
+    "clearTitle": "Mbeni mbaï ti lisoro ni ayeke polele?",
+    "clearMessage": "So ayeke zi asango ti AI so a bata ni na yâ ti appareil so.",
+    "deleteTitle": "Effacé lisoro so?",
+    "cannotUndo": "A lingbi ti kiri na ye so pëpe.",
+    "title": "Mbeti ti lisoro",
+    "subtitle": "AI asango ti kamarade so a bata ni na ndo ti appareil so.",
+    "empty": "A bata ambeni lisoro pëpe.",
+    "emptyTitle": "Ade a sara lisoro pëpe",
+    "emptyMessage": "Alisoro ti mo ti AI ti kamarade ayeke sigigi ge na peko ti kozo iringo ndo ti mo.",
+    "loadFailed": "A lingbi ti charge mbaï ti lisoro ni pëpe. Pardon, kiri mo tara ni.",
+    "clearFailed": "A lingbi ti zi mbaï ti lisoro pëpe. Pardon, kiri mo tara ni.",
+    "deleteFailed": "A lingbi ti supprimé lisoro so pëpe. Pardon, kiri mo tara ni.",
+    "aiCompanion": "AI mba ti mbi",
+    "resume": "kiringo tënë",
+    "clearAll": "Zia mbaï kue",
+    "roles": {
+      "assistant": "kamarade",
+      "user": "mo"
+    }
+  },
+  "voices": {
+    "title": "Azo ti mbi ti iringo azo .",
+    "subtitle": "Soro go ti kamarade so mo bâ so alingbi ti mä ni.",
+    "test": "Test ti go",
+    "stop": "Echantillon ti arrêté",
+    "selectionFailedTitle": "A soro ye ni pëpe",
+    "selectionFailedMessage": "Pardon tara ti soro go ni encore.",
+    "sampleFailedTitle": "Tapande ni ayeke dä pëpe",
+    "sampleFailedMessage": "A lingbi ti mä échantillon ti go so pëpe. Pardon, kiri mo tara ni.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "doux, calme, terrement"
+      },
+      "bestie": {
+        "name": "Nzoni kamarade",
+        "description": "lumière, adë bê, sarango lisoro"
+      },
+      "boyfriend": {
+        "name": "Kamarade ti koli",
+        "description": "ngbâ, ndoye, dä"
+      },
+      "muscleMan": {
+        "name": "zo ti muscle",
+        "description": "confiance, batango zo, pusungo zo"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Go",
+    "changeVoice": "Change go ti zo .",
+    "showCompanion": "Fa kamarade ti mo",
+    "offlineMode": "Mode so ayeke na lege ni pëpe",
+    "offlineModeSubtitle": "Lo sara kua na akiringo tënë ti compagnon so abungbi na ngoi so réseau wala Hume a-crédentiel ayeke dä pëpe.",
+    "privacyData": "Tënë ti zo & asango",
+    "privacyBody": "Exporter wala supprimé asango ti ndo so a bata ni na ndö ti appareil so.",
+    "preparingExport": "Lekengo ye ti tokuango ni...",
+    "exportData": "Exporté asango ti mo",
+    "privacyPolicy": "Ndia ti batango tënë ti zo wani",
+    "deleting": "Effacer...",
+    "deleteAll": "Effacer asango kue ti ndo ni",
+    "deviceManagement": "Salango kusala na a-appareil",
+    "emergencyContacts": "Azo so atingbi na ala na yâ ti kpale",
+    "signOut": "Sigi na gigi",
+    "exportFailedTitle": "Exportation ni ahon ndo ni",
+    "exportFailedMessage": "A lingbi ti exporté asango ti mo fadeso pëpe.",
+    "deleteConfirmTitle": "Effacer asango kue ti ndo ni?",
+    "deleteConfirmMessage": "So ayeke zi na yâ ti appareil so profil ti mo, a-paramètre ti mo, azo so mo tingbi na ala hio, mbaï ti lisoro ti mo, a-rappel ti mungo lege na mo nga na session ti auth ti ndo so mo yeke dä.",
+    "deleteEverything": "Effacé aye kue .",
+    "deleteFailedTitle": "Suppression ni ahon ndo ni",
+    "deleteFailedMessage": "A lingbi ti supprimé asango ti ndo ni fadeso pëpe.",
+    "linkFailed": "A lingbi ti zi lien ni pëpe",
+    "sections": {
+      "language": "yanga ti kodoro",
+      "languageSubtitle": "Interface na yanga ti kodoro ti mungo lege na système .",
+      "companion": "Kamarade",
+      "companionSubtitle": "Aye so mo ye na go nga na aye so mo soro na lege ti Internet pëpe",
+      "deviceSafety": "A-appareil na aye ti batango tele .",
+      "deviceSafetySubtitle": "NorthStar, azo ti batango zo, na azo so a lingbi ti wara ala hio .",
+      "privacy": "Aye ti zo wani nga na asango",
+      "privacySubtitle": "Mbaï, tokuango ni, suppression ni nga na ndia",
+      "account": "Compte",
+      "accountSubtitle": "Session ti mo ti fadeso VeryLoving ."
+    },
+    "updateFailedTitle": "A bata paramètre ni pëpe",
+    "updateFailedMessage": "A lingbi ti bata ye so mo ye pëpe. Pardon, kiri mo tara ni.",
+    "signOutFailedTitle": "A lingbi ti sigigi pëpe",
+    "signOutFailedMessage": "Session ti mo angbâ ti sara kua. Pardon, kiri mo tara ni."
+  },
+  "contacts": {
+    "title": "Azo ti mungo maboko hio",
+    "subtitle": "Azo so a zia bê na ala ayeke dä na ngoi ti akota bungbi ti batango tele.",
+    "addTitle": "Zia iri ti urgence",
+    "name": "Iri",
+    "namePlaceholder": "Iri ti zo so mo lingbi ti sara lisoro na lo",
+    "phone": "Numéro ti téléphone ti mo",
+    "add": "Zia mbeni zo ti tingbi na mo",
+    "empty": "A zia ambeni contact ti urgence na ndo ni pëpe.",
+    "emptyTitle": "Azo ti urgence ade ti si pëpe",
+    "emptyMessage": "Add mbeni zo so mo zia bê ti mo na lo tongaso si ala duti nduru na ngoi so mbeni safety flow ayeke na bezoin ti ala.",
+    "removeTitle": "Ti zi %{name}?",
+    "removeMessage": "Zo so ayeke sigigi mbeni pëpe na yâ ti flux d’urgence ti mo.",
+    "nameRequired": "Sû iri ti zo ni.",
+    "saveFailedTitle": "A bata asango ni pëpe",
+    "saveFailedMessage": "A lingbi ti bata contact so pëpe. Bâ anzene nzene ye ni na tara ni encore.",
+    "removeFailedTitle": "A zi contact ni pëpe",
+    "removeFailedMessage": "A lingbi ti zi contact so pëpe. Pardon, kiri mo tara ni.",
+    "callAccessibility": "Iri %{name}",
+    "removeAccessibility": "zi %{name} ."
+  },
+  "device": {
+    "title": "Salango kusala na a-appareil",
+    "subtitle": "Sala kusala na NorthStar ti mo.",
+    "connected": "A zia · %{battery}% batterie",
+    "none": "A-appareil so abungbi pëpe .",
+    "disconnect": "Zia appareil ni",
+    "connect": "Ti tingbi na appareil"
+  },
+  "friends": {
+    "title": "Akamarade",
+    "subtitle": "Azo ti batango, ahundango ye, na graphique ti urgence.",
+    "addDemo": "Ajouter kamarade ti démonstration",
+    "emptyTitle": "Cercle ti sécurité ti mo ayeke senge .",
+    "emptyMessage": "Akamarade nga na azo ti batango mo so mo zia bê ti mo na ala ayeke sigigi ande ge na ngoi so a zia ala na ndo ni.",
+    "newGuardian": "Fini Wabatango",
+    "statuses": {
+      "guardian": "Wabatango",
+      "pending": "A yeke ku"
+    }
+  },
+  "emergency": {
+    "title": "Urgence SOS",
+    "subtitle": "Escalate gi na ngoi so mo yeke na bezoin ti mungo maboko hio.",
+    "body": "So ayeke fa na azo ti batango mo nga ti leke azo so mo lingbi ti tingbi na ala na yâ ti kpale.",
+    "activate": "Sara si SOS asara kua",
+    "callCompanion": "Iri AI kamarade",
+    "notificationTitle": "SOS a sara kua na ni",
+    "notificationBody": "Flux ti urgence ti mo ayeke dä.",
+    "readyTitle": "SOS ayeke ndulu",
+    "callContact": "Iri %{name}?",
+    "addContact": "Zia mbeni zo ti sarango lisoro na lo na yâ ti Paramètres.",
+    "quickShareTitle": "Kango ye hio",
+    "quickShareMessage": "Location ti kangbingo stub ni ayeke dä. Connecté na backend ti kangbingo ye na nda ni ti tokua a-lien na fini."
+  },
+  "quickShare": {
+    "title": "Kango ye hio",
+    "subtitle": "Location ti kangbingo ye ni ayeke ndulu."
+  },
+  "capybearTap": {
+    "title": "Capybear robinet",
+    "subtitle": "Topika NorthStar ti mo fani use ti zia mbeni orange ti batango tele.",
+    "body": "Gesture lege ti BLE ti événement ti câblage."
+  },
+  "debug": {
+    "title": "VeryLoving lembeti ti débogage",
+    "subtitle": "Lege ti developpement-gi."
+  },
+  "errors": {
+    "voiceOffline": "Mo yeke mo bâ mo tene a yeke na lege ni pëpe. A yeke tokua message ti mo na ngoi so mo kiri mo sara connexion.",
+    "voiceQueued": "Tokua so a bata ni. A yeke tokua ni na ngoi so kamarade ti go ni akiri abungbi.",
+    "voiceRetrying": "Tara ti tokua tokua ti mo encore...",
+    "voiceConnecting": "Ti tingbi nzoni na mba ti mo ti go...",
+    "microphone": "A hunda ti wara micro ti sara na a-appel ti go. Mo lingbi ti zi ni na yâ ti Paramètres, wala ti sû mbeni message na place ni.",
+    "billing": "Compagnon ti go ti internet ayeke dä pëpe teti mbeni ngoi. Lo lingbi ti ngbâ ti sara kua na amba ti lo so ayeke na ndö ti Internet ape.",
+    "authentication": "Wafango tënë ti go ni alingbi pëpe ti vérifier session so. Zia iri ti mo encore wala sara kua na compagnon so ayeke na ndö ti Internet pëpe teti fadeso.",
+    "timeout": "Kamarade ti go ni amû ngoi mingi ti kiri tënë. Bâ connexion ti mo na tara ni encore.",
+    "network": "A lingbi ti wara go ti kamarade ni pëpe. Bâ connexion ti mo, na pekoni tara encore wala ngbâ ti sara kua na connexion pëpe.",
+    "genericVoice": "Mbeni ye akanga lege na go ti zo ni. Tara ti kiri ti sara ni, wala ngbâ ti sara kua na kamarade ti mo so ayeke na ndö ti Internet ape."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving tokuango asango"
+  },
+  "notifications": {
+    "channelName": "Asango ti batango tele"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving a hunda ti wara micro ti tene a bata mo nzoni nga na AI a-appel ti kamarade.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving lo sara kua na ndo ti mo ti sara na carte ti sécurité nga na a-appareil ti sécurité so ayeke nduru na mo.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving lo yeke na ndo so mo yeke dä ti mû maboko na azo so ayeke si nzoni nga na azo so ayeke si hio.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving lo yeke na ndo ti peko ti safe-arrivée nga na aye so ayeke nduru na danger-zone.",
+      "NSCameraUsageDescription": "VeryLoving lo yeke sara kua na caméra gi na ngoi so lo soro ti mû foto ti profil wala ti sécurité.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving asala kusala na bibliothèque ti afoto ti mo gi tongana mo soro mbeni profil wala mbeni image ti batango tele.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

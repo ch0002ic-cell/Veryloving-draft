@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "ເພີ່ມ",
+    "apple": "Apple",
+    "back": "ກັບຄືນ",
+    "call": "ໂທ",
+    "cancel": "ຍົກເລີກ",
+    "clear": "ແຈ່ມແຈ້ງ",
+    "close": "ປິດ",
+    "connect": "ຕິດ ຕໍ່",
+    "connecting": "ການເຊື່ອມຕໍ່...",
+    "continue": "ດໍາເນີນຕໍ່ໄປ",
+    "delete": "ລຶບ",
+    "finish": "ສໍາ ເລັດ",
+    "friends": "ຫມູ່ ເພື່ອນ",
+    "google": "Google",
+    "home": "ໜ້າຫຼັກ",
+    "loading": "ກຳລັງໂຫຼດ...",
+    "map": "ແຜນທີ່",
+    "notNow": "ບໍ່ແມ່ນຕອນນີ້",
+    "remove": "ລຶບ",
+    "retry": "ລອງໃໝ່",
+    "retrying": "ພະ ຍາ ຍາມ ອີກ",
+    "save": "ບັນທຶກ",
+    "selected": "ເລືອກ ແລ້ວ",
+    "send": "ສົ່ງ",
+    "settings": "ຕັ້ງຄ່າ",
+    "skip": "ຂ້າມ",
+    "skipForNow": "ຂ້າມ ໄປ ໃນ ຕອນ ນີ້",
+    "skipTutorial": "ຂ້າມບົດຮຽນ",
+    "sos": "SOS",
+    "unknown": "ບໍ່ຮູ້ຈັກ",
+    "user": "VeryLoving",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ພາສາ",
+    "subtitle": "ເລືອກພາສາທີ່ໃຊ້ຕະຫຼອດແອັບ.",
+    "system": "ຄ່າມາດຕະຖານຂອງລະບົບ",
+    "search": "ຄົ້ນຫາພາສາ",
+    "noResults": "ບໍ່ ມີ ພາ ສາ ໃດ ທີ່ ເຫມາະ ສົມ ກັບ ການ ຄົ້ນ ຄວ້າ ຂອງ ທ່ານ.",
+    "english": "ພາສາອັງກິດ",
+    "spanish": "ພາສາສະເປນ",
+    "french": "ພາສາຝຣັ່ງ",
+    "chineseSimplified": "ພາສາຈີນ (ພາສາຍ່ອຍ)"
+  },
+  "phone": {
+    "label": "ເບີໂທລະສັບ",
+    "placeholder": "ເບີໂທລະສັບ",
+    "selectCountry": "ເລືອກປະເທດ ຫຼື ພາກພື້ນ",
+    "searchCountry": "ຄົ້ນຫາປະເທດ, ລະຫັດ ຫຼື ຄໍານໍາຫນ້າໂທລະສັບ",
+    "noCountries": "ບໍ່ ມີ ປະ ເທດ ໃດ ທີ່ ເຫມາະ ສົມ ກັບ ການ ຄົ້ນ ຄວ້າ ຂອງ ທ່ານ.",
+    "countryButton": "ປ່ຽນປະເທດ, ປະຈຸບັນ %{country} plus %{callingCode}",
+    "inputAccessibility": "ເບີໂທລະສັບສໍາລັບ %{country}",
+    "required": "ໃສ່ເລກໂທລະສັບ.",
+    "tooShort": "ເລກ ໂທລະສັບ ນີ້ ສັ້ນ ເກີນ ໄປ.",
+    "tooLong": "ເລກໂທລະສັບນີ້ຍາວເກີນໄປ.",
+    "invalid": "ໃສ່ເລກໂທລະສັບທີ່ຖືກຕ້ອງສໍາລັບປະເທດທີ່ເລືອກ.",
+    "valid": "ເບີໂທລະສັບສາກົນທີ່ໃຊ້ໄດ້"
+  },
+  "auth": {
+    "onboardingTagline": "ຄູ່ ປອດ ໄພ ສ່ວນ ຕົວ ສໍາລັບ ເວລາ ລະຫວ່າງ \"ຂ້ອຍ ສະບາຍ ດີ\" ແລະ \"ຂ້ອຍ ຕ້ອງການ ຄວາມ ຊ່ອຍ ເຫລືອ.\"",
+    "createAccount": "ສ້າງບັນຊີ",
+    "continueOnboarding": "ດໍາເນີນຕໍ່ໄປກັບການເຂົ້າຮ່ວມ",
+    "createSubtitle": "ເລືອກວິທີການລົງຊື່ເພື່ອປົກປ້ອງຮູບພາບຄວາມປອດໄພຂອງເຈົ້າ.",
+    "phoneVerification": "ການຢືນຢັນທາງໂທລະສັບ",
+    "sendCode": "ສົ່ງລະຫັດ",
+    "sendingCode": "ກໍາລັງສົ່ງໂປຣແກຣມ...",
+    "verifyCode": "ຢືນຢັນລະຫັດ",
+    "sentTo": "ຖືກ ສົ່ງ ໄປ ຫາ ປະ ເທດ %{phone}",
+    "yourPhone": "ໂທລະສັບ ມື ຖື ຂອງ ທ່ານ",
+    "verificationCode": "ລະຫັດການຢືນຢັນ",
+    "verify": "ຢັ້ງຢືນ",
+    "verifying": "ກໍາລັງຢືນຢັນ...",
+    "invalidCode": "ໃສ່ລະຫັດການຢືນຢັນ.",
+    "signInFailedTitle": "ການເຂົ້າຖືກຂັດຂວາງ",
+    "signInFailedMessage": "ພວກ ເຮົາ ບໍ່ ສາມາດ ລົງ ຊື່ ໃຫ້ ສໍາ ເລັດ. ໃຫ້ກວດເບິ່ງການເຊື່ອມຕໍ່ຂອງເຈົ້າແລະລອງອີກ.",
+    "googleUnavailableTitle": "Google Sign-In ບໍ່ສາມາດໃຊ້ໄດ້",
+    "googleUnavailableMessage": "ການ ໃຊ້ ພາກ ພັດທະນາ ໃນ ທ້ອງ ຖິ່ນ. Native Google Sign-In ເຮັດວຽກໃນການສ້າງການພັດທະນາ.",
+    "northStarTitle": "NorthStar ເຄື່ອງ ເອ້",
+    "northStarSubtitle": "ຄູ່ດຽວນີ້ຫຼືເຮັດຕໍ່ໄປແລະຕື່ມໃສ່ໃນພາຍຫຼັງ.",
+    "northStarBody": "ເຄື່ອງ ນຸ່ງ VL01 ສາມາດ ເຮັດ ໃຫ້ ຄວາມ ປອດ ໄພ ເກີດ ຂຶ້ນ ໂດຍ ການ tap ແລະ ທ່າ ທີ press ດົນ ນານ.",
+    "setupJewelry": "ຕັ້ງ ເຄື່ອງ ເອ້",
+    "meetCapybear": "ພົບ ກັບ Capybear",
+    "meetCapybearSubtitle": "ຄູ່ ປອດ ໄພ ທີ່ ອ່ອນ ໂຍນ ຂອງ ທ່ານ ຢູ່ ໃນ ແຜນ ແລະ ໃນ ການ ເອີ້ນ.",
+    "capybearBody": "Capybear ສາມາດ ຊ່ອຍ ເຫລືອ ໃນ mode ບ້ານ, mode ຜູ້ ດູ ແລ, mode ສຸກ ເສີນ, ການ ເອີ້ນ ຂໍ້ ແກ້ ຕົວ ແລະ ການ ສະຫນັບສະຫນູນ ສຽງ.",
+    "chooseVoice": "ເລືອກ ສຽງ",
+    "capybearReminder": "Capybear ເຕືອນ",
+    "remindersReady": "ຄໍາເຕືອນໃຈທີ່ອ່ອນໂຍນພ້ອມແລ້ວ."
+  },
+  "permissions": {
+    "locationTitle": "ຄວາມປອດໄພຂອງສະຖານທີ່",
+    "locationSubtitle": "ໃຊ້ສໍາລັບແຜນທີ່, ເຂດອັນຕະລາຍ, ການມາເຖິງທີ່ປອດໄພ ແລະ SOS",
+    "locationBody": "VeryLoving ຖາມ ສະຖານ ທີ່ ເພື່ອ ວ່າ ຜູ້ ດູ ແລ ຈະ ສາມາດ ເຂົ້າ ໃຈ ບ່ອນ ທີ່ ຕ້ອງການ ຄວາມ ຊ່ອຍ ເຫລືອ. ທ່ານສາມາດປ່ຽນແປງໄດ້ພາຍຫຼັງໃນການຕັ້ງຄ່າ.",
+    "allowLocation": "ອະນຸຍາດໃຫ້ມີສະຖານທີ່",
+    "notificationsTitle": "ຄໍາເຕືອນເລື່ອງຄວາມປອດໄພ",
+    "notificationsSubtitle": "ການ ແຈ້ງ ບອກ ສົ່ງ ເສີມ ການ check-in ແລະ ເຫດ ການ ສຸກ ເສີນ.",
+    "notificationsBody": "ພວກ ເຮົາ ພຽງ ແຕ່ ໃຊ້ ການ ແຈ້ງ ບອກ ສໍາລັບ ການ ເຕືອນ ເລື່ອງ ຄວາມ ປອດ ໄພ, ຂໍ້ ມູນ ໃນ ຍາມ ສຸກ ເສີນ ແລະ ການ ເຕືອນ ໃຈ ທີ່ ທ່ານ ສາມາດ ເຮັດ ໄດ້.",
+    "enableNotifications": "ເປີດການແຈ້ງ",
+    "locationRationaleTitle": "ສະຖານ ທີ່ ຮັກສາ ສະພາບ ຄວາມ ປອດ ໄພ ໃຫ້ ຖືກຕ້ອງ",
+    "locationRationaleMessage": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ສໍາລັບ ແຜນ ທີ່ ຄວາມ ປອດ ໄພ, ເຂດ ອັນຕະລາຍ, ການ ແບ່ງປັນ ໄວ ແລະ ສະພາບ ການ SOS. ທ່ານສາມາດປ່ຽນແປງໄດ້ພາຍຫຼັງໃນການຕັ້ງຄ່າ.",
+    "notificationsRationaleTitle": "ການ ເຕືອນ ເລື່ອງ ຄວາມ ປອດ ໄພ ຕ້ອງ ມີ ການ ແຈ້ງ ບອກ",
+    "notificationsRationaleMessage": "VeryLoving ສົ່ງຄໍາເຕືອນໃຫ້ເຂົ້າໂຮງແຮມ, ຂໍ້ມູນໃຫມ່ໃນຍາມສຸກເສີນ ແລະ ຄໍາແນະນໍາເລື່ອງຄວາມປອດໄພທີ່ທ່ານສາມາດເຮັດໄດ້. ພວກ ເຮົາ ບໍ່ ໃຊ້ ການ ແຈ້ງ ບອກ ສໍາລັບ ການ ໂຄສະນາ.",
+    "microphoneRationaleTitle": "ໄມ ໂກ ໂບ ໃຫ້ ພະລັງ ແກ່ ການ ເອີ້ນ ເລື່ອງ ຄວາມ ປອດ ໄພ",
+    "microphoneRationaleMessage": "VeryLoving ໃຊ້ ໄມ ໂກ ຂອງ ທ່ານ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລີ່ມ AI ຄູ່ ຄອງ ຫລື ການ ເອີ້ນ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
+    "bluetoothRationaleTitle": "Bluetooth ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ນຸ່ງ ຖື ຂອງ ທ່ານ",
+    "bluetoothRationaleMessage": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຄູ່ ກັບ ເຄື່ອງ ເອ້ NorthStar, ອ່ານ ສະພາບ ການ ຕິດ ຕໍ່ ແລະ ກະ ຕຸ້ນ ຄວາມ ປອດ ໄພ ຈາກ ເຄື່ອງ ນຸ່ງ ຖື.",
+    "cameraRationaleTitle": "ກ້ອງຖ່າຍຮູບເປັນທາງເລືອກ",
+    "cameraRationaleMessage": "VeryLoving ໃຊ້ ກ້ອງຖ່າຍຮູບ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ທີ່ ຈະ ຖ່າຍ ຮູບ ຫລື ແບ່ງປັນ ຮູບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ຮັກສາ flow ນີ້ ໄວ້ ຈາກ Settings ແລະ dashboard.",
+    "chooseVoiceTitle": "ເລືອກ ສຽງ ຂອງ ທ່ານ",
+    "chooseVoiceSubtitle": "ເລືອກສຽງຄູ່ທີ່ຮູ້ສຶກປອດໄພທີ່ສຸດທີ່ຈະໄດ້ຍິນ.",
+    "homeTitle": "Home mode",
+    "homeSubtitle": "ການ ຄວບ ຄຸມ ຢ່າງ ງຽບໆ ເພື່ອ ຄວາມ ປອດ ໄພ ປະຈໍາ ວັນ.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "ແບ່ງປັນ ສະພາບ ການ ກັບ ຜູ້ ຄົນ ທີ່ ໄວ້ ວາງໃຈ ໄດ້.",
+    "emergencyTitle": "ແບບ ສຸກ ເສີນ",
+    "emergencySubtitle": "ຫ້າ ເທື່ອ ສາມາດ ຍົກ ລະດັບ ການ SOS ແລະ ການ ເຕືອນ ຂອງ ຜູ້ ດູ ແລ.",
+    "excuseTitle": "ຂໍ ໂທດ ໂທລະສັບ",
+    "excuseSubtitle": "ໃຫ້ ສ້າງ ເຫດຜົນ ທີ່ ດີ ທີ່ ຈະ ຫນີ ຈາກ ສະພາບ ການ ທີ່ ບໍ່ ສະບາຍ ໃຈ.",
+    "safetyCallTitle": "ການ ເອີ້ນ ເລື່ອງ ຄວາມ ປອດ ໄພ",
+    "safetyCallSubtitle": "ເລີ່ມໂທລະສັບຄູ່ໃນເວລາຈິງເມື່ອເຈົ້າຕ້ອງການການສະຫນັບສະຫນູນ.",
+    "practiceTitle": "ພາບ ຝຶກ ຊ້ອມ",
+    "practiceSubtitle": "ໃຫ້ ລອງ ເບິ່ງ ຄວາມ ປອດ ໄພ ໃນ ການ ສາທິດ ທີ່ ມີ ຄວາມ ກົດ ດັນ ຕ່ໍາ."
+  },
+  "jewelry": {
+    "pairTitle": "ຄູ່ NorthStar",
+    "pairSubtitle": "ໃຫ້ ເກັບ ເຄື່ອງ ເອ້ ໄວ້ ໃກ້ໆ ໃນ ຂະນະ ທີ່ scan .",
+    "scan": "scan ຊອກຫາອຸປະກອນ",
+    "scanning": "ກໍາລັງກວດສອບຢູ່ໃກ້ໆ...",
+    "noDevices": "ຍັງ ບໍ່ ພົບ ເຫັນ ອຸປະກອນ NorthStar ທີ່ຢູ່ ໃກ້ໆ ເທື່ອ.",
+    "scanStartFailed": "Bluetooth scan ບໍ່ສາມາດເລີ່ມຕົ້ນໄດ້. ກະລຸນາລອງອີກ.",
+    "scanFailed": "ພວກ ເຮົາ ບໍ່ ສາມາດ ຊອກ ຫາ ເຄື່ອງ ເອ້ ທີ່ຢູ່ ໃກ້ໆ ນັ້ນ. ໃຫ້ ກວດ ເບິ່ງ Bluetooth, ໃຫ້ NorthStar ໃກ້ໆ ແລະ ລອງ ອີກ.",
+    "scanAccessFailed": "Bluetooth scan ບໍ່ສາມາດເລີ່ມຕົ້ນໄດ້. ໃຫ້ ກວດ ເບິ່ງ Bluetooth ແລະ ລອງ ອີກ.",
+    "permissionDenied": "ການເຂົ້າເຖິງອຸປະກອນທີ່ຢູ່ໃກ້ໆຖືກປິດ. ອະນຸຍາດ ໃຫ້ Bluetooth ເຂົ້າ ເຖິງ ໃນ ການ ຕັ້ງ ຄ່າ, ແລ້ວ ລອງ ອີກ.",
+    "connectTimeout": "NorthStar ໃຊ້ ເວລາ ດົນ ເກີນ ໄປ ທີ່ ຈະ ຕິດ ຕໍ່ ຫາ ກັນ. ຍ້າຍມັນເຂົ້າໄປໃກ້ໆແລະລອງອີກ.",
+    "connectFailed": "ພວກ ເຮົາ ບໍ່ ສາມາດ ຕິດ ຕໍ່ ກັບ ມັນ NorthStar. ໃຫ້ ກວດ ເບິ່ງ ວ່າ ມັນ ຖືກ ชาร์จ ແລະ ຢູ່ ໃກ້ໆ, ແລ້ວ ໃຫ້ ລອງ ອີກ.",
+    "emptyTitle": "ຍັງບໍ່ທັນມີອຸປະກອນທີ່ຢູ່ໃກ້ໆ",
+    "emptyMessage": "ໃຫ້ NorthStar ແລະ ຢູ່ ໃກ້ ໂທລະສັບ ນີ້, ແລ້ວ scan ອີກ.",
+    "searchingMessage": "ຊອກ ຫາ ເຄື່ອງ NorthStar ຢູ່ ໃກ້ໆ..."
+  },
+  "home": {
+    "subtitle": "dashboard ຄູ່ຄວາມປອດໄພ",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ພ້ອມ ແລ້ວ",
+    "readyBody": "ສຽງ, ແຜນ ທີ່, ເຄື່ອງ ເອ້ ແລະ ຜູ້ ດູ ແລ ແມ່ນ ພຽງ ແຕ່ ເທື່ອ ດຽວ ເທົ່າ ນັ້ນ.",
+    "safetyCall": "ການ ເອີ້ນ ເລື່ອງ ຄວາມ ປອດ ໄພ",
+    "northStarDevice": "NorthStar",
+    "deviceConnected": "%{name} ຕິດຕໍ່ · %{battery}%",
+    "noDevice": "ບໍ່ມີອຸປະກອນຕິດຕໍ່ກັນ",
+    "manageDevice": "ຈັດການອຸປະກອນ",
+    "mode": "ແບບ ແຜນ",
+    "modes": {
+      "home": "ໜ້າຫຼັກ",
+      "guardian": "ຜູ້ປົກປ້ອງ",
+      "emergency": "ສຸກ ເສີນ"
+    }
+  },
+  "map": {
+    "finding": "ຊອກ ຫາ ສະຖານ ທີ່ ຂອງ ທ່ານ...",
+    "retry": "ສະຖານທີ່ລອງໃຫມ່",
+    "title": "ແຜນທີ່ຄວາມປອດໄພ",
+    "previewSubtitle": "Expo Go ທົບ ທວນ; Mapbox renders ໃນໂຄງສ້າງການພັດທະນາ.",
+    "preview": "ການທົບທວນແຜນທີ່",
+    "risk": "ຄວາມສ່ຽງ: %{risk} · Radius %{radius}m",
+    "refresh": "ຟື້ນຟູສະຖານທີ່",
+    "refreshing": "ຊອກ ຫາ ສະຖານ ທີ່...",
+    "updateFailed": "ພວກເຮົາບໍ່ສາມາດປັບປຸງສະຖານທີ່ຂອງທ່ານໄດ້. ກະລຸນາລອງອີກ.",
+    "notRequested": "ບໍ່ ໄດ້ ຂໍ ຮ້ອງ ໃຫ້ ເຂົ້າ ເຖິງ ສະຖານ ທີ່. ທ່ານສາມາດເປີດໄດ້ພາຍຫຼັງຈາກການຕັ້ງຄ່າ.",
+    "permissionOff": "ການ ເຂົ້າ ເຖິງ ສະຖານ ທີ່ ຖືກ ປິດ. ເປີດ ມັນ ໃນ ການ ຕັ້ງ ຄ່າ ເພື່ອ ວາງ ແຜນ ຄວາມ ປອດ ໄພ ໃຫ້ ຢູ່ ກາງ ຂອງ ທ່ານ.",
+    "timeout": "ສະຖານທີ່ຂອງເຈົ້າໃຊ້ເວລາດົນກວ່າທີ່ຄາດຫມາຍໄວ້. ຍ້າຍໄປຢູ່ບ່ອນໃດບ່ອນຫນຶ່ງທີ່ມີສັນຍານທີ່ແຈ່ມແຈ້ງກວ່າແລະລອງອີກ.",
+    "savedTitle": "ສະຖານທີ່ທີ່ເກັບໄວ້",
+    "savedEmptyTitle": "ຍັງ ບໍ່ ມີ ບ່ອນ ທີ່ ເກັບ ໄວ້",
+    "savedEmptyMessage": "ສະຖານທີ່ທີ່ໄວ້ໃຈໄດ້ທີ່ທ່ານເກັບໄວ້ຈະປາກົດຢູ່ທີ່ນີ້ເພື່ອເຂົ້າເຖິງໄດ້ໄວ.",
+    "zones": {
+      "crowding": "ຝູງ ຊົນ ໃນ ຕອນ ກາງຄືນ",
+      "lowLighting": "ບ່ອນ ທີ່ ມີ ແສງ ສະຫວ່າງ ຕ່ໍາ"
+    },
+    "risks": {
+      "low": "ຕ່ໍາ",
+      "medium": "ກາງ",
+      "high": "ສູງ"
+    }
+  },
+  "safetyCall": {
+    "connecting": "ການເຊື່ອມຕໍ່...",
+    "offlineCompanion": "ຄູ່ອິນເຕີເນັດ",
+    "offline": "ອອບລາຍ",
+    "connected": "ເຊື່ອມຕໍ່",
+    "interrupted": "ການເຊື່ອມຕໍ່ຖືກຂັດຂວາງ",
+    "ready": "ພ້ອມທີ່ຈະເຊື່ອມຕໍ່",
+    "connectingSecurely": "ການເຊື່ອມຕໍ່ຢ່າງປອດໄພກັບຄູ່ສຽງຂອງທ່ານ...",
+    "messagesWaiting": {
+      "one": "%{count} ທີ່ ລໍຖ້າ ສົ່ງ",
+      "other": "%{count} ຂ່າວສານ ທີ່ ລໍຖ້າ ສົ່ງ"
+    },
+    "useOffline": "ໃຊ້ຄູ່ອິນເຕີເນັດ",
+    "reconnect": "ຕິດ ຕໍ່ ກັບ ສຽງ AI",
+    "typePlaceholder": "ພິມ ຖ້າ ຫາກ ການ ເວົ້າ ຍາກ",
+    "endCall": "ຈົບ ການ ເອີ້ນ",
+    "startCall": "ເລີ່ມໂທລະສັບ",
+    "emptyTitle": "ການ ສົນທະນາ ຂອງ ທ່ານ ເລີ່ ມຕົ້ນ ຢູ່ ທີ່ ນີ້",
+    "emptyMessage": "ເລີ່ມໂທລະສັບຫຼືພິມຂໍ້ຄວາມເມື່ອເຈົ້າພ້ອມແລ້ວ."
+  },
+  "chat": {
+    "waiting": "ກໍາລັງລໍຖ້າການເຊື່ອມຕໍ່",
+    "notSent": "ບໍ່ ໄດ້ ສົ່ງ ຂ່າວສານ.",
+    "retryAccessibility": "ລອງສົ່ງຂໍ້ຄວາມອີກ"
+  },
+  "history": {
+    "clearTitle": "ປະຫວັດການສົນທະນາທີ່ແຈ່ມແຈ້ງບໍ?",
+    "clearMessage": "ສິ່ງ ນີ້ ຈະ ລຶບ ຂ່າວສານ ຄູ່ AI ທີ່ ໄດ້ ເກັບ ໄວ້ ຈາກ ອຸປະກອນ ນີ້.",
+    "deleteTitle": "ລຶບການສົນທະນານີ້ບໍ?",
+    "cannotUndo": "ສິ່ງ ນີ້ ບໍ່ ສາມາດ ແກ້ ໄຂ ໄດ້.",
+    "title": "ປະຫວັດການສົນທະນາ",
+    "subtitle": "AI ຂໍ້ ຄວາມ ຄູ່ ຄອງ ທີ່ ຖືກ ເກັບ ໄວ້ ໃນ ອຸ ປະ ກອນ ນີ້.",
+    "empty": "ຍັງ ບໍ່ ມີ ການ ສົນທະນາ ໃດ ຖືກ ເກັບ ໄວ້ ເທື່ອ.",
+    "emptyTitle": "ຍັງ ບໍ່ ມີ ການ ສົນທະນາ ເທື່ອ",
+    "emptyMessage": "ການ ສົນທະນາ AI ຂອງ ຄູ່ ຄອງ ຂອງ ທ່ານ ຈະ ປະກົດ ຢູ່ ທີ່ ນີ້ ຫລັງ ຈາກ ການ ເອີ້ນ ເທື່ອ ທໍາ ອິດ ຂອງ ທ່ານ.",
+    "loadFailed": "ພວກເຮົາບໍ່ສາມາດບັນທຶກປະຫວັດການສົນທະນາໄດ້. ກະລຸນາລອງອີກ.",
+    "clearFailed": "ພວກ ເຮົາ ບໍ່ ສາມາດ ແກ້ ໄຂ ປະຫວັດ ການ ສົນທະນາ ໄດ້. ກະລຸນາລອງອີກ.",
+    "deleteFailed": "ພວກ ເຮົາ ບໍ່ ສາມາດ ລຶບ ການ ສົນທະນາ ນັ້ນ. ກະລຸນາລອງອີກ.",
+    "aiCompanion": "AI ຄູ່ ຄອງ",
+    "resume": "ປະຫວັດສາດ",
+    "clearAll": "ລຶບລ້າງປະຫວັດສາດທັງຫມົດ",
+    "roles": {
+      "assistant": "ຄູ່ ຄອງ",
+      "user": "ເຈົ້າ"
+    }
+  },
+  "voices": {
+    "title": "ສຽງ ເອີ້ນ ຄວາມ ປອດ ໄພ ຂອງ ຂ້າ ພະ ເຈົ້າ",
+    "subtitle": "ເລືອກສຽງຄູ່ທີ່ຮູ້ສຶກວ່າຖືກຕ້ອງທີ່ຈະໄດ້ຍິນ.",
+    "test": "ທົດສອບສຽງ",
+    "stop": "ຢຸດຕົວຢ່າງ",
+    "selectionFailedTitle": "ບໍ່ໄດ້ບັນທຶກການເລືອກໄວ້",
+    "selectionFailedMessage": "ກະລຸນາລອງເລືອກສຽງອີກ.",
+    "sampleFailedTitle": "ຕົວຢ່າງບໍ່ມີ",
+    "sampleFailedMessage": "ຕົວຢ່າງສຽງນີ້ບໍ່ສາມາດຫຼິ້ນໄດ້. ກະລຸນາລອງອີກ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ອ່ອນ ໂຍນ, ສະຫງົບ, ພື້ນຖານ"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "ແຈ່ມ ໃສ, ໃຫ້ ຄວາມ ຫມັ້ນ ໃຈ, ເວົ້າລົມ ກັນ"
+      },
+      "boyfriend": {
+        "name": "ແຟນ",
+        "description": "ຫມັ້ນຄົງ, ຮັກໄຄ່, ປະຈຸ ບັນ"
+      },
+      "muscleMan": {
+        "name": "ກ້າມເນື້ອ",
+        "description": "ຫມັ້ນ ໃຈ, ປົກ ປ້ອງ, ກະ ຕຸ້ນ"
+      }
+    }
+  },
+  "settings": {
+    "voice": "ສຽງ",
+    "changeVoice": "ປ່ຽນ ສຽງ",
+    "showCompanion": "ສະ ແດງ ຄູ່ ຄອງ",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "ໃຊ້ການຕອບສະຫນອງຄູ່ຄອງທີ່ລວມກັນເມື່ອບໍ່ມີຂໍ້ມູນໃນເຄືອຂ່າຍ ຫຼື Hume.",
+    "privacyData": "ຄວາມເປັນສ່ວນຕົວ ແລະ ຂໍ້ມູນ",
+    "privacyBody": "ສົ່ງອອກຫຼືລຶບຂໍ້ມູນໃນທ້ອງຖິ່ນທີ່ເກັບໄວ້ໃນອຸປະກອນນີ້.",
+    "preparingExport": "ກໍາລັງກຽມການສົ່ງອອກ...",
+    "exportData": "ສົ່ງອອກຂໍ້ມູນຂອງຂ້ອຍ",
+    "privacyPolicy": "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
+    "deleting": "ກໍາລັງລຶບ...",
+    "deleteAll": "ລຶບຂໍ້ມູນໃນທ້ອງຖິ່ນທັງຫມົດ",
+    "deviceManagement": "ການຈັດສັນອຸປະກອນ",
+    "emergencyContacts": "ການ ຕິດ ຕໍ່ ສຸກ ເສີນ",
+    "signOut": "ອອກຊື່",
+    "exportFailedTitle": "ສົ່ງອອກບໍ່ສໍາເລັດ",
+    "exportFailedMessage": "ບໍ່ສາມາດສົ່ງອອກຂໍ້ມູນຂອງທ່ານໃນຕອນນີ້.",
+    "deleteConfirmTitle": "ລຶບຂໍ້ມູນໃນທ້ອງຖິ່ນທັງຫມົດ?",
+    "deleteConfirmMessage": "ສິ່ງນີ້ຈະລຶບຂໍ້ມູນ, ການຕັ້ງຄ່າ, ການຕິດຕໍ່ສຸກເສີນ, ປະຫວັດການສົນທະນາ, ການເຕືອນການອະນຸຍາດ ແລະ ພາກ auth ໃນທ້ອງຖິ່ນຂອງເຈົ້າຈາກອຸປະກອນນີ້.",
+    "deleteEverything": "ລຶບທຸກສິ່ງ",
+    "deleteFailedTitle": "ການລຶບບໍ່ສໍາເລັດ",
+    "deleteFailedMessage": "ບໍ່ສາມາດລຶບຂໍ້ມູນໃນທ້ອງຖິ່ນໄດ້ໃນຕອນນີ້.",
+    "linkFailed": "ບໍ່ສາມາດເປີດລິ້ງ",
+    "sections": {
+      "language": "ພາສາ",
+      "languageSubtitle": "ພາສາອະນຸຍາດຂອງລະບົບ ແລະ ລະບົບ",
+      "companion": "ຄູ່ ຄອງ",
+      "companionSubtitle": "ປັບແຕ່ງສຽງແລະອິນເຕີເນັດ",
+      "deviceSafety": "ອຸປະກອນ ແລະ ຄວາມ ປອດ ໄພ",
+      "deviceSafetySubtitle": "NorthStar, ຜູ້ດູແລ ແລະ ຜູ້ຕິດຕໍ່ສຸກເສີນ",
+      "privacy": "ຄວາມເປັນສ່ວນຕົວແລະຂໍ້ມູນ",
+      "privacySubtitle": "ປະຫວັດສາດ, ການສົ່ງອອກ, ການລຶບ, ແລະ ນະໂຍບາຍ",
+      "account": "ບັນຊີ",
+      "accountSubtitle": "ພາກ VeryLoving ໃນ ປະຈຸ ບັນ ຂອງ ທ່ານ"
+    },
+    "updateFailedTitle": "ບໍ່ໄດ້ບັນທຶກການຕັ້ງຄ່າ",
+    "updateFailedMessage": "ພວກ ເຮົາ ບໍ່ ສາມາດ ຮັກສາ ຄວາມ ເລືອກ ນັ້ນ ໄວ້. ກະລຸນາລອງອີກ.",
+    "signOutFailedTitle": "ບໍ່ສາມາດ sign out",
+    "signOutFailedMessage": "ພາກ ຂອງ ທ່ານ ຍັງ ດໍາ ເນີນ ຢູ່. ກະລຸນາລອງອີກ."
+  },
+  "contacts": {
+    "title": "ການ ຕິດ ຕໍ່ ສຸກ ເສີນ",
+    "subtitle": "ຜູ້ຄົນທີ່ໄວ້ວາງໃຈໄດ້ໃນລະຫວ່າງການຫລັ່ງໄຫລຂອງຄວາມປອດໄພ.",
+    "addTitle": "ເພີ່ມການຕິດຕໍ່ສຸກເສີນ",
+    "name": "ຊື່",
+    "namePlaceholder": "ຊື່ຕິດຕໍ່",
+    "phone": "ເບີໂທລະສັບຕິດຕໍ່",
+    "add": "ເພີ່ມການຕິດຕໍ່",
+    "empty": "ຍັງ ບໍ່ ມີ ການ ຕິດ ຕໍ່ ສຸກ ເສີນ ຕື່ມ ອີກ.",
+    "emptyTitle": "ຍັງ ບໍ່ ມີ ການ ຕິດ ຕໍ່ ສຸກ ເສີນ ເທື່ອ",
+    "emptyMessage": "ຕື່ມ ຄົນ ທີ່ ທ່ານ ໄວ້ ວາງ ໃຈ ເພື່ອ ວ່າ ເຂົາ ເຈົ້າ ຈະ ພ້ອມ ເມື່ອ ຂະ ບວນການ ຄວາມ ປອດ ໄພ ຕ້ອງການ ເຂົາ ເຈົ້າ.",
+    "removeTitle": "ລຶບ %{name}?",
+    "removeMessage": "ຄົນນີ້ຈະບໍ່ປາກົດໃນຂັ້ນຕອນສຸກເສີນຂອງເຈົ້າອີກຕໍ່ໄປ.",
+    "nameRequired": "ກະລຸນາຊື່ຜູ້ຕິດຕໍ່.",
+    "saveFailedTitle": "ບໍ່ໄດ້ບັນທຶກການຕິດຕໍ່",
+    "saveFailedMessage": "ພວກ ເຮົາ ບໍ່ ສາມາດ ເກັບ ການ ຕິດ ຕໍ່ ນີ້ ໄວ້. ໃຫ້ກວດເບິ່ງລາຍລະອຽດແລະລອງອີກ.",
+    "removeFailedTitle": "ການຕິດຕໍ່ບໍ່ໄດ້ຖືກລຶບອອກ",
+    "removeFailedMessage": "ພວກ ເຮົາ ບໍ່ ສາມາດ ລຶບ ການ ຕິດ ຕໍ່ ນີ້ ໄດ້. ກະລຸນາລອງອີກ.",
+    "callAccessibility": "ໂທ ຫາ %{name}",
+    "removeAccessibility": "ຖອດຖອນ %{name}"
+  },
+  "device": {
+    "title": "ການຈັດສັນອຸປະກອນ",
+    "subtitle": "ຈັດ ການ ກັບ ເຄື່ອງ ມື NorthStar ຂອງ ທ່ານ.",
+    "connected": "ເຊື່ອມຕໍ່ · %{battery}% ຂອງแบตเตอรี่",
+    "none": "ບໍ່ມີອຸປະກອນຕິດຕໍ່ພົວພັນ",
+    "disconnect": "ປິດອຸປະກອນ",
+    "connect": "ເຊື່ອມຕໍ່ອຸປະກອນ"
+  },
+  "friends": {
+    "title": "ຫມູ່ ເພື່ອນ",
+    "subtitle": "ຜູ້ ດູ ແລ, ຄໍາ ຂໍ ຮ້ອງ ແລະ ຮູບ ພາບ ສຸກ ເສີນ.",
+    "addDemo": "ເພີ່ມຫມູ່ສາທິດ",
+    "emptyTitle": "ວົງ ກົມ ຄວາມ ປອດ ໄພ ຂອງ ທ່ານ ວ່າງ ເປົ່າ",
+    "emptyMessage": "ຫມູ່ ເພື່ອນ ແລະ ຜູ້ ດູ ແລ ທີ່ ໄວ້ ວາງ ໃຈ ໄດ້ ຈະ ມາ ປະກົດ ຢູ່ ທີ່ ນີ້ ເມື່ອ ເຂົາ ເຈົ້າ ຖືກ ເພີ່ມ ເຕີມ.",
+    "newGuardian": "ຜູ້ ປົກ ປ້ອງ ຄົນ ໃຫມ່",
+    "statuses": {
+      "guardian": "ຜູ້ປົກປ້ອງ",
+      "pending": "ລໍຖ້າ"
+    }
+  },
+  "emergency": {
+    "title": "ການ SOS ສຸກ ເສີນ",
+    "subtitle": "ຍົກລະດັບເມື່ອເຈົ້າຕ້ອງການການສະຫນັບສະຫນູນທັນທີເທົ່ານັ້ນ.",
+    "body": "ສິ່ງນີ້ຈະແຈ້ງໃຫ້ຮູ້ກ່ຽວກັບຄວາມປອດໄພຂອງເຈົ້າແລະຕຽມຜູ້ຕິດຕໍ່ສຸກເສີນ.",
+    "activate": "ເປີດ SOS",
+    "callCompanion": "ໂທ ຫາ ຄູ່ AI",
+    "notificationTitle": "SOS ເປີດ",
+    "notificationBody": "ຂະບວນການສຸກເສີນຂອງທ່ານພ້ອມແລ້ວ.",
+    "readyTitle": "SOS ພ້ອມ ແລ້ວ",
+    "callContact": "ໂທ ຫາ %{name}?",
+    "addContact": "ເພີ່ມຜູ້ຕິດຕໍ່ສຸກເສີນໃນຕັ້ງຄ່າ.",
+    "quickShareTitle": "ແບ່ງປັນໄວໆ",
+    "quickShareMessage": "stub ການແບ່ງປັນສະຖານທີ່ພ້ອມແລ້ວ. ເຊື່ອມຕໍ່ຈຸດສຸດທ້າຍຂອງການແບ່ງປັນທາງຫຼັງເພື່ອສົ່ງການເຊື່ອມຕໍ່."
+  },
+  "quickShare": {
+    "title": "ແບ່ງປັນໄວໆ",
+    "subtitle": "ການແບ່ງປັນສະຖານທີ່ພ້ອມແລ້ວ."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "ໃຫ້ ແຕະ ສອງ ເທື່ອ NorthStar ຂອງ ທ່ານ ເພື່ອ ວາງ ຫມາກກ້ຽງ ທີ່ ປອດ ໄພ.",
+    "body": "ເສັ້ນທາງທ່າທາງພ້ອມແລ້ວສໍາລັບການເຊື່ອມໂຍງເຫດການຂອງ BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "ເສັ້ນທາງພັດທະນາເທົ່ານັ້ນ."
+  },
+  "errors": {
+    "voiceOffline": "ທ່ານ ເບິ່ງ ຄື ວ່າ ຢູ່ ນອກ ອິນ ເຕີ ແນັດ. ຂ່າວສານ ຂອງ ທ່ານ ຈະ ຖືກ ສົ່ງ ໄປ ເມື່ອ ທ່ານ ຕິດ ຕໍ່ ຫາ ກັນ.",
+    "voiceQueued": "ຂ່າວສານທີ່ເກັບໄວ້. ມັນ ຈະ ຖືກ ສົ່ງ ໄປ ເມື່ອ ຄູ່ ສຽງ ຕິດ ຕໍ່ ອີກ.",
+    "voiceRetrying": "ພະຍາຍາມ ສົ່ງ ຂ່າວສານ ຂອງ ທ່ານ ອີກ...",
+    "voiceConnecting": "ການເຊື່ອມຕໍ່ຢ່າງປອດໄພກັບຄູ່ສຽງຂອງທ່ານ...",
+    "microphone": "ຈໍາເປັນຕ້ອງມີໄມໂກນສໍາລັບການໂທລະສັບສຽງ. ທ່ານສາມາດເປີດມັນໄດ້ໃນການຕັ້ງຄ່າ, ຫຼືພິມຂໍ້ຄວາມແທນ.",
+    "billing": "ຄູ່ ສຽງ ທາງ ອິນ ເຕີ ແນັດ ບໍ່ ສາມາດ ໃຊ້ ໄດ້ ຊົ່ວຄາວ. ທ່ານ ສາ ມາດ ດໍາ ເນີນ ຕໍ່ ໄປ ກັບ ຄູ່ ຄອງ offline .",
+    "authentication": "ຄູ່ ສຽງ ບໍ່ ສາມາດ ຢືນຢັນ ພາກ ນີ້ ໄດ້. ໃຫ້ ລົງ ຊື່ ອີກ ຫລື ໃຊ້ ຄູ່ ຄອງ offline ໃນ ຕອນ ນີ້.",
+    "timeout": "ຄູ່ ສຽງ ໄດ້ ໃຊ້ ເວລາ ດົນ ເກີນ ໄປ ທີ່ ຈະ ຕອບ. ໃຫ້ກວດເບິ່ງການເຊື່ອມຕໍ່ຂອງເຈົ້າແລະລອງອີກ.",
+    "network": "ພວກ ເຮົາ ບໍ່ ສາມາດ ຕິດ ຕໍ່ ຫາ ຄູ່ ສຽງ ນັ້ນ. ໃຫ້ກວດເບິ່ງການເຊື່ອມຕໍ່ຂອງເຈົ້າ, ແລ້ວລອງອີກເທື່ອຫນຶ່ງຫຼືດໍາເນີນຕໍ່ໄປ offline.",
+    "genericVoice": "ມີ ບາງ ສິ່ງ ຂັດ ຂວາງ ການ ເອີ້ນ ສຽງ. ລອງອີກຄັ້ງຫນຶ່ງ, ຫຼືດໍາເນີນຕໍ່ໄປກັບຄູ່ຄອງ offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ການສົ່ງອອກຂໍ້ມູນ"
+  },
+  "notifications": {
+    "channelName": "ຄໍາເຕືອນເລື່ອງຄວາມປອດໄພ"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ຕ້ອງການ ໄມ ໂກ ເພື່ອ ຄວາມ ປອດ ໄພ ແລະ AI ການ ເອີ້ນ ຂອງ ຄູ່ ຄອງ.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ສໍາລັບ ແຜນ ທີ່ ຄວາມ ປອດ ໄພ ແລະ ລັກສະນະ ຄວາມ ປອດ ໄພ ທີ່ຢູ່ ໃກ້ໆ.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ເພື່ອ ສົ່ງ ເສີມ ການ ເດີນທາງ ໄປ ເຖິງ ແລະ ສຸກ ເສີນ.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ໃຊ້ສະຖານທີ່ພູມຫຼັງສໍາລັບລັກສະນະທີ່ປອດໄພແລະເຂດອັນຕະລາຍທີ່ຢູ່ໃກ້ໆ.",
+      "NSCameraUsageDescription": "VeryLoving ໃຊ້ ກ້ອງຖ່າຍຮູບ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ທີ່ ຈະ ຖ່າຍ ຮູບ ຫລື ຮູບ ພາບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ໃຊ້ ຫໍ ສະ ຫມຸດ ຮູບ ຂອງ ທ່ານ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ຮູບ ພາບ ຫລື ຮູບ ພາບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

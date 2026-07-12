@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Yokk",
+    "apple": "Apple",
+    "back": "Dellu",
+    "call": "Woo",
+    "cancel": "Fómm",
+    "clear": "Leer",
+    "close": "Tëj",
+    "connect": "Lëkkaloo",
+    "connecting": "Jokko...",
+    "continue": "Wéyal",
+    "delete": "Fàcc",
+    "finish": "Jeexal",
+    "friends": "Xarit",
+    "google": "Google",
+    "home": "Kër",
+    "loading": "Di yobbu...",
+    "map": "Kart",
+    "notNow": "Du leegi",
+    "remove": "Dindi",
+    "retry": "Jéemaat",
+    "retrying": "Jéemaat",
+    "save": "Sanc",
+    "selected": "Tann",
+    "send": "Yonnee",
+    "settings": "Jekkal",
+    "skip": "Tàll",
+    "skipForNow": "Teg leegi",
+    "skipTutorial": "Sàll jàngalekaay bi",
+    "sos": "SOS",
+    "unknown": "Xamu ñu",
+    "user": "VeryLoving jëfandikukat",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Làkk",
+    "subtitle": "Tannal làkk wi ngay jëfandikoo ci aplikaasioŋ bi yépp.",
+    "system": "Sistem biñ jagleel",
+    "search": "Seetlu làkk yi",
+    "noResults": "Amul làkk bu méngoo ak li nga seet.",
+    "english": "Anglais",
+    "spanish": "Españool",
+    "french": "français",
+    "chineseSimplified": "Chinois (bu yomb)"
+  },
+  "phone": {
+    "label": "Nimero telefon",
+    "placeholder": "Nimero telefon",
+    "selectCountry": "Tànn réew wala gox",
+    "searchCountry": "Seetal réew, kod, wala prefiksu woote",
+    "noCountries": "Amul réew bu méngoo ak li nga seet.",
+    "countryButton": "Soppi réew, leegi %{country} yokk %{callingCode}",
+    "inputAccessibility": "Nimero telefon ngir %{country}",
+    "required": "Bindal nimero telefon.",
+    "tooShort": "Nimero telefon bii dafa gàtt lool.",
+    "tooLong": "Nimero telefon bi gudd na lool.",
+    "invalid": "Bindal nimero telefon bu baax ci réew mi nga tànn.",
+    "valid": "Nimero telefon internasional bu baax"
+  },
+  "auth": {
+    "onboardingTagline": "A àndado kaaraange bopp ci diggante \"maa ngi ci jàmm\" ak \"dama soxla ndimbal.\"",
+    "createAccount": "Sosal kontu",
+    "continueOnboarding": "Wéyal ak dugg",
+    "createSubtitle": "Tannal nu ngay duggee ngir mëna aar sa graf kaaraange.",
+    "phoneVerification": "Sàmm telefon",
+    "sendCode": "Yonne kode",
+    "sendingCode": "Kodu yónnee...",
+    "verifyCode": "Xam kodu",
+    "sentTo": "Yonne ci %{phone}",
+    "yourPhone": "sa telefon",
+    "verificationCode": "Kodu firnde",
+    "verify": "Xam",
+    "verifying": "Xam...",
+    "invalidCode": "Dugalal kodu firnde.",
+    "signInFailedTitle": "Dugg bi dafa dakkal",
+    "signInFailedMessage": "Mënu nu matt dugg. Saytu sa lëkkaloo te jéemaat.",
+    "googleUnavailableTitle": "Google Duggal mënul am",
+    "googleUnavailableMessage": "Jëfandikoo sesioŋu yokkute ci dëkk bi. Native Google Sign-In dafay dox ci defarum yokkute.",
+    "northStarTitle": "NorthStar takkaay",
+    "northStarSubtitle": "Pair leegi wala nga wéyal nga yokk ko ëllëg.",
+    "northStarBody": "Warable VL01 bi mën na def ay robinet ak ay yëngu tëye yu yàgg.",
+    "setupJewelry": "Defar takkaay yi",
+    "meetCapybear": "Daje ak Capybear",
+    "meetCapybearSubtitle": "Sa àndado kaaraange bu woyof ci kaw kàrt bi ak ci woote yi.",
+    "capybearBody": "Capybear mën na jàppale ci mode kër, mode gardien, mode urgence, woote ngir jéggalu, ak ndimbalu baat.",
+    "chooseVoice": "Tannal benn baat",
+    "capybearReminder": "Capybear fàttaliku",
+    "remindersReady": "Fàttaliku yu woyof yi pare nañu."
+  },
+  "permissions": {
+    "locationTitle": "Kaaraange barab",
+    "locationSubtitle": "Dañu koy jëfandikoo ngir kàrt, barabi fitna, yegsi bu wóor, ak SOS muy tekki.",
+    "locationBody": "VeryLoving dafay laaj barab bi suko defee waajur yi xam fumu soxla ndimbal. Mën nga ko soppi ci Jekkal yi.",
+    "allowLocation": "Nangu barab",
+    "notificationsTitle": "Àrtu kaaraange",
+    "notificationsSubtitle": "Yégle yi dañuy jàppale dugg yi ak xew-xew yu jamp yi.",
+    "notificationsBody": "Dunu jëfandikoo yëgle yi ci wàllu kaaraange, yeesali jafe-jafe yi ak fàttalikaay yi nga amaale.",
+    "enableNotifications": "Aktiwise yëgle yi",
+    "locationRationaleTitle": "Bërëb bi dafay tëye mbir yi ci wàllu kaaraange",
+    "locationRationaleMessage": "VeryLoving dafay jëfandikoo sa barab ngir kàrtu kaaraange, barabi loraange, séddoo bu gaaw, ak SOS muy tekki. Mën nga ko soppi ci Jekkal yi.",
+    "notificationsRationaleTitle": "Àrtu kaaraange yi dañu soxla yëgle",
+    "notificationsRationaleMessage": "VeryLoving dafay yónnee ay fàttaliku dugg, yeesali paj mu jamp, ak digal kaaraange yi nga amalee. Jëfandiku wunu yëgle ngir yëgle.",
+    "microphoneRationaleTitle": "Mikro mooy doxal wooteb kaaraange",
+    "microphoneRationaleMessage": "VeryLoving du jëfandikoo sa mikro sudee danga tàmbali AI woote àndadoo wala wooteb kaaraange.",
+    "bluetoothRationaleTitle": "Bluetooth dafay boole sa wearable",
+    "bluetoothRationaleMessage": "VeryLoving dafay jëfandikoo Bluetooth ngir boole ak takkaay NorthStar, jàng tolluwaayu lëkkaloo bi, ak def kaaraange ci wearable bi.",
+    "cameraRationaleTitle": "Kamera bi mënul ñàkk",
+    "cameraRationaleMessage": "VeryLoving du jëfandikoo kameraa bi sudee danga tànn jël nataalu profil wala nga séddoo nataalu kaaraange."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving dafay tëye flow bi ci Jekkal yi ak ci tablo bi.",
+    "chooseVoiceTitle": "Tànnal sa baat",
+    "chooseVoiceSubtitle": "Tannal baat bi gëna neex dégg.",
+    "homeTitle": "modu kër",
+    "homeSubtitle": "Xool bu dal ngir kaaraange bis bu nekk.",
+    "guardianTitle": "Modu gardien",
+    "guardianSubtitle": "Séddoo contexte ak nit ñi nga wóolu.",
+    "emergencyTitle": "Mode d'urgence",
+    "emergencySubtitle": "Juroomi robinet mën nañu yokk ba SOS ak àrtu gardien.",
+    "excuseTitle": "Jéggalu woote",
+    "excuseSubtitle": "Sosal sabab bu baax ngir bàyyi jafe-jafe bu la neexul.",
+    "safetyCallTitle": "Wootu kaaraange",
+    "safetyCallSubtitle": "Tàmbalil woote àndadoo ci saasi soo soxlaa ndimbal.",
+    "practiceTitle": "Scene de pratique",
+    "practiceSubtitle": "Jéemal def kaaraange ci demo bu am pressure bu woyof."
+  },
+  "jewelry": {
+    "pairTitle": "ñaar NorthStar",
+    "pairSubtitle": "Denc takkaay yi ci sa wet balaa ngay skane.",
+    "scan": "Scan ngir gis aparey yi",
+    "scanning": "Scanning ci wetu...",
+    "noDevices": "Gisu ñu benn aparey NorthStar bu jege.",
+    "scanStartFailed": "Bluetooth skane bi mënu tàmbali. Jéemaat.",
+    "scanFailed": "Mënu nu gis takkaay yu jege. Saytu Bluetooth, nga tëye NorthStar, nga jéemaat.",
+    "scanAccessFailed": "Bluetooth skane bi mënatul tàmbali. Saytu Bluetooth access te nga jéemaat.",
+    "permissionDenied": "Accesu aparey bi gëna jege defa dee. May Bluetooth dugg ci Jekkal yi, ba noppi jéemaat.",
+    "connectTimeout": "NorthStar yàgg na lool ngir boole. Jegeel ko nga jéemaat.",
+    "connectFailed": "Mënu nu jëflante ak NorthStar. Saytu ndax sarse na te jege na, nga jéemaat.",
+    "emptyTitle": "Amul benn aparey bu jege",
+    "emptyMessage": "Deel NorthStar sarse te jege telefon bi, ba noppi nga skanewaat.",
+    "searchingMessage": "Seetlu NorthStar aparey yu jege..."
+  },
+  "home": {
+    "subtitle": "Tablo àndado kaaraange",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} pare na",
+    "readyBody": "Baat bi, kàrt bi, takkaay yi ak gardien yi nekk nañu ci benn robinet.",
+    "safetyCall": "Wootu kaaraange",
+    "northStarDevice": "NorthStar aparey",
+    "deviceConnected": "%{name} lëkkaloo · %{battery}%",
+    "noDevice": "Amul benn aparey buñ boole",
+    "manageDevice": "Saytu aparey",
+    "mode": "mode",
+    "modes": {
+      "home": "Kër",
+      "guardian": "Gardien",
+      "emergency": "Jafe-jafe"
+    }
+  },
+  "map": {
+    "finding": "Gis sa barab...",
+    "retry": "Jéemaat barab bi",
+    "title": "Kartu kaaraange",
+    "previewSubtitle": "Expo Go xoolaat; Mapbox dafay joxe ci defar defar.",
+    "preview": "Xool kàrt",
+    "risk": "Risk: %{risk} · Rayon %{radius}m",
+    "refresh": "Yeesal barab bi",
+    "refreshing": "Seet barab...",
+    "updateFailed": "Mënu nu yeesal sa barab. Jéemaat.",
+    "notRequested": "Laaj wuñu woon gis barab bi. Mën nga ko mëna tàmbali ci Jekkal yi.",
+    "permissionOff": "Access ci barab bi dellu na. Aktiwiseel ko ci Jekkal ngir mu nekk ci diggu kàrtu kaaraange gi ci sa kaw.",
+    "timeout": "Sa barab mingi jël lu ëpp li nga yaakaaroon. Demal ci barab bu siñaal bi gëna leer nga jéemaat.",
+    "savedTitle": "Barab yiñ denc",
+    "savedEmptyTitle": "amul barab yuñ denc",
+    "savedEmptyMessage": "Barab yi nga wóolu yi nga denc dina ñu feeñ fii ngir gaaw ci jëfandikoo.",
+    "zones": {
+      "crowding": "Guddi gu bari",
+      "lowLighting": "Barab bu am leeraay bu néew"
+    },
+    "risks": {
+      "low": "ci suuf",
+      "medium": "digg",
+      "high": "kawe"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Jokko...",
+    "offlineCompanion": "àndado bu nekkul ci net bi",
+    "offline": "Du ci net bi",
+    "connected": "Lëkkaloo",
+    "interrupted": "Lëkkaloo gi dafa dagg",
+    "ready": "Mën nañu boole",
+    "connectingSecurely": "Jokko bu wóor ak sa àndado baat...",
+    "messagesWaiting": {
+      "one": "%{count} bataaxal biy xaar ñu yónnee ko",
+      "other": "%{count} bataaxal yiy xaar ñu yónnee"
+    },
+    "useOffline": "Jëfandikool àndadoo bu nekkul ci net bi",
+    "reconnect": "Jokkowaat ak baat AI",
+    "typePlaceholder": "Bindal sudee wax dafa metti",
+    "endCall": "Jeexal woote",
+    "startCall": "Tàmbali woote",
+    "emptyTitle": "Sa waxtaan mingi tàmbali fii",
+    "emptyMessage": "Tàmbali woote bi wala nga bind mesaas soo noppee."
+  },
+  "chat": {
+    "waiting": "Xaar lëkkaloo",
+    "notSent": "Mesaas bi yónnee wuñu ko.",
+    "retryAccessibility": "Jéemaat yónnee mesaas bi"
+  },
+  "history": {
+    "clearTitle": "Fàcce jaar-jaaru waxtaan?",
+    "clearMessage": "Lii dafay dindi AI mesaas yiñ denc ci aparey bii.",
+    "deleteTitle": "Fàcce waxtaan wii?",
+    "cannotUndo": "Mënu ñu delloo lii.",
+    "title": "Taarixu waxtaan",
+    "subtitle": "AI mesaas àndadoo yiñ denc ci aparey bii.",
+    "empty": "Amul benn waxtaan buñ denc.",
+    "emptyTitle": "amul waxtaan",
+    "emptyMessage": "Sa AI waxtaan àndadoo dina feeñ fii ginaaw sa woote bu njëkk.",
+    "loadFailed": "Mënu nu jël jaar-jaaru waxtaan. Jéemaat.",
+    "clearFailed": "Mënu nu fomp jaar-jaaru waxtaan. Jéemaat.",
+    "deleteFailed": "Mënu nu efaase waxtaan woowu. Jéemaat.",
+    "aiCompanion": "AI wéttal",
+    "resume": "Dellu",
+    "clearAll": "Far jaar-jaar yépp",
+    "roles": {
+      "assistant": "àndado",
+      "user": "yaw"
+    }
+  },
+  "voices": {
+    "title": "Sama baat wooteb kaaraange",
+    "subtitle": "Tannal baat bi la neex dégg.",
+    "test": "Baatu test",
+    "stop": "Dakkal misaal bi",
+    "selectionFailedTitle": "Tànneef bi denc wuñu ko",
+    "selectionFailedMessage": "Jéemal tànnaat baat bi.",
+    "sampleFailedTitle": "Misal bi amul",
+    "sampleFailedMessage": "Mënu ñu déglu misaalu baat bii. Jéemaat.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "yomb, tekkaaral, suuf"
+      },
+      "bestie": {
+        "name": "Sama xarit",
+        "description": "leer, féexal xol, waxtaan"
+      },
+      "boyfriend": {
+        "name": "Sa xarit",
+        "description": "dax, bëgg, nekk"
+      },
+      "muscleMan": {
+        "name": "Ku sidit",
+        "description": "gëm sa bopp, aar, ñaax"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Baat",
+    "changeVoice": "Soppi baat",
+    "showCompanion": "Wone àndado",
+    "offlineMode": "mode offline",
+    "offlineModeSubtitle": "Jëfandikool tontu àndado yuñ boole sudee reso bi wala Hume gëm-gëm yi amul.",
+    "privacyData": "Sàmm & done",
+    "privacyBody": "Export wala efaase done yiñ denc ci aparey bii.",
+    "preparingExport": "Waajal yóbbu ci biti...",
+    "exportData": "Jëlal samay done",
+    "privacyPolicy": "Politigu nëbbëtu",
+    "deleting": "Efaase...",
+    "deleteAll": "Fàcc bépp done bu dëkk bi",
+    "deviceManagement": "Njëfandikoo aparey",
+    "emergencyContacts": "Jokkoo ci jafe-jafe",
+    "signOut": "Génn",
+    "exportFailedTitle": "Export mënatul",
+    "exportFailedMessage": "Mënu ñu yóbbu say done ci biti leegi.",
+    "deleteConfirmTitle": "Fàcce bépp done bu dëkk bi?",
+    "deleteConfirmMessage": "Lii dina dindi sa profil, jekkal yi, jokkolante yi ci jafe-jafe yi, jaar-jaaru waxtaan yi, fàttaliku ndigal yi, ak sesioŋ auth local ci aparey bii.",
+    "deleteEverything": "Fàcc lépp",
+    "deleteFailedTitle": "Fàcce bi sottiwul",
+    "deleteFailedMessage": "Mënu ñu efaase done yi ci dëkk bi leegi.",
+    "linkFailed": "Mënu ubbi lëkkalekaay bi",
+    "sections": {
+      "language": "Làkk",
+      "languageSubtitle": "Interface bi ak làkku ndigalu sistem bi",
+      "companion": "àndado",
+      "companionSubtitle": "Taamu baat ak offline",
+      "deviceSafety": "Aparey ak kaaraange",
+      "deviceSafetySubtitle": "NorthStar, tutekat yi, ak ñi ñuy jokkoo ak jafe-jafe yi",
+      "privacy": "Njaboot ak done",
+      "privacySubtitle": "Taarix, yóbbu, efaase ak sàrt",
+      "account": "Kontu",
+      "accountSubtitle": "Sa sesioŋ VeryLoving bi fi nekk"
+    },
+    "updateFailedTitle": "paramet bi denc wuñu ko",
+    "updateFailedMessage": "Mënu nu denc tànneef boobu. Jéemaat.",
+    "signOutFailedTitle": "Mënu ma genn",
+    "signOutFailedMessage": "Sa sesioŋ baa ngi dox. Jéemaat."
+  },
+  "contacts": {
+    "title": "Jokkoo ci jafe-jafe",
+    "subtitle": "nit ñu wóor ñu ngi jàppandi ci jamonoy kaaraange.",
+    "addTitle": "Yokk jokkolante urgent",
+    "name": "Tur",
+    "namePlaceholder": "Turu jokkookat bi",
+    "phone": "Nimero telefon bi ngay jokkoo",
+    "add": "Yokk jokkolante",
+    "empty": "Yokkagul benn jokkookatu paj mu jamp.",
+    "emptyTitle": "Amul ay jokkookatu paj mu jamp",
+    "emptyMessage": "Yokk ci kenn ku nga wóolu suko defee ñu mëna jàppale suñu ko soxlaa.",
+    "removeTitle": "Dindi %{name}?",
+    "removeMessage": "Nit kii du feeñati ci sa flow d'urgence.",
+    "nameRequired": "Bindal tur jokkookat bi.",
+    "saveFailedTitle": "Jokkoo bi dencul",
+    "saveFailedMessage": "Mënu nu denc jokkoo bii. Saytu leeral yi nga jéemaat.",
+    "removeFailedTitle": "Jokkoo bi dindi wuñu ko",
+    "removeFailedMessage": "Mënu nu dindi jokkolante bii. Jéemaat.",
+    "callAccessibility": "Woo %{name}",
+    "removeAccessibility": "Dindi %{name}"
+  },
+  "device": {
+    "title": "Njëfandikoo aparey",
+    "subtitle": "Saytu sa aparey NorthStar.",
+    "connected": "Konekti · %{battery}% batëri",
+    "none": "Amul benn aparey buñ boole",
+    "disconnect": "Debrancher aparey",
+    "connect": "Lëkkaloo aparey"
+  },
+  "friends": {
+    "title": "Xarit",
+    "subtitle": "Gardien yi, laaj yi ak graf urgent yi.",
+    "addDemo": "Yokk xarit demo",
+    "emptyTitle": "Sa wërgalu kaaraange amul dara",
+    "emptyMessage": "Xarit ak tutekat yi nga wóolu dina ñu feeñ fii suñu leen boolee.",
+    "newGuardian": "Gardien bu bees",
+    "statuses": {
+      "guardian": "Gardien",
+      "pending": "di xaar"
+    }
+  },
+  "emergency": {
+    "title": "Jafe-jafe SOS",
+    "subtitle": "Escalate rek soo soxlaa ndimbal ci saasi.",
+    "body": "Lii dina yëgal sa kaaraange ak waajal jokkool ak jafe-jafe.",
+    "activate": "Def SOS",
+    "callCompanion": "Woowal AI àndado",
+    "notificationTitle": "SOS tàmbali",
+    "notificationBody": "Sa flow d'urgence pare na.",
+    "readyTitle": "SOS pare",
+    "callContact": "Woo %{name}?",
+    "addContact": "Yokk ab jokkookaay bu jamp ci Jekkal yi.",
+    "quickShareTitle": "Séddoo bu gaaw",
+    "quickShareMessage": "Stub biy séddoo barab bi pare na. Keppal backend biy séddoo point bi ngir yónnee lëkkalekaay yi ci saasi."
+  },
+  "quickShare": {
+    "title": "Séddoo bu gaaw",
+    "subtitle": "Barab bi ñuy séddoo pare na."
+  },
+  "capybearTap": {
+    "title": "Capybear robinet",
+    "subtitle": "Bësal ñaari yoon sa NorthStar ngir daaneel benn oraas bu wóor.",
+    "body": "yoon gesture pare na ngir BLE xew-xewu kablage."
+  },
+  "debug": {
+    "title": "VeryLoving xëtu debug",
+    "subtitle": "Yoonu yokkute kese."
+  },
+  "errors": {
+    "voiceOffline": "Danga melni nekkoo ci net bi. Dina nu yónnee sa mesaas soo delloo ci lëkkaloo.",
+    "voiceQueued": "Mesaas biñ denc. Dina ñu ko yónnee su àndado baat bi lëkkaloowaat.",
+    "voiceRetrying": "Jéema yónneewaat sa mesaas...",
+    "voiceConnecting": "Jokko bu wóor ak sa àndado baat...",
+    "microphone": "Mikro lañu soxla ngir woote baat. Mën nga ko aktive ci Jekkal yi, wala nga bind mesaas.",
+    "billing": "Kàmpaañu baat bi nekk ci net bi amul ci diir bu gàtt. Mën nga wéyal ak àndadoo bi nekkul ci net bi.",
+    "authentication": "Kàddug baat bi mënu ci firndeel sesioŋ bii. Duggaat wala nga jëfandikoo àndadoo bi nekkul ci net bi leegi.",
+    "timeout": "Ki àndoon ak baat bi yàggul dara mu tontu. Saytu sa lëkkaloo te jéemaat.",
+    "network": "Mënu nu jokkoo ak ki ànd ak baat bi. Saytu sa lëkkaloo, ba noppi jéemaat wala nga wéyal te nekkul ci lëkkalekaay bi.",
+    "genericVoice": "amna lu dakkal woote baat bi. Jéemaat, wala nga wéyal ak àndado bi nekkul ci net bi."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving génne ay done"
+  },
+  "notifications": {
+    "channelName": "Àrtu kaaraange"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving soxla mikro ngir kaaraange ak AI woote àndadoo.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving dafay jëfandikoo sa barab ngir kàrtu kaaraange ak man-mani kaaraange yi la gëna jege.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving dafay jëfandikoo sa barab ngir jàppale ñiy ñëw ci jàmm ak ci jafe-jafe yi.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving dafay jëfandikoo barabu ginaaw ngir yegsi ci jàmm ak màndarga zone danger yu jege.",
+      "NSCameraUsageDescription": "VeryLoving du jëfandikoo kameraa bi sudee danga tànn jël nataalu profil wala nataalu kaaraange.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving du jëfandikoo sa bibliotek foto sudee danga tànn ab profil wala nataalu kaaraange.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

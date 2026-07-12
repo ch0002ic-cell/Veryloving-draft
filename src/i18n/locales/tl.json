@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Idagdag",
+    "apple": "Apple",
+    "back": "Bumalik",
+    "call": "Tumawag",
+    "cancel": "Kanselahin",
+    "clear": "Malinaw",
+    "close": "Isara",
+    "connect": "Kumonekta",
+    "connecting": "Kumokonekta...",
+    "continue": "Magpatuloy",
+    "delete": "Tanggalin",
+    "finish": "Tapos na",
+    "friends": "Magkaibigan",
+    "google": "Google",
+    "home": "Bahay",
+    "loading": "Naglo-load...",
+    "map": "Mapa",
+    "notNow": "Hindi ngayon",
+    "remove": "Alisin",
+    "retry": "Subukan muli",
+    "retrying": "Susubukang muli",
+    "save": "I-save",
+    "selected": "Napili",
+    "send": "Ipadala",
+    "settings": "Mga Setting",
+    "skip": "Laktawan",
+    "skipForNow": "Laktawan sa ngayon",
+    "skipTutorial": "Laktawan ang tutorial",
+    "sos": "SOS",
+    "unknown": "Hindi alam",
+    "user": "VeryLoving user",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Wika",
+    "subtitle": "Piliin ang wikang ginagamit sa buong app.",
+    "system": "Default ng system",
+    "search": "Maghanap ng mga wika",
+    "noResults": "Walang mga wikang tumutugma sa iyong paghahanap.",
+    "english": "Ingles",
+    "spanish": "Espanyol",
+    "french": "Pranses",
+    "chineseSimplified": "Intsik (Pinasimple)"
+  },
+  "phone": {
+    "label": "Numero ng telepono",
+    "placeholder": "Numero ng telepono",
+    "selectCountry": "Pumili ng bansa o rehiyon",
+    "searchCountry": "Maghanap ng bansa, code, o prefix sa pag-dial",
+    "noCountries": "Walang bansang tumutugma sa iyong paghahanap.",
+    "countryButton": "Baguhin ang bansa, kasalukuyang %{country} plus %{callingCode}",
+    "inputAccessibility": "Numero ng telepono para sa %{country}",
+    "required": "Magpasok ng numero ng telepono.",
+    "tooShort": "Ang numero ng teleponong ito ay masyadong maikli.",
+    "tooLong": "Masyadong mahaba ang numero ng teleponong ito.",
+    "invalid": "Magpasok ng wastong numero ng telepono para sa napiling bansa.",
+    "valid": "Badong internasyonal na numero ng telepono"
+  },
+  "auth": {
+    "onboardingTagline": "Isang personal na kasama sa kaligtasan sa mga sandali sa pagitan ng \"I'm fine\" at \"I need help.\"",
+    "createAccount": "Gumawa ng account",
+    "continueOnboarding": "Magpatuloy sa onboarding",
+    "createSubtitle": "Pumili ng paraan ng pag-sign-in upang protektahan ang iyong safety graph.",
+    "phoneVerification": "Pag-verify sa telepono",
+    "sendCode": "Magpadala ng code",
+    "sendingCode": "Nagpapadala ng code...",
+    "verifyCode": "I-verify ang code",
+    "sentTo": "Ipinadala sa %{phone}",
+    "yourPhone": "iyong telepono",
+    "verificationCode": "Verification code",
+    "verify": "I-verify",
+    "verifying": "Bini-verify...",
+    "invalidCode": "Ilagay ang verification code.",
+    "signInFailedTitle": "Naputol ang pag-sign-in",
+    "signInFailedMessage": "Hindi namin makumpleto ang pag-sign-in. Suriin ang iyong koneksyon at subukang muli.",
+    "googleUnavailableTitle": "Google Hindi available ang Sign-In",
+    "googleUnavailableMessage": "Paggamit ng lokal na sesyon ng pagpapaunlad. Gumagana ang Native Google Sign-In sa isang development build.",
+    "northStarTitle": "NorthStar alahas",
+    "northStarSubtitle": "Ipares ngayon o magpatuloy at idagdag ito sa ibang pagkakataon.",
+    "northStarBody": "Ang naisusuot na VL01 ay maaaring mag-trigger ng mga daloy ng kaligtasan gamit ang mga pag-tap at mga galaw ng matagal na pagpindot.",
+    "setupJewelry": "Mag-set up ng alahas",
+    "meetCapybear": "Meet Capybear",
+    "meetCapybearSubtitle": "Ang iyong magiliw na kasama sa kaligtasan sa mapa at sa mga tawag.\nMakakatulong ang",
+    "capybearBody": "Capybear sa home mode, guardian mode, emergency mode, excuse calls, at voice support.",
+    "chooseVoice": "Pumili ng boses",
+    "capybearReminder": "Capybear paalala",
+    "remindersReady": "Handa na ang mga malumanay na paalala."
+  },
+  "permissions": {
+    "locationTitle": "Kaligtasan sa lokasyon",
+    "locationSubtitle": "Ginagamit para sa mapa, mga danger zone, ligtas na pagdating, at SOS konteksto.",
+    "locationBody": "VeryLoving upang maunawaan ng mga tagapag-alaga kung saan maaaring kailanganin ang tulong. Mababago mo ito sa ibang pagkakataon sa Mga Setting.",
+    "allowLocation": "Pahintulutan ang lokasyon",
+    "notificationsTitle": "Mga alerto sa kaligtasan",
+    "notificationsSubtitle": "Sinusuportahan ng mga notification ang mga check-in at emergency na kaganapan.",
+    "notificationsBody": "Gumagamit lang kami ng mga notification para sa mga senyas sa kaligtasan, pang-emergency na update, at mga paalala na pinagana mo.",
+    "enableNotifications": "Paganahin ang mga notification",
+    "locationRationaleTitle": "Pinapanatiling tumpak ng lokasyon ang konteksto ng kaligtasan\nGinagamit ng",
+    "locationRationaleMessage": "VeryLoving ang iyong lokasyon para sa mapa ng kaligtasan, mga danger zone, quick share, at SOS na konteksto. Mababago mo ito sa ibang pagkakataon sa Mga Setting.",
+    "notificationsRationaleTitle": "Ang mga alerto sa kaligtasan ay nangangailangan ng mga abiso\nNagpapadala ang",
+    "notificationsRationaleMessage": "VeryLoving ng mga paalala sa pag-check-in, mga update sa emergency, at mga senyas sa kaligtasan na pinagana mo. Hindi kami gumagamit ng mga notification para sa mga ad.",
+    "microphoneRationaleTitle": "Ang mikropono ay nagpapagana ng mga pangkaligtasang tawag\nGinagamit lang ng",
+    "microphoneRationaleMessage": "VeryLoving ang iyong mikropono kapag nagsimula ka ng AI na kasama o tawag sa kaligtasan.\nIkinokonekta ng",
+    "bluetoothRationaleTitle": "Bluetooth ang iyong naisusuot\nGumagamit ang",
+    "bluetoothRationaleMessage": "VeryLoving ng Bluetooth para ipares sa NorthStar na alahas, basahin ang status ng koneksyon, at i-trigger ang mga daloy ng kaligtasan mula sa naisusuot.",
+    "cameraRationaleTitle": "Ang camera ay opsyonal\nGinagamit lang ng",
+    "cameraRationaleMessage": "VeryLoving ang camera kapag pinili mong kumuha ng larawan sa profile o magbahagi ng larawang pangkaligtasan.\nPinapanatili ng"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving na available ang daloy na ito mula sa Mga Setting at sa dashboard.",
+    "chooseVoiceTitle": "Piliin ang iyong boses",
+    "chooseVoiceSubtitle": "Piliin ang kasamang boses na pinakaligtas na marinig.",
+    "homeTitle": "Home mode",
+    "homeSubtitle": "Tahimik na pagsubaybay para sa pang-araw-araw na kaligtasan.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Ibahagi ang konteksto sa mga pinagkakatiwalaang tao.",
+    "emergencyTitle": "Emergency mode",
+    "emergencySubtitle": "Maaaring tumaas ang limang pag-tap sa SOS at mga alerto ng tagapag-alaga.",
+    "excuseTitle": "Excuse call",
+    "excuseSubtitle": "Gumawa ng magandang dahilan para umalis sa hindi komportableng sitwasyon.",
+    "safetyCallTitle": "Tawag sa kaligtasan",
+    "safetyCallSubtitle": "Magsimula ng isang real-time na kasamang tawag kapag kailangan mo ng suporta.",
+    "practiceTitle": "Pagsasanay sa eksena",
+    "practiceSubtitle": "Subukan ang mga daloy ng kaligtasan sa isang low-pressure na demo."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Itago ang alahas sa malapit habang nag-ii-scan.",
+    "scan": "Mag-scan para sa mga device",
+    "scanning": "Nag-ii-scan sa malapit...",
+    "noDevices": "Wala pang nahanap na malapit na NorthStar device.",
+    "scanStartFailed": "Bluetooth hindi makapagsimula ang pag-scan. Pakisubukang muli.",
+    "scanFailed": "Wala kaming mahanap na malapit na alahas. Lagyan ng check ang Bluetooth, panatilihing malapit ang NorthStar, at subukang muli.",
+    "scanAccessFailed": "Bluetooth hindi makapagsimula ang pag-scan. Suriin ang Bluetooth access at subukang muli.",
+    "permissionDenied": "Naka-off ang access sa malapit na device. Payagan ang Bluetooth na pag-access sa Mga Setting, pagkatapos ay subukang muli.\nMasyadong mahaba ang",
+    "connectTimeout": "NorthStar bago kumonekta. Ilapit ito at subukang muli.",
+    "connectFailed": "Hindi kami makakonekta sa NorthStar. Tingnan kung naka-charge ito at nasa malapit, pagkatapos ay subukang muli.",
+    "emptyTitle": "Wala pang kalapit na device",
+    "emptyMessage": "Panatilihing naka-charge ang NorthStar at malapit sa teleponong ito, pagkatapos ay i-scan muli.",
+    "searchingMessage": "Naghahanap ng NorthStar device sa malapit..."
+  },
+  "home": {
+    "subtitle": "Dashboard na kasama sa kaligtasan",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ay handa na",
+    "readyBody": "Boses, mapa, alahas, at mga tagapag-alaga ay isang tapikin lang.",
+    "safetyCall": "Tawag sa kaligtasan",
+    "northStarDevice": "NorthStar device",
+    "deviceConnected": "%{name} konektado · %{battery}%",
+    "noDevice": "Walang nakakonektang device",
+    "manageDevice": "Pamahalaan ang device",
+    "mode": "Mode",
+    "modes": {
+      "home": "Bahay",
+      "guardian": "Tagapag-alaga",
+      "emergency": "Emergency"
+    }
+  },
+  "map": {
+    "finding": "Hinahanap ang iyong lokasyon...",
+    "retry": "Subukan muli ang lokasyon",
+    "title": "Mapa ng kaligtasan",
+    "previewSubtitle": "Expo Go preview; Nagre-render ang Mapbox sa isang development build.",
+    "preview": "Preview ng mapa",
+    "risk": "Peligro: %{risk} · Radius %{radius}m",
+    "refresh": "I-refresh ang lokasyon",
+    "refreshing": "Naghahanap ng lokasyon...",
+    "updateFailed": "Hindi namin ma-update ang iyong lokasyon. Pakisubukang muli.",
+    "notRequested": "Hindi hiniling ang access sa lokasyon. Maaari mo itong paganahin sa ibang pagkakataon mula sa Mga Setting.",
+    "permissionOff": "Naka-off ang access sa lokasyon. Paganahin ito sa Mga Setting upang isentro sa iyo ang mapa ng kaligtasan.",
+    "timeout": "Ang iyong lokasyon ay mas tumatagal kaysa sa inaasahan. Lumipat sa isang lugar na may mas malinaw na signal at subukang muli.",
+    "savedTitle": "Naka-save na mga lugar",
+    "savedEmptyTitle": "Wala pang naka-save na lugar",
+    "savedEmptyMessage": "Lalabas dito ang mga pinagkakatiwalaang lugar na iyong sine-save para sa mabilis na pag-access.",
+    "zones": {
+      "crowding": "Pagsisikip sa gabi",
+      "lowLighting": "Lugar na may mababang ilaw"
+    },
+    "risks": {
+      "low": "mababa",
+      "medium": "medium",
+      "high": "mataas"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kumokonekta...",
+    "offlineCompanion": "Offline na kasama",
+    "offline": "Offline",
+    "connected": "Nakakonekta",
+    "interrupted": "Naputol ang koneksyon",
+    "ready": "Handa nang kumonekta",
+    "connectingSecurely": "Ligtas na kumokonekta sa iyong kasama sa boses...",
+    "messagesWaiting": {
+      "one": "%{count} mensaheng naghihintay na ipadala",
+      "other": "%{count} mga mensaheng naghihintay na ipadala"
+    },
+    "useOffline": "Gumamit ng offline na kasama",
+    "reconnect": "Muling kumonekta sa boses AI",
+    "typePlaceholder": "I-type kung mahirap magsalita",
+    "endCall": "Tapusin ang tawag",
+    "startCall": "Simulan ang tawag",
+    "emptyTitle": "Dito magsisimula ang iyong pag-uusap",
+    "emptyMessage": "Simulan ang tawag o mag-type ng mensahe kapag handa ka na."
+  },
+  "chat": {
+    "waiting": "Naghihintay ng koneksyon",
+    "notSent": "Hindi naipadala ang mensahe.",
+    "retryAccessibility": "Subukang muli ang pagpapadala ng mensahe"
+  },
+  "history": {
+    "clearTitle": "I-clear ang kasaysayan ng pag-uusap?",
+    "clearMessage": "Aalisin nito ang mga naka-save na AI na kasamang mensahe mula sa device na ito.",
+    "deleteTitle": "I-delete ang pag-uusap na ito?",
+    "cannotUndo": "Hindi na ito maaaring bawiin.",
+    "title": "Kasaysayan ng pag-uusap",
+    "subtitle": "AI mga kasamang mensahe na na-save sa device na ito.",
+    "empty": "Wala pang mga pag-uusap na na-save.",
+    "emptyTitle": "Wala pang pag-uusap",
+    "emptyMessage": "Lalabas dito ang iyong AI na mga kasamang pag-uusap pagkatapos ng iyong unang tawag.",
+    "loadFailed": "Hindi namin ma-load ang kasaysayan ng pag-uusap. Pakisubukang muli.",
+    "clearFailed": "Hindi namin ma-clear ang history ng pag-uusap. Pakisubukang muli.",
+    "deleteFailed": "Hindi namin matanggal ang pag-uusap na iyon. Pakisubukang muli.",
+    "aiCompanion": "AI kasama",
+    "resume": "Ipagpatuloy",
+    "clearAll": "I-clear ang lahat ng kasaysayan",
+    "roles": {
+      "assistant": "kasama",
+      "user": "ikaw"
+    }
+  },
+  "voices": {
+    "title": "Mga boses ng tawag sa kaligtasan ko",
+    "subtitle": "Piliin ang kasamang boses na sa tingin ay tamang pakinggan.",
+    "test": "Subukan ang boses",
+    "stop": "Ihinto ang sample",
+    "selectionFailedTitle": "Hindi na-save ang seleksyon",
+    "selectionFailedMessage": "Pakisubukang muli ang pagpili ng boses.",
+    "sampleFailedTitle": "Hindi available ang sample",
+    "sampleFailedMessage": "Hindi ma-play ang sample ng boses na ito. Pakisubukang muli.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "malambot, mahinahon, saligan"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "maliwanag, nakakapanatag, nakikipag-usap"
+      },
+      "boyfriend": {
+        "name": "Boyfriend",
+        "description": "matatag, mapagmahal, kasalukuyan"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "tiwala, proteksiyon, nakakaganyak"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Boses",
+    "changeVoice": "Palitan ang boses",
+    "showCompanion": "Ipakita ang kasama",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Gumamit ng mga naka-bundle na kasamang tugon kapag hindi available ang network o Hume na mga kredensyal.",
+    "privacyData": "Privacy at data",
+    "privacyBody": "I-export o tanggalin ang lokal na data na nakaimbak sa device na ito.",
+    "preparingExport": "Inihahanda ang pag-export...",
+    "exportData": "I-export ang aking data",
+    "privacyPolicy": "Patakaran sa privacy",
+    "deleting": "Tinatanggal...",
+    "deleteAll": "Tanggalin ang lahat ng lokal na data",
+    "deviceManagement": "Pamamahala ng device",
+    "emergencyContacts": "Mga pang-emergency na contact",
+    "signOut": "Mag-sign out",
+    "exportFailedTitle": "Nabigo ang pag-export",
+    "exportFailedMessage": "Hindi ma-export ang iyong data sa ngayon.",
+    "deleteConfirmTitle": "Tanggalin ang lahat ng lokal na data?",
+    "deleteConfirmMessage": "Aalisin nito ang iyong profile, mga setting, pang-emergency na contact, kasaysayan ng pag-uusap, mga paalala ng pahintulot, at lokal na session ng auth mula sa device na ito.",
+    "deleteEverything": "Burahin lahat",
+    "deleteFailedTitle": "Nabigo ang pagtanggal",
+    "deleteFailedMessage": "Hindi matanggal ang lokal na data sa ngayon.",
+    "linkFailed": "Hindi mabuksan ang link",
+    "sections": {
+      "language": "Wika",
+      "languageSubtitle": "Interface at wika ng pahintulot ng system",
+      "companion": "Kasama",
+      "companionSubtitle": "Mga kagustuhan sa boses at offline",
+      "deviceSafety": "Mga device at kaligtasan",
+      "deviceSafetySubtitle": "NorthStar, mga tagapag-alaga, at pang-emergency na contact",
+      "privacy": "Privacy at data",
+      "privacySubtitle": "Kasaysayan, pag-export, pagtanggal, at patakaran",
+      "account": "Account",
+      "accountSubtitle": "Ang iyong kasalukuyang VeryLoving session"
+    },
+    "updateFailedTitle": "Hindi na-save ang setting",
+    "updateFailedMessage": "Hindi namin ma-save ang kagustuhang iyon. Pakisubukang muli.",
+    "signOutFailedTitle": "Hindi makapag-sign out",
+    "signOutFailedMessage": "Aktibo pa rin ang iyong session. Pakisubukang muli."
+  },
+  "contacts": {
+    "title": "Mga pang-emergency na contact",
+    "subtitle": "Ang mga pinagkakatiwalaang tao ay magagamit sa panahon ng mga daloy ng kaligtasan.",
+    "addTitle": "Magdagdag ng emergency contact",
+    "name": "Pangalan",
+    "namePlaceholder": "Pangalan ng contact",
+    "phone": "Makipag-ugnayan sa numero ng telepono",
+    "add": "Magdagdag ng contact",
+    "empty": "Wala pang idinagdag na mga pang-emergency na contact.",
+    "emptyTitle": "Wala pang emergency na contact",
+    "emptyMessage": "Magdagdag ng taong pinagkakatiwalaan mo para maging handa siya kapag kailangan siya ng daloy ng kaligtasan.",
+    "removeTitle": "Alisin ang %{name}?",
+    "removeMessage": "Hindi na lalabas ang taong ito sa iyong emergency flow.",
+    "nameRequired": "Ilagay ang pangalan ng contact.",
+    "saveFailedTitle": "Hindi na-save ang contact",
+    "saveFailedMessage": "Hindi namin ma-save ang contact na ito. Suriin ang mga detalye at subukang muli.",
+    "removeFailedTitle": "Hindi inalis ang contact",
+    "removeFailedMessage": "Hindi namin maalis ang contact na ito. Pakisubukang muli.",
+    "callAccessibility": "Tumawag sa %{name}",
+    "removeAccessibility": "Alisin ang %{name}"
+  },
+  "device": {
+    "title": "Pamamahala ng device",
+    "subtitle": "Pamahalaan ang iyong NorthStar device.",
+    "connected": "Nakakonekta · %{battery}% baterya",
+    "none": "Walang nakakonektang device",
+    "disconnect": "Idiskonekta ang device",
+    "connect": "Ikonekta ang device"
+  },
+  "friends": {
+    "title": "Magkaibigan",
+    "subtitle": "Mga tagapag-alaga, kahilingan, at graph ng emergency.",
+    "addDemo": "Magdagdag ng kaibigang demo",
+    "emptyTitle": "Walang laman ang iyong safety circle",
+    "emptyMessage": "Lalabas dito ang mga pinagkakatiwalaang kaibigan at tagapag-alaga kapag naidagdag na sila.",
+    "newGuardian": "Bagong Tagapangalaga",
+    "statuses": {
+      "guardian": "Tagapangalaga",
+      "pending": "Nakabinbin"
+    }
+  },
+  "emergency": {
+    "title": "Emergency SOS",
+    "subtitle": "Escalate lang kapag kailangan mo ng agarang suporta.",
+    "body": "Aabisuhan nito ang iyong daloy ng kaligtasan at maghahanda ng mga pang-emerhensiyang contact.",
+    "activate": "I-activate ang SOS",
+    "callCompanion": "Tawagan ang AI kasama",
+    "notificationTitle": "SOS na-activate",
+    "notificationBody": "Handa na ang iyong emergency flow.",
+    "readyTitle": "SOS handa na",
+    "callContact": "Tumawag sa %{name}?",
+    "addContact": "Magdagdag ng pang-emergency na contact sa Mga Setting.",
+    "quickShareTitle": "Mabilis na pagbabahagi",
+    "quickShareMessage": "Handa na ang stub ng pagbabahagi ng lokasyon. Ikonekta ang backend share endpoint para magpadala ng mga live na link."
+  },
+  "quickShare": {
+    "title": "Mabilis na pagbabahagi",
+    "subtitle": "Handa na ang daloy ng pagbabahagi ng lokasyon."
+  },
+  "capybearTap": {
+    "title": "Capybear tapikin",
+    "subtitle": "I-double tap ang iyong NorthStar para mag-drop ng safety orange.",
+    "body": "Handa na ang ruta ng galaw para sa mga wiring ng kaganapan ng BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Development-only na ruta."
+  },
+  "errors": {
+    "voiceOffline": "Mukhang offline ka. Ipapadala ang iyong mensahe kapag muli kang kumonekta.",
+    "voiceQueued": "Nai-save ang mensahe. Ipapadala ito kapag muling kumonekta ang kasama sa boses.",
+    "voiceRetrying": "Sinusubukang ipadala muli ang iyong mensahe...",
+    "voiceConnecting": "Ligtas na kumokonekta sa iyong kasama sa boses...",
+    "microphone": "Kailangan ang microphone access para sa mga voice call. Maaari mo itong paganahin sa Mga Setting, o mag-type ng mensahe sa halip.",
+    "billing": "Ang online na kasamang boses ay pansamantalang hindi magagamit. Maaari kang magpatuloy sa offline na kasama.",
+    "authentication": "Hindi ma-verify ng kasamang boses ang session na ito. Mag-sign in muli o gamitin ang kasamang offline sa ngayon.",
+    "timeout": "Masyadong matagal bago tumugon ang kasama sa boses. Suriin ang iyong koneksyon at subukang muli.",
+    "network": "Hindi namin maabot ang kasamang boses. Suriin ang iyong koneksyon, pagkatapos ay subukang muli o magpatuloy offline.",
+    "genericVoice": "May huminto sa voice call. Subukang muli, o magpatuloy sa offline na kasama."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving pag-export ng data"
+  },
+  "notifications": {
+    "channelName": "Mga alerto sa kaligtasan"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving\nKailangan ng",
+      "NSMicrophoneUsageDescription": "VeryLoving ng access sa mikropono para sa kaligtasan at AI mga kasamang tawag.\nGinagamit ng",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ang iyong lokasyon para sa mapa ng kaligtasan at mga tampok na pangkaligtasan sa malapit.\nGinagamit ng",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ang iyong lokasyon upang suportahan ang ligtas na pagdating at mga daloy ng emergency.\nGumagamit ang",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ng lokasyon sa background para sa ligtas na pagdating at mga tampok na malapit sa danger-zone.\nGinagamit lang ng",
+      "NSCameraUsageDescription": "VeryLoving ang camera kapag pinili mong kumuha ng profile o larawang pangkaligtasan.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ang iyong library ng larawan kapag pumili ka ng profile o larawang pangkaligtasan.\nGumagamit ang",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan.\nGumagamit ang",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

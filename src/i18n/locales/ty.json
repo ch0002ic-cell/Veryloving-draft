@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "A tuu i te reira",
+    "apple": "Apple",
+    "back": "E ho'i mai",
+    "call": "A niuniu",
+    "cancel": "Faaore",
+    "clear": "Maramarama",
+    "close": "Opani",
+    "connect": "A tu'ati",
+    "connecting": "Te tu'atiraa...",
+    "continue": "A tamau noa",
+    "delete": "Tumâ",
+    "finish": "Faaotiraa",
+    "friends": "Te mau hoa",
+    "google": "Google",
+    "home": "Te fare",
+    "loading": "Te faautaraa...",
+    "map": "Hoho'a fenua",
+    "notNow": "Aita i teie nei",
+    "remove": "Tatararaa",
+    "retry": "Tamata faahou",
+    "retrying": "Tamata faahou",
+    "save": "A faaherehere",
+    "selected": "Ma'itihia",
+    "send": "Hapono",
+    "settings": "Te mau faanahoraa",
+    "skip": "Skip",
+    "skipForNow": "A hi'o i teie nei",
+    "skipTutorial": "Haapae i te haapiiraa",
+    "sos": "SOS",
+    "unknown": "Aita i itehia",
+    "user": "VeryLoving taata faaohipa",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Reo",
+    "subtitle": "A ma'iti i te reo e faaohipahia i roto i te faanahoraa.",
+    "system": "Hape o te faanahoraa",
+    "search": "Imi i te mau reo",
+    "noResults": "Aita e reo e tu'ati i ta outou ma'imiraa.",
+    "english": "Peretane",
+    "spanish": "Paniora",
+    "french": "Farani",
+    "chineseSimplified": "Tinito (faaohiehia)"
+  },
+  "phone": {
+    "label": "Numera niuniu",
+    "placeholder": "Numera niuniu",
+    "selectCountry": "A ma'iti i te fenua e aore râ, i te tuhaa fenua",
+    "searchCountry": "A imi i te fenua, te numera e aore râ, te reni niuniu",
+    "noCountries": "Aita e fenua e tu'ati i ta outou ma'imiraa.",
+    "countryButton": "A taui i te fenua, i teie nei %{country} e %{callingCode}",
+    "inputAccessibility": "Numera niuniu no %{country}",
+    "required": "A papa'i i te hoê numera niuniu.",
+    "tooShort": "E mea poto roa teie numera niuniu.",
+    "tooLong": "E mea roa roa teie numera niuniu.",
+    "invalid": "A papa'i i te hoê numera niuniu mana no te fenua i ma'itihia.",
+    "valid": "Numera niuniu mana na te ao atoa nei"
+  },
+  "auth": {
+    "onboardingTagline": "Te hoê hoa paruru no te mau taime i ropu i te parau « E mea maitai au » e « Te hinaaro nei au i te tauturu ».",
+    "createAccount": "A hamani i te hoê parau",
+    "continueOnboarding": "A tamau noa i te faaôraa",
+    "createSubtitle": "A ma'iti i te hoê rave'a no te paruru i ta outou hoho'a parururaa.",
+    "phoneVerification": "Hi'opo'araa na roto i te niuniu",
+    "sendCode": "Send code",
+    "sendingCode": "Haponoraa i te code...",
+    "verifyCode": "Hi'opo'a i te numera",
+    "sentTo": "Haponohia i te %{phone}",
+    "yourPhone": "ta outou niuniu",
+    "verificationCode": "Numera hi'opo'araa",
+    "verify": "Hi'opo'a",
+    "verifying": "Te hi'opo'araa...",
+    "invalidCode": "A papa'i i te numera hi'opo'araa.",
+    "signInFailedTitle": "Ua mutu te tomoraa",
+    "signInFailedMessage": "Aita i nehenehe ia matou ia faahope roa i te tomoraa i roto. A hi'opo'a i to outou tuatiraa e a tamata faahou.",
+    "googleUnavailableTitle": "Google Te tomoraa i roto aita e roaa",
+    "googleUnavailableMessage": "Te faaohiparaa i te hoê tuhaa haapiiraa no te faatupuraa i te fenua. Te ohipa nei te Native Google Sign-In i roto i te hoê paturaa paturaa.",
+    "northStarTitle": "NorthStar te mau tao'a piru",
+    "northStarSubtitle": "A apiti i teie nei e aore râ, a tamau noa e a tuu i te reira i muri a'e.",
+    "northStarBody": "E nehenehe te VL01 e faaara i te mau taheraa parururaa na roto i te mau pataraa e te mau tape'araa maoro.",
+    "setupJewelry": "A faaineine i te mau piru",
+    "meetCapybear": "A farerei ia Capybear",
+    "meetCapybearSubtitle": "To outou hoa paruru mărû i ni'a i te hoho'a fenua e i roto i te mau niuniu.",
+    "capybearBody": "E nehenehe ta Capybear e tauturu i te fare, te huru tia'i, te rave'a rû, te mau piiraa otoheraa, e te tautururaa i te reo.",
+    "chooseVoice": "A ma'iti i te hoê reo",
+    "capybearReminder": "Capybear faahaamana'oraa",
+    "remindersReady": "Ua ineine te mau faahaamana'oraa mǎrû."
+  },
+  "permissions": {
+    "locationTitle": "Te parururaa i te vahi",
+    "locationSubtitle": "Faaohipahia no te hoho'a fenua, te mau vahi atâta, te tapaeraa papû e te SOS.",
+    "locationBody": "VeryLoving ani oia i te vahi ia nehenehe i te mau tia'i ia taa i hea e hinaarohia ai te tauturu. E nehenehe ta outou e taui i te reira i muri a'e i roto i te Settings.",
+    "allowLocation": "Faati'a i te vahi",
+    "notificationsTitle": "Te mau faaararaa no te parururaa",
+    "notificationsSubtitle": "E tauturu te mau faaararaa i te mau hi'opo'araa e te mau ohipa rû.",
+    "notificationsBody": "E faaohipa noa matou i te mau faaararaa no te mau faaararaa no te parururaa, no te mau faananearaa rû, e no te mau faahaamana'oraa ta outou e faati'a.",
+    "enableNotifications": "Faati'a i te mau faaararaa",
+    "locationRationaleTitle": "E tape'a maitai te vahi i te vahi parururaa",
+    "locationRationaleMessage": "E faaohipa VeryLoving i to outou vahi no te hoho'a fenua parururaa, te mau vahi atâta, te faaiteraa vitiviti e te SOS i te mau mea atoa. E nehenehe ta outou e taui i te reira i muri a'e i roto i te Settings.",
+    "notificationsRationaleTitle": "E titauhia te mau faaararaa no te parururaa",
+    "notificationsRationaleMessage": "VeryLoving e hapono te reira i te mau faahaamana'oraa no te tapa'oraa i roto i te fare, te mau faaararaa rû e te mau faaararaa no te parururaa ta outou e faati'a. Aita matou e faaohipa nei i te mau faaararaa no te mau parau faatianiani.",
+    "microphoneRationaleTitle": "Na te micro e faatere i te mau niuniu paruru",
+    "microphoneRationaleMessage": "VeryLoving e faaohipa noa outou i ta outou micro ia haamata ana'e outou i te hoê AI hoa e aore râ, i te hoê niuniu paruru.",
+    "bluetoothRationaleTitle": "Bluetooth tu'ati i ta outou tauihaa",
+    "bluetoothRationaleMessage": "E faaohipa VeryLoving i te Bluetooth no te apiti atu i te NorthStar piru, no te tai'o i te huru o te tu'atiraa, e no te faatupu i te parururaa mai roto mai i te tao'a oomo.",
+    "cameraRationaleTitle": "E ma'itihia te pata hoho'a",
+    "cameraRationaleMessage": "VeryLoving e faaohipa oia i te pata hoho'a ia ma'iti ana'e outou i te pata i te hoê hoho'a e aore râ, ia faaite i te hoê hoho'a paruru."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving e roaa teie tereraa i roto i te Settings e te dashboard.",
+    "chooseVoiceTitle": "A ma'iti i to outou reo",
+    "chooseVoiceSubtitle": "A ma'iti i te reo o te hoa o te mana'o papû a'e ia faaroo.",
+    "homeTitle": "Faanahoraa no te fare",
+    "homeSubtitle": "Te hi'opo'araa hau no te parururaa i te mau mahana atoa.",
+    "guardianTitle": "Faanahoraa tia'i",
+    "guardianSubtitle": "A faaite i te mau parau tapiri i te mau taata ti'aturihia.",
+    "emergencyTitle": "Rave'a rû",
+    "emergencySubtitle": "E pae pataraa e nehenehe e faarahi atu i te mau faaararaa no te SOS e no te tia'i.",
+    "excuseTitle": "Te piiraa otoheraa",
+    "excuseSubtitle": "A faatupu i te hoê tumu maitai no te faaru'e i te hoê huru tupuraa au ore.",
+    "safetyCallTitle": "Te piiraa paruru",
+    "safetyCallSubtitle": "A haamata i te hoê niuniu hoa i te taime mau ia hinaaro ana'e outou i te tauturu.",
+    "practiceTitle": "Hoho'a haapiipiiraa",
+    "practiceSubtitle": "A tamata i te mau taheraa parururaa i roto i te hoê faahi'oraa ha'iha'i."
+  },
+  "jewelry": {
+    "pairTitle": "E piti NorthStar",
+    "pairSubtitle": "A tuu i te mau piru i piha'i iho ia hi'opo'a ana'e outou.",
+    "scan": "A hi'opo'a i te mau matini",
+    "scanning": "Te hi'opo'araa i piha'i iho mai...",
+    "noDevices": "Aita â te mau matini NorthStar i itehia mai.",
+    "scanStartFailed": "Aita Bluetooth hi'opo'araa i nehenehe e haamata. A tamata faahou.",
+    "scanFailed": "Aita matou i ite i te mau piru i pihai iho mai. A hi'o Bluetooth, a tape'a NorthStar i piha'i iho e a tamata faahou.",
+    "scanAccessFailed": "Aita Bluetooth hi'opo'araa i nehenehe e haamata. A hi'Bluetooth i te rave'a e a tamata faahou.",
+    "permissionDenied": "Aita te mau matini i piha'i iho i te matini i piha'i iho mai. A faati'a Bluetooth ia tomo i roto i te Settings, i muri iho a tamata faahou.",
+    "connectTimeout": "NorthStar mea maoro roa no te tu'ati. A haafatata i te reira e a tamata faahou.",
+    "connectFailed": "Aita i nehenehe ia matou ia tu'ati i te NorthStar. A hi'opo'a e, ua î anei te reira e tei piha'i iho mai, i muri iho a tamata faahou.",
+    "emptyTitle": "Aita â e matini i piha'i iho",
+    "emptyMessage": "A faaî noa i te NorthStar e i piha'i iho i teie niuniu, e i muri iho, a pata faahou.",
+    "searchingMessage": "Te imi ra i te mau matini NorthStar piha'i iho mai..."
+  },
+  "home": {
+    "subtitle": "Tapura no te paruru",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ua ineine",
+    "readyBody": "Te reo, te hoho'a fenua, te piru e te mau tia'i.",
+    "safetyCall": "Te piiraa paruru",
+    "northStarDevice": "NorthStar te matini",
+    "deviceConnected": "%{name} tu'atihia · %{battery}%",
+    "noDevice": "Aita e matini i tu'atihia",
+    "manageDevice": "Faatere i te matini",
+    "mode": "Huru raveraa",
+    "modes": {
+      "home": "Te fare",
+      "guardian": "Tia'i",
+      "emergency": "Ohipa rû"
+    }
+  },
+  "map": {
+    "finding": "Te imiraa i to outou vahi...",
+    "retry": "Te vahi tamataraa faahou",
+    "title": "Hoho'a fenua parururaa",
+    "previewSubtitle": "Expo Go hi'opo'araa ; Mapbox e renders i roto i te hoê development build.",
+    "preview": "Hi'oraa hoho'a fenua",
+    "risk": "Fifi : %{risk} · Radius %{radius}m",
+    "refresh": "Te vahi faaapîraa",
+    "refreshing": "Te imiraa i te vahi...",
+    "updateFailed": "Aita i nehenehe ia matou ia faananea i to outou vahi. A tamata faahou.",
+    "notRequested": "Aita i anihia ia haere i te vahi. E nehenehe ta outou e faati'a i te reira i muri a'e mai roto mai i te Settings.",
+    "permissionOff": "Aita te tomoraa i te vahi e vai ra. A tuu i te reira i roto i te Settings no te faatumu i te hoho'a fenua parururaa i ni'a ia outou.",
+    "timeout": "E mea maoro a'e to outou vahi i mana'ohia. A haere i te hoê vahi e te hoê tapa'o maramarama a'e e a tamata faahou.",
+    "savedTitle": "Te mau vahi i faahereherehia",
+    "savedEmptyTitle": "Aita â te mau vahi i faahereherehia",
+    "savedEmptyMessage": "E itehia te mau vahi ti'aturihia ta outou e faaherehere i ô nei no te hi'opo'a vitiviti.",
+    "zones": {
+      "crowding": "Ua rahi roa te taata i te maororaa pô",
+      "lowLighting": "Vahi mori iti"
+    },
+    "risks": {
+      "low": "Raro",
+      "medium": "Au noa",
+      "high": "teitei"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Te tu'atiraa...",
+    "offlineCompanion": "Hoa i ni'a i te itenati",
+    "offline": "Offline",
+    "connected": "Tu'atihia",
+    "interrupted": "Ua mutu te tu'atiraa",
+    "ready": "Ua ineine no te tu'ati",
+    "connectingSecurely": "Te tu'atiraa papû i to outou hoa reo...",
+    "messagesWaiting": {
+      "one": "%{count} poro'i e tia'i ra ia haponohia",
+      "other": "%{count} mau poro'i e tia'i ra i te haponohia"
+    },
+    "useOffline": "A faaohipa i te hoa i ni'a i te itenati",
+    "reconnect": "A tu'ati faahou i te reo AI",
+    "typePlaceholder": "A patapata mai te mea e mea fifi ia paraparau",
+    "endCall": "Faaotiraa i te piiraa",
+    "startCall": "Haamata i te niuniu",
+    "emptyTitle": "E haamata ta outou aparauraa i ô nei",
+    "emptyMessage": "A haamata i te niuniu e aore râ a patapata i te hoê poro'i ia ineine ana'e outou."
+  },
+  "chat": {
+    "waiting": "Te tia'iraa i te tu'atiraa",
+    "notSent": "Aita te poro'i i haponohia.",
+    "retryAccessibility": "Tamata faahou i te hapono i te poro'i"
+  },
+  "history": {
+    "clearTitle": "E mea maramarama maitai te aamu o te aparauraa ?",
+    "clearMessage": "E iriti te reira i te mau parau poro'i AI te mau apiti tei faahereherehia mai roto mai i teie matini.",
+    "deleteTitle": "Tumâ i teie aparauraa ?",
+    "cannotUndo": "Eita te reira e nehenehe e tatarahia.",
+    "title": "Aamu o te aparauraa",
+    "subtitle": "AI te mau parau poro'i tei faahereherehia i ni'a i teie matini.",
+    "empty": "Aita â te mau aparauraa i faahereherehia.",
+    "emptyTitle": "Aita â e aparauraa",
+    "emptyMessage": "E itehia ta outou mau aparauraa AI te mau hoa i ô nei i muri a'e i to outou niuniu matamua.",
+    "loadFailed": "Aita ta matou e nehenehe e faaî i te aamu o te aparauraa. A tamata faahou.",
+    "clearFailed": "Aita i nehenehe ia matou ia haamaramarama i te aamu o te aparauraa. A tamata faahou.",
+    "deleteFailed": "Eita ta matou e nehenehe e tumâ i taua aparauraa ra. A tamata faahou.",
+    "aiCompanion": "AI hoa",
+    "resume": "Resume",
+    "clearAll": "Tamâ i te aamu atoa",
+    "roles": {
+      "assistant": "hoa",
+      "user": "outou"
+    }
+  },
+  "voices": {
+    "title": "To'u mau reo no te paruru",
+    "subtitle": "A ma'iti i te reo apiti o te mana'o e mea tano ia faaroo.",
+    "test": "Tamata i te reo",
+    "stop": "Tape'a i te hi'oraa",
+    "selectionFailedTitle": "Aita te ma'itiraa i faahereherehia",
+    "selectionFailedMessage": "A tamata faahou i te ma'iti i te reo.",
+    "sampleFailedTitle": "Aita e vai ra te hoho'a",
+    "sampleFailedMessage": "Aita i nehenehe e ha'uti i teie hoho'a reo. A tamata faahou.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "te mărû, te hau, te niu"
+      },
+      "bestie": {
+        "name": "Te hoa maitai roa a'e",
+        "description": "te maramarama, te tamahanahana, te aparauraa"
+      },
+      "boyfriend": {
+        "name": "Hoa tamaroa",
+        "description": "te aueue ore, te here, te vai ra"
+      },
+      "muscleMan": {
+        "name": "Taata uaua",
+        "description": "te ti'aturi, te paruru, te faaitoitoraa"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Reo",
+    "changeVoice": "A taui i te reo",
+    "showCompanion": "Faaite i te hoa",
+    "offlineMode": "Rave'a offline",
+    "offlineModeSubtitle": "A faaohipa i te mau pahonoraa a te hoa ia ore ana'e te faanahoraa e aore râ te Hume parau faati'a e roaa.",
+    "privacyData": "Te oraraa o te taata iho e te mau haamaramaramaraa",
+    "privacyBody": "A hapono e aore râ a tumâ i te mau haamaramaramaraa no te fenua iho tei haaputuhia i ni'a i teie matini.",
+    "preparingExport": "Te faaineineraa i te hooraa i te tauihaa...",
+    "exportData": "Hapono i ta'u mau haamaramaramaraa",
+    "privacyPolicy": "Ture no te paruru i te taata",
+    "deleting": "Te tumâraa...",
+    "deleteAll": "Tumâ i te mau haamaramaramaraa atoa o te fenua iho",
+    "deviceManagement": "Faatereraa i te mau matini",
+    "emergencyContacts": "Te mau taata e farerei nei i te mau ohipa rû",
+    "signOut": "A tapa'o i rapae",
+    "exportFailedTitle": "Aita te haponoraa i manuïa",
+    "exportFailedMessage": "Aita e nehenehe e hapono i ta outou mau haamaramaramaraa i teie nei.",
+    "deleteConfirmTitle": "Tumâ i te mau haamaramaramaraa atoa no te fenua iho ?",
+    "deleteConfirmMessage": "E iriti te reira i to outou hoho'a, te mau faanahoraa, te mau niuniu rû, te aamu o te aparauraa, te mau faahaamana'oraa parau faati'a, e te tuhaa haapapûraa i ni'a i teie matini.",
+    "deleteEverything": "Tumâ i te mau mea atoa",
+    "deleteFailedTitle": "Aita te tumâraa i manuïa",
+    "deleteFailedMessage": "Aita e nehenehe e tumâ i te mau haamaramaramaraa o te fenua iho i teie nei.",
+    "linkFailed": "Aita e nehenehe e iriti i te hono",
+    "sections": {
+      "language": "Reo",
+      "languageSubtitle": "Interface e te parau faati'a no te faanahoraa",
+      "companion": "Hoa",
+      "companionSubtitle": "Te reo e te mau mea e au a'e i ni'a i te iten",
+      "deviceSafety": "Te mau matini e te parururaa",
+      "deviceSafetySubtitle": "NorthStar, te mau tia'i, e te mau taata rû",
+      "privacy": "Te oraraa o te taata iho e te mau haamaramaramaraa",
+      "privacySubtitle": "Te aamu, te haponoraa, te tumâraa, e te faatureraa",
+      "account": "Aamu",
+      "accountSubtitle": "Ta outou tuhaa pureraa no te VeryLoving i teie nei"
+    },
+    "updateFailedTitle": "Aita te faanahoraa i faahereherehia",
+    "updateFailedMessage": "Eita ta matou e nehenehe e faaherehere i taua mana'o ra. A tamata faahou.",
+    "signOutFailedTitle": "Aita i nehenehe e tapa'o i rapae",
+    "signOutFailedMessage": "Te tere noa ra ta outou tuhaa haapiiraa. A tamata faahou."
+  },
+  "contacts": {
+    "title": "Te mau taata e farerei nei i te mau ohipa rû",
+    "subtitle": "Te vai ra te mau taata ti'aturihia i roto i te mau tereraa parururaa.",
+    "addTitle": "A tuu i te hoê niuniu rû",
+    "name": "I'oa",
+    "namePlaceholder": "I'oa o te niuniu",
+    "phone": "Numera niuniu",
+    "add": "A tuu i te niuniu",
+    "empty": "Aita â te mau niuniu rû i tuuhia mai.",
+    "emptyTitle": "Aita â e farereiraa rû",
+    "emptyMessage": "A tuu mai i te hoê taata ta outou e ti'aturi ia ineine oia ia hinaaro ana'e te hoê vahi parururaa.",
+    "removeTitle": "A iriti i te %{name} ?",
+    "removeMessage": "Eita teie taata e fâ faahou mai i roto i ta outou reni rû.",
+    "nameRequired": "A papa'i i te i'oa o te taata e farerei ra.",
+    "saveFailedTitle": "Aita te niuniu i faahereherehia",
+    "saveFailedMessage": "Aita i nehenehe ia matou ia faaherehere i teie farereiraa. A hi'opo'a i te mau haamaramaramaraa e a tamata faahou.",
+    "removeFailedTitle": "Aita te niuniu i tatarahia",
+    "removeFailedMessage": "Aita i nehenehe ia matou ia iriti i teie niuniu. A tamata faahou.",
+    "callAccessibility": "A niuniu %{name}",
+    "removeAccessibility": "A iriti i te %{name}"
+  },
+  "device": {
+    "title": "Faatereraa i te mau matini",
+    "subtitle": "A faatere i ta outou matini NorthStar.",
+    "connected": "Tu'atihia · %{battery}% uira",
+    "none": "Aita e matini i tu'atihia",
+    "disconnect": "A tatara i te matini",
+    "connect": "A tu'ati i te matini"
+  },
+  "friends": {
+    "title": "Te mau hoa",
+    "subtitle": "Te mau tia'i, te mau aniraa, e te hoho'a no te mau ohipa rû.",
+    "addDemo": "Add demo friend",
+    "emptyTitle": "Aita e taata i roto i ta outou haamenemeneraa paruru",
+    "emptyMessage": "E itehia te mau hoa e te mau tia'i ti'aturihia i ô nei ia amuihia mai ratou.",
+    "newGuardian": "Tia'i apî",
+    "statuses": {
+      "guardian": "Tia'i",
+      "pending": "Te tia'i ra"
+    }
+  },
+  "emergency": {
+    "title": "Te mau SOS rû",
+    "subtitle": "A faarahi noa i te reira mai te peu e e hinaaro oioi outou i te tauturu.",
+    "body": "Na te reira e faaara i to outou tereraa no te parururaa e e faaineine i te mau niuniu rû.",
+    "activate": "A faaohipa i te SOS",
+    "callCompanion": "A niuniu i AI hoa",
+    "notificationTitle": "SOS faaohipahia",
+    "notificationBody": "Ua ineine ta outou tereraa rû.",
+    "readyTitle": "SOS ineine",
+    "callContact": "A niuniu %{name} ?",
+    "addContact": "A tuu i te hoê niuniu rû i roto i te Settings.",
+    "quickShareTitle": "Faaite vitiviti",
+    "quickShareMessage": "Ua ineine te tumu parau no te opereraa i te vahi. A tu'ati i te hopea o te backend share no te hapono i te mau hono ora."
+  },
+  "quickShare": {
+    "title": "Faaite vitiviti",
+    "subtitle": "Ua ineine te opereraa vahi."
+  },
+  "capybearTap": {
+    "title": "Capybear pata",
+    "subtitle": "A pata piti i to outou NorthStar no te tuu i te hoê anani paruru.",
+    "body": "Ua ineine te e'a no te niuniu i te ohipa BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "E'a no te faahoturaa noa."
+  },
+  "errors": {
+    "voiceOffline": "Mai te mea ra e, aita oe i itenati. E haponohia'tu ta outou parau poro'i ia tu'ati faahou outou.",
+    "voiceQueued": "Ua faahereherehia te poro'i. E haponohia'tu te reira ia tu'ati faahou te hoa reo.",
+    "voiceRetrying": "Te tamata nei au i te hapono faahou i ta outou poro'i...",
+    "voiceConnecting": "Te tu'atiraa papû i to outou hoa reo...",
+    "microphone": "E titauhia te micro no te mau niuniu reo. E nehenehe ta outou e faaohipa i te reira i roto i te Settings, e aore râ, e patapata i te hoê poro'i.",
+    "billing": "Aita e vai ra te reta reo i ni'a i te itenati no te hoê taime. E nehenehe ta outou e tamau noa e te hoa i ni'a i te itenati.",
+    "authentication": "Aita i ti'a i te hoa reo ia hi'opo'a i teie tuhaa haapiiraa. A tomo faahou i roto e aore râ a faaohipa i te hoa i ni'a i te itenati no teie taime.",
+    "timeout": "Ua maoro roa te hoa reo no te pahono mai. A hi'opo'a i to outou tuatiraa e a tamata faahou.",
+    "network": "Aita i roaa ia matou te hoa reo. A hi'opo'a i ta outou tuatiraa, i muri iho a tamata faahou e aore râ, a tamau noa i te haere i rapae i te reni.",
+    "genericVoice": "Ua tâpû te tahi mea i te piiraa reo. A tamata faahou, e aore râ, a tamau noa e te hoa i ni'a i te itenati."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving haponoraa i te mau haamaramaramaraa"
+  },
+  "notifications": {
+    "channelName": "Te mau faaararaa no te parururaa"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "E hinaaro VeryLoving i te micro no te paruru e no te AI i te mau niuniu.",
+      "NSLocationWhenInUseUsageDescription": "E faaohipa VeryLoving i to outou vahi no te hoho'a fenua parururaa e te mau rave'a parururaa i piha'i iho mai.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "E faaohipa VeryLoving i to outou vahi no te turu i te mau tereraa rû e te mau tereraa rû.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving faaohipa oia i te vahi i muri mai no te tapaeraa ma te papû e no te vahi atâta.",
+      "NSCameraUsageDescription": "VeryLoving e faaohipa oia i te pata hoho'a ia ma'iti ana'e outou i te pata i te hoho'a e aore râ, i te hoê hoho'a paruru.",
+      "NSPhotoLibraryUsageDescription": "E faaohipa VeryLoving i ta outou vairaa hoho'a ia ma'iti ana'e outou i te hoê hoho'a e aore râ, i te hoê hoho'a paruru.",
+      "NSBluetoothAlwaysUsageDescription": "E faaohipa VeryLoving i te Bluetooth no te tuati i ta outou mau tao'a NorthStar no te parururaa.",
+      "NSBluetoothPeripheralUsageDescription": "E faaohipa VeryLoving i te Bluetooth no te tuati i ta outou mau tao'a NorthStar no te parururaa."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

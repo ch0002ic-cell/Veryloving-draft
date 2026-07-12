@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "追加",
+    "apple": "Apple",
+    "back": "戻る",
+    "call": "鳴き声",
+    "cancel": "キャンセル",
+    "clear": "クリア",
+    "close": "閉じる",
+    "connect": "接続",
+    "connecting": "接続中...",
+    "continue": "続けてください",
+    "delete": "削除",
+    "finish": "フィニッシュ",
+    "friends": "友人",
+    "google": "Google",
+    "home": "ホーム",
+    "loading": "読み込み中...",
+    "map": "地図",
+    "notNow": "今はダメだ",
+    "remove": "削除",
+    "retry": "再挑戦",
+    "retrying": "再挑戦",
+    "save": "セーブ",
+    "selected": "選ばれました",
+    "send": "送信",
+    "settings": "舞台設定",
+    "skip": "スキップ",
+    "skipForNow": "今はスキップしておきます",
+    "skipTutorial": "スキップチュートリアル",
+    "sos": "SOS",
+    "unknown": "不明",
+    "user": "VeryLovingユーザー",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "言語",
+    "subtitle": "アプリ全体で使われる言語を選びましょう。",
+    "system": "システムデフォルト",
+    "search": "検索言語",
+    "noResults": "あなたの探している言語に合う言語はありません。",
+    "english": "英語",
+    "spanish": "スペイン語",
+    "french": "フランス語",
+    "chineseSimplified": "中国語(簡体字)"
+  },
+  "phone": {
+    "label": "電話番号",
+    "placeholder": "電話番号",
+    "selectCountry": "選択国または地域",
+    "searchCountry": "国、コード、またはダイヤルプレフィックスを検索してください",
+    "noCountries": "検索対象に合う国はありません。",
+    "countryButton": "国を変えて、現在%{country}以上%{callingCode}",
+    "inputAccessibility": "電話番号%{country}",
+    "required": "電話番号を入力してください。",
+    "tooShort": "この電話番号は短すぎる。",
+    "tooLong": "この電話番号は長すぎる。",
+    "invalid": "選択した国の有効な電話番号を入力してください。",
+    "valid": "有効な国際電話番号"
+  },
+  "auth": {
+    "onboardingTagline": "「大丈夫」と「助けが必要です」の間の個人的な安全の伴侶です。",
+    "createAccount": "アカウント作成",
+    "continueOnboarding": "オンボーディングを続けてください",
+    "createSubtitle": "安全グラフを守るためにサインイン方法を選択してください。",
+    "phoneVerification": "電話認証",
+    "sendCode": "コードを送れ",
+    "sendingCode": "コードを送信中...",
+    "verifyCode": "コードの検証",
+    "sentTo": "%{phone}に送られた",
+    "yourPhone": "君の電話",
+    "verificationCode": "検証コード",
+    "verify": "検証",
+    "verifying": "確認中...",
+    "invalidCode": "認証コードを入力してください。",
+    "signInFailedTitle": "サインインが中断されました",
+    "signInFailedMessage": "サインインが完了できませんでした。接続を確認してからもう一度試してください。",
+    "googleUnavailableTitle": "Google サインイン不可",
+    "googleUnavailableMessage": "ローカル開発セッションを使っています。開発ビルドではネイティブGoogleサインインが動作します。",
+    "northStarTitle": "NorthStarジュエリー",
+    "northStarSubtitle": "今すぐペアリングするか、後で追加するかのどちらかです。",
+    "northStarBody": "VL01ウェアラブルはタップや長い押下動作で安全フローをトリガーできます。",
+    "setupJewelry": "ジュエリーを設置する",
+    "meetCapybear": "Capybearに会いましょう",
+    "meetCapybearSubtitle": "地図上や通話であなたの優しい安全の相棒。",
+    "capybearBody": "Capybearホームモード、ガーディアンモード、緊急モード、通話の免除、音声サポートのサポートをサポートできます。",
+    "chooseVoice": "声を選べ",
+    "capybearReminder": "Capybear 注意点",
+    "remindersReady": "優しいリマインダーが用意できています。"
+  },
+  "permissions": {
+    "locationTitle": "ロケーションの安全性",
+    "locationSubtitle": "地図、危険地帯、安全な到着、SOSコンテキストに使われます。",
+    "locationBody": "VeryLoving保護者がどこで助けが必要か理解できるように場所を尋ねます。後で設定で変更できます。",
+    "allowLocation": "位置を許可する",
+    "notificationsTitle": "安全警報",
+    "notificationsSubtitle": "通知はチェックインや緊急事象をサポートします。",
+    "notificationsBody": "安全通知、緊急更新、有効にしたリマインダーのみをご利用ください。",
+    "enableNotifications": "通知を有効にする",
+    "locationRationaleTitle": "場所は安全の文脈を正確に保つ",
+    "locationRationaleMessage": "VeryLoving安全マップ、危険区域、クイックシェア、そしてSOSコンテキストにあなたの位置情報を利用します。後で設定で変更できます。",
+    "notificationsRationaleTitle": "安全警報には通知が必要です",
+    "notificationsRationaleMessage": "VeryLovingチェックインのリマインダー、緊急の更新、安全指示を送ってくれます。広告の通知は使用していません。",
+    "microphoneRationaleTitle": "マイクが安全コールを駆動",
+    "microphoneRationaleMessage": "VeryLovingは、AIの仲間や安全通話を始めるときだけマイクを使います。",
+    "bluetoothRationaleTitle": "Bluetoothあなたのウェアラブルをつなげます",
+    "bluetoothRationaleMessage": "VeryLovingBluetoothを使ってNorthStarジュエリーとペアリングし、接続状況を読み取り、ウェアラブルからの安全フローをトリガーします。",
+    "cameraRationaleTitle": "カメラはオプションです",
+    "cameraRationaleMessage": "VeryLovingカメラはプロフィール写真を撮るか安全写真を共有する時だけ使います。"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving設定やダッシュボードからこのフローを保持できます。",
+    "chooseVoiceTitle": "声を選びましょう",
+    "chooseVoiceSubtitle": "最も安心して聞きやすい仲間の声を選びましょう。",
+    "homeTitle": "ホームモード",
+    "homeSubtitle": "日々の安全のための静かな監視。",
+    "guardianTitle": "ガーディアンモード",
+    "guardianSubtitle": "信頼できる人に文脈を共有しましょう。",
+    "emergencyTitle": "緊急モード",
+    "emergencySubtitle": "5回タップするとSOSやガーディアンのアラートにエスカレートします。",
+    "excuseTitle": "失礼電話",
+    "excuseSubtitle": "不快な状況から抜け出すための優雅な理由を作りましょう。",
+    "safetyCallTitle": "安全コール",
+    "safetyCallSubtitle": "サポートが必要なときはリアルタイムの相棒通話を開始しましょう。",
+    "practiceTitle": "練習シーン",
+    "practiceSubtitle": "低圧デモで安全フローを試してみてください。"
+  },
+  "jewelry": {
+    "pairTitle": "ペアNorthStar",
+    "pairSubtitle": "スキャン中はジュエリーを近くに置いておくといいです。",
+    "scan": "デバイスのスキャン",
+    "scanning": "近くをスキャン中...",
+    "noDevices": "近くにNorthStar装置はまだ見つかっていない。",
+    "scanStartFailed": "Bluetoothスキャンが始動できなかった。もう一度お試しください。",
+    "scanFailed": "近くに宝石が見つからなかった。Bluetoothを確認し、NorthStarを近くに置き、もう一度試してみて。",
+    "scanAccessFailed": "Bluetoothスキャンが始動できなかった。アクセスBluetooth確認してもう一度試してください。",
+    "permissionDenied": "近くのデバイスへのアクセスはオフです。設定でBluetoothアクセスを許可してからもう一度試してください。",
+    "connectTimeout": "NorthStarつながるのに時間がかかりすぎた。近づけてもう一度試してみて。",
+    "connectFailed": "私たちは繋がることができNorthStar。充電されて近くにあるか確認してから、もう一度試してみてください。",
+    "emptyTitle": "まだ近くにデバイスはありません",
+    "emptyMessage": "充電NorthStarこの電話の近くに置いてから、再度スキャンしてください。",
+    "searchingMessage": "近くでNorthStar装置を探しています..."
+  },
+  "home": {
+    "subtitle": "安全補助ダッシュボード",
+    "modeStatus": "%{mode}モード",
+    "companionReady": "%{name}準備できてるよ",
+    "readyBody": "音声、マップ、ジュエリー、ガーディアンはワンタップで手に入る。",
+    "safetyCall": "安全コール",
+    "northStarDevice": "NorthStar装置",
+    "deviceConnected": "%{name} 接続 ·%{battery}%",
+    "noDevice": "デバイス接続されていません",
+    "manageDevice": "デバイスの管理",
+    "mode": "モード",
+    "modes": {
+      "home": "ホーム",
+      "guardian": "ガーディアン",
+      "emergency": "緊急"
+    }
+  },
+  "map": {
+    "finding": "居場所を突き止めて...",
+    "retry": "再試行場所",
+    "title": "安全地図",
+    "previewSubtitle": "Expo Goプレビュー;Mapbox開発ビルドでレンダリングします。",
+    "preview": "地図プレビュー",
+    "risk": "リスク:%{risk} ·半径の%{radius}m",
+    "refresh": "リフレッシュ場所",
+    "refreshing": "場所を探す...",
+    "updateFailed": "現在地の更新はできていません。もう一度お試しください。",
+    "notRequested": "位置情報へのアクセスは求められませんでした。後で設定から有効にできます。",
+    "permissionOff": "位置情報アクセスがオフになっています。設定で有効にして安全マップを自分に合わせます。",
+    "timeout": "あなたの位置情報が予想より時間がかかっています。信号がはっきりした場所に移動して、もう一度試してみてください。",
+    "savedTitle": "保存された場所",
+    "savedEmptyTitle": "まだ保存された場所はありません",
+    "savedEmptyMessage": "保存した信頼できる場所はここに表示され、素早くアクセスできます。",
+    "zones": {
+      "crowding": "深夜の混雑",
+      "lowLighting": "照明が少ないエリア"
+    },
+    "risks": {
+      "low": "ロー",
+      "medium": "メディア",
+      "high": "高く"
+    }
+  },
+  "safetyCall": {
+    "connecting": "接続中...",
+    "offlineCompanion": "オフラインの仲間",
+    "offline": "オフライン",
+    "connected": "接続",
+    "interrupted": "接続中断",
+    "ready": "接続準備完了",
+    "connectingSecurely": "声の仲間と安全に接続中...",
+    "messagesWaiting": {
+      "one": "送信%{count}メッセージを待っています",
+      "other": "送信待ちの%{count}メッセージ"
+    },
+    "useOffline": "オフラインの仲間を使う",
+    "reconnect": "音声AIに再接続",
+    "typePlaceholder": "話すのが難しいならタイプ",
+    "endCall": "通話終了",
+    "startCall": "通話開始",
+    "emptyTitle": "会話はここから始まります",
+    "emptyMessage": "準備ができたら通話を開始するかメッセージを入力してください。"
+  },
+  "chat": {
+    "waiting": "接続を待つ",
+    "notSent": "メッセージは送信されませんでした。",
+    "retryAccessibility": "メッセージ送信をやり直す"
+  },
+  "history": {
+    "clearTitle": "会話履歴はクリアですか?",
+    "clearMessage": "これにより、保存されたコンパニオンメッセージAIこのデバイスから削除されます。",
+    "deleteTitle": "この会話を削除すべきですか?",
+    "cannotUndo": "これは取り消せない。",
+    "title": "会話履歴",
+    "subtitle": "このデバイスに保存された関連メッセージAI。",
+    "empty": "まだ会話は保存されていません。",
+    "emptyTitle": "まだ会話はありません",
+    "emptyMessage": "AIの相棒会話は、最初の通話後にここに表示されます。",
+    "loadFailed": "会話履歴を読み込めませんでした。もう一度お試しください。",
+    "clearFailed": "会話履歴を消すことができませんでした。もう一度お試しください。",
+    "deleteFailed": "その会話は削除できませんでした。もう一度お試しください。",
+    "aiCompanion": "AIコンパニオン",
+    "resume": "履歴書",
+    "clearAll": "すべての歴史を消せ",
+    "roles": {
+      "assistant": "コンパニオン",
+      "user": "お前だ"
+    }
+  },
+  "voices": {
+    "title": "私の安全の呼び声",
+    "subtitle": "聞きやすい仲間の声を選びましょう。",
+    "test": "テストボイス",
+    "stop": "ストップサンプル",
+    "selectionFailedTitle": "選択が保存されていません",
+    "selectionFailedMessage": "もう一度声を選んでみてください。",
+    "sampleFailedTitle": "サンプルは利用できません",
+    "sampleFailedMessage": "この音声サンプルは再生できませんでした。もう一度お試しください。",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "柔らかく、穏やかで、地に足をつけさせてくれる"
+      },
+      "bestie": {
+        "name": "親友",
+        "description": "明るく、安心させて、会話的だった"
+      },
+      "boyfriend": {
+        "name": "彼氏",
+        "description": "落ち着いていて、愛情深く、存在感がある"
+      },
+      "muscleMan": {
+        "name": "マッスルマン",
+        "description": "自信に満ち、守りやすく、やる気が出る"
+      }
+    }
+  },
+  "settings": {
+    "voice": "声",
+    "changeVoice": "声を変える",
+    "showCompanion": "ショーの仲間",
+    "offlineMode": "オフラインモード",
+    "offlineModeSubtitle": "ネットワークやHume認証情報が利用できない場合は、バンドルされたコンパニオンレスポンスを活用してください。",
+    "privacyData": "プライバシーとデータ",
+    "privacyBody": "このデバイスに保存されているローカルデータをエクスポートまたは削除してください。",
+    "preparingExport": "輸出準備中...",
+    "exportData": "データをエクスポートしてください",
+    "privacyPolicy": "プライバシーポリシー",
+    "deleting": "削除中...",
+    "deleteAll": "すべてのローカルデータを削除してください",
+    "deviceManagement": "デバイス管理",
+    "emergencyContacts": "緊急連絡先",
+    "signOut": "サインアウト",
+    "exportFailedTitle": "輸出失敗",
+    "exportFailedMessage": "現在、データをエクスポートできません。",
+    "deleteConfirmTitle": "すべてのローカルデータを削除する?",
+    "deleteConfirmMessage": "これにより、このデバイスからプロフィール、設定、緊急連絡先、会話履歴、許可リマインダー、ローカル認証セッションが削除されます。",
+    "deleteEverything": "すべて削除してください",
+    "deleteFailedTitle": "削除は失敗しました",
+    "deleteFailedMessage": "現在、ローカルデータを削除できません。",
+    "linkFailed": "リンクを開けない",
+    "sections": {
+      "language": "言語",
+      "languageSubtitle": "インターフェースおよびシステム権限言語",
+      "companion": "コンパニオン",
+      "companionSubtitle": "音声およびオフラインの設定",
+      "deviceSafety": "装置と安全性",
+      "deviceSafetySubtitle": "NorthStar、保護者、緊急連絡先",
+      "privacy": "プライバシーとデータ",
+      "privacySubtitle": "歴史、エクスポート、削除、政策",
+      "account": "アカウント",
+      "accountSubtitle": "現在のVeryLovingセッション"
+    },
+    "updateFailedTitle": "設定が保存されていません",
+    "updateFailedMessage": "しかし、その優先順位は保存できませんでした。もう一度お試しください。",
+    "signOutFailedTitle": "サインアウトできませんでした",
+    "signOutFailedMessage": "セッションはまだ有効です。もう一度お試しください。"
+  },
+  "contacts": {
+    "title": "緊急連絡先",
+    "subtitle": "安全フロー中に信頼できるスタッフが待機しています。",
+    "addTitle": "緊急連絡先を追加",
+    "name": "名称",
+    "namePlaceholder": "連絡先名",
+    "phone": "連絡先電話番号",
+    "add": "連絡先を追加",
+    "empty": "緊急連絡先はまだ追加されていません。",
+    "emptyTitle": "緊急連絡先はまだない",
+    "emptyMessage": "信頼できる人を加えて、安全フローが必要なときにすぐに対応できるようにしましょう。",
+    "removeTitle": "%{name}を取り除く?",
+    "removeMessage": "この人は緊急フローに現れなくなります。",
+    "nameRequired": "連絡先の名前を入力してください。",
+    "saveFailedTitle": "連絡先が保存されていません",
+    "saveFailedMessage": "この接触は救えなかった。詳細を確認して、もう一度やり直してください。",
+    "removeFailedTitle": "連絡先は削除されていません",
+    "removeFailedMessage": "この接触を取り除くことはできませんでした。もう一度お試しください。",
+    "callAccessibility": "電話%{name}",
+    "removeAccessibility": "%{name}を外してください"
+  },
+  "device": {
+    "title": "デバイス管理",
+    "subtitle": "NorthStarデバイスを管理しましょう。",
+    "connected": "接続・バッテリー残%{battery}%です",
+    "none": "デバイス接続はされていません",
+    "disconnect": "切断装置",
+    "connect": "接続デバイス"
+  },
+  "friends": {
+    "title": "友人",
+    "subtitle": "ガーディアン、リクエスト、緊急グラフ。",
+    "addDemo": "デモフレンドを追加してください",
+    "emptyTitle": "あなたのセーフティサークルは空っぽです",
+    "emptyMessage": "信頼できる友人や保護者は、追加され次第ここに現れます。",
+    "newGuardian": "ニュー・ガーディアン",
+    "statuses": {
+      "guardian": "ガーディアン",
+      "pending": "保留中"
+    }
+  },
+  "emergency": {
+    "title": "緊急SOS",
+    "subtitle": "緊急のサポートが必要な時だけエスカレートしてください。",
+    "body": "これにより安全フローが通知され、緊急連絡先の準備ができます。",
+    "activate": "起動SOS",
+    "callCompanion": "仲間の電話AI",
+    "notificationTitle": "SOS起動",
+    "notificationBody": "緊急フローは準備完了です。",
+    "readyTitle": "SOS準備できてる",
+    "callContact": "電話%{name}?",
+    "addContact": "設定で緊急連絡先を追加してください。",
+    "quickShareTitle": "クイックシェア",
+    "quickShareMessage": "位置情報共有のスタブが準備できた。バックエンドの共有エンドポイントを接続してライブリンクを送信します。"
+  },
+  "quickShare": {
+    "title": "クイックシェア",
+    "subtitle": "ロケーションシェアフローは準備完了です。"
+  },
+  "capybearTap": {
+    "title": "Capybear タック",
+    "subtitle": "NorthStarをダブルタップすると安全オレンジを落とす。",
+    "body": "ジェスチャールートはBLEイベント配線の準備ができています。"
+  },
+  "debug": {
+    "title": "VeryLovingデバッグページ",
+    "subtitle": "開発専用ルート。"
+  },
+  "errors": {
+    "voiceOffline": "オフラインみたいだね。再接続時にメッセージが送信されます。",
+    "voiceQueued": "メッセージが保存されました。音声コンパニオンが再接続されたときに送信されます。",
+    "voiceRetrying": "もう一度メッセージを送ろうとしている...",
+    "voiceConnecting": "声の仲間と安全に接続中...",
+    "microphone": "音声通話にはマイクアクセスが必要です。設定で有効にするか、代わりにメッセージを入力できます。",
+    "billing": "オンライン音声コンパニオンは一時的に利用できません。オフラインの仲間で続けてもいいですよ。",
+    "authentication": "声の仲間はこのセッションを確認できなかった。再度サインインするか、今はオフラインのCompanionをご利用ください。",
+    "timeout": "声の仲間は返事が遅すぎた。接続を確認してからもう一度試してください。",
+    "network": "音声仲間には連絡が取れませんでした。接続を確認してからもう一度試すか、オフラインで続けてください。",
+    "genericVoice": "何かがその声を遮った。もう一度試すか、オフラインの仲間で続けてください。"
+  },
+  "privacy": {
+    "exportTitle": "VeryLovingデータエクスポート"
+  },
+  "notifications": {
+    "channelName": "安全警報"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving安全のためにマイクアクセスとAIの相棒通話が必要です。",
+      "NSLocationWhenInUseUsageDescription": "VeryLovingはあなたの位置情報を使って安全地図や近くの安全機能を表示します。",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLovingはあなたの位置情報を活用して安全な到着や緊急の流れを支援します。",
+      "NSLocationAlwaysUsageDescription": "VeryLoving安全な到着や近隣の危険区域の特徴にバックグラウンドロケーションを使用しています。",
+      "NSCameraUsageDescription": "VeryLovingカメラはプロフィール写真や安全写真を撮る時だけ使います。",
+      "NSPhotoLibraryUsageDescription": "VeryLovingプロフィールや安全画像を選択した時のみ写真ライブラリを使用します。",
+      "NSBluetoothAlwaysUsageDescription": "VeryLovingBluetoothを使ってNorthStarの安全ジュエリーに接続します。",
+      "NSBluetoothPeripheralUsageDescription": "VeryLovingBluetoothを使ってNorthStarの安全ジュエリーに接続します。"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

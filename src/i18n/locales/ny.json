@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Onjezani",
+    "apple": "Apple",
+    "back": "Kubwerera",
+    "call": "Imbani",
+    "cancel": "Letsani",
+    "clear": "Oyera",
+    "close": "Tsekani",
+    "connect": "Lumikizanani",
+    "connecting": "Kulumikizana...",
+    "continue": "Pitilizani",
+    "delete": "Chotsani",
+    "finish": "Malizani",
+    "friends": "Abwenzi",
+    "google": "Google",
+    "home": "Kunyumba",
+    "loading": "Kutsegula...",
+    "map": "Mapu",
+    "notNow": "Ayi pakali pano",
+    "remove": "Chotsani",
+    "retry": "Yeseraninso",
+    "retrying": "Kuyesanso",
+    "save": "Sungani",
+    "selected": "Zosankhidwa",
+    "send": "Tumizani",
+    "settings": "Zokonda",
+    "skip": "Dumphani",
+    "skipForNow": "Dumphani pano",
+    "skipTutorial": "Dumphani maphunziro",
+    "sos": "SOS",
+    "unknown": "Zosadziwika",
+    "user": "VeryLoving wogwiritsa ntchito",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Chiyankhulo",
+    "subtitle": "Sankhani chilankhulo chomwe chikugwiritsidwa ntchito mu pulogalamuyi.",
+    "system": "Kusakhazikika kwadongosolo",
+    "search": "Fufuzani zilankhulo",
+    "noResults": "Palibe zilankhulo zomwe zikufanana ndi zomwe mwasaka.",
+    "english": "Chingerezi",
+    "spanish": "Chisipanishi",
+    "french": "Chifalansa",
+    "chineseSimplified": "Chitchainizi (chosavuta)"
+  },
+  "phone": {
+    "label": "Nambala yafoni",
+    "placeholder": "Nambala yafoni",
+    "selectCountry": "Sankhani dziko kapena dera",
+    "searchCountry": "Sakani dziko, khodi, kapena mawu oyimba",
+    "noCountries": "Palibe mayiko omwe akufanana ndi zomwe mumasaka.",
+    "countryButton": "Sintha dziko, panopa %{country} kuphatikiza %{callingCode}",
+    "inputAccessibility": "Nambala yafoni ya %{country}",
+    "required": "Lowetsani nambala yafoni.",
+    "tooShort": "Nambala yafoni iyi ndiyafupi kwambiri.",
+    "tooLong": "Nambala yafoni iyi ndiyatalika kwambiri.",
+    "invalid": "Lowetsani nambala yafoni yovomerezeka ya dziko lomwe mwasankha.",
+    "valid": "Nambala yafoni yovomerezeka yapadziko lonse lapansi"
+  },
+  "auth": {
+    "onboardingTagline": "Wothandizira chitetezo changa pakanthawi pakati pa \"ndili bwino\" ndi \"Ndikufuna thandizo.\"",
+    "createAccount": "Pangani akaunti",
+    "continueOnboarding": "Pitirizani kukwera",
+    "createSubtitle": "Sankhani njira yolowera kuti muteteze graph yanu yachitetezo.",
+    "phoneVerification": "Kutsimikizira foni",
+    "sendCode": "Tumizani kodi",
+    "sendingCode": "Kutumiza kodi...",
+    "verifyCode": "Tsimikizani kodi",
+    "sentTo": "Kutumizidwa ku %{phone}",
+    "yourPhone": "foni yanu",
+    "verificationCode": "Khodi yotsimikizira",
+    "verify": "Tsimikizirani",
+    "verifying": "Kutsimikizira...",
+    "invalidCode": "Lowetsani nambala yotsimikizira.",
+    "signInFailedTitle": "Kulowa kwasokonezedwa",
+    "signInFailedMessage": "Sitinathe kumaliza kulowa. Onani kulumikizana kwanu ndikuyesanso.",
+    "googleUnavailableTitle": "Google Kulowetsa Kulibe",
+    "googleUnavailableMessage": "Kugwiritsa ntchito gawo lachitukuko mdera lanu. Native Google Sign-In imagwira ntchito popanga chitukuko.",
+    "northStarTitle": "NorthStar zodzikongoletsera",
+    "northStarSubtitle": "Lunzani nokha kapena pitilizani ndikuwonjezeranso nthawi ina.",
+    "northStarBody": "Zovala VL01 zimatha kuyambitsa kuyenda kwa chitetezo ndi matepi ndi manja aatali.",
+    "setupJewelry": "Konzani zodzikongoletsera",
+    "meetCapybear": "Kumanani Capybear",
+    "meetCapybearSubtitle": "Mnzanu wodekha wachitetezo pamapu komanso pakuyimba foni.",
+    "capybearBody": "Capybear ikhoza kuthandizira panyumba, njira yomuyang'anira, njira yadzidzidzi, kuyimba foni, ndi mawu.",
+    "chooseVoice": "Sankhani mawu",
+    "capybearReminder": "Capybear chikumbutso",
+    "remindersReady": "Zikumbutso zofatsa zakonzeka."
+  },
+  "permissions": {
+    "locationTitle": "chitetezo cha malo",
+    "locationSubtitle": "Amagwiritsidwa ntchito ngati mapu, madera oopsa, kufika bwino, ndi SOS nkhani.",
+    "locationBody": "VeryLoving amafunsa malo kuti athandizi amvetsetse pamene angafunike thandizo. Mutha kusintha izi pambuyo pake mu Zochunira.",
+    "allowLocation": "Lolani malo",
+    "notificationsTitle": "Zidziwitso zachitetezo",
+    "notificationsSubtitle": "Zidziwitso zimathandizira cheke ndi zochitika zadzidzidzi.",
+    "notificationsBody": "Timangogwiritsa ntchito zidziwitso pazachitetezo, zosintha mwadzidzidzi, ndi zikumbutso zomwe mumayatsa.",
+    "enableNotifications": "Yambitsani zidziwitso",
+    "locationRationaleTitle": "Malo amasunga chitetezo cholondola",
+    "locationRationaleMessage": "VeryLoving imagwiritsa ntchito malo omwe muli ngati mapu achitetezo, madera oopsa, kugawana mwachangu, ndi SOS nkhani. Mutha kusintha izi pambuyo pake mu Zochunira.",
+    "notificationsRationaleTitle": "Zidziwitso zachitetezo zimafunikira zidziwitso",
+    "notificationsRationaleMessage": "VeryLoving imatumiza zikumbutso zolowera, zosintha mwadzidzidzi, ndi zidziwitso zachitetezo zomwe mumayatsa. Sitigwiritsa ntchito zidziwitso pazotsatsa.",
+    "microphoneRationaleTitle": "Mayikrofoni amathandizira mafoni otetezedwa",
+    "microphoneRationaleMessage": "VeryLoving imagwiritsa ntchito cholankhulira chanu pokhapo mutayimba AI mnzanu kapena foni yotetezedwa.",
+    "bluetoothRationaleTitle": "Bluetooth amalumikiza zobvala zanu",
+    "bluetoothRationaleMessage": "VeryLoving amagwilitsila nchito Bluetooth kuphatikizana ndi NorthStar zodzikongoletsera, kuwerenga mkhalidwe wa kulumikizana, ndi kuyambitsa kuyenda kwa chitetezo kuchovala.",
+    "cameraRationaleTitle": "Kamera ndiyosasankha",
+    "cameraRationaleMessage": "VeryLoving imagwiritsa ntchito kamera pokhapo mutasankha kujambula chithunzi cha mbiri yanu kapena kugawana chithunzi chachitetezo."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving imasunga kutuluka uku kupezeka kuchokera ku Zikhazikiko ndi pa bolodi.",
+    "chooseVoiceTitle": "Sankhani mawu anu",
+    "chooseVoiceSubtitle": "Sankhani liwu la mnzako lomwe limamveka bwino kuti limve.",
+    "homeTitle": "Mode yakunyumba",
+    "homeSubtitle": "Kuwunika kwachete chitetezo cha tsiku ndi tsiku.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Gawani nkhani ndi anthu odalirika.",
+    "emergencyTitle": "Mode yadzidzidzi",
+    "emergencySubtitle": "Kupopa kasanu kutha kukwera mpaka SOS ndi machenjezo a alonda.",
+    "excuseTitle": "Kuyimbira foni",
+    "excuseSubtitle": "Pangani chifukwa chabwino chosiyira pamavuto.",
+    "safetyCallTitle": "Kuyitana kwachitetezo",
+    "safetyCallSubtitle": "Yambitsani kuyimba anzanu munthawi yeniyeni mukafuna chithandizo.",
+    "practiceTitle": "Yezetsani zochitika",
+    "practiceSubtitle": "Yesani kayendedwe ka chitetezo mu chiwonetsero chotsika."
+  },
+  "jewelry": {
+    "pairTitle": "Awiri NorthStar",
+    "pairSubtitle": "Sungani zodzikongoletserazo pafupi ndikusanthula.",
+    "scan": "Jambulani zida",
+    "scanning": "Kusanthula pafupi...",
+    "noDevices": "Palibe zida zapafupi NorthStar zomwe zapezeka pano.",
+    "scanStartFailed": "Bluetooth kusanthula sikunayambe. Chonde yesaninso.",
+    "scanFailed": "Sitinapeze zodzikongoletsera zapafupi. Yang'anani Bluetooth, khalani NorthStar pafupi, ndi kuyesanso.",
+    "scanAccessFailed": "Bluetooth kusanthula sikunayambe. Yang'anani Bluetooth kupeza ndi kuyesanso.",
+    "permissionDenied": "Kufikira pazida zapafupi kuzimitsa. Lolani Bluetooth kulowa mu Zochunira, kenako yesaninso.",
+    "connectTimeout": "NorthStar zinatenga nthawi yaitali kuti zigwirizane. Isunthireni pafupi ndikuyesanso.",
+    "connectFailed": "Sitinathe kulumikiza ku NorthStar. Yang'anani ngati yachajitsidwa komanso pafupi, ndiye yesaninso.",
+    "emptyTitle": "Palibe zida zapafupi panobe",
+    "emptyMessage": "Khalani NorthStar ndi chaji ndi pafupi ndi foni iyi, kenaka sikaninso.",
+    "searchingMessage": "Mukuyang'ana NorthStar zida zapafupi..."
+  },
+  "home": {
+    "subtitle": "Dashboard yothandizana ndi chitetezo",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} yakonzeka",
+    "readyBody": "Mawu, mapu, zodzikongoletsera, ndi athandizi amangoduliridwa kamodzi.",
+    "safetyCall": "Kuyitana kwachitetezo",
+    "northStarDevice": "NorthStar chipangizo",
+    "deviceConnected": "%{name} cholumikizidwa · %{battery}%",
+    "noDevice": "Palibe chipangizo cholumikizidwa",
+    "manageDevice": "Konzani chipangizo",
+    "mode": "Mode",
+    "modes": {
+      "home": "Kunyumba",
+      "guardian": "Guardian",
+      "emergency": "Zadzidzi"
+    }
+  },
+  "map": {
+    "finding": "Kupeza komwe muli...",
+    "retry": "Yeseraninso malo",
+    "title": "Mapu achitetezo",
+    "previewSubtitle": "Expo Go chithunzithunzi; Mapbox amapeleka mu kamangidwe kachitukuko.",
+    "preview": "Kuwoneratu mapu",
+    "risk": "Ngozi: %{risk} · Radius %{radius}m",
+    "refresh": "Onjezaninso malo",
+    "refreshing": "Kupeza malo...",
+    "updateFailed": "Sitinathe kusintha malo anu. Chonde yesaninso.",
+    "notRequested": "Kulowa malo sikunafunsidwe. Mutha kuyiyambitsa pambuyo pake kuchokera ku Zikhazikiko.",
+    "permissionOff": "Kulowa malo kwazimitsidwa. Yambitsani mu Zochunira kuti pakati pa mapu otetezeka pa inu.",
+    "timeout": "Malo anu akutenga nthawi yayitali kuposa momwe amayembekezera. Pitani kwinakwake ndi chizindikiro chomveka bwino ndikuyesanso.",
+    "savedTitle": "Malo osungidwa",
+    "savedEmptyTitle": "Palibe malo osungidwa",
+    "savedEmptyMessage": "Malo odalirika omwe mumasunga awoneka pano kuti muwapeze mwachangu.",
+    "zones": {
+      "crowding": "Kuchulukana kwausiku",
+      "lowLighting": "Malo ounikira ochepa"
+    },
+    "risks": {
+      "low": "otsika",
+      "medium": "zapakatikati",
+      "high": "pamwamba"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kulumikizana...",
+    "offlineCompanion": "Wothandizira pa intaneti",
+    "offline": "Opanda intaneti",
+    "connected": "Wolumikizidwa",
+    "interrupted": "Kulumikizana kwasokonekera",
+    "ready": "Okonzeka kulumikiza",
+    "connectingSecurely": "Kulumikizana mosatekeseka ndi mawu anzako...",
+    "messagesWaiting": {
+      "one": "%{count} uthenga womwe ukudikira kutumiza",
+      "other": "%{count} mauthenga omwe akudikirira kutumiza"
+    },
+    "useOffline": "Gwiritsani ntchito bwenzi lopanda intaneti",
+    "reconnect": "Lumikizananinso ndi mawu AI",
+    "typePlaceholder": "Talembani ngati kuyankhula kuli kovuta",
+    "endCall": "Imitsani kuyimba",
+    "startCall": "Yambani kuyimba",
+    "emptyTitle": "Zokambirana zanu ziyambira apa",
+    "emptyMessage": "Yambani kuyimba kapena lembani uthenga mukakonzeka."
+  },
+  "chat": {
+    "waiting": "Kudikirira kulumikizana",
+    "notSent": "Uthenga sunatumizidwe.",
+    "retryAccessibility": "Yeseraninso kutumiza uthenga"
+  },
+  "history": {
+    "clearTitle": "Chotsani mbiri ya zokambirana?",
+    "clearMessage": "Izi zimachotsa AI mauthenga amzake osungidwa pachidachi.",
+    "deleteTitle": "Muchotse zokambiranazi?",
+    "cannotUndo": "Izi sizingathetsedwe.",
+    "title": "Mbiri ya zokambirana",
+    "subtitle": "AI mauthenga amnzake osungidwa pa chipangizochi.",
+    "empty": "Palibe zokambirana zomwe zasungidwa.",
+    "emptyTitle": "Palibe zokambilana",
+    "emptyMessage": "Zokambirana za AI za mzanu ziziwoneka apa mukayimba koyamba.",
+    "loadFailed": "Sitinathe kuyika mbiri yakale. Chonde yesaninso.",
+    "clearFailed": "Sitinathe kuchotsa mbiri ya zokambirana. Chonde yesaninso.",
+    "deleteFailed": "Sitinathe kuchotsa zokambiranazi. Chonde yesaninso.",
+    "aiCompanion": "AI mnzako",
+    "resume": "Yambitsaninso",
+    "clearAll": "Chotsani mbiri yonse",
+    "roles": {
+      "assistant": "mnzako",
+      "user": "inu"
+    }
+  },
+  "voices": {
+    "title": "Mawu anga otetezedwa",
+    "subtitle": "Sankhani liwu la mnzanu lomwe likumva bwino kuti limve.",
+    "test": "Mawu oyesera",
+    "stop": "Imitsani zitsanzo",
+    "selectionFailedTitle": "Zosankha sizinasungidwe",
+    "selectionFailedMessage": "Chonde yesani kusankhanso mawu.",
+    "sampleFailedTitle": "Zitsanzo sizikupezeka",
+    "sampleFailedMessage": "Mawu awa sanathe kuseweredwa. Chonde yesaninso.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ofewa, odekha, okhazikika"
+      },
+      "bestie": {
+        "name": "Bwerani",
+        "description": "owala, olimbikitsa, olankhula"
+      },
+      "boyfriend": {
+        "name": "Chibwenzi",
+        "description": "okhazikika, okondana, opezekapo"
+      },
+      "muscleMan": {
+        "name": "Wopanda minyewa",
+        "description": "odzidalira, oteteza, olimbikitsa"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Mawu",
+    "changeVoice": "Sintha mawu",
+    "showCompanion": "Onetsani mnzanu",
+    "offlineMode": "Mode yapaintaneti",
+    "offlineModeSubtitle": "Gwiritsani ntchito mayankho ophatikizana nawo pamene netiweki kapena Hume zidziwitso sizikupezeka.",
+    "privacyData": "Zinsinsi & data",
+    "privacyBody": "Tumizani kapena kufufuta zomwe zasungidwa pachidachi.",
+    "preparingExport": "Kukonzekera kutumiza...",
+    "exportData": "Tumizani deta yanga",
+    "privacyPolicy": "Mfundo zachinsinsi",
+    "deleting": "Kuchotsa...",
+    "deleteAll": "Chotsani zidziwitso zonse zapafupi",
+    "deviceManagement": "Kusamalira zipangizo",
+    "emergencyContacts": "Kulumikizana ndi anthu mwadzidzidzi",
+    "signOut": "Tulukani",
+    "exportFailedTitle": "Kutumiza kunja kwalephera",
+    "exportFailedMessage": "Sitingathe kutumiza deta yanu pompano.",
+    "deleteConfirmTitle": "Fufutani zidziwitso zonse zapafupi?",
+    "deleteConfirmMessage": "Izi zimachotsa mbiri yanu, zochunira, olumikizana nawo mwadzidzidzi, mbiri ya zokambirana, zikumbutso za zilolezo, ndi gawo lazolemba zakomweko pachipangizochi.",
+    "deleteEverything": "Chotsani chilichonse",
+    "deleteFailedTitle": "Kuchotsa kwalephera",
+    "deleteFailedMessage": "Sitingathe kuchotsa zidziwitso zapafupi pakali pano.",
+    "linkFailed": "Sikadatha kutsegula ulalo",
+    "sections": {
+      "language": "Chiyankhulo",
+      "languageSubtitle": "Chiyankhulo ndi chilolezo cha dongosolo",
+      "companion": "Wothandizira",
+      "companionSubtitle": "Zokonda pamawu komanso osagwiritsa ntchito intaneti",
+      "deviceSafety": "Zida ndi chitetezo",
+      "deviceSafetySubtitle": "NorthStar, alonda, ndi okhudzana ndi ngozi",
+      "privacy": "Zinsinsi ndi deta",
+      "privacySubtitle": "Mbiri, kutumiza kunja, kufufuta, ndi ndondomeko",
+      "account": "Akaunti",
+      "accountSubtitle": "Chigawo chanu VeryLoving chapano"
+    },
+    "updateFailedTitle": "Zosintha sizinasungidwe",
+    "updateFailedMessage": "Sitinathe kusunga zomwe amakonda. Chonde yesaninso.",
+    "signOutFailedTitle": "Sitinathe kutuluka",
+    "signOutFailedMessage": "Gawo lanu likugwirabe ntchito. Chonde yesaninso."
+  },
+  "contacts": {
+    "title": "Macheza adzidzidzi",
+    "subtitle": "Anthu odalirika amapezeka panthawi yachitetezo.",
+    "addTitle": "Onjezani wolumikizana nawo mwadzidzidzi",
+    "name": "Dzina",
+    "namePlaceholder": "Dzina lothandizira",
+    "phone": "Nambala ya foni",
+    "add": "Onjezani kulumikizana",
+    "empty": "Palibe olumikizana nawo mwadzidzidzi omwe adawonjezedwa.",
+    "emptyTitle": "Palibe olumikizana nawo mwadzidzidzi",
+    "emptyMessage": "Onjezani munthu amene mumamukhulupirira kuti akhale okonzeka pamene chitetezo chikumufuna.",
+    "removeTitle": "Chotsani %{name}?",
+    "removeMessage": "Munthuyu sawonekanso paulendo wanu wadzidzidzi.",
+    "nameRequired": "Lowetsani dzina la mnzanuyo.",
+    "saveFailedTitle": "Kulumikizana sikunasungidwe",
+    "saveFailedMessage": "Sitinathe kusunga munthuyu. Onani zambiri ndikuyesanso.",
+    "removeFailedTitle": "Kulumikizana sikuchotsedwa",
+    "removeFailedMessage": "Sitinathe kuchotsa munthuyu. Chonde yesaninso.",
+    "callAccessibility": "Imbani %{name}",
+    "removeAccessibility": "Chotsani %{name}"
+  },
+  "device": {
+    "title": "Kasamalidwe kachipangizo",
+    "subtitle": "Konzani NorthStar chipangizo chanu.",
+    "connected": "Wolumikizidwa · %{battery}% batire",
+    "none": "Palibe zida zolumikizidwa",
+    "disconnect": "Lumikizani chipangizo",
+    "connect": "Lumikizani chipangizo"
+  },
+  "friends": {
+    "title": "Abwenzi",
+    "subtitle": "Oyang'anira, zopempha, ndi chithunzi chadzidzidzi.",
+    "addDemo": "Onjezani bwenzi lowonetsa",
+    "emptyTitle": "Bwalo lanu lachitetezo lilibe kanthu",
+    "emptyMessage": "Abwenzi odalirika ndi owasamalira awoneka pano akawonjezedwa.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Poyembekezera"
+    }
+  },
+  "emergency": {
+    "title": "Zadzidzi SOS",
+    "subtitle": "Kukwerani pokhapokha ngati mukufuna thandizo lachangu.",
+    "body": "Izi zidziwitsa mayendedwe anu otetezedwa ndikukonzekera anthu olumikizana nawo mwadzidzidzi.",
+    "activate": "Yambitsani SOS",
+    "callCompanion": "Imbani AI mnzako",
+    "notificationTitle": "SOS adatsegula",
+    "notificationBody": "Kuyenda kwanu mwadzidzidzi kwakonzeka.",
+    "readyTitle": "SOS okonzeka",
+    "callContact": "Imbani %{name}?",
+    "addContact": "Onjezani wolumikizana nawo mwadzidzidzi mu Zikhazikiko.",
+    "quickShareTitle": "Kugawana mwachangu",
+    "quickShareMessage": "Zigawo zogawana malo zakonzeka. Lumikizani backend share endpoint kuti mutumize maulalo amoyo."
+  },
+  "quickShare": {
+    "title": "Kugawana mwachangu",
+    "subtitle": "Kugawana malo kwakonzeka."
+  },
+  "capybearTap": {
+    "title": "Capybear pompani",
+    "subtitle": "Dinani kawiri NorthStar yanu kuti mugwetse lalanje lachitetezo.",
+    "body": "Njira yolumikizira ndi yokonzeka kuyimbira zochitika za BLE."
+  },
+  "debug": {
+    "title": "VeryLoving tsamba lothandizira",
+    "subtitle": "Njira yachitukuko chokha."
+  },
+  "errors": {
+    "voiceOffline": "Mukuwoneka ngati mulibe intaneti. Uthenga wanu udzatumizidwa mukalumikizanso.",
+    "voiceQueued": "Uthenga wasungidwa. Idzatumizidwa pamene bwenzi la mawu likugwirizananso.",
+    "voiceRetrying": "Kuyesa kutumizanso uthenga wanu...",
+    "voiceConnecting": "Kulumikizanani bwino ndi mnzako wamawu...",
+    "microphone": "Kupeza maikolofoni ndikofunikira pakuyimba kwamawu. Mutha kuyiyambitsa mu Zochunira, kapena lembani uthenga m'malo mwake.",
+    "billing": "Mnzake wapaintaneti sakupezeka kwakanthawi. Mutha kupitiliza ndi mnzanu wapaintaneti.",
+    "authentication": "Wolankhula naye sanatsimikizire gawoli. Lowaninso muakaunti yanu kapena gwiritsani ntchito mnzanu wapaintaneti pakadali pano.",
+    "timeout": "Mnzake wa mawu adatenga nthawi yayitali kuti asayankhe. Onani kulumikizana kwanu ndikuyesanso.",
+    "network": "Sitinathe kufikira mnzathu wa mawu. Yang'anani kulumikizidwa kwanu, kenako yesaninso kapena pitilizani osalumikizidwa pa intaneti.",
+    "genericVoice": "Chinachake chinasokoneza kuyimba kwa mawu. Yesaninso, kapena pitilizani ndi mnzanu wapaintaneti."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving kutumiza kwa data"
+  },
+  "notifications": {
+    "channelName": "Zidziwitso zachitetezo"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ikufunika mwayi wolandila maikolofoni kuti itetezeke komanso AI kuyimbana ndi anthu.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving imagwiritsa ntchito malo omwe muli pamapu achitetezo ndi zachitetezo chapafupi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving imagwiritsa ntchito malo omwe muli kuthandizira pofika mosatetezeka komanso kuyenda kwadzidzidzi.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving imagwiritsa ntchito malo akumbuyo pofika motetezeka komanso zapafupi za zone yowopsa.",
+      "NSCameraUsageDescription": "VeryLoving imagwiritsa ntchito kamera pokhapokha mutasankha kujambula mbiri kapena chithunzi chachitetezo.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving imagwiritsa ntchito laibulale ya zithunzi zanu pokhapokha mwasankha mbiri kapena chithunzi chachitetezo.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving amagwiritsa Bluetooth kulumikiza NorthStar zodzikongoletsera zachitetezo.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving amagwiritsa Bluetooth kulumikiza NorthStar zodzikongoletsera zachitetezo."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

@@ -18,6 +18,7 @@ export function AppProvider({ children }) {
   const contactsMutationQueueRef = useRef(Promise.resolve());
   const [device, setDevice] = useState({ connected: false, name: 'NorthStar VL01', battery: 82 });
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -33,6 +34,8 @@ export function AppProvider({ children }) {
       setContacts(savedContacts);
     }).catch((error) => {
       logger.warn('[AppState] Could not restore local settings', error);
+    }).finally(() => {
+      if (active) setIsHydrated(true);
     });
     return () => {
       active = false;
@@ -108,7 +111,7 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState }), [settings, updateSettings, contacts, addContact, removeContact, device, friends, selectedVoice, resetLocalState]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, friends, selectedVoice, resetLocalState, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

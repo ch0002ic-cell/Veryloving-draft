@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tanaki atu",
+    "apple": "Apple",
+    "back": "Foki",
+    "call": "Telefoni",
+    "cancel": "Kaniseli",
+    "clear": "Mahino",
+    "close": "Tapuni",
+    "connect": "Fehokotaki",
+    "connecting": "Fakafehokotaki...",
+    "continue": "Hoko atu",
+    "delete": "Tamateʻi",
+    "finish": "Fakaʻosi",
+    "friends": "Ngaahi kaungameʻa",
+    "google": "Google",
+    "home": "ʻApi",
+    "loading": "Loading...",
+    "map": "Mape",
+    "notNow": "ʻIkai ʻi he taimi ni",
+    "remove": "Toʻo",
+    "retry": "Toe feinga",
+    "retrying": "Toe feinga",
+    "save": "Seivi",
+    "selected": "Fili",
+    "send": "ʻAve",
+    "settings": "Ngaahi fokotuʻutuʻu",
+    "skip": "Hiki fakalaka",
+    "skipForNow": "Fakalaka he taimi ni",
+    "skipTutorial": "Fakalaka mei he fakahinohino",
+    "sos": "SOS",
+    "unknown": "ʻIkai ʻiloʻi",
+    "user": "VeryLoving tokotaha ngaue",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lea fakafonua",
+    "subtitle": "Fili ʻa e lea fakafonua ʻoku fakaʻaongaʻi ʻi he app kotoa.",
+    "system": "Default ʻa e polokalama",
+    "search": "Fekumi ʻi he ngaahi lea fakafonua",
+    "noResults": "ʻOku ʻikai ha lea fakafonua ʻe tatau mo hoʻo kumi.",
+    "english": "Pilitania",
+    "spanish": "Sipeini",
+    "french": "Falanise",
+    "chineseSimplified": "Siaina (fakafaingofua)"
+  },
+  "phone": {
+    "label": "Fika telefoni",
+    "placeholder": "Fika telefoni",
+    "selectCountry": "Fili ʻa e fonua pe vahefonua",
+    "searchCountry": "Kumi ʻa e fonua, kouti pe tomuʻa telefoni",
+    "noCountries": "ʻOku ʻikai ha fonua ʻe tatau mo hoʻo fekumi.",
+    "countryButton": "Liliu ʻa e fonua, lolotonga %{country} mo e %{callingCode}",
+    "inputAccessibility": "Fika telefoni ki he %{country}",
+    "required": "Fakahu ha fika telefoni.",
+    "tooShort": "ʻOku fuʻu nounou ʻa e fika telefoni ko ʻeni.",
+    "tooLong": "ʻOku fuʻu loloa ʻa e fika telefoni ko ʻeni.",
+    "invalid": "Fakahu ha fika telefoni ʻoku kei ʻaonga ki he fonua kuo fili.",
+    "valid": "Fika telefoni fakavahaʻapuleʻanga ʻoku kei ʻaonga"
+  },
+  "auth": {
+    "onboardingTagline": "Ko ha hoa malu fakatautaha ʻi he vahaʻa ʻo e \"ʻOku ou sai pe\" mo e \"ʻOku ou fie maʻu tokoni.\"",
+    "createAccount": "Faʻu ha ʻakauni",
+    "continueOnboarding": "Hoko atu ʻa e onboarding",
+    "createSubtitle": "Fili ha founga ke hu ai ki loto ke maluʻi hoʻo kalafi maluʻi.",
+    "phoneVerification": "Fakapapauʻi ʻo e telefoni",
+    "sendCode": "ʻAve ʻa e kouti",
+    "sendingCode": "Ko hono ʻave ʻo e kouti ...",
+    "verifyCode": "Fakapapauʻi ʻa e kouti",
+    "sentTo": "ʻAve ki he %{phone}",
+    "yourPhone": "hoʻo telefoni",
+    "verificationCode": "Kouti fakapapauʻi",
+    "verify": "Fakapapauʻi",
+    "verifying": "Fakapapauʻi...",
+    "invalidCode": "Fakahu ʻa e kouti fakapapauʻi.",
+    "signInFailedTitle": "Fakangata ʻa e hu ki loto",
+    "signInFailedMessage": "Naʻe ʻikai ke mau lava ʻo fakakakato ʻa e hu ki loto. Vakaiʻi hoʻo fehokotakiʻanga pea toe feinga pe.",
+    "googleUnavailableTitle": "Google ʻikai lava ke hu ki ai",
+    "googleUnavailableMessage": "Fakaʻaongaʻi ha fakataha fakalakalaka fakalotofonua. ʻOku ngaue ʻa e Native Google Sign-In ʻi ha langa fakalakalaka.",
+    "northStarTitle": "NorthStar meʻa teuteu",
+    "northStarSubtitle": "Fakatauhoa he taimi ni pe hoko atu pea toki tanaki atu ia ʻamui ange.",
+    "northStarBody": "ʻE lava ke fakatupu ʻe he VL01 wearable ʻa e tafe malu ʻaki ʻa e taps mo e lomiʻi loloa.",
+    "setupJewelry": "Fokotuʻu ha ngaahi meʻa teuteu",
+    "meetCapybear": "Feʻiloaki mo Capybear",
+    "meetCapybearSubtitle": "Ko ho hoa malu angavaivai ʻi he mape mo e ngaahi telefoni.",
+    "capybearBody": "ʻCapybear lava ke tokoni ʻi he home mode, guardian mode, emergency mode, excuse calls, mo e voice support.",
+    "chooseVoice": "Fili ha leʻo",
+    "capybearReminder": "Capybear fakamanatu",
+    "remindersReady": "ʻOku mateuteu ʻa e ngaahi fakamanatu vaivai."
+  },
+  "permissions": {
+    "locationTitle": "Malu ʻi he feituʻu",
+    "locationSubtitle": "Fakaʻaongaʻi ki he mape, ngaahi feituʻu fakatuʻutamaki, tuʻuta malu mo e SOS kakano.",
+    "locationBody": "ʻVeryLoving kole ʻa e feituʻu ke mahino ki he kau tauhi fanau ʻa e feituʻu ʻe ala fie maʻu ai ha tokoni. Te ke lava ʻo liliu ʻeni ʻamui ange ʻi he Settings.",
+    "allowLocation": "Fakaʻata ʻa e feituʻu",
+    "notificationsTitle": "Fakatokanga ki he malu",
+    "notificationsSubtitle": "ʻOku poupouʻi ʻe he ngaahi fanongonongo ʻa e ngaahi lesisita mo e ngaahi meʻa fakatuʻupakee.",
+    "notificationsBody": "ʻOku mau fakaʻaongaʻi pe ʻa e ngaahi fanongonongo ki he ngaahi fakahinohino ki he malu, ngaahi fakamatala fakamuimuitaha ki he meʻa fakatuʻupakee, mo e ngaahi fakamanatu ʻoku ke fakaʻaongaʻi.",
+    "enableNotifications": "Fakaʻata ʻa e ngaahi fanongonongo",
+    "locationRationaleTitle": "ʻOku tauhi ʻe he feituʻu ʻoku tuʻu ai ʻa e tuʻunga ʻo",
+    "locationRationaleMessage": "VeryLoving fakaʻaongaʻi ʻa e feituʻu ʻoku ke ʻi ai ki he mape ʻo e malu, ngaahi feituʻu fakatuʻutamaki, vahevahe vave, mo e SOS kakano. Te ke lava ʻo liliu ʻeni ʻamui ange ʻi he Settings.",
+    "notificationsRationaleTitle": "ʻOku fie maʻu ke fakatokanga ki he malu",
+    "notificationsRationaleMessage": "ʻVeryLoving ʻoatu ʻa e ngaahi fakamanatu ʻo e lesisita, ngaahi fakamatala fakamuimuitaha ki he meʻa fakatuʻupakee, mo e ngaahi fakahinohino ki he malu ʻoku ke fakaʻaongaʻi. ʻOku ʻikai ke mau fakaʻaongaʻi ʻa e ngaahi fanongonongo ki he ngaahi tuʻuaki.",
+    "microphoneRationaleTitle": "ʻOku fakaivia ʻe he maika ʻa e ngaahi telefoni ki he malu",
+    "microphoneRationaleMessage": "ʻVeryLoving fakaʻaongaʻi pe hoʻo maika ʻi he taimi ʻoku ke kamata ai ha AI hoa pe telefoni malu.",
+    "bluetoothRationaleTitle": "Bluetooth fakafehokotaki hoʻo wearable",
+    "bluetoothRationaleMessage": "ʻOku fakaʻaongaʻi ʻe VeryLoving ʻa e Bluetooth ke fakatauhoa mo e ngaahi meʻa teuteu ʻNorthStar, lau ʻa e tuʻunga ʻo e fehokotakiʻanga, pea fakatupu ʻa e tafe malu mei he wearable.",
+    "cameraRationaleTitle": "ʻOku fili pe ʻa e meʻafaitaa",
+    "cameraRationaleMessage": "ʻVeryLoving fakaʻaongaʻi pe ʻa e meʻafaitaa ʻi he taimi ʻoku ke fili ai ke faitaaʻi ha fakamatala fakafoʻituitui pe vahevahe ha ʻimisi malu."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving tauhi ʻa e tafe ko ʻeni ke maʻu mei he Settings mo e dashboard.",
+    "chooseVoiceTitle": "Fili ho leʻo",
+    "chooseVoiceSubtitle": "Fili ʻa e leʻo ʻo e hoa ʻoku ongoʻi malu taha ke fanongo ki ai.",
+    "homeTitle": "Tuʻunga ʻi ʻapi",
+    "homeSubtitle": "Vakaiʻi fakalongolongo ke malu fakaʻaho.",
+    "guardianTitle": "Founga tauhi",
+    "guardianSubtitle": "Vahevahe ʻa e kakano mo e kakai falalaʻanga.",
+    "emergencyTitle": "Tuʻunga fakatuʻupakee",
+    "emergencySubtitle": "ʻE lava ke fakalalahi ʻa e taaʻi ʻe nima ki he fakatokanga SOS mo e tauhi leʻo.",
+    "excuseTitle": "Kumi ʻuhinga",
+    "excuseSubtitle": "Faʻu ha ʻuhinga lelei ke mavahe ai mei ha tuʻunga ʻoku ʻikai fakafiemalie.",
+    "safetyCallTitle": "Ui ki he malu",
+    "safetyCallSubtitle": "Kamata ha telefoni hoa ʻi he taimi moʻoni ʻi he taimi ʻoku ke fie maʻu ai ha tokoni.",
+    "practiceTitle": "Konga ʻo e akoako",
+    "practiceSubtitle": "ʻAhiʻahiʻi ʻa e malu ʻi ha demo maʻulalo."
+  },
+  "jewelry": {
+    "pairTitle": "Hoa NorthStar",
+    "pairSubtitle": "Tauhi ofi ʻa e ngaahi meʻa teuteu lolotonga hono scan.",
+    "scan": "Scan ki he ngaahi meʻangaue",
+    "scanning": "Scan ofi mai...",
+    "noDevices": "ʻOku teʻeki ke maʻu ha ngaahi meʻangaue ofi NorthStar.",
+    "scanStartFailed": "Bluetooth ʻikai lava ʻo kamata ʻa e scan. Kataki ʻo toe feinga pe.",
+    "scanFailed": "Naʻe ʻikai ke mau lava ʻo maʻu ha ngaahi meʻa teuteu ofi mai. Vakaiʻi Bluetooth, tauhi NorthStar ke ofi ki ai, pea toe feinga pe.",
+    "scanAccessFailed": "Bluetooth ʻikai lava ʻo kamata ʻa e scan. Vakaiʻi Bluetooth hu ki ai pea toe feinga pe.",
+    "permissionDenied": "ʻOku tamateʻi ʻa e meʻangaue ofi mai. Fakaʻata Bluetooth ke hu ki ai ʻi he Settings, pea toe feinga pe.",
+    "connectTimeout": "NorthStar fuʻu fuoloa pea toki fetuʻutaki. ʻUnuakiʻi ia ke ofi ange pea toe feinga pe.",
+    "connectFailed": "Naʻe ʻikai ke mau lava ʻo fetuʻutaki mo NorthStar. Fakapapauʻi pe ʻoku fakafonu pea ofi mai, pea toe feinga pe.",
+    "emptyTitle": "ʻOku teʻeki ai ke ʻi ai ha ngaahi meʻangaue ofi",
+    "emptyMessage": "Tauhi NorthStar fakafonu pea ofi ki he telefoni ko ʻeni, pea toe scan.",
+    "searchingMessage": "Kumi ha ngaahi meʻangaue NorthStar ofi mai..."
+  },
+  "home": {
+    "subtitle": "Dashboard ʻo e hoa malu",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} mateuteu",
+    "readyBody": "Ko e leʻo, mape, siueli, mo e kau tauhi ʻoku ʻi ai pe ʻa e foʻi lomi ʻe taha.",
+    "safetyCall": "Ui ki he malu",
+    "northStarDevice": "NorthStar meʻangaue",
+    "deviceConnected": "%{name} fehokotaki · %{battery}%",
+    "noDevice": "ʻIkai ha meʻangaue ʻoku fehokotaki",
+    "manageDevice": "Tokangaʻi ʻo e device",
+    "mode": "Founga",
+    "modes": {
+      "home": "ʻApi",
+      "guardian": "Tauhi",
+      "emergency": "Meʻa fakatuʻupake"
+    }
+  },
+  "map": {
+    "finding": "Ko hono kumi ʻo e feituʻu ʻoku ke ʻi ai...",
+    "retry": "Feituʻu ʻo e toe feinga",
+    "title": "Mape ʻo e malu",
+    "previewSubtitle": "Expo Go tomuʻa vakaiʻi; ʻMapbox ʻoku ʻi ai ha langa fakalakalaka.",
+    "preview": "Tomuʻa vakaiʻi ʻo e mape",
+    "risk": "Fakatuʻutamaki: %{risk} · Radius %{radius}m",
+    "refresh": "Fakafoʻou ʻa e feituʻu",
+    "refreshing": "Kumi ʻa e feituʻu...",
+    "updateFailed": "ʻOku ʻikai ke mau lava ʻo ʻoatu ʻa e fakamatala fakamuimuitaha ki he feituʻu ʻoku Kataki ʻo toe feinga pe.",
+    "notRequested": "Naʻe ʻikai kole ke hu ki he feituʻu. Te ke lava ʻo fakaʻata ia ʻamui ange mei he Settings.",
+    "permissionOff": "ʻOku tamateʻi ʻa e feituʻu ʻoku hu ki ai. Fakaʻata ia ʻi he Settings ke fakatefito ʻa e mape malu ʻiate koe.",
+    "timeout": "ʻOku loloa ange ʻa e feituʻu ʻoku ke ʻi ai ʻi he meʻa naʻe fai ki ai e ʻaman ʻUnu ki ha feituʻu ʻoku mahino ange ai ʻa e fakaʻilonga pea toe feinga pe.",
+    "savedTitle": "Ngaahi feituʻu kuo fakahaofi",
+    "savedEmptyTitle": "ʻOku teʻeki ai ke fakahaofi ha ngaahi feituʻu",
+    "savedEmptyMessage": "ʻE ʻasi heni ʻa e ngaahi feituʻu falalaʻanga ʻoku ke seivi ke vave ʻa e hu ki ai.",
+    "zones": {
+      "crowding": "Tokolahi ʻa e kakai poʻuli",
+      "lowLighting": "Feituʻu maʻulalo ʻa e maama"
+    },
+    "risks": {
+      "low": "maʻulalo",
+      "medium": "lotoloto",
+      "high": "maʻolunga"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Fakafehokotaki...",
+    "offlineCompanion": "Hoa ʻi he ʻinitaneti",
+    "offline": "ʻIkai ke ʻi ai ha meʻa",
+    "connected": "Fehokotaki",
+    "interrupted": "Motuhi ʻa e fehokotakiʻanga",
+    "ready": "Mateuteu ke fetuʻutaki",
+    "connectingSecurely": "Fetuʻutaki malu ki ho hoa leʻo...",
+    "messagesWaiting": {
+      "one": "%{count} e popoaki ʻoku fakatatali ke ʻave",
+      "other": "%{count} ngaahi popoaki ʻoku fakatatali ke ʻave"
+    },
+    "useOffline": "Fakaʻaongaʻi ʻa e hoa ʻi he ʻinitaneti",
+    "reconnect": "Toe fakafehokotaki ki he AI leʻo",
+    "typePlaceholder": "Taipeʻi kapau ʻoku faingataʻa ke lea",
+    "endCall": "Fakaʻosi ʻa e uiuiʻi",
+    "startCall": "Kamata ʻa e telefoni",
+    "emptyTitle": "ʻOku kamata heni hoʻomou fetalanoaʻaki",
+    "emptyMessage": "Kamata ʻa e telefoni pe taipeʻi ha popoaki ʻi he taimi ʻoku ke mateuteu ai."
+  },
+  "chat": {
+    "waiting": "Tatali ki ha fehokotakiʻanga",
+    "notSent": "ʻIkai ʻave ʻa e popoaki.",
+    "retryAccessibility": "Toe feinga ke ʻave ʻa e popoaki"
+  },
+  "history": {
+    "clearTitle": "Mahino ʻa e hisitolia ʻo e fetalanoaʻaki?",
+    "clearMessage": "ʻOku toʻo heni ʻa e ngaahi popoaki AI ʻoku ʻomai fakataha mo ʻeni mei he meʻangaue ko ʻeni.",
+    "deleteTitle": "Tamateʻi ʻa e fetalanoaʻaki ko ʻeni?",
+    "cannotUndo": "He ʻikai lava ke toe fakafoki ʻeni.",
+    "title": "Hisitolia ʻo e fetalanoaʻaki",
+    "subtitle": "AI e ngaahi popoaki ʻoku ʻomai fakataha mo ia ʻoku seivi ʻi he meʻangaue ko ʻeni.",
+    "empty": "ʻOku teʻeki ai ke fakahaofi ha fetalanoaʻaki.",
+    "emptyTitle": "ʻOku teʻeki ai ke fai ha fetalanoaʻaki",
+    "emptyMessage": "ʻE ʻasi heni hoʻo AI fepotalanoaʻaki mo hoʻo hoa hili hoʻo ʻuluaki uiuiʻi.",
+    "loadFailed": "Naʻe ʻikai ke mau lava ʻo load ʻa e hisitolia ʻo e fetalanoaʻaki. Kataki ʻo toe feinga pe.",
+    "clearFailed": "Naʻe ʻikai ke mau lava ʻo fakaʻataʻata ʻa e hisitolia ʻo e fetalanoaʻaki Kataki ʻo toe feinga pe.",
+    "deleteFailed": "Naʻe ʻikai ke mau lava ʻo tamateʻi ʻa e fepotalanoaʻaki ko ia. Kataki ʻo toe feinga pe.",
+    "aiCompanion": "AI hoa",
+    "resume": "Hoko atu",
+    "clearAll": "Fakamaʻa kotoa ʻa e hisitolia",
+    "roles": {
+      "assistant": "hoa",
+      "user": "koe"
+    }
+  },
+  "voices": {
+    "title": "Ko hoku leʻo ʻo e ui ki he malu",
+    "subtitle": "Fili ʻa e leʻo ʻo e hoa ʻoku ongoʻi totonu ke fanongo ki ai.",
+    "test": "Siviʻi ʻa e leʻo",
+    "stop": "Taʻofi ʻa e sipinga",
+    "selectionFailedTitle": "ʻIkai seivi ʻa e fili",
+    "selectionFailedMessage": "Kataki ʻo toe feinga ke fili ʻa e leʻo.",
+    "sampleFailedTitle": "ʻIkai maʻu ʻa e sipinga",
+    "sampleFailedMessage": "Naʻe ʻikai lava ke ta ʻa e sipinga ʻo e leʻo ko ʻeni. Kataki ʻo toe feinga pe.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "vaivai, nonga, fakavaʻe"
+      },
+      "bestie": {
+        "name": "Lelei taha",
+        "description": "lelei, fakafiemalie, fepotalanoaʻaki"
+      },
+      "boyfriend": {
+        "name": "Kaumeʻa tangata",
+        "description": "tuʻumaʻu, ʻofa, lolotonga"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "loto-falala, maluʻi, fakaʻaiʻai"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Leʻo",
+    "changeVoice": "Liliu ʻa e leʻo",
+    "showCompanion": "Fakaʻaliʻali ʻa e hoa",
+    "offlineMode": "Tuʻunga ʻi he ʻinitaneti",
+    "offlineModeSubtitle": "Fakaʻaongaʻi ʻa e ngaahi tali ʻoku fakatahaʻi fakataha mo e hoa ʻi he taimi ʻoku ʻikai lava ke maʻu ai ʻa e ngaahi tohi fakamoʻoni ʻo e netiueka pe Hume.",
+    "privacyData": "Totonu fakafoʻituitui mo e fakamatala",
+    "privacyBody": "ʻAve pe tamateʻi ʻa e fakamatala fakalotofonua ʻoku tauhi ʻi he meʻangaue ko ʻeni.",
+    "preparingExport": "Ko hono teuteuʻi ʻo e export ...",
+    "exportData": "ʻAve ʻeku fakamatala",
+    "privacyPolicy": "Tuʻutuʻuni totonu fakafoʻituitui",
+    "deleting": "Toʻo...",
+    "deleteAll": "Tamateʻi ʻa e ngaahi fakamatala fakalotofonua kotoa pe",
+    "deviceManagement": "Puleʻi ʻo e device",
+    "emergencyContacts": "Ngaahi fetuʻutaki ki he meʻa fakatuʻupake",
+    "signOut": "Hu ki tuʻa",
+    "exportFailedTitle": "ʻIkai lava ʻo hiki atu",
+    "exportFailedMessage": "ʻIkai lava ke hiki atu hoʻo fakamatala he taimi ni.",
+    "deleteConfirmTitle": "Tamateʻi ʻa e ngaahi fakamatala fakalotofonua kotoa pe?",
+    "deleteConfirmMessage": "ʻOku toʻo heni hoʻo fakamatala fakafoʻituitui, settings, ngaahi fetuʻutaki ki he meʻa fakatuʻupakee, hisitolia ʻo e fepotalanoaʻaki, ngaahi fakamanatu ʻo e fakangofua, mo e sesi fakalao fakalotofonua mei he device ko ʻeni.",
+    "deleteEverything": "Tamateʻi ʻa e meʻa kotoa pe",
+    "deleteFailedTitle": "ʻIkai lava ʻo tamateʻi",
+    "deleteFailedMessage": "ʻIkai lava ʻo tamateʻi ʻa e fakamatala fakalotofonua he taimi ni.",
+    "linkFailed": "ʻIkai lava ʻo fakaava ʻa e fehokotakiʻanga",
+    "sections": {
+      "language": "Lea fakafonua",
+      "languageSubtitle": "Interface mo e lea fakangofuaʻi ʻo e polokalama",
+      "companion": "Hoa",
+      "companionSubtitle": "Leʻo mo e ngaahi meʻa ʻoku fie maʻu ʻi he ʻinitaneti",
+      "deviceSafety": "Ngaahi meʻangaue mo e malu",
+      "deviceSafetySubtitle": "NorthStar, kau tauhi, mo e ngaahi fetuʻutaki ki he meʻa fakatuʻupakee",
+      "privacy": "Totonu fakafoʻituitui mo e fakamatala",
+      "privacySubtitle": "Hisitolia, export, toʻo mo e tuʻutuʻuni",
+      "account": "ʻAkauni",
+      "accountSubtitle": "Ko hoʻo VeryLoving lolotonga"
+    },
+    "updateFailedTitle": "ʻIkai seivi ʻa e fokotuʻutuʻu",
+    "updateFailedMessage": "Naʻe ʻikai ke mau lava ʻo fakahaofi ʻa e meʻa ko ia. Kataki ʻo toe feinga pe.",
+    "signOutFailedTitle": "ʻIkai lava ʻo hu ki tuʻa",
+    "signOutFailedMessage": "ʻOku kei longomoʻui pe hoʻo fakatahaʻanga. Kataki ʻo toe feinga pe."
+  },
+  "contacts": {
+    "title": "Ngaahi fetuʻutaki ki he meʻa fakatuʻupake",
+    "subtitle": "Kakai falalaʻanga ʻoku maʻu lolotonga ʻa e feʻaveʻaki malu.",
+    "addTitle": "Tanaki atu ha fetuʻutaki ki he meʻa fakatuʻ",
+    "name": "Hingoa",
+    "namePlaceholder": "Hingoa ʻo e fetuʻutaki",
+    "phone": "Fika telefoni fetuʻutaki",
+    "add": "Tanaki atu ʻa e fetuʻutaki",
+    "empty": "ʻOku teʻeki ai ke tanaki atu ha fetuʻutaki ki he meʻa fakatuʻupakee",
+    "emptyTitle": "ʻOku teʻeki ai ke ʻi ai ha fetuʻutaki ki he me",
+    "emptyMessage": "Tanaki atu ha taha ʻoku ke falala ki ai koeʻuhi ke nau mateuteu ʻi he taimi ʻoku fie maʻu ai kinautolu ʻe ha founga malu.",
+    "removeTitle": "Toʻo %{name}?",
+    "removeMessage": "He ʻikai ke toe ʻasi ʻa e tokotaha ko ʻeni ʻi hoʻo fakamatala ki he meʻa fakatuʻupakee.",
+    "nameRequired": "Fakahu ʻa e hingoa ʻo e tokotaha fetuʻutaki.",
+    "saveFailedTitle": "ʻIkai seivi ʻa e Fetuʻutaki",
+    "saveFailedMessage": "Naʻe ʻikai ke mau lava ʻo seivi ʻa e fetuʻutaki ko ʻeni. Vakaiʻi ʻa e fakaikiiki pea toe feinga pe.",
+    "removeFailedTitle": "ʻIkai toʻo ʻa e fetuʻutaki",
+    "removeFailedMessage": "Naʻe ʻikai ke mau lava ʻo toʻo ʻa e fetuʻutaki ko ʻeni. Kataki ʻo toe feinga pe.",
+    "callAccessibility": "Telefoni %{name}",
+    "removeAccessibility": "Toʻo %{name}"
+  },
+  "device": {
+    "title": "Puleʻi ʻo e device",
+    "subtitle": "Tokangaʻi hoʻo NorthStar device.",
+    "connected": "Fehokotaki · %{battery}% puha ʻuhila",
+    "none": "ʻIkai ha meʻangaue ʻoku fehokotaki",
+    "disconnect": "Motuhi ʻa e device",
+    "connect": "Fakafehokotaki ʻa e device"
+  },
+  "friends": {
+    "title": "Ngaahi kaungameʻa",
+    "subtitle": "Tauhi fanau, kole, mo e kalafi ki he meʻa fakatuʻupakee.",
+    "addDemo": "Tanaki atu ha kaungameʻa demo",
+    "emptyTitle": "ʻOku ʻikai ha taha ʻi hoʻo siakale malu",
+    "emptyMessage": "ʻE ʻasi heni ʻa e ngaahi kaungameʻa mo e kau tauhi falalaʻanga ʻi he taimi ʻe tanaki atu ai kinautolu.",
+    "newGuardian": "Tauhi Foʻou",
+    "statuses": {
+      "guardian": "Tauhi",
+      "pending": "ʻOku fakatatali"
+    }
+  },
+  "emergency": {
+    "title": "Ngaahi meʻa fakatuʻupakeeSOS",
+    "subtitle": "Fakalalahi pe ʻi he taimi ʻoku ke fie maʻu ai ha tokoni fakavavevave.",
+    "body": "ʻE fakaha ʻe he meʻa ni hoʻo founga malu mo teuteuʻi ha ngaahi fetuʻutaki ki he meʻa fakatuʻupakee.",
+    "activate": "Fakaʻaongaʻi ʻa e SOS",
+    "callCompanion": "Telefoni ki AI hoa",
+    "notificationTitle": "SOS fakamoʻui",
+    "notificationBody": "Kuo maau hoʻo tafe mai ki he meʻa fakatuʻupakee.",
+    "readyTitle": "SOS mateuteu",
+    "callContact": "Telefoni %{name}?",
+    "addContact": "Tanaki atu ha fetuʻutaki ki he meʻa fakatuʻupake ʻi he Settings.",
+    "quickShareTitle": "Vahevahe vave",
+    "quickShareMessage": "Kuo maau ʻa e konga ʻo e vahevahe ʻo e feituʻu. Fakafehokotaki ʻa e backend share endpoint ke ʻave ʻa e ngaahi fehokotakiʻanga hangatonu."
+  },
+  "quickShare": {
+    "title": "Vahevahe vave",
+    "subtitle": "Kuo maau ʻa e feʻaveʻaki ʻo e feituʻu ʻoku vahevahe ai."
+  },
+  "capybearTap": {
+    "title": "Capybear lomiʻi",
+    "subtitle": "Lomiʻi tuʻo ua hoʻo NorthStar ke li ha lanu moli maluʻi.",
+    "body": "ʻOku mateuteu ʻa e hala ʻo e ngaue ki he fakauaea ʻo e meʻa ʻoku hoko ʻi he BLE."
+  },
+  "debug": {
+    "title": "VeryLoving peesi debug",
+    "subtitle": "Hala fakalakalaka pe."
+  },
+  "errors": {
+    "voiceOffline": "ʻOku hange ʻoku ke ʻikai ke ʻi he ʻinitaneti. ʻE ʻoatu hoʻo popoaki ʻi he taimi te ke toe fetuʻutaki ai.",
+    "voiceQueued": "Seivi ʻa e popoaki. ʻE ʻoatu ia ʻi he taimi ʻe toe fakahoko ai ʻa e hoa leʻo.",
+    "voiceRetrying": "Feinga ke toe ʻave hoʻo popoaki...",
+    "voiceConnecting": "Fetuʻutaki malu ki ho hoa leʻo...",
+    "microphone": "ʻOku fie maʻu ʻa e maika ki he ngaahi telefoni leʻo. Te ke lava ʻo fakaʻata ia ʻi he Settings, pe taipeʻi ha popoaki.",
+    "billing": "ʻOku ʻikai lava ke maʻu fakataimi ʻa e hoa leʻo ʻi he ʻinitaneti. ʻE lava ke ke hoko atu mo e hoa ʻi he ʻinitaneti.",
+    "authentication": "Naʻe ʻikai lava ʻe he hoa leʻo ʻo fakapapauʻi ʻa e fakatahaʻanga ko ʻeni. Toe hu ki loto pe fakaʻaongaʻi ʻa e hoa ʻi he ʻinitaneti he taimi ni.",
+    "timeout": "Naʻe fuʻu fuoloa pea toki tali mai ʻe he hoa leʻo. Vakaiʻi hoʻo fehokotakiʻanga pea toe feinga pe.",
+    "network": "Naʻe ʻikai ke mau lava ʻo fetuʻutaki ki he hoa leʻo. Vakaiʻi hoʻo fehokotakiʻanga, pea toe feinga pe hoko atu ʻi he ʻinitaneti.",
+    "genericVoice": "Naʻe ʻi ai ha meʻa naʻa ne taʻofi ʻa e ui leʻo. Toe feinga, pe hoko atu ʻaki ʻa e hoa ʻoku ʻikai ke ʻi ai ha meʻa."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving export ʻo e fakamatala"
+  },
+  "notifications": {
+    "channelName": "Fakatokanga ki he malu"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "ʻVeryLoving fie maʻu ke hu ki he maika ke malu mo AI ʻa e ngaahi telefoni mo e hoa.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving fakaʻaongaʻi ho feituʻu ki he mape malu mo e ngaahi meʻa malu ofi mai.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e feituʻu ʻoku ke ʻi ai ke tokoni ki he tuʻuta malu mo e ngaahi meʻa fakatuʻupakee.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving fakaʻaongaʻi ʻa e feituʻu puipuituʻa ki he tuʻuta malu mo e feituʻu fakatuʻutamaki ofi mai.",
+      "NSCameraUsageDescription": "ʻVeryLoving fakaʻaongaʻi pe ʻa e meʻafaitaa ʻi he taimi ʻoku ke fili ai ke faitaaʻi ha fakamatala fakafoʻituitui pe ta malu.",
+      "NSPhotoLibraryUsageDescription": "ʻVeryLoving fakaʻaongaʻi pe hoʻo laipeli taa ʻi he taimi ʻoku ke fili ai ha fakamatala fakafoʻituitui pe ʻimisi malu.",
+      "NSBluetoothAlwaysUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi.",
+      "NSBluetoothPeripheralUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

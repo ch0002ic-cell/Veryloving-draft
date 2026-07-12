@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tambah",
+    "apple": "Apple",
+    "back": "Mbalik",
+    "call": "Telpon",
+    "cancel": "Batal",
+    "clear": "Bening",
+    "close": "Tutup",
+    "connect": "Sambungake",
+    "connecting": "Nyambung...",
+    "continue": "Terus",
+    "delete": "Busak",
+    "finish": "Rampung",
+    "friends": "Kanca-kanca",
+    "google": "Google",
+    "home": "omah",
+    "loading": "Loading...",
+    "map": "Peta",
+    "notNow": "Ora saiki",
+    "remove": "Busak",
+    "retry": "Coba maneh",
+    "retrying": "Nyoba maneh",
+    "save": "Simpen",
+    "selected": "Dipilih",
+    "send": "Kirim",
+    "settings": "Setelan",
+    "skip": "Skip",
+    "skipForNow": "Skip saiki",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Ora dingerteni",
+    "user": "VeryLoving panganggo",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Basa",
+    "subtitle": "Pilih basa sing digunakake ing saindhenging app.",
+    "system": "System default",
+    "search": "Telusuri basa",
+    "noResults": "Ora ana basa sing cocog karo panelusuran sampeyan.",
+    "english": "Basa Jawa",
+    "spanish": "Spanyol",
+    "french": "Prancis",
+    "chineseSimplified": "Basa Cina (Sederhana)"
+  },
+  "phone": {
+    "label": "Nomer telpon",
+    "placeholder": "Nomer telpon",
+    "selectCountry": "Pilih negara utawa wilayah",
+    "searchCountry": "Telusuri negara, kode, utawa awalan telpon",
+    "noCountries": "Ora ana negara sing cocog karo panelusuran sampeyan.",
+    "countryButton": "Ganti negara, saiki %{country} plus %{callingCode}",
+    "inputAccessibility": "Nomer telpon kanggo %{country}",
+    "required": "Ketik nomer telpon.",
+    "tooShort": "Nomer telpon iki cendhak banget.",
+    "tooLong": "Nomer telpon iki dawa banget.",
+    "invalid": "Ketik nomer telpon sing bener kanggo negara sing dipilih.",
+    "valid": "Nomer telpon internasional sing valid"
+  },
+  "auth": {
+    "onboardingTagline": "Sawijining kanca safety pribadi kanggo wektu antarane \"Aku ora apa-apa\" lan \"Aku butuh pitulung.\"",
+    "createAccount": "Gawe akun",
+    "continueOnboarding": "Terus karo onboarding",
+    "createSubtitle": "Pilih cara mlebu kanggo nglindhungi grafik safety sampeyan.",
+    "phoneVerification": "Verifikasi telpon",
+    "sendCode": "Kirim kode",
+    "sendingCode": "Kirim kode...",
+    "verifyCode": "Verifikasi kode",
+    "sentTo": "Dikirim menyang %{phone}",
+    "yourPhone": "telpon sampeyan",
+    "verificationCode": "Kode verifikasi",
+    "verify": "Verifikasi",
+    "verifying": "Verifikasi...",
+    "invalidCode": "Ketik kode verifikasi.",
+    "signInFailedTitle": "Login diganggu",
+    "signInFailedMessage": "Kita ora bisa ngrampungake mlebu. Priksa sambungan sampeyan lan coba maneh.",
+    "googleUnavailableTitle": "Google Mlebet ora kasedhiya",
+    "googleUnavailableMessage": "Migunakake sesi pangembangan lokal. Native Google Sign-In dianggo ing pembangunan pembangunan.",
+    "northStarTitle": "NorthStar perhiasan",
+    "northStarSubtitle": "Gathukake saiki utawa terusake lan tambahake mengko.",
+    "northStarBody": "Ing VL01 sing bisa dipakai bisa micu aliran safety nganggo tunyuk lan gerakan penet dawa.",
+    "setupJewelry": "Setel perhiasan",
+    "meetCapybear": "Ketemu Capybear",
+    "meetCapybearSubtitle": "Rekan keamanan sing lembut ing peta lan ing telpon.",
+    "capybearBody": "Capybear bisa mbantu mode ngarep, mode wali, mode darurat, telpon alesan, lan dhukungan swara.",
+    "chooseVoice": "Pilih swara",
+    "capybearReminder": "Capybear pangeling",
+    "remindersReady": "Pangeling alus wis siyap."
+  },
+  "permissions": {
+    "locationTitle": "Keamanan lokasi",
+    "locationSubtitle": "Digunakake kanggo peta, zona bebaya, tekane kanthi aman, lan konteks SOS.",
+    "locationBody": "VeryLoving nyuwun panggonan supaya para wali bisa ngerti ngendi perlu bantuan. Sampeyan bisa ngganti iki mengko ing Setelan.",
+    "allowLocation": "Idini lokasi",
+    "notificationsTitle": "Tandha safety",
+    "notificationsSubtitle": "Kabar ndhukung check-in lan acara darurat.",
+    "notificationsBody": "Kita mung nggunakake kabar kanggo pituduh safety, nganyari darurat, lan pangeling sing sampeyan aktifake.",
+    "enableNotifications": "Aktifake kabar",
+    "locationRationaleTitle": "Location njaga konteks safety akurat",
+    "locationRationaleMessage": "VeryLoving nggunakake lokasi sampeyan kanggo peta safety, zona bebaya, nuduhake cepet, lan SOS konteks. Sampeyan bisa ngganti iki mengko ing Setelan.",
+    "notificationsRationaleTitle": "Tandha safety mbutuhake kabar",
+    "notificationsRationaleMessage": "VeryLoving ngirim pangeling mlebu, nganyari darurat, lan pituduh safety sing sampeyan aktifake. Kita ora nggunakake kabar kanggo iklan.",
+    "microphoneRationaleTitle": "Mikropon nguwasani telpon safety",
+    "microphoneRationaleMessage": "VeryLoving nggunakake mikropon mung nalika sampeyan miwiti AI telpon kanca utawa keamanan.",
+    "bluetoothRationaleTitle": "Bluetooth nyambungake sing bisa dianggo",
+    "bluetoothRationaleMessage": "VeryLoving nggunakake Bluetooth kanggo masangake karo NorthStar perhiasan, maca status sambungan, lan micu aliran safety saka wearable.",
+    "cameraRationaleTitle": "Kamera iku opsional",
+    "cameraRationaleMessage": "VeryLoving nggunakake kamera mung nalika sampeyan milih njupuk foto profil utawa nuduhake gambar safety."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving nyedhiyakake aliran iki saka Setelan lan dasbor.",
+    "chooseVoiceTitle": "Pilih swara sampeyan",
+    "chooseVoiceSubtitle": "Pilih swara kanca sing paling aman dirungokake.",
+    "homeTitle": "Mode ngarep",
+    "homeSubtitle": "Ngawasi sepi kanggo safety saben dina.",
+    "guardianTitle": "Mode wali",
+    "guardianSubtitle": "Tuduhake konteks karo wong sing dipercaya.",
+    "emergencyTitle": "Mode darurat",
+    "emergencySubtitle": "Lima tunyuk bisa munggah menyang SOS lan tandha wali.",
+    "excuseTitle": "Nuwun sewu",
+    "excuseSubtitle": "Gawe alasan sing apik kanggo ninggalake kahanan sing ora nyenengake.",
+    "safetyCallTitle": "Panggilan safety",
+    "safetyCallSubtitle": "Miwiti telpon kanca wektu nyata yen sampeyan butuh dhukungan.",
+    "practiceTitle": "Latihan adegan",
+    "practiceSubtitle": "Coba aliran safety ing demo tekanan rendah."
+  },
+  "jewelry": {
+    "pairTitle": "Pasangan NorthStar",
+    "pairSubtitle": "Simpen perhiasan ing cedhak nalika mindhai.",
+    "scan": "Pindai piranti",
+    "scanning": "Mindai cedhak...",
+    "noDevices": "Durung ana piranti NorthStar sing cedhak.",
+    "scanStartFailed": "Bluetooth mindhai ora bisa diwiwiti. Coba maneh.",
+    "scanFailed": "Kita ora bisa nemokake perhiasan sing cedhak. Priksa Bluetooth, terus NorthStar cedhak, lan coba maneh.",
+    "scanAccessFailed": "Bluetooth mindhai ora bisa diwiwiti. Priksa Bluetooth akses lan coba maneh.",
+    "permissionDenied": "Akses piranti ing cedhak mati. Idini akses Bluetooth ing Setelan, banjur coba maneh.",
+    "connectTimeout": "NorthStar suwe banget kanggo nyambung. Cedhak lan coba maneh.",
+    "connectFailed": "Kita ora bisa nyambung menyang NorthStar. Priksa manawa wis diisi daya lan cedhak, banjur coba maneh.",
+    "emptyTitle": "Durung ana piranti sing cedhak",
+    "emptyMessage": "Tansah NorthStar diisi daya lan cedhak karo telpon iki, banjur pindai maneh.",
+    "searchingMessage": "Nggoleki NorthStar piranti sing cedhak..."
+  },
+  "home": {
+    "subtitle": "Dasbor pendamping keamanan",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} wis siyap",
+    "readyBody": "Swara, peta, perhiasan, lan wali mung siji tutul.",
+    "safetyCall": "Telpon safety",
+    "northStarDevice": "NorthStar piranti",
+    "deviceConnected": "%{name} disambungake · %{battery}%",
+    "noDevice": "Ora ana piranti sing disambungake",
+    "manageDevice": "Atur piranti",
+    "mode": "Modus",
+    "modes": {
+      "home": "omah",
+      "guardian": "Wali",
+      "emergency": "Darurat"
+    }
+  },
+  "map": {
+    "finding": "Nggoleki lokasi sampeyan...",
+    "retry": "Coba maneh lokasi",
+    "title": "Peta safety",
+    "previewSubtitle": "Expo Go pratinjau; Mapbox nerjemahake ing mbangun pembangunan.",
+    "preview": "Pratinjau peta",
+    "risk": "Risiko: %{risk} · Radius %{radius}m",
+    "refresh": "Refresh lokasi",
+    "refreshing": "Nggoleki lokasi...",
+    "updateFailed": "Kita ora bisa nganyari lokasi sampeyan. Coba maneh.",
+    "notRequested": "Akses lokasi ora dijaluk. Sampeyan bisa ngaktifake mengko saka Setelan.",
+    "permissionOff": "Akses lokasi mati. Aktifake ing Setelan kanggo pusatake peta safety ing sampeyan.",
+    "timeout": "Lokasi sampeyan luwih suwe tinimbang sing dikarepake. Pindhah menyang endi wae kanthi sinyal sing luwih cetha lan coba maneh.",
+    "savedTitle": "Panggonan sing disimpen",
+    "savedEmptyTitle": "Durung ana panggonan sing disimpen",
+    "savedEmptyMessage": "Panggonan sing dipercaya sing sampeyan simpen bakal katon ing kene kanggo akses cepet.",
+    "zones": {
+      "crowding": "Rame wengi",
+      "lowLighting": "Area kurang cahya"
+    },
+    "risks": {
+      "low": "asor",
+      "medium": "sedheng",
+      "high": "dhuwur"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Nyambung...",
+    "offlineCompanion": "Kanca offline",
+    "offline": "Offline",
+    "connected": "Disambungake",
+    "interrupted": "Sambungan putus",
+    "ready": "Siap kanggo nyambung",
+    "connectingSecurely": "Nyambung kanthi aman menyang kanca swara sampeyan...",
+    "messagesWaiting": {
+      "one": "%{count} pesen nunggu dikirim",
+      "other": "%{count} pesen sing nunggu dikirim"
+    },
+    "useOffline": "Gunakake kanca offline",
+    "reconnect": "Sambungake maneh menyang swara AI",
+    "typePlaceholder": "Ketik yen ngomong angel",
+    "endCall": "Pungkasi telpon",
+    "startCall": "Miwiti telpon",
+    "emptyTitle": "Obrolan sampeyan diwiwiti ing kene",
+    "emptyMessage": "Miwiti telpon utawa ketik pesen yen wis siyap."
+  },
+  "chat": {
+    "waiting": "Ngenteni sambungan",
+    "notSent": "Pesen ora dikirim.",
+    "retryAccessibility": "Coba kirim pesen maneh"
+  },
+  "history": {
+    "clearTitle": "Mbusak riwayat obrolan?",
+    "clearMessage": "Iki mbusak AI pesen kanca sing disimpen saka piranti iki.",
+    "deleteTitle": "Busak obrolan iki?",
+    "cannotUndo": "Iki ora bisa dibatalake.",
+    "title": "Riwayat pacelathon",
+    "subtitle": "AI pesen kanca sing disimpen ing piranti iki.",
+    "empty": "Durung ana obrolan sing disimpen.",
+    "emptyTitle": "Durung ana obrolan",
+    "emptyMessage": "Obrolan AI kanca sampeyan bakal katon ing kene sawise telpon pisanan.",
+    "loadFailed": "Kita ora bisa mbukak riwayat obrolan. Coba maneh.",
+    "clearFailed": "Kita ora bisa mbusak riwayat obrolan. Coba maneh.",
+    "deleteFailed": "Kita ora bisa mbusak obrolan kasebut. Coba maneh.",
+    "aiCompanion": "AI rencang",
+    "resume": "Resume",
+    "clearAll": "Busak kabeh riwayat",
+    "roles": {
+      "assistant": "pendamping",
+      "user": "kowe"
+    }
+  },
+  "voices": {
+    "title": "Swara telpon keamananku",
+    "subtitle": "Pilih swara kanca sing cocog kanggo dirungokake.",
+    "test": "Tes swara",
+    "stop": "Stop sampel",
+    "selectionFailedTitle": "Pilihan ora disimpen",
+    "selectionFailedMessage": "Coba pilih swara maneh.",
+    "sampleFailedTitle": "Sample ora kasedhiya",
+    "sampleFailedMessage": "Sampel swara iki ora bisa diputer. Coba maneh.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "alus, tenang, lemah"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "padhang, ngyakinake, ngobrol"
+      },
+      "boyfriend": {
+        "name": "Pacar",
+        "description": "mantep, penyayang, saiki"
+      },
+      "muscleMan": {
+        "name": "Wong otot",
+        "description": "yakin, protèktif, motivasi"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Swara",
+    "changeVoice": "Ganti swara",
+    "showCompanion": "Tampilake kanca",
+    "offlineMode": "Mode offline",
+    "offlineModeSubtitle": "Gunakake tanggapan kanca sing dibundel nalika jaringan utawa Hume kredensial ora kasedhiya.",
+    "privacyData": "Privasi & data",
+    "privacyBody": "Ekspor utawa mbusak data lokal sing disimpen ing piranti iki.",
+    "preparingExport": "Nyiapake ekspor...",
+    "exportData": "Ekspor dataku",
+    "privacyPolicy": "Kabijakan privasi",
+    "deleting": "Mbusak...",
+    "deleteAll": "Busak kabeh data lokal",
+    "deviceManagement": "Manajemen piranti",
+    "emergencyContacts": "Kontak darurat",
+    "signOut": "Metu",
+    "exportFailedTitle": "Ekspor gagal",
+    "exportFailedMessage": "Ora bisa ngekspor data sampeyan saiki.",
+    "deleteConfirmTitle": "Busak kabeh data lokal?",
+    "deleteConfirmMessage": "Iki mbusak profil, setelan, kontak darurat, riwayat obrolan, pangeling ijin, lan sesi otentikasi lokal saka piranti iki.",
+    "deleteEverything": "Busak kabeh",
+    "deleteFailedTitle": "Pambusakan gagal",
+    "deleteFailedMessage": "Ora bisa mbusak data lokal saiki.",
+    "linkFailed": "Ora bisa mbukak link",
+    "sections": {
+      "language": "Basa",
+      "languageSubtitle": "Basa idin antarmuka lan sistem",
+      "companion": "Rencang",
+      "companionSubtitle": "Preferensi swara lan offline",
+      "deviceSafety": "Piranti lan safety",
+      "deviceSafetySubtitle": "NorthStar, wali, lan kontak darurat",
+      "privacy": "Privasi lan data",
+      "privacySubtitle": "Riwayat, ekspor, pambusakan, lan kabijakan",
+      "account": "Akun",
+      "accountSubtitle": "Sesi VeryLoving sampeyan saiki"
+    },
+    "updateFailedTitle": "Setelan ora disimpen",
+    "updateFailedMessage": "Kita ora bisa nyimpen pilihan kasebut. Coba maneh.",
+    "signOutFailedTitle": "Ora bisa metu",
+    "signOutFailedMessage": "Sesi sampeyan isih aktif. Coba maneh."
+  },
+  "contacts": {
+    "title": "Kontak darurat",
+    "subtitle": "Wong sing dipercaya kasedhiya sajrone arus safety.",
+    "addTitle": "Tambah kontak darurat",
+    "name": "Jeneng",
+    "namePlaceholder": "Jeneng kontak",
+    "phone": "Hubungi nomer telpon",
+    "add": "Tambah kontak",
+    "empty": "Durung ana kontak darurat sing ditambahake.",
+    "emptyTitle": "Durung ana kontak darurat",
+    "emptyMessage": "Tambahake wong sing dipercaya supaya dheweke siyap yen ana aliran safety.",
+    "removeTitle": "Busak %{name}?",
+    "removeMessage": "Wong iki ora bakal katon maneh ing aliran darurat sampeyan.",
+    "nameRequired": "Ketik jeneng kontak.",
+    "saveFailedTitle": "Kontak ora disimpen",
+    "saveFailedMessage": "Kita ora bisa nyimpen kontak iki. Priksa rincian lan coba maneh.",
+    "removeFailedTitle": "Kontak ora dibusak",
+    "removeFailedMessage": "Kita ora bisa mbusak kontak iki. Coba maneh.",
+    "callAccessibility": "Telpon %{name}",
+    "removeAccessibility": "Busak %{name}"
+  },
+  "device": {
+    "title": "Manajemen piranti",
+    "subtitle": "Atur piranti NorthStar sampeyan.",
+    "connected": "Disambungake · %{battery}% baterei",
+    "none": "Ora ana piranti sing disambungake",
+    "disconnect": "Pedhot piranti",
+    "connect": "Sambungake piranti"
+  },
+  "friends": {
+    "title": "Kanca-kanca",
+    "subtitle": "Wali, panjalukan, lan grafik darurat.",
+    "addDemo": "Tambah kanca demo",
+    "emptyTitle": "Bunderan safety sampeyan kosong",
+    "emptyMessage": "Kanca lan wali sing dipercaya bakal katon ing kene yen wis ditambahake.",
+    "newGuardian": "Wali Anyar",
+    "statuses": {
+      "guardian": "Wali",
+      "pending": "Pending"
+    }
+  },
+  "emergency": {
+    "title": "Darurat SOS",
+    "subtitle": "Escalate mung yen sampeyan butuh dhukungan langsung.",
+    "body": "Iki bakal ngabari aliran safety lan nyiapake kontak darurat.",
+    "activate": "Aktifake SOS",
+    "callCompanion": "Telpon AI rencang",
+    "notificationTitle": "SOS diaktifake",
+    "notificationBody": "Alur darurat sampeyan wis siyap.",
+    "readyTitle": "SOS siap",
+    "callContact": "Telpon %{name}?",
+    "addContact": "Tambah kontak darurat ing Setelan.",
+    "quickShareTitle": "Bagi kanthi cepet",
+    "quickShareMessage": "Stub nuduhake lokasi wis siyap. Sambungake endpoint bareng backend kanggo ngirim link langsung."
+  },
+  "quickShare": {
+    "title": "Enggo bareng cepet",
+    "subtitle": "Alur bareng lokasi wis siyap."
+  },
+  "capybearTap": {
+    "title": "Capybear tunyuk",
+    "subtitle": "Tutul kaping pindho NorthStar kanggo nyelehake oranye sing aman.",
+    "body": "Rute gerakan wis siyap kanggo kabel acara BLE."
+  },
+  "debug": {
+    "title": "VeryLoving kaca debug",
+    "subtitle": "Rute mung pembangunan."
+  },
+  "errors": {
+    "voiceOffline": "Kowe katon offline. Pesen sampeyan bakal dikirim nalika sampeyan nyambungake maneh.",
+    "voiceQueued": "Pesen disimpen. Bakal dikirim nalika kanca swara nyambung maneh.",
+    "voiceRetrying": "Nyoba ngirim pesen maneh...",
+    "voiceConnecting": "Nyambung kanthi aman menyang kanca swara sampeyan...",
+    "microphone": "Akses mikropon dibutuhake kanggo telpon swara. Sampeyan bisa ngaktifake ing Setelan, utawa ketik pesen.",
+    "billing": "Rekan swara online kanggo sementara ora kasedhiya. Sampeyan bisa nerusake karo kanca offline.",
+    "authentication": "Rekan swara ora bisa verifikasi sesi iki. Mlebu maneh utawa gunakake kanca offline saiki.",
+    "timeout": "Rekan swarane suwe banget kanggo nanggapi. Priksa sambungan sampeyan lan coba maneh.",
+    "network": "Kita ora bisa tekan kanca swara. Priksa sambungan sampeyan, banjur coba maneh utawa terus offline.",
+    "genericVoice": "Ana sing nyetop telpon swara. Coba maneh, utawa terusake karo kanca offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ekspor data"
+  },
+  "notifications": {
+    "channelName": "Tandha safety"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving mbutuhake akses mikropon kanggo safety lan AI telpon kanca.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving nggunakake lokasi sampeyan kanggo peta safety lan fitur safety cedhak.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving nggunakake lokasi sampeyan kanggo ndhukung arus tekan sing aman lan darurat.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving nggunakake lokasi latar mburi kanggo fitur zona bebaya sing aman lan cedhak.",
+      "NSCameraUsageDescription": "VeryLoving nggunakake kamera mung nalika sampeyan milih njupuk foto profil utawa safety.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving nggunakake perpustakaan foto mung nalika sampeyan milih profil utawa gambar safety.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving nggunakake Bluetooth kanggo nyambungake menyang NorthStar perhiasan safety.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving nggunakake Bluetooth kanggo nyambungake menyang NorthStar perhiasan safety."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

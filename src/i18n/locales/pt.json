@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Adicionar",
+    "apple": "Apple",
+    "back": "Voltar",
+    "call": "Chamada",
+    "cancel": "Cancelar",
+    "clear": "Limpo",
+    "close": "Fechar",
+    "connect": "Conecte-se",
+    "connecting": "Conectando...",
+    "continue": "Continue",
+    "delete": "Excluir",
+    "finish": "Fim",
+    "friends": "Amigos",
+    "google": "Google",
+    "home": "Casa",
+    "loading": "Carregando...",
+    "map": "Mapa",
+    "notNow": "Agora não",
+    "remove": "Remover",
+    "retry": "Retentar",
+    "retrying": "Retentativa",
+    "save": "Salvar",
+    "selected": "Selecionado",
+    "send": "Enviar",
+    "settings": "Configurações",
+    "skip": "Pular",
+    "skipForNow": "Pule por enquanto",
+    "skipTutorial": "Pular tutorial",
+    "sos": "SOS",
+    "unknown": "Desconhecido",
+    "user": "VeryLoving usuário",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Idioma",
+    "subtitle": "Escolha o idioma usado em todo o aplicativo.",
+    "system": "Padrão do sistema",
+    "search": "Idiomas de busca",
+    "noResults": "Nenhum idioma corresponde à sua busca.",
+    "english": "Inglês",
+    "spanish": "Espanhol",
+    "french": "Francês",
+    "chineseSimplified": "Chinês (Simplificado)"
+  },
+  "phone": {
+    "label": "Número de telefone",
+    "placeholder": "Número de telefone",
+    "selectCountry": "País ou região selecionada",
+    "searchCountry": "País de pesquisa, código ou prefixo de discagem",
+    "noCountries": "Nenhum país corresponde à sua busca.",
+    "countryButton": "Mude de país, atualmente %{country} mais %{callingCode}",
+    "inputAccessibility": "Número de telefone para %{country}",
+    "required": "Insira um número de telefone.",
+    "tooShort": "Esse número de telefone é muito curto.",
+    "tooLong": "Esse número de telefone está muito longo.",
+    "invalid": "Insira um número de telefone válido para o país selecionado.",
+    "valid": "Número de telefone internacional válido"
+  },
+  "auth": {
+    "onboardingTagline": "Um companheiro de segurança pessoal para os momentos entre \"Estou bem\" e \"Preciso de ajuda.\"",
+    "createAccount": "Criar conta",
+    "continueOnboarding": "Continue com a integração",
+    "createSubtitle": "Escolha um método de login para proteger seu gráfico de segurança.",
+    "phoneVerification": "Verificação por telefone",
+    "sendCode": "Enviar código",
+    "sendingCode": "Enviando código...",
+    "verifyCode": "Verificar código",
+    "sentTo": "Enviado para %{phone}",
+    "yourPhone": "seu celular",
+    "verificationCode": "Código de verificação",
+    "verify": "Verificar",
+    "verifying": "Verificando...",
+    "invalidCode": "Insira o código de verificação.",
+    "signInFailedTitle": "Login interrompido",
+    "signInFailedMessage": "Não conseguimos completar o login. Verifique sua conexão e tente novamente.",
+    "googleUnavailableTitle": "Google Log-In indisponível",
+    "googleUnavailableMessage": "Usando uma sessão de desenvolvimento local. O Log-In Google nativo funciona em uma build de desenvolvimento.",
+    "northStarTitle": "NorthStar joias",
+    "northStarSubtitle": "Emparelhe agora ou continue e adicione depois.",
+    "northStarBody": "O VL01 vestível pode acionar fluxos de segurança com toques e gestos de pressão longa.",
+    "setupJewelry": "Montagem de joias",
+    "meetCapybear": "Conheça Capybear",
+    "meetCapybearSubtitle": "Seu companheiro de segurança gentil no mapa e nas chamadas.",
+    "capybearBody": "Capybear pode ajudar com o modo casa, modo guardião, modo emergência, chamadas de desculpa e suporte por voz.",
+    "chooseVoice": "Escolha uma voz",
+    "capybearReminder": "Capybear lembrete",
+    "remindersReady": "Lembretes gentis estão prontos."
+  },
+  "permissions": {
+    "locationTitle": "Segurança em locais",
+    "locationSubtitle": "Usado para o mapa, zonas de perigo, chegada segura e SOS contexto.",
+    "locationBody": "VeryLoving pede a localização para que os responsáveis entendam onde pode ser necessário ajudar. Você pode mudar isso depois nas Configurações.",
+    "allowLocation": "Permitir localização",
+    "notificationsTitle": "Alertas de segurança",
+    "notificationsSubtitle": "Notificações suportam check-ins e eventos de emergência.",
+    "notificationsBody": "Usamos notificações apenas para avisos de segurança, atualizações de emergência e lembretes que você ativa.",
+    "enableNotifications": "Ativar notificações",
+    "locationRationaleTitle": "A localização mantém o contexto de segurança preciso",
+    "locationRationaleMessage": "VeryLoving usa sua localização para o mapa de segurança, zonas de perigo, compartilhamento rápido e SOS contexto. Você pode mudar isso depois nas Configurações.",
+    "notificationsRationaleTitle": "Alertas de segurança precisam de notificações",
+    "notificationsRationaleMessage": "VeryLoving envia lembretes de check-in, atualizações emergenciais e avisos de segurança que você habilita. Não usamos notificações para anúncios.",
+    "microphoneRationaleTitle": "Microfone alimenta chamadas de segurança",
+    "microphoneRationaleMessage": "VeryLoving usa seu microfone apenas quando você inicia um AI chamada de companheiro ou segurança.",
+    "bluetoothRationaleTitle": "Bluetooth conecta seu wearable",
+    "bluetoothRationaleMessage": "VeryLoving usa Bluetooth para combinar com NorthStar joias, ler o status da conexão e os fluxos de segurança do gatilho a partir do wearable.",
+    "cameraRationaleTitle": "Câmera é opcional",
+    "cameraRationaleMessage": "VeryLoving usa a câmera apenas quando você escolhe tirar uma foto de perfil ou compartilhar uma imagem de segurança."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving mantém esse fluxo disponível nas Configurações e no painel.",
+    "chooseVoiceTitle": "Escolha sua voz",
+    "chooseVoiceSubtitle": "Escolha a voz de companheiro que parece mais segura de ouvir.",
+    "homeTitle": "Modo Home",
+    "homeSubtitle": "Monitoramento silencioso para segurança diária.",
+    "guardianTitle": "Modo Guardião",
+    "guardianSubtitle": "Compartilhe contexto com pessoas de confiança.",
+    "emergencyTitle": "Modo de emergência",
+    "emergencySubtitle": "Cinco toques podem escalar para alertas de SOS e guardiões.",
+    "excuseTitle": "Com licença",
+    "excuseSubtitle": "Crie um motivo elegante para sair de uma situação desconfortável.",
+    "safetyCallTitle": "Chamada de segurança",
+    "safetyCallSubtitle": "Inicie uma ligação de acompanhante em tempo real quando precisar de apoio.",
+    "practiceTitle": "Cena de ensaio",
+    "practiceSubtitle": "Tente os fluxos de segurança em uma demonstração de baixa pressão."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Mantenha as joias por perto enquanto escaneia.",
+    "scan": "Varredura para dispositivos",
+    "scanning": "Escaneando as proximidades...",
+    "noDevices": "Nenhum dispositivo NorthStar próximo ainda encontrado.",
+    "scanStartFailed": "Bluetooth escaneamento não conseguiu começar. Por favor, tente novamente.",
+    "scanFailed": "Não conseguimos encontrar joias próximas. Verifique Bluetooth, mantenhaNorthStar perto e tente novamente.",
+    "scanAccessFailed": "Bluetooth escaneamento não conseguiu começar. Verifique Bluetooth acesso e tente novamente.",
+    "permissionDenied": "O acesso a dispositivos próximos está desligado. Permita Bluetooth acesso nas Configurações e tente novamente.",
+    "connectTimeout": "NorthStar demorou demais para conectar. Aproxime-o e tente de novo.",
+    "connectFailed": "Não conseguimos nos conectar com NorthStar. Verifique se está carregado e próximo, e tente novamente.",
+    "emptyTitle": "Ainda não há dispositivos próximos",
+    "emptyMessage": "Mantenha NorthStar carregado e perto desse telefone, depois escaneie novamente.",
+    "searchingMessage": "Procurando NorthStar dispositivos por perto..."
+  },
+  "home": {
+    "subtitle": "Painel companheiro de segurança",
+    "modeStatus": "%{mode} MODO",
+    "companionReady": "%{name} está pronto",
+    "readyBody": "Voz, mapa, joias e guardiões estão a um toque de distância.",
+    "safetyCall": "Chamada de segurança",
+    "northStarDevice": "NorthStar dispositivo",
+    "deviceConnected": "%{name} conectado · %{battery}%",
+    "noDevice": "Nenhum dispositivo conectado",
+    "manageDevice": "Gerenciar dispositivo",
+    "mode": "Modo",
+    "modes": {
+      "home": "Casa",
+      "guardian": "Guardião",
+      "emergency": "Emergência"
+    }
+  },
+  "map": {
+    "finding": "Encontrar sua localização...",
+    "retry": "Local de retentativa",
+    "title": "Mapa de segurança",
+    "previewSubtitle": "Expo Go prévia; Mapbox renderiza em uma build de desenvolvimento.",
+    "preview": "Prévia do mapa",
+    "risk": "Risco: %{risk} · Raio %{radius}m",
+    "refresh": "Local de atualização",
+    "refreshing": "Encontrando a localização...",
+    "updateFailed": "Não conseguimos atualizar sua localização. Por favor, tente novamente.",
+    "notRequested": "O acesso ao local não foi solicitado. Você pode ativar depois pelas Configurações.",
+    "permissionOff": "O acesso à localização está desligado. Ative na Configuração para centralizar o mapa de segurança em você.",
+    "timeout": "Sua localização está demorando mais do que o esperado. Vá para algum lugar com um sinal mais claro e tente novamente.",
+    "savedTitle": "Lugares salvos",
+    "savedEmptyTitle": "Ainda não há vagas salvas",
+    "savedEmptyMessage": "Os lugares confiáveis que você salvar aparecerão aqui para acesso rápido.",
+    "zones": {
+      "crowding": "Lotação noturna",
+      "lowLighting": "Área de pouca iluminação"
+    },
+    "risks": {
+      "low": "baixo",
+      "medium": "Médio",
+      "high": "alto"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Conectando...",
+    "offlineCompanion": "Companheiro offline",
+    "offline": "Offline",
+    "connected": "Conectados",
+    "interrupted": "Conexão interrompida",
+    "ready": "Pronto para conectar",
+    "connectingSecurely": "Conectando-se com segurança ao seu companheiro de voz...",
+    "messagesWaiting": {
+      "one": "%{count} mensagem esperando para ser enviada",
+      "other": "%{count} mensagens esperando para serem enviadas"
+    },
+    "useOffline": "Use o companheiro offline",
+    "reconnect": "Reconecte-se à AI de voz",
+    "typePlaceholder": "Digite se falar for difícil",
+    "endCall": "Fim de chamada",
+    "startCall": "Iniciar chamada",
+    "emptyTitle": "Sua conversa começa aqui",
+    "emptyMessage": "Inicie a ligação ou digite uma mensagem quando estiver pronto."
+  },
+  "chat": {
+    "waiting": "Aguardando conexão",
+    "notSent": "Mensagem não enviada.",
+    "retryAccessibility": "Retentar enviar a mensagem"
+  },
+  "history": {
+    "clearTitle": "Histórico de conversas limpo?",
+    "clearMessage": "Isso remove AI mensagens de acompanhamento salvas desse dispositivo.",
+    "deleteTitle": "Apagar essa conversa?",
+    "cannotUndo": "Isso não pode ser desfeito.",
+    "title": "Histórico de conversas",
+    "subtitle": "AI mensagens acompanhantes salvas neste dispositivo.",
+    "empty": "Nenhuma conversa salva ainda.",
+    "emptyTitle": "Ainda não houve conversas",
+    "emptyMessage": "Suas conversas AI acompanhantes aparecerão aqui após a primeira ligação.",
+    "loadFailed": "Não conseguimos carregar o histórico das conversas. Por favor, tente novamente.",
+    "clearFailed": "Não conseguimos limpar o histórico das conversas. Por favor, tente novamente.",
+    "deleteFailed": "Não podíamos apagar essa conversa. Por favor, tente novamente.",
+    "aiCompanion": "AI companheiro",
+    "resume": "Currículo",
+    "clearAll": "Limpar todo o histórico",
+    "roles": {
+      "assistant": "Companheiro",
+      "user": "você"
+    }
+  },
+  "voices": {
+    "title": "Vozes do meu chamado de segurança",
+    "subtitle": "Escolha a voz companheira que parecer certa para ouvir.",
+    "test": "Voz de teste",
+    "stop": "Amostra de parada",
+    "selectionFailedTitle": "Seleção não salva",
+    "selectionFailedMessage": "Por favor, tente escolher a voz novamente.",
+    "sampleFailedTitle": "Amostra indisponível",
+    "sampleFailedMessage": "Essa amostra de voz não pôde ser reproduzida. Por favor, tente novamente.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "suave, calmo, reconfortante"
+      },
+      "bestie": {
+        "name": "Melhor amiga",
+        "description": "Brilhante, tranquilizador, conversacional"
+      },
+      "boyfriend": {
+        "name": "Namorado",
+        "description": "Constante, afetuoso, presente"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "confiante, protetor, motivador"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Voz",
+    "changeVoice": "Mudança de voz",
+    "showCompanion": "Companheiro de programa",
+    "offlineMode": "Modo offline",
+    "offlineModeSubtitle": "Use respostas acompanhantes agrupadas quando as credenciais da rede ou Hume não estiverem disponíveis.",
+    "privacyData": "Privacidade e dados",
+    "privacyBody": "Exporte ou exclua os dados locais armazenados neste dispositivo.",
+    "preparingExport": "Preparando exportação...",
+    "exportData": "Exportar meus dados",
+    "privacyPolicy": "Política de privacidade",
+    "deleting": "Deletar...",
+    "deleteAll": "Exclua todos os dados locais",
+    "deviceManagement": "Gerenciamento de dispositivos",
+    "emergencyContacts": "Contatos de emergência",
+    "signOut": "Sair",
+    "exportFailedTitle": "Exportação fracassada",
+    "exportFailedMessage": "Não consigo exportar seus dados no momento.",
+    "deleteConfirmTitle": "Excluir todos os dados locais?",
+    "deleteConfirmMessage": "Isso remove seu perfil, configurações, contatos de emergência, histórico de conversas, lembretes de permissão e sessão de autenticação local deste dispositivo.",
+    "deleteEverything": "Apague tudo",
+    "deleteFailedTitle": "Falha na exclusão",
+    "deleteFailedMessage": "Não é possível deletar dados locais no momento.",
+    "linkFailed": "Não é possível abrir o link",
+    "sections": {
+      "language": "Idioma",
+      "languageSubtitle": "Interface e linguagem de permissões do sistema",
+      "companion": "Companheiro",
+      "companionSubtitle": "Preferências de voz e offline",
+      "deviceSafety": "Dispositivos e segurança",
+      "deviceSafetySubtitle": "NorthStar, guardiões e contatos de emergência",
+      "privacy": "Privacidade e dados",
+      "privacySubtitle": "Histórico, exportação, exclusão e política",
+      "account": "Conta",
+      "accountSubtitle": "Sua sessão atual de VeryLoving"
+    },
+    "updateFailedTitle": "Configuração não salva",
+    "updateFailedMessage": "Não conseguimos salvar essa preferência. Por favor, tente novamente.",
+    "signOutFailedTitle": "Não consegui sair",
+    "signOutFailedMessage": "Sua sessão ainda está ativa. Por favor, tente novamente."
+  },
+  "contacts": {
+    "title": "Contatos de emergência",
+    "subtitle": "Pessoas de confiança disponíveis durante os fluxos de segurança.",
+    "addTitle": "Adicionar contato de emergência",
+    "name": "Nome",
+    "namePlaceholder": "Nome do contato",
+    "phone": "Número de telefone de contato",
+    "add": "Adicionar contato",
+    "empty": "Ainda não foram adicionados contatos de emergência.",
+    "emptyTitle": "Ainda sem contatos de emergência",
+    "emptyMessage": "Adicione alguém de confiança para que ele esteja pronto quando precisar de um fluxo de segurança.",
+    "removeTitle": "Remover %{name}?",
+    "removeMessage": "Essa pessoa não aparecerá mais no seu fluxo de emergência.",
+    "nameRequired": "Digite o nome do contato.",
+    "saveFailedTitle": "Contato não salvo",
+    "saveFailedMessage": "Não conseguimos salvar esse contato. Confira os detalhes e tente novamente.",
+    "removeFailedTitle": "Contato não removido",
+    "removeFailedMessage": "Não conseguimos remover esse contato. Por favor, tente novamente.",
+    "callAccessibility": "Ligue %{name}",
+    "removeAccessibility": "Remova %{name}"
+  },
+  "device": {
+    "title": "Gerenciamento de dispositivos",
+    "subtitle": "Gerencie seu dispositivo NorthStar.",
+    "connected": "Conectado · %{battery}% de bateria",
+    "none": "Nenhum dispositivo conectado",
+    "disconnect": "Dispositivo de desconexão",
+    "connect": "Conecte o dispositivo"
+  },
+  "friends": {
+    "title": "Amigos",
+    "subtitle": "Guardiões, pedidos e gráfico de emergência.",
+    "addDemo": "Adicionar amigo de demonstração",
+    "emptyTitle": "Seu círculo de segurança está vazio",
+    "emptyMessage": "Amigos e guardiões de confiança aparecerão aqui assim que forem adicionados.",
+    "newGuardian": "Novo Guardião",
+    "statuses": {
+      "guardian": "Guardião",
+      "pending": "Pendente"
+    }
+  },
+  "emergency": {
+    "title": "Emergência SOS",
+    "subtitle": "Escale a situação apenas quando precisar de apoio imediato.",
+    "body": "Isso notificará o fluxo de segurança e preparará contatos de emergência.",
+    "activate": "Ative SOS",
+    "callCompanion": "Ligue AI acompanhante",
+    "notificationTitle": "SOS ativado",
+    "notificationBody": "Seu fluxo de emergência está pronto.",
+    "readyTitle": "SOS pronto",
+    "callContact": "Ligar %{name}?",
+    "addContact": "Adicione um contato de emergência nas Configurações.",
+    "quickShareTitle": "Compartilhamento rápido",
+    "quickShareMessage": "O esboço de compartilhamento de localização está pronto. Conecte o endpoint de compartilhamento backend para enviar links ao vivo."
+  },
+  "quickShare": {
+    "title": "Compartilhamento rápido",
+    "subtitle": "O fluxo de compartilhamento de localização está pronto."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Toque duas vezes no NorthStar para soltar uma laranja de segurança.",
+    "body": "A rota gestual está pronta para a fiação de eventos do BLE."
+  },
+  "debug": {
+    "title": "VeryLoving página de depuração",
+    "subtitle": "Rota apenas para desenvolvimento."
+  },
+  "errors": {
+    "voiceOffline": "Você parece offline. Sua mensagem será enviada quando você se reconectar.",
+    "voiceQueued": "Mensagem salva. Será enviado quando o companheiro de voz se reconectar.",
+    "voiceRetrying": "Tentando enviar sua mensagem de novo...",
+    "voiceConnecting": "Conectando-se com segurança ao seu companheiro de voz...",
+    "microphone": "É necessário acesso ao microfone para chamadas de voz. Você pode ativar isso nas Configurações ou digitar uma mensagem em vez disso.",
+    "billing": "O companheiro de voz online está temporariamente indisponível. Você pode continuar com o companheiro offline.",
+    "authentication": "O acompanhante de voz não conseguiu confirmar essa sessão. Faça login novamente ou use o acompanhante offline por enquanto.",
+    "timeout": "A companheira de voz demorou demais para responder. Verifique sua conexão e tente novamente.",
+    "network": "Não conseguimos alcançar o companheiro de voz. Verifique sua conexão, depois tente novamente ou continue offline.",
+    "genericVoice": "Algo interrompeu a chamada de voz. Tente novamente, ou continue com o companheiro offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving Exportação de dados"
+  },
+  "notifications": {
+    "channelName": "Alertas de segurança"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving precisa de acesso por microfone para segurança e AI chamadas de acompanhante.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving usa sua localização para o mapa de segurança e para recursos de segurança próximos.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving usa sua localização para apoiar chegadas seguras e fluxos de emergência.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving usa localização de fundo para chegada segura e características de zonas de perigo próximas.",
+      "NSCameraUsageDescription": "VeryLoving usa a câmera apenas quando você escolhe tirar uma foto de perfil ou de segurança.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving usa sua biblioteca de fotos apenas quando você escolhe uma imagem de perfil ou de segurança.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving usa Bluetooth para conectar às suas joias de segurança NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving usa Bluetooth para conectar às suas joias de segurança NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

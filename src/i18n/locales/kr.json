@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Nyira",
+    "apple": "Apple",
+    "back": "Ngawo",
+    "call": "Bowotə",
+    "cancel": "Daftə",
+    "clear": "Futu",
+    "close": "Zakkatə",
+    "connect": "Kǝltǝ",
+    "connecting": "Kəltə...",
+    "continue": "Gowo kowo",
+    "delete": "Cintə",
+    "finish": "Tamowo",
+    "friends": "Sawa",
+    "google": "Google",
+    "home": "Fato",
+    "loading": "Sawudin...",
+    "map": "Taswira",
+    "notNow": "Kǝrma gǝnyi",
+    "remove": "Tuluwu",
+    "retry": "Waltǝm jarabne",
+    "retrying": "Waltǝm jarabtǝ",
+    "save": "Gəne",
+    "selected": "Kartǝna",
+    "send": "Zuwo",
+    "settings": "Futuwa",
+    "skip": "Tǝrtǝ",
+    "skipForNow": "Kǝrmagǝro kolle",
+    "skipTutorial": "Tutorial kolle",
+    "sos": "SOS",
+    "unknown": "Notənyi",
+    "user": "VeryLoving faidatǝma",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Təlam",
+    "subtitle": "Təlam do app sammason faidatin dəga karne.",
+    "system": "Nizam defaultbe",
+    "search": "Təlamma kulasne",
+    "noResults": "Təlamma ndasoma kulashinəmga samənzənyi.",
+    "english": "Nasara",
+    "spanish": "Tǝlam Spanishbe",
+    "french": "Faransa",
+    "chineseSimplified": "Təlam Chinesebe (Kəsketəgəna)"
+  },
+  "phone": {
+    "label": "Lamba wayabe",
+    "placeholder": "Lamba wayabe",
+    "selectCountry": "Lardə au nasha karne",
+    "searchCountry": "Lardə kulasne, lamba, au prefix bowotəye",
+    "noCountries": "Lardəwa ndasoma kulashinəmga samənzənyi.",
+    "countryButton": "Lardǝ faltǝ, kǝrmagǝro %{country} plus %{callingCode}",
+    "inputAccessibility": "Lamba wayabe %{country} nankaro",
+    "required": "Lamba wayabe yike.",
+    "tooShort": "Lamba wayabe adə zauro koriya.",
+    "tooLong": "Lamba wayabe adə zauro kuruwu.",
+    "invalid": "Lamba wayabe lardə kartənadəbe kalkaldə yike.",
+    "valid": "Lamba wayabe dunyabe faida'a"
+  },
+  "auth": {
+    "onboardingTagline": "Nǝlefa kǝlanǝmbe loktuwa kate “Wu nganyi” kuru “Bana mǝradǝngǝna.”",
+    "createAccount": "Akawunt kunkunne",
+    "continueOnboarding": "Onboarding lan goza kowo",
+    "createSubtitle": "Duwal sign-inbe karne graph nəlefabe nzəliwo nankaro.",
+    "phoneVerification": "Waya tawattəgə",
+    "sendCode": "lamba zutə",
+    "sendingCode": "Lamba zutə...",
+    "verifyCode": "Lamba tawattəgə",
+    "sentTo": "%{phone} ro zuzaana",
+    "yourPhone": "wayanǝm",
+    "verificationCode": "Lamba tawattəgəbe",
+    "verify": "Tawattəgə",
+    "verifying": "Tawattəgə...",
+    "invalidCode": "Lamba tawattəgəbedə yike.",
+    "signInFailedTitle": "Futuro gagǝyedǝ tartǝgǝna",
+    "signInFailedMessage": "Andeye raknǝm gagǝye tamonyiyen. Connectionnǝmdǝ kulasne kuru waltǝ jarabne.",
+    "googleUnavailableTitle": "Google Gawo-gawo ba",
+    "googleUnavailableMessage": "Zaman fuwutə fatobe faidatə. Native Google Sign-In də cida gar fuwutəye lan cidajin.",
+    "northStarTitle": "NorthStar zaye",
+    "northStarSubtitle": "Pair kərma au goza kozəna kuru dare yira.",
+    "northStarBody": "Shi VL01 wearabledǝ raksǝ nǝlefa suwudin taps-a kuru alama kuruwu-a lan.",
+    "setupJewelry": "Zawa gǝnatǝ",
+    "meetCapybear": "Capybear kəla kəlnəmin",
+    "meetCapybearSubtitle": "Sawanəm nəlefabe kəla mapben kuru suro bowotəben.",
+    "capybearBody": "Capybear raksə banazəyin futu fatobe-a, futu gartəma-a, futu azallatabe-a, uzur bowotə-a, kuru bana kowo-a.",
+    "chooseVoice": "Kowo karne",
+    "capybearReminder": "Capybear taktə",
+    "remindersReady": "Taktəwa ngəla dawartəna."
+  },
+  "permissions": {
+    "locationTitle": "Nǝlefa nabe",
+    "locationSubtitle": "Map-a, na tajirwa-a, nəlefa-a, kuru SOS-a nankaro faidatin.",
+    "locationBody": "VeryLoving na gojin sau am gartəmasoye asuzayin na bana məradətənadə. Rangnǝm shi adǝga faltin darelan suro Settingsben.",
+    "allowLocation": "Na amari",
+    "notificationsTitle": "Alamaram nəlewabe",
+    "notificationsSubtitle": "Wartǝgǝdǝ banazǝyin check-ins-a kuru lamarra azallatabe-a.",
+    "notificationsBody": "Andeye bas warmatǝgǝdǝ faidatǝyen nasha nǝlefabe-a, bǝlintǝ azallatabe-a, kuru taktǝgǝram nyiye yita gattǝgǝma-a.",
+    "enableNotifications": "Wartəwa yitagattəgə",
+    "locationRationaleTitle": "Nadəye awo nəlefabe kalkalro sədin",
+    "locationRationaleMessage": "VeryLoving nanəm faidatə map nəlefabe-a, na tajirwabe-a, duwaro yayaktə-a, kuru SOS awo surodən dagəna-aro. Rangnǝm shi adǝga faltin darelan suro Settingsben.",
+    "notificationsRationaleTitle": "Alarm nəlefabe notə məradəzəna",
+    "notificationsRationaleMessage": "VeryLoving ye taktəwa gawo-a, awowa azallataro bəlintəgə-a, kuru awowa nəlefaye yitagattəgə-a zuzəyin. Andeye notifications faidatǝnyi ads ro.",
+    "microphoneRationaleTitle": "Maikrofondə bowotə nəlewabe dunowa sədin",
+    "microphoneRationaleMessage": "VeryLoving də microphone lan faidatin sa AI companion au safety bowotə badijiya bas.",
+    "bluetoothRationaleTitle": "Bluetooth awo tǝkǝna dǝga kǝljin",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth faidatə zaye NorthStar'a kəljin, kəndaram kəltəye kərajin, kuru awo təkkindən nəlefa suwudin.",
+    "cameraRationaleTitle": "Kemeradǝ mburo walzǝna",
+    "cameraRationaleMessage": "VeryLoving də camera faidatin sa foto kəlanzəye gotə au foto nəlefaye yayaktə bas lan."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving dəye letəram adəga Settings-a dashboard-a lan tuwondin.",
+    "chooseVoiceTitle": "Kowonǝm karne",
+    "chooseVoiceSubtitle": "Kowo companionbe do fantəro ngəlaro fanjinmadə karne.",
+    "homeTitle": "Modu fatobe",
+    "homeSubtitle": "Nǝlefa kunbalinbe nankaro kulashi kǝla kǝllǝm.",
+    "guardianTitle": "Modu gartəma",
+    "guardianSubtitle": "Am kasatkataro awo bayantənadəga yitagattəgə.",
+    "emergencyTitle": "Modu azallata",
+    "emergencySubtitle": "Tap uwu raksə SOS ro waljin kuru alama gartəmayero waljin.",
+    "excuseTitle": "Uzur bowotə",
+    "excuseSubtitle": "Dalil ngəla kəndaram kuttu koltəbe kudo.",
+    "safetyCallTitle": "Nǝlefa bowotǝ",
+    "safetyCallSubtitle": "Sa bana məradəzəna lan bowotə loktu zahirye badine.",
+    "practiceTitle": "Na cidabe",
+    "practiceSubtitle": "Nzəliwo suro demo duno-ganaben jarabne."
+  },
+  "jewelry": {
+    "pairTitle": "Indi NorthStar",
+    "pairSubtitle": "Zawadǝ karǝngǝn gǝnane loktu scanning lan.",
+    "scan": "Karewa scanne",
+    "scanning": "Scanning karǝngǝn...",
+    "noDevices": "Karewa NorthStar karǝngǝn kuwamiyayi tǝbandǝnyi.",
+    "scanStartFailed": "Bluetooth scanning də baditin ba. Martǝne waltǝ jarabne.",
+    "scanFailed": "Andeye awo nzayebe karǝngǝn tuwondǝnyi. Bluetooth kulasne, NorthStar dəga zakkatə, kuru waltə jarabne.",
+    "scanAccessFailed": "Bluetooth scanning də baditin ba. Bluetooth access dəga kulasne kuru waltə jarabne.",
+    "permissionDenied": "Naura-karǝngǝbe fandonzǝ ba. Suro Settingsben Bluetooth-ga kolzǝ, daji waltǝ jarabne.",
+    "connectTimeout": "NorthStar loktu nguwu gozəna kəltəro. Karǝngǝne kuru waltǝ jarabne.",
+    "connectFailed": "Andeye raknǝm NorthStar-a kǝlnyenba. Charge təna kuru karəngənro wune, daji waltə jarabne.",
+    "emptyTitle": "Kuwamiyayi naura karǝngǝn bawo",
+    "emptyMessage": "NorthStar charged lan rowotə kuru waya adəga karəngən, daji waltə scanned.",
+    "searchingMessage": "Karewa NorthStar karǝngǝn majin..."
+  },
+  "home": {
+    "subtitle": "Nǝlefa dashboardbe",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} dawartəna",
+    "readyBody": "Kowo-a, taswira-a, nzaye-a, kuru gartəwu-adə tap fallan kara.",
+    "safetyCall": "Nǝlefa bowotǝ",
+    "northStarDevice": "NorthStar naura cidabe",
+    "deviceConnected": "%{name} kəllata · %{battery}%",
+    "noDevice": "Naura laa kəllata ba",
+    "manageDevice": "Naura cistǝgǝ",
+    "mode": "Mode",
+    "modes": {
+      "home": "Fato",
+      "guardian": "Kǝlima",
+      "emergency": "Azalla"
+    }
+  },
+  "map": {
+    "finding": "Nanǝmma gotǝ...",
+    "retry": "Na waltǝm jarabne",
+    "title": "Map nəlefabe",
+    "previewSubtitle": "Expo Go futu kurube; Mapbox suro gar fuwutəben fəlejin.",
+    "preview": "Taswira kurube",
+    "risk": "Tajirwa: %{risk} · Radius %{radius}m",
+    "refresh": "Na bǝlintǝgǝ",
+    "refreshing": "Na matə...",
+    "updateFailed": "Andeye raknǝm nanǝmdǝga bǝlinnyiyenba. Martǝne waltǝ jarabne.",
+    "notRequested": "Na fando mǝradǝtǝnyi. Rangnǝm shiga darelan Settings lan sǝdin.",
+    "permissionOff": "Na fandodə ba. Settings lan faidatə map nəlewabe dəga dawudən gənatəro.",
+    "timeout": "Na nyiye loktu nguwu gojin təmatəna kozənaro. Na laa alamaram fetero lenəmin kuru waltə jarabne.",
+    "savedTitle": "Nawa gǝnatǝna",
+    "savedEmptyTitle": "Kuwamiyayi nawa gənatəna ba",
+    "savedEmptyMessage": "Nawa kasatkata gənatənadə na allan fəlejin duwaro fando nankaro.",
+    "zones": {
+      "crowding": "Dare bənyelan jama ngəwu",
+      "lowLighting": "na konnu gana"
+    },
+    "risks": {
+      "low": "cidiya",
+      "medium": "dawudawu",
+      "high": "sami"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kəltə...",
+    "offlineCompanion": "Sawa intanetbe",
+    "offline": "Layi ba",
+    "connected": "Kǝllata",
+    "interrupted": "Kəltəram tartəgəna",
+    "ready": "Kəltəro dawartəna",
+    "connectingSecurely": "Nzəliworo sawa kowonəmro kəltəgə...",
+    "messagesWaiting": {
+      "one": "%{count} kawuli zuwatǝro jejin",
+      "other": "%{count} kawuliwa zuwatǝro jezayin"
+    },
+    "useOffline": "Sawa offlinebe faidatǝne",
+    "reconnect": "Walta kowo AI",
+    "typePlaceholder": "Ruwo waneye mana zau",
+    "endCall": "Bowotə datəgəram",
+    "startCall": "Bowotə badine",
+    "emptyTitle": "Zandenǝmdǝ na allan badijin",
+    "emptyMessage": "Bowotə badine au kawuli ruwotə loktu dawartəna lan."
+  },
+  "chat": {
+    "waiting": "Kǝltǝ jetin",
+    "notSent": "Kawuli tǝmatǝnyi.",
+    "retryAccessibility": "Waltǝ kawuli zutǝ jarabne"
+  },
+  "history": {
+    "clearTitle": "Gargam zandeye cin?",
+    "clearMessage": "Adəye kawuliwa companionbe AI suro naura adəben gənatənadə sutuluyin.",
+    "deleteTitle": "Zande adəga cin?",
+    "cannotUndo": "Adə raktə kalaktəyin ba.",
+    "title": "Gargam zandebe",
+    "subtitle": "AI kawuliwa companionbe naura allan gənatəna.",
+    "empty": "Kuwamiyayi zandewa gənatənyi.",
+    "emptyTitle": "Kuwamiyayi zande ba",
+    "emptyMessage": "Zandewa AI sawa-nəmyedə na allan fəlejin ngawo bowonəm buro salakbedən.",
+    "loadFailed": "Andeye muwonzǝ gargam zandeye loadnyiyen ba. Martǝne waltǝ jarabne.",
+    "clearFailed": "Andeye raknǝm gargam zandebe dǝga cinba. Martǝne waltǝ jarabne.",
+    "deleteFailed": "Andeye raknǝm zande adǝga cinba. Martǝne waltǝ jarabne.",
+    "aiCompanion": "AI sawa",
+    "resume": "Waltǝm",
+    "clearAll": "Gargam samma cin",
+    "roles": {
+      "assistant": "sawa",
+      "user": "nyi"
+    }
+  },
+  "voices": {
+    "title": "Kowowa bowotəye nəlefabe",
+    "subtitle": "Kowo companionbe do fantəro kalkalro fantənadə karne.",
+    "test": "Kowo jarabtə",
+    "stop": "Samfurdǝ dafne",
+    "selectionFailedTitle": "Kartədə gənatənyi",
+    "selectionFailedMessage": "Martəgəne waltə kowodə karne jarabne.",
+    "sampleFailedTitle": "Misaldǝ bawo",
+    "sampleFailedMessage": "Samfuri kowobe adə raktə yitagattəyinba. Martǝne waltǝ jarabne.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "tǝlala, kǝji, cidi"
+      },
+      "bestie": {
+        "name": "Sawa",
+        "description": "nur, tawattəgə, zande"
+      },
+      "boyfriend": {
+        "name": "Sawa",
+        "description": "kalkal, kǝragǝma, kǝrmagǝ"
+      },
+      "muscleMan": {
+        "name": "Kam tiyibe",
+        "description": "kasattǝ, nzǝliwo, hangal gǝnatǝ"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Kowo",
+    "changeVoice": "Kowo faltǝ",
+    "showCompanion": "Sawa fǝlene",
+    "offlineMode": "Modu offlinebe",
+    "offlineModeSubtitle": "Jaawuwa companionbe bundled faidatə loktu network au Hume shaidawa mbejiro waljiya.",
+    "privacyData": "Nǝm sirra & bayanna",
+    "privacyBody": "Bayanna fatobe kəla naura adəben gənatənadə sutuluwu au cin.",
+    "preparingExport": "Lardəro sutuluwuna dawartə...",
+    "exportData": "Bayannanyi diyaro sutuluwu",
+    "privacyPolicy": "Letəgəram sirribe",
+    "deleting": "Cintə...",
+    "deleteAll": "Bayanna fatobe sammaso cinne",
+    "deviceManagement": "Naura cidabe",
+    "emergencyContacts": "Kǝltǝram azallatabe",
+    "signOut": "Luwo",
+    "exportFailedTitle": "Lamar diyayero sutuluwunyi",
+    "exportFailedMessage": "Kǝrma dǝro data nǝm ngǝlanǝm sutuluyin ba.",
+    "deleteConfirmTitle": "Bayanna fatobe samma cin?",
+    "deleteConfirmMessage": "Adəye profilenəm-a, futu-a, kəla kəltəram azallata-a, gargam zande-a, taktə-a izini-a, kuru loktu auth fatobe-a suro naura adəben sutuluyin.",
+    "deleteEverything": "Abiso cin",
+    "deleteFailedTitle": "Suntə teyero",
+    "deleteFailedMessage": "Kǝrma dǝro bayan fatobe dǝga cintǝyin ba.",
+    "linkFailed": "Link katəro mowonjinba",
+    "sections": {
+      "language": "Təlam",
+      "languageSubtitle": "Təlam kəltəram-a nizam izini-a",
+      "companion": "Sawa",
+      "companionSubtitle": "Kowo-a offline-a raayi",
+      "deviceSafety": "Kareya cidabe-a kuru nəlefa-a",
+      "deviceSafetySubtitle": "NorthStar, gartəmaso, kuru am azallataro notəmaso",
+      "privacy": "Sir-a kuru bayanna-a",
+      "privacySubtitle": "Gargam, sutuluwu, cintǝ, kuru letəgəram",
+      "account": "Akawunt",
+      "accountSubtitle": "Zamannǝm VeryLoving kǝrmabe"
+    },
+    "updateFailedTitle": "Setindǝ gǝnatǝnyi",
+    "updateFailedMessage": "Andeye raknǝm awo mǝradǝtǝna dǝga gǝnanyiyen ba. Martǝne waltǝ jarabne.",
+    "signOutFailedTitle": "Raksə luwuminba",
+    "signOutFailedMessage": "Sessionnǝmdǝ kuwamiyayi cidajin. Martǝne waltǝ jarabne."
+  },
+  "contacts": {
+    "title": "Kǝltǝram azallatabe",
+    "subtitle": "Am kasatkata mbeji loktu nəlewaben.",
+    "addTitle": "Kəltəram azallataye kəlne",
+    "name": "Su",
+    "namePlaceholder": "Su kǝla kǝltabe",
+    "phone": "Lamba wayabe",
+    "add": "Kǝla kǝllǝm yira",
+    "empty": "Kuwamiyayi awo kəla azallataben kəltənyi.",
+    "emptyTitle": "Kuwamiyayi am azallatabe notənyi",
+    "emptyMessage": "Kam do ne kasattəna dəga kəlne sandiye dawartəna loktu do ne safety flow ye sandiya məradəzəna lan.",
+    "removeTitle": "%{name} tutuluwuna?",
+    "removeMessage": "Kam adə suro awo təmatəyen fəlejinba.",
+    "nameRequired": "Su kam do ne kǝlanzǝn gǝnatǝna dǝga yike.",
+    "saveFailedTitle": "Kəltəramdə gənatənyi",
+    "saveFailedMessage": "Andeye raknǝm kǝla kǝl adǝga gǝnanyiyenba. Bayannadə kulasne kuru waltə jarabne.",
+    "removeFailedTitle": "Kəla kəltəramdə tutuluwunyi",
+    "removeFailedMessage": "Andeye raknǝm kǝla kǝl adǝga tutuluyinba. Martǝne waltǝ jarabne.",
+    "callAccessibility": "%{name} bowotə",
+    "removeAccessibility": "%{name} tuluwuye"
+  },
+  "device": {
+    "title": "Naura cidabe",
+    "subtitle": "Nauranǝm NorthStar dǝga cistǝgǝ.",
+    "connected": "Kǝllatǝna · %{battery}% batǝri",
+    "none": "Karewa kəllata ba",
+    "disconnect": "Nauradəga təmtəgə",
+    "connect": "Naura kǝltǝ"
+  },
+  "friends": {
+    "title": "Sawa",
+    "subtitle": "Gardians, awo məradətəna, kuru graph azallatabe.",
+    "addDemo": "Sawa demo yira",
+    "emptyTitle": "Korkori nəlefabedə de",
+    "emptyMessage": "Sawa-a kuru gartəwu-a kasatkatadə na allan fəlezayin loktu sandiya kəlzaiya.",
+    "newGuardian": "Gardian Bǝlin",
+    "statuses": {
+      "guardian": "Kǝlima",
+      "pending": "Datə"
+    }
+  },
+  "emergency": {
+    "title": "Tǝmatǝram SOS",
+    "subtitle": "Escalate də sa bana kəla kəltəyen məradəzəna lan bas.",
+    "body": "Adəye nəlefa letəgəramnəm nozəyin kuru awo kəla azallatayen dawarjin.",
+    "activate": "Cidatə SOS",
+    "callCompanion": "Sawa AI bowone",
+    "notificationTitle": "SOS cidazəna",
+    "notificationBody": "Fəletə azallataro dawartəna.",
+    "readyTitle": "SOS dawartəna",
+    "callContact": "%{name} bowotə?",
+    "addContact": "Settings lan bayan kəla awowa tədinma yira.",
+    "quickShareTitle": "duwan yayaktǝ",
+    "quickShareMessage": "Na-a yayaktəbe stubdə dawartəna. Na datəgəram sharebedə kəlne kəltəram livebe zutəro."
+  },
+  "quickShare": {
+    "title": "duwan yayaktǝ",
+    "subtitle": "Na share flow də dawartəna."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "NorthStar nǝm indiro tapne lemun nǝlefabe gǝnatǝro.",
+    "body": "Diwal gesturebedə waya BLEbe nankaro dawartəna."
+  },
+  "debug": {
+    "title": "VeryLoving warak awo kalkaltəgəbe",
+    "subtitle": "Diwal fuwutə basbe."
+  },
+  "errors": {
+    "voiceOffline": "Nyi alama offline yeyi. Kawulinǝmdǝ zuwatin loktu waltǝm kǝltǝmiya.",
+    "voiceQueued": "Kawuli gənatəna. Sa kowo companion də waltə kəljiya shiga zuzayin.",
+    "voiceRetrying": "Waltǝm kawulinǝm zutǝro jarabcin...",
+    "voiceConnecting": "Sawanəm kowo'a nzəliwo'aro kəltə...",
+    "microphone": "Microphone lan faidatə kowo lan bowotin. Rangnǝm Settings lan sǝdin, au kawuli ruwojin.",
+    "billing": "Shi kowo intanettedǝ loktu ganalagǝro tuwondinba. Rangnǝm gozagǝ kowom offline lan.",
+    "authentication": "Sawa kowobedə raksə loktu adəga tawatsəyinba. Waltǝ gagǝne au kǝrmagǝro offline companiondǝ faidatǝne.",
+    "timeout": "Sawa kowobedə loktu ngəwu gozə jaawuwa cin. Connectionnǝmdǝ kulasne kuru waltǝ jarabne.",
+    "network": "Andeye raknǝm sawa kowobedǝga nazǝnyiyenba. Kǝlanǝmma kulasne, daji waltǝ jarabne au offline lan gowom kowom.",
+    "genericVoice": "Awolagǝye kowo bowotǝdǝga tarzǝna. Waltǝ jarabne, au sawa offlinebedǝga gowom kowom."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving bayanna diyaro sutuluwu"
+  },
+  "notifications": {
+    "channelName": "Alamaram nəlewabe"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLovingdǝ microphone fando mǝradǝzǝna kǝla nǝlefa-a kuru AI sawa-a bowotǝro.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving nanǝm faidatin map nǝlefabe-a kuru awowa nǝlefabe karǝngǝbe-aro.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving nanǝm faidatǝ banazǝgǝ nǝlefa-nazǝgǝ-a kuru letǝ azallata-a.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving na ngawobe faidatin nəlefa-nazəgə-a kuru alama-a na tajirwabe karəngən-aro.",
+      "NSCameraUsageDescription": "VeryLoving də camera faidatin sa foto kəlanzəye au foto nəlefaye gotə bas lan.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving foto librarybe faidatin loktu foto kəlanzəbe au foto nəlewabe karnəm bas.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving də Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

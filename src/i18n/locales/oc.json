@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Apondre",
+    "apple": "Apple",
+    "back": "Arrièr",
+    "call": "Sonar",
+    "cancel": "Anullar",
+    "clear": "Clar",
+    "close": "Barrar",
+    "connect": "Connectar",
+    "connecting": "En connectant...",
+    "continue": "Contunhar",
+    "delete": "Escafar",
+    "finish": "Acabar",
+    "friends": "Amics",
+    "google": "Google",
+    "home": "Ostal",
+    "loading": "En cargament...",
+    "map": "Mapa",
+    "notNow": "pas ara",
+    "remove": "Levar",
+    "retry": "Tornatz ensajar",
+    "retrying": "Ensajar de nòu",
+    "save": "Salvar",
+    "selected": "Seleccionat",
+    "send": "Mandar",
+    "settings": "Paramètres",
+    "skip": "Sautar",
+    "skipForNow": "Sautar per ara",
+    "skipTutorial": "Sautar lo tutorial",
+    "sos": "SOS",
+    "unknown": "Desconegut",
+    "user": "VeryLoving utilizaire",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lenga",
+    "subtitle": "Causissètz la lenga utilizada dins tota l'aplicacion.",
+    "system": "Per defaut del sistèma",
+    "search": "Cercar de lengas",
+    "noResults": "Cap de lenga correspond pas a vòstra recèrca.",
+    "english": "anglés",
+    "spanish": "espanhòl",
+    "french": "Francés",
+    "chineseSimplified": "Chinés (Simplificat)"
+  },
+  "phone": {
+    "label": "Numèro de telefòn",
+    "placeholder": "Numèro de telefòn",
+    "selectCountry": "Seleccionatz país o region",
+    "searchCountry": "Cercar país, còde o prefix de marcatge",
+    "noCountries": "Cap de país correspond pas a vòstra recèrca.",
+    "countryButton": "Cambiar de país, actualament %{country} e mai %{callingCode}",
+    "inputAccessibility": "Numèro de telefòn per %{country}",
+    "required": "Picatz un numèro de telefòn.",
+    "tooShort": "Aqueste numèro de telefòn es tròp cort.",
+    "tooLong": "Aqueste numèro de telefòn es tròp long.",
+    "invalid": "Picatz un numèro de telefòn valid pel país seleccionat.",
+    "valid": "Numèro de telefòn internacional valid"
+  },
+  "auth": {
+    "onboardingTagline": "Un companh de seguretat personala pels moments entre \"soi plan\" e \"ai besonh d'ajuda\".",
+    "createAccount": "Crear un compte",
+    "continueOnboarding": "Contunhar amb l'embarcament",
+    "createSubtitle": "Causissètz un metòde de connexion per protegir vòstre grafic de seguretat.",
+    "phoneVerification": "Verificacion telefònica",
+    "sendCode": "Mandar lo còde",
+    "sendingCode": "Enviant lo còde...",
+    "verifyCode": "Verificar lo còde",
+    "sentTo": "Mandat a %{phone}",
+    "yourPhone": "vòstre telefòn",
+    "verificationCode": "Còdi de verificacion",
+    "verify": "Verificar",
+    "verifying": "En verificant...",
+    "invalidCode": "Picatz lo còde de verificacion.",
+    "signInFailedTitle": "Connexion interromput",
+    "signInFailedMessage": "Avèm pas pogut completar la connexion. Verificatz vòstra connexion e ensajatz tornarmai.",
+    "googleUnavailableTitle": "Google Connexion indisponible",
+    "googleUnavailableMessage": "Utilizar una sesilha de desvolopament locala. Native Google Sign-In fonciona dins una version de desvolopament.",
+    "northStarTitle": "NorthStar joièls",
+    "northStarSubtitle": "Acoblar ara o contunhar e apondètz-lo mai tard.",
+    "northStarBody": "Lo portable VL01 pòt desencadenar de fluxes de seguretat amb de picadas e de gèstes de pression longas.",
+    "setupJewelry": "Montar de joièls",
+    "meetCapybear": "Rescontratz Capybear",
+    "meetCapybearSubtitle": "Vòstre doç companh de seguretat sus la mapa e dins las cridas.",
+    "capybearBody": "Capybear pòt ajudar amb lo mòde d'ostal, lo mòde gardian, lo mòde d'urgéncia, los apèls d'excusas e lo supòrt vocal.",
+    "chooseVoice": "Causissètz una votz",
+    "capybearReminder": "Capybear rapèl",
+    "remindersReady": "Los rapèls doç son prèstes."
+  },
+  "permissions": {
+    "locationTitle": "Seguretat de l'emplaçament",
+    "locationSubtitle": "Utilizat per la mapa, las zònas de perilh, l'arribada segura, e lo contèxte SOS.",
+    "locationBody": "VeryLoving demanda l'emplaçament per que los gardians pòscan comprene ont l'ajuda pòt èsser necessària. Podètz cambiar aquò mai tard dins los Paramètres.",
+    "allowLocation": "Autorizar l'emplaçament",
+    "notificationsTitle": "Alèrtas de seguretat",
+    "notificationsSubtitle": "Las notificacions prenon en carga los enregistraments e los eveniments d'urgéncia.",
+    "notificationsBody": "Utilizam pas que las notificacions per d'indicacions de seguretat, de mesas a jorn d'urgéncia e de rapèls qu'activatz.",
+    "enableNotifications": "Activar las notificacions",
+    "locationRationaleTitle": "L'emplaçament manten lo contèxte de seguretat precis",
+    "locationRationaleMessage": "VeryLoving utiliza vòstre emplaçament per la mapa de seguretat, las zònas de perilh, lo partatge rapid e lo contèxte SOS. Podètz cambiar aquò mai tard dins los Paramètres.",
+    "notificationsRationaleTitle": "Las alèrtas de seguretat an besonh de notificacions",
+    "notificationsRationaleMessage": "VeryLoving manda de rapèls d'enregistrament, de mesas a jorn d'urgéncia e d'indicacions de seguretat qu'activatz. Utilizam pas de notificacions per d'anóncias.",
+    "microphoneRationaleTitle": "Lo micròfon alimenta las cridas de seguretat",
+    "microphoneRationaleMessage": "VeryLoving utiliza vòstre microfòn sonque quand aviatz una AI apèl de companh o de seguretat.",
+    "bluetoothRationaleTitle": "Bluetooth connecta vòstre portable",
+    "bluetoothRationaleMessage": "VeryLoving utiliza Bluetooth per acoblar amb de joièls NorthStar, legir l'estat de connexion, e desencadenar los fluxes de seguretat dempuèi lo portable.",
+    "cameraRationaleTitle": "La camèra es facultativa",
+    "cameraRationaleMessage": "VeryLoving utiliza la camèra sonque quand causissètz de prene una fòto de perfil o de partejar una imatge de seguretat."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving garda aqueste flux disponible dempuèi los Paramètres e lo tablèu de bòrd.",
+    "chooseVoiceTitle": "Causissètz vòstra votz",
+    "chooseVoiceSubtitle": "Causissètz la votz companha que sembla mai segura d'ausir.",
+    "homeTitle": "Mòde d'acuèlh",
+    "homeSubtitle": "Susvelhança silenciosa per la seguretat quotidiana.",
+    "guardianTitle": "Mòde gardian",
+    "guardianSubtitle": "Partejar lo contèxte amb de personas de fisança.",
+    "emergencyTitle": "Mòde d'urgéncia",
+    "emergencySubtitle": "Cinc clics pòdon escalar cap a SOS e d'alèrtas de gardian.",
+    "excuseTitle": "Crida d'excusa",
+    "excuseSubtitle": "Creatz una rason graciosa per daissar una situacion incomòda.",
+    "safetyCallTitle": "Crida de seguretat",
+    "safetyCallSubtitle": "Començatz una crida de companh en temps real quand avètz besonh d'ajuda.",
+    "practiceTitle": "Scèna d'entraïnament",
+    "practiceSubtitle": "Ensajatz los fluxes de seguretat dins una demo a bassa pression."
+  },
+  "jewelry": {
+    "pairTitle": "Coble NorthStar",
+    "pairSubtitle": "Gardatz las jòias a proximitat del temps qu'escanejatz.",
+    "scan": "Escanar pels periferics",
+    "scanning": "Escanar a proximitat...",
+    "noDevices": "Cap de periferic NorthStar pròche pas encara trobat.",
+    "scanStartFailed": "Bluetooth l'escandalhatge a pas pogut començar. Ensajatz tornarmai.",
+    "scanFailed": "Podèrem pas trobar de joièls pròches. Marcatz Bluetooth, gardatz NorthStar tampat, e ensajatz tornarmai.",
+    "scanAccessFailed": "Bluetooth l'escandalhatge a pas pogut començar. Verificatz Bluetooth accès e ensajatz tornamai.",
+    "permissionDenied": "L'accès al periferic pròche es desactivat. Autorizar Bluetooth l'accès dins los Paramètres, puèi ensajatz tornamai.",
+    "connectTimeout": "NorthStar a pres tròp de temps per se connectar. Apropatz-lo e ensajatz tornarmai.",
+    "connectFailed": "Avèm pas pogut nos connectar a NorthStar. Verificatz qu'es cargat e pròche, puèi ensajatz tornarmai.",
+    "emptyTitle": "Pas encara de periferic pròche",
+    "emptyMessage": "Gardar NorthStar cargat e pròche d'aqueste telefòn, puèi escanar tornarmai.",
+    "searchingMessage": "En cèrca de periferics NorthStar a proximitat..."
+  },
+  "home": {
+    "subtitle": "Tablèu de bòrd de companh de seguretat",
+    "modeStatus": "%{mode} MÒDE",
+    "companionReady": "%{name} es prèst",
+    "readyBody": "La votz, la mapa, las jòias e los gardians son a un clic.",
+    "safetyCall": "Crida de seguretat",
+    "northStarDevice": "NorthStar periferic",
+    "deviceConnected": "%{name} connectat · %{battery}%",
+    "noDevice": "Cap de periferic connectat",
+    "manageDevice": "Gerir lo periferic",
+    "mode": "Mòde",
+    "modes": {
+      "home": "Ostal",
+      "guardian": "Gardian",
+      "emergency": "Urgéncia"
+    }
+  },
+  "map": {
+    "finding": "En trobant vòstre emplaçament...",
+    "retry": "Emplaçament de tornar ensajar",
+    "title": "Mapa de seguretat",
+    "previewSubtitle": "Expo Go apercebut; Mapbox rend dins una version de desvolopament.",
+    "preview": "Apercebut de mapa",
+    "risk": "Risc: %{risk} · Rai %{radius}m",
+    "refresh": "Actualizar l'emplaçament",
+    "refreshing": "Trobar l'emplaçament...",
+    "updateFailed": "Avèm pas pogut metre a jorn vòstre emplaçament. Ensajatz tornarmai.",
+    "notRequested": "L'accès a l'emplaçament es pas estat demandat. Lo podètz activar mai tard dempuèi los Paramètres.",
+    "permissionOff": "L'accès a l'emplaçament es desactivat. Activatz-lo dins los Paramètres per centrar la mapa de seguretat sus vos.",
+    "timeout": "Vòstre emplaçament pren mai de temps que previst. Desplaçatz-vos endacòm amb un senhal mai clar e ensajatz tornarmai.",
+    "savedTitle": "Luòcs enregistrats",
+    "savedEmptyTitle": "Pas de plaça enregistrada encara",
+    "savedEmptyMessage": "Los luòcs de fisança qu'enregistratz apareisseràn aicí per un accès rapid.",
+    "zones": {
+      "crowding": "Aglomeracion tardièra de nuèch",
+      "lowLighting": "Zona de bassa esclairatge"
+    },
+    "risks": {
+      "low": "bas",
+      "medium": "mejan",
+      "high": "naut"
+    }
+  },
+  "safetyCall": {
+    "connecting": "En connectant...",
+    "offlineCompanion": "Companh fòra linha",
+    "offline": "fòra linha",
+    "connected": "Connectat",
+    "interrupted": "La connexion interrompuda",
+    "ready": "Lèst per se connectar",
+    "connectingSecurely": "Se connectant en seguretat a vòstre companh de votz...",
+    "messagesWaiting": {
+      "one": "%{count} messatge en espèra de mandar",
+      "other": "%{count} messatges en espèra de mandar"
+    },
+    "useOffline": "Utilizar lo companh fòra linha",
+    "reconnect": "Tornatz connectar a la votz AI",
+    "typePlaceholder": "Picatz se parlar es malaisit",
+    "endCall": "Acabatz la crida",
+    "startCall": "Començar la crida",
+    "emptyTitle": "Vòstra convèrsa comença aicí",
+    "emptyMessage": "Començatz la crida o picatz un messatge quand sètz prèst."
+  },
+  "chat": {
+    "waiting": "En espèra de connexion",
+    "notSent": "Messatge pas mandat.",
+    "retryAccessibility": "Tornatz ensajar de mandar un messatge"
+  },
+  "history": {
+    "clearTitle": "Escafar l'istoric de convèrsa?",
+    "clearMessage": "Aquò suprimís AI messatges companhs enregistrats d'aqueste periferic.",
+    "deleteTitle": "Suprimir aquesta convèrsa ?",
+    "cannotUndo": "Aquò pòt pas èsser desfach.",
+    "title": "Istoric de convèrsa",
+    "subtitle": "AI messatges companhs enregistrats sus aqueste periferic.",
+    "empty": "Cap de convèrsa enregistrada pas encara.",
+    "emptyTitle": "Pas encara de convèrsa",
+    "emptyMessage": "Vòstras AI convèrsas companhièras apareisseràn aicí après vòstre primièr apèl.",
+    "loadFailed": "Avèm pas pogut cargar l'istoric de convèrsas. Ensajatz tornarmai.",
+    "clearFailed": "Avèm pas pogut escafar l'istoric de convèrsa. Ensajatz tornarmai.",
+    "deleteFailed": "Avèm pas pogut suprimir aquela convèrsa. Ensajatz tornarmai.",
+    "aiCompanion": "AI companh",
+    "resume": "Reprendre",
+    "clearAll": "Escafar tot l'istoric",
+    "roles": {
+      "assistant": "companhon",
+      "user": "tu"
+    }
+  },
+  "voices": {
+    "title": "Ma votz de crida de seguretat",
+    "subtitle": "Causissètz la votz companha que vos sembla justa d'ausir.",
+    "test": "Votz de tèst",
+    "stop": "Arrèsta la mòstra",
+    "selectionFailedTitle": "Seleccion pas enregistrada",
+    "selectionFailedMessage": "Ensajatz de tornar causir la votz.",
+    "sampleFailedTitle": "Mostra indisponible",
+    "sampleFailedMessage": "Aqueste mòstra de votz a pas pogut èsser jogat. Ensajatz tornarmai.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "suau, calm, a tèrra"
+      },
+      "bestie": {
+        "name": "Bestia",
+        "description": "brilhant, rassegurant, conversacional"
+      },
+      "boyfriend": {
+        "name": "Amiguet",
+        "description": "ferm, afeccionat, present"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "segur, protector, motivant"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Votz",
+    "changeVoice": "Cambiar la votz",
+    "showCompanion": "Companh de mòstra",
+    "offlineMode": "Mòde fòra linha",
+    "offlineModeSubtitle": "Utilizatz de responsas de companhs paquets quand la ret o las credencials Hume son indisponiblas.",
+    "privacyData": "Confidencialitat e donadas",
+    "privacyBody": "Exportatz o suprimissètz las donadas localas enregistradas sus aqueste periferic.",
+    "preparingExport": "En preparacion de l'exportacion...",
+    "exportData": "Exportar mas donadas",
+    "privacyPolicy": "Politica de confidencialitat",
+    "deleting": "En suprimissent...",
+    "deleteAll": "Suprimir totas las donadas localas",
+    "deviceManagement": "Gestion dels periferics",
+    "emergencyContacts": "Contactes d'urgéncia",
+    "signOut": "Desconnectar",
+    "exportFailedTitle": "L'exportacion a fracassat",
+    "exportFailedMessage": "Impossible d'exportar vòstras donadas ara.",
+    "deleteConfirmTitle": "Suprimir totas las donadas localas ?",
+    "deleteConfirmMessage": "Aquò suprimís vòstre perfil, vòstres paramètres, contactes d'urgéncia, vòstre istoric de convèrsa, los rapèls d'autorizacion e la sesilha d'autentificacion locala d'aqueste periferic.",
+    "deleteEverything": "Suprimir tot",
+    "deleteFailedTitle": "La supression a fracassat",
+    "deleteFailedMessage": "Impossible de suprimir las donadas localas ara.",
+    "linkFailed": "Impossible de dobrir lo ligam",
+    "sections": {
+      "language": "Lenga",
+      "languageSubtitle": "Lenga d'interfàcia e d'autorizacion del sistèma",
+      "companion": "Companhon",
+      "companionSubtitle": "Preferéncias de votz e fòra linha",
+      "deviceSafety": "Dispositius e seguretat",
+      "deviceSafetySubtitle": "NorthStar, gardians, e contactes d'urgéncia",
+      "privacy": "La vida privada e las donadas",
+      "privacySubtitle": "Istoric, exportacion, supression e politica",
+      "account": "Compte",
+      "accountSubtitle": "Vòstra sesilha VeryLoving actuala"
+    },
+    "updateFailedTitle": "Paramètre pas enregistrat",
+    "updateFailedMessage": "Avèm pas pogut enregistrar aquela preferéncia. Ensajatz tornarmai.",
+    "signOutFailedTitle": "Poguèt pas se desconnectar",
+    "signOutFailedMessage": "Vòstra sesilha es encara activa. Ensajatz tornarmai."
+  },
+  "contacts": {
+    "title": "Contactes d'urgéncia",
+    "subtitle": "De personas de fisança disponiblas pendent los fluxes de seguretat.",
+    "addTitle": "Apondre un contacte d'urgéncia",
+    "name": "Nom",
+    "namePlaceholder": "Nom de contacte",
+    "phone": "Numèro de telefòn de contacte",
+    "add": "Apondre un contacte",
+    "empty": "Cap de contacte d'urgéncia pas encara apondut.",
+    "emptyTitle": "Cap de contacte d'urgéncia encara",
+    "emptyMessage": "Apondètz qualqu'un que ne fasètz fisança per que siá prèst quand un flux de seguretat los a besonh.",
+    "removeTitle": "Suprimir %{name}?",
+    "removeMessage": "Aquesta persona apareisserà pas pus dins vòstre flux d'urgéncia.",
+    "nameRequired": "Picatz lo nom del contacte.",
+    "saveFailedTitle": "Contacte pas enregistrat",
+    "saveFailedMessage": "Avèm pas pogut enregistrar aqueste contacte. Verificatz los detalhs e ensajatz tornarmai.",
+    "removeFailedTitle": "Contacte pas suprimit",
+    "removeFailedMessage": "Avèm pas pogut suprimir aqueste contacte. Ensajatz tornarmai.",
+    "callAccessibility": "Trucar %{name}",
+    "removeAccessibility": "Suprimir %{name}"
+  },
+  "device": {
+    "title": "Gestion dels periferics",
+    "subtitle": "Gerir vòstre periferic NorthStar.",
+    "connected": "Connectat · %{battery}% batariá",
+    "none": "Pas cap de periferic connectat",
+    "disconnect": "Desconnectar lo periferic",
+    "connect": "Connectar lo periferic"
+  },
+  "friends": {
+    "title": "Amics",
+    "subtitle": "Gardians, demandas, e grafic d'urgéncia.",
+    "addDemo": "Apondre un amic de demo",
+    "emptyTitle": "Vòstre cercle de seguretat es void",
+    "emptyMessage": "Los amics e los tutors de fisança apareisseràn aicí un còp que seràn aponduts.",
+    "newGuardian": "Nòu Gardian",
+    "statuses": {
+      "guardian": "Gardian",
+      "pending": "En espèra"
+    }
+  },
+  "emergency": {
+    "title": "Urgéncia SOS",
+    "subtitle": "Escalatz sonque quand avètz besonh d'un sosten immediat.",
+    "body": "Aquò notificarà vòstre flux de seguretat e prepararà los contactes d'urgéncia.",
+    "activate": "Activar SOS",
+    "callCompanion": "Trucar AI companh",
+    "notificationTitle": "SOS activat",
+    "notificationBody": "Vòstre flux d'urgéncia es prèst.",
+    "readyTitle": "SOS prèst",
+    "callContact": "Apelar %{name}?",
+    "addContact": "Apondre un contacte d'urgéncia dins los Paramètres.",
+    "quickShareTitle": "Partatge rapid",
+    "quickShareMessage": "Lo tronc de partatge de localizacion es prèst. Connectatz lo ponch final de partatge de fons per mandar de ligams en dirècte."
+  },
+  "quickShare": {
+    "title": "Partatge rapid",
+    "subtitle": "Lo flux de partatge de localizacion es prèst."
+  },
+  "capybearTap": {
+    "title": "Capybear picar",
+    "subtitle": "Picatz dos còps sus vòstre NorthStar per daissar tombar un irange de seguretat.",
+    "body": "La rota de gèst es prèsta pel cablament d'eveniments BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pagina de depuracion",
+    "subtitle": "Rota de desvolopament solament."
+  },
+  "errors": {
+    "voiceOffline": "Semblatz fòra linha. Vòstre messatge serà mandat quand vos tornatz connectar.",
+    "voiceQueued": "Messatge enregistrat. Serà mandat quand lo companh de votz se tornarà connectar.",
+    "voiceRetrying": "Ensajar de tornar mandar vòstre messatge...",
+    "voiceConnecting": "Se connectant en seguretat a vòstre companh de votz...",
+    "microphone": "L'accès al micrò es necessari per las cridas vocalas. O podètz activar dins los Paramètres, o picar un messatge a la plaça.",
+    "billing": "Lo companh de votz en linha es temporàriament indisponible. Podètz contunhar amb lo companh fòra linha.",
+    "authentication": "Lo companh de votz a pas pogut verificar aquesta sesilha. Connectatz-vos tornarmai o utilizatz lo companh fòra linha pel moment.",
+    "timeout": "Lo companh de votz prenguèt tròp de temps per respondre. Verificatz vòstra connexion e ensajatz tornarmai.",
+    "network": "Poguèrem pas aténher lo companh de votz. Verificatz vòstra connexion, puèi ensajatz tornarmai o contunhatz fòra linha.",
+    "genericVoice": "Quicòm interrompèt la crida vocala. Ensajatz tornarmai, o contunhatz amb lo companh fòra linha."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving exportacion de donadas"
+  },
+  "notifications": {
+    "channelName": "Alèrtas de seguretat"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving a besonh d'accès al micrò per seguretat e AI d'apèls de companh.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving utiliza vòstre emplaçament per la mapa de seguretat e las foncionalitats de seguretat pròchas.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving utiliza vòstre emplaçament per prene en carga los fluxes d'arribada segura e d'urgéncia.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving utiliza l'emplaçament de fons per las foncionalitats d'arribada segura e de zòna de perilh pròcha.",
+      "NSCameraUsageDescription": "VeryLoving utiliza la camèra sonque quand causissètz de prene una fòto de perfil o de seguretat.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving utiliza vòstra bibliotèca de fòtos sonque quand causissètz un perfil o un imatge de seguretat.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving utiliza Bluetooth per se connectar a vòstre NorthStar joièl de seguretat.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving utiliza Bluetooth per se connectar a vòstre NorthStar joièl de seguretat."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

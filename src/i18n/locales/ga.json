@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Cuir Leis",
+    "apple": "Apple",
+    "back": "Ar ais",
+    "call": "Glaoigh",
+    "cancel": "Cuir ar ceal",
+    "clear": "Glan",
+    "close": "Dún",
+    "connect": "Ceangail",
+    "connecting": "Ag Ceangal...",
+    "continue": "Lean ar aghaidh",
+    "delete": "Scrios",
+    "finish": "Críochnaigh",
+    "friends": "Cairde",
+    "google": "Google",
+    "home": "Baile",
+    "loading": "Á Luchtú...",
+    "map": "Léarscáil",
+    "notNow": "Ní anois",
+    "remove": "Bain",
+    "retry": "Déan iarracht arís",
+    "retrying": "Déan iarracht arís",
+    "save": "Sábháil",
+    "selected": "Roghnaithe",
+    "send": "Seol",
+    "settings": "Socruithe",
+    "skip": "Scipeáil",
+    "skipForNow": "Scipeáil anois",
+    "skipTutorial": "Scipeáil rang teagaisc",
+    "sos": "SOS",
+    "unknown": "Anaithnid",
+    "user": "VeryLoving úsáideoir",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Teanga",
+    "subtitle": "Roghnaigh an teanga a úsáidtear ar fud an aip.",
+    "system": "Réamhshocrú an chórais",
+    "search": "Teangacha cuardaigh",
+    "noResults": "Níl aon teanga ag teacht le do chuardach.",
+    "english": "Béarla",
+    "spanish": "Spainnis",
+    "french": "Fraincis",
+    "chineseSimplified": "Sínis (Simplithe)"
+  },
+  "phone": {
+    "label": "Uimhir theileafóin",
+    "placeholder": "Uimhir theileafóin",
+    "selectCountry": "Roghnaigh tír nó réigiún",
+    "searchCountry": "Cuardaigh tír, cód, nó réimír dhiailithe",
+    "noCountries": "Níl aon tír ag teacht le do chuardach.",
+    "countryButton": "Athraigh tír, faoi láthair %{country} móide %{callingCode}",
+    "inputAccessibility": "Uimhir theileafóin %{country}",
+    "required": "Iontráil uimhir theileafóin.",
+    "tooShort": "Tá an uimhir theileafóin seo ró-ghearr.",
+    "tooLong": "Tá an uimhir theileafóin seo rófhada.",
+    "invalid": "Iontráil uimhir theileafóin bhailí don tír roghnaithe.",
+    "valid": "Uimhir theileafóin idirnáisiúnta bailí"
+  },
+  "auth": {
+    "onboardingTagline": "Compánach sábháilteachta pearsanta do na chuimhneacháin idir \"Tá mé ceart go leor\" agus \"Teastaíonn cabhair uaim.\"",
+    "createAccount": "Cruthaigh cuntas",
+    "continueOnboarding": "Lean ar aghaidh le dul ar bord",
+    "createSubtitle": "Roghnaigh modh sínithe isteach chun do ghraf sábháilteachta a chosaint.",
+    "phoneVerification": "Fíorú teileafóin",
+    "sendCode": "Seol cód",
+    "sendingCode": "Cód á sheoladh...",
+    "verifyCode": "Fíoraigh cód",
+    "sentTo": "Seolta chuig %{phone}",
+    "yourPhone": "do ghuthán",
+    "verificationCode": "Cód fíoraithe",
+    "verify": "Fíoraigh",
+    "verifying": "Ag fíorú...",
+    "invalidCode": "Cuir isteach an cód fíoraithe.",
+    "signInFailedTitle": "Síniú isteach briste",
+    "signInFailedMessage": "Ní raibh muid in ann síniú isteach a chríochnú. Seiceáil do nasc agus bain triail as arís.",
+    "googleUnavailableTitle": "Google Níl Síniú Isteach ar fáil",
+    "googleUnavailableMessage": "Ag baint úsáide as seisiún forbartha áitiúil. Oibríonn Native Google Sign-In i dtógáil forbartha.",
+    "northStarTitle": "NorthStar jewelry",
+    "northStarSubtitle": "Péire anois nó lean ar aghaidh agus cuir leis níos déanaí.",
+    "northStarBody": "Is féidir leis an VL01 wearable sreafaí sábháilteachta a spreagadh le sconnaí agus gothaí preas fada.",
+    "setupJewelry": "Socraigh jewelry",
+    "meetCapybear": "Téigh in aithne Capybear",
+    "meetCapybearSubtitle": "Do chompánach sábháilteachta milis ar an léarscáil agus i nglaonna.",
+    "capybearBody": "Is féidir Capybear cabhrú le modh baile, modh caomhnóra, modh éigeandála, glaonna leithscéalta, agus tacaíocht ghutha.",
+    "chooseVoice": "Roghnaigh guth",
+    "capybearReminder": "Capybear meabhrúchán",
+    "remindersReady": "Tá meabhrúcháin mhín réidh."
+  },
+  "permissions": {
+    "locationTitle": "Sábháilteacht suímh",
+    "locationSubtitle": "Úsáidte don léarscáil, criosanna contúirte, teacht shábháilte, agus SOS chomhthéacs.",
+    "locationBody": "Iarrann VeryLoving suíomh ionas gur féidir le caomhnóirí tuiscint a fháil ar an áit a bhféadfadh cabhair a bheith ag teastáil. Is féidir leat é seo a athrú níos déanaí i Socruithe.",
+    "allowLocation": "Ceadaigh suíomh",
+    "notificationsTitle": "Foláirimh sábháilteachta",
+    "notificationsSubtitle": "Tacaíonn fógraí le seiceáil isteach agus le himeachtaí éigeandála.",
+    "notificationsBody": "Ní úsáidimid fógraí ach le haghaidh leideanna sábháilteachta, nuashonruithe éigeandála, agus meabhrúcháin a chumasaíonn tú.",
+    "enableNotifications": "Cumasaigh fógraí",
+    "locationRationaleTitle": "Coinníonn suíomh comhthéacs sábháilteachta cruinn",
+    "locationRationaleMessage": "Úsáideann VeryLoving do shuíomh don léarscáil sábháilteachta, criosanna contúirte, comhroinnt thapa, agus comhthéacs SOS. Is féidir leat é seo a athrú níos déanaí i Socruithe.",
+    "notificationsRationaleTitle": "Teastaíonn fógraí ó rabhaidh sábháilteachta",
+    "notificationsRationaleMessage": "VeryLoving seolann meabhrúcháin seiceála isteach, nuashonruithe éigeandála, agus leideanna sábháilteachta a chumasaíonn tú. Ní úsáidimid fógraí le haghaidh fógraí.",
+    "microphoneRationaleTitle": "Cumhachtaíonn micreafón glaonna sábháilteachta",
+    "microphoneRationaleMessage": "Ní úsáideann VeryLoving do mhicreafón ach amháin nuair a thosaíonn tú AI chompánach nó glao sábháilteachta.",
+    "bluetoothRationaleTitle": "Bluetooth nascann do wearable",
+    "bluetoothRationaleMessage": "Úsáideann VeryLoving Bluetooth chun péire le jewelry NorthStar, stádas nasc a léamh, agus sreabhadh sábháilteachta a spreagadh ón wearable.",
+    "cameraRationaleTitle": "Tá an ceamara roghnach",
+    "cameraRationaleMessage": "Ní úsáideann VeryLoving an ceamara ach amháin nuair a roghnaíonn tú grianghraf próifíle a thógáil nó íomhá sábháilteachta a roinnt."
+  },
+  "tutorial": {
+    "sharedBody": "Coinníonn VeryLoving an sreabhadh seo ar fáil ó Socruithe agus ón bpainéal.",
+    "chooseVoiceTitle": "Roghnaigh do ghuth",
+    "chooseVoiceSubtitle": "Roghnaigh an guth compánach is sábháilte a chloisteáil.",
+    "homeTitle": "Mód baile",
+    "homeSubtitle": "Monatóireacht chiúin ar mhaithe le sábháilteacht laethúil.",
+    "guardianTitle": "Mód caomhnóra",
+    "guardianSubtitle": "Comhroinn comhthéacs le daoine iontaofa.",
+    "emergencyTitle": "Mód éigeandála",
+    "emergencySubtitle": "Is féidir le cúig sconna dul i ngleic le foláirimh SOS agus caomhnóra.",
+    "excuseTitle": "Glao leithscéal",
+    "excuseSubtitle": "Cruthaigh cúis ghrásta chun staid mhíchompordach a fhágáil.",
+    "safetyCallTitle": "Glao sábháilteachta",
+    "safetyCallSubtitle": "Cuir tús le glao compánach fíor-ama nuair a theastaíonn tacaíocht uait.",
+    "practiceTitle": "Radharc cleachtais",
+    "practiceSubtitle": "Bain triail as na sreafaí sábháilteachta i dtaispeántas ísealbhrú."
+  },
+  "jewelry": {
+    "pairTitle": "Péire NorthStar",
+    "pairSubtitle": "Coinnigh an jewelry in aice láimhe agus tú ag scanadh.",
+    "scan": "Scanadh le haghaidh feistí",
+    "scanning": "Ag scanadh in aice láimhe...",
+    "noDevices": "Níor aimsíodh aon ghléasanna NorthStar in aice láimhe fós.",
+    "scanStartFailed": "Níorbh fhéidir Bluetooth scanadh a thosú. Bain triail as arís le do thoil.",
+    "scanFailed": "Ní raibh muid in ann seodra in aice láimhe a fháil. Seiceáil Bluetooth, coinnigh NorthStar gar, agus bain triail as arís.",
+    "scanAccessFailed": "Níorbh fhéidir Bluetooth scanadh a thosú. Seiceáil Bluetooth rochtain agus bain triail as arís.",
+    "permissionDenied": "Tá rochtain ar ghléas in aice láimhe as. Ceadaigh rochtain Bluetooth i Socruithe, ansin bain triail as arís.",
+    "connectTimeout": "NorthStar thóg sé ró-fhada ceangal a dhéanamh. Bog níos gaire é agus bain triail as arís.",
+    "connectFailed": "Ní raibh muid in ann ceangal a dhéanamh le NorthStar. Seiceáil go bhfuil sé luchtaithe agus in aice láimhe, ansin bain triail as arís.",
+    "emptyTitle": "Níl aon ghléasanna in aice láimhe fós",
+    "emptyMessage": "Coinnigh NorthStar luchtaithe agus gar don fhón seo, ansin scanadh arís.",
+    "searchingMessage": "Ag lorg NorthStar gléasanna in aice láimhe..."
+  },
+  "home": {
+    "subtitle": "Painéal compánach sábháilteachta",
+    "modeStatus": "%{mode} MÓD",
+    "companionReady": "%{name} atá réidh",
+    "readyBody": "Tá guth, léarscáil, jewelry, agus caomhnóirí sconna amháin ar shiúl.",
+    "safetyCall": "Glao sábháilteachta",
+    "northStarDevice": "NorthStar gléas",
+    "deviceConnected": "%{name} ceangailte · %{battery}%",
+    "noDevice": "Níl aon ghléas ceangailte",
+    "manageDevice": "Bainistigh gléas",
+    "mode": "Mód",
+    "modes": {
+      "home": "Baile",
+      "guardian": "Caomhnóir",
+      "emergency": "Éigeandáil"
+    }
+  },
+  "map": {
+    "finding": "Ag aimsiú do shuíomh...",
+    "retry": "Déan iarracht suíomh arís",
+    "title": "Léarscáil sábháilteachta",
+    "previewSubtitle": "Expo Go réamhamharc; Mapbox rindreáil i dtógáil forbartha.",
+    "preview": "Réamhamharc léarscáile",
+    "risk": "Riosca: %{risk} · Ga %{radius}m",
+    "refresh": "Athnuaigh suíomh",
+    "refreshing": "Suíomh á aimsiú...",
+    "updateFailed": "Ní fhéadfaimis do shuíomh a nuashonrú. Bain triail as arís le do thoil.",
+    "notRequested": "Níor iarradh rochtain ar shuíomh. Is féidir leat é a chumasú níos déanaí ó Socruithe.",
+    "permissionOff": "Tá rochtain ar shuíomh as. Cumasaigh é i Socruithe chun an léarscáil sábháilteachta a lárnú ort.",
+    "timeout": "Tá do shuíomh ag tógáil níos faide ná mar a bhíothas ag súil leis. Bog áit éigin le comhartha níos soiléire agus bain triail as arís.",
+    "savedTitle": "Áiteanna a shábháil",
+    "savedEmptyTitle": "Níl aon áiteanna sábhála fós",
+    "savedEmptyMessage": "Beidh áiteanna iontaofa a shábhálann tú le feiceáil anseo le haghaidh rochtain thapa.",
+    "zones": {
+      "crowding": "Plódú déanach san oíche",
+      "lowLighting": "Limistéar soilsithe íseal"
+    },
+    "risks": {
+      "low": "íseal",
+      "medium": "Meánach",
+      "high": "Ard"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ag Ceangal...",
+    "offlineCompanion": "Compánach as líne",
+    "offline": "As líne",
+    "connected": "Ceangailte",
+    "interrupted": "Ceangal briste",
+    "ready": "Réidh le ceangal",
+    "connectingSecurely": "Ag nascadh go daingean le do chompánach gutha...",
+    "messagesWaiting": {
+      "one": "%{count} teachtaireacht ag fanacht le seoladh",
+      "other": "%{count} teachtaireachtaí atá ag fanacht le seoladh"
+    },
+    "useOffline": "Bain úsáid as compánach as líne",
+    "reconnect": "Athcheangail le AI guth",
+    "typePlaceholder": "Clóscríobh má tá sé deacair labhairt",
+    "endCall": "Deireadh an ghlao",
+    "startCall": "Tosaigh an glao",
+    "emptyTitle": "Tosaíonn do chomhrá anseo",
+    "emptyMessage": "Tosaigh an glao nó clóscríobh teachtaireacht nuair a bheidh tú réidh."
+  },
+  "chat": {
+    "waiting": "Ag fanacht le ceangal",
+    "notSent": "Níor seoladh an teachtaireacht.",
+    "retryAccessibility": "Bain triail as teachtaireacht a sheoladh arís"
+  },
+  "history": {
+    "clearTitle": "Stair chomhrá soiléir?",
+    "clearMessage": "Baineann sé seo teachtaireachtaí AI chompánacha a shábháil ón ngléas seo.",
+    "deleteTitle": "Scrios an comhrá seo?",
+    "cannotUndo": "Ní féidir é seo a chur ar ceal.",
+    "title": "Stair an chomhrá",
+    "subtitle": "AI teachtaireachtaí compánacha a shábháil ar an ngléas seo.",
+    "empty": "Níor shábháil aon chomhráite fós.",
+    "emptyTitle": "Níl aon chomhráite fós",
+    "emptyMessage": "Beidh do chomhráite compánach AI le feiceáil anseo tar éis do chéad ghlao.",
+    "loadFailed": "Ní raibh muid in ann stair chomhrá a luchtú. Bain triail as arís le do thoil.",
+    "clearFailed": "Ní raibh muid in ann stair an chomhrá a ghlanadh. Bain triail as arís le do thoil.",
+    "deleteFailed": "Ní fhéadfaimis an comhrá sin a scriosadh. Bain triail as arís le do thoil.",
+    "aiCompanion": "AI chompánach",
+    "resume": "Atosaigh",
+    "clearAll": "Glan an stair ar fad",
+    "roles": {
+      "assistant": "compánach",
+      "user": "tusa"
+    }
+  },
+  "voices": {
+    "title": "Mo ghuthanna glaonna sábháilteachta",
+    "subtitle": "Roghnaigh an guth compánach a bhraitheann ceart a chloisteáil.",
+    "test": "Guth tástála",
+    "stop": "Stop sampla",
+    "selectionFailedTitle": "Níor sábháladh an roghnúchán",
+    "selectionFailedMessage": "Bain triail as an guth a roghnú arís.",
+    "sampleFailedTitle": "Sampla nach bhfuil ar fáil",
+    "sampleFailedMessage": "Níorbh fhéidir an sampla gutha seo a sheinm. Bain triail as arís le do thoil.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "bog, socair, talamh"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "geal, suaimhneach, comhrá"
+      },
+      "boyfriend": {
+        "name": "Buachaill",
+        "description": "seasta, grámhar, i láthair"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "muiníneach, cosantach, spreagtha"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Guth",
+    "changeVoice": "Athraigh guth",
+    "showCompanion": "Taispeáin compánach",
+    "offlineMode": "Mód as líne",
+    "offlineModeSubtitle": "Bain úsáid as freagraí compánacha cuachta nuair nach bhfuil an líonra nó na dintiúir Hume ar fáil.",
+    "privacyData": "Príobháideachas agus sonraí",
+    "privacyBody": "Easpórtáil nó scrios na sonraí logánta atá stóráilte ar an ngléas seo.",
+    "preparingExport": "Easpórtáil á ullmhú...",
+    "exportData": "Easpórtáil mo chuid sonraí",
+    "privacyPolicy": "Polasaí príobháideachais",
+    "deleting": "Ag scriosadh...",
+    "deleteAll": "Scrios na sonraí logánta go léir",
+    "deviceManagement": "Bainistíocht gléasanna",
+    "emergencyContacts": "Teagmhálacha éigeandála",
+    "signOut": "Sínigh amach",
+    "exportFailedTitle": "Theip ar easpórtáil",
+    "exportFailedMessage": "Ní féidir do chuid sonraí a easpórtáil anois.",
+    "deleteConfirmTitle": "Scrios na sonraí logánta go léir?",
+    "deleteConfirmMessage": "Baineann sé seo do phróifíl, socruithe, teagmhálacha éigeandála, stair comhrá, meabhrúcháin ceadanna, agus seisiún údaraithe áitiúil ón ngléas seo.",
+    "deleteEverything": "Scrios gach rud",
+    "deleteFailedTitle": "Theip ar scriosadh",
+    "deleteFailedMessage": "Ní féidir sonraí logánta a scriosadh anois.",
+    "linkFailed": "Ní féidir nasc a oscailt",
+    "sections": {
+      "language": "Teanga",
+      "languageSubtitle": "Comhéadan agus teanga ceada an chórais",
+      "companion": "Compánach",
+      "companionSubtitle": "Sainroghanna guth agus as líne",
+      "deviceSafety": "Feistí agus sábháilteacht",
+      "deviceSafetySubtitle": "NorthStar, caomhnóirí, agus teagmhálaithe éigeandála",
+      "privacy": "Príobháideachas agus sonraí",
+      "privacySubtitle": "Stair, easpórtáil, scriosadh, agus polasaí",
+      "account": "Cuntas",
+      "accountSubtitle": "Do sheisiún reatha VeryLoving"
+    },
+    "updateFailedTitle": "Socrú gan sábháil",
+    "updateFailedMessage": "Ní fhéadfaimis an rogha sin a shábháil. Bain triail as arís le do thoil.",
+    "signOutFailedTitle": "Níorbh fhéidir síniú amach",
+    "signOutFailedMessage": "Tá do sheisiún fós gníomhach. Bain triail as arís le do thoil."
+  },
+  "contacts": {
+    "title": "Teagmhálacha éigeandála",
+    "subtitle": "Daoine iontaofa ar fáil le linn sreafaí sábháilteachta.",
+    "addTitle": "Cuir Teagmháil Éigeandála leis",
+    "name": "Ainm",
+    "namePlaceholder": "Ainm teagmhála",
+    "phone": "Uimhir theileafóin teagmhála",
+    "add": "Cuir Teagmháil Leis",
+    "empty": "Níor cuireadh aon teagmhálacha éigeandála leis fós.",
+    "emptyTitle": "Níl aon teagmhálacha éigeandála fós",
+    "emptyMessage": "Cuir duine a bhfuil muinín agat astu ionas go mbeidh siad réidh nuair a bhíonn sreabhadh sábháilteachta ag teastáil uathu.",
+    "removeTitle": "Bain %{name}?",
+    "removeMessage": "Ní bheidh an duine seo le feiceáil i do shreabhadh éigeandála a thuilleadh.",
+    "nameRequired": "Iontráil ainm an teagmhála.",
+    "saveFailedTitle": "Teagmháil gan sábháil",
+    "saveFailedMessage": "Níorbh fhéidir an teagmháil seo a shábháil. Seiceáil na sonraí agus bain triail as arís.",
+    "removeFailedTitle": "Gan teagmháil a bhaint",
+    "removeFailedMessage": "Níorbh fhéidir an teagmháil seo a bhaint. Bain triail as arís le do thoil.",
+    "callAccessibility": "Glaoigh ar %{name}",
+    "removeAccessibility": "Bain %{name}"
+  },
+  "device": {
+    "title": "Bainistíocht gléasanna",
+    "subtitle": "Bainistigh do ghléas NorthStar.",
+    "connected": "Ceangailte · %{battery}% ceallraí",
+    "none": "Níl aon ghléasanna ceangailte",
+    "disconnect": "Dícheangail an gléas",
+    "connect": "Ceangail an gléas"
+  },
+  "friends": {
+    "title": "Cairde",
+    "subtitle": "Caomhnóirí, iarratais, agus graf éigeandála.",
+    "addDemo": "Cuir cara taispeána leis",
+    "emptyTitle": "Tá do chiorcal sábháilteachta folamh",
+    "emptyMessage": "Beidh cairde agus caomhnóirí iontaofa le feiceáil anseo nuair a chuirtear leis iad.",
+    "newGuardian": "Caomhnóir Nua",
+    "statuses": {
+      "guardian": "Caomhnóir",
+      "pending": "Ar feitheamh"
+    }
+  },
+  "emergency": {
+    "title": "SOS éigeandála",
+    "subtitle": "Déan méadú ach amháin nuair a theastaíonn tacaíocht láithreach uait.",
+    "body": "Cuirfidh sé seo do shreabhadh sábháilteachta ar an eolas agus ullmhóidh sé teagmhálacha éigeandála.",
+    "activate": "Gníomhachtaigh SOS",
+    "callCompanion": "Glaoigh ar chompánach AI",
+    "notificationTitle": "SOS gníomhachtaithe",
+    "notificationBody": "Tá do shreabhadh éigeandála réidh.",
+    "readyTitle": "SOS réidh",
+    "callContact": "Glaoigh ar %{name}?",
+    "addContact": "Cuir teagmhálaí éigeandála leis i Socruithe.",
+    "quickShareTitle": "Comhroinn thapa",
+    "quickShareMessage": "Tá síol comhroinnte suímh réidh. Ceangail an críochphointe comhroinnte inneall chun naisc bheo a sheoladh."
+  },
+  "quickShare": {
+    "title": "Comhroinn thapa",
+    "subtitle": "Tá sreabhadh comhroinnte suímh réidh."
+  },
+  "capybearTap": {
+    "title": "Capybear sconna",
+    "subtitle": "Sconna dúbailte ar do NorthStar chun oráiste sábháilteachta a scaoileadh.",
+    "body": "Tá an bealach gothaí réidh le haghaidh sreangú imeachta BLE."
+  },
+  "debug": {
+    "title": "VeryLoving leathanach dífhabhtaithe",
+    "subtitle": "Bealach forbartha amháin."
+  },
+  "errors": {
+    "voiceOffline": "Is cosúil go bhfuil tú as líne. Seolfar do theachtaireacht nuair a athnascfaidh tú.",
+    "voiceQueued": "Sábháladh an teachtaireacht. Seolfar é nuair a athnascfaidh an compánach gutha.",
+    "voiceRetrying": "Ag iarraidh do theachtaireacht a sheoladh arís...",
+    "voiceConnecting": "Ag nascadh go daingean le do chompánach gutha...",
+    "microphone": "Tá rochtain ar mhicreafón ag teastáil le haghaidh glaonna gutha. Is féidir leat é a chumasú i Socruithe, nó teachtaireacht a chlóscríobh ina ionad.",
+    "billing": "Níl an compánach guth ar líne ar fáil go sealadach. Is féidir leat leanúint ar aghaidh leis an gcompánach as líne.",
+    "authentication": "Níorbh fhéidir leis an gcompánach gutha an seisiún seo a fhíorú. Sínigh isteach arís nó bain úsáid as an gcompánach as líne anois.",
+    "timeout": "Thóg an compánach guth ró-fhada chun freagra a thabhairt. Seiceáil do nasc agus bain triail as arís.",
+    "network": "Ní raibh muid in ann teacht ar an gcompánach gutha. Seiceáil do cheangal, ansin déan iarracht arís nó lean ar aghaidh as líne.",
+    "genericVoice": "Chuir rud éigin isteach ar an nglaoch gutha. Bain triail as arís, nó lean ar aghaidh leis an gcompánach as líne."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving easpórtáil sonraí"
+  },
+  "notifications": {
+    "channelName": "Foláirimh sábháilteachta"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving gá rochtain ar mhicreafón ar mhaithe le sábháilteacht agus glaonna compánach AI.",
+      "NSLocationWhenInUseUsageDescription": "Úsáideann VeryLoving do shuíomh don léarscáil sábháilteachta agus do ghnéithe sábháilteachta in aice láimhe.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving úsáideann sé do shuíomh chun tacú le sreafaí sábháilte agus éigeandála.",
+      "NSLocationAlwaysUsageDescription": "Úsáideann VeryLoving suíomh cúlra le haghaidh gnéithe sábháilte agus crios contúirte in aice láimhe.",
+      "NSCameraUsageDescription": "Ní úsáideann VeryLoving an ceamara ach amháin nuair a roghnaíonn tú próifíl nó grianghraf sábháilteachta a thógáil.",
+      "NSPhotoLibraryUsageDescription": "Ní úsáideann VeryLoving do leabharlann grianghraf ach amháin nuair a roghnaíonn tú próifíl nó íomhá sábháilteachta.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

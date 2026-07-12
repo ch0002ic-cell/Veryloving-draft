@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Żid",
+    "apple": "Apple",
+    "back": "Lura",
+    "call": "Call",
+    "cancel": "Ikkanċellazzjoni",
+    "clear": "Ċar",
+    "close": "Għalaq",
+    "connect": "Konnessjoni",
+    "connecting": "Konnessjoni...",
+    "continue": "Kompli",
+    "delete": "Ħassar",
+    "finish": "Tmiem",
+    "friends": "Ħbieb",
+    "google": "Google",
+    "home": "Dar",
+    "loading": "Qed jitħaddem...",
+    "map": "Mappa",
+    "notNow": "Mhux issa",
+    "remove": "Neħħi",
+    "retry": "Retry",
+    "retrying": "Tentattiv mill-ġdid",
+    "save": "Salva",
+    "selected": "Magħżula",
+    "send": "Ibgħat",
+    "settings": "Settings",
+    "skip": "Skip",
+    "skipForNow": "Ħalli għal issa",
+    "skipTutorial": "Ħalli t-tutorjat",
+    "sos": "SOS",
+    "unknown": "Mhux magħruf",
+    "user": "VeryLovingutent",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lingwa",
+    "subtitle": "Agħżel il-lingwa użata matul l-app.",
+    "system": "Default tas-sistema",
+    "search": "Lingwi tat-tfittxija",
+    "noResults": "L-ebda lingwa ma taqbel mal-ifittxija tiegħek.",
+    "english": "Ingliż",
+    "spanish": "Spanjol",
+    "french": "Franċiż",
+    "chineseSimplified": "Ċiniż (Simplifikat)"
+  },
+  "phone": {
+    "label": "Numru tat-telefon",
+    "placeholder": "Numru tat-telefon",
+    "selectCountry": "Għażla ta' pajjiż jew reġjun",
+    "searchCountry": "Fittex pajjiż, kodiċi, jew prefiss ta' djaling",
+    "noCountries": "L-ebda pajjiż ma jaqbel mat-tfittxija tiegħek.",
+    "countryButton": "Biddel il-pajjiż, bħalissa %{country} u %{callingCode}",
+    "inputAccessibility": "Numru tat-telefon għal %{country}",
+    "required": "Daħħal numru tat-telefon.",
+    "tooShort": "Dan in-numru tat-telefon huwa qasir wisq.",
+    "tooLong": "Dan in-numru tat-telefon huwa twil wisq.",
+    "invalid": "Daħħal numru tat-telefon validu għall-pajjiż magħżul.",
+    "valid": "Numru ta' telefon internazzjonali validu"
+  },
+  "auth": {
+    "onboardingTagline": "Sieħeb personali ta' sigurtà għall-mumenti bejn \"Jien tajjeb\" u \"Għandi bżonn għajnuna.\"",
+    "createAccount": "Ħoloq kont",
+    "continueOnboarding": "Kompli bl-onboarding",
+    "createSubtitle": "Agħżel metodu ta' login biex tipproteġi l-grafiku tas-sigurtà tiegħek.",
+    "phoneVerification": "Verifika tat-telefon",
+    "sendCode": "Kodiċi ta' Send",
+    "sendingCode": "Nibgħat kodiċi...",
+    "verifyCode": "Kodiċi ta' verifika",
+    "sentTo": "Mibgħuta %{phone}",
+    "yourPhone": "it-telefon tiegħek",
+    "verificationCode": "Kodiċi ta' verifika",
+    "verify": "Ivverifika",
+    "verifying": "Verifika...",
+    "invalidCode": "Daħħal il-kodiċi ta' verifika.",
+    "signInFailedTitle": "Id-dħul interrott",
+    "signInFailedMessage": "Ma stajniex nkomplu l-iloging. Iċċekkja l-konnessjoni tiegħek u erġa' ipprova.",
+    "googleUnavailableTitle": "Google Reġistrazzjoni mhux disponibbli",
+    "googleUnavailableMessage": "Bl-użu ta' sessjoni ta' żvilupp lokali. Native Google Sign-In jaħdem f'bini ta' żvilupp.",
+    "northStarTitle": "NorthStar Ġojjellerija",
+    "northStarSubtitle": "Għaqqad issa jew kompli u żid aktar tard.",
+    "northStarBody": "Il-VL01 li jintlibes jista' jattiva flussi ta' sigurtà b'taps u ġesti ta' pressjoni twila.",
+    "setupJewelry": "Organizza ġojjellerija",
+    "meetCapybear": "Iltaqa' Capybear",
+    "meetCapybearSubtitle": "Il-kumpanija tas-sigurtà ġentili tiegħek fuq il-mappa u fil-telefonati.",
+    "capybearBody": "Capybear tista' tgħin bil-modalità dar, modalità guardian, modalità ta' emerġenza, sejħiet ta' skuża, u appoġġ bil-vuċi.",
+    "chooseVoice": "Agħżel vuċi",
+    "capybearReminder": "Capybear tfakkira",
+    "remindersReady": "Tfakkiriet ħelwin huma lesti."
+  },
+  "permissions": {
+    "locationTitle": "Sigurtà fil-post",
+    "locationSubtitle": "Użat għall-mappa, żoni ta' periklu, wasla sigura, u SOS kuntest.",
+    "locationBody": "VeryLoving jistaqsi l-post sabiex il-gwardjani jifhmu fejn jista' jkun hemm bżonn ta' għajnuna. Tista' tbiddel dan aktar tard fis-Settings.",
+    "allowLocation": "Permess ta' lokazzjoni",
+    "notificationsTitle": "Twissijiet ta' sigurtà",
+    "notificationsSubtitle": "In-notifiki jappoġġjaw check-ins u avvenimenti ta' emerġenza.",
+    "notificationsBody": "Aħna nużaw biss notifiki għal prompts ta' sigurtà, aġġornamenti ta' emerġenza, u twissijiet li tippermetti.",
+    "enableNotifications": "Attiva n-notifiki",
+    "locationRationaleTitle": "Il-post iżomm il-kuntest tas-sigurtà preċiż",
+    "locationRationaleMessage": "VeryLoving juża l-post tiegħek għall-mappa tas-sigurtà, żoni ta' periklu, quick share, u SOS kuntest. Tista' tbiddel dan aktar tard fis-Settings.",
+    "notificationsRationaleTitle": "Twissijiet ta' sigurtà jeħtieġu notifiki",
+    "notificationsRationaleMessage": "VeryLoving jibgħat twissijiet ta' check-in, aġġornamenti ta' emerġenza, u prompts ta' sigurtà li tippermetti. Aħna ma nużawx notifiki għal reklami.",
+    "microphoneRationaleTitle": "Il-mikrofonu jsaħħaħ is-sejħiet tas-sigurtà",
+    "microphoneRationaleMessage": "VeryLoving juża l-mikrofonu tiegħek biss meta tibda sejħa AI companion jew safety.",
+    "bluetoothRationaleTitle": "Bluetooth jgħaqqad il-wearable tiegħek",
+    "bluetoothRationaleMessage": "VeryLoving juża Bluetooth biex jingħaqad ma' ġojjellerija NorthStar, jaqra l-istatus tal-konnessjoni, u jħalli l-flussi ta' sigurtà mill-wearable.",
+    "cameraRationaleTitle": "Il-kamera hija fakultattiva",
+    "cameraRationaleMessage": "VeryLoving tuża l-kamera biss meta tagħżel li tieħu ritratt ta' profil jew taqsam immaġni ta' sigurtà."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving jżomm dan il-fluss disponibbli kemm mis-settings kif ukoll mid-dashboard.",
+    "chooseVoiceTitle": "Agħżel il-vuċi tiegħek",
+    "chooseVoiceSubtitle": "Agħżel il-vuċi companion li tħossok l-iktar sigur biex tisma'.",
+    "homeTitle": "Modalità Home",
+    "homeSubtitle": "Monitoraġġ kwiet għas-sigurtà ta' kuljum.",
+    "guardianTitle": "Modalità Guardian",
+    "guardianSubtitle": "Qasam il-kuntest ma' nies affidabbli.",
+    "emergencyTitle": "Modalità ta' emerġenza",
+    "emergencySubtitle": "Ħames taps jistgħu jkomplu għal twissijiet ta' SOS u gwardjani.",
+    "excuseTitle": "Sejħa ta' skuża",
+    "excuseSubtitle": "Oħloq raġuni sabiħa biex titlaq minn sitwazzjoni mhux komda.",
+    "safetyCallTitle": "Sejħa ta' sigurtà",
+    "safetyCallSubtitle": "Ibda sejħa ta' sieħeb f'ħin reali meta jkollok bżonn appoġġ.",
+    "practiceTitle": "Xena ta' prattika",
+    "practiceSubtitle": "Ippruvaw il-flussi tas-sigurtà f'demo ta' pressjoni baxxa."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Żomm il-ġojjellerija qrib waqt li tiskannja.",
+    "scan": "Skannjar għal apparati",
+    "scanning": "Qed jiskannja viċin...",
+    "noDevices": "Ma nstab l-ebda apparat ta' NorthStar viċin s'issa.",
+    "scanStartFailed": "Bluetooth-scanning ma setgħetx tibda. Jekk jogħġbok ipprova mill-ġdid.",
+    "scanFailed": "Ma stajniex insibu ġojjellerija fil-viċin. Iċċekkja Bluetooth, żomm NorthStar viċin, u erġa' ipprova.",
+    "scanAccessFailed": "Bluetooth-scanning ma setgħetx tibda. Iċċekkja Bluetooth-aċċess u erġa' ipprova.",
+    "permissionDenied": "L-aċċess għall-apparat viċin huwa mitfi. Ippermetti aċċess Bluetooth f'Settings, imbagħad ipprova mill-ġdid.",
+    "connectTimeout": "NorthStar ħadet wisq żmien biex tikkonnettja. Ħuha eqreb u erġa' ipprova.",
+    "connectFailed": "Ma stajniex ngħaqqdu ma' NorthStar. Iċċekkja li hija ċċarġjata u viċin, imbagħad ipprova mill-ġdid.",
+    "emptyTitle": "Għad m'hemm l-ebda apparat viċin",
+    "emptyMessage": "Żomm NorthStar ċarġ u viċin dan it-telefon, imbagħad skennja mill-ġdid.",
+    "searchingMessage": "Qed infittex apparat NorthStar viċin..."
+  },
+  "home": {
+    "subtitle": "Dashboard tas-sigurtà",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} lest",
+    "readyBody": "Il-vuċi, il-mappa, il-ġojjellerija u l-gwardjani huma f'kuntatt wieħed 'il bogħod.",
+    "safetyCall": "Sejħa ta' sigurtà",
+    "northStarDevice": "NorthStar apparat",
+    "deviceConnected": "%{name} konness · %{battery}%",
+    "noDevice": "L-ebda apparat konness",
+    "manageDevice": "Immaniġġja l-apparat",
+    "mode": "Modalità",
+    "modes": {
+      "home": "Dar",
+      "guardian": "Guardian",
+      "emergency": "Emerġenza"
+    }
+  },
+  "map": {
+    "finding": "Insib il-post tiegħek...",
+    "retry": "Post ta' riprova",
+    "title": "Mappa tas-sigurtà",
+    "previewSubtitle": "Expo Go preview; Mapbox jirrendi f'build ta' żvilupp.",
+    "preview": "Preview tal-mappa",
+    "risk": "Riskju: %{risk} · Radju %{radius}m",
+    "refresh": "Post ta' aġġornament",
+    "refreshing": "Insibu l-post...",
+    "updateFailed": "Ma stajniex naġġornaw il-post tiegħek. Jekk jogħġbok ipprova mill-ġdid.",
+    "notRequested": "Ma ġiex mitlub aċċess għall-post. Tista' tippermettih aktar tard minn Settings.",
+    "permissionOff": "L-aċċess għall-post huwa mħassar. Ippermettih fis-settings biex iċ-ċentru tal-mappa tas-sigurtà fuqek.",
+    "timeout": "Il-post tiegħek qed jieħu aktar żmien milli mistenni. Imxi xi post b'sinjal aktar ċar u erġa' ipprova.",
+    "savedTitle": "Postijiet maħżuna",
+    "savedEmptyTitle": "Għad m'hemm l-ebda postijiet maħżuna",
+    "savedEmptyMessage": "Postijiet affidabbli li ssejvaw jidhru hawn għal aċċess mgħaġġel.",
+    "zones": {
+      "crowding": "Affollament tard bil-lejl",
+      "lowLighting": "Żona ta' dawl baxx"
+    },
+    "risks": {
+      "low": "baxx",
+      "medium": "Medju",
+      "high": "għoli"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Konnessjoni...",
+    "offlineCompanion": "Kumpanija offline",
+    "offline": "Offline",
+    "connected": "Konnessi",
+    "interrupted": "Konnessjoni interrotta",
+    "ready": "Lest biex jikkonnettja",
+    "connectingSecurely": "Tikkonnettja b'mod sigur mal-vuċi tiegħek...",
+    "messagesWaiting": {
+      "one": "%{count} messaġġ li jistenna biex jintbagħat",
+      "other": "%{count} messaġġi jistennew biex jintbagħtu"
+    },
+    "useOffline": "Uża sħab offline",
+    "reconnect": "Irrikonnettja mal-vuċi AI",
+    "typePlaceholder": "Ikteb jekk jitkellem diffiċli",
+    "endCall": "Tmiem tas-sejħa",
+    "startCall": "Bidu tas-sejħa",
+    "emptyTitle": "Il-konversazzjoni tiegħek tibda hawn",
+    "emptyMessage": "Ibda t-telefonata jew ikteb messaġġ meta tkun lest."
+  },
+  "chat": {
+    "waiting": "Stennija għall-konnessjoni",
+    "notSent": "Messaġġ mhux mibgħut.",
+    "retryAccessibility": "Ipprova jerġa' jibgħat messaġġ"
+  },
+  "history": {
+    "clearTitle": "Storja ċara ta' konversazzjoni?",
+    "clearMessage": "Dan ineħħi l-messaġġi AI ta' sempliċi minn dan l-apparat.",
+    "deleteTitle": "Tħassar din il-konversazzjoni?",
+    "cannotUndo": "Dan ma jistax jiġi mħassar.",
+    "title": "Storja tal-konversazzjonijiet",
+    "subtitle": "AI messaġġi ta' semplu maħżuna fuq dan l-apparat.",
+    "empty": "Għad m'hemm l-ebda konversazzjoni salvata.",
+    "emptyTitle": "L-ebda konversazzjonijiet s'issa",
+    "emptyMessage": "Il-AI konversazzjonijiet tiegħek se jidhru hawn wara l-ewwel sejħa tiegħek.",
+    "loadFailed": "Ma stajniex nħaddmu l-istorja tal-konversazzjonijiet. Jekk jogħġbok ipprova mill-ġdid.",
+    "clearFailed": "Ma stajniex nħassru l-istorja tal-konversazzjonijiet. Jekk jogħġbok ipprova mill-ġdid.",
+    "deleteFailed": "Ma stajniex inħassru dik il-konversazzjoni. Jekk jogħġbok ipprova mill-ġdid.",
+    "aiCompanion": "AI sieħeb",
+    "resume": "Riżumé",
+    "clearAll": "Ħassar l-istorja kollha",
+    "roles": {
+      "assistant": "Companion",
+      "user": "Int"
+    }
+  },
+  "voices": {
+    "title": "Il-vuċijiet tiegħi tas-sejħa tas-sigurtà",
+    "subtitle": "Agħżel il-vuċi tal-kumpanija li tħossok tajjeb biex tisma'.",
+    "test": "Vuċi tat-Test",
+    "stop": "Kampjun ta' waqfien",
+    "selectionFailedTitle": "Għażla mhux salvata",
+    "selectionFailedMessage": "Jekk jogħġbok ipprova tagħżel il-vuċi mill-ġdid.",
+    "sampleFailedTitle": "Kampjun mhux disponibbli",
+    "sampleFailedMessage": "Dan il-kampjun tal-vuċi ma setax jintlagħab. Jekk jogħġbok ipprova mill-ġdid.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Ħelwa, kalma, li jgħaqqad l-art"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Brillanti, kunfidanti, konversazzjonali"
+      },
+      "boyfriend": {
+        "name": "Għarus",
+        "description": "Stabbli, affettiv, preżenti"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "kunfidenti, protettivi, motivanti"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Vuċi",
+    "changeVoice": "Biddel il-vuċi",
+    "showCompanion": "Kumpanija tal-programm",
+    "offlineMode": "Modalità offline",
+    "offlineModeSubtitle": "Uża tweġibiet kumpanija magħquda meta l-kredenzjali tan-netwerk jew tal-Hume ma jkunux disponibbli.",
+    "privacyData": "Privatezza u data",
+    "privacyBody": "Esporta jew ħassar id-data lokali maħżuna fuq dan l-apparat.",
+    "preparingExport": "Qed jippreparaw l-esportazzjoni...",
+    "exportData": "Esporta d-dejta tiegħi",
+    "privacyPolicy": "Politika tal-Privatezza",
+    "deleting": "Inħassru...",
+    "deleteAll": "Ħassar id-dejta lokali kollha",
+    "deviceManagement": "Ġestjoni tal-apparat",
+    "emergencyContacts": "Kuntatti ta' emerġenza",
+    "signOut": "Ħruġ",
+    "exportFailedTitle": "L-esportazzjoni falliet",
+    "exportFailedMessage": "Ma nistax jesporta d-dejta tiegħek bħalissa.",
+    "deleteConfirmTitle": "Tħassar id-data lokali kollha?",
+    "deleteConfirmMessage": "Dan ineħħi l-profil tiegħek, is-settings, il-kuntatti ta' emerġenza, l-istorja tal-konversazzjonijiet, twissijiet ta' permessi, u sessjoni ta' awtenzjoni lokali minn dan l-apparat.",
+    "deleteEverything": "Ħassar kollox",
+    "deleteFailedTitle": "Tħassir fallut",
+    "deleteFailedMessage": "Ma nistax inħassar id-dejta lokali bħalissa.",
+    "linkFailed": "Ma jistax jiftaħ il-link",
+    "sections": {
+      "language": "Lingwa",
+      "languageSubtitle": "Interface u lingwa ta' permess tas-sistema",
+      "companion": "Companion",
+      "companionSubtitle": "Preferenzi tal-vuċi u offline",
+      "deviceSafety": "Apparat u sigurtà",
+      "deviceSafetySubtitle": "NorthStar, gwardjani, u kuntatti ta' emerġenza",
+      "privacy": "Privatezza u data",
+      "privacySubtitle": "Storja, esportazzjoni, tħassir, u politika",
+      "account": "Kont",
+      "accountSubtitle": "Is-sessjoni attwali tiegħek VeryLoving"
+    },
+    "updateFailedTitle": "Issettjar mhux salvat",
+    "updateFailedMessage": "Ma stajniex insalvaw dik il-preferenza. Jekk jogħġbok ipprova mill-ġdid.",
+    "signOutFailedTitle": "Ma setgħetx tagħmel signing out",
+    "signOutFailedMessage": "Is-sessjoni tiegħek għadha attiva. Jekk jogħġbok ipprova mill-ġdid."
+  },
+  "contacts": {
+    "title": "Kuntatti ta' emerġenza",
+    "subtitle": "Persuni ta' fiduċja disponibbli waqt il-flussi ta' sigurtà.",
+    "addTitle": "Żid kuntatt ta' emerġenza",
+    "name": "Isem",
+    "namePlaceholder": "Isem ta' kuntatt",
+    "phone": "Numru tat-telefon ta' kuntatt",
+    "add": "Żid kuntatt",
+    "empty": "Għad m'hemmx kuntatt ta' emerġenza miżjuda.",
+    "emptyTitle": "Għad m'hemm l-ebda kuntatt ta' emerġenza",
+    "emptyMessage": "Żid xi ħadd li tafda biex ikunu lesti meta jkun hemm bżonn ta' sigurtà.",
+    "removeTitle": "Tneħħi %{name}?",
+    "removeMessage": "Din il-persuna ma tidhirx aktar fil-fluss ta' emerġenza tiegħek.",
+    "nameRequired": "Daħħal l-isem tal-kuntatt.",
+    "saveFailedTitle": "Kuntatt mhux salvat",
+    "saveFailedMessage": "Ma stajniex insalvaw dan il-kuntatt. Iċċekkja d-dettalji u erġa' ipprova.",
+    "removeFailedTitle": "Kuntatt mhux imneħħi",
+    "removeFailedMessage": "Ma stajniex neħħu dan il-kuntatt. Jekk jogħġbok ipprova mill-ġdid.",
+    "callAccessibility": "Ċempel %{name}",
+    "removeAccessibility": "Neħħi %{name}"
+  },
+  "device": {
+    "title": "Ġestjoni tal-apparat",
+    "subtitle": "Immaniġġja l-apparat NorthStar tiegħek.",
+    "connected": "Konness · %{battery}% batterija",
+    "none": "L-ebda apparat konness",
+    "disconnect": "Apparat ta' Diskonnessjoni",
+    "connect": "Apparat konnettja"
+  },
+  "friends": {
+    "title": "Ħbieb",
+    "subtitle": "Gwardjani, talbiet, u grafu ta' emerġenza.",
+    "addDemo": "Żid il-ħabib tad-demo",
+    "emptyTitle": "Iċ-ċirku tas-sigurtà tiegħek huwa vojt",
+    "emptyMessage": "Ħbieb u gwardjani fidati jidhru hawn ladarba jiġu miżjuda.",
+    "newGuardian": "Il-Gwardjan il-Ġdid",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Pendenti"
+    }
+  },
+  "emergency": {
+    "title": "Emerġenza SOS",
+    "subtitle": "Eskala biss meta jkollok bżonn appoġġ immedjat.",
+    "body": "Dan jinforma l-fluss tas-sigurtà tiegħek u jipprepara l-kuntatti ta' emerġenza.",
+    "activate": "Attiva SOS",
+    "callCompanion": "Ċempel AI sieħeb",
+    "notificationTitle": "SOS attivata",
+    "notificationBody": "Il-fluss ta' emerġenza tiegħek lest.",
+    "readyTitle": "SOS lest",
+    "callContact": "Ċempel %{name}?",
+    "addContact": "Żid kuntatt ta' emerġenza fis-Settings.",
+    "quickShareTitle": "Qsim malajr",
+    "quickShareMessage": "Is-stub tal-qsim tal-post huwa lest. Ikkonnettja l-punt ta' tmiem tal-kondiviżjonijiet tal-backend biex tibgħat links ħajjin."
+  },
+  "quickShare": {
+    "title": "Qsim malajr",
+    "subtitle": "Il-fluss tal-qsim tal-post huwa lest."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Agħti double tap fuq il-NorthStar biex tħalli orange tas-sigurtà.",
+    "body": "Ir-rotta tal-ġesti hija lesta għall-wiring ta' avvenimenti BLE."
+  },
+  "debug": {
+    "title": "VeryLoving paġna tad-debug",
+    "subtitle": "Rotta ta' żvilupp biss."
+  },
+  "errors": {
+    "voiceOffline": "Tidher offline. Il-messaġġ tiegħek jintbagħat meta terġa' tikkonnettja.",
+    "voiceQueued": "Messaġġ salvat. Se jintbagħat meta l-kumpanija tal-vuċi terġa' tikkonnettja.",
+    "voiceRetrying": "Qed tipprova tibgħat il-messaġġ tiegħek mill-ġdid...",
+    "voiceConnecting": "Tikkonnettja b'mod sigur mal-vuċi tiegħek...",
+    "microphone": "Aċċess bil-mikrofonu huwa meħtieġ għall-isejħiet bil-vuċi. Tista' tippermettih fis-Settings, jew tikteb messaġġ minflok.",
+    "billing": "Il-kumpanija tal-vuċi online mhix disponibbli temporanjament. Tista' tkompli bil-companion offline.",
+    "authentication": "Il-kumpanija tal-vuċi ma setgħetx tikkonferma din is-sessjoni. Idħol mill-ġdid jew uża l-companion offline għalissa.",
+    "timeout": "Il-kumpanija tal-vuċi ħadet wisq żmien biex tirrispondi. Iċċekkja l-konnessjoni tiegħek u erġa' ipprova.",
+    "network": "Ma stajniex nilħqu lill-vuċi. Iċċekkja l-konnessjoni tiegħek, imbagħad ipprova mill-ġdid jew kompli offline.",
+    "genericVoice": "Xi ħaġa waqqfet is-sejħa bil-vuċi. Ipprova mill-ġdid, jew kompli bil-companion offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving-esportazzjoni tad-data"
+  },
+  "notifications": {
+    "channelName": "Twissijiet ta' sigurtà"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving jeħtieġ aċċess mikrofoniku għas-sigurtà u AI sejħiet ta' sħubija.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving juża l-post tiegħek għall-mappa tas-sigurtà u l-karatteristiċi tas-sigurtà fil-viċin.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving juża l-post tiegħek biex jappoġġja flussi ta' wasla sigura u ta' emerġenza.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving juża post ta' sfond għal wasla sigura u karatteristiċi ta' żona ta' periklu viċin.",
+      "NSCameraUsageDescription": "VeryLoving tuża l-kamera biss meta tagħżel li tieħu profil jew ritratt ta' sigurtà.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving tuża l-librerija tar-ritratti tiegħek biss meta tagħżel profil jew immaġni ta' sigurtà.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

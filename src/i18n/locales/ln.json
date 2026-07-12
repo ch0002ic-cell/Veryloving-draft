@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ajouter",
+    "apple": "Apple",
+    "back": "Na nsima",
+    "call": "Appel",
+    "cancel": "Boya",
+    "clear": "Polele",
+    "close": "Penepene",
+    "connect": "Connecter",
+    "connecting": "Connecter...",
+    "continue": "Kokoba",
+    "delete": "Supprimer",
+    "finish": "Nsuka",
+    "friends": "Baninga",
+    "google": "Google",
+    "home": "Ndako",
+    "loading": "Chargement...",
+    "map": "Carte",
+    "notNow": "Siko oyo te",
+    "remove": "Supprimer",
+    "retry": "Komeka lisusu",
+    "retrying": "Komeka lisusu",
+    "save": "Kobatela",
+    "selected": "Koponama",
+    "send": "Kotinda",
+    "settings": "Réglages",
+    "skip": "Skip",
+    "skipForNow": "Skip for now",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Eyebani te",
+    "user": "VeryLoving utilisateur",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Monoko",
+    "subtitle": "Poná monɔkɔ oyo elobeli na monɔkɔ oyo ezali kosalelama na monɔkɔ yango.",
+    "system": "Système défaut",
+    "search": "Koluka minoko",
+    "noResults": "Ata minoko moko te ekokani na boluki na yo.",
+    "english": "Anglais",
+    "spanish": "Espagnol",
+    "french": "Français",
+    "chineseSimplified": "Chinois ( bikangiseli _ bikangiseli _ kobɔngisa)"
+  },
+  "phone": {
+    "label": "Numero ya telefone",
+    "placeholder": "Numero ya telefone",
+    "selectCountry": "pona mboka to etuka",
+    "searchCountry": "Koluka mboka, code, to préfixe ya kobenga",
+    "noCountries": "Ata mboka moko te ekokani na boluki na yo.",
+    "countryButton": "Mbongwana ya mboka, sikoyo %{country} plus %{callingCode}",
+    "inputAccessibility": "Numero ya telefone mpo na %{country}",
+    "required": "Pesa numero ya telefone.",
+    "tooShort": "Numero ya telephone na yo ezali mokuse mingi.",
+    "tooLong": "Numero ya telephone yango ezali molayi mingi.",
+    "invalid": "Tindá Tindá Nimero ya telefone ya ekólo oyo oponi.",
+    "valid": "Numero ya téléphone ya mokili mobimba"
+  },
+  "auth": {
+    "onboardingTagline": "Kozala moninga ya libateli na ntango oyo ezali kati na \"Nazali malamu\" mpe \"Nazali na mposa ya lisalisi.\"",
+    "createAccount": "Créer compte",
+    "continueOnboarding": "Kokoba na mosala ya kosakola",
+    "createSubtitle": "Poná elobeli ya bajɛstɛ mpo na kobatela lokasa na yo ya libateli.",
+    "phoneVerification": "Vérification ya telefone",
+    "sendCode": "Kotinda code",
+    "sendingCode": "ya pas de code...",
+    "verifyCode": "Vérifier code",
+    "sentTo": "Etindamaki na %{phone}",
+    "yourPhone": "phone na yo",
+    "verificationCode": "Kode ya vérification",
+    "verify": "Vérifier",
+    "verifying": "Vérifier...",
+    "invalidCode": "Kota code ya vérification.",
+    "signInFailedTitle": "Sign-in ekatanaki",
+    "signInFailedMessage": "Tokokaki te kokoma mokanda mobimba. Tala na kati ya mokanda na yo mpe meka lisusu.",
+    "googleUnavailableTitle": "Google Sign-in non disponible",
+    "googleUnavailableMessage": "Kosalela likita ya développement ya mboka. Native Google Sign-In azali kosala na ndako ya kotonga.",
+    "northStarTitle": "NorthStar bijoux",
+    "northStarSubtitle": "Kobakisa yango sikoyo to kobakisa yango na sima.",
+    "northStarBody": "Kolata ya VL01 ekoki kosala ete bato bátambola malamu na nzela ya robinet mpe bajɛstɛ ya kofina ya molai.",
+    "setupJewelry": "Sala bijoux",
+    "meetCapybear": "Kokutana na Capybear",
+    "meetCapybearSubtitle": "Moninga na yo ya boboto na karte mpe na ba appels.",
+    "capybearBody": "Capybear ekoki kosalisa na mode ya ndako, mode Guardian, mode ya urgence, kosenga bolimbisi, mpe lisalisi ya mongongo.",
+    "chooseVoice": "Poná mongongo oyo ozali koyoka",
+    "capybearReminder": "Capybear souvenir",
+    "remindersReady": "Makundoli ya boboto esili kobongisama."
+  },
+  "permissions": {
+    "locationTitle": "Sécurité ya esika",
+    "locationSubtitle": "Esalelamaka mpo na karte, bisika ya likama, esika ya likama mpe SOS contexte.",
+    "locationBody": "VeryLoving asengi esika mpo ete bato oyo babatelaka bango bayeba esika nini mposa ya lisalisi ekoki kozala. Okoki kobongola yango na nsima.",
+    "allowLocation": "Kopesa nzela na esika",
+    "notificationsTitle": "Alerte ya sécurité",
+    "notificationsSubtitle": "Bansango esalisaka mpo na koyeba soki likama ebimi mpe soki likama ebimi.",
+    "notificationsBody": "Tosalelaka kaka bansango mpo na likama ya likama mpe bansango oyo ozali na yango.",
+    "enableNotifications": "Activer ba notifications",
+    "locationRationaleTitle": "Esika ezali kobatela makambo ya libateli",
+    "locationRationaleMessage": "VeryLoving kosalela esika na yo mpo na karte ya libateli, bisika ya likama, kokabola na lombangu, mpe makambo SOS. Okoki kobongola yango na nsima.",
+    "notificationsRationaleTitle": "Ba alertes ya sécurité esengaka ba notifications",
+    "notificationsRationaleMessage": "VeryLoving kotinda ba rappels ya check-in, ba mises à jour ya urgence, mpe ba rappels ya likama oyo okoki kosala. Tosalelaka ba annonces te mpo na kosala bapiblisite.",
+    "microphoneRationaleTitle": "Microphone ezali kopesa nguya na ba appels ya sécurité",
+    "microphoneRationaleMessage": "VeryLoving kosalela mikro na yo kaka soki obandi kosolola na moninga na yo ya AI to ya libateli.",
+    "bluetoothRationaleTitle": "Bluetooth connecter elamba na yo",
+    "bluetoothRationaleMessage": "VeryLoving asalelaka Bluetooth mpo na kosangisa babiju na NorthStar, kotánga état ya connexion, mpe kosala ete biloko ya kolata ezala malamu.",
+    "cameraRationaleTitle": "Kamera ezali pona kopona",
+    "cameraRationaleMessage": "VeryLoving kosalela aparɛyi yango kaka soki oponi kozwa fɔtɔ ya profil to kotya fɔtɔ ya libateli."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving esalaka ete flux wana ezala na Réglages mpe na tableau de bord.",
+    "chooseVoiceTitle": "Pona mongongo na yo",
+    "chooseVoiceSubtitle": "Poná mongongo ya moninga oyo omoni ete ezali malamu mpo na koyoka.",
+    "homeTitle": "Mode ya ndako",
+    "homeSubtitle": "Kokengela na kimya mpo na libateli ya mokolo na mokolo.",
+    "guardianTitle": "Mode Guardian",
+    "guardianSubtitle": "Yebisá bato oyo otyelaka motema.",
+    "emergencyTitle": "Mode ya urgence",
+    "emergencySubtitle": "Taps mitano ekoki komata na ba alerte ya SOS mpe ya kobatela.",
+    "excuseTitle": "Bolimbisi",
+    "excuseSubtitle": "Luká koyeba ntina oyo osengeli kotika likambo moko oyo esepelisaka yo te.",
+    "safetyCallTitle": "Appel ya sécurité",
+    "safetyCallSubtitle": "Sololá na moninga na yo ya motema ntango ozali na mposa ya lisalisi.",
+    "practiceTitle": "Esika ya entraînement",
+    "practiceSubtitle": "Meka komibatela na demo ya pression ya moke."
+  },
+  "jewelry": {
+    "pairTitle": "Mibale NorthStar",
+    "pairSubtitle": "Bomba babiju pembeni na yo ntango ozali scanner.",
+    "scan": "Scanner mpo na bamasini",
+    "scanning": "Scanner ya pembeni",
+    "noDevices": "Ba appareils NorthStar pene na yango emonanaki naino te.",
+    "scanStartFailed": "Bluetooth scanner ekokaki kobanda te. Nasengi yo omeka lisusu.",
+    "scanFailed": "Tomonaki babiju ya pembeni te. Tala Bluetooth, tikala NorthStar, mpe meka lisusu.",
+    "scanAccessFailed": "Bluetooth scanner ekokaki kobanda te. Tala na Bluetooth na yo mpe meka lisusu.",
+    "permissionDenied": "Accès ya appareil oyo ezali pene na yango ekangami. Meká kokɔta na Linɔ́ngi Bluetooth ya Mosɛnzɛli, mpe meka lisusu.",
+    "connectTimeout": "NorthStar ezwaki ntango mingi mpo na kosolola. Pusani pene na yo, mpe meka lisusu.",
+    "connectFailed": "Tozalaki kokoka te kosolola na NorthStar. Tala soki ezali na charge mpe ezali pene na yango, mpe meka lisusu.",
+    "emptyTitle": "Ba appareils ya pembeni ezali naino te",
+    "emptyMessage": "Bomba NorthStar charge mpe pene na telefone oyo, na nsima scanner lisusu.",
+    "searchingMessage": "Na ko luka ba NorthStar oyo bazali pembeni na bango..."
+  },
+  "home": {
+    "subtitle": "Tableau de bord ya compagnon ya sécurité",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} Omibongisa",
+    "readyBody": "Mingongo, karte, babiju, mpe bakɛngɛli ezali eloko moko.",
+    "safetyCall": "Appel ya sécurité",
+    "northStarDevice": "NorthStar masini",
+    "deviceConnected": "%{name} lien · %{battery}%",
+    "noDevice": "Masini moko te ekangami",
+    "manageDevice": "Gestion ya masini",
+    "mode": "Mode",
+    "modes": {
+      "home": "Ndako",
+      "guardian": "Mobateli",
+      "emergency": "Urgence"
+    }
+  },
+  "map": {
+    "finding": "Boluka esika na bino ...",
+    "retry": "Esika ya komeka lisusu",
+    "title": "Carte ya sécurité",
+    "previewSubtitle": "Expo Go preview; Mapbox kotonga ndako na ndenge ya malamu.",
+    "preview": "Aperçu ya carte",
+    "risk": "Likama : %{risk} · Radius %{radius}m",
+    "refresh": "Esika ya kozongisa lisusu",
+    "refreshing": "Koluka esika ...",
+    "updateFailed": "Tokokaki te koyebisa yo esika ozali. Nasengi yo omeka lisusu.",
+    "notRequested": "Basengaki te ete bato bázwa esika yango. Okoki kosala yango na sima na nzela ya Réglages.",
+    "permissionOff": "Bisika ya kokɔta ezali lisusu te. Pesa yango na Réglages mpo na kotya karte ya sécurité likolo na yo.",
+    "timeout": "Mosala na yo eumelaka mingi koleka ndenge tokanisaki. Bɛtá na esika oyo ezali na elembo ya polele mpe meka lisusu.",
+    "savedTitle": "Bisika oyo ebatelamaki",
+    "savedEmptyTitle": "Bisika oyo ebatelamaki naino te",
+    "savedEmptyMessage": "Bisika ya confiance oyo obombaka ekomonana awa mpo na kozwa yango na lombangu.",
+    "zones": {
+      "crowding": "Asunaki Koufuku Kotobuki",
+      "lowLighting": "Esika ya mwinda ya moke"
+    },
+    "risks": {
+      "low": "Na nse",
+      "medium": "Moyenne",
+      "high": "Likolo"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Connecter...",
+    "offlineCompanion": "Moninga ya offline",
+    "offline": "Offline",
+    "connected": "Ekangami",
+    "interrupted": "Connexion ekatanaki",
+    "ready": "Komibongisa mpo na kosangana",
+    "connectingSecurely": "Na boyi ko loba na moninga na yo na mongongo na yo...",
+    "messagesWaiting": {
+      "one": "%{count} ya pas de message pour toi",
+      "other": "%{count} ya pas de message pour moi"
+    },
+    "useOffline": "Salela compagnon offline",
+    "reconnect": "ya pas de soucis pour la AI",
+    "typePlaceholder": "Koloba ezali mpasi",
+    "endCall": "Nsuka ya appel",
+    "startCall": "Kobanda kobenga",
+    "emptyTitle": "Lisolo na yo ebandi awa",
+    "emptyMessage": "Bɛtá mesaje to mesaje ntango ozali na mposa ya kobenga."
+  },
+  "chat": {
+    "waiting": "ya pas de link",
+    "notSent": "Message non envoyé.",
+    "retryAccessibility": "Komeka kotinda message"
+  },
+  "history": {
+    "clearTitle": "Lisolo ya polele ya lisolo?",
+    "clearMessage": "Yango elongolaka ba messages AI compagnons na aparɛyi oyo.",
+    "deleteTitle": "Supprimer lisolo oyo?",
+    "cannotUndo": "Yango ekoki kobongwana te.",
+    "title": "Lisolo ya masolo",
+    "subtitle": "AI ba messages oyo ebombamaki na aparɛyi oyo.",
+    "empty": "Masolo ebatelamaki naino te.",
+    "emptyTitle": "Masolo ezali naino te",
+    "emptyMessage": "Masolo na yo ya AI ekobima awa nsima ya bokutani na yo ya liboso.",
+    "loadFailed": "Tokokaki te kotia lisolo ya lisolo. Nasengi yo omeka lisusu.",
+    "clearFailed": "Tokokaki te kolimbola lisolo ya lisolo. Nasengi yo omeka lisusu.",
+    "deleteFailed": "Tokokaki te kolongola lisolo wana. Nasengi yo omeka lisusu.",
+    "aiCompanion": "AI compagnon",
+    "resume": "Resume",
+    "clearAll": "Clear all history",
+    "roles": {
+      "assistant": "Compagnon",
+      "user": "Yo"
+    }
+  },
+  "voices": {
+    "title": "Mingongo na ngai ya libateli",
+    "subtitle": "Poná mongongo ya moninga oyo okosepela koyoka.",
+    "test": "Mongongo ya momekano",
+    "stop": "Echantillon ya stop",
+    "selectionFailedTitle": "Boponi ebikisami te",
+    "selectionFailedMessage": "Nasengi yo omeka lisusu kopona mongongo na yo.",
+    "sampleFailedTitle": "Echantillon non disponible",
+    "sampleFailedMessage": "Nzembo oyo ekokaki kosalema te. Nasengi yo omeka lisusu.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Kimya, kimya, kimya"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "Solo, Solola, Solola"
+      },
+      "boyfriend": {
+        "name": "Likangu",
+        "description": "makasi, bolingo, présent"
+      },
+      "muscleMan": {
+        "name": "Moscleman",
+        "description": "Kotobukiya, Kotobukiya, Kotobukiya"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Mongongo",
+    "changeVoice": "Kobongola mongongo",
+    "showCompanion": "Show companion",
+    "offlineMode": "Mode offline",
+    "offlineModeSubtitle": "Salela biyano ya compagnon ya lisanga soki réseau to ba identifiants ya Hume ezali te.",
+    "privacyData": "Confidentialité mpe bansango",
+    "privacyBody": "Kolongola to kolongola makambo oyo ezali na aparɛyi oyo ezali na aparɛyi oyo.",
+    "preparingExport": "ya pas d'export...",
+    "exportData": "Exporter ba données na ngai",
+    "privacyPolicy": "Politique ya confidentialité",
+    "deleting": "Supprimer...",
+    "deleteAll": "Supprimer toutes les données locales",
+    "deviceManagement": "Gestion ya ba appareils",
+    "emergencyContacts": "Contacts ya urgence",
+    "signOut": "Signer",
+    "exportFailedTitle": "Exportation ekweyaki te",
+    "exportFailedMessage": "Nakoki te kobimisa ba données na yo sikoyo.",
+    "deleteConfirmTitle": "Supprimer toutes les données locales ?",
+    "deleteConfirmMessage": "Yango elongolaka profil na yo, paramètres, contacts ya urgence, lisolo ya masolo, rappel ya ndingisa, mpe session ya auth ya esika na appareil oyo.",
+    "deleteEverything": "Supprimer tout",
+    "deleteFailedTitle": "Suppression échoue",
+    "deleteFailedMessage": "Nakoki te kolongola ba données locales sikoyo.",
+    "linkFailed": "non ya pas de link",
+    "sections": {
+      "language": "Monoko",
+      "languageSubtitle": "Interface mpe elobeli ya ndingisa ya système",
+      "companion": "Compagnon",
+      "companionSubtitle": "Préférences ya mongongo mpe ya offline",
+      "deviceSafety": "Bisaleli mpe libateli",
+      "deviceSafetySubtitle": "NorthStar, bakɛngɛli, mpe bato oyo bakutanaka na bango na likama",
+      "privacy": "Confidentialité mpe makambo ya moto",
+      "privacySubtitle": "Histoire, exportation, suppression et politique",
+      "account": "Lisolo",
+      "accountSubtitle": "Session na yo ya VeryLoving sikoyo"
+    },
+    "updateFailedTitle": "Esika oyo ebikisami te",
+    "updateFailedMessage": "Tokokaki te kobomba liponi wana. Nasengi yo omeka lisusu.",
+    "signOutFailedTitle": "Akokaki kokoma mokanda te",
+    "signOutFailedMessage": "Session na yo ezali kaka na tina te. Nasengi yo omeka lisusu."
+  },
+  "contacts": {
+    "title": "Contacts ya urgence",
+    "subtitle": "Bato ya confiance bazali wana na ntango ya likama",
+    "addTitle": "Kobakisa contact ya urgence",
+    "name": "Nkombo",
+    "namePlaceholder": "Nkombo ya contact",
+    "phone": "Numero ya telefone ya contact",
+    "add": "Ajouter contact",
+    "empty": "Ata moto moko te ya contact ya urgence ebakisami.",
+    "emptyTitle": "Bato ya urgence bazali naino te",
+    "emptyMessage": "Yebisá moto moko oyo otyelaka motema mpo amibongisa soki likama moko esengeli.",
+    "removeTitle": "Supprimer %{name}?",
+    "removeMessage": "Moto yango akomonana lisusu te na esika na yo ya urgence.",
+    "nameRequired": "Pesa nkombo ya moto oyo azali kosolola na ye.",
+    "saveFailedTitle": "Contact non sauvé",
+    "saveFailedMessage": "Tokokaki te kotika contact wana. Tala makambo oyo ezali na ebandeli mpe meka lisusu.",
+    "removeFailedTitle": "Contact non supprimé",
+    "removeFailedMessage": "Tokokaki te kolongola contact wana. Nasengi yo omeka lisusu.",
+    "callAccessibility": "Benga %{name}",
+    "removeAccessibility": "Longolá %{name}"
+  },
+  "device": {
+    "title": "Gestion ya ba appareils",
+    "subtitle": "Salelá aparɛyi na yo NorthStar",
+    "connected": "Connecté · %{battery}% Batterie",
+    "none": "Ba appareils ezali na boyokani te",
+    "disconnect": "Masini ya kokabola",
+    "connect": "Connecter appareil"
+  },
+  "friends": {
+    "title": "Baninga",
+    "subtitle": "Bakɛngɛli, bosengi mpe graphe ya urgence.",
+    "addDemo": "Add demo friend",
+    "emptyTitle": "Cercle na yo ya sécurité ezali mpamba",
+    "emptyMessage": "Baninga mpe bato oyo batyelaka motema bakobima awa soki babakisami.",
+    "newGuardian": "Guardian ya sika",
+    "statuses": {
+      "guardian": "Mobateli",
+      "pending": "Kozela"
+    }
+  },
+  "emergency": {
+    "title": "Urgence SOS",
+    "subtitle": "Okoki kozwa lisungi kaka soki ozali na mposa ya lisungi na lombangu.",
+    "body": "Yango ekosalisa yo oyeba ndenge ya komibatela mpe ekobongisa bato oyo bakutanaka na bango na mbalakaka.",
+    "activate": "Activer SOS",
+    "callCompanion": "Benga moninga AI",
+    "notificationTitle": "SOS activé",
+    "notificationBody": "Lisalisi na yo ya mbangu esili kobongisama.",
+    "readyTitle": "SOS ya komibongisa",
+    "callContact": "Kobenga %{name}?",
+    "addContact": "Tindá Tindá Kosolola na bato ya urgence na bisika oyo esengeli.",
+    "quickShareTitle": "Kokabola na lombangu",
+    "quickShareMessage": "Esika ya kokabola bisika esili kobongisama. Connectez le endpoint de partage backend pour envoyer des liens en direct."
+  },
+  "quickShare": {
+    "title": "Kokabola na lombangu",
+    "subtitle": "Esika ya kokabola biloko esili kobongisama."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Bɛtá mbala mibale NorthStar na yo mpo na kobwaka orange ya libateli.",
+    "body": "Nzela ya geste ebongisami mpo na makambo ya BLE"
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Nzela ya développement kaka."
+  },
+  "errors": {
+    "voiceOffline": "Ozali komonana lokola ozali na libanda ya Internet. Nsango na yo ekopesama ntango okozonga.",
+    "voiceQueued": "Nsango ebikisami. Ekotindama ntango moninga ya mongongo akozonga.",
+    "voiceRetrying": "Na meka kotindela yo lisusu message na yo...",
+    "voiceConnecting": "Na boyi ko loba na moninga na yo na mongongo na yo...",
+    "microphone": "Accès na microphone esengami mpo na ba appels vocals. Okoki kokoma yango na esika ya kokoma to kokoma yango na esika ya mesaje.",
+    "billing": "Moninga ya mongongo na internet azali lisusu te mpo na mwa ntango. Okoki kokoba na moninga na yo na nzela ya Internet.",
+    "authentication": "Moninga ya mongongo akokaki te kotala session wana. Kota lisusu to salela compagnon ya offline mpo na sikoyo.",
+    "timeout": "Moninga ya mongongo yango azwaki ntango mingi mpo na koyanola. Tala na kati ya mokanda na yo mpe meka lisusu.",
+    "network": "Tokokaki te kopusana penepene na moninga na ye. Kende na internet na yo, meka lisusu to kende lisusu na internet.",
+    "genericVoice": "Eloko moko ekataki mongongo yango. Komeka lisusu, to kokoba na moninga na yo ya Internet."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving exportation ya données"
+  },
+  "notifications": {
+    "channelName": "Alerte ya sécurité"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving azali na mposa ya microphone mpo na libateli mpe AI baninga.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving kosalela karte ya likama mpe biloko ya likama oyo ezali pene na yo.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving kosalela esika ofandi mpo na kosalisa bato oyo bazali koya na likama mpe na likama te.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving esalelaka esika ya liboso mpo na kokoma na likama mpe na bisika ya likama oyo ezali pene.",
+      "NSCameraUsageDescription": "VeryLoving kosalela aparɛyi yango kaka soki oponi kozwa fɔtɔ to fɔtɔ ya libateli.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving kosalela bibliothèque ya bilili kaka soki oponi profil to elilingi ya libateli.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

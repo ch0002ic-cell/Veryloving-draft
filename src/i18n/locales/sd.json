@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "شامل ڪريو",
+    "apple": "Apple",
+    "back": "پوئتي",
+    "call": "ڪال ڪريو",
+    "cancel": "منسوخ ڪريو",
+    "clear": "صاف ڪريو",
+    "close": "بند ڪريو",
+    "connect": "ڳنڍيو",
+    "connecting": "ڳنڍڻ...",
+    "continue": "جاري رکو",
+    "delete": "ڊاهيو",
+    "finish": "ختم ڪريو",
+    "friends": "دوست",
+    "google": "Google",
+    "home": "گھر",
+    "loading": "لوڊ ٿي رهي آهي...",
+    "map": "نقشو",
+    "notNow": "ھينئر نہ",
+    "remove": "هٽايو",
+    "retry": "ٻيهر ڪوشش ڪريو",
+    "retrying": "ٻيهر ڪوشش ڪريو",
+    "save": "محفوظ ڪريو",
+    "selected": "چونڊيل",
+    "send": "موڪليو",
+    "settings": "ترتيبون",
+    "skip": "ڇڏي ڏيو",
+    "skipForNow": "هينئر لاءِ ڇڏي ڏيو",
+    "skipTutorial": "سبق ڇڏي ڏيو",
+    "sos": "SOS",
+    "unknown": "نامعلوم",
+    "user": "VeryLoving استعمال ڪندڙ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ٻولي",
+    "subtitle": "سڄي ايپ ۾ استعمال ٿيل ٻولي چونڊيو.",
+    "system": "سرشتي جو ڊفالٽ",
+    "search": "ٻوليون ڳوليو",
+    "noResults": "ڪي به ٻوليون توهان جي ڳولا سان ٺهڪي نه اينديون آهن.",
+    "english": "انگريزي",
+    "spanish": "ھسپانوي",
+    "french": "فراسيسي",
+    "chineseSimplified": "چيني (آسان)"
+  },
+  "phone": {
+    "label": "فون نمبر",
+    "placeholder": "فون نمبر",
+    "selectCountry": "ملڪ يا علائقو چونڊيو",
+    "searchCountry": "ملڪ، ڪوڊ يا ڊائلنگ اڳياڙي ڳوليو",
+    "noCountries": "ڪو به ملڪ توهان جي ڳولا سان ملندو آهي.",
+    "countryButton": "ملڪ تبديل ڪريو، في الحال %{country} پلس %{callingCode}",
+    "inputAccessibility": "فون نمبر %{country}",
+    "required": "هڪ فون نمبر داخل ڪريو",
+    "tooShort": "هي فون نمبر تمام نن isو آهي.",
+    "tooLong": "هي فون نمبر تمام ڊگهو آهي.",
+    "invalid": "چونڊيل ملڪ لاءِ صحيح فون نمبر داخل ڪريو.",
+    "valid": "صحيح بين الاقوامي فون نمبر"
+  },
+  "auth": {
+    "onboardingTagline": "\"مان ٺيڪ آهيان\" ۽ \"مون کي مدد جي ضرورت آهي\" جي وچ ۾ لمحن لاءِ ذاتي حفاظت جو ساٿي.",
+    "createAccount": "کاتو ٺاهيو",
+    "continueOnboarding": "آن بورڊنگ سان جاري رکو",
+    "createSubtitle": "توهان جي حفاظت واري گراف کي بچائڻ لاءِ سائن ان جو طريقو چونڊيو.",
+    "phoneVerification": "فون جي تصديق",
+    "sendCode": "ڪوڊ موڪليو",
+    "sendingCode": "ڪوڊ موڪليندي...",
+    "verifyCode": "ڪوڊ جي تصديق ڪريو",
+    "sentTo": "موڪليل %{phone}",
+    "yourPhone": "توهان جو فون",
+    "verificationCode": "تصديق جو ڪوڊ",
+    "verify": "تصديق ڪريو",
+    "verifying": "تصديق ڪندي...",
+    "invalidCode": "تصديق جو ڪوڊ داخل ڪريو.",
+    "signInFailedTitle": "داخل ٿيڻ ۾ رڪاوٽ پئجي وئي",
+    "signInFailedMessage": "اسان سائن ان مڪمل نه ڪري سگهياسين. پنهنجو ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "googleUnavailableTitle": "Google داخل ٿيڻ دستياب ناهي",
+    "googleUnavailableMessage": "مقامي ترقياتي سيشن کي استعمال ڪندي. اصلي Google سائن ان هڪ ترقياتي تعمير ۾ ڪم ڪري ٿو.",
+    "northStarTitle": "NorthStar زيور",
+    "northStarSubtitle": "هاڻي جوڙيو يا جاري رکو ۽ بعد ۾ شامل ڪريو.",
+    "northStarBody": "VL01 پائڻ وارو نلڪن ۽ ڊگھي پريس اشارن سان حفاظتي وهڪري کي متحرڪ ڪري سگهي ٿو.",
+    "setupJewelry": "زيور سيٽ ڪريو",
+    "meetCapybear": "ملو Capybear",
+    "meetCapybearSubtitle": "نقشي تي ۽ ڪالن ۾ توهان جو نرم حفاظتي ساٿي.",
+    "capybearBody": "Capybear گهر موڊ ، گارڊين موڊ ، ايمرجنسي موڊ ، عذر ڪال ۽ وائس سپورٽ سان مدد ڪري سگهو ٿا.",
+    "chooseVoice": "هڪ آواز چونڊيو",
+    "capybearReminder": "Capybear ياد ڏياريندڙ",
+    "remindersReady": "نرم ياد ڏياريندڙ تيار آهن."
+  },
+  "permissions": {
+    "locationTitle": "جڳھ جي حفاظت",
+    "locationSubtitle": "نقشي لاءِ استعمال ڪيو ويندو آهي ، خطري وارا علائقا ، محفوظ آمد ۽ SOS جي حوالي سان.",
+    "locationBody": "VeryLoving مقام پڇي ٿو ته جيئن محافظ سمجهي سگهن ته ڪٿي مدد جي ضرورت ٿي سگهي ٿي. توهان هن کي بعد ۾ سيٽنگن ۾ تبديل ڪري سگهو ٿا.",
+    "allowLocation": "جاءِ جي اجازت ڏيو",
+    "notificationsTitle": "حفاظتي خبرداريون",
+    "notificationsSubtitle": "اطلاعن چيڪ ان ۽ هنگامي واقعن جي حمايت ڪن ٿا.",
+    "notificationsBody": "اسان صرف حفاظتي اشارن ، هنگامي تازه ڪارين ، ۽ ياد ڏياريندڙن لاءِ اطلاعن لاءِ استعمال ڪندا آهيون جيڪي توهان فعال ڪندا آهيو.",
+    "enableNotifications": "اطلاعن کي فعال ڪريو",
+    "locationRationaleTitle": "مقام حفاظت جي تناظر کي صحيح رکي ٿو",
+    "locationRationaleMessage": "VeryLoving حفاظتي نقشي ، خطري جي علائقن ، جلدي شيئر ۽ SOS تناظر لاءِ توهان جي مقام کي استعمال ڪري ٿو. توهان هن کي بعد ۾ سيٽنگن ۾ تبديل ڪري سگهو ٿا.",
+    "notificationsRationaleTitle": "حفاظتي خبردارين کي اطلاعن جي ضرورت آهي",
+    "notificationsRationaleMessage": "VeryLoving موڪلي ٿو چيڪ ان ياد ڏياريندڙ ، هنگامي تازه ڪاريون ، ۽ حفاظتي اشارا جيڪي توهان کي فعال ڪن ٿا. اسان اشتهارن لاءِ اطلاعن استعمال نٿا ڪريون.",
+    "microphoneRationaleTitle": "مائڪروفون حفاظتي ڪالن کي طاقت ڏئي ٿو",
+    "microphoneRationaleMessage": "VeryLoving توهان جو مائڪروفون صرف ان وقت استعمال ڪندو آهي جڏهن توهان AI ساٿي يا حفاظتي ڪال شروع ڪندا آهيو.",
+    "bluetoothRationaleTitle": "Bluetooth توهان جي پائڻ واري کي ڳن connيندو آهي",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth کي NorthStar زيورن سان گڏ ڪرڻ لاءِ استعمال ڪري ٿو ، ڪنيڪشن جي حالت پڙهو ، ۽ پائڻ واري کان حفاظتي وهڪري کي متحرڪ ڪري ٿو.",
+    "cameraRationaleTitle": "ڪئميرا اختياري آهي",
+    "cameraRationaleMessage": "VeryLoving ڪئميرا صرف ان وقت استعمال ڪندو آهي جڏهن توهان پروفائل فوٽو ڪ toڻ يا حفاظتي تصوير شيئر ڪرڻ جو انتخاب ڪندا آهيو."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving هن وهڪري کي سيٽنگون ۽ ڊيش بورڊ کان دستياب رکي ٿو.",
+    "chooseVoiceTitle": "پنهنجو آواز چونڊيو",
+    "chooseVoiceSubtitle": "ساٿي آواز چونڊيو جيڪو ٻڌڻ لاءِ سڀ کان وڌيڪ محفوظ محسوس ٿئي.",
+    "homeTitle": "گهر جو موڊ",
+    "homeSubtitle": "روزاني حفاظت لاءِ خاموش نگراني.",
+    "guardianTitle": "گارڊين موڊ",
+    "guardianSubtitle": "قابل اعتماد ماڻهن سان تناظر شيئر ڪريو",
+    "emergencyTitle": "هنگامي حالت",
+    "emergencySubtitle": "پنج نلڪا SOS ۽ گارڊين الرٽ تائين وڌي سگهن ٿا.",
+    "excuseTitle": "عذر ڪال",
+    "excuseSubtitle": "هڪ بيچيني واري صورتحال کي ڇڏڻ لاءِ هڪ شاندار سبب ٺاهيو.",
+    "safetyCallTitle": "حفاظتي ڪال",
+    "safetyCallSubtitle": "حقيقي وقت ۾ ساٿي ڪال شروع ڪريو جڏهن توهان کي مدد جي ضرورت هجي.",
+    "practiceTitle": "مشق جو منظر",
+    "practiceSubtitle": "گهٽ دٻاءُ واري ڊيمو ۾ حفاظتي وهڪري جي ڪوشش ڪريو."
+  },
+  "jewelry": {
+    "pairTitle": "جوڙو NorthStar",
+    "pairSubtitle": "اسڪين ڪرڻ دوران زيورن کي ويجهو رکو.",
+    "scan": "اوزارن لاءِ اسڪين ڪريو",
+    "scanning": "ويجهي اسڪيننگ ڪندي...",
+    "noDevices": "اڃا تائين ويجهي NorthStar ڊوائيس نه مليا.",
+    "scanStartFailed": "Bluetooth اسڪيننگ شروع نه ٿي سگهي. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "scanFailed": "اسان کي ويجهي زيور نه ملي سگهيا. چيڪ Bluetooth ، NorthStar کي ويجهي رکو ، ۽ ٻيهر ڪوشش ڪريو.",
+    "scanAccessFailed": "Bluetooth اسڪيننگ شروع نه ٿي سگهي. رسائي Bluetooth چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "permissionDenied": "ويجهي ڊوائيس جي رسائي بند آهي. سيٽنگن ۾ Bluetooth رسائي جي اجازت ڏيو ، پوءِ ٻيهر ڪوشش ڪريو.",
+    "connectTimeout": "NorthStar کي ڳن toڻ ۾ تمام گهڻو وقت لڳو. ان کي ويجهو منتقل ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "connectFailed": "اسان NorthStar سان رابطو نه ڪري سگهياسين. چيڪ ڪريو ته اهو چارج ٿيل آهي ۽ ويجهو آهي ، پوءِ ٻيهر ڪوشش ڪريو.",
+    "emptyTitle": "اڃا ويجهي ڪا به ڊوائيس نه آهي",
+    "emptyMessage": "NorthStar کي چارج ۽ هن فون جي ويجهو رکو ، پوءِ ٻيهر اسڪين ڪريو.",
+    "searchingMessage": "ويجهي NorthStar ڊوائيس ڳولي رهيا آهن ..."
+  },
+  "home": {
+    "subtitle": "حفاظت ساٿي ڊيش بورڊ",
+    "modeStatus": "%{mode} موڊ",
+    "companionReady": "%{name} تيار آهي",
+    "readyBody": "آواز ، نقشو ، زيور ۽ محافظ هڪ ٽيپ پري آهن.",
+    "safetyCall": "حفاظتي ڪال",
+    "northStarDevice": "NorthStar اوزار",
+    "deviceConnected": "%{name} ڳنڍيل · %{battery}٪",
+    "noDevice": "ڪو به ڊوائيس ڳنڍيل ناهي",
+    "manageDevice": "اوزار جو انتظام ڪريو",
+    "mode": "موڊ",
+    "modes": {
+      "home": "گھر",
+      "guardian": "گارڊين",
+      "emergency": "ايمرجنسي"
+    }
+  },
+  "map": {
+    "finding": "پنهنجو مقام ڳوليندي...",
+    "retry": "جاءِ کي ٻيهر آزمايو",
+    "title": "حفاظت جو نقشو",
+    "previewSubtitle": "Expo Go پيش منظر ؛ Mapbox ترقياتي تعمير ۾ پيش ڪري ٿو.",
+    "preview": "نقشي جو ڏيک",
+    "risk": "خطرو: %{risk} · ريڊيس %{radius}m",
+    "refresh": "جاءِ ريتازو ڪريو",
+    "refreshing": "جاءِ ڳوليندي...",
+    "updateFailed": "اسان توهان جي جاءِ وقوع جي تجديد نه ڪري سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "notRequested": "مقام جي رسائي جي درخواست نه ڪئي وئي. توھان ان کي بعد ۾ چالو ڪري سگھوٿا سيٽنگون کان.",
+    "permissionOff": "مقام جي رسائي بند آهي. ان کي سيٽنگن ۾ فعال ڪريو حفاظتي نقشي کي توهان تي مرڪز ڪرڻ لاءِ.",
+    "timeout": "توهان جو مقام توقع کان وڌيڪ وقت وٺي رهيو آهي. وڌيڪ واضح سگنل سان ڪنهن هنڌ منتقل ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "savedTitle": "سانڍيل جڳھون",
+    "savedEmptyTitle": "اڃا تائين سانڍيل جايون نه آهن",
+    "savedEmptyMessage": "ڀروسي جوڳھ جيڪي توھان محفوظ ڪندا آھن ھتي ظاھر ٿيندا تڪڙي رسائي لاءِ.",
+    "zones": {
+      "crowding": "رات جو دير سان هجوم",
+      "lowLighting": "گھٽ روشني وارو علائقو"
+    },
+    "risks": {
+      "low": "گھٽ",
+      "medium": "وچولي",
+      "high": "هاءِ"
+    }
+  },
+  "safetyCall": {
+    "connecting": "ڳنڍڻ...",
+    "offlineCompanion": "آف لائن ساٿي",
+    "offline": "آف لائن",
+    "connected": "ڳنڍيل",
+    "interrupted": "ڪنيڪشن ۾ رڪاوٽ پئجي وئي",
+    "ready": "ڳنڍڻ لاءِ تيار",
+    "connectingSecurely": "توهان جي آواز جي ساٿي سان محفوظ طور تي ڳن connectingڻ ...",
+    "messagesWaiting": {
+      "one": "%{count} پيغام موڪلڻ لاءِ انتظار ڪري رهيو آهي",
+      "other": "%{count} پيغام موڪلڻ جي انتظار ۾ آهن"
+    },
+    "useOffline": "آف لائن ساٿي استعمال ڪريو",
+    "reconnect": "آواز سان ٻيهر ڳنڍيو AI",
+    "typePlaceholder": "ٽائپ ڪريو جيڪڏهن ڳالهائڻ ڏکيو آهي",
+    "endCall": "ڪال ختم ڪريو",
+    "startCall": "ڪال شروع ڪريو",
+    "emptyTitle": "توهان جي گفتگو هتي شروع ٿئي ٿي",
+    "emptyMessage": "ڪال شروع ڪريو يا هڪ پيغام ٽائپ ڪريو جڏهن توهان تيار آهيو."
+  },
+  "chat": {
+    "waiting": "ڪنيڪشن جو انتظار ڪندي",
+    "notSent": "پيغام نه موڪليو ويو",
+    "retryAccessibility": "پيغام موڪلڻ جي ٻيهر ڪوشش ڪريو"
+  },
+  "history": {
+    "clearTitle": "ڳالهه ٻولهه جي تاريخ کي صاف ڪريو؟",
+    "clearMessage": "هي هن ڊوائيس مان محفوظ ٿيل AI ساٿي پيغامن کي هٽائي ٿو.",
+    "deleteTitle": "هن گفتگو کي حذف ڪريو؟",
+    "cannotUndo": "اهو ختم نه ٿو ڪري سگهجي.",
+    "title": "گفتگو جي تاريخ",
+    "subtitle": "AI ساٿي پيغام هن ڊوائيس تي محفوظ ڪيا ويا آهن.",
+    "empty": "اڃا تائين ڪا به گفتگو محفوظ نه ڪئي وئي آهي.",
+    "emptyTitle": "اڃا تائين ڪا ڳالهه ٻولهه ناهي",
+    "emptyMessage": "توهان جي AI ساٿي گفتگو توهان جي پهرين ڪال کان پوءِ هتي ظاهر ٿيندي.",
+    "loadFailed": "اسان گفتگو جي تاريخ لوڊ نه ڪري سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "clearFailed": "اسان گفتگو جي تاريخ کي صاف نه ڪري سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "deleteFailed": "اسان اها گفتگو حذف نه ڪري سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "aiCompanion": "AI ساٿي",
+    "resume": "ٻيهر شروع ڪريو",
+    "clearAll": "سڀ تاريخ صاف ڪريو",
+    "roles": {
+      "assistant": "ساٿي",
+      "user": "توهان"
+    }
+  },
+  "voices": {
+    "title": "منهنجي حفاظت ڪال آوازن",
+    "subtitle": "ساٿي آواز چونڊيو جيڪو ٻڌڻ لاءِ صحيح محسوس ٿئي.",
+    "test": "آواز کي آزمايو",
+    "stop": "نمونو روڪيو",
+    "selectionFailedTitle": "چونڊ سانڍ نه ڪئي وئي",
+    "selectionFailedMessage": "مهرباني ڪري ٻيهر آواز چونڊڻ جي ڪوشش ڪريو.",
+    "sampleFailedTitle": "نمونو دستياب نه آهي",
+    "sampleFailedMessage": "هي آواز جو نمونو هلائي نه سگهيو. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "نرم ، پرسکون ، گرائونڊ"
+      },
+      "bestie": {
+        "name": "بيسٽي",
+        "description": "روشن ، يقين ڏياريندڙ ، گفتگو ڪندڙ"
+      },
+      "boyfriend": {
+        "name": "عاشق",
+        "description": "مستحڪم ، پيارو ، حاضر"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "اعتماد ، حفاظت ، حوصله افزائي"
+      }
+    }
+  },
+  "settings": {
+    "voice": "آواز",
+    "changeVoice": "آواز بدلايو",
+    "showCompanion": "ساٿي ڏيکاريو",
+    "offlineMode": "آف لائن موڊ",
+    "offlineModeSubtitle": "بنڈل ساٿي جوابن کي استعمال ڪريو جڏهن نيٽ ورڪ يا Hume جون سندون دستياب نه آهن.",
+    "privacyData": "رازداري & ڊيٽا",
+    "privacyBody": "هن ڊوائيس تي محفوظ ڪيل مقامي ڊيٽا برآمد يا حذف ڪريو.",
+    "preparingExport": "برآمد جي تياري ڪندي...",
+    "exportData": "منهنجو ڊيٽا ايڪسپورٽ ڪريو",
+    "privacyPolicy": "رازداري جي پاليسي",
+    "deleting": "حذف ڪندي...",
+    "deleteAll": "سڀ مقامي ڊيٽا ڊاهيو",
+    "deviceManagement": "اوزار جو انتظام",
+    "emergencyContacts": "هنگامي رابطا",
+    "signOut": "ٻاهر نڪرو",
+    "exportFailedTitle": "برآمد ۾ ناڪامي",
+    "exportFailedMessage": "هن وقت توهان جي ڊيٽا برآمد ڪرڻ جي قابل ناهي.",
+    "deleteConfirmTitle": "سڀ مقامي ڊيٽا ختم ڪريو؟",
+    "deleteConfirmMessage": "اهو توهان جي پروفائيل ، سيٽنگون ، هنگامي رابطا ، گفتگو جي تاريخ ، اجازت جي ياد ڏياريندڙ ، ۽ مقامي آٿ سيشن کي هن ڊوائيس مان هٽائي ٿو.",
+    "deleteEverything": "سڀ ڪجهه ڊاهيو",
+    "deleteFailedTitle": "ڊاهڻ ۾ ناڪامي",
+    "deleteFailedMessage": "هن وقت مقامي ڊيٽا ڊاهڻ جي قابل نه آهي.",
+    "linkFailed": "ڳنڍڻو کولڻ کان قاصر",
+    "sections": {
+      "language": "ٻولي",
+      "languageSubtitle": "انٽر ۽ سرشتي جي اجازت واري ٻولي",
+      "companion": "ساٿي",
+      "companionSubtitle": "آواز ۽ آف لائن ترجيحات",
+      "deviceSafety": "ڊوائيس ۽ حفاظت",
+      "deviceSafetySubtitle": "NorthStar ، سرپرست ۽ هنگامي رابطا",
+      "privacy": "رازداري ۽ ڊيٽا",
+      "privacySubtitle": "تاريخ، برآمد، حذف ۽ پاليسي",
+      "account": "کاتو",
+      "accountSubtitle": "توهان جو هاڻوڪو VeryLoving سيشن"
+    },
+    "updateFailedTitle": "سيٽنگ سانڍ نه ڪئي پئي وڃي",
+    "updateFailedMessage": "اسان انهي ترجيح کي بچائي نه سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "signOutFailedTitle": "سائن آئوٽ نه ٿي سگهيو",
+    "signOutFailedMessage": "توهان جو سيشن اڃا تائين فعال آهي. مهرباني ڪري ٻيهر ڪوشش ڪريو."
+  },
+  "contacts": {
+    "title": "هنگامي رابطا",
+    "subtitle": "حفاظتي وهڪري دوران قابل اعتماد ماڻهو موجود آهن.",
+    "addTitle": "هنگامي رابطو شامل ڪريو",
+    "name": "نالو",
+    "namePlaceholder": "رابطي جو نالو",
+    "phone": "رابطو فون نمبر",
+    "add": "رابطو شامل ڪريو",
+    "empty": "اڃا تائين هنگامي رابطا شامل نه ڪيا ويا آهن.",
+    "emptyTitle": "اڃا تائين هنگامي رابطا نه آهن",
+    "emptyMessage": "ڪنهن کي شامل ڪريو جنهن تي توهان اعتماد ڪيو ته اهي تيار آهن جڏهن حفاظتي وهڪري کي انهن جي ضرورت هجي.",
+    "removeTitle": "%{name} هٽايو؟",
+    "removeMessage": "هي ماڻهو هاڻي توهان جي هنگامي وهڪري ۾ ظاهر نه ٿيندو.",
+    "nameRequired": "رابطي جو نالو داخل ڪريو.",
+    "saveFailedTitle": "رابطو سانڍيل نه آهي",
+    "saveFailedMessage": "اسان هي رابطو بچائي نه سگهياسين. تفصيل چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "removeFailedTitle": "رابطو هٽايو نه ويو",
+    "removeFailedMessage": "هي رابطو اسان هٽائي نه سگهياسين. مهرباني ڪري ٻيهر ڪوشش ڪريو.",
+    "callAccessibility": "ڪال %{name}",
+    "removeAccessibility": "هٽايو %{name}"
+  },
+  "device": {
+    "title": "اوزار جو انتظام",
+    "subtitle": "توهان جي NorthStar ڊوائيس کي منظم ڪريو",
+    "connected": "ڳنڍيل · %{battery} سيڪڙو بيٽري",
+    "none": "ڪو به ڊوائيس ڳنڍيل نه آهي",
+    "disconnect": "ڊوائيس ڪٽيو",
+    "connect": "اوزار ڳنڍيو"
+  },
+  "friends": {
+    "title": "دوست",
+    "subtitle": "محافظ ، درخواستون ۽ هنگامي گراف",
+    "addDemo": "ڊيمو دوست شامل ڪريو",
+    "emptyTitle": "توهان جو حفاظتي دائرو خالي آهي",
+    "emptyMessage": "قابل اعتماد دوست ۽ سرپرست هڪ ڀيرو شامل ٿيڻ کان پوءِ هتي ظاهر ٿيندا.",
+    "newGuardian": "نئون گارڊين",
+    "statuses": {
+      "guardian": "گارڊين",
+      "pending": "التوا ۾ آهي"
+    }
+  },
+  "emergency": {
+    "title": "هنگامي SOS",
+    "subtitle": "صرف ان وقت وڌايو جڏهن توهان کي فوري مدد جي ضرورت هجي.",
+    "body": "اهو توهان جي حفاظت جي وهڪري کي اطلاع ڏيندو ۽ هنگامي رابطن کي تيار ڪندو.",
+    "activate": "چالو SOS",
+    "callCompanion": "AI ساٿي کي ڪال ڪريو",
+    "notificationTitle": "SOS چالو ڪيو ويو",
+    "notificationBody": "توهان جو هنگامي وهڪرو تيار آهي.",
+    "readyTitle": "SOS تيار",
+    "callContact": "ڪال %{name}؟",
+    "addContact": "سيٽنگن ۾ هنگامي رابطو شامل ڪريو.",
+    "quickShareTitle": "تڪڙو شيئر",
+    "quickShareMessage": "مقام شيئرنگ اسٽب تيار آهي. لائيو لنڪس موڪلڻ لاءِ پوئتي شيئر آخري پوائنٽ کي ڳن connectيو."
+  },
+  "quickShare": {
+    "title": "تڪڙو شيئر",
+    "subtitle": "مقام شيئر فلو تيار آهي."
+  },
+  "capybearTap": {
+    "title": "Capybear ٽيپ ڪريو",
+    "subtitle": "حفاظتي نارنگي ڇڏڻ لاءِ پنهنجي NorthStar کي ٻه ڀيرا ٽيپ ڪريو.",
+    "body": "اشاري وارو رستو BLE ايونٽ وائرنگ لاءِ تيار آهي."
+  },
+  "debug": {
+    "title": "VeryLoving ڊيبگ صفحو",
+    "subtitle": "صرف ترقي وارو رستو."
+  },
+  "errors": {
+    "voiceOffline": "توهان آف لائن لڳي رهيا آهيو. توهان جو پيغام موڪليو ويندو جڏهن توهان ٻيهر ڳن connectيو.",
+    "voiceQueued": "پيغام محفوظ ڪيو ويو. اهو موڪليو ويندو جڏهن آواز جو ساٿي ٻيهر ڳن connectedي ٿو.",
+    "voiceRetrying": "پنهنجو پيغام ٻيهر موڪلڻ جي ڪوشش ڪندي...",
+    "voiceConnecting": "توهان جي آواز جي ساٿي سان محفوظ طور تي ڳن connectingڻ ...",
+    "microphone": "وائس ڪالز لاءِ مائڪروفون جي رسائي جي ضرورت آهي. توهان ان کي سيٽنگن ۾ چالو ڪري سگهو ٿا ، يا ان جي بدران هڪ پيغام ٽائپ ڪري سگهو ٿا.",
+    "billing": "آن لائن وائس ساٿي عارضي طور تي دستياب ناهي. توهان آف لائن ساٿي سان جاري رکي سگهو ٿا.",
+    "authentication": "آواز جو ساٿي هن سيشن جي تصديق نه ڪري سگهيو. ٻيهر سائن ان ٿيو يا هاڻي لاءِ آف لائن ساٿي استعمال ڪريو.",
+    "timeout": "آواز جي ساٿي کي جواب ڏيڻ ۾ تمام گهڻو وقت لڳو. پنهنجو ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو.",
+    "network": "اسان آواز جي ساٿي تائين پهچي نه سگهياسين. پنهنجو ڪنيڪشن چيڪ ڪريو ، پوءِ ٻيهر ڪوشش ڪريو يا آف لائن جاري رکو.",
+    "genericVoice": "ڪنهن شيءِ وائس ڪال ۾ رڪاوٽ وڌي. ٻيهر ڪوشش ڪريو ، يا آف لائن ساٿي سان جاري رکو."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ڊيٽا ايڪسپورٽ"
+  },
+  "notifications": {
+    "channelName": "حفاظتي خبرداريون"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving کي حفاظت ۽ AI ساٿي ڪالن لاءِ مائڪروفون جي رسائي جي ضرورت آهي.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving حفاظتي نقشي ۽ ويجهي حفاظت جي خاصيتن لاءِ توهان جي مقام کي استعمال ڪري ٿو.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving توهان جي جڳھ کي محفوظ آمد ۽ هنگامي وهڪري جي حمايت ڪرڻ لاءِ استعمال ڪندو آهي.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving محفوظ آمد ۽ ويجهي خطري واري علائقي جي خاصيتن لاءِ پس منظر جي جڳهه استعمال ڪندو آهي.",
+      "NSCameraUsageDescription": "VeryLoving ڪئميرا صرف ان وقت استعمال ڪندو آهي جڏهن توهان پروفائل يا حفاظتي فوٽو ڪ toڻ جو انتخاب ڪندا آهيو.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving توهان جي فوٽو لائبريري صرف ان وقت استعمال ڪندو آهي جڏهن توهان پروفائل يا حفاظتي تصوير چونڊيندا آهيو.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving توهان جي NorthStar حفاظتي زيورن سان ڳن toڻ لاءِ Bluetooth استعمال ڪندو آهي.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving توهان جي NorthStar حفاظتي زيورن سان ڳن toڻ لاءِ Bluetooth استعمال ڪندو آهي."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

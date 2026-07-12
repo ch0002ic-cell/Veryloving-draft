@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ñembojoapy",
+    "apple": "Apple",
+    "back": "Tapykue gotyo",
+    "call": "Ohenói",
+    "cancel": "Oñembogue",
+    "clear": "Oñemopotî",
+    "close": "Oñemboty",
+    "connect": "Ñembojoaju",
+    "connecting": "Oñembojoajúvo...",
+    "continue": "Eñepyrũ",
+    "delete": "Ombogue",
+    "finish": "Omohu’ã",
+    "friends": "Amigokuéra",
+    "google": "Google",
+    "home": "Óga",
+    "loading": "Oñembohasávo...",
+    "map": "Mapa rehegua",
+    "notNow": "Ndaha’éi ko’áĝa",
+    "remove": "Ojepe’a",
+    "retry": "Eñeha’ã jey",
+    "retrying": "Oñeha’ã jey",
+    "save": "Ñañongatu",
+    "selected": "Ojeporavóva",
+    "send": "Emondo",
+    "settings": "Ñemboheko",
+    "skip": "Ojeheja rei",
+    "skipForNow": "Esalta ko’áĝa peve",
+    "skipTutorial": "Embohasa mbo’epy",
+    "sos": "SOS",
+    "unknown": "Ndojekuaái",
+    "user": "VeryLoving puruhára",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ñe’ẽ",
+    "subtitle": "Eiporavo ñe’ẽ ojeporúva app pukukue javeve.",
+    "system": "Sistema rehegua ñepyrũrã",
+    "search": "Eheka ñe’ẽnguéra",
+    "noResults": "Ndaipóri ñe’ẽ ojoajúva ne jeheka rehe.",
+    "english": "Guaranípe",
+    "spanish": "Español ñe’ẽ",
+    "french": "Francés ñe’ẽ",
+    "chineseSimplified": "Chino (Simplificado) Ñe’ẽpoty ha ñe’ẽpoty ."
+  },
+  "phone": {
+    "label": "Teléfono número",
+    "placeholder": "Teléfono número",
+    "selectCountry": "Eiporavo tetã térã región",
+    "searchCountry": "Eheka tetã, código térã ñe’ẽpehẽtai ñehenói",
+    "noCountries": "Ndaipóri tetã ojoajúva nde jeheka rehe.",
+    "countryButton": "Oñemoambue tetã, ko’áĝa %{country} ha avei %{callingCode}",
+    "inputAccessibility": "Teléfono número %{country} rehegua",
+    "required": "Emoinge peteĩ teléfono número.",
+    "tooShort": "Ko teléfono número mbykyeterei.",
+    "tooLong": "Ko teléfono número ipukueterei.",
+    "invalid": "Emoinge peteĩ teléfono número añetegua tetã ojeporavóvape g̃uarã.",
+    "valid": "Teléfono internacional válido"
+  },
+  "auth": {
+    "onboardingTagline": "Peteĩ compañero de seguridad personal umi momento oĩva “Aime porã” ha “Aikotevẽ pytyvõ” mbytépe.",
+    "createAccount": "Ojapo cuenta",
+    "continueOnboarding": "Esegui onboarding reheve",
+    "createSubtitle": "Eiporavo peteĩ método reike hag̃ua reñangareko hag̃ua nde gráfico seguridad rehe.",
+    "phoneVerification": "Telefono rupive jehechauka",
+    "sendCode": "Emondo código",
+    "sendingCode": "Omondóva código...",
+    "verifyCode": "Emoañete kódigo",
+    "sentTo": "Oñemondo %{phone}pe",
+    "yourPhone": "nde teléfono rehegua",
+    "verificationCode": "Código verificación rehegua",
+    "verify": "Ojekuaauka",
+    "verifying": "Omoañete...",
+    "invalidCode": "Emoinge pe código verificación rehegua.",
+    "signInFailedTitle": "Oñeinterrumpi jeike",
+    "signInFailedMessage": "Ndaikatúi romohu’ã jeike. Ehecháke ne joaju ha eñeha’ã jey.",
+    "googleUnavailableTitle": "Google Ndojeguerekói jeike",
+    "googleUnavailableMessage": "Oipurúvo peteĩ sesión desarrollo local rehegua. Nativo Google Sign-In omba’apo peteĩ desarrollo ñemopu’ãme.",
+    "northStarTitle": "NorthStar joya rehegua",
+    "northStarSubtitle": "Embojoaju ko’áĝa térã eñepyrũ ha emoĩve upe rire.",
+    "northStarBody": "Pe VL01 ojeporúva ikatu ombohape flujo de seguridad grifo ha gesto de prensa puku rupive.",
+    "setupJewelry": "Omohenda joya",
+    "meetCapybear": "Oñembyaty Capybear",
+    "meetCapybearSubtitle": "Ne irũ seguridad rehegua manso mapa-pe ha ñehenóipe.",
+    "capybearBody": "Capybear ikatu oipytyvõ modo hogar, modo guardián, modo emergencia, llamada excusa ha soporte voz rehegua.",
+    "chooseVoice": "Eiporavo peteĩ ñe’ẽ",
+    "capybearReminder": "Capybear mandu’a",
+    "remindersReady": "Oĩma mandu’a suave."
+  },
+  "permissions": {
+    "locationTitle": "Ubicación seguridad rehegua",
+    "locationSubtitle": "Ojepuru mapa, zona de peligro, og̃uahẽ porã ha SOS contexto-pe g̃uarã.",
+    "locationBody": "VeryLoving ojerure moõpa oĩ ikatu hag̃uáicha umi oñangarekóva ontende moõpa ikatu oñeikotevẽ pytyvõ. Ikatu remoambue kóva upe rire Ñembohekorãme.",
+    "allowLocation": "Eheja moõpa oĩ",
+    "notificationsTitle": "Alertas de seguridad rehegua",
+    "notificationsSubtitle": "Umi marandu oipytyvõ umi jeike ha umi mba’e ojehúva emergencia-pe.",
+    "notificationsBody": "Roipuru momarandu-nte umi ñe’ẽmondo seguridad rehegua, ñembopyahu emergencia ha mandu’a rehegua rembohapéva.",
+    "enableNotifications": "Emboguata marandu",
+    "locationRationaleTitle": "Ubicación omantene contexto seguridad rehegua hekopete",
+    "locationRationaleMessage": "VeryLoving oipuru nde reimeha mapa de seguridad, zona de peligro, compartición pya’e ha SOS contexto-pe g̃uarã. Ikatu remoambue kóva upe rire Ñembohekorãme.",
+    "notificationsRationaleTitle": "Umi alerta seguridad rehegua oikotevẽ marandu",
+    "notificationsRationaleMessage": "VeryLoving omondo mandu’a jeike rehegua, ñembopyahu emergencia rehegua ha ñe’ẽmondo seguridad rehegua rembohapéva. Ndoroiporúi momarandu marandurã.",
+    "microphoneRationaleTitle": "Micrófono omombarete umi ñehenói seguridad rehegua",
+    "microphoneRationaleMessage": "VeryLoving oipuru ne micrófono remoñepyrũ jave añoite peteĩ AI compañero térã seguridad ñehenói.",
+    "bluetoothRationaleTitle": "Bluetooth ombojoaju nde mba’e ojeporúva",
+    "bluetoothRationaleMessage": "VeryLoving oipuru Bluetooth ombojoaju hagua NorthStar joya ndive, omoñe e estado conexión rehegua ha ombohape umi flujo seguridad rehegua pe ojeporúvagui.",
+    "cameraRationaleTitle": "Cámara ha’e opcional",
+    "cameraRationaleMessage": "VeryLoving oipuru cámara reiporavóramo añoite rejagarra hag̃ua peteĩ taꞌãngamýi perfil rehegua térã rembohasa hag̃ua peteĩ taꞌãngamýi seguridad rehegua."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving oñongatu ko flujo ojeguerekóva Ñemboheko ha panel-gui.",
+    "chooseVoiceTitle": "Eiporavo ne ñe’ẽ",
+    "chooseVoiceSubtitle": "Eiporavo iñirũ ñe’ẽ oñeñandu porãvéva oñehendu haguã.",
+    "homeTitle": "Modo ógape",
+    "homeSubtitle": "Ojesareko kirirĩháme ojeguereko haguã seguridad ára ha ára.",
+    "guardianTitle": "Modo guardián rehegua",
+    "guardianSubtitle": "Ekomparti contexto tapichakuéra ojeroviahápe.",
+    "emergencyTitle": "Modo de emergencia rehegua",
+    "emergencySubtitle": "Po grifo ikatu ojeescala SOS ha alertas guardián peve.",
+    "excuseTitle": "Ñehenói excusa rehegua",
+    "excuseSubtitle": "Ejapo petet razón graciosa reheja hagua petet situación incómoda.",
+    "safetyCallTitle": "Ñehenói seguridad rehegua",
+    "safetyCallSubtitle": "Emoñepyrũ peteĩ ñehenói compañero tiempo real-pe reikotevẽ jave pytyvõ.",
+    "practiceTitle": "Escena de práctica",
+    "practiceSubtitle": "Eñeha’ã umi flujo seguridad rehegua peteĩ demostración baja presión-pe."
+  },
+  "jewelry": {
+    "pairTitle": "Pareja NorthStar",
+    "pairSubtitle": "Eñongatu hi’aguĩ umi joya reescanea aja.",
+    "scan": "Eheka umi tembipuru",
+    "scanning": "Escaneo hi'aguĩva...",
+    "noDevices": "Ndojejuhúi gueteri tembipuru NorthStar hi’aguĩva.",
+    "scanStartFailed": "Bluetooth ndaikatúi oñepyrũ escaneo. Eñeha’ã jey.",
+    "scanFailed": "Ndorojuhúi joya hi’aguĩva. Ejesareko Bluetooth rehe, eñongatu NorthStar hi’aguĩ, ha eñeha’ã jey.",
+    "scanAccessFailed": "Bluetooth ndaikatúi oñepyrũ escaneo. Ejesareko Bluetooth jeike rehe ha eñeha’ã jey.",
+    "permissionDenied": "Oñembogue jeike tembipuru hi’aguĩvape. Eheja Bluetooth jeike Ñembohekorãme, upéi eñeha’ã jey.",
+    "connectTimeout": "NorthStar ipukueterei oñembojoaju haguã. Emoaguĩve ha eñeha’ã jey.",
+    "connectFailed": "Ndaikatúi rojoaju NorthStar ndive. Ehecháke ojekargapa ha hi’aguĩpa, upéi eñeha’ã jey.",
+    "emptyTitle": "Ndaipóri gueteri tembipuru hi’aguĩva",
+    "emptyMessage": "Eñongatu NorthStar cargado ha hi’aguĩ ko teléfono-gui, upéi eescanea jey.",
+    "searchingMessage": "Oheka NorthStar tembipuru hi’aguĩva..."
+  },
+  "home": {
+    "subtitle": "Tabla de mando de seguridad compañero rehegua",
+    "modeStatus": "%{mode} MODO rehegua",
+    "companionReady": "%{name} oĩma",
+    "readyBody": "Ñe’ẽ, mapa, joya ha guardián opyta peteĩ grifo-pe.",
+    "safetyCall": "Ñehenói seguridad rehegua",
+    "northStarDevice": "NorthStar tembipuru",
+    "deviceConnected": "%{name} ojoaju · %{battery}% .",
+    "noDevice": "Ndaipóri tembipuru oñembojoajúva",
+    "manageDevice": "Emohenda tembipuru",
+    "mode": "Modo rehegua",
+    "modes": {
+      "home": "Óga",
+      "guardian": "Guardia rehegua",
+      "emergency": "Emergencia rehegua"
+    }
+  },
+  "map": {
+    "finding": "Rejuhúvo nde reimeha...",
+    "retry": "Eñeha’ã jey moõpa oĩ",
+    "title": "Mapa de seguridad rehegua",
+    "previewSubtitle": "Expo Go jehechaukarã; Mapbox ojapo peteĩ desarrollo ñemopu’ãme.",
+    "preview": "Mapa jehechaukarã",
+    "risk": "Riesgo: %{risk} · Radio %{radius}m rehegua",
+    "refresh": "Embopyahu tenda",
+    "refreshing": "Ojejuhúvo moõpa...",
+    "updateFailed": "Ndaikatúi rombopyahu nde reimeha. Eñeha’ã jey.",
+    "notRequested": "Ndojejeruréi ojeike haguã moõpa oĩ. Ikatu emboguata upe rire Ñemboheko guive.",
+    "permissionOff": "Oñembogue jeike tenda rehegua. Emboguata Configuración-pe ecentra hag̃ua nde ári pe mapa de seguridad.",
+    "timeout": "Nde reimeha ogueraha areve oñeha’arõvagui. Eñemongu’e peteĩ hendápe peteĩ señal hesakãvéva reheve ha eñeha’ã jey.",
+    "savedTitle": "Tenda oñeñongatúva",
+    "savedEmptyTitle": "Ndaipóri gueteri tenda oñeñongatúva",
+    "savedEmptyMessage": "Ojehecháta ko’ápe umi tenda ojeroviaitéva reñongatúva ojeike pya’e hag̃ua.",
+    "zones": {
+      "crowding": "Pyhare pyte aty guasu",
+      "lowLighting": "Área hesakã’ỹva"
+    },
+    "risks": {
+      "low": "ijyvate",
+      "medium": "medio rehegua",
+      "high": "yvate"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Oñembojoajúvo...",
+    "offlineCompanion": "Compañero fuera de línea",
+    "offline": "Oĩva línea-pe",
+    "connected": "Oñembojoajúva",
+    "interrupted": "Oñembotapykue joaju",
+    "ready": "Oĩmava oñembojoaju hag̃ua",
+    "connectingSecurely": "Eñembojoaju porãvo ne ñe’ẽ irũ ndive...",
+    "messagesWaiting": {
+      "one": "%{count} marandu oha’arõva omondo",
+      "other": "%{count} marandu oha’arõva oñemondo"
+    },
+    "useOffline": "Eipuru compañero offline",
+    "reconnect": "Ñembojoaju jey ñe’ẽme AI",
+    "typePlaceholder": "Ehai hasýramo oñeñe’ẽ haguã",
+    "endCall": "Opa ñehenói",
+    "startCall": "Eñepyrũ ñehenói",
+    "emptyTitle": "Ko’ápe oñepyrũ ne ñemongeta",
+    "emptyMessage": "Emoñepyrũ ñehenói térã ehai peteĩ marandu reime jave preparado."
+  },
+  "chat": {
+    "waiting": "Oha’arõvo joaju",
+    "notSent": "Marandu noñemondoiva’ekue.",
+    "retryAccessibility": "Eñeha’ã jey emondo marandu"
+  },
+  "history": {
+    "clearTitle": "Oñemohesakã ñemongeta rembiasakue?",
+    "clearMessage": "Kóva oipe’a ko tembipuru’ígui marandu AI compañero oñeñongatúva.",
+    "deleteTitle": "Embogue ko ñomongeta?",
+    "cannotUndo": "Kóva ndaikatúi ojejapo jey.",
+    "title": "Ñemongeta rembiasakue",
+    "subtitle": "AI marandu iñirũnguéra oñeñongatúva ko tembipuru’ípe.",
+    "empty": "Noñeñongatúi gueteri ñomongeta.",
+    "emptyTitle": "Ndaipóri gueteri ñomongeta",
+    "emptyMessage": "Ne AI irũ ñemongeta ojehechaukáta ko’ápe ne ñehenói peteĩha rire.",
+    "loadFailed": "Ndaikatúi rokarga ñemongeta rembiasakue. Eñeha’ã jey.",
+    "clearFailed": "Ndaikatúikuri romopotĩ ñomongeta rembiasakue. Eñeha’ã jey.",
+    "deleteFailed": "Ndaikatúikuri rombogue upe ñomongeta. Eñeha’ã jey.",
+    "aiCompanion": "AI irũ",
+    "resume": "Oñepyrũ jey",
+    "clearAll": "Emopotĩ opaite tembiasakue",
+    "roles": {
+      "assistant": "moirũ",
+      "user": "nde"
+    }
+  },
+  "voices": {
+    "title": "Che seguridad ñehenói ñe’ẽ",
+    "subtitle": "Eiporavo iñirũ ñe’ẽ oñeñandúva ohendu porãha.",
+    "test": "Eñeha’ã ñe’ẽ",
+    "stop": "Ejoko muestra rehegua",
+    "selectionFailedTitle": "Jeporavo noñongatúi",
+    "selectionFailedMessage": "Eñeha’ã jey eiporavo ñe’ẽ.",
+    "sampleFailedTitle": "Muestra ndojeguerekói",
+    "sampleFailedMessage": "Ko muestra de voz ndaikatúi oñembopu. Eñeha’ã jey.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ipiro’y, ipy’aguapy, yvýpe"
+      },
+      "bestie": {
+        "name": "Bestie rehegua",
+        "description": "hesakã, ombopy’aguapýva, oñe’ẽva"
+      },
+      "boyfriend": {
+        "name": "Novio",
+        "description": "estable, mborayhu, presente"
+      },
+      "muscleMan": {
+        "name": "Músculo rehegua",
+        "description": "ojerovia, oñangarekóva, omokyre’ỹva"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ñe’ẽ",
+    "changeVoice": "Emoambue ñe’ẽ",
+    "showCompanion": "Ehechauka irũ",
+    "offlineMode": "Modo fuera de línea rehegua",
+    "offlineModeSubtitle": "Eipuru ñembohovái compañero rehegua oñembojoajúva ndojeguerekói jave red térã Hume credencial.",
+    "privacyData": "Ñe’ẽñemi & datokuéra",
+    "privacyBody": "Emosẽ térã embogue umi dato local oñeñongatúva ko tembipuru’ípe.",
+    "preparingExport": "Oñembosako’ívo exportación...",
+    "exportData": "Eguerahauka che datokuéra",
+    "privacyPolicy": "Política privacidad rehegua",
+    "deleting": "Ombogue haguã...",
+    "deleteAll": "Embogue opaite dato local",
+    "deviceManagement": "Tembiporu jesareko",
+    "emergencyContacts": "Contacto emergencia rehegua",
+    "signOut": "Esẽ",
+    "exportFailedTitle": "Ojeguerahauka ndoikói",
+    "exportFailedMessage": "Ndaikatúi ojeguerahauka ne marandu ko’áĝaite.",
+    "deleteConfirmTitle": "Emboguepaite umi dato local?",
+    "deleteConfirmMessage": "Kóva oipe’a ne perfil, ñemboheko, contacto emergencia, ñomongeta rembiasakue, permiso mandu’a ha sesión auth local ko tembipuru’ígui.",
+    "deleteEverything": "Embogue opa mba’e",
+    "deleteFailedTitle": "Oñembogue ndoikói",
+    "deleteFailedMessage": "Ndaikatúi oñembogue umi dato local ko’áĝaite.",
+    "linkFailed": "Ndaikatúi ojeipe’a enlace",
+    "sections": {
+      "language": "Ñe’ẽ",
+      "languageSubtitle": "Interfaz ha sistema permiso ñe’ẽ",
+      "companion": "Compañero",
+      "companionSubtitle": "Ñe’ẽ ha jeporavo’ỹva",
+      "deviceSafety": "Tembiporu ha seguridad rehegua",
+      "deviceSafetySubtitle": "NorthStar, guardián, ha contacto emergencia rehegua",
+      "privacy": "Ñe’ẽñemi ha datokuéra",
+      "privacySubtitle": "Tembiasakue, ñemondo, ñembogue ha política",
+      "account": "Cuenta rehegua",
+      "accountSubtitle": "Ne VeryLoving sesión ko’áĝagua"
+    },
+    "updateFailedTitle": "Ñemboheko noñeñongatúi",
+    "updateFailedMessage": "Ndaikatúikuri roñongatu upe preferencia. Eñeha’ã jey.",
+    "signOutFailedTitle": "Ndaikatúi osẽ",
+    "signOutFailedMessage": "Ne sesión oĩ gueteri activo. Eñeha’ã jey."
+  },
+  "contacts": {
+    "title": "Contacto emergencia rehegua",
+    "subtitle": "Tapicha ojeroviakuaáva ojeguerekóva umi flujo de seguridad jave.",
+    "addTitle": "Oñemoĩve contacto emergencia rehegua",
+    "name": "Téra",
+    "namePlaceholder": "Ñe’ẽmondo réra",
+    "phone": "Teléfono número de contacto rehegua",
+    "add": "Emoĩve contacto rehegua",
+    "empty": "Noñembojoapýi gueteri contacto emergencia rehegua.",
+    "emptyTitle": "Ndaipóri gueteri contacto emergencia rehegua",
+    "emptyMessage": "Emoĩ peteĩ tapicha rejeroviaha ikatu hag̃uáicha oĩma preparádo peteĩ flujo de seguridad oikotevẽ jave hesekuéra.",
+    "removeTitle": "Oipe’a %{name}?",
+    "removeMessage": "Ko tapicha ndojehecháivéima nde flujo de emergencia-pe.",
+    "nameRequired": "Emoinge pe contacto réra.",
+    "saveFailedTitle": "Contacto noñeñongatúi",
+    "saveFailedMessage": "Ndaikatúi roñongatu ko contacto. Ehecháke umi detalle ha eñeha’ã jey.",
+    "removeFailedTitle": "Contacto ndojepe’ái",
+    "removeFailedMessage": "Ndaikatúi roipe’a ko contacto. Eñeha’ã jey.",
+    "callAccessibility": "Ohenói %{name}",
+    "removeAccessibility": "Ojepe’a %{name}"
+  },
+  "device": {
+    "title": "Tembiporu jesareko",
+    "subtitle": "Emohenda nde NorthStar tembipuru.",
+    "connected": "Oñembojoajúva · %{battery}% batería",
+    "none": "Ndaipóri tembipuru oñembojoajúva",
+    "disconnect": "Embogue tembipuru",
+    "connect": "Embojoaju tembipuru"
+  },
+  "friends": {
+    "title": "Amigokuéra",
+    "subtitle": "Guardia, mba’ejerure ha gráfico emergencia rehegua.",
+    "addDemo": "Emoĩve demostración angirũ",
+    "emptyTitle": "Ne círculo de seguridad oĩ nandi",
+    "emptyMessage": "Ko’ápe ojehechaukáta angirũ ha guardián ojeroviaitéva oñembojoapývo.",
+    "newGuardian": "Guarani pyahu",
+    "statuses": {
+      "guardian": "Guardia rehegua",
+      "pending": "Oĩva pendiente"
+    }
+  },
+  "emergency": {
+    "title": "Emergencia rehegua SOS",
+    "subtitle": "Embotuichave reikotevẽ jave añoite pytyvõ pya’e.",
+    "body": "Kóva oikuaaukáta nde flujo de seguridad ha ombosako’íta umi contacto emergencia rehegua.",
+    "activate": "Omomba’apo SOS",
+    "callCompanion": "Ohenói AI irũ",
+    "notificationTitle": "SOS oñemboguata",
+    "notificationBody": "Ne flujo emergencia rehegua oĩma.",
+    "readyTitle": "SOS oĩma",
+    "callContact": "Ohenói %{name}?",
+    "addContact": "Emoĩ peteĩ contacto emergencia rehegua Ñembohekorãme.",
+    "quickShareTitle": "Pya’e oñemboja’o",
+    "quickShareMessage": "Stub de compartición de localización oĩma. Embojoaju punto paha compartición backend rehegua emondo hag̃ua enlace oikovéva."
+  },
+  "quickShare": {
+    "title": "Pya’e oñemboja’o",
+    "subtitle": "Ubicación compartida flujo oĩma listo."
+  },
+  "capybearTap": {
+    "title": "Capybear tapa",
+    "subtitle": "Epoko mokõi jey nde NorthStar rehe reity hagua peteĩ naranja seguridad rehegua.",
+    "body": "Ruta gesto rehegua oĩma cableado evento BLE-pe g̃uarã."
+  },
+  "debug": {
+    "title": "VeryLoving página depuración rehegua",
+    "subtitle": "Rape desarrollo-pe g̃uarãnte."
+  },
+  "errors": {
+    "voiceOffline": "Ha’ete ku nde reime’ỹva línea-pe. Ne marandu oñemondota reñembojoaju jeývo.",
+    "voiceQueued": "Marandu oñeñongatu. Oñemondóta oñembojoaju jeývo ñe’ẽ irũ.",
+    "voiceRetrying": "Reñeha’ã remondo jey ne marandu...",
+    "voiceConnecting": "Eñembojoaju porãvo ne ñe’ẽ irũ ndive...",
+    "microphone": "Oñeikotevẽ micrófono jeike oñehenói hag̃ua ñe’ẽ rupive. Ikatu emboguata Ñembohekorãme, térã ehai peteĩ marandu hendaguépe.",
+    "billing": "Pe ñe’ẽ ñemoirũ en línea ndojeguerekói sapy’ami. Ikatu resegui pe compañero offline ndive.",
+    "authentication": "Pe ñe’ẽ irũ ndaikatúikuri omoañete ko sesión. Eike jey térã eipuru pe irũ oĩva línea’ỹre ko’áĝa g̃uarã.",
+    "timeout": "Pe ñe’ẽ irũ ipukueterei ombohovái haĝua. Ehecháke ne joaju ha eñeha’ã jey.",
+    "network": "Ndaikatúi roguahẽ ñe’ẽ irũme. Ehecháke ne joaju, upéi eñeha’ã jey térã eñepyrũ esẽ’ỹre.",
+    "genericVoice": "Oĩ mba’e ombotapykuéva ñehenói ñe’ẽ rupive. Eñeha’ã jey, térã esegui pe compañero offline ndive."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving marandu ñembohasa"
+  },
+  "notifications": {
+    "channelName": "Alertas de seguridad rehegua"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving oikotevẽ micrófono jeike seguridad ha AI compañero ñehenói.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving oipuru nde reimeha pe mapa seguridad rehegua ha umi mba’e seguridad rehegua hi’aguĩvape g̃uarã.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving oipuru nde reimeha oipytyvõ hag̃ua umi flujo de llegada segura ha emergencia.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving oipuru tenda tenondegua umi mba’ekuaarã zona de peligro-pe g̃uarã, og̃uahẽha seguro ha hi’aguĩva.",
+      "NSCameraUsageDescription": "VeryLoving oipuru cámara reiporavóramo añoite rejagarra hag̃ua peteĩ perfil térã taꞌãngamýi seguridad rehegua.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving oipuru nde taꞌãngamýi ryru reiporavóramo añoite peteĩ perfil térã taꞌãnga seguridad rehegua.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

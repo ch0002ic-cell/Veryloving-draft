@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "ወሲኽካ",
+    "apple": "Apple",
+    "back": "ተመለስ",
+    "call": "ደውል",
+    "cancel": "ደምስስ",
+    "clear": "ጽሩይ",
+    "close": "ምዕጻው",
+    "connect": "ተራኸብ",
+    "connecting": "ምትእስሳር ...",
+    "continue": "ቀጽሎ",
+    "delete": "ደምስስ",
+    "finish": "መደምደምታ",
+    "friends": "ኣዕሩኽ",
+    "google": "Google",
+    "home": "መበገሲ",
+    "loading": "ጽዕነት...",
+    "map": "ካርታ",
+    "notNow": "ሕጂ ኣይኮነን",
+    "remove": "ኣወግዶ",
+    "retry": "ዳግመ ፈትኑ",
+    "retrying": "ዳግመ ፈተነ",
+    "save": "ኣቐምጥ",
+    "selected": "እተመርጸ",
+    "send": "ልእኽ",
+    "settings": "ኣቀማምጣ",
+    "skip": "ዘለል",
+    "skipForNow": "ንሕጂ ዘለል",
+    "skipTutorial": "ዝለል መምሃሪ",
+    "sos": "SOS",
+    "unknown": "ዘይተፈልጠ",
+    "user": "VeryLoving ተጠቃሚ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ቋንቋ",
+    "subtitle": "ኣብ ብምሉኡ እቲ ኣፕሊኬሽን ዝጥቀመሉ ቛንቋ ምረጽ።",
+    "system": "ስርዓት ነባሪ",
+    "search": "ቛንቋታት ምድላይ",
+    "noResults": "ምስ ምንዳይኻ ዚሰማማዕ ቋንቋታት የልቦን።",
+    "english": "ቛንቋ እንግሊዝ",
+    "spanish": "ስፓኒሽኛ",
+    "french": "ፈረንሳይኛ",
+    "chineseSimplified": "ቻይንኛ (ቀሊል)"
+  },
+  "phone": {
+    "label": "ቍጽሪ ተሌፎን",
+    "placeholder": "ቍጽሪ ተሌፎን",
+    "selectCountry": "ሃገር ወይ ዞባ ምረጽ",
+    "searchCountry": "ሃገር፣ ኮድ ወይ ናይ ምድዋል ቅድመ-ጥብቆ ድለ",
+    "noCountries": "ምስ ምንዳይኻ ዚሰማማዕ ሃገራት የለን።",
+    "countryButton": "ኣብዚ እዋን እዚ %{country} %{callingCode}",
+    "inputAccessibility": "ቍጽሪ ተሌፎን ናይ %{country}",
+    "required": "ቍጽሪ ተሌፎን ኣእትዉ።",
+    "tooShort": "ቍጽሪ ተሌፎን ኣዝዩ ሓጺር እዩ።",
+    "tooLong": "ቍጽሪ ተሌፎን ኣዝዩ ነዊሕ እዩ።",
+    "invalid": "ነቲ እተመርጸ ሃገር ብቑዕ ቍጽሪ ተሌፎን ኣእትዎ።",
+    "valid": "ብቑዕ ኣህጉራዊ ቍጽሪ ተሌፎን"
+  },
+  "auth": {
+    "onboardingTagline": "ኣብ መንጎ \"ደሓን እየ\" ከምኡውን \"ሓገዝ የድልየኒ እዩ\" ኣብ ዘሎ እዋን ናይ ብሕቲ ድሕንነት ብጻይ እዩ።",
+    "createAccount": "ሕሳብ ፍጠር",
+    "continueOnboarding": "ኣብ መርከብ ምእታው ቀጽል",
+    "createSubtitle": "ንድሕንነትካ ንምክልኻል ዘኽእል ሜላ ምረጽ።",
+    "phoneVerification": "ናይ ተሌፎን መረጋገጺ",
+    "sendCode": "ኮድ ለኣኹ",
+    "sendingCode": "ኮድ ምልኣኽ -",
+    "verifyCode": "ኮድ ኣረጋግጽ",
+    "sentTo": "ናብ %{phone} ተላእከ",
+    "yourPhone": "ተሌፎንካ",
+    "verificationCode": "ኮድ መረጋገጺ",
+    "verify": "ኣረጋግጽ",
+    "verifying": "ንምርግጋጽ ...",
+    "invalidCode": "ነቲ ናይ መረጋገጺ ኮድ ኣእትዎ።",
+    "signInFailedTitle": "እቲ ምልክት ተቛረጸ",
+    "signInFailedMessage": "ነቲ ምልክት ክንውድኦ ኣይንኽእልን ኢና። ርክብካ ኣረጋግጽ እሞ እንደገና ፈትን።",
+    "googleUnavailableTitle": "Google ምእታው ኣይርከብን እዩ",
+    "googleUnavailableMessage": "ናይ ከባቢ ኣኼባ ምጥቃም። ናይ Google መራኸቢ ብዙሓን ኣብ ህንጸት ይሰርሕ ኣሎ።",
+    "northStarTitle": "NorthStar ስልማት",
+    "northStarSubtitle": "ሕጂ ኣጣምር ወይ ቀጽል ጸኒሕካ ወሲኽካ።",
+    "northStarBody": "እቲ VL01 ዚኽደኖ መሳርሒ ብታንኳታትን ነዊሕ ጸቕጢ ብምግባር ድሕንነት ኬለዓዕል ይኽእል እዩ።",
+    "setupJewelry": "ስልማት ኣዳልዉ",
+    "meetCapybear": "ምስ Capybear ተራኸብ",
+    "meetCapybearSubtitle": "ሕያዋይ ናይ ድሕንነት መገላግልትኻ ኣብ ካርታን ኣብ ተሌፎን።",
+    "capybearBody": "Capybear ኣብ ገዛ ሞድ ሞድ ሓላዊ ህጹጽ ኵነታት መመኽነይታ ተሌፎን ከምኡውን ናይ ድምጺ ደገፍ ኪሕግዝ ይኽእል እዩ።",
+    "chooseVoice": "ድምጺ ምረጽ",
+    "capybearReminder": "Capybear መዘኻኸሪ",
+    "remindersReady": "ህዱእ መዘኻኸሪታት ተዳልዩ ኣሎ።"
+  },
+  "permissions": {
+    "locationTitle": "ድሕንነት ቦታ",
+    "locationSubtitle": "ንካርታ ሓደገኛ ዞባታት ብደሓን ምምጻእ ከምኡውን SOS ከባቢ የገልግል።",
+    "locationBody": "VeryLoving ሓለውቲ ኣበይ ሓገዝ ከም ዜድልዮም ምእንቲ ኺርድኡ ቦታ ይሓትት። ነዚ ጸኒሕካ ኣብ Settings ክትቅይሮ ትኽእል ኢኻ።",
+    "allowLocation": "ቦታ ፍቀድ",
+    "notificationsTitle": "ናይ ድሕንነት መጠንቀቕታታት",
+    "notificationsSubtitle": "መጠንቀቕታታት ንመምርሒታትን ህጹጽ ፍጻመታትን ይድግፍ።",
+    "notificationsBody": "መጠንቀቕታታት ንድሕንነት መጠንቀቕታታት ህጹጽ እዋናዊ ሓበሬታ ከምኡውን መዘኻኸሪታት ጥራይ ኢና እንጥቀመሉ።",
+    "enableNotifications": "ምልክታታት ኣአንቀሳቕስ",
+    "locationRationaleTitle": "እቲ ቦታ ንድሕንነት ቅኑዕ ይገብሮ",
+    "locationRationaleMessage": "VeryLoving ቦታኻ ንናይ ድሕንነት ካርታ ሓደገኛ ዞባታት ቅልጡፍ ምክፋል ከምኡውን SOS ትሕዝቶ ትጥቀመሉ። ነዚ ጸኒሕካ ኣብ Settings ክትቅይሮ ትኽእል ኢኻ።",
+    "notificationsRationaleTitle": "ናይ ድሕንነት መጠንቀቕታታት መጠንቀቕታታት የድልዮም",
+    "notificationsRationaleMessage": "VeryLoving ናይ ምቍጽጻር መዘኻኸሪታት ህጹጽ እዋናዊ ሓበሬታ ከምኡውን ናይ ድሕንነት መጠንቀቕታታት ይልእኽ። ንመወዓውዒ ዚኸውን መጠንቀቕታታት ኣይንጥቀምን ኢና።",
+    "microphoneRationaleTitle": "ማይክሮፎን ናይ ድሕንነት ጻውዒት የበርክት",
+    "microphoneRationaleMessage": "VeryLoving ማይክሮፎንካ እትጥቀመሉ AI ብጻይ ወይ ናይ ድሕንነት ጻውዒት ክትጅምር ከለኻ ጥራይ እዩ።",
+    "bluetoothRationaleTitle": "Bluetooth ነቲ ዚኽደኖ መሳርሒኻ የራኽቦ",
+    "bluetoothRationaleMessage": "VeryLoving ምስ ስልማት NorthStar ንምውህሃድ Bluetooth ይጥቀም።",
+    "cameraRationaleTitle": "ካሜራ ኣማራጺ እያ",
+    "cameraRationaleMessage": "VeryLoving ነታ ካሜራ እትጥቀመላ ናይ ፕሮፋይል ስእሊ ኽትወስድ ወይ ናይ ድሕንነት ስእሊ ኸተካፍል ምስ እትመርጽ ጥራይ እዩ።"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ነዚ ውሕጅ እዚ ካብ Settingsን ዳሽቦርድን ከም ዚረኽብዎ ይገብር።",
+    "chooseVoiceTitle": "ድምጽኻ ምረጽ",
+    "chooseVoiceSubtitle": "ንኽትሰምዖ ዝያዳ ድሕንነት ዚስምዖ ድምጺ ምረጽ።",
+    "homeTitle": "ናይ ገዛ ሞድ",
+    "homeSubtitle": "ንመዓልታዊ ድሕንነት ህድእ ዝበለ ምክትታል።",
+    "guardianTitle": "ሞድ ጋርድያን",
+    "guardianSubtitle": "ኣብ ከባቢኡ ምስ ዚኣምኑ ሰባት ኣካፍል።",
+    "emergencyTitle": "ህጹጽ ኵነታት",
+    "emergencySubtitle": "ሓሙሽተ መትሓዚ ናብ መጠንቀቕታ SOS ከምኡውን ሓላዊ ክበጽሕ ይኽእል ኢዩ።",
+    "excuseTitle": "ይቕረታ ጻውዒት",
+    "excuseSubtitle": "ካብ ዘይምሹእ ኵነታት ንኽትወጽእ ዜኽእለካ ጽቡቕ ምኽንያት ፍጠር።",
+    "safetyCallTitle": "ናይ ድሕንነት ጻውዒት",
+    "safetyCallSubtitle": "ሓገዝ ኣብ ዘድልየካ እዋን ናይ ሓቂ ግዜ ናይ ብጻይ ተሌፎን ጀምር።",
+    "practiceTitle": "ልምምድ ዚግበረሉ ትርኢት",
+    "practiceSubtitle": "ኣብ ትሑት ጸቕጢ ዘለዎ መርኣዪ ነቲ ናይ ድሕንነት ዋሕዚ ፈትኖ።"
+  },
+  "jewelry": {
+    "pairTitle": "ጽምዲ NorthStar",
+    "pairSubtitle": "ስካን ክትገብር ከሎኻ ነቲ ስልማት ኣብ ጥቓኻ ኣቐምጦ።",
+    "scan": "ንመሳርሒታት ስካን",
+    "scanning": "ኣብ ጥቓኻ ስካን ...",
+    "noDevices": "ኣብ ጥቓ NorthStar መሳርሒታት ገና ኣይተረኽበን።",
+    "scanStartFailed": "Bluetooth ስካን ኪጅምር ኣይከኣለን። በጃኻ ደጊምካ ፈትን።",
+    "scanFailed": "ኣብ ጥቓና ዝነበረ ስልማት ክንረክብ ኣይከኣልናን። Bluetooth ኣረጋግጽ NorthStar ተጠንቂቕካ እንደገና ፈትን።",
+    "scanAccessFailed": "Bluetooth ስካን ኪጅምር ኣይከኣለን። Bluetooth መእተዊ ኣረጋግጽ እሞ እንደገና ፈትኖ።",
+    "permissionDenied": "እቲ ኣብ ጥቓኡ ዘሎ መራኸቢ ብዙሓን ተዓጽዩ እዩ። ኣብ Bluetooth ኣድራሻታት ክትኣቱ ፍቐደሉ ድሕሪኡ እንደገና ፈትን።",
+    "connectTimeout": "NorthStar ንኽትራኸብ ነዊሕ ግዜ ወሲዱ እዩ። ቀሪብካ እንደገና ፈትኖ።",
+    "connectFailed": "ምስ NorthStar ክንራኸብ ኣይንኽእልን ኢና። ኣብ ጥቓኻ ኸም ዘሎ ኣረጋግጽ፣ ድሕሪኡ እንደገና ፈትን።",
+    "emptyTitle": "ኣብ ጥቓ እቲ ኸባቢ ዘሎ መሳርሒታት ገና የልቦን",
+    "emptyMessage": "NorthStar ተሌፎን ተጠቐመሉ እሞ እንደገና ስካን ግበር።",
+    "searchingMessage": "ኣብ ጥቓና ዘሎ NorthStar መሳርሒታት ምድላይ..."
+  },
+  "home": {
+    "subtitle": "ናይ ድሕንነት መገላግልቲ ዳሽቦርድ",
+    "modeStatus": "%{mode} ሞድ",
+    "companionReady": "%{name} ተዳልዩ ኣሎ",
+    "readyBody": "ድምጽ፣ ካርታ፣ ስልማትን ሓለውትን ኣብ ሓደ መትሓዚ እዮም ዚርከቡ።",
+    "safetyCall": "ናይ ድሕንነት ጻውዒት",
+    "northStarDevice": "NorthStar መሳርሒ",
+    "deviceConnected": "%{name} ዝተኣሳሰረ · %{battery}%",
+    "noDevice": "ዝተኣሳሰረ መሳርሒ የለን",
+    "manageDevice": "ናይ ምምሕዳር መሳርሒ",
+    "mode": "ሞድ",
+    "modes": {
+      "home": "መበገሲ",
+      "guardian": "ጋርድያን",
+      "emergency": "ህጹጽ ኵነታት"
+    }
+  },
+  "map": {
+    "finding": "ኣድራሻኻ ክትረክብ ከሎኻ -",
+    "retry": "ቦታ ዳግመ ፈትኖ",
+    "title": "ካርታ ድሕንነት",
+    "previewSubtitle": "Expo Go ቅድመ ምርኢት፤ Mapbox ኣብ ህንጸት ይካየድ ኣሎ።",
+    "preview": "ቅድመ-እይታ ካርታ",
+    "risk": "ሓደጋ፦ %{risk} · ራዲየስ %{radius}m",
+    "refresh": "ቦታ ምሕዳስ",
+    "refreshing": "ቦታ ምርካብ።።።",
+    "updateFailed": "ኣድራሻኻ ከነሐድሶ ኣይንኽእልን ኢና። በጃኻ ደጊምካ ፈትን።",
+    "notRequested": "ናይ ቦታ መእተዊ ኣይሓተተን። ጸኒሕካ ካብ Settings ከተውጽእ ትኽእል ኢኻ።",
+    "permissionOff": "ናይ ቦታ መእተዊ ጠፊኡ እዩ። ነቲ ናይ ድሕንነት ካርታ ኣብ ልዕሌኻ ማእከል ንምግባር ኣብ Settings ኣበርክቶ።",
+    "timeout": "ኣድራሻኻ ካብቲ እተጸበኻዮ ዝነውሐ ግዜ እዩ ዚወስድ። ንጹር ምልክት ሒዝካ ናብ ካልእ ቦታ ግዕዝ እሞ እንደገና ፈትን።",
+    "savedTitle": "እተቐመጠ ቦታታት",
+    "savedEmptyTitle": "ክሳብ ሕጂ ዝተረፈ ቦታ የለን",
+    "savedEmptyMessage": "ብቕልጡፍ ክትበጽሖ እትኽእል ትውክልቲ ዝግበሮ ቦታታት ኣብዚ ክርአ ኢዩ።",
+    "zones": {
+      "crowding": "ምሸት ምሸት ብጭካነ",
+      "lowLighting": "ትሑት ብርሃን ዘለዎ ቦታ"
+    },
+    "risks": {
+      "low": "ትሑት",
+      "medium": "ማእከላይ",
+      "high": "ልዑል"
+    }
+  },
+  "safetyCall": {
+    "connecting": "ምትእስሳር ...",
+    "offlineCompanion": "ካብ መስመር ወጻኢ ብጻይ",
+    "offline": "ካብ መስመር ወጻኢ",
+    "connected": "ዝተኣሳሰረ",
+    "interrupted": "እቲ ርክብ ተቛረጸ",
+    "ready": "ንምትሕብባር ድሉው",
+    "connectingSecurely": "ምስ ናይ ድምጺ ብጻይካ ብጥንቃቐ ተራኸብ።",
+    "messagesWaiting": {
+      "one": "%{count} መልእኽቲ ንምልኣኽ ይጽበ ኣሎ",
+      "other": "%{count} መልእኽቲ ንምልኣኽ ይጽበዩ"
+    },
+    "useOffline": "ካብ መስመር ወጻኢ መገላግልቲ ተጠቐም",
+    "reconnect": "ናብ ናይ ድምጺ AI ተራኸብ",
+    "typePlaceholder": "ምዝራብ ኣጸጋሚ እንተ ዀይኑ ሕተም",
+    "endCall": "መደምደምታ",
+    "startCall": "ጻውዒት ጀምር",
+    "emptyTitle": "ዝርርብኩም ኣብዚ እዩ ዚጅምር",
+    "emptyMessage": "ተሌፎን ጀምር ወይ ድሉው ምስ ኰንካ መልእኽቲ ጽሓፍ።"
+  },
+  "chat": {
+    "waiting": "ምትእስሳር ምጽባይ",
+    "notSent": "መልእኽቲ ኣይተላእከን።",
+    "retryAccessibility": "መልእኽቲ ንምልኣኽ እንደገና ፈትኑ"
+  },
+  "history": {
+    "clearTitle": "ንጹር ታሪኽ ዝርርብ ድዩ?",
+    "clearMessage": "እዚ ኸኣ እተቐመጠ AI መገላግልቲ መልእኽትታት ካብዚ መሳርሒ እዚ የወግዶ።",
+    "deleteTitle": "ነዚ ዝርርብ ድምስሶ?",
+    "cannotUndo": "እዚ ክውገድ ኣይክእልን እዩ።",
+    "title": "ታሪኽ ዝርርብ",
+    "subtitle": "AI መራኸቢ ብዙሓን ኣብዚ ኣድራሻ እዚ ተዓቚቡ ኣሎ።",
+    "empty": "ክሳብ ሕጂ ዝርርብ ኣይረኸበን።",
+    "emptyTitle": "ገና ዝርርብ የለን",
+    "emptyMessage": "እቲ AI ናይ መገላግልትኻ ዝርርብ ድሕሪ እቲ ናይ መጀመርታ ደዊልካ ኣብዚ ኺርአ እዩ።",
+    "loadFailed": "ታሪኽ ዝርርብ ክንጽዕር ኣይንኽእልን ኢና። በጃኻ ደጊምካ ፈትን።",
+    "clearFailed": "ታሪኽ ዝርርብ ከነጽርዮ ኣይከኣልናን። በጃኻ ደጊምካ ፈትን።",
+    "deleteFailed": "ነዚ ዝርርብ እዚ ኸነጥፍኦ ኣይንኽእልን ኢና ። በጃኻ ደጊምካ ፈትን።",
+    "aiCompanion": "AI መገላግልቲ",
+    "resume": "Resume",
+    "clearAll": "ንዅሉ ታሪኽ ኣጽርዮ",
+    "roles": {
+      "assistant": "ብጻይ",
+      "user": "ንስኻ"
+    }
+  },
+  "voices": {
+    "title": "ናይ ድሕንነት ጻውዒት ድምጸይ",
+    "subtitle": "ነቲ ኽትሰምዖ ዚግባእ ኰይኑ ዚስምዖ ብጻይ ድምጺ ምረጽ።",
+    "test": "ናይ ፈተና ድምጺ",
+    "stop": "መርኣዪ ደው ኣብሎ",
+    "selectionFailedTitle": "እቲ ምርጫ ኣይተዓቀነበን",
+    "selectionFailedMessage": "ብኽብረትኩም ነቲ ድምጺ እንደገና ኽትመርጽዎ ፈትኑ።",
+    "sampleFailedTitle": "መርኣዪ ኣይተረኽበን",
+    "sampleFailedMessage": "እዚ ናይ ድምጺ መርኣዪ ክጻወት ኣይከኣለን። በጃኻ ደጊምካ ፈትን።",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ልስሉስ ህዱእ መሰረት"
+      },
+      "bestie": {
+        "name": "ቤስቲ",
+        "description": "ብሩህ ዜጸናንዕ ዘረባ"
+      },
+      "boyfriend": {
+        "name": "ናይ ፍቕሪ መሓዛ ወዲ",
+        "description": "ቀዋሚ ፈቃር ህሉው"
+      },
+      "muscleMan": {
+        "name": "ጭዋዳታት",
+        "description": "ምትእምማን ዘለዎ ዕቝባ ዜለዓዕል ዜነቓቕሕ"
+      }
+    }
+  },
+  "settings": {
+    "voice": "ድምጺ",
+    "changeVoice": "ድምጺ ምቕያር",
+    "showCompanion": "ብጻይ ኣርኢ",
+    "offlineMode": "ካብ መስመር ወጻኢ ዝዀነ ሞድ",
+    "offlineModeSubtitle": "እቲ መርበብ ወይ Hume መረጋገጺ ሓበሬታ ኣብ ዘይህልወሉ እዋን እተጠርነፈ ብጻይ መልስታት ተጠቐም።",
+    "privacyData": "ግላዊነትን ሓበሬታን",
+    "privacyBody": "ነቲ ኣብዚ መሳርሒ እዚ እተቐመጠ ናይ ከባቢ ሓበሬታ ናብ ወጻኢ ምልኣኽ ወይ ኣጥፍኦ።",
+    "preparingExport": "ንሰደድ ምድላው...",
+    "exportData": "ዳታተይ ናብ ወጻኢ ምልኣኽ",
+    "privacyPolicy": "ናይ ብሕቲ ፖሊሲ",
+    "deleting": "ምጥፋእ...",
+    "deleteAll": "ንዅሉ ናይቲ ከባቢ ዳታ ኣድምስሶ",
+    "deviceManagement": "ምምሕዳር መሳርሒ",
+    "emergencyContacts": "ናይ ህጹጽ ረድኤት ርክባት",
+    "signOut": "ምውጻእ",
+    "exportFailedTitle": "ናብ ወጻኢ ምልኣኽ ፈሺሉ",
+    "exportFailedMessage": "ኣብዚ እዋን እዚ ዳታኻ ኽትልእኽ ኣይትኽእልን ኢኻ።",
+    "deleteConfirmTitle": "ንዅሉ ናይቲ ከባቢ ዳታ ድምስሶ?",
+    "deleteConfirmMessage": "እዚ ድማ ፕሮፋይልካ ኣቀራርባኻ ህጹጽ ርክባትካ ታሪኽ ዝርርብ ናይ ፍቓድ መዘኻኸሪታት ከምኡውን ናይ ከባቢ ናይ ምስክር ክፍለ ግዜ ካብዚ መሳርሒ የልግሶ።",
+    "deleteEverything": "ንዅሉ ኣድምስሶ",
+    "deleteFailedTitle": "ምጥፋእ ፈሺሉ",
+    "deleteFailedMessage": "ኣብዚ እዋን'ዚ ናይ ከባቢ ሓበሬታ ክድምስሶ ኣይከኣለን።",
+    "linkFailed": "ሊንክ ክኽፈት ኣይከኣለን",
+    "sections": {
+      "language": "ቋንቋ",
+      "languageSubtitle": "መራኸቢ ብዙሓንን ናይ ስርዓት ፍቓድ ቋንቋን",
+      "companion": "መገላግልቲ",
+      "companionSubtitle": "ድምጽን ካብ መስመር ወጻኢ ምርጫታትን",
+      "deviceSafety": "መሳርሒታትን ድሕንነትን",
+      "deviceSafetySubtitle": "NorthStar ሓለውትን ህጹጽ ርክባትን",
+      "privacy": "ግላዊነትን ሓበሬታን",
+      "privacySubtitle": "ታሪኽ፣ ሰደድ፣ ምጥፋእን ፖሊሲን",
+      "account": "ሕሳብ",
+      "accountSubtitle": "ኣብዚ እዋን እዚ VeryLoving ኣኼባኻ"
+    },
+    "updateFailedTitle": "ምድላው ኣይተዓቀነበን",
+    "updateFailedMessage": "ነዚ ምርጫ እዚ ኸነድሕኖ ኣይከኣልናን። በጃኻ ደጊምካ ፈትን።",
+    "signOutFailedTitle": "ክወጽእ ኣይከኣለን",
+    "signOutFailedMessage": "ኣኼባኹም ገና ንጡፍ እዩ። በጃኻ ደጊምካ ፈትን።"
+  },
+  "contacts": {
+    "title": "ናይ ህጹጽ ረድኤት ርክባት",
+    "subtitle": "ኣብ እዋን ድሕንነት ዚውሕዙ ሰባት ዚኣምኑ ሰባት።",
+    "addTitle": "ናይ ህጹጽ ግዜ ርክብ ወሲኽካ",
+    "name": "ስም",
+    "namePlaceholder": "ስም ኣድራሻ",
+    "phone": "ቍጽሪ ተሌፎን ኣድራሻ",
+    "add": "ኣድራሻ ወሲኽካ",
+    "empty": "ህጹጽ ርክባት ገና ኣይተወሰኸን።",
+    "emptyTitle": "ክሳብ ሕጂ ናይ ህጹጽ ረድኤት ርክብ የለን",
+    "emptyMessage": "ናይ ድሕንነት ዋሕዚ ኣብ ዜድልዮ እዋን ድሉዋት ምእንቲ ኪዀኑ እትኣምኖ ሰብ ወሲኽ።",
+    "removeTitle": "%{name} ኣወግዶ?",
+    "removeMessage": "እዚ ሰብ እዚ ድሕሪ ደጊም ኣብ ናይ ህጹጽ ግዜ ውሕስነት ኣይኪህሉን እዩ።",
+    "nameRequired": "ስም ኣድራሻኻ ኣእትዎ።",
+    "saveFailedTitle": "እቲ ርክብ ኣይተዓቀነበን",
+    "saveFailedMessage": "ነዚ ርክብ እዚ ከነድሕኖ ኣይንኽእልን ኢና። ዝርዝር ነጥብታት ኣረጋግጽ እሞ እንደገና ፈትኖ።",
+    "removeFailedTitle": "እቲ ርክብ ኣይተወገደን",
+    "removeFailedMessage": "ነዚ ርክብ እዚ ኸነወግዶ ኣይንኽእልን ኢና። በጃኻ ደጊምካ ፈትን።",
+    "callAccessibility": "ናብ %{name} ደውሉ",
+    "removeAccessibility": "ኣወግዶ %{name}"
+  },
+  "device": {
+    "title": "ምምሕዳር መሳርሒ",
+    "subtitle": "ነቲ ናይ NorthStar መሳርሒኻ ተቘጻጸሮ።",
+    "connected": "ዝተኣሳሰረ · %{battery}% ባትሪ",
+    "none": "እተተሓሓዘ መሳርሒታት የለን",
+    "disconnect": "ነቲ መሳርሒ ኣቋርጾ",
+    "connect": "መራኸቢ መሳርሒ"
+  },
+  "friends": {
+    "title": "ኣዕሩኽ",
+    "subtitle": "ሓለውቲ ሕቶታት ከምኡውን ናይ ህጹጽ ግዜ ግራፍ።",
+    "addDemo": "ዴሞ ዓርኪ ወሲኽካ",
+    "emptyTitle": "ናይ ድሕንነት ክበብካ ባዶ እዩ",
+    "emptyMessage": "እሙን ኣዕሩኽን ሓለውትን ምስ ተወሰኹ ኣብዚ ኺርኣዩ እዮም።",
+    "newGuardian": "ኒው ጋርድያን",
+    "statuses": {
+      "guardian": "ጋርድያን",
+      "pending": "ይጽበ ኣሎ"
+    }
+  },
+  "emergency": {
+    "title": "ህጹጽ SOS",
+    "subtitle": "ህጹጽ ሓገዝ ምስ ዜድልየካ ጥራይ እዩ ዚውስኽ።",
+    "body": "እዚ ንድሕንነትካ ኼፍልጦን ህጹጽ ርክባት ኬዳልዎን እዩ።",
+    "activate": "ኣንቀሳቕስ SOS",
+    "callCompanion": "AI ብጻይካ ደውል",
+    "notificationTitle": "SOS ንጡፍ",
+    "notificationBody": "ናይ ህጹጽ ረድኤትካ ድሉው እዩ።",
+    "readyTitle": "SOS ድሉው",
+    "callContact": "%{name} ደውለሉ?",
+    "addContact": "ናይ ህጹጽ ግዜ ኣድራሻ ኣብ Settings ወሲኽ።",
+    "quickShareTitle": "ቅልጡፍ ምክፋል",
+    "quickShareMessage": "ናይ ቦታ ምክፋል መትረብ ተዳልዩ ኣሎ። ህያው ሊንክ ንምልኣኽ ነቲ ናይ ድሕሪት ኣካፋይ ናይ መወዳእታ ነጥብ ኣራኽቦ።"
+  },
+  "quickShare": {
+    "title": "ቅልጡፍ ምክፋል",
+    "subtitle": "ናይ ቦታ ኣካፋይ ዋሕዚ ተዳልዩ ኣሎ።"
+  },
+  "capybearTap": {
+    "title": "Capybear ጠውቑ",
+    "subtitle": "ናይ ድሕንነት ኣራንሺ ንምድርባይ NorthStar ክልተ ሳዕ ጠውቑ።",
+    "body": "ናይ ኣካላዊ ምንቅስቓስ መስመር ንናይ BLE ፍጻመ ገመድ ተዳልዩ ኣሎ።"
+  },
+  "debug": {
+    "title": "VeryLoving ገጽ ማረም",
+    "subtitle": "ናይ ምዕባለ መስመር ጥራይ።"
+  },
+  "errors": {
+    "voiceOffline": "ካብ መስመር ወጻኢ ኢኻ እትመስል። መልእኽትኻ ምስ ተመልሰ ክለኣኽ እዩ።",
+    "voiceQueued": "መልእኽትታት ተቐሚጡ እዩ። እቲ ናይ ድምጺ መገላግልቲ እንደገና ምስ ተራኸበ እዩ ዚለኣኽ።",
+    "voiceRetrying": "መልእኽትኹም ደጊምኩም ክትልእኹ ፈቲኑ።።።",
+    "voiceConnecting": "ምስ ናይ ድምጺ ብጻይካ ብጥንቃቐ ተራኸብ።",
+    "microphone": "ንድምጺ ንምድዋል ማይክሮፎን የድሊ። ኣብ Settings ከተንቀሳቕሶ ትኽእል ኢኻ ወይ ኣብ ክንዳኡስ መልእኽቲ ኽትጽሕፍ ትኽእል ኢኻ።",
+    "billing": "እቲ ኣብ ኢንተርነት ዘሎ ናይ ድምጺ መገላግልቲ ንግዜኡ ኣይተረኽበን። ምስ ናይ ወጻኢ ብጻይካ ክትቅጽል ትኽእል ኢኻ።",
+    "authentication": "እቲ ናይ ድምጺ መገላግልቲ ነዚ ኣኼባ እዚ ኼረጋግጾ ኣይከኣለን። ደጊምካ ተመዝጊብካ ወይ ከኣ ንሕጂ ነቲ ኻብ መስመር ወጻኢ ዘሎ ብጻይ ተጠቐመሉ።",
+    "timeout": "እቲ ናይ ድምጺ መገላግልቱ መልሲ ንምሃብ ነዊሕ ግዜ ወሰደሉ። ርክብካ ኣረጋግጽ እሞ እንደገና ፈትን።",
+    "network": "ነቲ ናይ ድምጺ መገላግልትና ክንረኽቦ ኣይከኣልናን። መራኸቢኻ ኣረጋግጽ፣ ድሕሪኡ እንደገና ፈትኖ ወይ ካብ መስመር ወጻኢ ቐጽል።",
+    "genericVoice": "ገለ ነገር ነቲ ድምጺ ኣቋረጾ። ደጊምካ ፈትኖ ወይ ከኣ ነቲ ኣብ ኢንተርነት ዘሎ ብጻይካ ቐጽሎ።"
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ዳታ ምልኣኽ"
+  },
+  "notifications": {
+    "channelName": "ናይ ድሕንነት መጠንቀቕታታት"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ንድሕንነትን AI መገላግልትን ማይክሮፎን የድልየና እዩ።",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ንናይ ድሕንነት ካርታን ኣብ ጥቓኻ ዘሎ ናይ ድሕንነት መምርሒታትን ንቦታኻ ትጥቀመሉ።",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ቦታ ብውሕስነት ንምምጻእን ህጹጽ ዋሕዚ ንምድጋፍ ትጥቀመሉ።",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ድሕረ-ባይታ ንምምጻእን ኣብ ጥቓ ሓደገኛ ዞባን ዘሎ ባህርያት ይጥቀም።",
+      "NSCameraUsageDescription": "VeryLoving ካሜራ እትጥቀመላ ፕሮፋይል ወይ ናይ ድሕንነት ስእሊ ኽትወስድ ምስ እትመርጽ ጥራይ እዩ።",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ናይ ስእሊ ቤተ-መጻሕፍቲ እትጥቀመሉ ፕሮፋይል ወይ ናይ ድሕንነት ስእሊ ኽትመርጽ ከለኻ ጥራይ እዩ።",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ምስ NorthStar ድሕንነት ስልማትካ ንምትሕሓዝ Bluetooth ትጥቀም።",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ምስ NorthStar ድሕንነት ስልማትካ ንምትሕሓዝ Bluetooth ትጥቀም።"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

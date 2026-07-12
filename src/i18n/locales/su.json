@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tambihkeun",
+    "apple": "Apple",
+    "back": "Balik",
+    "call": "Telepon",
+    "cancel": "Batalkeun",
+    "clear": "Jelas",
+    "close": "Tutup",
+    "connect": "Sambungkeun",
+    "connecting": "Nyambungkeun...",
+    "continue": "Teruskeun",
+    "delete": "Pupus",
+    "finish": "Rengse",
+    "friends": "Babaturan",
+    "google": "Google",
+    "home": "Imah",
+    "loading": "Ngamuat...",
+    "map": "Peta",
+    "notNow": "Henteu ayeuna",
+    "remove": "Cabut",
+    "retry": "Coba deui",
+    "retrying": "Cobian deui",
+    "save": "Simpen",
+    "selected": "Dipilih",
+    "send": "Kirimkeun",
+    "settings": "Setélan",
+    "skip": "Skip",
+    "skipForNow": "Skip ayeuna",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Teu kanyahoan",
+    "user": "VeryLoving pamaké",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Basa",
+    "subtitle": "Pilih basa anu dianggo sapanjang aplikasi.",
+    "system": "System standar",
+    "search": "Teangan basa",
+    "noResults": "Teu aya basa anu cocog sareng pamilarian anjeun.",
+    "english": "Basa Inggris",
+    "spanish": "Spanyol",
+    "french": "Basa Perancis",
+    "chineseSimplified": "Basa Cina (Saderhana)"
+  },
+  "phone": {
+    "label": "Nomer telepon",
+    "placeholder": "Nomer telepon",
+    "selectCountry": "Pilih nagara atawa wewengkon",
+    "searchCountry": "Teangan nagara, kode, atawa awalan telepon",
+    "noCountries": "Teu aya nagara anu cocog sareng pamilarian anjeun.",
+    "countryButton": "Ganti nagara, ayeuna %{country} tambah %{callingCode}",
+    "inputAccessibility": "Nomer telepon pikeun %{country}",
+    "required": "Asupkeun nomer telepon.",
+    "tooShort": "Nomer telepon ieu pondok teuing.",
+    "tooLong": "Nomer telepon ieu panjang teuing.",
+    "invalid": "Asupkeun nomer telepon nu valid pikeun nagara nu dipilih.",
+    "valid": "Nomer telepon internasional anu valid"
+  },
+  "auth": {
+    "onboardingTagline": "Saurang pendamping kaamanan pribadi pikeun momen antara \"Abdi teu kunanaon\" sareng \"Abdi peryogi bantosan\".",
+    "createAccount": "Jieun akun",
+    "continueOnboarding": "Teruskeun onboarding",
+    "createSubtitle": "Pilih metode asup pikeun ngajaga grafik kaamanan anjeun.",
+    "phoneVerification": "Verifikasi telepon",
+    "sendCode": "Kirim kodeu",
+    "sendingCode": "Kirim kode...",
+    "verifyCode": "Parios kodeu",
+    "sentTo": "Dikirim ka %{phone}",
+    "yourPhone": "telepon anjeun",
+    "verificationCode": "Kode verifikasi",
+    "verify": "Vérifikasi",
+    "verifying": "Vérifikasi...",
+    "invalidCode": "Asupkeun kodeu verifikasi.",
+    "signInFailedTitle": "Asup kaganggu",
+    "signInFailedMessage": "Kami henteu tiasa ngalengkepan asup. Pariksa sambungan anjeun sarta cobian deui.",
+    "googleUnavailableTitle": "Google Asup-Asup teu sadia",
+    "googleUnavailableMessage": "Maké sési pamekaran lokal. Native Google Sign-In dianggo dina wangunan pangwangunan.",
+    "northStarTitle": "NorthStar perhiasan",
+    "northStarSubtitle": "Sapasangkeun ayeuna atanapi teraskeun teras tambahkeun engké.",
+    "northStarBody": "The VL01 wearable bisa memicu aliran kaamanan ku ketok jeung sapuan pencét lila.",
+    "setupJewelry": "Setel perhiasan",
+    "meetCapybear": "Papanggih Capybear",
+    "meetCapybearSubtitle": "Rencangan kaamanan anu lembut anjeun dina peta sareng dina telepon.",
+    "capybearBody": "Capybear tiasa ngabantosan modeu bumi, mode wali, modeu darurat, telepon hapunten, sareng dukungan sora.",
+    "chooseVoice": "Pilih sora",
+    "capybearReminder": "Capybear panginget",
+    "remindersReady": "Panginget hipu tos siap."
+  },
+  "permissions": {
+    "locationTitle": "Kaamanan lokasi",
+    "locationSubtitle": "Dipaké pikeun peta, zona bahaya, kadatangan aman, sareng kontéks SOS.",
+    "locationBody": "VeryLoving nyuhunkeun lokasi supados wali tiasa ngartos dimana peryogi bantosan. Anjeun tiasa ngarobih ieu engké dina Setélan.",
+    "allowLocation": "Ngidinan lokasi",
+    "notificationsTitle": "Iberan kaamanan",
+    "notificationsSubtitle": "Bewara ngadukung pamariksaan sareng acara darurat.",
+    "notificationsBody": "Kami ngan ukur nganggo béwara pikeun paréntah kaamanan, apdet darurat, sareng panginget anu anjeun aktipkeun.",
+    "enableNotifications": "Aktipkeun béwara",
+    "locationRationaleTitle": "Lokasi ngajaga konteks kaamanan akurat",
+    "locationRationaleMessage": "VeryLoving ngagunakeun lokasi anjeun pikeun peta kaamanan, zona bahaya, babagi gancang, jeung kontéks SOS. Anjeun tiasa ngarobih ieu engké dina Setélan.",
+    "notificationsRationaleTitle": "Pangémutan kaamanan peryogi béwara",
+    "notificationsRationaleMessage": "VeryLoving ngirim panginget check-in, apdet darurat, sareng ajakan kaamanan anu anjeun aktipkeun. Kami henteu nganggo béwara pikeun iklan.",
+    "microphoneRationaleTitle": "Mikropon nguatkeun telepon kaamanan",
+    "microphoneRationaleMessage": "VeryLoving nganggo mikropon anjeun ngan ukur nalika anjeun ngamimitian telepon pendamping atanapi kaamanan AI.",
+    "bluetoothRationaleTitle": "Bluetooth nyambungkeun wearable anjeun",
+    "bluetoothRationaleMessage": "VeryLoving ngagunakeun Bluetooth pikeun masangkeun jeung NorthStar perhiasan, maca status sambungan, sarta memicu aliran kaamanan ti wearable.",
+    "cameraRationaleTitle": "Kaméra pilihan",
+    "cameraRationaleMessage": "VeryLoving ngagunakeun kaméra ngan lamun anjeun milih nyandak poto profil atawa babagi gambar kaamanan."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ngajaga aliran ieu sadia ti Setélan jeung dasbor.",
+    "chooseVoiceTitle": "Pilih sora anjeun",
+    "chooseVoiceSubtitle": "Pilih sora pendamping anu karasaeun paling aman pikeun didangu.",
+    "homeTitle": "Mode imah",
+    "homeSubtitle": "Ngawaskeun sepi pikeun kaamanan sapopoé.",
+    "guardianTitle": "Mode wali",
+    "guardianSubtitle": "Bagikeun kontéks sareng jalma anu dipercaya.",
+    "emergencyTitle": "Modeu darurat",
+    "emergencySubtitle": "Lima ketok bisa naék ka SOS jeung béja wali.",
+    "excuseTitle": "Telepon Hapunten",
+    "excuseSubtitle": "Jieun alesan anggun pikeun ninggalkeun kaayaan teu nyaman.",
+    "safetyCallTitle": "Telepon kaamanan",
+    "safetyCallSubtitle": "Mimitian telepon pendamping sacara real-time nalika anjeun peryogi pangrojong.",
+    "practiceTitle": "Adegan latihan",
+    "practiceSubtitle": "Coba aliran kaamanan dina demo tekanan-rendah."
+  },
+  "jewelry": {
+    "pairTitle": "Sapasangkeun NorthStar",
+    "pairSubtitle": "Simpen perhiasan di deukeutna bari nyeken.",
+    "scan": "Scan alat",
+    "scanning": "Scaning caket dieu...",
+    "noDevices": "Teu aya alat NorthStar caket dieu acan kapanggih.",
+    "scanStartFailed": "Bluetooth panyeken teu bisa dimimitian. Mangga cobian deui.",
+    "scanFailed": "Kami henteu mendakan perhiasan caket dieu. Pariksa Bluetooth, tutup NorthStar, teras cobian deui.",
+    "scanAccessFailed": "Bluetooth panyeken teu bisa dimimitian. Pariksa aksés Bluetooth teras cobian deui.",
+    "permissionDenied": "Akses alat-deukeut pareum. Idinan Bluetooth aksés dina Setélan, teras cobian deui.",
+    "connectTimeout": "NorthStar lila teuing pikeun nyambung. Pindahkeunana ngadeukeutan teras cobian deui.",
+    "connectFailed": "Kami teu bisa nyambung ka NorthStar. Pariksa yén éta dieusi sareng caket dieu, teras cobian deui.",
+    "emptyTitle": "Teu aya alat anu caket",
+    "emptyMessage": "Simpen NorthStar dicas sareng caket kana telepon ieu, teras seken deui.",
+    "searchingMessage": "Néangan NorthStar alat nu deukeut..."
+  },
+  "home": {
+    "subtitle": "Dasbor pendamping kaamanan",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} tos siap",
+    "readyBody": "Sora, peta, perhiasan, jeung wali ngan saukur ketok.",
+    "safetyCall": "Telepon kaamanan",
+    "northStarDevice": "NorthStar alat",
+    "deviceConnected": "%{name} disambungkeun · %{battery}%",
+    "noDevice": "Taya alat disambungkeun",
+    "manageDevice": "Atur alat",
+    "mode": "Modus",
+    "modes": {
+      "home": "Imah",
+      "guardian": "Penjaga",
+      "emergency": "Darurat"
+    }
+  },
+  "map": {
+    "finding": "Néangan lokasi anjeun...",
+    "retry": "Coba deui lokasi",
+    "title": "Peta kaamanan",
+    "previewSubtitle": "Expo Go sawangan; Mapbox renders dina wangunan pangwangunan.",
+    "preview": "Tilikan peta",
+    "risk": "Resiko: %{risk} · Radius %{radius}m",
+    "refresh": "Refresh lokasi",
+    "refreshing": "Néangan lokasi...",
+    "updateFailed": "Kami henteu tiasa ngamutahirkeun lokasi anjeun. Mangga cobian deui.",
+    "notRequested": "Akses lokasi henteu dipénta. Anjeun tiasa ngaktipkeun engké tina Setélan.",
+    "permissionOff": "Akses lokasi pareum. Aktipkeun dina Setélan pikeun museur peta kaamanan ka anjeun.",
+    "timeout": "Lokasi anjeun langkung lami tibatan anu disangka. Pindah ka tempat anu sinyalna langkung jelas sareng cobian deui.",
+    "savedTitle": "Tempat disimpen",
+    "savedEmptyTitle": "Teu aya tempat anu disimpen",
+    "savedEmptyMessage": "Tempat dipercaya anu anjeun simpen bakal muncul di dieu pikeun aksés gancang.",
+    "zones": {
+      "crowding": "Ramé peuting",
+      "lowLighting": "Daérah cahayana rendah"
+    },
+    "risks": {
+      "low": "rendah",
+      "medium": "sedeng",
+      "high": "luhur"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Nyambungkeun...",
+    "offlineCompanion": "Rencangan offline",
+    "offline": "Luring",
+    "connected": "Sambungkeun",
+    "interrupted": "Koneksi kaganggu",
+    "ready": "Siap nyambung",
+    "connectingSecurely": "Nyambungkeun aman ka pasangan sora anjeun...",
+    "messagesWaiting": {
+      "one": "%{count} pesen nungguan dikirim",
+      "other": "%{count} seratan ngantosan dikirim"
+    },
+    "useOffline": "Paké pendamping offline",
+    "reconnect": "Sambungkeun deui ka sora AI",
+    "typePlaceholder": "Ketik upami nyarios sesah",
+    "endCall": "Tungtung telepon",
+    "startCall": "Mimitian nelepon",
+    "emptyTitle": "Paguneman anjeun dimimitian di dieu",
+    "emptyMessage": "Mimitian telepon atawa ketik talatah sawaktos Anjeun tos siap."
+  },
+  "chat": {
+    "waiting": "Ngadagoan sambungan",
+    "notSent": "Pesen teu dikirim.",
+    "retryAccessibility": "Coba deui ngirim talatah"
+  },
+  "history": {
+    "clearTitle": "Hapus sajarah paguneman?",
+    "clearMessage": "Ieu ngahapus AI talatah pendamping anu disimpen tina alat ieu.",
+    "deleteTitle": "Pupus paguneman ieu?",
+    "cannotUndo": "Ieu teu tiasa dibolaykeun.",
+    "title": "Riwayat paguneman",
+    "subtitle": "AI talatah pendamping disimpen dina alat ieu.",
+    "empty": "Teu aya paguneman anu disimpen.",
+    "emptyTitle": "Teu aya obrolan",
+    "emptyMessage": "Paguneman pendamping AI anjeun bakal muncul di dieu saatos telepon munggaran anjeun.",
+    "loadFailed": "Kami henteu tiasa ngamuat riwayat paguneman. Mangga cobian deui.",
+    "clearFailed": "Kami henteu tiasa mupus sajarah paguneman. Mangga cobian deui.",
+    "deleteFailed": "Kami henteu tiasa ngahapus paguneman éta. Mangga cobian deui.",
+    "aiCompanion": "AI pendamping",
+    "resume": "Teruskeun",
+    "clearAll": "Pupus sadaya sajarah",
+    "roles": {
+      "assistant": "pendamping",
+      "user": "anjeun"
+    }
+  },
+  "voices": {
+    "title": "Sora telepon kaamanan kuring",
+    "subtitle": "Pilih sora pendamping anu karasaeun pas didangukeun.",
+    "test": "Uji sora",
+    "stop": "Eureunkeun sampel",
+    "selectionFailedTitle": "Pilihan teu disimpen",
+    "selectionFailedMessage": "Coba pilih deui sorana.",
+    "sampleFailedTitle": "Sampel teu sadia",
+    "sampleFailedMessage": "Sampel sora ieu teu bisa diputer. Mangga cobian deui.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "lemes, tenang, grounding"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "caang, ngayakinkeun, ngobrol"
+      },
+      "boyfriend": {
+        "name": "Kabogoh",
+        "description": "ajeg, kaasih, hadir"
+      },
+      "muscleMan": {
+        "name": "Otot",
+        "description": "yakin, ngajaga, ngamotivasi"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Sora",
+    "changeVoice": "Ganti sora",
+    "showCompanion": "Témbongkeun pendamping",
+    "offlineMode": "Modeu offline",
+    "offlineModeSubtitle": "Paké réspon pendamping anu dibuntel lamun jaringan atawa Hume kredensial teu sadia.",
+    "privacyData": "Privasi & data",
+    "privacyBody": "Ékspor atawa pupus data lokal nu disimpen dina alat ieu.",
+    "preparingExport": "Nyiapkeun ékspor...",
+    "exportData": "Ékspor data kuring",
+    "privacyPolicy": "Kabijakan privasi",
+    "deleting": "Ngahapus...",
+    "deleteAll": "Pupus sadaya data lokal",
+    "deviceManagement": "Manajemén alat",
+    "emergencyContacts": "Kontak darurat",
+    "signOut": "Asup kaluar",
+    "exportFailedTitle": "Ékspor gagal",
+    "exportFailedMessage": "Teu tiasa ngékspor data anjeun ayeuna.",
+    "deleteConfirmTitle": "Pupus sadaya data lokal?",
+    "deleteConfirmMessage": "Ieu miceun profil anjeun, setelan, kontak darurat, riwayat paguneman, panginget idin, sareng sesi otentikasi lokal tina alat ieu.",
+    "deleteEverything": "Pupus sadayana",
+    "deleteFailedTitle": "Gagal ngahapus",
+    "deleteFailedMessage": "Teu tiasa ngahapus data lokal ayeuna.",
+    "linkFailed": "Teu tiasa muka tautan",
+    "sections": {
+      "language": "Basa",
+      "languageSubtitle": "Basa idin antarmuka sareng sistem",
+      "companion": "Paréncangan",
+      "companionSubtitle": "Préferénsi sora sareng offline",
+      "deviceSafety": "Alat sareng kaamanan",
+      "deviceSafetySubtitle": "NorthStar, wali, sareng kontak darurat",
+      "privacy": "Privasi sareng data",
+      "privacySubtitle": "Sajarah, ékspor, ngahapus, sareng kawijakan",
+      "account": "Rekening",
+      "accountSubtitle": "Sesi VeryLoving anjeun ayeuna"
+    },
+    "updateFailedTitle": "Setélan teu disimpen",
+    "updateFailedMessage": "Kami henteu tiasa nyimpen karesep éta. Mangga cobian deui.",
+    "signOutFailedTitle": "Teu tiasa kaluar",
+    "signOutFailedMessage": "Sesi anjeun masih aktip. Mangga cobian deui."
+  },
+  "contacts": {
+    "title": "Kontak darurat",
+    "subtitle": "Jalma anu dipercaya sayogi salami aliran kaamanan.",
+    "addTitle": "Tambahkeun kontak darurat",
+    "name": "Ngaran",
+    "namePlaceholder": "Ngaran kontak",
+    "phone": "Hubungi nomer telepon",
+    "add": "Tambahkeun kontak",
+    "empty": "Teu aya kontak darurat ditambahkeun.",
+    "emptyTitle": "Teu aya kontak darurat",
+    "emptyMessage": "Tambihkeun batur anu anjeun percanten supados aranjeunna siap nalika aliran kaamanan butuh aranjeunna.",
+    "removeTitle": "Hapus %{name}?",
+    "removeMessage": "Jalma ieu moal muncul deui dina aliran darurat anjeun.",
+    "nameRequired": "Asupkeun ngaran kontak.",
+    "saveFailedTitle": "Kontak teu disimpen",
+    "saveFailedMessage": "Kami henteu tiasa nyimpen kontak ieu. Pariksa detil na cobian deui.",
+    "removeFailedTitle": "Kontak teu dipiceun",
+    "removeFailedMessage": "Kami henteu tiasa ngahapus kontak ieu. Mangga cobian deui.",
+    "callAccessibility": "Telepon %{name}",
+    "removeAccessibility": "Hapus %{name}"
+  },
+  "device": {
+    "title": "Manajemén alat",
+    "subtitle": "Atur alat NorthStar anjeun.",
+    "connected": "Nyambung · %{battery}% batre",
+    "none": "Taya alat disambungkeun",
+    "disconnect": "Pegatkeun sambungan alat",
+    "connect": "Sambungkeun alat"
+  },
+  "friends": {
+    "title": "Baturan",
+    "subtitle": "Penjaga, pamundut, sareng grafik darurat.",
+    "addDemo": "Tambahkeun babaturan demo",
+    "emptyTitle": "Bunderan kaamanan anjeun kosong",
+    "emptyMessage": "Babaturan sareng wali anu dipercaya bakal muncul di dieu saatos aranjeunna ditambahkeun.",
+    "newGuardian": "Wali Anyar",
+    "statuses": {
+      "guardian": "Penjaga",
+      "pending": "Ditunggu"
+    }
+  },
+  "emergency": {
+    "title": "Darurat SOS",
+    "subtitle": "Escalate ngan lamun anjeun peryogi rojongan langsung.",
+    "body": "Ieu bakal ngabéjaan aliran kaamanan anjeun sareng nyiapkeun kontak darurat.",
+    "activate": "Aktipkeun SOS",
+    "callCompanion": "Telepon AI pendamping",
+    "notificationTitle": "SOS diaktipkeun",
+    "notificationBody": "Alur darurat anjeun parantos siap.",
+    "readyTitle": "SOS siap",
+    "callContact": "Telepon %{name}?",
+    "addContact": "Tambahkeun kontak darurat dina Setelan.",
+    "quickShareTitle": "Bagikeun gancang",
+    "quickShareMessage": "Stub babagi lokasi tos siap. Sambungkeun titik tungtung bagikeun backend pikeun ngirim tautan langsung."
+  },
+  "quickShare": {
+    "title": "Bagikeun gancang",
+    "subtitle": "Alur babagi lokasi tos siap."
+  },
+  "capybearTap": {
+    "title": "Capybear ketok",
+    "subtitle": "Ketok dua kali NorthStar anjeun pikeun neundeun jeruk kaamanan.",
+    "body": "Jalur sapuan geus siap pikeun wiring acara BLE."
+  },
+  "debug": {
+    "title": "VeryLoving kaca debug",
+    "subtitle": "Jalur-pangwangunan wungkul."
+  },
+  "errors": {
+    "voiceOffline": "Anjeun sigana offline. Pesen anjeun bakal dikirim nalika anjeun nyambung deui.",
+    "voiceQueued": "Pesen disimpen. Ieu bakal dikirim nalika pendamping sora nyambung deui.",
+    "voiceRetrying": "Nyobaan ngirim pesen anjeun deui...",
+    "voiceConnecting": "Nyambungkeun aman ka pasangan sora anjeun...",
+    "microphone": "Akses mikropon diperlukeun pikeun nelepon sora. Anjeun tiasa ngaktifkeunana dina Setélan, atanapi ngetik pesen.",
+    "billing": "Pangiring sora online samentawis teu sayogi. Anjeun tiasa neraskeun sareng pendamping offline.",
+    "authentication": "Pangiring sora teu tiasa pariksa sési ieu. Asup deui atanapi nganggo pendamping offline kanggo ayeuna.",
+    "timeout": "Pangiring sorana lila teuing pikeun ngaréspon. Pariksa sambungan anjeun sarta cobian deui.",
+    "network": "Kami henteu tiasa ngahontal pendamping sora. Pariksa sambungan anjeun, teras cobian deui atanapi teraskeun offline.",
+    "genericVoice": "Aya nu ngaganggu sauran sora. Cobian deui, atanapi teraskeun sareng pendamping offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ékspor data"
+  },
+  "notifications": {
+    "channelName": "Iberan kaamanan"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving peryogi aksés mikropon pikeun kaamanan sareng AI telepon pendamping.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving nganggo lokasi anjeun pikeun peta kaamanan sareng fitur kaamanan caket dieu.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ngagunakeun lokasi anjeun pikeun ngadukung kadatangan aman sareng aliran darurat.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ngagunakeun lokasi latar tukang pikeun fitur zona bahaya anu aman sareng caket dieu.",
+      "NSCameraUsageDescription": "VeryLoving nganggo kaméra ngan nalika anjeun milih nyandak poto profil atanapi kaamanan.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ngagunakeun perpustakaan poto anjeun ngan lamun anjeun milih profil atawa gambar kaamanan.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

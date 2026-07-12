@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Tåtte",
+    "call": "Ågang",
+    "cancel": "Kansela",
+    "clear": "Klåru",
+    "close": "Close",
+    "connect": "Konekta",
+    "connecting": "Manma'a'ñao...",
+    "continue": "Sigi ha'",
+    "delete": "Na'suha",
+    "finish": "Fini'",
+    "friends": "Amigu siha",
+    "google": "Google",
+    "home": "Gima'",
+    "loading": "Ma'a'agang...",
+    "map": "Mapa",
+    "notNow": "Ti på'go",
+    "remove": "Na'suha",
+    "retry": "Påtte ta'lo",
+    "retrying": "Hu prutehi ta'lo",
+    "save": "Na'setbe",
+    "selected": "Ma'ayek",
+    "send": "Na'hanao",
+    "settings": "Settings",
+    "skip": "Skip",
+    "skipForNow": "Laknos på'go",
+    "skipTutorial": "Fanma'pos i tinige'",
+    "sos": "SOS",
+    "unknown": "Ti ma tungo'",
+    "user": "VeryLoving na taotao",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lengguåhi",
+    "subtitle": "Pili i fino' ni' ma'usa gi todu i app.",
+    "system": "Sistema ni' ma'usa",
+    "search": "Lina'la' i lengguåhi siha",
+    "noResults": "Tåya' lengguåhi ni' parehu yan i inaligao-mu.",
+    "english": "Engles",
+    "spanish": "Españot",
+    "french": "Frenses",
+    "chineseSimplified": "Chinese (Simplifika)"
+  },
+  "phone": {
+    "label": "Numero tilifon",
+    "placeholder": "Numero tilifon",
+    "selectCountry": "Pili i nasion pat i lugåt",
+    "searchCountry": "Lina'la' i nasion, i kodu, pat i prefix ni' para un li'e'",
+    "noCountries": "Tåya' nasion ni' parehu yan i inaligao-mu.",
+    "countryButton": "Na'lå'la' i tano'-mu, på'go %{country} yan %{callingCode}",
+    "inputAccessibility": "Numero tilifon para %{country}",
+    "required": "Na'halom un numeron tilifon.",
+    "tooShort": "Ti åpmam este na numeron tilifon.",
+    "tooLong": "Este na numeron tilifon gof lå'la'.",
+    "invalid": "Na'halom un numeron tilifon ni' bali para i nasion ni' un selekta.",
+    "valid": "Numåran tilifon ni' bali gi i enteru mundo"
+  },
+  "auth": {
+    "onboardingTagline": "Un kompañero ni' para u na'siguru na maolek yu' gi i tiempo siha gi entre \"Maolek yu'\" yan \"Malago' yu' ayudo.\"",
+    "createAccount": "Fanma'tinas kuenta",
+    "continueOnboarding": "Sige ha' i onboarding",
+    "createSubtitle": "Cho'gue un manera para un prutehi i grafik-mu.",
+    "phoneVerification": "Verifikasion gi i tilifon",
+    "sendCode": "Na'hanao i kodu",
+    "sendingCode": "Manma'pos na kodu...",
+    "verifyCode": "Na'siguru na ma'ayek i kodu",
+    "sentTo": "Ma'pos para %{phone}",
+    "yourPhone": "i tilifon-mu",
+    "verificationCode": "Kode para i prubåba",
+    "verify": "Na'siguru",
+    "verifying": "Manma'ayek...",
+    "invalidCode": "Na'halom i kodun prubåba.",
+    "signInFailedTitle": "Ma'utot i siñat-hu",
+    "signInFailedMessage": "Ti siña in kumple i siñat-måmi. Chek i koneksion-mu ya prutehi ta'lo.",
+    "googleUnavailableTitle": "Google Ti siña humalom",
+    "googleUnavailableMessage": "Usan un sesion development gi i lugåt. Native Google Sign-In ha cho'gue gi un development build.",
+    "northStarTitle": "NorthStar alahas",
+    "northStarSubtitle": "Para ya o sigue y añadilo despues.",
+    "northStarBody": "I VL01 na siña ma'usa siña ha na'fanhuyong i safety flows gi i tap yan i långhet na gestu siha.",
+    "setupJewelry": "Na'setbe i alahas-mu",
+    "meetCapybear": "Fanmatto Capybear",
+    "meetCapybearSubtitle": "I maolek na kompañero-mu gi i mapa yan gi i inagang siha.",
+    "capybearBody": "Capybear siña ha ayuda gi i home mode, guardian mode, emergency mode, excuse calls, yan voice support.",
+    "chooseVoice": "På'go un bos",
+    "capybearReminder": "Capybear na rikåra",
+    "remindersReady": "Manlisto i manma'å'ñao na manma'å'ñao."
+  },
+  "permissions": {
+    "locationTitle": "Safety gi i lugat",
+    "locationSubtitle": "Ma'usa para i mapa, i lugåt peligro, i safu na finatto, yan i SOS na konteksto.",
+    "locationBody": "VeryLoving ha faisen put i lugat para u ma tungo' i manma'gås-ñiha håfa na lugåt siña ma nisisita ayudo. Siña un na'lå'la' este gi i Settings.",
+    "allowLocation": "Na'i siñat na lugat",
+    "notificationsTitle": "Abisa put inañadi",
+    "notificationsSubtitle": "I notisia siha ma supotte i che'cho' yan i emergency events.",
+    "notificationsBody": "In u'usa ha' i notisia siha para i siñat siha put i inañadi, i inadelantan i emergency, yan i manma'å'ñao na siñat siha ni' un na'setbe.",
+    "enableNotifications": "Na'siña i notisia siha",
+    "locationRationaleTitle": "I lugat ha na'siguru na maolek i kontekston inañadi",
+    "locationRationaleMessage": "VeryLoving ha usa i lugat-mu para i mapa, i lugåt siha ni' peligro, i quick share, yan i SOS na konteksto. Siña un na'lå'la' este gi i Settings.",
+    "notificationsRationaleTitle": "I abisu siha put inañadi nisisåriu na u ma na'i notisia",
+    "notificationsRationaleMessage": "VeryLoving ha na'hanao i manma'pos na che'cho', i manma'pos na ineppe siha, yan i manma'pos na ineppe siha ni' un na'setbe. Ti in usa i notisia siha para i anunsio siha.",
+    "microphoneRationaleTitle": "I mikrofon ha na'fanmetgot i inagang siha",
+    "microphoneRationaleMessage": "VeryLoving ha usa i mikrofon-mu ha' yanggen un tutuhon un AI na inagang para i kompañero pat i safety call.",
+    "bluetoothRationaleTitle": "Bluetooth ha konne' i magagu-mu",
+    "bluetoothRationaleMessage": "VeryLoving ha usa Bluetooth para u parehu yan NorthStar na alahas, taitai i estao i koneksion, yan ha na'fanhuyong i safety flows ginen i wearable.",
+    "cameraRationaleTitle": "Ti nisisåriu i kamera",
+    "cameraRationaleMessage": "VeryLoving ha usa i kamera ha' yanggen malago' hao para un chule' un litråtu gi i prugråma-mu pat un na'i un litråtu put i inañadi."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ha na'guaha este na lina'la' ginen i Settings yan i dashboard.",
+    "chooseVoiceTitle": "Na'i i bos-mu",
+    "chooseVoiceSubtitle": "Pili i bos ni' mas safu para un hungok.",
+    "homeTitle": "Modu gi gima'",
+    "homeSubtitle": "Silensiu na inatan para i inañadi kada diha.",
+    "guardianTitle": "Guardian mode",
+    "guardianSubtitle": "Na'i i taotao ni' un konfi'a i kuentos-mu.",
+    "emergencyTitle": "Modun emerensiha",
+    "emergencySubtitle": "Singko na tåya' siña ma'eskala asta SOS yan alertan i manma'gas.",
+    "excuseTitle": "Dispensa yu'",
+    "excuseSubtitle": "Na'huyong un rason ni' maolek para un hånao ginen un sitbisiu ni' ti komfotme.",
+    "safetyCallTitle": "Safety call",
+    "safetyCallSubtitle": "Tutuhon un ågang para i mangga'chong-mu yanggen malago' hao inayuda.",
+    "practiceTitle": "Esena para i praktis",
+    "practiceSubtitle": "Pruba i safety flows gi un low-pressure demo."
+  },
+  "jewelry": {
+    "pairTitle": "Pares NorthStar",
+    "pairSubtitle": "Na'i i alahas gi fi'on-mu yanggen un eskan.",
+    "scan": "Eskan para i dipattamenton-måmi",
+    "scanning": "Manma'eskan gi fi'on-måmi...",
+    "noDevices": "Ti ma sodda' NorthStar na dipattamenton-måmi.",
+    "scanStartFailed": "Bluetooth ti siña ha tutuhon i eskan. På'go, prutehi ta'lo.",
+    "scanFailed": "Ti siña in sodda' alahas gi fi'on-måmi. Chek Bluetooth, na'siguru NorthStar, ya prutehi ta'lo.",
+    "scanAccessFailed": "Bluetooth ti siña ha tutuhon i eskan. Chek Bluetooth ya un prutehi ta'lo.",
+    "permissionDenied": "Ma'apase i inañadi gi i dipattamenton-måmi. Na'i Bluetooth siñat gi i Settings, pues pruba ta'lo.",
+    "connectTimeout": "NorthStar gof åpmam para bai hu konekta. Na'hålom ya un prutehi ta'lo.",
+    "connectFailed": "Ti siña in konekta yan NorthStar. Chek kao esta ma'chågi yan gaige gi fi'on-ña, pues prutehi ta'lo.",
+    "emptyTitle": "Tåya' na dipattamenton-måmi på'go",
+    "emptyMessage": "Na'i NorthStar kårga ya gaige gi fi'on este na tilifon, pues eskan ta'lo.",
+    "searchingMessage": "Manaligao NorthStar na dipattamenton-måmi gi fi'on-måmi..."
+  },
+  "home": {
+    "subtitle": "Safety companion dashboard",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} esta listo",
+    "readyBody": "I bos, i mapa, i alahas, yan i manma'gås-ta, un tåmpe ha'.",
+    "safetyCall": "Safety call",
+    "northStarDevice": "NorthStar na dipattamenton",
+    "deviceConnected": "%{name} konektado · %{battery}%",
+    "noDevice": "Tåya' kosas makonekta",
+    "manageDevice": "Manehante i dipattamenton-måmi",
+    "mode": "Mode",
+    "modes": {
+      "home": "Gima'",
+      "guardian": "Guardian",
+      "emergency": "Emergency"
+    }
+  },
+  "map": {
+    "finding": "Ma sodda' i lugat-mu...",
+    "retry": "Påtte i lugat",
+    "title": "Mapa put inañadi",
+    "previewSubtitle": "Expo Go preview; Mapbox ha na'fanhuyong gi un development build.",
+    "preview": "Map preview",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Na'lå'la' ta'lo i lugat",
+    "refreshing": "Ma sodda' i lugat...",
+    "updateFailed": "Ti siña in na'lå'la' i lugat-mu. På'go, prutehi ta'lo.",
+    "notRequested": "Ti ma faisen i siñat para i lugat. Siña un na'siña gi i Settings.",
+    "permissionOff": "Ti ma'ayek i lugat. Na'siña gi i Settings para u sentra i safety map gi hilo'-mu.",
+    "timeout": "Mas lå'la' i lugat-mu ki i ma espipiha. Fanhånao para un lugat ni' mas klaru i sinyal-ña ya prutehi ta'lo.",
+    "savedTitle": "Ma na'setbe na lugat siha",
+    "savedEmptyTitle": "Ti ma na'setbe i lugat siha på'go",
+    "savedEmptyMessage": "I lugat siha ni' un konfi'a ni' un na'setbe para u fanmafa'nu'i guini para u fanma'ayek.",
+    "zones": {
+      "crowding": "Manma'a'ñao i taotao siha gi pupuengi",
+      "lowLighting": "Areglu ni' ti gof takhilo' i atdao"
+    },
+    "risks": {
+      "low": "bahu",
+      "medium": "medio",
+      "high": "high"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Manma'a'ñao...",
+    "offlineCompanion": "Offline kompañero",
+    "offline": "Offline",
+    "connected": "Makonekta",
+    "interrupted": "Ma'utot i koneksion",
+    "ready": "Listo para bai hu konekta",
+    "connectingSecurely": "Manma'a'ñao gi i bos-mu...",
+    "messagesWaiting": {
+      "one": "%{count} mensåhi ni' ma'espipiha para u ma'entrega",
+      "other": "%{count} na mensåhi siha manma'espipiha para u fanmana'i"
+    },
+    "useOffline": "Usa i kompañero ni' ti gaige gi i internet",
+    "reconnect": "Rekonekta gi bos AI",
+    "typePlaceholder": "Tåya' yanggen difisit i fino'",
+    "endCall": "Uttimo na inagang",
+    "startCall": "Tutuhon i inagang",
+    "emptyTitle": "I fino'-mu ha tutuhon guini",
+    "emptyMessage": "Tutuhon i inagang pat tuge' un mensåhi yanggen listo hao."
+  },
+  "chat": {
+    "waiting": "Manhahasso para i koneksion",
+    "notSent": "Ti ma na'hanao i mensåhi.",
+    "retryAccessibility": "Påtte i mensåhi"
+  },
+  "history": {
+    "clearTitle": "Klåru i estoria put i fino'-mu?",
+    "clearMessage": "Este ha na'suha i ma na'setbe na AI na mensåhi siha ginen este na dipattamenton.",
+    "deleteTitle": "Kao un na'suha este na fino'?",
+    "cannotUndo": "Ti siña ma na'suha este.",
+    "title": "Historia put i fino'-ta",
+    "subtitle": "AI mensåhi siha ni' manma'a'agang gi este na dipattamenton.",
+    "empty": "Tåya' na fino' CHamoru ma na'setbe på'go.",
+    "emptyTitle": "Tåya' kuentos på'go",
+    "emptyMessage": "I AI na fino'-mu para u fanhuyong guini despues di i fine'nina na inagang-mu.",
+    "loadFailed": "Ti siña in na'halom i historian i fino'-ta. På'go, prutehi ta'lo.",
+    "clearFailed": "Ti siña in na'suha i historian i fino'-måmi. På'go, prutehi ta'lo.",
+    "deleteFailed": "Ti siña in na'suha ayu na fino'-ta. På'go, prutehi ta'lo.",
+    "aiCompanion": "AI kompañero",
+    "resume": "Resume",
+    "clearAll": "Na'suha todu i estoria",
+    "roles": {
+      "assistant": "compañero",
+      "user": "hågu"
+    }
+  },
+  "voices": {
+    "title": "I bos-hu put i inagang-hu",
+    "subtitle": "Pili i bos ni' maolek para un hungok.",
+    "test": "Bos prueba",
+    "stop": "Para i muestra",
+    "selectionFailedTitle": "Ti ma na'setbe i sinisedi",
+    "selectionFailedMessage": "På'go, prutehi i bos ta'lo.",
+    "sampleFailedTitle": "Ti siña ma sodda' i muestra",
+    "sampleFailedMessage": "Ti siña ma tuge' este na muestran bos. På'go, prutehi ta'lo.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "båba, trankilo, yan manma'å'ñao"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "båba, na'magof, yan na'magof"
+      },
+      "boyfriend": {
+        "name": "Nobiu",
+        "description": "fitme, afektao, presente"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "konfiante, prutehi, yan na'fanmagof"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Bos",
+    "changeVoice": "Na'lå'la' i bos-mu",
+    "showCompanion": "Mubi na kompañero",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Usa i manma'a'agang na ineppe siha yanggen ti siña i red pat i Hume na kredensiåt siha.",
+    "privacyData": "Pribåsi yan datos",
+    "privacyBody": "Na'huyong pat na'suha i dañuyan na infotmasion ni' ma na'setbe gi este na dipattamenton.",
+    "preparingExport": "Manmaprepara i manma'ekspåtta...",
+    "exportData": "Na'huyong i dañu-hu",
+    "privacyPolicy": "I polisian pribåsi",
+    "deleting": "Ma'apåsi...",
+    "deleteAll": "Na'suha todu i dañuyan na infotmasion",
+    "deviceManagement": "Manehanten i dipattamenton",
+    "emergencyContacts": "Manma'å'ñao nu i lina'la'-ñiha",
+    "signOut": "Fañågu",
+    "exportFailedTitle": "Ti siña ma na'huyong",
+    "exportFailedMessage": "Ti siña hu na'huyong i dañu-mu på'go.",
+    "deleteConfirmTitle": "Na'suha todu i dañuyan na infotmasion?",
+    "deleteConfirmMessage": "Este ha na'suha i prugråma-mu, i setbisio-mu, i kontak-mu gi i emergency, i historian i fino'-mu, i manma'pos na permiso, yan i local auth session-mu ginen este na dipattamenton.",
+    "deleteEverything": "Na'suha todu",
+    "deleteFailedTitle": "Ti siña ma na'suha",
+    "deleteFailedMessage": "Ti siña hu na'suha i dañuyan na infotmasion på'go.",
+    "linkFailed": "Ti siña hu abri i link",
+    "sections": {
+      "language": "Lengguåhi",
+      "languageSubtitle": "I inetnon yan i lengguåhen prumision sistema",
+      "companion": "Kompañero",
+      "companionSubtitle": "Bos yan offline na minalago'",
+      "deviceSafety": "Dipattamenton yan inañadi",
+      "deviceSafetySubtitle": "NorthStar, manma'gås-ñiha, yan manma'gås-ñiha gi i tiempon chinatsaga",
+      "privacy": "Pribåsi yan datos",
+      "privacySubtitle": "Historia, ma'ekspåtta, ma'apåsi, yan i polisia",
+      "account": "Kuenta",
+      "accountSubtitle": "I VeryLoving na sesion-mu på'go"
+    },
+    "updateFailedTitle": "Ti ma na'setbe i setbisio",
+    "updateFailedMessage": "Ti siña in na'setbe ayu na minalago'. På'go, prutehi ta'lo.",
+    "signOutFailedTitle": "Ti siña hu huyong",
+    "signOutFailedMessage": "Sige ha' i sesion-mu. På'go, prutehi ta'lo."
+  },
+  "contacts": {
+    "title": "Manma'å'ñao nu i lina'la'-ñiha",
+    "subtitle": "Manma'å'ñao na taotao siha gi i tiempon safety flows.",
+    "addTitle": "Adåpta i kontak gi i tiempon chinatsaga",
+    "name": "Na'an",
+    "namePlaceholder": "Na'an i kontak",
+    "phone": "Numåran tilifon",
+    "add": "Añadi i kontakto",
+    "empty": "Ti ma addåpta i kontak-mu gi i tiempon chinatsaga.",
+    "emptyTitle": "Tåya' siña un kontak gi i tiempon chinatsaga",
+    "emptyMessage": "Addåpta un taotao ni' un konfi'a ya u fanlisto yanggen nisisåriu para i safety flow.",
+    "removeTitle": "Na'suha %{name}?",
+    "removeMessage": "Este na taotao ti u fanhuyong gi i emergency flow-mu.",
+    "nameRequired": "Na'halom i na'an i taotao.",
+    "saveFailedTitle": "Ti ma na'setbe i kontak",
+    "saveFailedMessage": "Ti siña in na'setbe este na kontak. Chek i detalle siha ya prutehi ta'lo.",
+    "removeFailedTitle": "Ti ma na'suha i kontak",
+    "removeFailedMessage": "Ti siña in na'suha este na kontak. På'go, prutehi ta'lo.",
+    "callAccessibility": "Ågang %{name}",
+    "removeAccessibility": "Na'suha %{name}"
+  },
+  "device": {
+    "title": "Manehanten i dipattamenton",
+    "subtitle": "Manehante i NorthStar na dipattamenton-mu.",
+    "connected": "Makonekta · %{battery}% na bateria",
+    "none": "Tåya' kosas siha manmakonekta",
+    "disconnect": "Na'suha i kosas",
+    "connect": "Konekta i dipattamenton-måmi"
+  },
+  "friends": {
+    "title": "Amigu siha",
+    "subtitle": "Manma'gås-ta, fina'tinas-ta, yan grafikon emergency.",
+    "addDemo": "Add demo friend",
+    "emptyTitle": "Ti guaha taotao gi i siñat-mu",
+    "emptyMessage": "Manmafa'nu'i i mangga'chong-mu yan i manma'gas-mu guini yanggen ma addåpta siha.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Manma'a'atan"
+    }
+  },
+  "emergency": {
+    "title": "Emergensia SOS",
+    "subtitle": "Na'lå'la' ha' yanggen malago' hao inayuda.",
+    "body": "Este para u na'tungo' i safety flow-mu yan u na'listo i emergency contacts-mu.",
+    "activate": "Aktiba SOS",
+    "callCompanion": "Ågang AI kompañero",
+    "notificationTitle": "SOS ma'aktiba",
+    "notificationBody": "Listo i emergency flow-mu.",
+    "readyTitle": "SOS listo",
+    "callContact": "Ågang %{name}?",
+    "addContact": "Adåpta un emergency contact gi i Settings.",
+    "quickShareTitle": "På'go na inayek",
+    "quickShareMessage": "Esta listo i tinige' put i ina'ayuda gi i lugat. Na'daña' i backend share endpoint para un na'hanao i live links."
+  },
+  "quickShare": {
+    "title": "På'go na inayek",
+    "subtitle": "Listo i lina'la' i taotao siha."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Doble-tap i NorthStar-mu para un na'huyong un safety orange.",
+    "body": "Gesture route esta listo para i BLE event wiring."
+  },
+  "debug": {
+    "title": "VeryLoving pahina para i inadilånto",
+    "subtitle": "Ruta para i fina'tinas ha'."
+  },
+  "errors": {
+    "voiceOffline": "Parehu ha' na ti gaige hao gi i internet. Para u ma na'hanao i mensåhi-mu yanggen un konekta ta'lo.",
+    "voiceQueued": "Ma na'setbe i mensåhi. Para u ma'apåsi yanggen i kompañero-ña i bos ha konekta ta'lo.",
+    "voiceRetrying": "Malago' yu' na bai hu na'hanao i mensåhi-mu ta'lo...",
+    "voiceConnecting": "Manma'a'ñao gi i bos-mu...",
+    "microphone": "Ma nisisita i mikrofon para i inagang. Siña un na'setbe gi i Settings, pat un tuge' un mensåhi.",
+    "billing": "Ti siña ma'usa i bos gi i internet. Siña un sigi ha' yan i kompañero ni' ti gaige gi i internet.",
+    "authentication": "Ti siña i kompañero-ña gi i bos ha verify este na sesion. Fanhålom ta'lo pat usa i offline na kompañero på'go.",
+    "timeout": "I bos i kompañero-ña ti åpmam para u ålok. Chek i koneksion-mu ya prutehi ta'lo.",
+    "network": "Ti siña in ågang i bos-ña. Chek i koneksion-mu, pues pruba ta'lo pat sigi ha' offline.",
+    "genericVoice": "Guåha ha na'fanlamen i inagang. Påtte ta'lo, pat sigi ha' yan i kompañero ni' ti gaige gi i internet."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving na'huyong i dañu"
+  },
+  "notifications": {
+    "channelName": "Abisa put inañadi"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving nisisåriu na guaha mikrofon-ña para i inañadi yan AI i inagang i mangga'chong-ña.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ha usa i lugat-mu para i mapa yan i siñat siha gi fi'on-mu.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ha usa i lugat-mu para u na'siguru na manmatto yan manmatto gi tiempon emergensia.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ha usa i lugat gi i sanlagu para i safu na finatto yan i lugåt peligro gi fi'on-ña.",
+      "NSCameraUsageDescription": "VeryLoving ha usa i kamera ha' yanggen malago' hao para un chule' un litråtu pat un litråtu put inañadi.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ha usa i litråtu-mu ha' yanggen un ayek un prugråma pat un litråtu put inañadi.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Thêm",
+    "apple": "Apple",
+    "back": "Quay lại",
+    "call": "Liên hệ",
+    "cancel": "Hủy bỏ",
+    "clear": "Xóa",
+    "close": "Đóng",
+    "connect": "Kết nối",
+    "connecting": "Đang kết nối...",
+    "continue": "Tiếp tục",
+    "delete": "Xóa",
+    "finish": "Kết thúc",
+    "friends": "Bạn bè",
+    "google": "Google",
+    "home": "Trang chủ",
+    "loading": "Đang tải...",
+    "map": "Bản đồ",
+    "notNow": "Không phải bây giờ",
+    "remove": "Loại bỏ",
+    "retry": "Thử lại",
+    "retrying": "Thử lại",
+    "save": "Lưu",
+    "selected": "Đã chọn",
+    "send": "Gửi",
+    "settings": "Cài đặt",
+    "skip": "Bỏ qua",
+    "skipForNow": "Bỏ qua ngay bây giờ",
+    "skipTutorial": "Bỏ qua hướng dẫn",
+    "sos": "SOS",
+    "unknown": "Không xác định",
+    "user": "VeryLoving người dùng",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ngôn ngữ",
+    "subtitle": "Chọn ngôn ngữ được sử dụng trong toàn bộ ứng dụng.",
+    "system": "Mặc định hệ thống",
+    "search": "Ngôn ngữ tìm kiếm",
+    "noResults": "Không có ngôn ngữ nào phù hợp với tìm kiếm của bạn.",
+    "english": "Tiếng Việt",
+    "spanish": "Tiếng Tây Ban Nha",
+    "french": "Tiếng Pháp",
+    "chineseSimplified": "Tiếng Trung (Giản thể)"
+  },
+  "phone": {
+    "label": "Số điện thoại",
+    "placeholder": "Số điện thoại",
+    "selectCountry": "Chọn quốc gia hoặc khu vực",
+    "searchCountry": "Tìm kiếm quốc gia, mã hoặc tiền tố quay số",
+    "noCountries": "Không có quốc gia nào khớp với tìm kiếm của bạn.",
+    "countryButton": "Thay đổi quốc gia, hiện tại %{country} cộng với %{callingCode}",
+    "inputAccessibility": "Số điện thoại cho %{country}",
+    "required": "Nhập số điện thoại.",
+    "tooShort": "Số điện thoại này quá ngắn.",
+    "tooLong": "Số điện thoại này quá dài.",
+    "invalid": "Nhập số điện thoại hợp lệ cho quốc gia đã chọn.",
+    "valid": "Số điện thoại quốc tế hợp lệ"
+  },
+  "auth": {
+    "onboardingTagline": "Một người bạn đồng hành an toàn cá nhân trong những khoảnh khắc giữa \"Tôi ổn\" và \"Tôi cần giúp đỡ\".",
+    "createAccount": "Tạo tài khoản",
+    "continueOnboarding": "Tiếp tục giới thiệu",
+    "createSubtitle": "Chọn phương thức đăng nhập để bảo vệ biểu đồ an toàn của bạn.",
+    "phoneVerification": "Xác minh điện thoại",
+    "sendCode": "Gửi mã",
+    "sendingCode": "Gửi mã...",
+    "verifyCode": "Xác minh mã",
+    "sentTo": "Đã gửi đến %{phone}",
+    "yourPhone": "Điện thoại của bạn",
+    "verificationCode": "Mã xác minh",
+    "verify": "Xác minh",
+    "verifying": "Đang xác minh...",
+    "invalidCode": "Nhập mã xác minh.",
+    "signInFailedTitle": "Đăng nhập bị gián đoạn",
+    "signInFailedMessage": "Chúng tôi không thể hoàn tất đăng nhập. Kiểm tra kết nối của bạn và thử lại.",
+    "googleUnavailableTitle": "Đăng nhập Google không khả dụng",
+    "googleUnavailableMessage": "Sử dụng phiên phát triển cục bộ. Đăng nhập Google gốc hoạt động trong bản dựng phát triển.",
+    "northStarTitle": "Trang sức NorthStar",
+    "northStarSubtitle": "Ghép nối ngay bây giờ hoặc tiếp tục và thêm sau.",
+    "northStarBody": "Thiết bị đeo VL01 có thể kích hoạt các luồng an toàn bằng cách chạm và cử chỉ nhấn lâu.",
+    "setupJewelry": "Thiết lập đồ trang sức",
+    "meetCapybear": "Gặp gỡ Capybear",
+    "meetCapybearSubtitle": "Người bạn đồng hành an toàn nhẹ nhàng của bạn trên bản đồ và trong các cuộc gọi.",
+    "capybearBody": "Capybear có thể trợ giúp về chế độ nhà, chế độ người giám hộ, chế độ khẩn cấp, cuộc gọi xin lỗi và hỗ trợ bằng giọng nói.",
+    "chooseVoice": "Chọn giọng nói",
+    "capybearReminder": "Capybear nhắc nhở",
+    "remindersReady": "Lời nhắc nhẹ nhàng đã sẵn sàng."
+  },
+  "permissions": {
+    "locationTitle": "An toàn vị trí",
+    "locationSubtitle": "Được sử dụng cho bản đồ, khu vực nguy hiểm, đến an toàn và bối cảnh SOS.",
+    "locationBody": "VeryLoving yêu cầu vị trí để người giám hộ có thể hiểu nơi có thể cần trợ giúp. Bạn có thể thay đổi điều này sau trong Cài đặt.",
+    "allowLocation": "Cho phép vị trí",
+    "notificationsTitle": "Cảnh báo an toàn",
+    "notificationsSubtitle": "Thông báo hỗ trợ đăng ký và các sự kiện khẩn cấp.",
+    "notificationsBody": "Chúng tôi chỉ sử dụng thông báo cho lời nhắc an toàn, cập nhật khẩn cấp và lời nhắc mà bạn bật.",
+    "enableNotifications": "Bật thông báo",
+    "locationRationaleTitle": "Vị trí giữ cho bối cảnh an toàn chính xác",
+    "locationRationaleMessage": "VeryLoving sử dụng vị trí của bạn cho bản đồ an toàn, khu vực nguy hiểm, chia sẻ nhanh và ngữ cảnh SOS. Bạn có thể thay đổi điều này sau trong Cài đặt.",
+    "notificationsRationaleTitle": "Cảnh báo an toàn cần thông báo",
+    "notificationsRationaleMessage": "VeryLoving gửi lời nhắc đăng ký, cập nhật khẩn cấp và lời nhắc an toàn mà bạn bật. Chúng tôi không sử dụng thông báo cho quảng cáo.",
+    "microphoneRationaleTitle": "Micrô cung cấp năng lượng cho các cuộc gọi an toàn",
+    "microphoneRationaleMessage": "VeryLoving chỉ sử dụng micrô khi bạn bắt đầu cuộc gọi an toàn hoặc bạn đồng hành AI.",
+    "bluetoothRationaleTitle": "Bluetooth kết nối thiết bị đeo của bạn",
+    "bluetoothRationaleMessage": "VeryLoving sử dụng Bluetooth để ghép nối với đồ trang sức NorthStar, đọc trạng thái kết nối và kích hoạt luồng an toàn từ thiết bị đeo.",
+    "cameraRationaleTitle": "Máy ảnh là tùy chọn",
+    "cameraRationaleMessage": "VeryLoving chỉ sử dụng máy ảnh khi bạn chọn chụp ảnh hồ sơ hoặc chia sẻ hình ảnh an toàn."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving giữ cho quy trình này có sẵn từ Cài đặt và bảng thông tin.",
+    "chooseVoiceTitle": "Chọn giọng nói của bạn",
+    "chooseVoiceSubtitle": "Chọn giọng nói đồng hành cảm thấy an toàn nhất để nghe.",
+    "homeTitle": "Chế độ nhà",
+    "homeSubtitle": "Giám sát yên tĩnh để đảm bảo an toàn hàng ngày.",
+    "guardianTitle": "Chế độ người giám hộ",
+    "guardianSubtitle": "Chia sẻ ngữ cảnh với những người đáng tin cậy.",
+    "emergencyTitle": "Chế độ khẩn cấp",
+    "emergencySubtitle": "Năm lần nhấn có thể leo thang thành cảnh báo SOS và người giám hộ.",
+    "excuseTitle": "Xin lỗi cuộc gọi",
+    "excuseSubtitle": "Tạo ra một lý do duyên dáng để rời khỏi một tình huống khó chịu.",
+    "safetyCallTitle": "Cuộc gọi an toàn",
+    "safetyCallSubtitle": "Bắt đầu cuộc gọi đồng hành theo thời gian thực khi bạn cần hỗ trợ.",
+    "practiceTitle": "Cảnh tập",
+    "practiceSubtitle": "Hãy thử các luồng an toàn trong bản demo áp suất thấp."
+  },
+  "jewelry": {
+    "pairTitle": "Ghép nối NorthStar",
+    "pairSubtitle": "Giữ đồ trang sức gần đó trong khi quét.",
+    "scan": "Quét thiết bị",
+    "scanning": "Đang quét gần đó...",
+    "noDevices": "Chưa tìm thấy thiết bị NorthStar gần đó.",
+    "scanStartFailed": "Quá trình quét Bluetooth không thể bắt đầu. Vui lòng thử lại.",
+    "scanFailed": "Chúng tôi không thể tìm thấy đồ trang sức gần đó. Kiểm tra Bluetooth, giữ NorthStar gần và thử lại.",
+    "scanAccessFailed": "Quá trình quét Bluetooth không thể bắt đầu. Kiểm tra quyền truy cập Bluetooth và thử lại.",
+    "permissionDenied": "Quyền truy cập thiết bị lân cận bị tắt. Cho phép Bluetooth truy cập trong Cài đặt, sau đó thử lại.",
+    "connectTimeout": "NorthStar mất quá nhiều thời gian để kết nối. Di chuyển nó lại gần hơn và thử lại.",
+    "connectFailed": "Chúng tôi không thể kết nối với NorthStar. Kiểm tra xem nó đã được sạc và ở gần chưa, sau đó thử lại.",
+    "emptyTitle": "Chưa có thiết bị nào ở gần",
+    "emptyMessage": "Giữ NorthStar sạc và gần điện thoại này, sau đó quét lại.",
+    "searchingMessage": "Tìm kiếm các thiết bị NorthStar gần đó..."
+  },
+  "home": {
+    "subtitle": "Bảng điều khiển đồng hành an toàn",
+    "modeStatus": "CHẾ ĐỘ %{mode}",
+    "companionReady": "%{name} đã sẵn sàng",
+    "readyBody": "Giọng nói, bản đồ, đồ trang sức và người giám hộ chỉ bằng một lần nhấn.",
+    "safetyCall": "Cuộc gọi an toàn",
+    "northStarDevice": "NorthStar thiết bị",
+    "deviceConnected": "%{name} kết nối · %{battery}%",
+    "noDevice": "Không có thiết bị nào được kết nối",
+    "manageDevice": "Quản lý thiết bị",
+    "mode": "Chế độ",
+    "modes": {
+      "home": "Trang chủ",
+      "guardian": "Người giám hộ",
+      "emergency": "Khẩn cấp"
+    }
+  },
+  "map": {
+    "finding": "Tìm vị trí của bạn...",
+    "retry": "Thử lại vị trí",
+    "title": "Bản đồ an toàn",
+    "previewSubtitle": "Expo Go xem trước; Mapbox kết xuất trong bản dựng phát triển.",
+    "preview": "Xem trước bản đồ",
+    "risk": "Rủi ro: %{risk} · Bán kính %{radius}m",
+    "refresh": "Làm mới vị trí",
+    "refreshing": "Tìm vị trí...",
+    "updateFailed": "Chúng tôi không thể cập nhật vị trí của bạn. Vui lòng thử lại.",
+    "notRequested": "Quyền truy cập vị trí không được yêu cầu. Bạn có thể bật nó sau từ Cài đặt.",
+    "permissionOff": "Quyền truy cập vị trí bị tắt. Bật tính năng này trong Cài đặt để căn giữa bản đồ an toàn vào bạn.",
+    "timeout": "Vị trí của bạn mất nhiều thời gian hơn dự kiến. Di chuyển đến một nơi nào đó có tín hiệu rõ ràng hơn và thử lại.",
+    "savedTitle": "Địa điểm đã lưu",
+    "savedEmptyTitle": "Chưa có địa điểm nào được lưu",
+    "savedEmptyMessage": "Các địa điểm đáng tin cậy mà bạn lưu sẽ xuất hiện ở đây để truy cập nhanh.",
+    "zones": {
+      "crowding": "Đêm khuya đông đúc",
+      "lowLighting": "Khu vực ánh sáng yếu"
+    },
+    "risks": {
+      "low": "thấp",
+      "medium": "trung bình",
+      "high": "cao"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Đang kết nối...",
+    "offlineCompanion": "Đồng hành ngoại tuyến",
+    "offline": "Ngoại tuyến",
+    "connected": "Kết nối",
+    "interrupted": "Kết nối bị gián đoạn",
+    "ready": "Sẵn sàng kết nối",
+    "connectingSecurely": "Kết nối an toàn với người bạn đồng hành bằng giọng nói của bạn...",
+    "messagesWaiting": {
+      "one": "%{count} tin nhắn đang chờ gửi",
+      "other": "%{count} tin nhắn đang chờ gửi"
+    },
+    "useOffline": "Sử dụng đồng hành ngoại tuyến",
+    "reconnect": "Kết nối lại với AI thoại",
+    "typePlaceholder": "Nhập nếu nói khó",
+    "endCall": "Kết thúc cuộc gọi",
+    "startCall": "Bắt đầu cuộc gọi",
+    "emptyTitle": "Cuộc trò chuyện của bạn bắt đầu từ đây",
+    "emptyMessage": "Bắt đầu cuộc gọi hoặc nhập tin nhắn khi bạn đã sẵn sàng."
+  },
+  "chat": {
+    "waiting": "Đang chờ kết nối",
+    "notSent": "Tin nhắn không được gửi.",
+    "retryAccessibility": "Thử gửi lại tin nhắn"
+  },
+  "history": {
+    "clearTitle": "Xóa lịch sử cuộc trò chuyện?",
+    "clearMessage": "Thao tác này sẽ xóa các tin nhắn đồng hành AI đã lưu khỏi thiết bị này.",
+    "deleteTitle": "Xóa cuộc trò chuyện này?",
+    "cannotUndo": "Điều này không thể hoàn tác.",
+    "title": "Lịch sử cuộc trò chuyện",
+    "subtitle": "AI tin nhắn đồng hành được lưu trên thiết bị này.",
+    "empty": "Chưa có cuộc trò chuyện nào được lưu.",
+    "emptyTitle": "Chưa có cuộc trò chuyện nào",
+    "emptyMessage": "Các cuộc trò chuyện đồng hành AI của bạn sẽ xuất hiện ở đây sau cuộc gọi đầu tiên của bạn.",
+    "loadFailed": "Chúng tôi không thể tải lịch sử cuộc trò chuyện. Vui lòng thử lại.",
+    "clearFailed": "Chúng tôi không thể xóa lịch sử cuộc trò chuyện. Vui lòng thử lại.",
+    "deleteFailed": "Chúng tôi không thể xóa cuộc trò chuyện đó. Vui lòng thử lại.",
+    "aiCompanion": "AI bạn đồng hành",
+    "resume": "Sơ yếu lý lịch",
+    "clearAll": "Xóa tất cả lịch sử",
+    "roles": {
+      "assistant": "Người bạn đồng hành",
+      "user": "bạn"
+    }
+  },
+  "voices": {
+    "title": "Tiếng nói cuộc gọi an toàn của tôi",
+    "subtitle": "Chọn giọng nói đồng hành cảm thấy phù hợp để nghe.",
+    "test": "Kiểm tra giọng nói",
+    "stop": "Dừng mẫu",
+    "selectionFailedTitle": "Lựa chọn không được lưu",
+    "selectionFailedMessage": "Vui lòng thử chọn lại giọng nói.",
+    "sampleFailedTitle": "Mẫu không có sẵn",
+    "sampleFailedMessage": "Không thể phát mẫu giọng nói này. Vui lòng thử lại.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Mềm mại, bình tĩnh, tiếp đất"
+      },
+      "bestie": {
+        "name": "Thân thiết",
+        "description": "tươi sáng, yên tâm, trò chuyện"
+      },
+      "boyfriend": {
+        "name": "Bạn trai",
+        "description": "ổn định, trìu mến, hiện tại"
+      },
+      "muscleMan": {
+        "name": "Cơ bắp",
+        "description": "Tự tin, bảo vệ, động lực"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Giọng nói",
+    "changeVoice": "Thay đổi giọng nói",
+    "showCompanion": "Hiển thị người bạn đồng hành",
+    "offlineMode": "Chế độ ngoại tuyến",
+    "offlineModeSubtitle": "Sử dụng phản hồi đồng hành đi kèm khi thông tin đăng nhập mạng hoặc Hume không khả dụng.",
+    "privacyData": "Quyền riêng tư và dữ liệu",
+    "privacyBody": "Xuất hoặc xóa dữ liệu cục bộ được lưu trữ trên thiết bị này.",
+    "preparingExport": "Chuẩn bị xuất khẩu...",
+    "exportData": "Xuất dữ liệu của tôi",
+    "privacyPolicy": "Chính sách bảo mật",
+    "deleting": "Đang xóa...",
+    "deleteAll": "Xóa tất cả dữ liệu cục bộ",
+    "deviceManagement": "Quản lý thiết bị",
+    "emergencyContacts": "Liên hệ khẩn cấp",
+    "signOut": "Đăng xuất",
+    "exportFailedTitle": "Xuất không thành công",
+    "exportFailedMessage": "Không thể xuất dữ liệu của bạn ngay bây giờ.",
+    "deleteConfirmTitle": "Xóa tất cả dữ liệu cục bộ?",
+    "deleteConfirmMessage": "Thao tác này sẽ xóa hồ sơ của bạnfile, cài đặt, liên hệ khẩn cấp, lịch sử cuộc trò chuyện, lời nhắc quyền và phiên xác thực cục bộ khỏi thiết bị này.",
+    "deleteEverything": "Xóa mọi thứ",
+    "deleteFailedTitle": "Xóa không thành công",
+    "deleteFailedMessage": "Không thể xóa dữ liệu cục bộ ngay bây giờ.",
+    "linkFailed": "Không thể mở liên kết",
+    "sections": {
+      "language": "Ngôn ngữ",
+      "languageSubtitle": "Giao diện và ngôn ngữ cho phép hệ thống",
+      "companion": "Đồng hành",
+      "companionSubtitle": "Tùy chọn giọng nói và ngoại tuyến",
+      "deviceSafety": "Thiết bị và an toàn",
+      "deviceSafetySubtitle": "NorthStar, người giám hộ và người liên hệ khẩn cấp",
+      "privacy": "Quyền riêng tư và dữ liệu",
+      "privacySubtitle": "Lịch sử, xuất, xóa và chính sách",
+      "account": "Tài khoản",
+      "accountSubtitle": "Phiên VeryLoving hiện tại của bạn"
+    },
+    "updateFailedTitle": "Cài đặt không được lưu",
+    "updateFailedMessage": "Chúng tôi không thể lưu lại sở thích đó. Vui lòng thử lại.",
+    "signOutFailedTitle": "Không thể đăng xuất",
+    "signOutFailedMessage": "Phiên của bạn vẫn đang hoạt động. Vui lòng thử lại."
+  },
+  "contacts": {
+    "title": "Liên hệ khẩn cấp",
+    "subtitle": "Những người đáng tin cậy luôn sẵn sàng trong các luồng an toàn.",
+    "addTitle": "Thêm liên hệ khẩn cấp",
+    "name": "Tên",
+    "namePlaceholder": "Tên liên hệ",
+    "phone": "Số điện thoại liên hệ",
+    "add": "Thêm liên hệ",
+    "empty": "Chưa có liên hệ khẩn cấp nào được thêm vào.",
+    "emptyTitle": "Chưa có liên hệ khẩn cấp",
+    "emptyMessage": "Thêm người mà bạn tin tưởng để họ sẵn sàng khi quy trình an toàn cần họ.",
+    "removeTitle": "Xóa %{name}?",
+    "removeMessage": "Người này sẽ không còn xuất hiện trong quy trình khẩn cấp của bạn nữa.",
+    "nameRequired": "Nhập tên của người liên hệ.",
+    "saveFailedTitle": "Liên hệ không được lưu",
+    "saveFailedMessage": "Chúng tôi không thể lưu liên lạc này. Kiểm tra chi tiết và thử lại.",
+    "removeFailedTitle": "Liên hệ không bị xóa",
+    "removeFailedMessage": "Chúng tôi không thể xóa liên hệ này. Vui lòng thử lại.",
+    "callAccessibility": "Gọi %{name}",
+    "removeAccessibility": "Xóa %{name}"
+  },
+  "device": {
+    "title": "Quản lý thiết bị",
+    "subtitle": "Quản lý thiết bị NorthStar của bạn.",
+    "connected": "Đã kết nối · Pin %{battery}%",
+    "none": "Không có thiết bị nào được kết nối",
+    "disconnect": "Ngắt kết nối thiết bị",
+    "connect": "Kết nối thiết bị"
+  },
+  "friends": {
+    "title": "Bạn bè",
+    "subtitle": "Người giám hộ, yêu cầu và biểu đồ khẩn cấp.",
+    "addDemo": "Thêm bạn demo",
+    "emptyTitle": "Vòng tròn an toàn của bạn trống rỗng",
+    "emptyMessage": "Bạn bè và người giám hộ đáng tin cậy sẽ xuất hiện ở đây sau khi họ được thêm vào.",
+    "newGuardian": "Người bảo vệ mới",
+    "statuses": {
+      "guardian": "Người giám hộ",
+      "pending": "Đang chờ xử lý"
+    }
+  },
+  "emergency": {
+    "title": "SOS khẩn cấp",
+    "subtitle": "Chỉ leo thang khi bạn cần hỗ trợ ngay lập tức.",
+    "body": "Điều này sẽ thông báo luồng an toàn của bạn và chuẩn bị các liên hệ khẩn cấp.",
+    "activate": "Kích hoạt SOS",
+    "callCompanion": "Gọi cho AI đồng hành",
+    "notificationTitle": "SOS kích hoạt",
+    "notificationBody": "Quy trình khẩn cấp của bạn đã sẵn sàng.",
+    "readyTitle": "SOS sẵn sàng",
+    "callContact": "Gọi cho %{name}?",
+    "addContact": "Thêm liên hệ khẩn cấp trong Cài đặt.",
+    "quickShareTitle": "Chia sẻ nhanh",
+    "quickShareMessage": "Sơ khai chia sẻ vị trí đã sẵn sàng. Kết nối điểm cuối chia sẻ phụ trợ để gửi liên kết trực tiếp."
+  },
+  "quickShare": {
+    "title": "Chia sẻ nhanh",
+    "subtitle": "Quy trình chia sẻ vị trí đã sẵn sàng."
+  },
+  "capybearTap": {
+    "title": "Capybear nhấn",
+    "subtitle": "Nhấn đúp vào NorthStar của bạn để thả một quả cam an toàn.",
+    "body": "Tuyến cử chỉ đã sẵn sàng cho hệ thống dây sự kiện BLE."
+  },
+  "debug": {
+    "title": "VeryLoving trang gỡ lỗi",
+    "subtitle": "Tuyến đường chỉ dành cho phát triển."
+  },
+  "errors": {
+    "voiceOffline": "Bạn có vẻ ngoại tuyến. Tin nhắn của bạn sẽ được gửi khi bạn kết nối lại.",
+    "voiceQueued": "Tin nhắn đã lưu. Nó sẽ được gửi khi người bạn đồng hành bằng giọng nói kết nối lại.",
+    "voiceRetrying": "Đang cố gắng gửi lại tin nhắn của bạn...",
+    "voiceConnecting": "Kết nối an toàn với người bạn đồng hành bằng giọng nói của bạn...",
+    "microphone": "Cần có quyền truy cập micrô cho các cuộc gọi thoại. Bạn có thể bật tính năng này trong Cài đặt hoặc nhập tin nhắn để thay thế.",
+    "billing": "Đồng hành thoại trực tuyến tạm thời không khả dụng. Bạn có thể tiếp tục với người bạn đồng hành ngoại tuyến.",
+    "authentication": "Người bạn đồng hành bằng giọng nói không thể xác minh phiên này. Đăng nhập lại hoặc sử dụng đồng hành ngoại tuyến ngay bây giờ.",
+    "timeout": "Người bạn đồng hành bằng giọng nói mất quá nhiều thời gian để trả lời. Kiểm tra kết nối của bạn và thử lại.",
+    "network": "Chúng tôi không thể liên lạc với người bạn đồng hành bằng giọng nói. Kiểm tra kết nối của bạn, sau đó thử lại hoặc tiếp tục ngoại tuyến.",
+    "genericVoice": "Có thứ gì đó làm gián đoạn cuộc gọi thoại. Hãy thử lại hoặc tiếp tục với người bạn đồng hành ngoại tuyến."
+  },
+  "privacy": {
+    "exportTitle": "Xuất dữ liệu VeryLoving"
+  },
+  "notifications": {
+    "channelName": "Cảnh báo an toàn"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving cần truy cập micrô để đảm bảo an toàn và AI các cuộc gọi đồng hành.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving sử dụng vị trí của bạn cho bản đồ an toàn và các tính năng an toàn gần đó.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sử dụng vị trí của bạn để hỗ trợ các luồng đến và khẩn cấp an toàn.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving sử dụng vị trí nền cho các tính năng đến an toàn và vùng nguy hiểm gần đó.",
+      "NSCameraUsageDescription": "VeryLoving chỉ sử dụng máy ảnh khi bạn chọn chụp ảnh hồ sơ hoặc ảnh an toàn.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving chỉ sử dụng thư viện ảnh khi bạn chọn hồ sơ hoặc hình ảnh an toàn.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sử dụng Bluetooth để kết nối với đồ trang sức an toàn NorthStar của bạn.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving sử dụng Bluetooth để kết nối với đồ trang sức an toàn NorthStar của bạn."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

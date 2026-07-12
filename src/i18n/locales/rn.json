@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Kwongerako",
+    "apple": "Apple",
+    "back": "Inyuma",
+    "call": "Hamagara",
+    "cancel": "Gukuraho",
+    "clear": "Gukuraho",
+    "close": "Funga",
+    "connect": "Huza",
+    "connecting": "Guhuza...",
+    "continue": "Bandanya",
+    "delete": "Gukuraho",
+    "finish": "Guheza",
+    "friends": "Ncuti",
+    "google": "Google",
+    "home": "Inzu",
+    "loading": "Biriko birashirwako...",
+    "map": "ikarata",
+    "notNow": "Oya ubu",
+    "remove": "Kuraho",
+    "retry": "Subira kugerageza",
+    "retrying": "Gusubira kugerageza",
+    "save": "Bika",
+    "selected": "Ivyatowe",
+    "send": "Kohereza",
+    "settings": "Imiterere",
+    "skip": "Simbuka",
+    "skipForNow": "Simbuka ubu",
+    "skipTutorial": "Simbuka inyigisho",
+    "sos": "SOS",
+    "unknown": "Ntibizwi",
+    "user": "VeryLoving umukoresha",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ururimi",
+    "subtitle": "Hitamwo ururimi rukoreshwa muri porogarama yose.",
+    "system": "Sisitemu mburabuzi",
+    "search": "Indimi zo gushakisha",
+    "noResults": "Nta ndimi zihuye n'ivyo ushaka.",
+    "english": "Icongereza",
+    "spanish": "Ikisupanyoli",
+    "french": "Igifaransa",
+    "chineseSimplified": "Igishinwa (Cyoroshe)"
+  },
+  "phone": {
+    "label": "Nimero ya telefone",
+    "placeholder": "Nimero ya telefone",
+    "selectCountry": "Hitamwo igihugu canke akarere",
+    "searchCountry": "Rondera igihugu, kode, canke intango yo guhamagara",
+    "noCountries": "Nta bihugu bihuye n'ivyo ushaka.",
+    "countryButton": "Hindura igihugu, ubu %{country} wongereko %{callingCode}",
+    "inputAccessibility": "Inomero ya telefone ya %{country}",
+    "required": "Injira inomero ya telefone.",
+    "tooShort": "Iyi nimero ya telefone ni ngufi cane.",
+    "tooLong": "Iyi nimero ya telefone ni ndende cane.",
+    "invalid": "Injira inomero ya telefone ibereye y'igihugu wahisemwo.",
+    "valid": "inomero ya telefone mpuzamakungu ikora"
+  },
+  "auth": {
+    "onboardingTagline": "Umugenzi w’umutekano w’umuntu ku giti ciwe mu bihe biri hagati y’aho “ndakomeye” n’aho “ndakeneye gufashwa.”",
+    "createAccount": "Rema konti",
+    "continueOnboarding": "Bandanya n'ugushirwa mu bwato",
+    "createSubtitle": "Hitamwo uburyo bwo kwinjira kugira ngo ukinge igicapo cawe c'umutekano.",
+    "phoneVerification": "Igenzura rya telefone",
+    "sendCode": "Kohereza kode",
+    "sendingCode": "Kurungika kode...",
+    "verifyCode": "Suzuma kode",
+    "sentTo": "Yoherejwe kuri %{phone}",
+    "yourPhone": "telefone yawe",
+    "verificationCode": "Kode y'igenzura",
+    "verify": "Suzuma",
+    "verifying": "Kugenzura...",
+    "invalidCode": "Injira kode yo kugenzura.",
+    "signInFailedTitle": "Kwinjira vyacitse",
+    "signInFailedMessage": "Ntitwashoboye kurangiza kwinjira. Suzuma uko uhuye maze wongere ugerageze.",
+    "googleUnavailableTitle": "Google Kwinjira ntibiboneka",
+    "googleUnavailableMessage": "Gukoresha ikiganiro c’iterambere ry’intara. Native Google Sign-In ikora mu kwubaka kw'iterambere.",
+    "northStarTitle": "NorthStar amabuye y'agaciro",
+    "northStarSubtitle": "Pair ubu canke ubandanye wongereko mu nyuma.",
+    "northStarBody": "Igikoresho co kwambara VL01 gishobora gutuma habaho umutekano ukoresheje amapompi n’ibimenyetso vy’ugukanda birebire.",
+    "setupJewelry": "Gushiraho amabuye y'agaciro",
+    "meetCapybear": "Hura Capybear",
+    "meetCapybearSubtitle": "Umugenzi wawe w’umutekano w’umugwaneza ku ikarita no mu guhamagara.",
+    "capybearBody": "Capybear ishobora gufasha mu buryo bwo muhira, uburyo bwo kurera, uburyo bw’ivyihutirwa, guhamagara kugira ngo urebwe, no gufasha mw’ijwi.",
+    "chooseVoice": "Hitamwo ijwi",
+    "capybearReminder": "Capybear ivyibutsa",
+    "remindersReady": "Ivyibutsa vy’ubugwaneza birateguwe."
+  },
+  "permissions": {
+    "locationTitle": "Umutekano w'ahantu",
+    "locationSubtitle": "Ikoreshwa ku ikarita, uturere tw'akaga, gushika ata nkomanzi, na SOS ivyerekeye.",
+    "locationBody": "VeryLoving asaba aho hantu kugira ngo abacungera abana bashobore gutahura aho imfashanyo yoshobora gukenerwa. Ushobora guhindura ivyo mu nyuma mu Mitunganyirize.",
+    "allowLocation": "kwemera ahantu",
+    "notificationsTitle": "Imburi z'umutekano",
+    "notificationsSubtitle": "Imenyekanisha rishigikira kwinjira n’ibintu vyihutirwa.",
+    "notificationsBody": "Dukoresha gusa amatangazo ku bijanye n’umutekano, ivyihutirwa, n’ivyibutsa ushoboza.",
+    "enableNotifications": "Gushoboza amatangazo",
+    "locationRationaleTitle": "Ikibanza kigumiza umutekano ukuri",
+    "locationRationaleMessage": "VeryLoving ikoresha aho uri ku ikarita y'umutekano, uturere tw'akaga, gusangira vyihuse, na SOS ivyerekeye. Ushobora guhindura ivyo mu nyuma mu Mitunganyirize.",
+    "notificationsRationaleTitle": "Imburi z'umutekano zikeneye imenyekanisha",
+    "notificationsRationaleMessage": "VeryLoving yohereza ivyibutsa vyo kwinjira, ivyihutirwa, n'ivy'umutekano ushoboza. Ntidukoresha amatangazo ku kwamamaza.",
+    "microphoneRationaleTitle": "Mikoro itanga ubushobozi bwo guhamagara mu mutekano",
+    "microphoneRationaleMessage": "VeryLoving ikoresha mikoro yawe gusa iyo utanguye AI guhamagara umugenzi canke guhamagara umutekano.",
+    "bluetoothRationaleTitle": "Bluetooth ihuza ivyo wambara",
+    "bluetoothRationaleMessage": "VeryLoving ikoresha Bluetooth gufatanya n'amabuye y'agaciro NorthStar, gusoma uko ubufatanye buri, no gutuma umutekano uva ku vyo kwambara.",
+    "cameraRationaleTitle": "Ikamera ni ubusabe",
+    "cameraRationaleMessage": "VeryLoving ikoresha kamera gusa iyo uhisemwo gufata ifoto y’ibanga canke gusangira ishusho y’umutekano."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving igumya iyo nzira iboneka mu Miterere no ku rubuga.",
+    "chooseVoiceTitle": "Hitamwo ijwi ryawe",
+    "chooseVoiceSubtitle": "Hitamwo ijwi ry’umugenzi wumva ritekanye kuruta ibindi vyose kwumva.",
+    "homeTitle": "Uburyo bwo muhira",
+    "homeSubtitle": "Gukurikirana mu gacerere kugira ngo umuntu agire umutekano ku musi ku musi.",
+    "guardianTitle": "Uburyo bw'umurinzi",
+    "guardianSubtitle": "Sangira ivyerekeye n’abantu wizigira.",
+    "emergencyTitle": "Uburyo bwihutirwa",
+    "emergencySubtitle": "Imirongo itanu ishobora gushika ku SOS n’imburi z’abacungera.",
+    "excuseTitle": "Uhamagara imbabazi",
+    "excuseSubtitle": "Rema imvo nziza yo kuva mu bintu bitari vyiza.",
+    "safetyCallTitle": "Uguhamagara umutekano",
+    "safetyCallSubtitle": "Tangira guhamagara umugenzi mu gihe nyaco igihe ukeneye gufashwa.",
+    "practiceTitle": "Imyimenyerezo",
+    "practiceSubtitle": "Gerageza imigenderanire y’umutekano mu kwerekanwa kw’umuvuduko muto."
+  },
+  "jewelry": {
+    "pairTitle": "Ibiri NorthStar",
+    "pairSubtitle": "Ugumye amabuye y’agaciro hafi igihe uriko urakora scanner.",
+    "scan": "Gusuzuma ibikoresho",
+    "scanning": "Gupima hafi...",
+    "noDevices": "Nta bikoresho NorthStar biri hafi vyabonetse.",
+    "scanStartFailed": "Bluetooth gupima ntivyashoboye gutangura. Ndagusavye wongere ugerageze.",
+    "scanFailed": "Ntitwaronse amabuye y’agaciro hafi. Suzuma Bluetooth, ugumize NorthStar hafi, hanyuma wongere ugerageze.",
+    "scanAccessFailed": "Bluetooth gupima ntivyashoboye gutangura. Suzuma Bluetooth access hanyuma wongere ugerageze.",
+    "permissionDenied": "Ugushika ku gikoresho kiri hafi birazimye. Kwemerera Bluetooth gushika mu Mitunganyirize, hanyuma wongere ugerageze.",
+    "connectTimeout": "NorthStar vyatwaye igihe kirekire cane kugira ngo bihuzwe. Uyishire hafi maze wongere ugerageze.",
+    "connectFailed": "Ntitwashoboye kwifatanya na NorthStar. Suzuma ko ishaje kandi iri hafi, hanyuma wongere ugerageze.",
+    "emptyTitle": "Nta bikoresho biri hafi",
+    "emptyMessage": "Guma NorthStar charged kandi hafi y'iyi telefone, hanyuma wongere uyi scanner.",
+    "searchingMessage": "Uriko urarondera NorthStar ibikoresho biri hafi..."
+  },
+  "home": {
+    "subtitle": "Umugenzi w'umutekano",
+    "modeStatus": "%{mode} UBURYO",
+    "companionReady": "%{name} irateguye",
+    "readyBody": "Ijwi, ikarata, amabuye y’agaciro, n’abarinzi biri kure y’uruzitiro rumwe.",
+    "safetyCall": "Uguhamagara umutekano",
+    "northStarDevice": "NorthStar igikoresho",
+    "deviceConnected": "%{name} ihuye · %{battery}%",
+    "noDevice": "Nta gikoresho gihuye",
+    "manageDevice": "Gucungera igikoresho",
+    "mode": "Uburyo",
+    "modes": {
+      "home": "Inzu",
+      "guardian": "Umurinzi",
+      "emergency": "Ivyihutirwa"
+    }
+  },
+  "map": {
+    "finding": "Kurondera aho uri...",
+    "retry": "Subira kugerageza ahantu",
+    "title": "ikarata y'umutekano",
+    "previewSubtitle": "Expo Go ivyerekanwa; Mapbox ihindura mu kwubaka kw'iterambere.",
+    "preview": "Igaragara ry'ikarata",
+    "risk": "Ingorane: %{risk} · Uburebure %{radius}m",
+    "refresh": "Subiriza ahantu",
+    "refreshing": "Kurondera ahantu...",
+    "updateFailed": "Ntitwashoboye guhindura aho uri. Ndagusavye wongere ugerageze.",
+    "notRequested": "Ugushika ku kibanza ntivyasabwe. Ushobora kuyifungura mu nyuma ukoresheje Amategeko.",
+    "permissionOff": "Ugushika ku kibanza birazimye. Bishoboze mu Mitunganyirize kugira ngo ikarita y’umutekano ibe hagati kuri wewe.",
+    "timeout": "Aho uri hariko haratwara igihe kirekire kuruta uko wari witeze. Niwimukire ahantu hari ikimenyetso gitomoye maze wongere ugerageze.",
+    "savedTitle": "Ibibanza vyabitswe",
+    "savedEmptyTitle": "Nta bibanza vyazigamye",
+    "savedEmptyMessage": "Ibibanza wizigiye ubika bizokwerekanwa hano kugira ngo ushobore kubironka ningoga.",
+    "zones": {
+      "crowding": "Uguteranira hamwe kw'ijoro",
+      "lowLighting": "Aho umuco uri hasi"
+    },
+    "risks": {
+      "low": "hasi",
+      "medium": "gisanzwe",
+      "high": "hejuru"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Guhuza...",
+    "offlineCompanion": "Umugenzi atari kuri interineti",
+    "offline": "Itari ku murongo",
+    "connected": "Bihuye",
+    "interrupted": "Ihuzwa ryacitse",
+    "ready": "Yiteguye gufatanya",
+    "connectingSecurely": "Guhuza neza n'ijwi ryawe...",
+    "messagesWaiting": {
+      "one": "%{count} ubutumwa burindiriye koherezwa",
+      "other": "%{count} ubutumwa burindiriye koherezwa"
+    },
+    "useOffline": "Koresha umugenzi atari kuri interineti",
+    "reconnect": "Subira gufatanya n'ijwi AI",
+    "typePlaceholder": "Andika nimba kuvuga bigoye",
+    "endCall": "Iherezo ry'uguhamagara",
+    "startCall": "Gutangura guhamagara",
+    "emptyTitle": "Ikiyago canyu gitangura hano",
+    "emptyMessage": "Tangira guhamagara canke wandike ubutumwa iyo witeguye."
+  },
+  "chat": {
+    "waiting": "Turindiriye guhuzwa",
+    "notSent": "Ubutumwa ntibwarungitswe.",
+    "retryAccessibility": "Subira kugerageza kohereza ubutumwa"
+  },
+  "history": {
+    "clearTitle": "Gukuraho amateka y'ikiyago?",
+    "clearMessage": "Ibi bikuraho ubutumwa AI bwabitswe kuri iki gikoresho.",
+    "deleteTitle": "Gufuta iki kiganiro?",
+    "cannotUndo": "Ivyo ntibishobora gusubirwamwo.",
+    "title": "amateka y'ikiyago",
+    "subtitle": "AI ubutumwa bujana bwabitswe kuri iki gikoresho.",
+    "empty": "Nta biganiro vyazigamye.",
+    "emptyTitle": "Nta biganiro bikiriho",
+    "emptyMessage": "Ibiyago vyawe AI vy'abagenzi bizoboneka hano inyuma y'uguhamagara kwawe kwa mbere.",
+    "loadFailed": "Ntitwashoboye gushiramwo amateka y'ibiyago. Ndagusavye wongere ugerageze.",
+    "clearFailed": "Ntitwashoboye gukuraho amateka y’ibiyago. Ndagusavye wongere ugerageze.",
+    "deleteFailed": "Ntitwashoboye gufuta ico kiganiro. Ndagusavye wongere ugerageze.",
+    "aiCompanion": "AI umugenzi",
+    "resume": "Gusubiramwo",
+    "clearAll": "Kuraho amateka yose",
+    "roles": {
+      "assistant": "umugenzi",
+      "user": "wewe"
+    }
+  },
+  "voices": {
+    "title": "Amajwi yanje y'umutekano",
+    "subtitle": "Hitamwo ijwi ry’umugenzi wumva ko ribereye kwumva.",
+    "test": "Ijwi ryo kugerageza",
+    "stop": "Hagarika urugero",
+    "selectionFailedTitle": "Ihitamwo ntiryibitswe",
+    "selectionFailedMessage": "Ndagusavye wongere ugerageze guhitamwo ijwi.",
+    "sampleFailedTitle": "Icitegererezo ntikiboneka",
+    "sampleFailedMessage": "Iki kigereranyo c'ijwi nticashoboye kuvuzwa. Ndagusavye wongere ugerageze.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "yoroshe, gutuza, gushingira hasi"
+      },
+      "bestie": {
+        "name": "Mugenzi mwiza",
+        "description": "umuco, guhumuriza, ikiyago"
+      },
+      "boyfriend": {
+        "name": "Umukunzi",
+        "description": "gushikama, urukundo, ubu"
+      },
+      "muscleMan": {
+        "name": "Umuntu w'imitsi",
+        "description": "kwizigira, gukingira, gutera intege"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ijwi",
+    "changeVoice": "Hindura ijwi",
+    "showCompanion": "Kwerekana umugenzi",
+    "offlineMode": "uburyo butarimwo umurongo",
+    "offlineModeSubtitle": "Koresha inyishu z'abagenzi zifatanye iyo urubuga canke Hume ivyemezo bitaboneka.",
+    "privacyData": "Ubuzima bwite n'amakuru",
+    "privacyBody": "Sohora hanze canke gukuraho amakuru yo mu karere abitswe kuri iki gikoresho.",
+    "preparingExport": "Gutegura ivyoherezwa hanze...",
+    "exportData": "Sohora amakuru yanje",
+    "privacyPolicy": "Itegeko ry'ubuzima bwite",
+    "deleting": "Gukuraho...",
+    "deleteAll": "Gukuraho amakuru yose yo mu karere",
+    "deviceManagement": "Ubuyobozi bw'ibikoresho",
+    "emergencyContacts": "Abo bashobora guhamagara mu gihe c'ivyihutirwa",
+    "signOut": "Sohoka",
+    "exportFailedTitle": "Gurungika hanze vyananiwe",
+    "exportFailedMessage": "Ntibishobora kwohereza hanze amakuru yawe ubu.",
+    "deleteConfirmTitle": "Gukuraho amakuru yose yo mu karere?",
+    "deleteConfirmMessage": "Ibi bikuraho umwirondoro wawe, amagenamiterere, abo ushobora guhamagara mu gihe c'ivyago, amateka y'ibiyago, ivyibutsa vy'uruhusha, n'igihe c'ukwemeza co mu karere kuri iki gikoresho.",
+    "deleteEverything": "Sikura vyose",
+    "deleteFailedTitle": "Gukuraho vyananiwe",
+    "deleteFailedMessage": "Ntibishobora gukuraho amakuru yo mu karere ubu.",
+    "linkFailed": "Ntibishobora gufungura ihuriro",
+    "sections": {
+      "language": "Ururimi",
+      "languageSubtitle": "Ikigaragara n'ururimi rw'uruhusha rwa sisitemu",
+      "companion": "Umugenzi",
+      "companionSubtitle": "Ijwi n'ivyo ukunda bitari kuri interineti",
+      "deviceSafety": "Ibikoresho n'umutekano",
+      "deviceSafetySubtitle": "NorthStar, abarera, n'abo guhamagara vyihutirwa",
+      "privacy": "Ubuzima bwite n'amakuru",
+      "privacySubtitle": "Amateka, kwohereza hanze, gukuraho, n'amategeko",
+      "account": "Konti",
+      "accountSubtitle": "Ikiganiro cawe c'ubu VeryLoving"
+    },
+    "updateFailedTitle": "Imiterere ntiyabitswe",
+    "updateFailedMessage": "Ntitwashoboye kubika ivyo dukunda. Ndagusavye wongere ugerageze.",
+    "signOutFailedTitle": "Ntibishobora gusohoka",
+    "signOutFailedMessage": "Ikiganiro cawe kiracariko kirakora. Ndagusavye wongere ugerageze."
+  },
+  "contacts": {
+    "title": "Abo bashobora guhamagara mu gihe c'ivyago",
+    "subtitle": "Abantu bizigira baboneka mu gihe c’imigenderanire y’umutekano.",
+    "addTitle": "Wongereko umuntu wo guhamagara vyihutirwa",
+    "name": "Izina",
+    "namePlaceholder": "Izina ry'uwo wohamagara",
+    "phone": "Nimero ya telefone yo guhamagara",
+    "add": "Kwongerako uwo guhamagara",
+    "empty": "Nta nkuru z’ivyihutirwa zongeweko.",
+    "emptyTitle": "Nta n'umwe yovugana n'ivyihutirwa",
+    "emptyMessage": "Wongerako umuntu wizigira kugira ngo abe yiteguye igihe umuvuduko w’umutekano ubakeneye.",
+    "removeTitle": "Kuraho %{name}?",
+    "removeMessage": "Uyu muntu ntazosubira kugaragara mu nzira yawe y’ivyihutirwa.",
+    "nameRequired": "Injira izina ry'uwo muvugana.",
+    "saveFailedTitle": "Umuhamagara ntiyabitswe",
+    "saveFailedMessage": "Ntitwashoboye kubika iyi nkuru. Suzuma ido n’ido maze wongere ugerageze.",
+    "removeFailedTitle": "Umubona ntiyakuweho",
+    "removeFailedMessage": "Ntitwashoboye gukuraho iyi nkuru. Ndagusavye wongere ugerageze.",
+    "callAccessibility": "Hamagara %{name}",
+    "removeAccessibility": "Kuraho %{name}"
+  },
+  "device": {
+    "title": "Ubuyobozi bw'ibikoresho",
+    "subtitle": "Gucungera igikoresho cawe NorthStar.",
+    "connected": "Ihujwe · %{battery}% bateri",
+    "none": "Nta bikoresho bihuye",
+    "disconnect": "Kuraho igikoresho",
+    "connect": "Huza igikoresho"
+  },
+  "friends": {
+    "title": "Ncuti",
+    "subtitle": "Abarinzi, ibisabwa, n’igishushanyo c’ivyihutirwa.",
+    "addDemo": "Ongereko umugenzi w'iyerekanwa",
+    "emptyTitle": "Umuzingi wawe w'umutekano uri ubusa",
+    "emptyMessage": "Abagenzi n’abacungezi bizigirwa bazoboneka hano bamaze kwongerwako.",
+    "newGuardian": "Umurinzi mushasha",
+    "statuses": {
+      "guardian": "Umurinzi",
+      "pending": "Birindiriye"
+    }
+  },
+  "emergency": {
+    "title": "Ivyihutirwa SOS",
+    "subtitle": "Gutera imbere gusa igihe ukeneye gufashwa ubwo nyene.",
+    "body": "Ivyo bizomenyesha urugendo rwawe rw’umutekano no gutegura abo wohamagara mu gihe c’ivyago.",
+    "activate": "Gukoresha SOS",
+    "callCompanion": "Hamagara AI umugenzi",
+    "notificationTitle": "SOS vyakoreshejwe",
+    "notificationBody": "Ivyihutirwa vyawe vyiteguwe.",
+    "readyTitle": "SOS yiteguye",
+    "callContact": "Hamagara %{name}?",
+    "addContact": "Ongera umuntu wo guhamagara vyihutirwa mu Mitunganyirize.",
+    "quickShareTitle": "Gusangira vyihuse",
+    "quickShareMessage": "Ikiganiro co gusangira ahantu kirateguwe. Huza iherezo ry'ugusangira inyuma kugira ngo wohereze amahuza y'ubuzima."
+  },
+  "quickShare": {
+    "title": "Gusangira vyihuse",
+    "subtitle": "Ikibanza co gusangira uruja n’uruza rwateguwe."
+  },
+  "capybearTap": {
+    "title": "Capybear kanda",
+    "subtitle": "Kanda kabiri kuri NorthStar yawe kugira ngo utere umuceri w'umutekano.",
+    "body": "Inzira y'ibimenyetso iriteguye ku bijanye n'ugushiramwo amawaya y'ibintu vya BLE."
+  },
+  "debug": {
+    "title": "VeryLoving urupapuro rwo gukosora",
+    "subtitle": "Inzira y’iterambere gusa."
+  },
+  "errors": {
+    "voiceOffline": "Usa n'uwutari mu murongo. Ubutumwa bwawe buzorungikwa iyo usubiye kwifatanya.",
+    "voiceQueued": "Ubutumwa bwabitswe. Bizorungikwa igihe uwo mugenzi w’ijwi azosubira gufatanya.",
+    "voiceRetrying": "Kugerageza kohereza ubutumwa bwawe kandi...",
+    "voiceConnecting": "Guhuza neza n'ijwi ryawe...",
+    "microphone": "Ugukoresha mikoro birakenewe kugira ngo umuntu ahamagare n’ijwi. Ushobora kuyifungura mu Mitunganyirize, canke ukandika ubutumwa aho kuyikoresha.",
+    "billing": "Ijwi ryo kuri interineti ntiriboneka mu gihe gito. Ushobora kubandanya n’uwo mugenzi atari mu nzira.",
+    "authentication": "Umugenzi w'ijwi ntiyashoboye kugenzura iki kiganiro. Subira winjire canke ukoreshe umugenzi atari mu murongo ubu.",
+    "timeout": "Uwo mugenzi w’ijwi yatwaye igihe kirekire cane kugira ngo yishure. Suzuma uko uhuye maze wongere ugerageze.",
+    "network": "Ntitwashoboye gushikira uwo mugenzi w’ijwi. Suzuma ko uhuye, hanyuma wongere ugerageze canke ukomeze utari kuri internet.",
+    "genericVoice": "Hari ikintu cacitse ijwi ry’uguhamagara. Gerageza kandi, canke ukomeze n'uwo mugenzi atari kuri interineti."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving amakuru yoherezwa hanze"
+  },
+  "notifications": {
+    "channelName": "Imburi z'umutekano"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ikeneye gukoresha mikoro kugira ngo ibe nziza kandi AI ihamagara abagenzi.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ikoresha aho uri ku ikarita y’umutekano n’ibintu vy’umutekano biri hafi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ikoresha aho uri kugira ngo ifashe mu gushika ata nkomanzi no mu gusohoka mu buryo bwihutirwa.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving ikoresha ahantu h'inyuma ku bijanye n'ugushika ata nkomanzi n'ibimenyetso vy'ahantu h'akaga hafi.",
+      "NSCameraUsageDescription": "VeryLoving ikoresha kamera gusa iyo uhisemwo gufata ifoto y’ibanga canke y’umutekano.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ikoresha ububiko bw'amafoto yawe gusa iyo uhisemwo ishusho y'umwirondoro canke y'umutekano.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ikoresha Bluetooth kugira ngo ihuze n'amabuye yawe y'agaciro NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving ikoresha Bluetooth kugira ngo ihuze n'amabuye yawe y'agaciro NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

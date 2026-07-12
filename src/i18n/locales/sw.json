@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ongeza",
+    "apple": "Apple",
+    "back": "Kurudi",
+    "call": "Wito",
+    "cancel": "Ghairi",
+    "clear": "Wazi",
+    "close": "Karibu",
+    "connect": "Unganisha",
+    "connecting": "Kuunganisha...",
+    "continue": "Endelea",
+    "delete": "Futa",
+    "finish": "kumaliza",
+    "friends": "Marafiki",
+    "google": "Google",
+    "home": "Nyumbani",
+    "loading": "Inapakia...",
+    "map": "Ramani",
+    "notNow": "Sio sasa",
+    "remove": "Ondoa",
+    "retry": "Jaribu tena",
+    "retrying": "Kujaribu tena",
+    "save": "Hifadhi",
+    "selected": "Imechaguliwa",
+    "send": "Tuma",
+    "settings": "Mipangilio",
+    "skip": "Ruka",
+    "skipForNow": "Ruka kwa sasa",
+    "skipTutorial": "Ruka mafunzo",
+    "sos": "SOS",
+    "unknown": "Haijulikani",
+    "user": "VeryLoving mtumiaji",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lugha",
+    "subtitle": "Chagua lugha inayotumiwa katika programu yote.",
+    "system": "Chaguo-msingi la mfumo",
+    "search": "Lugha za utafutaji",
+    "noResults": "Hakuna lugha zinazolingana na utafutaji wako.",
+    "english": "Kiingereza",
+    "spanish": "Kihispania",
+    "french": "Kifaransa",
+    "chineseSimplified": "Kichina (Imerahisishwa)"
+  },
+  "phone": {
+    "label": "Nambari ya simu",
+    "placeholder": "Nambari ya simu",
+    "selectCountry": "Chagua nchi au mkoa",
+    "searchCountry": "Tafuta nchi, msimbo, au kiambishi awali cha kupiga simu",
+    "noCountries": "Hakuna nchi zinazolingana na utafutaji wako.",
+    "countryButton": "Badilisha nchi, kwa sasa %{country} pamoja na %{callingCode}",
+    "inputAccessibility": "Nambari ya simu ya %{country}",
+    "required": "Ingiza nambari ya simu.",
+    "tooShort": "Nambari hii ya simu ni fupi sana.",
+    "tooLong": "Nambari hii ya simu ni ndefu sana.",
+    "invalid": "Ingiza nambari halali ya simu kwa nchi iliyochaguliwa.",
+    "valid": "Nambari halali ya simu ya kimataifa"
+  },
+  "auth": {
+    "onboardingTagline": "Rafiki wa usalama wa kibinafsi kwa wakati kati ya \"Niko sawa\" na \"Ninahitaji msaada.\"",
+    "createAccount": "Unda akaunti",
+    "continueOnboarding": "Endelea na kuingia",
+    "createSubtitle": "Chagua njia ya kuingia ili kulinda grafu yako ya usalama.",
+    "phoneVerification": "Uthibitishaji wa simu",
+    "sendCode": "Tuma msimbo",
+    "sendingCode": "Kutuma msimbo...",
+    "verifyCode": "Thibitisha msimbo",
+    "sentTo": "Imetumwa kwa %{phone}",
+    "yourPhone": "simu yako",
+    "verificationCode": "Msimbo wa uthibitishaji",
+    "verify": "Thibitisha",
+    "verifying": "Kuthibitisha...",
+    "invalidCode": "Ingiza msimbo wa uthibitishaji.",
+    "signInFailedTitle": "Kuingia kumeingiliwa",
+    "signInFailedMessage": "Hatukuweza kukamilisha kuingia. Angalia muunganisho wako na ujaribu tena.",
+    "googleUnavailableTitle": "Google Kuingia haipatikani",
+    "googleUnavailableMessage": "Kutumia kikao cha maendeleo ya ndani. Kuingia kwa Asili Google hufanya kazi katika ujenzi wa maendeleo.",
+    "northStarTitle": "NorthStar kujitia",
+    "northStarSubtitle": "Oanisha sasa au endelea na uiongeze baadaye.",
+    "northStarBody": "Inayoweza kuvaliwa VL01 inaweza kusababisha mtiririko wa usalama kwa bomba na ishara ndefu za vyombo vya habari.",
+    "setupJewelry": "Weka vito vya mapambo",
+    "meetCapybear": "Kutana na Capybear",
+    "meetCapybearSubtitle": "Rafiki yako mpole wa usalama kwenye ramani na kwa simu.",
+    "capybearBody": "Capybear inaweza kusaidia kwa hali ya nyumbani, hali ya mlezi, hali ya dharura, simu za udhuru na usaidizi wa sauti.",
+    "chooseVoice": "Chagua sauti",
+    "capybearReminder": "Capybear ukumbusho",
+    "remindersReady": "Vikumbusho vya upole viko tayari."
+  },
+  "permissions": {
+    "locationTitle": "Usalama wa eneo",
+    "locationSubtitle": "Inatumika kwa ramani, maeneo hatari, kuwasili salama, na muktadha SOS.",
+    "locationBody": "VeryLoving inauliza eneo ili walezi waweze kuelewa ni wapi msaada unaweza kuhitajika. Unaweza kubadilisha hii baadaye katika Mipangilio.",
+    "allowLocation": "Ruhusu eneo",
+    "notificationsTitle": "Arifa za usalama",
+    "notificationsSubtitle": "Arifa zinasaidia kuingia na matukio ya dharura.",
+    "notificationsBody": "Tunatumia arifa tu kwa vidokezo vya usalama, masasisho ya dharura na vikumbusho unavyowezesha.",
+    "enableNotifications": "Washa arifa",
+    "locationRationaleTitle": "Mahali huweka muktadha wa usalama sahihi",
+    "locationRationaleMessage": "VeryLoving hutumia eneo lako kwa ramani ya usalama, maeneo ya hatari, kushiriki haraka, na muktadha SOS. Unaweza kubadilisha hii baadaye katika Mipangilio.",
+    "notificationsRationaleTitle": "Arifa za usalama zinahitaji arifa",
+    "notificationsRationaleMessage": "VeryLoving hutuma vikumbusho vya kuingia, masasisho ya dharura, na vidokezo vya usalama unavyowezesha. Hatutumii arifa kwa matangazo.",
+    "microphoneRationaleTitle": "Maikrofoni huwezesha simu za usalama",
+    "microphoneRationaleMessage": "VeryLoving hutumia maikrofoni yako tu unapoanzisha simu ya AI au ya usalama.",
+    "bluetoothRationaleTitle": "Bluetooth inaunganisha kifaa chako cha kuvaa",
+    "bluetoothRationaleMessage": "VeryLoving hutumia Bluetooth kuoanisha na vito vya NorthStar, kusoma hali ya muunganisho, na kuchochea mtiririko wa usalama kutoka kwa inayoweza kuvaliwa.",
+    "cameraRationaleTitle": "Kamera ni hiari",
+    "cameraRationaleMessage": "VeryLoving hutumia kamera tu unapochagua kupiga picha ya wasifu au kushiriki picha ya usalama."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving huweka mtiririko huu kutoka kwa Mipangilio na dashibodi.",
+    "chooseVoiceTitle": "Chagua sauti yako",
+    "chooseVoiceSubtitle": "Chagua sauti ya mwenzake ambayo inahisi salama zaidi kusikia.",
+    "homeTitle": "Hali ya nyumbani",
+    "homeSubtitle": "Ufuatiliaji wa utulivu kwa usalama wa kila siku.",
+    "guardianTitle": "Hali ya mlezi",
+    "guardianSubtitle": "Shiriki muktadha na watu wanaoaminika.",
+    "emergencyTitle": "Hali ya dharura",
+    "emergencySubtitle": "Bomba tano zinaweza kuongezeka hadi arifa za SOS na mlezi.",
+    "excuseTitle": "Simu ya udhuru",
+    "excuseSubtitle": "Unda sababu nzuri ya kuacha hali isiyofaa.",
+    "safetyCallTitle": "Simu ya usalama",
+    "safetyCallSubtitle": "Anza simu ya wakati halisi wakati unahitaji usaidizi.",
+    "practiceTitle": "Eneo la mazoezi",
+    "practiceSubtitle": "Jaribu mtiririko wa usalama katika onyesho la shinikizo la chini."
+  },
+  "jewelry": {
+    "pairTitle": "Jozi NorthStar",
+    "pairSubtitle": "Weka vito vya mapambo karibu wakati wa skanning.",
+    "scan": "Changanua vifaa",
+    "scanning": "Kuchanganua karibu...",
+    "noDevices": "Hakuna vifaa vya karibu vya NorthStar vilivyopatikana bado.",
+    "scanStartFailed": "Bluetooth skanning haikuweza kuanza. Tafadhali jaribu tena.",
+    "scanFailed": "Hatukuweza kupata vito vya karibu. Angalia Bluetooth, weka NorthStar karibu, na ujaribu tena.",
+    "scanAccessFailed": "Bluetooth skanning haikuweza kuanza. Angalia ufikiaji Bluetooth na ujaribu tena.",
+    "permissionDenied": "Ufikiaji wa kifaa cha karibu umezimwa. Ruhusu ufikiaji Bluetooth katika Mipangilio, kisha ujaribu tena.",
+    "connectTimeout": "NorthStar ilichukua muda mrefu sana kuunganisha. Sogeza karibu na ujaribu tena.",
+    "connectFailed": "Hatukuweza kuungana na NorthStar. Hakikisha kuwa imeshtakiwa na karibu, kisha jaribu tena.",
+    "emptyTitle": "Bado hakuna vifaa vya karibu",
+    "emptyMessage": "Weka chaji NorthStar na karibu na simu hii, kisha uchanganue tena.",
+    "searchingMessage": "Kutafuta vifaa NorthStar karibu..."
+  },
+  "home": {
+    "subtitle": "Dashibodi ya rafiki wa usalama",
+    "modeStatus": "%{mode} HALI",
+    "companionReady": "%{name} iko tayari",
+    "readyBody": "Sauti, ramani, vito vya mapambo, na walezi ni bomba moja.",
+    "safetyCall": "Simu ya usalama",
+    "northStarDevice": "NorthStar kifaa",
+    "deviceConnected": "%{name} imeunganishwa · %{battery}%",
+    "noDevice": "Hakuna kifaa kilichounganishwa",
+    "manageDevice": "Dhibiti kifaa",
+    "mode": "Hali",
+    "modes": {
+      "home": "Nyumbani",
+      "guardian": "Mlezi",
+      "emergency": "Dharura"
+    }
+  },
+  "map": {
+    "finding": "Kupata eneo lako...",
+    "retry": "Jaribu tena eneo",
+    "title": "Ramani ya usalama",
+    "previewSubtitle": "Expo Go hakikisho; Mapbox hutoa katika muundo wa maendeleo.",
+    "preview": "Muhtasari wa ramani",
+    "risk": "Hatari: %{risk} · Radius %{radius}m",
+    "refresh": "Onyesha upya eneo",
+    "refreshing": "Kutafuta eneo...",
+    "updateFailed": "Hatukuweza kusasisha eneo lako. Tafadhali jaribu tena.",
+    "notRequested": "Ufikiaji wa eneo haukuombwa. Unaweza kuiwezesha baadaye kutoka kwa Mipangilio.",
+    "permissionOff": "Ufikiaji wa eneo umezimwa. Iwashe katika Mipangilio ili kuweka ramani ya usalama juu yako.",
+    "timeout": "Eneo lako linachukua muda mrefu kuliko ilivyotarajiwa. Sogeza mahali pengine na ishara iliyo wazi na ujaribu tena.",
+    "savedTitle": "Maeneo yaliyohifadhiwa",
+    "savedEmptyTitle": "Bado hakuna maeneo yaliyohifadhiwa",
+    "savedEmptyMessage": "Maeneo yanayoaminika unayohifadhi yataonekana hapa kwa ufikiaji wa haraka.",
+    "zones": {
+      "crowding": "Msongamano wa usiku wa manane",
+      "lowLighting": "Eneo la chini la taa"
+    },
+    "risks": {
+      "low": "Chini",
+      "medium": "kati",
+      "high": "Juu"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kuunganisha...",
+    "offlineCompanion": "Mwenzi wa nje ya mtandao",
+    "offline": "Nje ya mtandao",
+    "connected": "Imeunganishwa",
+    "interrupted": "Uunganisho umeingiliwa",
+    "ready": "Tayari kuungana",
+    "connectingSecurely": "Kuunganisha kwa usalama kwa mwenzako wa sauti...",
+    "messagesWaiting": {
+      "one": "%{count} ujumbe unasubiri kutuma",
+      "other": "%{count} ujumbe unaosubiri kutuma"
+    },
+    "useOffline": "Tumia mwenzi wa nje ya mtandao",
+    "reconnect": "Unganisha tena kwenye AI ya sauti",
+    "typePlaceholder": "Andika ikiwa kuzungumza ni ngumu",
+    "endCall": "Mwisho wa simu",
+    "startCall": "Anza simu",
+    "emptyTitle": "Mazungumzo yako yanaanzia hapa",
+    "emptyMessage": "Anzisha simu au andika ujumbe ukiwa tayari."
+  },
+  "chat": {
+    "waiting": "Inasubiri muunganisho",
+    "notSent": "Ujumbe haujatumwa.",
+    "retryAccessibility": "Jaribu tena kutuma ujumbe"
+  },
+  "history": {
+    "clearTitle": "Futa historia ya mazungumzo?",
+    "clearMessage": "Hii huondoa ujumbe AI mwenza uliohifadhiwa kutoka kwa kifaa hiki.",
+    "deleteTitle": "Futa mazungumzo haya?",
+    "cannotUndo": "Hii haiwezi kutenduliwa.",
+    "title": "Historia ya mazungumzo",
+    "subtitle": "AI ujumbe shirikishi umehifadhiwa kwenye kifaa hiki.",
+    "empty": "Bado hakuna mazungumzo yaliyohifadhiwa.",
+    "emptyTitle": "Bado hakuna mazungumzo",
+    "emptyMessage": "Mazungumzo yako AI rafiki yataonekana hapa baada ya simu yako ya kwanza.",
+    "loadFailed": "Hatukuweza kupakia historia ya mazungumzo. Tafadhali jaribu tena.",
+    "clearFailed": "Hatukuweza kufuta historia ya mazungumzo. Tafadhali jaribu tena.",
+    "deleteFailed": "Hatukuweza kufuta mazungumzo hayo. Tafadhali jaribu tena.",
+    "aiCompanion": "AI mwenzi",
+    "resume": "Rejea",
+    "clearAll": "Futa historia yote",
+    "roles": {
+      "assistant": "Mwenzi",
+      "user": "Wewe"
+    }
+  },
+  "voices": {
+    "title": "Sauti zangu za simu za usalama",
+    "subtitle": "Chagua sauti ya mwenzi ambayo inahisi sawa kusikia.",
+    "test": "Sauti ya mtihani",
+    "stop": "Acha sampuli",
+    "selectionFailedTitle": "Uteuzi haujahifadhiwa",
+    "selectionFailedMessage": "Tafadhali jaribu kuchagua sauti tena.",
+    "sampleFailedTitle": "Sampuli haipatikani",
+    "sampleFailedMessage": "Sampuli hii ya sauti haikuweza kuchezwa. Tafadhali jaribu tena.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Laini, utulivu, msingi"
+      },
+      "bestie": {
+        "name": "Mpenzi",
+        "description": "mkali, kutia moyo, mazungumzo"
+      },
+      "boyfriend": {
+        "name": "Mpenzi",
+        "description": "thabiti, upendo, sasa"
+      },
+      "muscleMan": {
+        "name": "Mtu wa misuli",
+        "description": "kujiamini, kulinda, kuhamasisha"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Sauti",
+    "changeVoice": "Badilisha sauti",
+    "showCompanion": "Onyesha mwenzi",
+    "offlineMode": "Hali ya nje ya mtandao",
+    "offlineModeSubtitle": "Tumia majibu rafiki yaliyounganishwa wakati kitambulisho cha mtandao au Hume hakipatikani.",
+    "privacyData": "Faragha na data",
+    "privacyBody": "Hamisha au ufute data ya ndani iliyohifadhiwa kwenye kifaa hiki.",
+    "preparingExport": "Kuandaa kuuza nje...",
+    "exportData": "Hamisha data yangu",
+    "privacyPolicy": "Sera ya faragha",
+    "deleting": "Kufuta...",
+    "deleteAll": "Futa data yote ya ndani",
+    "deviceManagement": "Usimamizi wa kifaa",
+    "emergencyContacts": "Anwani za dharura",
+    "signOut": "Ondoka",
+    "exportFailedTitle": "Usafirishaji umeshindwa",
+    "exportFailedMessage": "Haiwezi kuhamisha data yako sasa hivi.",
+    "deleteConfirmTitle": "Futa data zote za ndani?",
+    "deleteConfirmMessage": "Hii huondoa wasifu wako, mipangilio, anwani za dharura, historia ya mazungumzo, vikumbusho vya ruhusa na kipindi cha uthibitishaji wa ndani kutoka kwa kifaa hiki.",
+    "deleteEverything": "Futa kila kitu",
+    "deleteFailedTitle": "Kufuta kumeshindwa",
+    "deleteFailedMessage": "Haiwezi kufuta data ya ndani hivi sasa.",
+    "linkFailed": "Haiwezi kufungua kiungo",
+    "sections": {
+      "language": "Lugha",
+      "languageSubtitle": "Kiolesura na lugha ya ruhusa ya mfumo",
+      "companion": "Mwenzi",
+      "companionSubtitle": "Mapendeleo ya sauti na nje ya mtandao",
+      "deviceSafety": "Vifaa na usalama",
+      "deviceSafetySubtitle": "NorthStar, walezi, na anwani za dharura",
+      "privacy": "Faragha na data",
+      "privacySubtitle": "Historia, usafirishaji, ufutaji, na sera",
+      "account": "Akaunti",
+      "accountSubtitle": "Kipindi chako cha sasa cha VeryLoving"
+    },
+    "updateFailedTitle": "Mpangilio haujahifadhiwa",
+    "updateFailedMessage": "Hatukuweza kuokoa upendeleo huo. Tafadhali jaribu tena.",
+    "signOutFailedTitle": "Haikuweza kuondoka",
+    "signOutFailedMessage": "Kipindi chako bado kinatumika. Tafadhali jaribu tena."
+  },
+  "contacts": {
+    "title": "Anwani za dharura",
+    "subtitle": "Watu wanaoaminika wanapatikana wakati wa mtiririko wa usalama.",
+    "addTitle": "Ongeza mawasiliano ya dharura",
+    "name": "Jina",
+    "namePlaceholder": "Jina la mawasiliano",
+    "phone": "Nambari ya simu ya mawasiliano",
+    "add": "Ongeza mawasiliano",
+    "empty": "Bado hakuna mawasiliano ya dharura yaliyoongezwa.",
+    "emptyTitle": "Bado hakuna mawasiliano ya dharura",
+    "emptyMessage": "Ongeza mtu unayemwamini ili awe tayari wakati mtiririko wa usalama unamhitaji.",
+    "removeTitle": "Ondoa %{name}?",
+    "removeMessage": "Mtu huyu hataonekana tena katika mtiririko wako wa dharura.",
+    "nameRequired": "Ingiza jina la mwasiliani.",
+    "saveFailedTitle": "Mawasiliano hayajahifadhiwa",
+    "saveFailedMessage": "Hatukuweza kuhifadhi mawasiliano haya. Angalia maelezo na ujaribu tena.",
+    "removeFailedTitle": "Mawasiliano hayajaondolewa",
+    "removeFailedMessage": "Hatukuweza kuondoa mawasiliano haya. Tafadhali jaribu tena.",
+    "callAccessibility": "Piga simu %{name}",
+    "removeAccessibility": "Ondoa %{name}"
+  },
+  "device": {
+    "title": "Usimamizi wa kifaa",
+    "subtitle": "Dhibiti kifaa chako cha NorthStar.",
+    "connected": "Imeunganishwa · %{battery}% ya betri",
+    "none": "Hakuna vifaa vilivyounganishwa",
+    "disconnect": "Tenganisha kifaa",
+    "connect": "Unganisha kifaa"
+  },
+  "friends": {
+    "title": "Marafiki",
+    "subtitle": "Walinzi, maombi, na grafu ya dharura.",
+    "addDemo": "Ongeza rafiki wa demo",
+    "emptyTitle": "Mduara wako wa usalama ni tupu",
+    "emptyMessage": "Marafiki na walezi wanaoaminika wataonekana hapa mara tu watakapoongezwa.",
+    "newGuardian": "Mlezi Mpya",
+    "statuses": {
+      "guardian": "Mlezi",
+      "pending": "Inasubiri"
+    }
+  },
+  "emergency": {
+    "title": "Dharura SOS",
+    "subtitle": "Kuongezeka tu wakati unahitaji msaada wa haraka.",
+    "body": "Hii itaarifu mtiririko wako wa usalama na kuandaa anwani za dharura.",
+    "activate": "Washa SOS",
+    "callCompanion": "Piga simu AI mwenzi",
+    "notificationTitle": "SOS imeamilishwa",
+    "notificationBody": "Mtiririko wako wa dharura uko tayari.",
+    "readyTitle": "SOS tayari",
+    "callContact": "Piga simu %{name}?",
+    "addContact": "Ongeza anwani ya dharura katika Mipangilio.",
+    "quickShareTitle": "Kushiriki haraka",
+    "quickShareMessage": "Sehemu ya kushiriki eneo iko tayari. Unganisha sehemu ya mwisho ya kushiriki nyuma ili kutuma viungo vya moja kwa moja."
+  },
+  "quickShare": {
+    "title": "Kushiriki haraka",
+    "subtitle": "Mtiririko wa kushiriki eneo uko tayari."
+  },
+  "capybearTap": {
+    "title": "Capybear gonga",
+    "subtitle": "Gusa mara mbili NorthStar yako ili kudondosha chungwa la usalama.",
+    "body": "Njia ya ishara iko tayari kwa nyaya za tukio la BLE."
+  },
+  "debug": {
+    "title": "VeryLoving ukurasa wa utatuzi",
+    "subtitle": "Njia ya maendeleo pekee."
+  },
+  "errors": {
+    "voiceOffline": "Unaonekana nje ya mtandao. Ujumbe wako utatumwa unapounganisha tena.",
+    "voiceQueued": "Ujumbe umehifadhiwa. Itatumwa wakati mwenzi wa sauti ataungana tena.",
+    "voiceRetrying": "Kujaribu kutuma ujumbe wako tena...",
+    "voiceConnecting": "Kuunganisha kwa usalama kwa mwenzako wa sauti...",
+    "microphone": "Ufikiaji wa maikrofoni unahitajika kwa simu za sauti. Unaweza kuiwezesha katika Mipangilio, au kuandika ujumbe badala yake.",
+    "billing": "Mwenzi wa sauti mtandaoni hapatikani kwa muda. Unaweza kuendelea na mwenzi wa nje ya mtandao.",
+    "authentication": "Mwenzake wa sauti hakuweza kuthibitisha kikao hiki. Ingia tena au utumie mwenzi wa nje ya mtandao kwa sasa.",
+    "timeout": "Mwenzake wa sauti alichukua muda mrefu sana kujibu. Angalia muunganisho wako na ujaribu tena.",
+    "network": "Hatukuweza kumfikia mwenzi wa sauti. Angalia muunganisho wako, kisha ujaribu tena au uendelee nje ya mtandao.",
+    "genericVoice": "Kitu kilikatiza simu ya sauti. Jaribu tena, au endelea na mwenzi wa nje ya mtandao."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving usafirishaji wa data"
+  },
+  "notifications": {
+    "channelName": "Arifa za usalama"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving inahitaji ufikiaji wa maikrofoni kwa usalama na simu AI mwenza.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving hutumia eneo lako kwa ramani ya usalama na vipengele vya usalama vilivyo karibu.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving hutumia eneo lako kusaidia kuwasili salama na mtiririko wa dharura.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving hutumia eneo la usuli kwa usalama na vipengele vya karibu vya eneo la hatari.",
+      "NSCameraUsageDescription": "VeryLoving hutumia kamera tu unapochagua kuchukua wasifu au picha ya usalama.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving hutumia maktaba yako ya picha tu unapochagua wasifu au picha ya usalama.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

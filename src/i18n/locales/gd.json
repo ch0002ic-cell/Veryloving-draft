@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Cuir",
+    "apple": "Apple",
+    "back": "Air ais",
+    "call": "Cuir fòn",
+    "cancel": "Sguir dheth",
+    "clear": "Soilleir",
+    "close": "Dùin",
+    "connect": "Dèan ceangal",
+    "connecting": "A' ceangal...",
+    "continue": "Lean air adhart",
+    "delete": "Sguab às",
+    "finish": "Crìochnaich",
+    "friends": "Caraidean",
+    "google": "Google",
+    "home": "Dachaigh",
+    "loading": "A’ luchdachadh...",
+    "map": "Mapa",
+    "notNow": "Chan ann a-nis",
+    "remove": "Thoir air falbh",
+    "retry": "Feuch a-rithist",
+    "retrying": "A’ feuchainn a-rithist",
+    "save": "Sàbhail",
+    "selected": "Taghte",
+    "send": "Cuir",
+    "settings": "Roghainnean",
+    "skip": "Leum",
+    "skipForNow": "Skip airson a-nis",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Neo-aithnichte",
+    "user": "VeryLoving cleachdaiche",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Cànan",
+    "subtitle": "Tagh an cànan a chleachdar air feadh na h-aplacaid.",
+    "system": "Ro-shealladh an t-siostaim",
+    "search": "Rannsaich cànanan",
+    "noResults": "Chan eil cànan sam bith a’ freagairt ris an rannsachadh agad.",
+    "english": "Beurla",
+    "spanish": "Spàinntis",
+    "french": "Fraingis",
+    "chineseSimplified": "Sìneach (Sìmplidh)"
+  },
+  "phone": {
+    "label": "Àireamh fòn",
+    "placeholder": "Àireamh fòn",
+    "selectCountry": "Tagh dùthaich no sgìre",
+    "searchCountry": "Rannsaich dùthaich, còd, no ro-leasachan dial",
+    "noCountries": "Chan eil dùthaich sam bith a’ freagairt ris an rannsachadh agad.",
+    "countryButton": "Atharraich dùthaich, an-dràsta %{country} agus %{callingCode}",
+    "inputAccessibility": "Àireamh fòn airson %{country}",
+    "required": "Cuir a-steach àireamh fòn.",
+    "tooShort": "Tha an àireamh fòn seo ro ghoirid.",
+    "tooLong": "Tha an àireamh fòn seo ro fhada.",
+    "invalid": "Cuir a-steach àireamh fòn dligheach airson na dùthcha taghte.",
+    "valid": "Àireamh fòn eadar-nàiseanta dligheach"
+  },
+  "auth": {
+    "onboardingTagline": "Companach sàbhailteachd pearsanta airson na h-amannan eadar “Tha mi ceart gu leòr” agus “tha feum agam air cuideachadh.”",
+    "createAccount": "Cruthaich cunntas",
+    "continueOnboarding": "Lean air adhart le bhith a’ dol air bòrd",
+    "createSubtitle": "Tagh modh soidhnidh a-steach gus do ghraf sàbhailteachd a dhìon.",
+    "phoneVerification": "Dearbhadh fòn",
+    "sendCode": "Cuir an còd",
+    "sendingCode": "A’ cur a’ chòd...",
+    "verifyCode": "Dearbhaich an còd",
+    "sentTo": "Air a chuir gu %{phone}",
+    "yourPhone": "am fòn agad",
+    "verificationCode": "Còd dearbhaidh",
+    "verify": "Dearbhaich",
+    "verifying": "A’ dearbhadh...",
+    "invalidCode": "Cuir a-steach an còd dearbhaidh.",
+    "signInFailedTitle": "Briseadh a-steach don chlàradh",
+    "signInFailedMessage": "Cha b’ urrainn dhuinn an clàradh a-steach a chrìochnachadh. Thoir sùil air a' cheangal agad is feuch ris a-rithist.",
+    "googleUnavailableTitle": "Google Chan eil clàradh a-steach ri fhaighinn",
+    "googleUnavailableMessage": "A’ cleachdadh seisean leasachaidh ionadail. Tha clàradh a-steach dùthchasach Google ag obair ann an togalach leasachaidh.",
+    "northStarTitle": "NorthStar seudaireachd",
+    "northStarSubtitle": "Pair a-nis no lean air adhart agus cuir ris nas fhaide air adhart.",
+    "northStarBody": "'S urrainn dhan VL01 a ghabhas caitheamh sruthan sàbhailteachd a bhrosnachadh le tapan is gluasadan preas fada.",
+    "setupJewelry": "Suidhich seudaireachd",
+    "meetCapybear": "Coinnich Capybear",
+    "meetCapybearSubtitle": "Do chompanach sàbhailteachd socair air a’ mhapa agus ann an gairmean.\nFaodaidh",
+    "capybearBody": "Capybear cuideachadh le modh dachaigh, modh dìon, modh èiginn, fiosan leisg, agus taic guth.",
+    "chooseVoice": "Tagh guth",
+    "capybearReminder": "Capybear cuimhneachan",
+    "remindersReady": "Tha cuimhneachain socair deiseil."
+  },
+  "permissions": {
+    "locationTitle": "Sàbhailteachd àite",
+    "locationSubtitle": "Air a chleachdadh airson a’ mhapa, sònaichean cunnart, ruighinn sàbhailte, agus co-theacs SOS.",
+    "locationBody": "Iarraidh VeryLoving àite gus an tuig an luchd-gleidhidh càit a bheil feum air cuideachadh. Faodaidh tu seo atharrachadh nas fhaide air adhart ann an Settings.",
+    "allowLocation": "Ceadaich àite",
+    "notificationsTitle": "Rabhaidhean sàbhailteachd",
+    "notificationsSubtitle": "Bidh brathan a’ toirt taic do chlàradh a-steach agus tachartasan èiginneach.",
+    "notificationsBody": "Cha bhith sinn a’ cleachdadh ach brathan airson sanasan sàbhailteachd, ùrachaidhean èiginneach, agus cuimhneachain a chuireas tu an comas.",
+    "enableNotifications": "Dèan comas air fiosan",
+    "locationRationaleTitle": "Tha an t-àite a’ cumail co-theacs sàbhailteachd ceart",
+    "locationRationaleMessage": "Cleachdaidh VeryLoving d’ ionad airson a’ mhapa sàbhailteachd, sònaichean cunnart, co-roinn sgiobalta, agus co-theacs SOS. Faodaidh tu seo atharrachadh nas fhaide air adhart ann an Settings.",
+    "notificationsRationaleTitle": "Feumaidh rabhaidhean sàbhailteachd fiosan",
+    "notificationsRationaleMessage": "VeryLoving a’ cur chuimhneachain clàraidh a-steach, ùrachaidhean èiginneach agus sanasan sàbhailteachd a chuireas tu an comas. Cha bhith sinn a’ cleachdadh brathan airson sanasan.",
+    "microphoneRationaleTitle": "Bidh microfòn a’ toirt cumhachd do ghairmean sàbhailteachd",
+    "microphoneRationaleMessage": "Chan eil VeryLoving a’ cleachdadh a’ mhicreofon agad ach nuair a thòisicheas tu air companach no gairm sàbhailteachd AI.",
+    "bluetoothRationaleTitle": "Bluetooth a' ceangal an so-ghiùlain agad",
+    "bluetoothRationaleMessage": "Cleachdaidh VeryLoving Bluetooth gus seudaireachd NorthStar a chàradh, inbhe ceangail a leughadh, agus sruthan sàbhailteachd a bhrosnachadh on nì a ghabhas caitheamh.",
+    "cameraRationaleTitle": "Tha camara roghainneil\nCha chleachd",
+    "cameraRationaleMessage": "VeryLoving an camara ach nuair a roghnaicheas tu dealbh pròifil a thogail no dealbh sàbhailteachd a cho-roinn.\nCumaidh"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving an sruth seo ri làimh o Settings agus an deas-bhòrd.",
+    "chooseVoiceTitle": "Tagh do ghuth",
+    "chooseVoiceSubtitle": "Tagh an guth companach a tha a’ faireachdainn as sàbhailte a chluinntinn.",
+    "homeTitle": "Modh dachaigh",
+    "homeSubtitle": "Sgrùdadh sàmhach airson sàbhailteachd làitheil.",
+    "guardianTitle": "Modh geàrd",
+    "guardianSubtitle": "Roinn co-theacsa le daoine earbsach.",
+    "emergencyTitle": "Modh èiginn",
+    "emergencySubtitle": "Faodaidh còig tapaichean a dhol suas gu SOS agus rabhaidhean dìon.",
+    "excuseTitle": "Gairm leisgeul",
+    "excuseSubtitle": "Cruthaich adhbhar gràsmhor airson suidheachadh mì-chofhurtail fhàgail.",
+    "safetyCallTitle": "Call sàbhailteachd",
+    "safetyCallSubtitle": "Tòisich gairm companach fìor-ùine nuair a bhios feum agad air taic.",
+    "practiceTitle": "Cleachdadh sealladh",
+    "practiceSubtitle": "Feuch na sruthan sàbhailteachd ann an demo le cuideam ìosal."
+  },
+  "jewelry": {
+    "pairTitle": "Paidhir NorthStar",
+    "pairSubtitle": "Cùm an seudaireachd faisg air làimh fhad ‘s a tha thu a’ sganadh.",
+    "scan": "Sgan airson innealan",
+    "scanning": "A’ sganadh faisg air làimh...",
+    "noDevices": "Cha deach uidheam NorthStar faisg air làimh a lorg fhathast.",
+    "scanStartFailed": "Cha b' urrainn don sganadh Bluetooth tòiseachadh. Feuch ris a-rithist.",
+    "scanFailed": "Cha b’ urrainn dhuinn seudaireachd faisg air làimh a lorg. Thoir sùil air Bluetooth, cùm NorthStar dlùth is feuch ris a-rithist.\nCha b' urrainn dhan sganadh",
+    "scanAccessFailed": "Bluetooth tòiseachadh. Thoir sùil air inntrigeadh Bluetooth is feuch ris a-rithist.",
+    "permissionDenied": "Tha ruigsinneachd inneal faisg air làimh dheth. Ceadaich inntrigeadh dha Bluetooth sna roghainnean is feuch ris a-rithist.\nThug",
+    "connectTimeout": "NorthStar ro fhada gus ceangal a dhèanamh. Gluais e nas fhaisge agus feuch ris a-rithist.",
+    "connectFailed": "Cha b' urrainn dhuinn ceangal a dhèanamh ri NorthStar. Dèan cinnteach gu bheil cosgais air agus faisg air làimh, feuch ris a-rithist.",
+    "emptyTitle": "Chan eil innealan faisg air làimh fhathast",
+    "emptyMessage": "Cùm NorthStar fo chasaid is dùin air an fhòn seo, agus an uairsin dèan scan a-rithist.",
+    "searchingMessage": "A' coimhead airson uidheaman NorthStar faisg air làimh…"
+  },
+  "home": {
+    "subtitle": "Deas-bhòrd companach sàbhailteachd",
+    "modeStatus": "%{mode} MODE\nTha",
+    "companionReady": "%{name} deiseil",
+    "readyBody": "Tha guth, mapa, seudaireachd agus luchd-dìon mar aon tap air falbh.",
+    "safetyCall": "Call sàbhailteachd",
+    "northStarDevice": "NorthStar inneal",
+    "deviceConnected": "%{name} ceangailte · %{battery}%",
+    "noDevice": "Chan eil inneal ceangailte",
+    "manageDevice": "Stiùirich inneal",
+    "mode": "Modh",
+    "modes": {
+      "home": "Dachaigh",
+      "guardian": "Neach-gleidhidh",
+      "emergency": "Èiginn"
+    }
+  },
+  "map": {
+    "finding": "A’ lorg d’ àite...",
+    "retry": "Feuch an t-àite a-rithist",
+    "title": "mapa sàbhailteachd",
+    "previewSubtitle": "Expo Go ro-shealladh; Tha Mapbox a' toirt seachad ann an togail leasachaidh.",
+    "preview": "Ro-shealladh mapa",
+    "risk": "Cunnart: %{risk} · Radius %{radius}m",
+    "refresh": "Ùraich àite",
+    "refreshing": "A’ lorg àite...",
+    "updateFailed": "Cha b’ urrainn dhuinn d’ ionad ùrachadh. Feuch ris a-rithist.",
+    "notRequested": "Cha deach inntrigeadh àite iarraidh. Faodaidh tu a chomasachadh nas fhaide air adhart bho Settings.",
+    "permissionOff": "Tha inntrigeadh an àite dheth. Dèan comas air ann an Settings gus am mapa sàbhailteachd a mheadhanachadh ort.",
+    "timeout": "Tha d’ àite a’ toirt nas fhaide na bha dùil. Gluais am badeigin le comharra nas soilleire agus feuch ris a-rithist.",
+    "savedTitle": "Àiteachan air an sàbhaladh",
+    "savedEmptyTitle": "Chan eil àiteachan air an sàbhaladh fhathast",
+    "savedEmptyMessage": "Nochdaidh àiteachan earbsach a shàbhaileas tu an seo airson ruigsinneachd luath.",
+    "zones": {
+      "crowding": "Sluagh anmoch air an oidhche",
+      "lowLighting": "Raon solais ìosal"
+    },
+    "risks": {
+      "low": "ìosal",
+      "medium": "meadhanach",
+      "high": "àrd"
+    }
+  },
+  "safetyCall": {
+    "connecting": "A' ceangal...",
+    "offlineCompanion": "Companach far-loidhne",
+    "offline": "Offline",
+    "connected": "Ceangailte",
+    "interrupted": "Ceangal air a bhriseadh",
+    "ready": "Deiseil airson ceangal",
+    "connectingSecurely": "A’ ceangal gu tèarainte ri do chompanach guth...",
+    "messagesWaiting": {
+      "one": "%{count} teachdaireachd a' feitheamh ri cur",
+      "other": "%{count} brathan a' feitheamh ri cur"
+    },
+    "useOffline": "Cleachd companach far loidhne",
+    "reconnect": "Ath-cheangail ri guth AI",
+    "typePlaceholder": "Dèan seòrsa ma tha e doirbh bruidhinn",
+    "endCall": "Cuir crìoch air a’ ghairm",
+    "startCall": "Tòisich gairm",
+    "emptyTitle": "Bidh do chòmhradh a’ tòiseachadh an seo",
+    "emptyMessage": "Tòisich a’ ghairm no sgrìobh teachdaireachd nuair a bhios tu deiseil."
+  },
+  "chat": {
+    "waiting": "A’ feitheamh airson ceangal",
+    "notSent": "Cha deach an teachdaireachd a chuir.",
+    "retryAccessibility": "Feuch ri teachdaireachd a chuir a-rithist"
+  },
+  "history": {
+    "clearTitle": "Eachdraidh còmhraidh soilleir?",
+    "clearMessage": "Bheir seo air falbh teachdaireachdan companach AI a chaidh a shàbhaladh on uidheam seo.",
+    "deleteTitle": "Sguab às an còmhradh seo?",
+    "cannotUndo": "Chan urrainnear seo a chuir dheth.",
+    "title": "Eachdraidh còmhraidh",
+    "subtitle": "AI brathan companach air an sàbhaladh air an uidheam seo.",
+    "empty": "Cha deach còmhraidhean a shàbhaladh fhathast.",
+    "emptyTitle": "Chan eil còmhradh ann fhathast",
+    "emptyMessage": "Nochdaidh na còmhraidhean companach agad AI an-seo as dèidh do chiad ghairm.",
+    "loadFailed": "Cha b’ urrainn dhuinn eachdraidh còmhraidh a luchdachadh. Feuch ris a-rithist.",
+    "clearFailed": "Cha b’ urrainn dhuinn eachdraidh còmhraidh a ghlanadh. Feuch ris a-rithist.",
+    "deleteFailed": "Cha b' urrainn dhuinn an còmhradh sin a sguabadh às. Feuch ris a-rithist.",
+    "aiCompanion": "AI companach",
+    "resume": "Ath-thòisich",
+    "clearAll": "Glan an eachdraidh gu lèir",
+    "roles": {
+      "assistant": "companach",
+      "user": "thu"
+    }
+  },
+  "voices": {
+    "title": "Mo ghuthan gairm sàbhailteachd",
+    "subtitle": "Tagh an guth companach a tha a’ faireachdainn ceart airson a chluinntinn.",
+    "test": "Dèan deuchainn air guth",
+    "stop": "Cuir stad air sampall",
+    "selectionFailedTitle": "Cha deach an taghadh a shàbhaladh",
+    "selectionFailedMessage": "Feuch an tagh thu an guth a-rithist.",
+    "sampleFailedTitle": "Sampall ri fhaighinn",
+    "sampleFailedMessage": "Cha b’ urrainn dhuinn an sampall guth seo a chluich. Feuch ris a-rithist.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "bog, socair, bunail"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "soilleir, misneachail, còmhradh"
+      },
+      "boyfriend": {
+        "name": "bràmair",
+        "description": "seasmhach, gràdhach, làthaireach"
+      },
+      "muscleMan": {
+        "name": "Fear-fèithean",
+        "description": "misneachail, dìonach, brosnachail"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Guth",
+    "changeVoice": "Atharraich guth",
+    "showCompanion": "Seall companach",
+    "offlineMode": "Modh far-loidhne",
+    "offlineModeSubtitle": "Cleachd freagairtean companach cuachta nuair nach eil an lìonra no Hume ri fhaighinn.",
+    "privacyData": "Prìobhaideachd & dàta",
+    "privacyBody": "Às-phortaich no sguab às an dàta ionadail a tha air a stòradh air an inneal seo.",
+    "preparingExport": "Ag ullachadh às-mhalairt...",
+    "exportData": "Às-mhalairt an dàta agam",
+    "privacyPolicy": "Poileasaidh prìobhaideachd",
+    "deleting": "A’ sguabadh às...",
+    "deleteAll": "Thoir às a h-uile dàta ionadail",
+    "deviceManagement": "Stiùireadh innealan",
+    "emergencyContacts": "Luchd-conaltraidh èiginneach",
+    "signOut": "Clàraich a-mach",
+    "exportFailedTitle": "Dh'fhàillig às-mhalairt",
+    "exportFailedMessage": "Cha ghabh an dàta agad às-mhalairt an-dràsta fhèin.",
+    "deleteConfirmTitle": "Sguab às a h-uile dàta ionadail?",
+    "deleteConfirmMessage": "Bheir seo air falbh do phròifil, roghainnean, caraidean èiginneach, eachdraidh còmhraidh, cuimhneachain cead, agus seisean ùghdarrais ionadail bhon inneal seo.",
+    "deleteEverything": "Sguab às a h-uile càil",
+    "deleteFailedTitle": "Dh'fhàillig an sguabadh às",
+    "deleteFailedMessage": "Cha ghabh dàta ionadail a sguabadh às an-dràsta.",
+    "linkFailed": "Cha ghabh an ceangal fhosgladh",
+    "sections": {
+      "language": "Cànan",
+      "languageSubtitle": "Cànan eadar-aghaidh agus cead siostam",
+      "companion": "Companach",
+      "companionSubtitle": "Guth agus roghainnean far-loidhne",
+      "deviceSafety": "Innealan agus sàbhailteachd",
+      "deviceSafetySubtitle": "NorthStar, luchd-gleidhidh is caraidean èiginneach",
+      "privacy": "Prìobhaideachd agus dàta",
+      "privacySubtitle": "Eachdraidh, às-mhalairt, sguabadh às, agus poileasaidh",
+      "account": "Cunntas",
+      "accountSubtitle": "An seisean VeryLoving agad an-dràsta"
+    },
+    "updateFailedTitle": "Cha deach an suidheachadh a shàbhaladh",
+    "updateFailedMessage": "Cha b’ urrainn dhuinn an roghainn sin a shàbhaladh. Feuch ris a-rithist.",
+    "signOutFailedTitle": "Cha b' urrainn dhuinn clàradh a-mach",
+    "signOutFailedMessage": "Tha an seisean agad fhathast gnìomhach. Feuch ris a-rithist."
+  },
+  "contacts": {
+    "title": "Luchd-conaltraidh èiginneach",
+    "subtitle": "Daoine earbsach rim faighinn aig àm sruthan sàbhailteachd.",
+    "addTitle": "Cuir fios èiginn ris",
+    "name": "Ainm",
+    "namePlaceholder": "Ainm conaltraidh",
+    "phone": "Cuir fios gu àireamh fòn",
+    "add": "Cuir fios ris",
+    "empty": "Cha deach fiosan èiginneach a chur ris fhathast.",
+    "emptyTitle": "Chan eil fiosan èiginn ann fhathast",
+    "emptyMessage": "Cuir cuideigin ris anns a bheil earbsa agad gus am bi iad deiseil nuair a bhios sruth sàbhailteachd a dhìth orra.",
+    "removeTitle": "Thoir air falbh %{name}?",
+    "removeMessage": "Cha nochd an neach seo tuilleadh nad shruth èiginn.",
+    "nameRequired": "Cuir a-steach ainm an neach-conaltraidh.",
+    "saveFailedTitle": "Cha deach fios a shàbhaladh",
+    "saveFailedMessage": "Cha b' urrainn dhuinn an ceangal seo a shàbhaladh. Thoir sùil air an fhiosrachadh agus feuch ris a-rithist.",
+    "removeFailedTitle": "Cha deach an ceangal a thoirt air falbh",
+    "removeFailedMessage": "Cha b' urrainn dhuinn an ceangal seo a thoirt air falbh. Feuch ris a-rithist.",
+    "callAccessibility": "Cuir fòn gu %{name}",
+    "removeAccessibility": "Thoir air falbh %{name}"
+  },
+  "device": {
+    "title": "Stiùireadh innealan",
+    "subtitle": "Stiùirich an inneal NorthStar agad.",
+    "connected": "Ceangailte · %{battery}% bataraidh",
+    "none": "Chan eil innealan ceangailte",
+    "disconnect": "Dì-cheangail an inneal",
+    "connect": "Ceangail inneal"
+  },
+  "friends": {
+    "title": "Caraidean",
+    "subtitle": "Luchd-gleidhidh, iarrtasan, agus graf èiginn.",
+    "addDemo": "Cuir caraid demo ris",
+    "emptyTitle": "Tha an cearcall sàbhailteachd agad falamh",
+    "emptyMessage": "Nochdaidh caraidean agus luchd-dìon earbsach an seo aon uair ‘s gu bheil iad air an cur ris.",
+    "newGuardian": "Neach-gleidhidh Ùr",
+    "statuses": {
+      "guardian": "Neach-gleidhidh",
+      "pending": "A' feitheamh"
+    }
+  },
+  "emergency": {
+    "title": "Èiginn SOS",
+    "subtitle": "Àrdaich dìreach nuair a tha feum agad air taic sa bhad.",
+    "body": "Bheir seo fios don t-sruth sàbhailteachd agad agus ullaichidh e fiosan èiginn.",
+    "activate": "Cuir an gnìomh SOS",
+    "callCompanion": "Cuir fòn gu companach AI",
+    "notificationTitle": "SOS air a ghnìomhachadh",
+    "notificationBody": "Tha an sruth èiginn agad deiseil.",
+    "readyTitle": "SOS deiseil",
+    "callContact": "Cuir fòn gu %{name}?",
+    "addContact": "Cuir fios èiginn ann an Settings.",
+    "quickShareTitle": "Co-roinn sgiobalta",
+    "quickShareMessage": "Tha stub roinneadh àite deiseil. Ceangail an deireadh-phuing co-roinn backend gus ceanglaichean beò a chuir."
+  },
+  "quickShare": {
+    "title": "Co-roinn sgiobalta",
+    "subtitle": "Tha sruth roinn àite deiseil."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Dèan suathadh air an NorthStar agad gus orains sàbhailteachd a leigeil sìos.",
+    "body": "Tha slighe gluasad-bodhaig deiseil airson sreangadh tachartas BLE."
+  },
+  "debug": {
+    "title": "VeryLoving duilleag deasbaid",
+    "subtitle": "Slighe leasachaidh a-mhàin."
+  },
+  "errors": {
+    "voiceOffline": "Tha thu a’ coimhead far loidhne. Thèid do theachdaireachd a chuir nuair a nì thu ceangal a-rithist.",
+    "voiceQueued": "Teachdaireachd air a shàbhaladh. Thèid a chuir nuair a bhios an companach guth ag ath-cheangal.",
+    "voiceRetrying": "A’ feuchainn ri do theachdaireachd a chur a-rithist...",
+    "voiceConnecting": "A’ ceangal gu tèarainte ri do chompanach guth...",
+    "microphone": "Tha feum air ruigsinneachd microfòn airson fiosan gutha. Faodaidh tu a chomasachadh ann an Settings, no cuir a-steach teachdaireachd na àite.",
+    "billing": "Chan eil an companach guth air-loidhne ri fhaighinn airson ùine. Faodaidh tu leantainn air adhart leis a’ chompanach far loidhne.",
+    "authentication": "Cha b’ urrainn don chompanach guth an seisean seo a dhearbhadh. Clàraich a-steach a-rithist no cleachd an companach far loidhne airson a-nis.",
+    "timeout": "Thug an companach guth ro fhada airson freagairt. Thoir sùil air a' cheangal agad is feuch ris a-rithist.",
+    "network": "Cha b’ urrainn dhuinn an companach guth a ruighinn. Thoir sùil air a' cheangal agad agus feuch ris a-rithist no lean ort far loidhne.",
+    "genericVoice": "Chuir rudeigin stad air a’ ghairm guth. Feuch ris a-rithist, neo lean air adhart leis a’ chompanach far loidhne."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving às-phortadh dàta"
+  },
+  "notifications": {
+    "channelName": "Rabhaidhean sàbhailteachd"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "Feumaidh VeryLoving cothrom air a’ mhicreofon airson sàbhailteachd agus fiosan companach AI.",
+      "NSLocationWhenInUseUsageDescription": "Cleachdaidh VeryLoving d’ ionad airson a’ mhapa sàbhailteachd agus feartan sàbhailteachd faisg air làimh.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "Cleachdaidh VeryLoving d’ ionad gus taic a thoirt do shruthan-inntrigidh sàbhailte agus èiginn.",
+      "NSLocationAlwaysUsageDescription": "Tha VeryLoving a’ cleachdadh cùl-ionad airson feartan ruigsinn sàbhailte agus sòn cunnart faisg air làimh.",
+      "NSCameraUsageDescription": "VeryLoving a’ cleachdadh a’ chamara ach nuair a thaghas tu dealbh pròifil no sàbhailteachd a thogail.\nCleachdaidh",
+      "NSPhotoLibraryUsageDescription": "VeryLoving leabharlann nan dealbhan agad a-mhàin nuair a thaghas tu ìomhaigh pròifil no sàbhailteachd.",
+      "NSBluetoothAlwaysUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad.",
+      "NSBluetoothPeripheralUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

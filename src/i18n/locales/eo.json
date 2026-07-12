@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Aldoni",
+    "apple": "Apple",
+    "back": "Reen",
+    "call": "Voku",
+    "cancel": "Nuligi",
+    "clear": "Klara",
+    "close": "Fermu",
+    "connect": "Konekti",
+    "connecting": "Konektante...",
+    "continue": "Daŭrigu",
+    "delete": "Forigi",
+    "finish": "Finu",
+    "friends": "Amikoj",
+    "google": "Google",
+    "home": "Hejme",
+    "loading": "Ŝargante...",
+    "map": "Mapo",
+    "notNow": "Ne nun",
+    "remove": "Forigi",
+    "retry": "Reprovi",
+    "retrying": "Reprovado",
+    "save": "Konservi",
+    "selected": "Elektita",
+    "send": "Sendu",
+    "settings": "Agordoj",
+    "skip": "Salti",
+    "skipForNow": "Saltu por nun",
+    "skipTutorial": "Salti lernilon",
+    "sos": "SOS",
+    "unknown": "Nekonata",
+    "user": "VeryLoving uzanto",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Lingvo",
+    "subtitle": "Elektu la lingvon uzatan tra la aplikaĵo.",
+    "system": "Defaŭlta sistemo",
+    "search": "Serĉi lingvojn",
+    "noResults": "Neniu lingvo kongruas kun via serĉo.",
+    "english": "La angla",
+    "spanish": "la hispana",
+    "french": "franca",
+    "chineseSimplified": "ĉina (simpligita)"
+  },
+  "phone": {
+    "label": "Telefonnumero",
+    "placeholder": "Telefonnumero",
+    "selectCountry": "Elektu landon aŭ regionon",
+    "searchCountry": "Serĉu landon, kodon aŭ telefonprefikson",
+    "noCountries": "Neniu lando kongruas kun via serĉo.",
+    "countryButton": "Ŝanĝi landon, nuntempe %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefonnumero por %{country}",
+    "required": "Enigu telefonnumeron.",
+    "tooShort": "Ĉi tiu telefonnumero estas tro mallonga.",
+    "tooLong": "Ĉi tiu telefonnumero estas tro longa.",
+    "invalid": "Enigu validan telefonnumeron por la elektita lando.",
+    "valid": "Valida internacia telefonnumero"
+  },
+  "auth": {
+    "onboardingTagline": "Persona sekureca kunulo por la momentoj inter \"Mi fartas bone\" kaj \"Mi bezonas helpon.\"",
+    "createAccount": "Kreu konton",
+    "continueOnboarding": "Daŭrigu enŝipiĝon",
+    "createSubtitle": "Elektu ensalutmetodon por protekti vian sekurecan grafikaĵon.",
+    "phoneVerification": "Telefona konfirmo",
+    "sendCode": "Sendu kodon",
+    "sendingCode": "Sendante kodon...",
+    "verifyCode": "Konfirmu kodon",
+    "sentTo": "Sendita al %{phone}",
+    "yourPhone": "via telefono",
+    "verificationCode": "Konfirma kodo",
+    "verify": "Konfirmu",
+    "verifying": "Konfirmante...",
+    "invalidCode": "Enigu la konfirmkodon.",
+    "signInFailedTitle": "Ensaluto interrompita",
+    "signInFailedMessage": "Ni ne povis kompletigi ensaluti. Kontrolu vian konekton kaj provu denove.",
+    "googleUnavailableTitle": "Google Ensaluto ne disponebla",
+    "googleUnavailableMessage": "Uzante lokan evoluan sesion. Indiĝena Google Ensaluto funkcias en evolukonstruaĵo.",
+    "northStarTitle": "NorthStar juvelaĵoj",
+    "northStarSubtitle": "Parigi nun aŭ daŭrigu kaj aldonu ĝin poste.",
+    "northStarBody": "La VL01 portebla povas ekigi sekurecajn fluojn per frapetoj kaj longaj gazetaj gestoj.",
+    "setupJewelry": "Agordu juvelojn",
+    "meetCapybear": "Renkontu Capybear",
+    "meetCapybearSubtitle": "Via milda sekureca kunulo sur la mapo kaj en vokoj.",
+    "capybearBody": "Capybear povas helpi kun hejma reĝimo, kuratora reĝimo, kriz-reĝimo, senkulpigaj vokoj kaj voĉa subteno.",
+    "chooseVoice": "Elektu voĉon",
+    "capybearReminder": "Capybear memorigilo",
+    "remindersReady": "Mildaj memorigiloj estas pretaj."
+  },
+  "permissions": {
+    "locationTitle": "Loksekureco",
+    "locationSubtitle": "Uzita por la mapo, danĝerzonoj, sekura alveno kaj SOS kunteksto.",
+    "locationBody": "VeryLoving petas lokon por ke gardantoj povu kompreni kie helpo povas esti bezonata. Vi povas ŝanĝi ĉi tion poste en Agordoj.",
+    "allowLocation": "Permesi lokon",
+    "notificationsTitle": "Atentigoj pri sekureco",
+    "notificationsSubtitle": "Scizoj subtenas enskribojn kaj krizajn eventojn.",
+    "notificationsBody": "Ni nur uzas sciigojn por sekurecaj instrukcioj, krizaj ĝisdatigoj kaj memorigiloj, kiujn vi ebligas.",
+    "enableNotifications": "Ebligu sciigojn",
+    "locationRationaleTitle": "Loko konservas sekurecan kuntekston preciza",
+    "locationRationaleMessage": "VeryLoving uzas vian lokon por la sekureca mapo, danĝerzonoj, rapida kundivido kaj SOS kunteksto. Vi povas ŝanĝi ĉi tion poste en Agordoj.",
+    "notificationsRationaleTitle": "Atentigoj pri sekureco bezonas sciigojn",
+    "notificationsRationaleMessage": "VeryLoving sendas enregistrajn memorigilojn, krizajn ĝisdatigojn kaj sekurecajn instigojn, kiujn vi ebligas. Ni ne uzas sciigojn por reklamoj.",
+    "microphoneRationaleTitle": "Mikrofono funkciigas sekurecajn vokojn",
+    "microphoneRationaleMessage": "VeryLoving uzas vian mikrofonon nur kiam vi komencas AI kunulon aŭ sekurecan vokon.",
+    "bluetoothRationaleTitle": "Bluetooth ligas vian porteblan",
+    "bluetoothRationaleMessage": "VeryLoving uzas Bluetooth por pariĝi kun NorthStar juvelaĵoj, legi konektan staton kaj ekigi sekurecajn fluojn de la portebla.",
+    "cameraRationaleTitle": "Fotilo estas laŭvola",
+    "cameraRationaleMessage": "VeryLoving uzas la fotilon nur kiam vi elektas fari profilfoton aŭ dividi sekurecan bildon."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving tenas ĉi tiun fluon havebla de Agordoj kaj la panelo.",
+    "chooseVoiceTitle": "Elektu vian voĉon",
+    "chooseVoiceSubtitle": "Elektu la kunulan voĉon, kiu sentiĝas plej sekura por aŭdi.",
+    "homeTitle": "Hejma reĝimo",
+    "homeSubtitle": "Trankvila monitorado por ĉiutaga sekureco.",
+    "guardianTitle": "Reĝimo Gardisto",
+    "guardianSubtitle": "Kunhavigu kuntekston kun fidindaj homoj.",
+    "emergencyTitle": "Krizreĝimo",
+    "emergencySubtitle": "Kvin frapetoj povas eskaladi al SOS kaj gardisto-atentigoj.",
+    "excuseTitle": "Pardonu vokon",
+    "excuseSubtitle": "Kreu gracian kialon por forlasi malkomfortan situacion.",
+    "safetyCallTitle": "Sekurecvoko",
+    "safetyCallSubtitle": "Komencu realtempan kunulvokon kiam vi bezonas subtenon.",
+    "practiceTitle": "Sceno de praktiko",
+    "practiceSubtitle": "Provu la sekurecajn fluojn en malaltprema pruvo."
+  },
+  "jewelry": {
+    "pairTitle": "Paro NorthStar",
+    "pairSubtitle": "Konservu la juvelojn proksime dum skanado.",
+    "scan": "Skanu por aparatoj",
+    "scanning": "Skanado proksime...",
+    "noDevices": "Neniu proksimaj NorthStar aparatoj ankoraŭ trovitaj.",
+    "scanStartFailed": "Bluetooth skanado ne povis komenci. Bonvolu provi denove.",
+    "scanFailed": "Ni ne povis trovi apudajn juvelaĵojn. Kontrolu Bluetooth, tenu NorthStar proksime, kaj provu denove.",
+    "scanAccessFailed": "Bluetooth skanado ne povis komenciĝi. Kontrolu Bluetooth aliron kaj provu denove.",
+    "permissionDenied": "Aliro al proksima aparato estas malŝaltita. Permesu Bluetooth aliron en Agordoj, tiam provu denove.",
+    "connectTimeout": "NorthStar daŭris tro longe por konektiĝi. Movu ĝin pli proksimen kaj provu denove.",
+    "connectFailed": "Ni ne povis konektiĝi al NorthStar. Kontrolu, ke ĝi estas ŝargita kaj proksima, tiam provu denove.",
+    "emptyTitle": "Ankoraŭ neniuj proksimaj aparatoj",
+    "emptyMessage": "Tenu NorthStar ŝarĝita kaj proksime al ĉi tiu telefono, poste skanu denove.",
+    "searchingMessage": "Serĉas NorthStar aparatojn proksime..."
+  },
+  "home": {
+    "subtitle": "Sekureca kunulpanelo",
+    "modeStatus": "%{mode} MODO",
+    "companionReady": "%{name} estas preta",
+    "readyBody": "Voĉo, mapo, juvelaĵo kaj gardistoj estas unu frapeto for.",
+    "safetyCall": "Sekurecvoko",
+    "northStarDevice": "NorthStar aparato",
+    "deviceConnected": "%{name} konektita · %{battery}%",
+    "noDevice": "Neniu aparato konektita",
+    "manageDevice": "Administri aparaton",
+    "mode": "Reĝimo",
+    "modes": {
+      "home": "Hejme",
+      "guardian": "Gardisto",
+      "emergency": "Krizo"
+    }
+  },
+  "map": {
+    "finding": "Trovante vian lokon...",
+    "retry": "Reprovi lokon",
+    "title": "Sekurecmapo",
+    "previewSubtitle": "Expo Go antaŭrigardo; Mapbox bildigas en evolukonstruaĵo.",
+    "preview": "Antaŭrigardo de mapo",
+    "risk": "Risko: %{risk} · Radiuso %{radius}m",
+    "refresh": "Refreŝigi lokon",
+    "refreshing": "Trovante lokon...",
+    "updateFailed": "Ni ne povis ĝisdatigi vian lokon. Bonvolu provi denove.",
+    "notRequested": "Lokaliro ne estis petita. Vi povas ebligi ĝin poste de Agordoj.",
+    "permissionOff": "Lokaliro estas malŝaltita. Ebligu ĝin en Agordoj por centri la sekurecan mapon sur vi.",
+    "timeout": "Via loko daŭras pli longe ol atendite. Movu ien kun pli klara signalo kaj provu denove.",
+    "savedTitle": "Konservitaj lokoj",
+    "savedEmptyTitle": "Ankoraŭ neniuj konservitaj lokoj",
+    "savedEmptyMessage": "Fidaj lokoj, kiujn vi konservas, aperos ĉi tie por rapida aliro.",
+    "zones": {
+      "crowding": "Malfrunokta amasiĝo",
+      "lowLighting": "Malalta lumiga areo"
+    },
+    "risks": {
+      "low": "malalta",
+      "medium": "mezulo",
+      "high": "alta"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Konektante...",
+    "offlineCompanion": "Eksterreta kunulo",
+    "offline": "Senrete",
+    "connected": "Konektita",
+    "interrupted": "Konekto interrompita",
+    "ready": "Preta por konekti",
+    "connectingSecurely": "Sekure konektante al via voĉa kunulo...",
+    "messagesWaiting": {
+      "one": "%{count} mesaĝo atendas sendon",
+      "other": "%{count} mesaĝoj atendantaj sendo"
+    },
+    "useOffline": "Uzu senkonektan kunulon",
+    "reconnect": "Rekonekti al voĉo AI",
+    "typePlaceholder": "Tajpu se paroli estas malfacile",
+    "endCall": "Finu vokon",
+    "startCall": "Komencu vokon",
+    "emptyTitle": "Via konversacio komenciĝas ĉi tie",
+    "emptyMessage": "Komencu la vokon aŭ tajpu mesaĝon kiam vi estas preta."
+  },
+  "chat": {
+    "waiting": "Atendante konekton",
+    "notSent": "Mesaĝo ne sendita.",
+    "retryAccessibility": "Reprovu sendi mesaĝon"
+  },
+  "history": {
+    "clearTitle": "Ĉu forigi konversacian historion?",
+    "clearMessage": "Ĉi tio forigas konservitajn AI akompanajn mesaĝojn de ĉi tiu aparato.",
+    "deleteTitle": "Ĉu forigi ĉi tiun konversacion?",
+    "cannotUndo": "Ĉi tio ne povas esti malfarita.",
+    "title": "Historio de konversacio",
+    "subtitle": "AI akompanaj mesaĝoj konservitaj en ĉi tiu aparato.",
+    "empty": "Ankoraŭ neniuj konversacioj konservitaj.",
+    "emptyTitle": "Ankoraŭ neniuj konversacioj",
+    "emptyMessage": "Viaj AI akompanaj konversacioj aperos ĉi tie post via unua voko.",
+    "loadFailed": "Ni ne povis ŝargi konversacian historion. Bonvolu provi denove.",
+    "clearFailed": "Ni ne povis malbari konversacian historion. Bonvolu provi denove.",
+    "deleteFailed": "Ni ne povis forigi tiun konversacion. Bonvolu provi denove.",
+    "aiCompanion": "AI kunulo",
+    "resume": "Rekomenci",
+    "clearAll": "Forigi la tutan historion",
+    "roles": {
+      "assistant": "kunulo",
+      "user": "vi"
+    }
+  },
+  "voices": {
+    "title": "Miaj sekurecaj vokoj",
+    "subtitle": "Elektu la kunulan voĉon, kiu sentas bone aŭdi.",
+    "test": "Prova voĉo",
+    "stop": "Ĉesu specimenon",
+    "selectionFailedTitle": "Selektado ne konservita",
+    "selectionFailedMessage": "Bonvolu provi elekti la voĉon denove.",
+    "sampleFailedTitle": "Provaĵo nedisponebla",
+    "sampleFailedMessage": "Tiu ĉi voĉeksploro ne povis esti ludita. Bonvolu provi denove.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mola, trankvila, surgrunda"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "hela, trankviliga, konversacia"
+      },
+      "boyfriend": {
+        "name": "Fianĉo",
+        "description": "firma, amema, ĉeestanta"
+      },
+      "muscleMan": {
+        "name": "Muskolisto",
+        "description": "fida, protekta, instiga"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Voĉo",
+    "changeVoice": "Ŝanĝi voĉon",
+    "showCompanion": "Montri kunulon",
+    "offlineMode": "Reĝimo eksterrete",
+    "offlineModeSubtitle": "Uzu kunigitajn respondojn kiam la reto aŭ Hume akreditaĵoj ne estas disponeblaj.",
+    "privacyData": "Privateco kaj datumoj",
+    "privacyBody": "Eksportu aŭ forigu la lokajn datumojn konservitajn en ĉi tiu aparato.",
+    "preparingExport": "Preparado de eksporto...",
+    "exportData": "Eksportu miajn datumojn",
+    "privacyPolicy": "Privateca politiko",
+    "deleting": "Forigante...",
+    "deleteAll": "Forigu ĉiujn lokajn datumojn",
+    "deviceManagement": "Administrado de aparatoj",
+    "emergencyContacts": "Krizaj kontaktoj",
+    "signOut": "Eliru",
+    "exportFailedTitle": "Eksporto malsukcesis",
+    "exportFailedMessage": "Ne eblas eksporti viajn datumojn nun.",
+    "deleteConfirmTitle": "Ĉu forigi ĉiujn lokajn datumojn?",
+    "deleteConfirmMessage": "Ĉi tio forigas vian profilon, agordojn, krizajn kontaktojn, konversacian historion, permesajn memorigilojn kaj lokan aŭtentsesion de ĉi tiu aparato.",
+    "deleteEverything": "Forigi ĉion",
+    "deleteFailedTitle": "Forigo malsukcesis",
+    "deleteFailedMessage": "Ne eblas forigi lokajn datumojn nun.",
+    "linkFailed": "Ne eblas malfermi ligilon",
+    "sections": {
+      "language": "Lingvo",
+      "languageSubtitle": "Interfaco kaj sistema permesa lingvo",
+      "companion": "Kunulo",
+      "companionSubtitle": "Voĉaj kaj eksterretaj preferoj",
+      "deviceSafety": "Aparatoj kaj sekureco",
+      "deviceSafetySubtitle": "NorthStar, gardantoj kaj krizaj kontaktoj",
+      "privacy": "Privateco kaj datumoj",
+      "privacySubtitle": "Historio, eksporto, forigo kaj politiko",
+      "account": "Konto",
+      "accountSubtitle": "Via nuna VeryLoving sesio"
+    },
+    "updateFailedTitle": "Agordo ne konservita",
+    "updateFailedMessage": "Ni ne povis konservi tiun preferon. Bonvolu provi denove.",
+    "signOutFailedTitle": "Ne eblis elsaluti",
+    "signOutFailedMessage": "Via sesio ankoraŭ estas aktiva. Bonvolu provi denove."
+  },
+  "contacts": {
+    "title": "Krizaj kontaktoj",
+    "subtitle": "Fidaj homoj haveblaj dum sekurecaj fluoj.",
+    "addTitle": "Aldonu kriz-kontakton",
+    "name": "Nomo",
+    "namePlaceholder": "Nomo de kontakto",
+    "phone": "Kontaktu telefonnumeron",
+    "add": "Aldonu kontakton",
+    "empty": "Ankoraŭ neniuj krizaj kontaktoj aldonitaj.",
+    "emptyTitle": "Ankoraŭ neniuj krizaj kontaktoj",
+    "emptyMessage": "Aldonu iun, kiun vi fidas, por ke ili estu pretaj kiam sekureca fluo bezonas ilin.",
+    "removeTitle": "Forigi %{name}?",
+    "removeMessage": "Ĉi tiu persono ne plu aperos en via kriza fluo.",
+    "nameRequired": "Enigu la nomon de la kontakto.",
+    "saveFailedTitle": "Kontakto ne konservita",
+    "saveFailedMessage": "Ni ne povis konservi ĉi tiun kontakton. Kontrolu la detalojn kaj provu denove.",
+    "removeFailedTitle": "Kontakto ne forigita",
+    "removeFailedMessage": "Ni ne povis forigi ĉi tiun kontakton. Bonvolu provi denove.",
+    "callAccessibility": "Voku %{name}",
+    "removeAccessibility": "Forigi %{name}"
+  },
+  "device": {
+    "title": "Aparato-administrado",
+    "subtitle": "Administru vian NorthStar aparaton.",
+    "connected": "Konektita · %{battery}% baterio",
+    "none": "Neniu aparatoj konektitaj",
+    "disconnect": "Malkonekti aparaton",
+    "connect": "Konekti aparaton"
+  },
+  "friends": {
+    "title": "Amikoj",
+    "subtitle": "Gardantoj, petoj kaj kriz-grafiko.",
+    "addDemo": "Aldonu demo-amikon",
+    "emptyTitle": "Via sekureca rondo estas malplena",
+    "emptyMessage": "Fidaj amikoj kaj gardantoj aperos ĉi tie post kiam ili estos aldonitaj.",
+    "newGuardian": "Nova Gardisto",
+    "statuses": {
+      "guardian": "Gardisto",
+      "pending": "Pritraktata"
+    }
+  },
+  "emergency": {
+    "title": "Krizo SOS",
+    "subtitle": "Gravu nur kiam vi bezonas tujan subtenon.",
+    "body": "Ĉi tio sciigos vian sekurecan fluon kaj preparos krizajn kontaktojn.",
+    "activate": "Aktivigi SOS",
+    "callCompanion": "Voku AI kunulo",
+    "notificationTitle": "SOS aktivigita",
+    "notificationBody": "Via kriza fluo estas preta.",
+    "readyTitle": "SOS preta",
+    "callContact": "Voki %{name}?",
+    "addContact": "Aldonu krizkontakton en Agordoj.",
+    "quickShareTitle": "Rapida kundivido",
+    "quickShareMessage": "Stumpo pri kundivido de loko estas preta. Konektu la backend-dividan finpunkton por sendi vivajn ligilojn."
+  },
+  "quickShare": {
+    "title": "Rapida kundivido",
+    "subtitle": "Lokdivida fluo estas preta."
+  },
+  "capybearTap": {
+    "title": "Capybear frapeti",
+    "subtitle": "Frapu duoble vian NorthStar por faligi sekurecan oranĝon.",
+    "body": "Gesta vojo estas preta por BLE-okazaĵdratado."
+  },
+  "debug": {
+    "title": "VeryLoving sencimiga paĝo",
+    "subtitle": "Itinero por nur disvolviĝo."
+  },
+  "errors": {
+    "voiceOffline": "Vi ŝajnas eksterrete. Via mesaĝo estos sendita kiam vi rekonektos.",
+    "voiceQueued": "Mesaĝo konservita. Ĝi estos sendita kiam la voĉa kunulo rekonektas.",
+    "voiceRetrying": "Provas sendi vian mesaĝon denove...",
+    "voiceConnecting": "Sekure konektante al via voĉa kunulo...",
+    "microphone": "Aliro al mikrofono estas necesa por voĉvokoj. Vi povas ebligi ĝin en Agordoj, aŭ tajpi mesaĝon anstataŭe.",
+    "billing": "La interreta voĉa kunulo estas provizore neatingebla. Vi povas daŭrigi kun la eksterreta kunulo.",
+    "authentication": "La voĉa kunulo ne povis kontroli ĉi tiun seancon. Ensalutu denove aŭ uzu la senkonektan kunulon por nun.",
+    "timeout": "La voĉa kunulo daŭris tro longe por respondi. Kontrolu vian konekton kaj provu denove.",
+    "network": "Ni ne povis atingi la voĉan kunulon. Kontrolu vian konekton, tiam provu denove aŭ daŭrigu eksterrete.",
+    "genericVoice": "Io interrompis la voĉvokon. Provu denove, aŭ daŭrigu kun la eksterreta kunulo."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving eksporto de datumoj"
+  },
+  "notifications": {
+    "channelName": "Atentigoj pri sekureco"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving bezonas mikrofonan aliron por sekureco kaj AI kunulvokoj.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving uzas vian lokon por la sekureca mapo kaj proksimaj sekurecaj funkcioj.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving uzas vian lokon por subteni sekuran alvenon kaj krizajn fluojn.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving uzas fonan lokon por sekura alveno kaj proksimaj danĝerzonaj funkcioj.",
+      "NSCameraUsageDescription": "VeryLoving uzas la fotilon nur kiam vi elektas fari profilon aŭ sekurecan foton.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving uzas vian fotobibliotekon nur kiam vi elektas profilon aŭ sekurecan bildon.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uzas Bluetooth por konekti al viaj NorthStar sekurecaj juvelaĵoj.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving uzas Bluetooth por konekti al viaj NorthStar sekurecaj juvelaĵoj."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

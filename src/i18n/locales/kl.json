@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ilanngussaq",
+    "apple": "Apple",
+    "back": "Taarsiullugu",
+    "call": "Sianerit",
+    "cancel": "Ataarsiuk",
+    "clear": "Ersarissumik",
+    "close": "Suli",
+    "connect": "Attaveqarneq",
+    "connecting": "Attaveqarneq...",
+    "continue": "Ingerlatiinnaruk",
+    "delete": "Piineq",
+    "finish": "Naammassineq",
+    "friends": "Ikinngutit",
+    "google": "Google",
+    "home": "Illu",
+    "loading": "Ikkussineq...",
+    "map": "Nunnguaq",
+    "notNow": "Maannaunngilaq",
+    "remove": "Peerlugu",
+    "retry": "Misilittariaqarpat",
+    "retrying": "Misilitsinneq",
+    "save": "Annaasaqarit",
+    "selected": "Toqqakkat",
+    "send": "Nassiussaq",
+    "settings": "Inissiissutit",
+    "skip": "Ataaruk",
+    "skipForNow": "Maannamut skip",
+    "skipTutorial": "Ilinniartitsineq qaangerlugu",
+    "sos": "SOS",
+    "unknown": "Ilisimaneqanngilaq",
+    "user": "VeryLoving atuisoq",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Oqaatsit",
+    "subtitle": "App-imi tamani oqaatsit atorneqartut toqqaruk.",
+    "system": "Systemip atorneqarnera",
+    "search": "Oqaatsit ujarlugit",
+    "noResults": "Oqaatsit arlaannaalluunniit ujaasinernut naleqqutinngillat.",
+    "english": "tuluit oqaasii",
+    "spanish": "spanskisut",
+    "french": "Franskisut",
+    "chineseSimplified": "kiinamiusut (Ajornannginnerusoq)"
+  },
+  "phone": {
+    "label": "Oqarasuaatip normua",
+    "placeholder": "Oqarasuaatip normua",
+    "selectCountry": "Nuna imaluunniit sumiiffik toqqaruk",
+    "searchCountry": "Nuna, kode imaluunniit sianerfiup siulliup ujarlugu",
+    "noCountries": "Nunat arlaannaalluunniit ujaasinermut naleqqutinngillat.",
+    "countryButton": "Nuna allanngortiguk, ullumikkut %{country} plus %{callingCode}",
+    "inputAccessibility": "%{country}-mut oqarasuaatip normua",
+    "required": "Oqarasuaatip normua allaguk.",
+    "tooShort": "Oqarasuaatip normua una sivikippallaarpoq.",
+    "tooLong": "Oqarasuaatip normua una sivikippallaarpoq.",
+    "invalid": "Nunamut toqqarneqarsimasumut oqarasuaatip normua atuuttoq allattukkit.",
+    "valid": "Nunat tamalaat akornanni oqarasuaatip normua atuuttoq"
+  },
+  "auth": {
+    "onboardingTagline": "Piffinni ”I’m fine”-p aamma ”I need help”-ip akornanni inuup nammineq isumannaallisaanermut inngiaqataasoq.",
+    "createAccount": "Kontomik pilersitsineq",
+    "continueOnboarding": "Ingerlatiinnarlugu onboarding",
+    "createSubtitle": "Isumannaallisaanermut grafik illersorniarlugu allattorsimaffimmi periuseq toqqaruk.",
+    "phoneVerification": "Telefonikkut uppernarsaaneq",
+    "sendCode": "Kode nassiuk",
+    "sendingCode": "Kodemik nassiussineq...",
+    "verifyCode": "Kode uppernarsaruk",
+    "sentTo": "Umut nassiunneqarpoq %{phone}",
+    "yourPhone": "telefonivit",
+    "verificationCode": "Uppernarsaanermut kode",
+    "verify": "Uppernarsaruk",
+    "verifying": "Uppernarsaaneq...",
+    "invalidCode": "Uppernarsaanerup kode-a allaguk.",
+    "signInFailedTitle": "Iserneq unitsinneqarpoq",
+    "signInFailedMessage": "Atsiornissaq naammassiniarsinnaasimanngilagut. Attaveqaatit misissukkit misiliillutillu.",
+    "googleUnavailableTitle": "Google Sign-In atorneqarsinnaanngilaq",
+    "googleUnavailableMessage": "Sumiiffimmi ineriartortitsinermik ataatsimeersuarneq atorlugu. Native Google Sign-In ineriartortitsinermi sanaartornermi sulisarpoq.",
+    "northStarTitle": "NorthStar pinnersaatinik",
+    "northStarSubtitle": "Paariuk maanna imaluunniit ingerlaqqillutit kingusinnerusukkut ilanngukkit.",
+    "northStarBody": "VL01 wearable-ip isumannaallisaanermut strøm-it tap-inik aammalu sivisuumik tryk-gestur-inik pilersitsisinnaavoq.",
+    "setupJewelry": "Pinnersaatinik inissiisarneq",
+    "meetCapybear": "Naapigit Capybear",
+    "meetCapybearSubtitle": "Illit isumannaallisaanermut inngiaqatitit nunap assiganik aamma sianernerni.",
+    "capybearBody": "Capybear angerlarsimaffimmi atuinermut, angajoqqaatut atuinermut, pilertortumik atuinermut, pisuutitsilluni sianernermut, aamma nipimik tapersersuinermut iluaqutaasinnaavoq.",
+    "chooseVoice": "Nipit toqqaruk",
+    "capybearReminder": "Capybear eqqaamasaqarneq",
+    "remindersReady": "Eqqaatissiissutit sapinngisamik piareerput."
+  },
+  "permissions": {
+    "locationTitle": "Sumiiffimmi isumannaallisaaneq",
+    "locationSubtitle": "Atorneqarpoq nunap assiganut, ulorianartorsiorfiusunut, isumannaatsumik tikittarnermut, aamma SOS sammivimmut.",
+    "locationBody": "VeryLoving sumiiffimmik piumasaqarpoq, taamaalilluni angajoqqaat paasiniarsinnaaqqullugit sumi ikiorneqarnissaq pisariaqartinneqarsinnaanersoq. Tamanna kingusinnerusukkut Instillinger-imi allanngortissinnaavat.",
+    "allowLocation": "Sumiiffik akueriuk",
+    "notificationsTitle": "Isumannaallisaanermut nalunaarutit",
+    "notificationsSubtitle": "Nalunaarutiginninnerit check-in-inik aamma ajunaartoqarneranik tapersersuisarput.",
+    "notificationsBody": "Isumannaallisaanermut piumasaqaatinut, pilertortumik nutarterinernut, aamma eqqaamasassanut illit atuutilersittartakkanut nalunaarutit kisimik atortarpagut.",
+    "enableNotifications": "Nalunaarutit atulersikkit",
+    "locationRationaleTitle": "Sumiiffiup isumannaallisaanermut tunngasut eqqortumik inissisimatinniarpai",
+    "locationRationaleMessage": "VeryLoving isumannaallisaanermut nunap assiganut, ulorianartorsiorfiusunut, sukkasuumik avitseqatigiinnermut aamma SOS-mut sumiiffiit atortarpai. Tamanna kingusinnerusukkut Instillinger-imi allanngortissinnaavat.",
+    "notificationsRationaleTitle": "Isumannaallisaanermut nalunaarutiginninnerit pisariaqartippaat",
+    "notificationsRationaleMessage": "VeryLoving nassiussavaa check-in-imut eqqaamasassanik, pilertortumik nutarterinernik, aamma isumannaallisaanermut piumasaqaatinik illit atuutilersissinnaasatit. Ussassaartutit pillugit nalunaarutit atorneq ajorpagut.",
+    "microphoneRationaleTitle": "Mikrofoni isumannaallisaanermut sianernernut atuivoq",
+    "microphoneRationaleMessage": "VeryLoving mikrofoni atortarpaa aatsaat AI-mik inngiaqateqarnissamut imaluunniit isumannaallisaanermut sianernissamut aallartitsiguit.",
+    "bluetoothRationaleTitle": "Bluetooth wearable-imut atassuteqarpoq",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth atortarpaa NorthStar-mik pinnersaatinik paarlaasseqatigiinnissamut, attaveqarnerup inissisimanera atuarnissaanut, aammalu atorneqarsinnaasumit isumannaallisaanermut strøm-inik aallartitsinissamut.",
+    "cameraRationaleTitle": "Kamera toqqarneqarsinnaavoq",
+    "cameraRationaleMessage": "VeryLoving aatsaat profilimi assilisassiornissaq imaluunniit isumannaallisaanermut assilisassiornissaq toqqarukku kamera atortarpaa."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving-ip flow-i taanna Instillinger-imiit aamma dashboard-imiit pissarsiarineqarsinnaanngortittarpaa.",
+    "chooseVoiceTitle": "Nipit toqqaruk",
+    "chooseVoiceSubtitle": "Inngiaqatit nipi tusarnissaanut isumannaatsumik misigisoq toqqaruk.",
+    "homeTitle": "Illumi atortoq",
+    "homeSubtitle": "Ulluinnarni isumannaallisaanermut nipimik nakkutilliineq.",
+    "guardianTitle": "Illersuisutut atortoq",
+    "guardianSubtitle": "Inuit tatigineqarsinnaasut kontekstimik avitseqatigikkit.",
+    "emergencyTitle": "Ajunaarnersuaqarnermi atortoq",
+    "emergencySubtitle": "Tappinerit pingasut SOS-mut aamma guardian-imut mianersoqqussummut eskalersinnaapput.",
+    "excuseTitle": "Utoqqatsissutigiuk sianerneq",
+    "excuseSubtitle": "Pissutsimik ajunngitsumik qimagussornissamut pissutissaqartitsineq.",
+    "safetyCallTitle": "Isumannaallisaanermut sianerneq",
+    "safetyCallSubtitle": "Tapersersorneqarnissamik pisariaqartitsiguit piffissaq eqqorlugu inussiarnersumik sianerneq aallartiguk.",
+    "practiceTitle": "Scene sungiusarneq",
+    "practiceSubtitle": "Misilittaruk isumannaallisaanermut strømmit allamik tryk-demo-mi."
+  },
+  "jewelry": {
+    "pairTitle": "Paarisaq NorthStar",
+    "pairSubtitle": "Scannerinermi pinnersaatinik qanittukkut inissitsigit.",
+    "scan": "Atortut pillugit scannerneq",
+    "scanning": "Qanittumi scannerneq...",
+    "noDevices": "Atortut NorthStar qaninnerpaat suli nassaarineqanngillat.",
+    "scanStartFailed": "Bluetooth scannerneq aallartisinnaasimanngilaq. Misilittariaqarpat.",
+    "scanFailed": "Qaninnermi pinnersaatinik nassaarsinnaasimanngilagut. Bluetooth misissukkit, NorthStar qanilliartortiguk, misileqqillugulu.",
+    "scanAccessFailed": "Bluetooth scannerneq aallartisinnaasimanngilaq. Bluetooth isertitsineq misissukkit misiliillutillu.",
+    "permissionDenied": "Atortumut qaninnermut isersinnaaneq qamippoq. Inuussutissarsiutini Bluetooth-mik isertitsigit, taava misiliigit.",
+    "connectTimeout": "NorthStar attaveqarnissaanut sivisuumik piffissaqarsimavoq. Qaninnerusumut nuuguk misiliillunilu.",
+    "connectFailed": "NorthStar-mut attaveqarsinnaasimanngilagut. Misissukkit akilerneqarsimasoq aamma qaninnersoq, taava misiliigit.",
+    "emptyTitle": "Suli qaninnerpaamik atortunik peqanngilaq",
+    "emptyMessage": "NorthStar charger-erlugu telefonimut una qanilliartortiguk, taava scanner-erlugu.",
+    "searchingMessage": "Atortunik NorthStar-nik qanittukkut ujaasivunga..."
+  },
+  "home": {
+    "subtitle": "Isumannaallisaanermut inussiarnersumik instrumentbordi",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} piareersimavoq",
+    "readyBody": "Nipit, nunap assiga, pinnersaatinik, aammalu illersuisunik ataatsimik ungasissuseqarput.",
+    "safetyCall": "Isumannaallisaanermut sianerneq",
+    "northStarDevice": "NorthStar atortoq",
+    "deviceConnected": "%{name} attaveqartoq · %{battery}%",
+    "noDevice": "Atortoq attaveqanngilaq",
+    "manageDevice": "Atortoq aqutsiuk",
+    "mode": "Modus",
+    "modes": {
+      "home": "Illu",
+      "guardian": "Ingerlatsisoq",
+      "emergency": "Ajornartorsiut"
+    }
+  },
+  "map": {
+    "finding": "Sumiiffiit nassaariniarlugu...",
+    "retry": "Sumiiffissaq misissoruk",
+    "title": "Isumannaallisaanermut nunap assiga",
+    "previewSubtitle": "Expo Go siullermeerneq; Mapbox ineriartortitsinermi sanaartornermi renderertarpoq.",
+    "preview": "Nunnguap assinga siullermeerlugu",
+    "risk": "Ajornartorsiut: %{risk} · Radius %{radius}m",
+    "refresh": "Sumiiffik nutarterlugu",
+    "refreshing": "Sumiiffimmik nassaarneq...",
+    "updateFailed": "Sumiiffiit nutartersinnaasimanngilagut. Misilittariaqarpat.",
+    "notRequested": "Sumiiffimmut isernissaq piumasarineqanngilaq. Instillinger-imiit kingusinnerusukkut atorsinnaavat.",
+    "permissionOff": "Sumiiffimmut isernissaq qaminneqarpoq. Instillinger-imi atukkit, isumannaallisaanermut nunap assiga ilinnut centereqqullugu.",
+    "timeout": "Sumiiffiit naatsorsuutigisamiit sivisuneruvoq. Ersarissumik nalunaaqutsiussamik allamut nuugit misiliillutillu.",
+    "savedTitle": "Sumiiffiit annaaneqarsimasut",
+    "savedEmptyTitle": "Suli sumiiffiit annaanneqanngillat",
+    "savedEmptyMessage": "Sumiiffiit tatigineqarsinnaasut uani takussaapput sukkasuumik isernissamut.",
+    "zones": {
+      "crowding": "Unnukkut kingusissukkut inuppassuarnik",
+      "lowLighting": "Qulliit aalajangersimasut"
+    },
+    "risks": {
+      "low": "allat",
+      "medium": "agguaqatigiissillugu",
+      "high": "høj"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Attaveqarneq...",
+    "offlineCompanion": "Offline-imik inooqataasoq",
+    "offline": "Attaveqanngitsoq",
+    "connected": "Attaveqartoq",
+    "interrupted": "Attaveqarneq unitsinneqarpoq",
+    "ready": "Attaveqarnissamut piareersimavoq",
+    "connectingSecurely": "Nipit inngiaqatinnut isumannaatsumik attaveqarneq...",
+    "messagesWaiting": {
+      "one": "%{count} nalunaarusiaq nassiunneqarnissaanut utaqqisoq",
+      "other": "%{count} allakkat nassiunneqarnissaat utaqqisut"
+    },
+    "useOffline": "Offline-imik inngiaqateqarneq atoruk",
+    "reconnect": "Nipit AI-mut attaveqaqqikkit",
+    "typePlaceholder": "Oqalunneq ajornakusoorpat allaguk",
+    "endCall": "Sianerit naammassiuk",
+    "startCall": "Aallartitsineq sianerneq",
+    "emptyTitle": "Oqaloqatigiinnerit uani aallartissaaq",
+    "emptyMessage": "Sianerneq aallartiguk imaluunniit piareersimaguit allakkat allaguk."
+  },
+  "chat": {
+    "waiting": "Attaveqarnissamut utaqqineq",
+    "notSent": "Nalunaarutigineqanngilaq.",
+    "retryAccessibility": "Paasissutissaq nassiunniarlugu misiliigit"
+  },
+  "history": {
+    "clearTitle": "Oqaloqatigiinnerup oqaluttuassartaa erseqqissoq?",
+    "clearMessage": "Taamaalilluni atortumiit AI-mik allakkanik allanneqarsimasunik peersitsivoq.",
+    "deleteTitle": "Oqaloqatigiinneq una piiaruk?",
+    "cannotUndo": "Tamanna unitsinneqarsinnaanngilaq.",
+    "title": "Oqaloqatigiinnerup oqaluttuassartaa",
+    "subtitle": "AI inngiaqatimi allakkat atortumi tassani toqqoqqapput.",
+    "empty": "Oqaloqatigiinnerit suli annaanneqanngillat.",
+    "emptyTitle": "Suli oqaloqatigiittoqanngilaq",
+    "emptyMessage": "Inngiaqatitit AI oqaloqatigiinnerit siullerpaamik sianernerup kingorna uani takussaapput.",
+    "loadFailed": "Oqaloqatigiinnerup oqaluttuassartaa ikkussinnaasimanngilagut. Misilittariaqarpat.",
+    "clearFailed": "Oqaloqatigiinnerup oqaluttuassartaa erseqqissarsinnaanngilarput. Misilittariaqarpat.",
+    "deleteFailed": "Oqaloqatigiinneq taanna piiarsinnaasimanngilagut. Misilittariaqarpat.",
+    "aiCompanion": "AI inussiarnersumik",
+    "resume": "Ingerlatsineq",
+    "clearAll": "Oqaluttuassartaq tamaat peerlugu",
+    "roles": {
+      "assistant": "inngiaqqat",
+      "user": "illit"
+    }
+  },
+  "voices": {
+    "title": "Isumannaallisaanermut sianerfigisakka",
+    "subtitle": "Inngiaqatit nipi tusarnissaanut eqqortumik misigisoq toqqaruk.",
+    "test": "Misilitsissut nipi",
+    "stop": "Stop-imik misissuineq",
+    "selectionFailedTitle": "Toqqakkat allanneqarsimanngillat",
+    "selectionFailedMessage": "Nipit toqqarlugit misiliigit.",
+    "sampleFailedTitle": "Prøve pissarsiarineqarsinnaanngilaq",
+    "sampleFailedMessage": "Nipit misiliutaat una tusarnaarneqarsinnaasimanngilaq. Misilittariaqarpat.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "qittoq, eqqissisimasoq, nunamut tunngasoq"
+      },
+      "bestie": {
+        "name": "Pitsaannaq",
+        "description": "qaammaarisoq, eqqissisitsisoq, oqaloqatigiinnermik"
+      },
+      "boyfriend": {
+        "name": "Angusaq",
+        "description": "eqqissisimasumik, asannittumik, najuuttumik"
+      },
+      "muscleMan": {
+        "name": "Muskelman",
+        "description": "imminut tatigisoq, illersuisoq, kajumissisitsisoq"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Nipit",
+    "changeVoice": "Nipit allanngortikkit",
+    "showCompanion": "Takutiguk inngiaqatigisaq",
+    "offlineMode": "Offline-imik atuineq",
+    "offlineModeSubtitle": "Netværki imaluunniit Hume uppernarsaatinik atuisinnaanngippata ataatsimoorussamik akissuteqaatit atorlugit.",
+    "privacyData": "Inuttut pisinnaatitaaffiit & data",
+    "privacyBody": "Atortumi tassani lokaldata-t toqqoqqasut export-erlugit imaluunniit piiakkit.",
+    "preparingExport": "Avammut tuniniaanissamut piareersarneq...",
+    "exportData": "Data-t export-erlugit",
+    "privacyPolicy": "Inuttut pisinnaatitaaffinnut politikki",
+    "deleting": "Piineq...",
+    "deleteAll": "Lokale data tamarmik piiakkit",
+    "deviceManagement": "Atortunik aqutsineq",
+    "emergencyContacts": "Ajunaarnersuaqartillugu attaveqarfiit",
+    "signOut": "Allagit",
+    "exportFailedTitle": "Eksport iluatsinngilaq",
+    "exportFailedMessage": "Data-tit maannakkut export-ersinnaanngilatit.",
+    "deleteConfirmTitle": "Lokale data tamarmik piiarpatit?",
+    "deleteConfirmMessage": "Taamaalilluni profilit, inissititersimasatit, pilertortumik attaveqarfiit, oqaloqatigiinnerup oqaluttuassartaa, akuersissutinik eqqaamasassanik, aammalu najukkami akuersissutinik ataatsimiinneq atortumiit peertarpai.",
+    "deleteEverything": "Suna tamaat piiakkit",
+    "deleteFailedTitle": "Piineq iluatsinngilaq",
+    "deleteFailedMessage": "Lokale data maannakkut piiarsinnaanngilatit.",
+    "linkFailed": "Link ammarsinnaanngilaq",
+    "sections": {
+      "language": "Oqaatsit",
+      "languageSubtitle": "Atortussaq aamma systemimut akuersissutinik oqaatsit",
+      "companion": "Inngiaqat",
+      "companionSubtitle": "Nipit aamma offline-imik piumasaqaatit",
+      "deviceSafety": "Atortut aamma isumannaallisaaneq",
+      "deviceSafetySubtitle": "NorthStar, angajoqqaat, aamma pilertortumik attaveqarfiit",
+      "privacy": "Inuttut aamma paasissutissat",
+      "privacySubtitle": "Oqaluttuassartaq, avammut tuniniaaneq, piiaaneq, aamma politikki",
+      "account": "Konto",
+      "accountSubtitle": "Ullumikkut VeryLoving ataatsimiinnerit"
+    },
+    "updateFailedTitle": "Inissiisarneq toqqarneqanngilaq",
+    "updateFailedMessage": "Taanna piumasaq annaassinnaasimanngilagut. Misilittariaqarpat.",
+    "signOutFailedTitle": "Aallarsinnaanngilaq",
+    "signOutFailedMessage": "Sessionit suli atuuppoq. Misilittariaqarpat."
+  },
+  "contacts": {
+    "title": "Ajornartorsiornermi attaveqarfiit",
+    "subtitle": "Isumannaallisaanermut ingerlaarnermi inuit tatigineqarsinnaasut pissarsiarineqarsinnaapput.",
+    "addTitle": "Ajornartorsiutikkut attaveqarfik ilanngukkit",
+    "name": "Aqqa",
+    "namePlaceholder": "Attaveqarfigisap aqqa",
+    "phone": "Oqarasuaatip normua attaveqarfigisinnaasat",
+    "add": "Attaveqarfik ilanngukkit",
+    "empty": "Suli pilertortumik attaveqarfiit ilanngunneqanngillat.",
+    "emptyTitle": "Suli pilertortumik saaffiginnittoqanngilaq",
+    "emptyMessage": "Ilanngukkit upperisat, taamaalillutik isumannaallisaanermut pisariaqartitsisoqarpat piareersimassapput.",
+    "removeTitle": "Peerlugu %{name}?",
+    "removeMessage": "Inuk taanna ajunaarnersuaqarnerani takussaajunnaassaaq.",
+    "nameRequired": "Attaveqarfiup aqqa allaguk.",
+    "saveFailedTitle": "Attaveqarfik allanneqanngilaq",
+    "saveFailedMessage": "Attaveqarfik una annaassinnaasimanngilagut. Immikkuualuttut misissukkit misiliillutillu.",
+    "removeFailedTitle": "Attaveqarfik peerneqanngilaq",
+    "removeFailedMessage": "Attaveqarfik una peersinnaasimanngilagut. Misilittariaqarpat.",
+    "callAccessibility": "Sianerit %{name}",
+    "removeAccessibility": "Peerlugu %{name}"
+  },
+  "device": {
+    "title": "Atortunik aqutsineq",
+    "subtitle": "NorthStar atortoq aqutsiuk.",
+    "connected": "Attaveqarsimasoq · %{battery}% batteri",
+    "none": "Atortut attaveqanngillat",
+    "disconnect": "Atortoq attaveqarfigiuk",
+    "connect": "Atortoq attaveqarfigiuk"
+  },
+  "friends": {
+    "title": "Ikinngutit",
+    "subtitle": "Ingerlatsisut, piumasaqaatit, aamma pilertortumik grafik.",
+    "addDemo": "Demo-mik ikinngutit ilanngukkit",
+    "emptyTitle": "Isumannaallisaanermut cirkel-it imaqanngilaq",
+    "emptyMessage": "Ikinngutit aammalu angajoqqaat tatigineqarsinnaasut ilanngunneqarpata uani takussaapput.",
+    "newGuardian": "Nutaaq Guardian",
+    "statuses": {
+      "guardian": "Ingerlatsisoq",
+      "pending": "Utaqqisoq"
+    }
+  },
+  "emergency": {
+    "title": "Ajornartorsiut SOS",
+    "subtitle": "Aatsaat piaartumik tapersersorneqarnissamik pisariaqartitsiguit escalate.",
+    "body": "Taanna isumannaallisaanermut tunngasunik nalunaaruteqartitsissaaq aammalu ajunaarnersuaqarnerani attaveqarfiit piareersarlugit.",
+    "activate": "Aktiveriuk SOS",
+    "callCompanion": "Inngiaqqat AI sianerfigiuk",
+    "notificationTitle": "SOS atulersinneqarpoq",
+    "notificationBody": "Illit ajunaarnersuaqarnermi flow-it piareersimavoq.",
+    "readyTitle": "SOS piareersimavoq",
+    "callContact": "Sianerit %{name}?",
+    "addContact": "Instillinger-imi pilertortumik attaveqarfissaq ilanngukkit.",
+    "quickShareTitle": "Sukkamik avitseqatigiinneq",
+    "quickShareMessage": "Sumiiffimmi avitseqatigiinneq stub piareersimavoq. Link-inik live-nik nassiussinissamut backend-imi avitseqatigiinnermut kingulleq attavigiuk."
+  },
+  "quickShare": {
+    "title": "Sukkamik avitseqatigiinneq",
+    "subtitle": "Sumiiffimmi avitseqatigiittarneq piareersimavoq."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Marloriaq NorthStar-it tooruk isumannaallisaanermut orange-mik ikkussinissamut.",
+    "body": "Gesture route piareersimavoq BLE-mik pisussaq ledning-imut."
+  },
+  "debug": {
+    "title": "VeryLoving ajortuliornermut qupperneq",
+    "subtitle": "Ineriartortitsinermut kisimi aqqut."
+  },
+  "errors": {
+    "voiceOffline": "Offline-itut isigisarpat. Attaveqaqqilerpat allakkat nassiunneqassapput.",
+    "voiceQueued": "Paasissutissaq annaaneqarpoq. Taanna nassiunneqassaaq nipit inngiaqatigisaat attaveqaqqilerpat.",
+    "voiceRetrying": "Nassiussassanik nassiussiniarlunga misiliivunga...",
+    "voiceConnecting": "Nipit inngiaqatinnut isumannaatsumik attaveqarneq...",
+    "microphone": "Nipit atorlugit sianernissamut mikrofonimik atuineq pisariaqarpoq. Instillinger-imi atorsinnaavat, imaluunniit taarsiullugu allakkat allatsinnaavatit.",
+    "billing": "Onlinekkut nipilersortarfik piffissap ilaani atorneqarsinnaanngilaq. Offline-imik inngiaqateqarnikkut ingerlaqqissinnaavutit.",
+    "authentication": "Nipit inngiaqatigisaata ataatsimiinneq una uppernarsarsinnaasimanngilaa. Isertitsigit imaluunniit offline-imi inngiaqatitit maannamut atukkit.",
+    "timeout": "Nipit inngiaqatigisaata akissuteqarnissaminut sivisuumik piffissaqarsimavoq. Attaveqaatit misissukkit misiliillutillu.",
+    "network": "Nipit inngiaqatigisaat tikissinnaasimanngilagut. Attaveqarnerit misissukkit, taava misiliigit imaluunniit offline-imik ingerlaqqigit.",
+    "genericVoice": "Nipit atorlugit sianerneq arlaannik ajoqusersimavoq. Misilittariaqarpat, imaluunniit offline-imi inngiaqatitit ingerlateqqikkit."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving paasissutissanik avammut tuniniaaneq"
+  },
+  "notifications": {
+    "channelName": "Isumannaallisaanermut nalunaarutit"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving isumannaallisaanermut aamma AI inngiaqateqarnissamut mikrofonimik atuisoqartariaqarpoq.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving isumannaallisaanermut nunap assiga aamma isumannaallisaanermut qanittukkut sumiiffiit atortarpai.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sumiiffiit atortarpai isumannaatsumik tikittarnermut aamma ajunaarnersuaqarneranik tapersersuinermut.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving isumannaatsumik tikittarnermut aamma qanittumi ulorianartorsiorfiusumi pisunut tunuliaqutaasoq atortarpaa.",
+      "NSCameraUsageDescription": "VeryLoving aatsaat profilimik imaluunniit isumannaallisaanermik assiliineq toqqarukku kamera atortarpaa.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving assiliarnik atuakkiorfiit atortarpai aatsaat profilimik imaluunniit isumannaallisaanermut assimik toqqaagaanni.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

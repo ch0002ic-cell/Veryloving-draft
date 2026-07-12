@@ -37,6 +37,8 @@
     "title": "Language",
     "subtitle": "Choose the language used throughout the app.",
     "system": "System default",
+    "search": "Search languages",
+    "noResults": "No languages match your search.",
     "english": "English",
     "spanish": "Spanish",
     "french": "French",

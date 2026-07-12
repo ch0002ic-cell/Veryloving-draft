@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Pridať",
+    "apple": "Apple",
+    "back": "Späť",
+    "call": "Výzva",
+    "cancel": "Zrušiť",
+    "clear": "Clear",
+    "close": "Koniec",
+    "connect": "Pripojiť sa",
+    "connecting": "Spojenie...",
+    "continue": "Pokračovať",
+    "delete": "Vymazať",
+    "finish": "Cieľ",
+    "friends": "Priatelia",
+    "google": "Google",
+    "home": "Domov",
+    "loading": "Načítavam...",
+    "map": "Mapa",
+    "notNow": "Teraz nie",
+    "remove": "Odstrániť",
+    "retry": "Skús znova",
+    "retrying": "Opätovné skúšanie",
+    "save": "Uložiť",
+    "selected": "Vybraní",
+    "send": "Odoslať",
+    "settings": "Prostredia",
+    "skip": "Preskočiť",
+    "skipForNow": "Zatiaľ preskočte",
+    "skipTutorial": "Preskočiť tutoriál",
+    "sos": "SOS",
+    "unknown": "Neznámy",
+    "user": "VeryLoving používateľ",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Jazyk",
+    "subtitle": "Vyberte jazyk používaný v celej aplikácii.",
+    "system": "Predvolené nastavenie systému",
+    "search": "Vyhľadávacie jazyky",
+    "noResults": "Žiadny jazyk nezodpovedá vášmu vyhľadávaniu.",
+    "english": "Angličtina",
+    "spanish": "Španielčina",
+    "french": "Francúzština",
+    "chineseSimplified": "Čínština (zjednodušená)"
+  },
+  "phone": {
+    "label": "Telefónne číslo",
+    "placeholder": "Telefónne číslo",
+    "selectCountry": "Vyberte krajinu alebo región",
+    "searchCountry": "Vyhľadajte krajinu, kód alebo prefix vytočenia",
+    "noCountries": "Žiadna krajina sa nezhoduje s vaším vyhľadávaním.",
+    "countryButton": "Zmena krajiny, momentálne %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefónne číslo na %{country}",
+    "required": "Zadajte telefónne číslo.",
+    "tooShort": "Toto telefónne číslo je príliš krátke.",
+    "tooLong": "Toto telefónne číslo je príliš dlhé.",
+    "invalid": "Zadajte platné telefónne číslo pre vybranú krajinu.",
+    "valid": "Platné medzinárodné telefónne číslo"
+  },
+  "auth": {
+    "onboardingTagline": "Osobný spoločník na bezpečnosť v momentoch medzi \"Som v poriadku\" a \"Potrebujem pomoc.\"",
+    "createAccount": "Vytvoriť účet",
+    "continueOnboarding": "Pokračujte v onboardingu",
+    "createSubtitle": "Vyberte si spôsob prihlásenia, aby ste ochránili svoj bezpečnostný graf.",
+    "phoneVerification": "Overenie telefónu",
+    "sendCode": "Odosielací kód",
+    "sendingCode": "Posielam kód...",
+    "verifyCode": "Overovací kód",
+    "sentTo": "Poslaný do %{phone}",
+    "yourPhone": "Tvoj telefón",
+    "verificationCode": "Overovací kód",
+    "verify": "Overiť",
+    "verifying": "Overujem...",
+    "invalidCode": "Zadajte overovací kód.",
+    "signInFailedTitle": "Prihlásenie prerušené",
+    "signInFailedMessage": "Prihlásenie sa nám nepodarilo dokončiť. Skontrolujte svoje pripojenie a skúste to znova.",
+    "googleUnavailableTitle": "Google Prihlásenie nie je dostupné",
+    "googleUnavailableMessage": "Využívam miestnu rozvojovú reláciu. Native Google Signing funguje vo vývojovej verzii.",
+    "northStarTitle": "NorthStar šperky",
+    "northStarSubtitle": "Spárujte teraz alebo pokračujte a pridajte neskôr.",
+    "northStarBody": "VL01 nositeľné zariadenie dokáže spustiť bezpečnostné prúdy poklepaním a dlhými gestami stláčania.",
+    "setupJewelry": "Založte si šperky",
+    "meetCapybear": "Zoznámte sa s Capybear",
+    "meetCapybearSubtitle": "Tvoj jemný spoločník na mape aj v hovoroch.",
+    "capybearBody": "Capybear môže pomôcť s domácim režimom, režimom strážcu, núdzovým režimom, výhovorkami a hlasovou podporou.",
+    "chooseVoice": "Vyberte si hlas",
+    "capybearReminder": "Capybear pripomienka",
+    "remindersReady": "Jemné pripomienky sú pripravené."
+  },
+  "permissions": {
+    "locationTitle": "Bezpečnosť lokality",
+    "locationSubtitle": "Používa sa na mapu, nebezpečné zóny, bezpečný príchod a SOS kontext.",
+    "locationBody": "VeryLoving žiada o miesto, aby opatrovníci vedeli, kde môže byť potrebná pomoc. Toto môžete zmeniť neskôr v nastaveniach.",
+    "allowLocation": "Povoliť umiestnenie",
+    "notificationsTitle": "Bezpečnostné výstrahy",
+    "notificationsSubtitle": "Notifikácie podporujú kontroly a núdzové udalosti.",
+    "notificationsBody": "Upozornenia používame len na bezpečnostné upozornenia, núdzové aktualizácie a pripomienky, ktoré zapnete.",
+    "enableNotifications": "Povoliť notifikácie",
+    "locationRationaleTitle": "Poloha zabezpečuje presnosť bezpečnostného kontextu",
+    "locationRationaleMessage": "VeryLoving používa vašu polohu na bezpečnostnú mapu, nebezpečné zóny, rýchle zdieľanie a SOS kontext. Toto môžete zmeniť neskôr v nastaveniach.",
+    "notificationsRationaleTitle": "Bezpečnostné upozornenia potrebujú upozornenia",
+    "notificationsRationaleMessage": "VeryLoving posiela pripomienky na prihlásenie, núdzové aktualizácie a bezpečnostné upozornenia, ktoré vám umožnia. Na reklamy nepoužívame notifikácie.",
+    "microphoneRationaleTitle": "Mikrofón poháňa bezpečnostné výzvy",
+    "microphoneRationaleMessage": "VeryLoving používa mikrofón len vtedy, keď začnete AI spoločníka alebo bezpečnostnú výzvu.",
+    "bluetoothRationaleTitle": "Bluetooth prepája vaše nositeľné zariadenie",
+    "bluetoothRationaleMessage": "VeryLoving používa Bluetooth na spárovanie s NorthStar šperkami, čítanie stavu pripojenia a bezpečnostné prúdy spúšte z nositeľného zariadenia.",
+    "cameraRationaleTitle": "Kamera je voliteľná",
+    "cameraRationaleMessage": "VeryLoving používa fotoaparát len vtedy, keď sa rozhodnete urobiť profilovú fotografiu alebo zdieľať bezpečnostnú fotografiu."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving udržiava tento postup dostupný v nastaveniach a v dashboarde.",
+    "chooseVoiceTitle": "Vyberte si svoj hlas",
+    "chooseVoiceSubtitle": "Vyberte si spoločnícky hlas, ktorý je najbezpečnejšie počuť.",
+    "homeTitle": "Domovský režim",
+    "homeSubtitle": "Tiché monitorovanie pre každodennú bezpečnosť.",
+    "guardianTitle": "Režim Guardian",
+    "guardianSubtitle": "Zdieľajte kontext s dôveryhodnými ľuďmi.",
+    "emergencyTitle": "Núdzový režim",
+    "emergencySubtitle": "Päť ťuknutí môže eskalovať do SOS a guardian alertov.",
+    "excuseTitle": "Ospravedlňujúci sa hovor",
+    "excuseSubtitle": "Vytvorte si dôstojný dôvod na odchod z nepríjemnej situácie.",
+    "safetyCallTitle": "Bezpečnostné volanie",
+    "safetyCallSubtitle": "Začnite hovor s partnerom v reálnom čase, keď potrebujete podporu.",
+    "practiceTitle": "Tréningová scéna",
+    "practiceSubtitle": "Vyskúšajte bezpečnostné prúdy v nízkotlakovej demontáži."
+  },
+  "jewelry": {
+    "pairTitle": "Dvojica NorthStar",
+    "pairSubtitle": "Majte šperky po ruke počas skenovania.",
+    "scan": "Skenovanie zariadení",
+    "scanning": "Skenujem blízko...",
+    "noDevices": "Zatiaľ sa nenašli žiadne blízke NorthStar zariadenia.",
+    "scanStartFailed": "Bluetooth skenovanie sa nedalo spustiť. Prosím, skúste to znova.",
+    "scanFailed": "Nenašli sme blízke šperky. Skontrolujte Bluetooth, držte NorthStar blízko a skúšajte znova.",
+    "scanAccessFailed": "Bluetooth skenovanie sa nedalo spustiť. Skontrolujte Bluetooth prístup a skúste to znova.",
+    "permissionDenied": "Prístup k blízkym zariadeniam je vypnutý. Povoľte Bluetooth prístup v nastaveniach, potom skúste znova.",
+    "connectTimeout": "NorthStar trvalo príliš dlho, kým sa spojila. Posuň ho bližšie a skús znova.",
+    "connectFailed": "Nemohli sme sa pripojiť k NorthStar. Skontrolujte, či je nabitý a blízko, potom to skúste znova.",
+    "emptyTitle": "Zatiaľ žiadne blízke zariadenia",
+    "emptyMessage": "Držte NorthStar nabitý a blízko tohto telefónu, potom ho znova naskenuj.",
+    "searchingMessage": "Hľadám NorthStar zariadenia v blízkosti..."
+  },
+  "home": {
+    "subtitle": "Bezpečnostný sprievodný panel",
+    "modeStatus": "%{mode} MÓD",
+    "companionReady": "%{name} je pripravený",
+    "readyBody": "Hlas, mapa, šperky a strážcovia sú na dosah jedného ťuknutia.",
+    "safetyCall": "Bezpečnostné volanie",
+    "northStarDevice": "NorthStar zariadenie",
+    "deviceConnected": "%{name} pripojené · %{battery} %",
+    "noDevice": "Žiadne zariadenie pripojené",
+    "manageDevice": "Spravovať zariadenie",
+    "mode": "Režim",
+    "modes": {
+      "home": "Domov",
+      "guardian": "Guardian",
+      "emergency": "Núdzová situácia"
+    }
+  },
+  "map": {
+    "finding": "Nájsť tvoju polohu...",
+    "retry": "Miesto opätovného pokusu",
+    "title": "Bezpečnostná mapa",
+    "previewSubtitle": "Expo Go ukážku; Mapbox renderuje vo vývojárskej verzii.",
+    "preview": "Náhľad mapy",
+    "risk": "Riziko: %{risk} · Polomer %{radius}m",
+    "refresh": "Miesto obnovenia",
+    "refreshing": "Hľadanie polohy...",
+    "updateFailed": "Nemohli sme aktualizovať vašu polohu. Prosím, skúste to znova.",
+    "notRequested": "Prístup k polohe nebol požiadaný. Neskôr to môžete povoliť v nastaveniach.",
+    "permissionOff": "Prístup k polohe je vypnutý. Zapni to v nastaveniach, aby si na seba vycentroval bezpečnostnú mapu.",
+    "timeout": "Tvoja poloha trvá dlhšie, než sa očakávalo. Presuňte sa niekam s jasnejším signálom a skúste to znova.",
+    "savedTitle": "Zachované miesta",
+    "savedEmptyTitle": "Zatiaľ žiadne uložené miesta",
+    "savedEmptyMessage": "Dôveryhodné miesta, ktoré uložíte, sa tu zobrazia pre rýchly prístup.",
+    "zones": {
+      "crowding": "Nočné preplnenie",
+      "lowLighting": "Oblasť slabého osvetlenia"
+    },
+    "risks": {
+      "low": "nízke",
+      "medium": "Medium",
+      "high": "vysoko"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Spojenie...",
+    "offlineCompanion": "Offline spoločník",
+    "offline": "Offline",
+    "connected": "Connected",
+    "interrupted": "Spojenie prerušené",
+    "ready": "Pripravený na spojenie",
+    "connectingSecurely": "Bezpečne sa pripájaš k svojmu hlasovému spoločníkovi...",
+    "messagesWaiting": {
+      "one": "%{count} správa čaká na odoslanie",
+      "other": "%{count} správ čakajúcich na odoslanie"
+    },
+    "useOffline": "Používajte offline sprievodcu",
+    "reconnect": "Znovu sa spojte s hlasovou AI",
+    "typePlaceholder": "Napíš, ak je rozprávanie ťažké",
+    "endCall": "Koniec hovoru",
+    "startCall": "Začnite hovor",
+    "emptyTitle": "Váš rozhovor začína tu",
+    "emptyMessage": "Začnite hovor alebo napíšte správu, keď budete pripravení."
+  },
+  "chat": {
+    "waiting": "Čakanie na spojenie",
+    "notSent": "Správa neodoslaná.",
+    "retryAccessibility": "Skús znova odoslať správu"
+  },
+  "history": {
+    "clearTitle": "Čistá história konverzácie?",
+    "clearMessage": "Tým sa odstránia uložené AI sprievodné správy z tohto zariadenia.",
+    "deleteTitle": "Vymazať túto konverzáciu?",
+    "cannotUndo": "To sa nedá vrátiť späť.",
+    "title": "História konverzácie",
+    "subtitle": "AI sprievodné správy uložené na tomto zariadení.",
+    "empty": "Zatiaľ žiadne konverzácie neuložené.",
+    "emptyTitle": "Zatiaľ žiadne rozhovory",
+    "emptyMessage": "Vaše AI rozhovory so spoločníkmi sa tu objavia po prvom hovore.",
+    "loadFailed": "Nemohli sme načítať históriu rozhovorov. Prosím, skúste to znova.",
+    "clearFailed": "Nedokázali sme vyčistiť históriu konverzácie. Prosím, skúste to znova.",
+    "deleteFailed": "Túto konverzáciu sme nemohli vymazať. Prosím, skúste to znova.",
+    "aiCompanion": "AI spoločník",
+    "resume": "Životopis",
+    "clearAll": "Vymazať všetku históriu",
+    "roles": {
+      "assistant": "Spoločník",
+      "user": "Ty"
+    }
+  },
+  "voices": {
+    "title": "Moje bezpečnostné hlasy",
+    "subtitle": "Vyberte si spoločnícky hlas, ktorý je správny na počutie.",
+    "test": "Testovací hlas",
+    "stop": "Stop sample",
+    "selectionFailedTitle": "Výber neuložený",
+    "selectionFailedMessage": "Prosím, skúste si znova vybrať hlas.",
+    "sampleFailedTitle": "Vzorka nie je dostupná",
+    "sampleFailedMessage": "Tento hlasový sample sa nepodarilo prehrať. Prosím, skúste to znova.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "jemné, pokojné, uzemňujúce"
+      },
+      "bestie": {
+        "name": "Najlepší kamarát",
+        "description": "Jasné, upokojujúce, konverzačné"
+      },
+      "boyfriend": {
+        "name": "Priateľ",
+        "description": "Stále, láskavé, prítomné"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "sebavedomý, ochranný, motivujúci"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Hlas",
+    "changeVoice": "Zmeniť hlas",
+    "showCompanion": "Sprievodca v relácii",
+    "offlineMode": "Offline režim",
+    "offlineModeSubtitle": "Používajte balíkové sprievodné odpovede, keď sieť alebo Hume prihlasovacie údaje nie sú dostupné.",
+    "privacyData": "Súkromie a dáta",
+    "privacyBody": "Exportujte alebo vymažte lokálne údaje uložené na tomto zariadení.",
+    "preparingExport": "Pripravujeme export...",
+    "exportData": "Exportovať moje dáta",
+    "privacyPolicy": "Zásady ochrany súkromia",
+    "deleting": "Vymazávam...",
+    "deleteAll": "Vymazať všetky lokálne dáta",
+    "deviceManagement": "Správa zariadení",
+    "emergencyContacts": "Núdzové kontakty",
+    "signOut": "Odhlásiť sa",
+    "exportFailedTitle": "Export zlyhal",
+    "exportFailedMessage": "Momentálne nemôžem exportovať vaše dáta.",
+    "deleteConfirmTitle": "Vymazať všetky lokálne dáta?",
+    "deleteConfirmMessage": "Tým sa odstránia váš profil, nastavenia, núdzové kontakty, história konverzácií, pripomienky oprávnení a lokálna autentifikácia z tohto zariadenia.",
+    "deleteEverything": "Vymaž všetko",
+    "deleteFailedTitle": "Vymazanie zlyhalo",
+    "deleteFailedMessage": "Momentálne nemôžem vymazať lokálne dáta.",
+    "linkFailed": "Nepodarilo sa otvoriť odkaz",
+    "sections": {
+      "language": "Jazyk",
+      "languageSubtitle": "Jazyk pre rozhranie a systémové oprávnenia",
+      "companion": "Spoločník",
+      "companionSubtitle": "Hlasové a offline nastavenia",
+      "deviceSafety": "Zariadenia a bezpečnosť",
+      "deviceSafetySubtitle": "NorthStar, opatrovníci a núdzové kontakty",
+      "privacy": "Súkromie a údaje",
+      "privacySubtitle": "História, export, vymazanie a politika",
+      "account": "Účet",
+      "accountSubtitle": "Vaša aktuálna VeryLoving sedenie"
+    },
+    "updateFailedTitle": "Nastavenie sa neuložilo",
+    "updateFailedMessage": "Túto preferenciu sme si nemohli zachrániť. Prosím, skúste to znova.",
+    "signOutFailedTitle": "Nepodarilo sa odhlásiť",
+    "signOutFailedMessage": "Vaša relácia je stále aktívna. Prosím, skúste to znova."
+  },
+  "contacts": {
+    "title": "Núdzové kontakty",
+    "subtitle": "Dôveryhodní ľudia sú k dispozícii počas bezpečnostných procesov.",
+    "addTitle": "Pridajte núdzový kontakt",
+    "name": "Názov",
+    "namePlaceholder": "Kontaktné meno",
+    "phone": "Kontaktné telefónne číslo",
+    "add": "Pridať kontakt",
+    "empty": "Zatiaľ neboli pridané žiadne núdzové kontakty.",
+    "emptyTitle": "Zatiaľ žiadne núdzové kontakty",
+    "emptyMessage": "Pridajte niekoho, komu dôverujete, aby bol pripravený, keď bude potrebný bezpečnostný tok.",
+    "removeTitle": "Odstrániť %{name}?",
+    "removeMessage": "Táto osoba sa už nebude objavovať vo vašom núdzovom procese.",
+    "nameRequired": "Zadajte meno kontaktu.",
+    "saveFailedTitle": "Kontakt neuložený",
+    "saveFailedMessage": "Tento kontakt sme nedokázali zachrániť. Skontrolujte detaily a skúste to znova.",
+    "removeFailedTitle": "Kontakt nebol odstránený",
+    "removeFailedMessage": "Tento kontakt sme nemohli odstrániť. Prosím, skúste to znova.",
+    "callAccessibility": "Zavolaj %{name}",
+    "removeAccessibility": "Odstráňte %{name}"
+  },
+  "device": {
+    "title": "Správa zariadení",
+    "subtitle": "Spravujte svoje NorthStar zariadenie.",
+    "connected": "Connected · %{battery} % batérie",
+    "none": "Žiadne zariadenia pripojené",
+    "disconnect": "Odpojovacie zariadenie",
+    "connect": "Pripojiť zariadenie"
+  },
+  "friends": {
+    "title": "Priatelia",
+    "subtitle": "Strážcovia, žiadosti a núdzový graf.",
+    "addDemo": "Pridať demo priateľa",
+    "emptyTitle": "Tvoj bezpečnostný kruh je prázdny",
+    "emptyMessage": "Dôveryhodní priatelia a opatrovníci sa tu objavia, keď budú pridaní.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Čaká sa"
+    }
+  },
+  "emergency": {
+    "title": "Núdzové SOS",
+    "subtitle": "Eskalujte len vtedy, keď potrebujete okamžitú podporu.",
+    "body": "Tým upozorníte na váš bezpečnostný tok a pripravíte núdzové kontakty.",
+    "activate": "Aktivujte SOS",
+    "callCompanion": "Zavolajte AI spoločníka",
+    "notificationTitle": "SOS aktivovaný",
+    "notificationBody": "Tvoj núdzový prietok je pripravený.",
+    "readyTitle": "SOS pripravený",
+    "callContact": "Zavolať %{name}?",
+    "addContact": "Pridajte núdzový kontakt v nastaveniach.",
+    "quickShareTitle": "Rýchle zdieľanie",
+    "quickShareMessage": "Náčrt zdieľania lokality je pripravený. Pripojte backendový share endpoint, aby ste posielali živé odkazy."
+  },
+  "quickShare": {
+    "title": "Rýchle zdieľanie",
+    "subtitle": "Tok zdieľania lokalít je pripravený."
+  },
+  "capybearTap": {
+    "title": "Capybear kohútik",
+    "subtitle": "Dvakrát ťuknite NorthStar a pustite bezpečnostný pomaranč.",
+    "body": "Gestová trasa je pripravená na zapojenie BLE udalostí."
+  },
+  "debug": {
+    "title": "VeryLoving debug stránka",
+    "subtitle": "Len vývojová trasa."
+  },
+  "errors": {
+    "voiceOffline": "Zdáš sa byť offline. Vaša správa bude odoslaná, keď sa znovu pripojíte.",
+    "voiceQueued": "Správa uložená. Bude odoslaný, keď sa hlasový spoločník znovu pripojí.",
+    "voiceRetrying": "Znova sa snažíš poslať tvoju správu...",
+    "voiceConnecting": "Bezpečne sa pripájaš k svojmu hlasovému spoločníkovi...",
+    "microphone": "Na hlasové hovory je potrebný prístup k mikrofónu. Môžete to povoliť v nastaveniach, alebo namiesto toho napísať správu.",
+    "billing": "Online hlasový sprievodca je dočasne nedostupný. Môžete pokračovať s offline spoločníkom.",
+    "authentication": "Hlasový spoločník túto reláciu nemohol overiť. Prihláste sa znova alebo zatiaľ používajte offline spoločníka.",
+    "timeout": "Hlasový spoločník odpovedal príliš dlho. Skontrolujte svoje pripojenie a skúste to znova.",
+    "network": "Nedokázali sme sa dovolať hlasovému spoločníkovi. Skontrolujte si pripojenie, potom to skúste znova alebo pokračujte offline.",
+    "genericVoice": "Niečo prerušilo hlasový hovor. Skúste to znova, alebo pokračujte s offline sprievodcom."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving export dát"
+  },
+  "notifications": {
+    "channelName": "Bezpečnostné výstrahy"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving potrebuje prístup k mikrofónu kvôli bezpečnosti a AI volania spoločníkov.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving používa vašu polohu na bezpečnostnú mapu a blízke bezpečnostné prvky.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving využíva vašu polohu na podporu bezpečného príchodu a núdzových tokov.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving využíva polohu pozadia pre bezpečný príchod a blízke prvky nebezpečných zón.",
+      "NSCameraUsageDescription": "VeryLoving používa fotoaparát len vtedy, keď sa rozhodnete urobiť profilovú alebo bezpečnostnú fotografiu.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving používa vašu fotoknižnicu len vtedy, keď si vyberiete profilový alebo bezpečnostný obrázok.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving používa Bluetooth na pripojenie k vašim NorthStar bezpečnostným šperkom.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving používa Bluetooth na pripojenie k vašim NorthStar bezpečnostným šperkom."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

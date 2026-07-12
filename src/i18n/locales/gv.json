@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Cur rish",
+    "apple": "Apple",
+    "back": "Arrey",
+    "call": "Gall",
+    "cancel": "Cur stiagh",
+    "clear": "Cleaysh",
+    "close": "Dloie",
+    "connect": "Ceaghley",
+    "connecting": "Ceangley...",
+    "continue": "Lesh",
+    "delete": "Smoo",
+    "finish": "Cur seose",
+    "friends": "Caarjyn",
+    "google": "Google",
+    "home": "Thie",
+    "loading": "T'eh loadaghey...",
+    "map": "Map",
+    "notNow": "Cha nel nish",
+    "remove": "Cur magh",
+    "retry": "Reesht",
+    "retrying": "Reesht",
+    "save": "Slane",
+    "selected": "Reiht",
+    "send": "Cur",
+    "settings": "Reihyssyn",
+    "skip": "Smooinaght",
+    "skipForNow": "Skip son y traa t'ayn",
+    "skipTutorial": "Smoo yn tutorial",
+    "sos": "SOS",
+    "unknown": "Ny fys",
+    "user": "VeryLoving ymmydeyr",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Chengey",
+    "subtitle": "Roish y çhengey t'er ny h-ussaghey trooid y app.",
+    "system": "Systeem ry-hoi",
+    "search": "Chengaghyn y vriwnys",
+    "noResults": "Cha nel çhengey erbee cordail rish dty ymmyd.",
+    "english": "Gaelg",
+    "spanish": "Spaainey",
+    "french": "Frangish",
+    "chineseSimplified": "Shinaagh (Symmyrchagh)"
+  },
+  "phone": {
+    "label": "Uimhir y phone",
+    "placeholder": "Uimhir y phone",
+    "selectCountry": "Taght yn ard-valley ny'n rheynn",
+    "searchCountry": "Lhig da'n cheer, code, ny ro-laue",
+    "noCountries": "Cha nel ardjyn erbee cordail rish dty ymmyd.",
+    "countryButton": "Caghlaa yn cheer, %{country} as %{callingCode} er-y-fa shen",
+    "inputAccessibility": "Uimhir y phone son %{country}",
+    "required": "Cur stiagh uimhir phone.",
+    "tooShort": "Ta'n earroo phone shoh ro-ghooie.",
+    "tooLong": "Ta'n earroo phone shoh ro-hiar.",
+    "invalid": "Cuir stiagh uimhir phone ymmydoil son y çheer taitnyssagh.",
+    "valid": "Uimhir phone eddyr-nashoonagh"
+  },
+  "auth": {
+    "onboardingTagline": "Companyn slaynt persoonagh son ny traaghyn eddyr “Ta mee mie” as “Ta feme aym er cooney.”",
+    "createAccount": "Cruinney cuntait",
+    "continueOnboarding": "Lesh onboarding",
+    "createSubtitle": "Choose y raad sign-in dy choadey dty graph slaynt.",
+    "phoneVerification": "Verraghey y phone",
+    "sendCode": "Cur code",
+    "sendingCode": "Cur code...",
+    "verifyCode": "Veraghey code",
+    "sentTo": "Currit gys %{phone}",
+    "yourPhone": "dty phone",
+    "verificationCode": "Code ymmyrkey",
+    "verify": "Veraghey",
+    "verifying": "Veraghey...",
+    "invalidCode": "Cur stiagh y code verify.",
+    "signInFailedTitle": "Ta'n sign-in er ny bhrisey",
+    "signInFailedMessage": "Cha b'aashagh shin cur seose y sign-in. Check dty cheshaght as feddyn magh reesht.",
+    "googleUnavailableTitle": "Google Cha nel sign-in ry-gheddyn",
+    "googleUnavailableMessage": "Ushtey jeh session forsaghey ynnydagh. Ta Google Sign-In obbraghey ayns towse forsaghey.",
+    "northStarTitle": "NorthStar jewelry",
+    "northStarSubtitle": "Pair nish ny lesh as cur eh rish ny yei.",
+    "northStarBody": "Yn VL01 wearable t'eh ry-gheddyn slystaghyn s'saghney lesh tappyn as gestures press fadagh.",
+    "setupJewelry": "Cur seose jewelry",
+    "meetCapybear": "Clashtey Capybear",
+    "meetCapybearSubtitle": "Dy chompanyn slaynt glen 'sy map as 'sy ghlare.",
+    "capybearBody": "Capybear faggys eh cooney lesh mood thie, mood guardian, mood urjid, glareyn lesh ymmyd, as tastey boght.",
+    "chooseVoice": "Reih cowrey",
+    "capybearReminder": "Capybear cooinaghtyn",
+    "remindersReady": "Ta cowreydyn glen ry-gheddyn."
+  },
+  "permissions": {
+    "locationTitle": "Safety 'sy 'nnyd",
+    "locationSubtitle": "Cleayney son y chaart, cryssyn peril, ard-vooinjerey, as SOS context.",
+    "locationBody": "VeryLoving goaill stiagh ynnyd dy vod ny guardianyn tushtey y ghoaill c'raad t'ad feme er cooney. Faggys da'n red shoh y chaghlaa 'sy 'Settings'.",
+    "allowLocation": "Ceadagh ynnyd",
+    "notificationsTitle": "Raadaghyn slaynt",
+    "notificationsSubtitle": "Ta fysseree tastey jeh check-ins as taghyrtyn urjid.",
+    "notificationsBody": "Cha nel shin uss agh ymmyd jeh fysseree son prompts safety, updates emergency, as reminders ta shiu cur stiagh.",
+    "enableNotifications": "Cur fysseree",
+    "locationRationaleTitle": "Ta'n ynnyd cur y context s'saualtys ry-cheilley",
+    "locationRationaleMessage": "VeryLoving t'eh usaghey dty ard-chleaysh son y map s'saghney, cryssyn danger, co-roshtyn quick, as SOS context. Faggys da'n red shoh y chaghlaa 'sy 'Settings'.",
+    "notificationsRationaleTitle": "Ta feme er raaidyn-slaynt son fysseree",
+    "notificationsRationaleMessage": "VeryLoving t'eh cur cowrey check-in, nushteeyn urjid, as cowrey s'saghney ta shiu cur stiagh. Cha nel shin uss ymmyd jeh fysseree son advertisementyn.",
+    "microphoneRationaleTitle": "Ta'n microphone cur cummey da glareyn sheeanchoree",
+    "microphoneRationaleMessage": "VeryLoving t'eh usaghey dty microphone ny-lomarcan tra t'ou uss t'er toshiaght AI companion ny glare s'saghney.",
+    "bluetoothRationaleTitle": "Bluetooth t'eh ceaghley dty veeal",
+    "bluetoothRationaleMessage": "VeryLoving t'eh uss Bluetooth dy cho-paartaghey lesh NorthStar jewelry, lesh stayd ceaghley, as trigger slystyn shleiy veih'n wearable.",
+    "cameraRationaleTitle": "Ta'n camera roghnagh",
+    "cameraRationaleMessage": "VeryLoving t'eh usaghey y chamera ny-lomarcan tra t'ou uss roshtyn dy ghoaill pictur profile ny dy choardail rish pictur safety."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving t'eh cur y slyst shoh ry-gheddyn veih Soilshaghyn as y dashboard.",
+    "chooseVoiceTitle": "Reih dty voylley",
+    "chooseVoiceSubtitle": "Pick y voylley companion ta feer sheelt dy chlashtyn.",
+    "homeTitle": "Mood thie",
+    "homeSubtitle": "Monitoring quiet son y slaynt laa as laa.",
+    "guardianTitle": "Mood guardian",
+    "guardianSubtitle": "Share y cho-theay lesh deiney creeney.",
+    "emergencyTitle": "Mood ymmyrchagh",
+    "emergencySubtitle": "Foddee cwoaie tappyn escalate gys SOS as raaidyn guardian.",
+    "excuseTitle": "Glaare lesh leshtal",
+    "excuseSubtitle": "Cruinney reason gracious dy scarrey rish stayd neu-chosney.",
+    "safetyCallTitle": "Galm y slaynt",
+    "safetyCallSubtitle": "Toshiaght glare companion real-time tra ta feme ayd er cooney.",
+    "practiceTitle": "Scene ymmyd",
+    "practiceSubtitle": "Try ny slystyn slaynt ayns demo low-brish."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Cur y jewelry ry-cheilley tra t'ou scaan.",
+    "scan": "Scanney son ymmyd",
+    "scanning": "Scaanaghey ry-cheilley...",
+    "noDevices": "Cha nel NorthStar innidyn ry-gheddyn foast.",
+    "scanStartFailed": "Bluetooth cha b'ee y scaanaghey toshiaght. Feayrish reesht, my yeearree.",
+    "scanFailed": "Cha dod shin jewelry y gheddyn. Check Bluetooth, cum NorthStar er-gerrey, as feddyn magh reesht.",
+    "scanAccessFailed": "Bluetooth cha b'ee y scaanaghey toshiaght. Sheck Bluetooth access as feddyn magh reesht.",
+    "permissionDenied": "Ta'n obbyr 'sy ghraih-instrument er-chea. Lesh Bluetooth stiagh ayns Soitçhyn, as feddyn magh reesht.",
+    "connectTimeout": "NorthStar ghow eh ro-am dy cheangley. Mow eh ny s’drymmey as feddyn eh reesht.",
+    "connectFailed": "Cha b'aashagh shin ceaghley rish NorthStar. Sheck dy vel eh charged as ry-cheilley, as feddyn magh reesht.",
+    "emptyTitle": "Cha nel innidyn ry-cheilley foast",
+    "emptyMessage": "Cum NorthStar charged as gerrit rish y phone shoh, as scaan eh reesht.",
+    "searchingMessage": "T'eh shirrey NorthStar innidyn ry-cheilley..."
+  },
+  "home": {
+    "subtitle": "Dashboard co-chaarjys",
+    "modeStatus": "%{mode} MOOD\nTa",
+    "companionReady": "%{name} aarloo",
+    "readyBody": "Ta cowrey, map, jewelry, as guardianyn un tap er-chea.",
+    "safetyCall": "Galm y slaynt",
+    "northStarDevice": "NorthStar inneil",
+    "deviceConnected": "%{name} ceaghlit · %{battery}%",
+    "noDevice": "Cha nel inneal ceaut",
+    "manageDevice": "Riaghlagh yn innid",
+    "mode": "Mood",
+    "modes": {
+      "home": "Thie",
+      "guardian": "Farreyder",
+      "emergency": "Er-earroo"
+    }
+  },
+  "map": {
+    "finding": "Foddey dty ynnyd...",
+    "retry": "Reesht ynnyd",
+    "title": "Map y slaynt",
+    "previewSubtitle": "Expo Go ro-earroo; Mapbox renders ayns towse y ghraih.",
+    "preview": "Roish-akin y map",
+    "risk": "Risk: %{risk} · Radius %{radius}m",
+    "refresh": "Ashaghey ynnyd",
+    "refreshing": "Foddey ynnyd...",
+    "updateFailed": "Cha b'aashagh shin cur dty ynnyd er-ny-host. Feayrish reesht, my yeearree.",
+    "notRequested": "Cha row ymmyd jeh'n 'location' er ny ghoaill. Faggys da'n 'Settings' 'sy 'Settings'.",
+    "permissionOff": "Ta'n obbyr 'sy 'nnyd off. Cur eh stiagh ayns Soilshaghyn dy hroggal y map s'saghney er dty hon.",
+    "timeout": "Ta'n 'location' ayd's goaill ny smoo 'sy traa t'er n'gholl shaghey. Mow ayns ard-valley lesh signal ny sodjey as feddyn magh.",
+    "savedTitle": "Laghyn s'sauail",
+    "savedEmptyTitle": "Cha nel laghyn s'saualtagh foast",
+    "savedEmptyMessage": "Bee ny laghyn creeney t'ou uss shaghey ry-akin ec shoh son ymmyd s'leaie.",
+    "zones": {
+      "crowding": "Crowding 'sy 'noid",
+      "lowLighting": "Sheer soilshey low"
+    },
+    "risks": {
+      "low": "illey",
+      "medium": "mean",
+      "high": "ard"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ceangley...",
+    "offlineCompanion": "Company er-linney",
+    "offline": "er-linney",
+    "connected": "Ceanglit",
+    "interrupted": "Ta'n cheshaght brisht",
+    "ready": "Ready dy cheangley",
+    "connectingSecurely": "Ceaghley dy scanshoil rish dty chompanyn ghoo...",
+    "messagesWaiting": {
+      "one": "%{count} teacht ta geaishtagh dy chur",
+      "other": "%{count} teachtyn ta geaishtagh dy chur"
+    },
+    "useOffline": "Cleaysh companion offline",
+    "reconnect": "Ath-cheangley rish y voylley AI",
+    "typePlaceholder": "Screeu my ta'n loayrt doaltattym",
+    "endCall": "Cur jerrey y ghlare",
+    "startCall": "Toshiaght y ghlare",
+    "emptyTitle": "T'eh toshiaght y cho-chowrey shoh",
+    "emptyMessage": "Toshiaght y ghlare ny scrieu teacht tra t'ou ready."
+  },
+  "chat": {
+    "waiting": "Ta mee geaishtagh rish conaant",
+    "notSent": "Cha nel y theay er ny choyrt.",
+    "retryAccessibility": "Farrey reesht dy chur teacht"
+  },
+  "history": {
+    "clearTitle": "Clear tashtey cowrey?",
+    "clearMessage": "T'eh shoh cur magh AI teachtyn co-chasley jeh'n innid shoh.",
+    "deleteTitle": "Smooinee yn cho-chowrey shoh?",
+    "cannotUndo": "Cha nel eh ry-yannoo.",
+    "title": "Eash y cho-chowrey",
+    "subtitle": "AI teachtyn co-chasley er nyn goyrt stiagh er y ghraih shoh.",
+    "empty": "Cha nel cowrey erbee er ny s'sauail foast.",
+    "emptyTitle": "Cha nel co-chaslyssyn foast",
+    "emptyMessage": "By lhisagh ny AI co-chaslyssyn eu ve ry-akin ec shoh erreish da'n chiad ghlare eu.",
+    "loadFailed": "Cha b'aashagh shin taghyrtyn co-chaslys y lhoobey. Feayrish reesht, my yeearree.",
+    "clearFailed": "Cha b'aashagh shin cleayney tashtey y cho-chowrey. Feayrish reesht, my yeearree.",
+    "deleteFailed": "Cha b'aashagh shin y cho-chowrey shen y scughey. Feayrish reesht, my yeearree.",
+    "aiCompanion": "AI companion",
+    "resume": "Reesht",
+    "clearAll": "Cuill ooilley ny tashtey",
+    "roles": {
+      "assistant": "company",
+      "user": "us"
+    }
+  },
+  "voices": {
+    "title": "My ghlare-slaynt",
+    "subtitle": "Choose y voylley companion ta ry-chlashtyn.",
+    "test": "Goo y test",
+    "stop": "Stop y sampleyr",
+    "selectionFailedTitle": "Cha nel y roghnagh er ny choadey",
+    "selectionFailedMessage": "Farrey dy reih y voylley reesht.",
+    "sampleFailedTitle": "Sampleyr cha nel eh ry gheddyn",
+    "sampleFailedMessage": "Cha b'ee y sampleyr boght shoh er ny chlashtyn. Feayrish reesht, my yeearree.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "bog, calm, grounding"
+      },
+      "bestie": {
+        "name": "Sheer",
+        "description": "soilshey, sheeyney, co-chaslys"
+      },
+      "boyfriend": {
+        "name": "Chaarjyn",
+        "description": "stayd, graihagh, nish"
+      },
+      "muscleMan": {
+        "name": "Dooinney-chree",
+        "description": "feer-chreeagh, coadey, stiurey"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Goo",
+    "changeVoice": "Caghlaa yn voylley",
+    "showCompanion": "Soilshaghey companion",
+    "offlineMode": "Mood offline",
+    "offlineModeSubtitle": "Cleaysh freggyrtyn companion bundled tra nagh vel y red ny Hume credentials ry-gheddyn.",
+    "privacyData": "Privacy & coontey",
+    "privacyBody": "Export ny scughey ny cooishyn 'sy valley ta ry-gheddyn 'sy 'instrument' shoh.",
+    "preparingExport": "Reayll magh...",
+    "exportData": "Cur magh my data",
+    "privacyPolicy": "Politics pryssoonagh",
+    "deleting": "Smooinee...",
+    "deleteAll": "Smooinee er ooilley ny cooishyn 'sy valley",
+    "deviceManagement": "Riaghlagh yn innid",
+    "emergencyContacts": "Coontaghyn ec y traa t'ayn",
+    "signOut": "Cur magh",
+    "exportFailedTitle": "Cha nel eh er n'eiyrt magh",
+    "exportFailedMessage": "Cha nel eh ry-hoi ymmyrkey dty data er-y-fa shen.",
+    "deleteConfirmTitle": "Smooinee er ooilley ny cooishyn 'sy valley?",
+    "deleteConfirmMessage": "T'eh shoh cur magh dty phrofiil, dty soilshaghyn, dty chowraghyn ec y traa t'ayn, dty stayr cowrey, cowreydyn ceaut, as session auth local veih'n innid shoh.",
+    "deleteEverything": "Smooinee er dy chooilley nhee",
+    "deleteFailedTitle": "Cha dod y scughey",
+    "deleteFailedMessage": "Cha nel eh ry-hoi y scughey data local annoish.",
+    "linkFailed": "Cha nel eh ry-hoi y linney y foshley",
+    "sections": {
+      "language": "Chengey",
+      "languageSubtitle": "Caghlaa yn eaddagh as y system",
+      "companion": "Company",
+      "companionSubtitle": "Roshtyn boght as offline",
+      "deviceSafety": "Instrumentyn as safety",
+      "deviceSafetySubtitle": "NorthStar, guardianyn, as cooneyderyn urjid",
+      "privacy": "Privacy as coontey",
+      "privacySubtitle": "Eash, ymmyrkey magh, scughey, as policy",
+      "account": "Cuntey",
+      "accountSubtitle": "Dy session VeryLoving t'ayd nish"
+    },
+    "updateFailedTitle": "Cha nel y rheynn ry-ghoaill",
+    "updateFailedMessage": "Cha b'aashagh shin y roshtyn shen y sparrey. Feayrish reesht, my yeearree.",
+    "signOutFailedTitle": "Cha b'aashagh eh goll magh",
+    "signOutFailedMessage": "Ta'n session ayd foast glan. Feayrish reesht, my yeearree."
+  },
+  "contacts": {
+    "title": "Connaghtyn ec y traa t'ayn",
+    "subtitle": "Duiney creeney ry-gheddyn rish slystaghyn slaynt.",
+    "addTitle": "Cur rish coonney urjid",
+    "name": "Ennym",
+    "namePlaceholder": "Ennym y cho-chowrey",
+    "phone": "Uimhir y phone",
+    "add": "Cur rish",
+    "empty": "Cha nel co-chowraghyn urjid er nyn goyrt stiagh foast.",
+    "emptyTitle": "Cha nel co-chowraghyn erbee er-mayrn foast",
+    "emptyMessage": "Cuir rish dooinney ta shiu credjal dy vod ad ve ready tra ta slyst safety feme orroo.",
+    "removeTitle": "Dy chur magh %{name}?",
+    "removeMessage": "Cha bee y dooinney shoh er ny hoilshaghey ayns dty slyst emergency.",
+    "nameRequired": "Cur stiagh ennym y chonaant.",
+    "saveFailedTitle": "Cha nel y cho-chowrey er ny s'sauail",
+    "saveFailedMessage": "Cha b'aashagh shin y cho-chowrey shoh y scanshoil. Check ny mraane as feddyn magh reesht.",
+    "removeFailedTitle": "Cha nel y cho-chowrey er ny chur magh",
+    "removeFailedMessage": "Cha b'aashagh shin y cho-chowrey shoh y chur ersooyl. Feayrish reesht, my yeearree.",
+    "callAccessibility": "Glaare %{name}",
+    "removeAccessibility": "Cur magh %{name}"
+  },
+  "device": {
+    "title": "Riaghlagh yn innid",
+    "subtitle": "Reill dty NorthStar innid.",
+    "connected": "Ceaghlit · %{battery}% y battyr",
+    "none": "Cha nel innidyn ceaut",
+    "disconnect": "Dymmyrkey yn innid",
+    "connect": "Ceagh yn innid"
+  },
+  "friends": {
+    "title": "Caarjyn",
+    "subtitle": "Guardianyn, irriney, as graph ymmyrchagh.",
+    "addDemo": "Cur rish cara demo",
+    "emptyTitle": "Ta'n cirkel slaynt ayd foshlit",
+    "emptyMessage": "By lhisagh caraid as guardianyn creeney ve ry-akin ec y traa t'ayn tra t'ad er nyn goyrt stiagh.",
+    "newGuardian": "Gaardian Noa",
+    "statuses": {
+      "guardian": "Foddeyder",
+      "pending": "Feill"
+    }
+  },
+  "emergency": {
+    "title": "Er-earroo SOS",
+    "subtitle": "Escalate agh tra ta feme ayd er cooney dy h-oikoil.",
+    "body": "This t'eh cur fys da'n slyst shleiy as t'eh ry-hoi ry-hoi.",
+    "activate": "Cur obbyr SOS",
+    "callCompanion": "Galm AI companion",
+    "notificationTitle": "SOS er ny ghleiy",
+    "notificationBody": "Ta'n slyst ec y traa t'ayn ready.",
+    "readyTitle": "SOS aarloo",
+    "callContact": "Glaare %{name}?",
+    "addContact": "Cuir stiagh ymmyd jeh'n 'emergency' ayns Soitçhyn.",
+    "quickShareTitle": "Sheshaght sniessey",
+    "quickShareMessage": "Ta'n stub rannaghey 'sy 'nnyd ready. Ceangley yn 'endpoint share' backend dy chur ceaghleyn beo."
+  },
+  "quickShare": {
+    "title": "Sheshaght sniessey",
+    "subtitle": "Ta slyst share location ready."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tapp daa cheayrt er dty NorthStar dy scughey orange s'saghney.",
+    "body": "Ta'n raad gesture ready son wiring BLE."
+  },
+  "debug": {
+    "title": "VeryLoving duillag debug",
+    "subtitle": "Raad y ghleashtan-only."
+  },
+  "errors": {
+    "voiceOffline": "T'ou myr dy vel oo offline. Ta'n teisht er ny choyrt tra t'ou uss ry-cheilley.",
+    "voiceQueued": "Teisht er ny s'sauail. T'eh er ny choyrt tra t'eh ry-cheilley rish y chompanyn voice.",
+    "voiceRetrying": "T'ou uss jannoo ymmyd jeh dty theayrt reesht...",
+    "voiceConnecting": "Ceaghley dy scanshoil rish dty chompanyn voice...",
+    "microphone": "Ta feme er microphone son glareyn boght. Faggys oo eh ayns Settings, ny scrieu teacht ayns e ynnyd.",
+    "billing": "Cha nel y chompany boght online ry-gheddyn son traa. Faggys da’n chompany offline.",
+    "authentication": "Cha b'ee y chompany boght ry-hoi y session shoh y verify. Sign in reesht ny uss uss y chompany offline son y traa t'ayn.",
+    "timeout": "Ghow y chompanyn boght ry-hoi dy freggyrt. Check dty cheshaght as feddyn magh reesht.",
+    "network": "Cha b'aashagh shin reach y chompany boght. Sheck dty cheet-stiagh, as feddyn magh reesht ny gow ersooyl offline.",
+    "genericVoice": "Ren red erbee y ghlare y ghlare. Feaysaghey reesht, ny lesh magh rish y chompany offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ymmyd jeh coontey"
+  },
+  "notifications": {
+    "channelName": "Raaidyn shleiy"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ta feme er microphone son slaynt as AI glareyn companion.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving t'eh usaghey dty ard-valley son y map s'saghney as ny s'saghney t'ayn.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving t'eh usaghey dty ard-valley dy chur tastey da slystaghyn ry-gheddyn as ry-gheddyn.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving t'eh uss 'sy stayd 'sy 'cho-chaslys' son 'safe-arrival' as 'danger-zone'.",
+      "NSCameraUsageDescription": "VeryLoving t'eh usaghey y chamera agh tra t'ou uss roshtyn dy ghoaill ymmyd jeh'n 'profile' ny 'safety photo'.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving t'eh usaghey dty leabharlann photo agh tra t'ou uss roshtyn profil ny ymmyd jeh ymmyd.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving t'eh uss Bluetooth dy cheangley rish dty NorthStar jewelry slaynt.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving t'eh uss Bluetooth dy cheangley rish dty NorthStar jewelry slaynt."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

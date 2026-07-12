@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tafoegje",
+    "apple": "Apple",
+    "back": "Werom",
+    "call": "Belje",
+    "cancel": "Ofbrekke",
+    "clear": "Dúdlik",
+    "close": "Slute",
+    "connect": "Ferbine",
+    "connecting": "Ferbine...",
+    "continue": "Trochgean",
+    "delete": "Wiskje",
+    "finish": "Finish",
+    "friends": "Freonen",
+    "google": "Google",
+    "home": "Thús",
+    "loading": "Loading...",
+    "map": "Kaart",
+    "notNow": "No net",
+    "remove": "Fuortsmite",
+    "retry": "Opnij besykje",
+    "retrying": "Opnij besykje",
+    "save": "Bewarje",
+    "selected": "Selektearre",
+    "send": "Ferstjoere",
+    "settings": "Ynstellings",
+    "skip": "Oerslaan",
+    "skipForNow": "Oerslaan foarearst",
+    "skipTutorial": "Tutorial oerslaan",
+    "sos": "SOS",
+    "unknown": "Unbekend",
+    "user": "VeryLoving brûker",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Taal",
+    "subtitle": "Kies de taal dy't yn 'e app wurdt brûkt.",
+    "system": "Systeem standert",
+    "search": "Talen sykje",
+    "noResults": "Der binne gjin talen dy't oerienkomme mei jo sykopdracht.",
+    "english": "Ingelsk",
+    "spanish": "Spaansk",
+    "french": "Frânsk",
+    "chineseSimplified": "Sineesk (ferfâldige)"
+  },
+  "phone": {
+    "label": "Telefoannûmer",
+    "placeholder": "Telefoannûmer",
+    "selectCountry": "Selektearje lân of regio",
+    "searchCountry": "Sykje lân, koade of foarheaksel",
+    "noCountries": "Gjin lannen oerienkomme mei jo sykopdracht.",
+    "countryButton": "Lân feroarje, op it stuit %{country} plus %{callingCode}",
+    "inputAccessibility": "Tillefoannûmer foar %{country}",
+    "required": "Fier in telefoannûmer yn.",
+    "tooShort": "Dit telefoannûmer is te koart.",
+    "tooLong": "Dit telefoannûmer is te lang.",
+    "invalid": "Fier in jildich telefoannûmer yn foar it selektearre lân.",
+    "valid": "Jildich ynternasjonaal telefoannûmer"
+  },
+  "auth": {
+    "onboardingTagline": "In persoanlike feiligensbegelieder foar de mominten tusken \"It giet goed\" en \"Ik haw help nedich.\"",
+    "createAccount": "Account oanmeitsje",
+    "continueOnboarding": "Trochgean mei onboarding",
+    "createSubtitle": "Kies in oanmeldmetoade om jo feiligensgrafyk te beskermjen.",
+    "phoneVerification": "Telefoanferifikaasje",
+    "sendCode": "Stjoer koade",
+    "sendingCode": "Koade ferstjoere...",
+    "verifyCode": "Koade kontrolearje",
+    "sentTo": "Stjoerd nei %{phone}",
+    "yourPhone": "jo telefoan",
+    "verificationCode": "Ferifikaasjekoade",
+    "verify": "Ferifiearje",
+    "verifying": "Ferifiearje ...",
+    "invalidCode": "Fier de ferifikaasjekoade yn.",
+    "signInFailedTitle": "Oanmelde ûnderbrutsen",
+    "signInFailedMessage": "Wy koene de oanmelding net foltôgje. Kontrolearje jo ferbining en besykje it nochris.",
+    "googleUnavailableTitle": "Google Oanmelde net beskikber",
+    "googleUnavailableMessage": "Gebrûk fan in lokale ûntwikkeling sesje. Native Google Sign-In wurket yn in ûntwikkelingsbou.",
+    "northStarTitle": "NorthStar sieraden",
+    "northStarSubtitle": "No ferbine of trochgean en it letter tafoegje.",
+    "northStarBody": "De VL01 wearable kin feiligensstreamen triggerje mei kranen en lange drukbewegingen.",
+    "setupJewelry": "Sieraden ynstelle",
+    "meetCapybear": "Meet Capybear",
+    "meetCapybearSubtitle": "Jo sêfte feiligensmaat op 'e kaart en yn petearen.",
+    "capybearBody": "Capybear kin helpe mei thúsmodus, fersoargermodus, needmodus, ekskúsoproppen en stimstipe.",
+    "chooseVoice": "Kies in stim",
+    "capybearReminder": "Capybear herinnering",
+    "remindersReady": "Sachte herinneringen binne klear."
+  },
+  "permissions": {
+    "locationTitle": "Lokaasjefeiligens",
+    "locationSubtitle": "Wurdt brûkt foar de kaart, gefaarsônes, feilige oankomst en SOS kontekst.",
+    "locationBody": "VeryLoving freget om lokaasje sadat fersoargers kinne begripe wêr't help nedich wêze kin. Jo kinne dit letter feroarje yn Ynstellings.",
+    "allowLocation": "Lokaasje tastean",
+    "notificationsTitle": "Feiligens warskôgings",
+    "notificationsSubtitle": "Notifikaasjes stypje check-ins en needeveneminten.",
+    "notificationsBody": "Wy brûke allinich notifikaasjes foar feiligensprompts, needupdates en herinnerings dy't jo ynskeakelje.",
+    "enableNotifications": "Notifikaasjes ynskeakelje",
+    "locationRationaleTitle": "Lokaasje hâldt feiligenskontekst akkuraat",
+    "locationRationaleMessage": "VeryLoving brûkt jo lokaasje foar de feiligenskaart, gefaarsônes, fluch dielen en SOS kontekst. Jo kinne dit letter feroarje yn Ynstellings.",
+    "notificationsRationaleTitle": "Feiligens warskôgings hawwe notifikaasjes nedich",
+    "notificationsRationaleMessage": "VeryLoving stjoert oanmeldingsherinneringen, needupdates en feiligensprompts dy't jo ynskeakelje. Wy brûke gjin notifikaasjes foar advertinsjes.",
+    "microphoneRationaleTitle": "Mikrofoan makket feiligensoproppen oan",
+    "microphoneRationaleMessage": "VeryLoving brûkt jo mikrofoan allinich as jo in AI begelieder of feiligensoprop begjinne.",
+    "bluetoothRationaleTitle": "Bluetooth ferbynt jo wearable",
+    "bluetoothRationaleMessage": "VeryLoving brûkt Bluetooth om te paren mei NorthStar sieraden, ferbiningstatus te lêzen en feiligensstreamen fan 'e wearable te triggerjen.",
+    "cameraRationaleTitle": "Kamera is opsjoneel",
+    "cameraRationaleMessage": "VeryLoving brûkt de kamera allinich as jo kieze om in profylfoto te nimmen of in feiligensôfbylding te dielen."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving hâldt dizze stream beskikber fanút Ynstellings en it dashboard.",
+    "chooseVoiceTitle": "Kies jo stim",
+    "chooseVoiceSubtitle": "Kies de begeliedersstim dy't it feilichst fielt om te hearren.",
+    "homeTitle": "Thúsmodus",
+    "homeSubtitle": "Rêste tafersjoch foar deistige feiligens.",
+    "guardianTitle": "Guardian modus",
+    "guardianSubtitle": "Diel kontekst mei fertroude minsken.",
+    "emergencyTitle": "Emergency modus",
+    "emergencySubtitle": "Fiif kranen kinne eskalearje nei SOS en warskôgings foar fersoargers.",
+    "excuseTitle": "Ekskús oprop",
+    "excuseSubtitle": "Meitsje in sierlike reden om in ûngemaklike situaasje te ferlitten.",
+    "safetyCallTitle": "Feiligens oprop",
+    "safetyCallSubtitle": "Begjin in real-time begelieder oprop as jo stipe nedich binne.",
+    "practiceTitle": "Oefeningssêne",
+    "practiceSubtitle": "Besykje de feiligensstreamen yn in demo mei lege druk."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Hâld de sieraden yn 'e buert by it scannen.",
+    "scan": "Scan foar apparaten",
+    "scanning": "Scannen tichtby...",
+    "noDevices": "Noch gjin NorthStar apparaten yn de buert fûn.",
+    "scanStartFailed": "Bluetooth skennen koe net begjinne. Besykje it nochris.",
+    "scanFailed": "Wy koene gjin sieraden yn de buert fine. Kontrolearje Bluetooth, hâld NorthStar tichtby en besykje it nochris.",
+    "scanAccessFailed": "Bluetooth skennen koe net begjinne. Kontrolearje Bluetooth tagong en besykje it nochris.",
+    "permissionDenied": "Tagong ta apparaat yn 'e buert is útskeakele. Tastean Bluetooth tagong yn Ynstellings, besykje dan it nochris.",
+    "connectTimeout": "NorthStar duorre te lang om te ferbinen. Ferpleats it tichterby en besykje it nochris.",
+    "connectFailed": "Wy koene gjin ferbining meitsje mei NorthStar. Kontrolearje dat it is opladen en tichtby, en besykje dan nochris.",
+    "emptyTitle": "Noch gjin apparaten yn 'e buert",
+    "emptyMessage": "Hâld NorthStar opladen en tichtby dizze telefoan, en scan dan nochris.",
+    "searchingMessage": "Sykje nei NorthStar apparaten yn de buert..."
+  },
+  "home": {
+    "subtitle": "Dashboard foar feiligensbegelieder",
+    "modeStatus": "%{mode} MODUS",
+    "companionReady": "%{name} is klear",
+    "readyBody": "Stim, kaart, sieraden en hoeders binne ien kraan fuort.",
+    "safetyCall": "Feiligens oprop",
+    "northStarDevice": "NorthStar apparaat",
+    "deviceConnected": "%{name} ferbûn · %{battery}%",
+    "noDevice": "Gjin apparaat ferbûn",
+    "manageDevice": "Behear apparaat",
+    "mode": "Modus",
+    "modes": {
+      "home": "Thús",
+      "guardian": "Guardian",
+      "emergency": "Emergency"
+    }
+  },
+  "map": {
+    "finding": "Jo lokaasje fine ...",
+    "retry": "Lokaasje opnij besykje",
+    "title": "Feiligenskaart",
+    "previewSubtitle": "Expo Go foarbyld; Mapbox jout yn in ûntwikkelingsbou.",
+    "preview": "Kaartfoarbyld",
+    "risk": "Risiko: %{risk} · Radius %{radius}m",
+    "refresh": "Lokaasje ferfarskje",
+    "refreshing": "Lokaasje fine...",
+    "updateFailed": "Wy koene jo lokaasje net bywurkje. Besykje it nochris.",
+    "notRequested": "Lokaasjetagong waard net frege. Jo kinne it letter ynskeakelje fan Ynstellings.",
+    "permissionOff": "Lokaasjetagong is út. Aktivearje it yn Ynstellings om de feiligenskaart op jo te sintrum.",
+    "timeout": "Jo lokaasje duorret langer dan ferwachte. Ferpleats earne mei in dúdliker sinjaal en besykje it nochris.",
+    "savedTitle": "Opsleine plakken",
+    "savedEmptyTitle": "Noch gjin bewarre plakken",
+    "savedEmptyMessage": "Fertroude plakken dy't jo bewarje sille hjir ferskine foar rappe tagong.",
+    "zones": {
+      "crowding": "Late nacht drokte",
+      "lowLighting": "Leech ferljochting gebiet"
+    },
+    "risks": {
+      "low": "leech",
+      "medium": "medium",
+      "high": "heech"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ferbine...",
+    "offlineCompanion": "Offline begelieder",
+    "offline": "Offline",
+    "connected": "Ferbûn",
+    "interrupted": "Ferbining ûnderbrutsen",
+    "ready": "Klear om te ferbinen",
+    "connectingSecurely": "Feilich ferbining meitsje mei jo stimbegelieder ...",
+    "messagesWaiting": {
+      "one": "%{count} berjocht dat wachtet om te ferstjoeren",
+      "other": "%{count} berjochten wachtsje op ferstjoeren"
+    },
+    "useOffline": "Gebrûk offline begelieder",
+    "reconnect": "Op 'e nij ferbine mei stim AI",
+    "typePlaceholder": "Typ as praten dreech is",
+    "endCall": "Oprop beëinigje",
+    "startCall": "Begjin oprop",
+    "emptyTitle": "Jo petear begjint hjir",
+    "emptyMessage": "Begjin de oprop of typ in berjocht as jo klear binne."
+  },
+  "chat": {
+    "waiting": "Wachtsje op ferbining",
+    "notSent": "Berjocht net ferstjoerd.",
+    "retryAccessibility": "Besykje it berjocht opnij te ferstjoeren"
+  },
+  "history": {
+    "clearTitle": "Konversaasjeskiednis wiskje?",
+    "clearMessage": "Dit ferwideret bewarre AI begeliedende berjochten fan dit apparaat.",
+    "deleteTitle": "Dizze konversaasje wiskje?",
+    "cannotUndo": "Dit kin net ûngedien makke wurde.",
+    "title": "Konversaasjeskiednis",
+    "subtitle": "AI begeliedende berjochten bewarre op dit apparaat.",
+    "empty": "Noch gjin konversaasjes bewarre.",
+    "emptyTitle": "Noch gjin petearen",
+    "emptyMessage": "Jo AI begelieder petearen sille hjir ferskine nei jo earste oprop.",
+    "loadFailed": "Wy koene de konversaasjeskiednis net laden. Besykje it nochris.",
+    "clearFailed": "Wy koene de konversaasjeskiednis net wiskje. Besykje it nochris.",
+    "deleteFailed": "Wy koene dat petear net wiskje. Besykje it nochris.",
+    "aiCompanion": "AI begelieder",
+    "resume": "Ferfetsje",
+    "clearAll": "Alle skiednis wiskje",
+    "roles": {
+      "assistant": "begelieder",
+      "user": "dy"
+    }
+  },
+  "voices": {
+    "title": "Myn feiligensopropstimmen",
+    "subtitle": "Kies de begelieder stim dy't goed fielt om te hearren.",
+    "test": "Test stim",
+    "stop": "Stopje sample",
+    "selectionFailedTitle": "Seleksje net bewarre",
+    "selectionFailedMessage": "Besykje asjebleaft de stim nochris te kiezen.",
+    "sampleFailedTitle": "Sample net beskikber",
+    "sampleFailedMessage": "Dit stimfoarbyld koe net spile wurde. Besykje it nochris.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "sêft, kalm, grûn"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "helder, gerêststellend, konversaasje"
+      },
+      "boyfriend": {
+        "name": "Freon",
+        "description": "fêst, leaflik, oanwêzich"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "selsbetrouwen, beskermjend, motivearjend"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Stim",
+    "changeVoice": "Feroarje stim",
+    "showCompanion": "Begelieder sjen litte",
+    "offlineMode": "Offline modus",
+    "offlineModeSubtitle": "Gebrûk bondele begelieder-antwurden as it netwurk of Hume bewiisbrieven net beskikber binne.",
+    "privacyData": "Privacy en gegevens",
+    "privacyBody": "Eksportearje of wiskje de lokale gegevens opslein op dit apparaat.",
+    "preparingExport": "Eksport tariede...",
+    "exportData": "Eksportearje myn gegevens",
+    "privacyPolicy": "Privacybelied",
+    "deleting": "Wiskje...",
+    "deleteAll": "Alle lokale gegevens wiskje",
+    "deviceManagement": "Apparaatbehear",
+    "emergencyContacts": "Emergency kontakten",
+    "signOut": "Ofmelde",
+    "exportFailedTitle": "Eksportearje mislearre",
+    "exportFailedMessage": "Kin jo gegevens no net eksportearje.",
+    "deleteConfirmTitle": "Alle lokale gegevens wiskje?",
+    "deleteConfirmMessage": "Dit ferwideret jo profyl, ynstellings, needkontakten, konversaasjeskiednis, tastimmingherinneringen en lokale autentyksesje fan dit apparaat.",
+    "deleteEverything": "Alles wiskje",
+    "deleteFailedTitle": "Ferwidering mislearre",
+    "deleteFailedMessage": "Kin lokale gegevens op it stuit net wiskje.",
+    "linkFailed": "Kin keppeling net iepenje",
+    "sections": {
+      "language": "Taal",
+      "languageSubtitle": "Taal foar ynterface en systeemfergunning",
+      "companion": "Begelieder",
+      "companionSubtitle": "Stim en offline foarkarren",
+      "deviceSafety": "Apparaten en feiligens",
+      "deviceSafetySubtitle": "NorthStar, fersoargers en needkontakten",
+      "privacy": "Privacy en gegevens",
+      "privacySubtitle": "Skiednis, eksport, wiskjen en belied",
+      "account": "Account",
+      "accountSubtitle": "Jo hjoeddeistige VeryLoving sesje"
+    },
+    "updateFailedTitle": "Ynstelling net bewarre",
+    "updateFailedMessage": "Wy koene dy foarkar net bewarje. Besykje it nochris.",
+    "signOutFailedTitle": "Koe net ôfmelde",
+    "signOutFailedMessage": "Jo sesje is noch aktyf. Besykje it nochris."
+  },
+  "contacts": {
+    "title": "Emergency kontakten",
+    "subtitle": "Fertroude minsken beskikber tidens feiligensstreamen.",
+    "addTitle": "Foegje needkontakt ta",
+    "name": "Namme",
+    "namePlaceholder": "Namme fan kontakt",
+    "phone": "Kontakt telefoannûmer",
+    "add": "Foegje kontakt ta",
+    "empty": "Noch gjin needkontakten tafoege.",
+    "emptyTitle": "Noch gjin needkontakten",
+    "emptyMessage": "Foegje immen ta dy't jo fertrouwe, sadat se klear binne as in feiligensstream se nedich is.",
+    "removeTitle": "Fuortsmite %{name}?",
+    "removeMessage": "Dizze persoan sil net mear ferskine yn jo needstream.",
+    "nameRequired": "Fier de namme fan it kontakt yn.",
+    "saveFailedTitle": "Kontakt net bewarre",
+    "saveFailedMessage": "Wy koene dit kontakt net bewarje. Kontrolearje de details en besykje it nochris.",
+    "removeFailedTitle": "Kontakt net fuortsmiten",
+    "removeFailedMessage": "Wy koene dit kontakt net fuortsmite. Besykje it nochris.",
+    "callAccessibility": "Rop %{name}",
+    "removeAccessibility": "Fuortsmite %{name}"
+  },
+  "device": {
+    "title": "Apparaatbehear",
+    "subtitle": "Behear jo NorthStar apparaat.",
+    "connected": "Ferbûn · %{battery}% batterij",
+    "none": "Gjin apparaten ferbûn",
+    "disconnect": "Apparaat losmeitsje",
+    "connect": "Ferbine apparaat"
+  },
+  "friends": {
+    "title": "Freonen",
+    "subtitle": "Guardians, oanfragen en needgrafyk.",
+    "addDemo": "Foegje demofreon ta",
+    "emptyTitle": "Jo feiligenssirkel is leech",
+    "emptyMessage": "Fertroude freonen en fersoargers sille hjir ferskine as se binne tafoege.",
+    "newGuardian": "Nije Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Yn ôfwachting"
+    }
+  },
+  "emergency": {
+    "title": "Emergency SOS",
+    "subtitle": "Eskalearje allinich as jo direkte stipe nedich binne.",
+    "body": "Dit sil jo feiligensstream ynformearje en needkontakten tariede.",
+    "activate": "Aktivearje SOS",
+    "callCompanion": "Rop AI begelieder",
+    "notificationTitle": "SOS aktivearre",
+    "notificationBody": "Jo needstream is klear.",
+    "readyTitle": "SOS klear",
+    "callContact": "Skilje %{name}?",
+    "addContact": "Foegje in needkontakt ta yn Ynstellings.",
+    "quickShareTitle": "Fluch dielen",
+    "quickShareMessage": "Stub foar dielen fan lokaasje is klear. Ferbine it einpunt fan dielde backend om live keppelings te ferstjoeren."
+  },
+  "quickShare": {
+    "title": "Fluch dielen",
+    "subtitle": "De stream fan lokaasjediel is klear."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tik dûbel op jo NorthStar om in feilichheidsoranje te fallen.",
+    "body": "Gebearrûte is klear foar BLE-evenemintbedrading."
+  },
+  "debug": {
+    "title": "VeryLoving debug side",
+    "subtitle": "Rûte allinich foar ûntwikkeling."
+  },
+  "errors": {
+    "voiceOffline": "Jo lykje offline. Jo berjocht sil ferstjoerd wurde as jo opnij ferbine.",
+    "voiceQueued": "Berjocht bewarre. It sil stjoerd wurde as de stimbegelieder opnij ferbynt.",
+    "voiceRetrying": "Besykje jo berjocht nochris te ferstjoeren...",
+    "voiceConnecting": "Feilich ferbining meitsje mei jo stimbegelieder ...",
+    "microphone": "Mikrofoantagong is nedich foar stimoproppen. Jo kinne it ynskeakelje yn Ynstellings, of typ in berjocht ynstee.",
+    "billing": "De online stimbegelieder is tydlik net beskikber. Jo kinne trochgean mei de offline begelieder.",
+    "authentication": "De stimbegelieder koe dizze sesje net ferifiearje. Meld jo opnij oan of brûk de offline begelieder foar no.",
+    "timeout": "De stimbegelieder duorre te lang om te reagearjen. Kontrolearje jo ferbining en besykje it nochris.",
+    "network": "Wy koene de stimbegelieder net berikke. Kontrolearje jo ferbining, besykje dan nochris of gean offline.",
+    "genericVoice": "Iets ûnderbriek de stimoprop. Besykje it nochris, of gean troch mei de offline begelieder."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving gegevens eksportearje"
+  },
+  "notifications": {
+    "channelName": "Feiligens warskôgings"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving hat mikrofoantagong nedich foar feiligens en AI begeliedersoproppen.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving brûkt jo lokaasje foar de feiligenskaart en feiligensfunksjes yn 'e buert.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving brûkt jo lokaasje om feilige oankomst en needstreamen te stypjen.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving brûkt eftergrûnlokaasje foar feilige oankomst en funksjes yn gefaarsône yn 'e buert.",
+      "NSCameraUsageDescription": "VeryLoving brûkt de kamera allinich as jo kieze om in profyl of feiligensfoto te nimmen.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving brûkt jo fotobibleteek allinich as jo in profyl of feiligensôfbylding kieze.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving brûkt Bluetooth om te ferbinen mei jo NorthStar feiligenssieraden.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving brûkt Bluetooth om te ferbinen mei jo NorthStar feiligenssieraden."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

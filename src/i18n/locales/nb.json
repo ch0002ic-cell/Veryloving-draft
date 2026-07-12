@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Legg til",
+    "apple": "Apple",
+    "back": "Tilbake",
+    "call": "Ring",
+    "cancel": "Avbryt",
+    "clear": "Klart",
+    "close": "Lukk",
+    "connect": "Koble deg til",
+    "connecting": "Kobler til...",
+    "continue": "Fortsett",
+    "delete": "Slett",
+    "finish": "Avslutning",
+    "friends": "Venner",
+    "google": "Google",
+    "home": "Hjem",
+    "loading": "Laster...",
+    "map": "Kart",
+    "notNow": "Ikke nå",
+    "remove": "Fjern",
+    "retry": "Nytt forsøk",
+    "retrying": "Prøver på nytt",
+    "save": "Lagre",
+    "selected": "Utvalgt",
+    "send": "Send",
+    "settings": "Miljøer",
+    "skip": "Hopp over",
+    "skipForNow": "Hopp over for nå",
+    "skipTutorial": "Hopp over veiledning",
+    "sos": "SOS",
+    "unknown": "Ukjent",
+    "user": "VeryLoving bruker",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Språk",
+    "subtitle": "Velg språket som brukes i hele appen.",
+    "system": "Systemstandard",
+    "search": "Søkespråk",
+    "noResults": "Ingen språk matcher søket ditt.",
+    "english": "Engelsk",
+    "spanish": "Spansk",
+    "french": "Fransk",
+    "chineseSimplified": "Kinesisk (forenklet)"
+  },
+  "phone": {
+    "label": "Telefonnummer",
+    "placeholder": "Telefonnummer",
+    "selectCountry": "Velg land eller region",
+    "searchCountry": "Søk etter land, kode eller oppringingsprefiks",
+    "noCountries": "Ingen land matcher søket ditt.",
+    "countryButton": "Bytt land, for øyeblikket %{country} pluss %{callingCode}",
+    "inputAccessibility": "Telefonnummer til %{country}",
+    "required": "Skriv inn et telefonnummer.",
+    "tooShort": "Dette telefonnummeret er for kort.",
+    "tooLong": "Dette telefonnummeret er for langt.",
+    "invalid": "Skriv inn et gyldig telefonnummer for det valgte landet.",
+    "valid": "Gyldig internasjonalt telefonnummer"
+  },
+  "auth": {
+    "onboardingTagline": "En personlig sikkerhetspartner i øyeblikkene mellom «Jeg har det bra» og «Jeg trenger hjelp.»",
+    "createAccount": "Opprett konto",
+    "continueOnboarding": "Fortsett med onboarding",
+    "createSubtitle": "Velg en innloggingsmetode for å beskytte sikkerhetsgrafen din.",
+    "phoneVerification": "Telefonverifisering",
+    "sendCode": "Send kode",
+    "sendingCode": "Sender kode...",
+    "verifyCode": "Verifiser koden",
+    "sentTo": "Sendt til %{phone}",
+    "yourPhone": "Telefonen din",
+    "verificationCode": "Verifiseringskode",
+    "verify": "Verifiser",
+    "verifying": "Verifiserer...",
+    "invalidCode": "Skriv inn verifiseringskoden.",
+    "signInFailedTitle": "Innlogging avbrutt",
+    "signInFailedMessage": "Vi klarte ikke å fullføre innloggingen. Sjekk tilkoblingen din og prøv igjen.",
+    "googleUnavailableTitle": "Google Innlogging utilgjengelig",
+    "googleUnavailableMessage": "Bruk av en lokal utviklingsøkt. Native Google Sign-In fungerer i en utviklingsversjon.",
+    "northStarTitle": "NorthStar smykker",
+    "northStarSubtitle": "Par nå eller fortsett og legg det til senere.",
+    "northStarBody": "Den VL01 bærbare kan utløse sikkerhetsflyt med trykk og lange trykkbevegelser.",
+    "setupJewelry": "Sett opp smykker",
+    "meetCapybear": "Møt Capybear",
+    "meetCapybearSubtitle": "Din milde sikkerhetspartner på kartet og i samtaler.",
+    "capybearBody": "Capybear kan hjelpe med hjemmemodus, vergemodus, nødmodus, unnskyldningsanrop og stemmestøtte.",
+    "chooseVoice": "Velg en stemme",
+    "capybearReminder": "Capybear påminnelse",
+    "remindersReady": "Milde påminnelser er klare."
+  },
+  "permissions": {
+    "locationTitle": "Lokasjonssikkerhet",
+    "locationSubtitle": "Brukes for kartet, faresoner, trygg ankomst og SOS kontekst.",
+    "locationBody": "VeryLoving ber om sted slik at verger kan forstå hvor hjelp kan være nødvendig. Du kan endre dette senere i Innstillinger.",
+    "allowLocation": "Tillatt lokalisering",
+    "notificationsTitle": "Sikkerhetsvarsler",
+    "notificationsSubtitle": "Varsler støtter innsjekkinger og nødsituasjoner.",
+    "notificationsBody": "Vi bruker kun varsler for sikkerhetsvarsler, nødoppdateringer og påminnelser du aktiverer.",
+    "enableNotifications": "Aktiver varsler",
+    "locationRationaleTitle": "Plasseringen holder sikkerhetskonteksten nøyaktig",
+    "locationRationaleMessage": "VeryLoving bruker posisjonen din for sikkerhetskartet, faresoner, hurtigdeling og SOS kontekst. Du kan endre dette senere i Innstillinger.",
+    "notificationsRationaleTitle": "Sikkerhetsvarsler trenger varsler",
+    "notificationsRationaleMessage": "VeryLoving sender påminnelser om innsjekking, nødoppdateringer og sikkerhetspåminnelser du aktiverer. Vi bruker ikke varsler for annonser.",
+    "microphoneRationaleTitle": "Mikrofon gir mulighet for sikkerhetssamtaler",
+    "microphoneRationaleMessage": "VeryLoving bruker mikrofonen din kun når du starter en AI følgesvenn eller sikkerhetssamtale.",
+    "bluetoothRationaleTitle": "Bluetooth kobler sammen din bærbare enhet",
+    "bluetoothRationaleMessage": "VeryLoving bruker Bluetooth for å kombinere med NorthStar smykker, lese tilkoblingsstatus og utløse sikkerhetsstrømmer fra wearablen.",
+    "cameraRationaleTitle": "Kamera er valgfritt",
+    "cameraRationaleMessage": "VeryLoving bruker kameraet kun når du velger å ta et profilbilde eller dele et sikkerhetsbilde."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving holder denne flyten tilgjengelig fra Innstillinger og dashbordet.",
+    "chooseVoiceTitle": "Velg stemmen din",
+    "chooseVoiceSubtitle": "Velg den ledsagerstemmen som føles tryggest å høre.",
+    "homeTitle": "Hjemmemodus",
+    "homeSubtitle": "Stille overvåking for daglig sikkerhet.",
+    "guardianTitle": "Voktermodus",
+    "guardianSubtitle": "Del kontekst med pålitelige personer.",
+    "emergencyTitle": "Nødmodus",
+    "emergencySubtitle": "Fem trykk kan eskalere til SOS- og voktervarsler.",
+    "excuseTitle": "Unnskyldningssamtale",
+    "excuseSubtitle": "Lag en elegant grunn til å forlate en ubehagelig situasjon.",
+    "safetyCallTitle": "Sikkerhetsoppfordring",
+    "safetyCallSubtitle": "Start en samtale med følgesvenn i sanntid når du trenger støtte.",
+    "practiceTitle": "Øvingsscene",
+    "practiceSubtitle": "Prøv sikkerhetsstrømningene i en lavtrykksdemo."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Ha smykkene i nærheten mens du skanner.",
+    "scan": "Skann etter enheter",
+    "scanning": "Skanner i nærheten...",
+    "noDevices": "Ingen nærliggende NorthStar enheter funnet ennå.",
+    "scanStartFailed": "Bluetooth skanningen kunne ikke starte. Vennligst prøv igjen.",
+    "scanFailed": "Vi kunne ikke finne smykker i nærheten. Sjekk Bluetooth, hold NorthStar nær, og prøv igjen.",
+    "scanAccessFailed": "Bluetooth skanningen kunne ikke starte. Sjekk Bluetooth tilgang og prøv igjen.",
+    "permissionDenied": "Tilgang til nærliggende enheter er av. La Bluetooth tilgang i Innstillinger, og prøv igjen.",
+    "connectTimeout": "NorthStar tok for lang tid å få kontakt. Flytt den nærmere og prøv igjen.",
+    "connectFailed": "Vi klarte ikke å koble oss til NorthStar. Sjekk at den er ladet og i nærheten, og prøv igjen.",
+    "emptyTitle": "Ingen enheter i nærheten ennå",
+    "emptyMessage": "Hold NorthStar ladet og nær denne telefonen, så skann igjen.",
+    "searchingMessage": "Leter etter NorthStar enheter i nærheten..."
+  },
+  "home": {
+    "subtitle": "Sikkerhetskamerat-dashbord",
+    "modeStatus": "%{mode} MODUS",
+    "companionReady": "%{name} er klar",
+    "readyBody": "Stemme, kart, smykker og voktere er ett trykk unna.",
+    "safetyCall": "Sikkerhetsoppfordring",
+    "northStarDevice": "NorthStar enhet",
+    "deviceConnected": "%{name} koblet · %{battery} %",
+    "noDevice": "Ingen enhet koblet til",
+    "manageDevice": "Administrer enhet",
+    "mode": "Modus",
+    "modes": {
+      "home": "Hjem",
+      "guardian": "Guardian",
+      "emergency": "Nødsituasjon"
+    }
+  },
+  "map": {
+    "finding": "Å finne posisjonen din...",
+    "retry": "Gjenprøvingssted",
+    "title": "Sikkerhetskart",
+    "previewSubtitle": "Expo Go forhåndsvisning; Mapbox renderes i en utviklingsversjon.",
+    "preview": "Kartforhåndsvisning",
+    "risk": "Risiko: %{risk} · Radius %{radius}m",
+    "refresh": "Oppdater-lokasjon",
+    "refreshing": "Finne sted...",
+    "updateFailed": "Vi kunne ikke oppdatere posisjonen din. Vennligst prøv igjen.",
+    "notRequested": "Posisjonstilgang ble ikke bedt om. Du kan aktivere det senere fra Innstillinger.",
+    "permissionOff": "Lokasjonstilgang er av. Slå det på i Innstillinger for å sentrere sikkerhetskartet på deg.",
+    "timeout": "Posisjonen din tar lengre tid enn forventet. Beveg deg et sted med klarere signal og prøv igjen.",
+    "savedTitle": "Lagrede steder",
+    "savedEmptyTitle": "Ingen lagrede steder ennå",
+    "savedEmptyMessage": "Pålitelige steder du lagrer vil vises her for rask tilgang.",
+    "zones": {
+      "crowding": "Sen kveldstrafikk",
+      "lowLighting": "Område med svakt lys"
+    },
+    "risks": {
+      "low": "lavt",
+      "medium": "Medium",
+      "high": "høyt"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kobler til...",
+    "offlineCompanion": "Offline følgesvenn",
+    "offline": "Offline",
+    "connected": "Connected",
+    "interrupted": "Tilkobling avbrutt",
+    "ready": "Klar til å koble til",
+    "connectingSecurely": "Kobler deg trygt til stemmekameraten din...",
+    "messagesWaiting": {
+      "one": "%{count} melding som venter på å sendes",
+      "other": "%{count} meldinger som venter på å sendes"
+    },
+    "useOffline": "Bruk offline følgesvenn",
+    "reconnect": "Koble til stemmeAI",
+    "typePlaceholder": "Skriv hvis det er vanskelig å snakke",
+    "endCall": "Avslutning",
+    "startCall": "Start call",
+    "emptyTitle": "Samtalen din starter her",
+    "emptyMessage": "Start samtalen eller skriv en melding når du er klar."
+  },
+  "chat": {
+    "waiting": "Venter på tilkobling",
+    "notSent": "Melding ikke sendt.",
+    "retryAccessibility": "Prøv å sende melding på nytt"
+  },
+  "history": {
+    "clearTitle": "Klar samtalehistorikk?",
+    "clearMessage": "Dette fjerner lagrede AI følgesvennmeldinger fra denne enheten.",
+    "deleteTitle": "Slette denne samtalen?",
+    "cannotUndo": "Dette kan ikke gjøres om.",
+    "title": "Samtalehistorikk",
+    "subtitle": "AI følgesvennmeldinger lagret på denne enheten.",
+    "empty": "Ingen samtaler lagret ennå.",
+    "emptyTitle": "Ingen samtaler ennå",
+    "emptyMessage": "Dine samtaler med AI følgesvenner vil vises her etter din første samtale.",
+    "loadFailed": "Vi klarte ikke å laste inn samtalehistorikk. Vennligst prøv igjen.",
+    "clearFailed": "Vi klarte ikke å rydde samtalehistorikken. Vennligst prøv igjen.",
+    "deleteFailed": "Vi kunne ikke slette den samtalen. Vennligst prøv igjen.",
+    "aiCompanion": "AI følgesvenn",
+    "resume": "CV",
+    "clearAll": "Fjern all historikk",
+    "roles": {
+      "assistant": "Følgesvenn",
+      "user": "Du"
+    }
+  },
+  "voices": {
+    "title": "Mine sikkerhetsrop stemmer",
+    "subtitle": "Velg den følgesvennstemmen som føles riktig å høre.",
+    "test": "Teststemme",
+    "stop": "Stoppprøve",
+    "selectionFailedTitle": "Utvelgelsen ikke lagret",
+    "selectionFailedMessage": "Vennligst prøv å velge stemmen igjen.",
+    "sampleFailedTitle": "Utvalg utilgjengelig",
+    "sampleFailedMessage": "Denne stemmeprøven kunne ikke spilles av. Vennligst prøv igjen.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mykt, rolig, jordnært"
+      },
+      "bestie": {
+        "name": "Bestevenn",
+        "description": "lys, beroligende, samtalende"
+      },
+      "boyfriend": {
+        "name": "Kjæreste",
+        "description": "stødig, kjærlig, til stede"
+      },
+      "muscleMan": {
+        "name": "Muskelmann",
+        "description": "selvsikker, beskyttende, motiverende"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Stemme",
+    "changeVoice": "Endre stemme",
+    "showCompanion": "Showkamerat",
+    "offlineMode": "Offline-modus",
+    "offlineModeSubtitle": "Bruk medfølgende følgesvennsvar når nettverks- eller Hume legitimasjon ikke er tilgjengelig.",
+    "privacyData": "Personvern og data",
+    "privacyBody": "Eksporter eller slett de lokale dataene som er lagret på denne enheten.",
+    "preparingExport": "Forbereder eksport...",
+    "exportData": "Eksporter dataene mine",
+    "privacyPolicy": "Personvernregler",
+    "deleting": "Sletter...",
+    "deleteAll": "Slett all lokal data",
+    "deviceManagement": "Enhetsadministrasjon",
+    "emergencyContacts": "Nødkontakter",
+    "signOut": "Logg ut",
+    "exportFailedTitle": "Eksporten mislyktes",
+    "exportFailedMessage": "Kan ikke eksportere dataene dine akkurat nå.",
+    "deleteConfirmTitle": "Slette all lokal data?",
+    "deleteConfirmMessage": "Dette fjerner profilen, innstillingene, nødkontakter, samtalehistorikk, tillatelsespåminnelser og lokal autentiseringsøkt fra denne enheten.",
+    "deleteEverything": "Slett alt",
+    "deleteFailedTitle": "Slettingen mislyktes",
+    "deleteFailedMessage": "Kan ikke slette lokale data akkurat nå.",
+    "linkFailed": "Kan ikke åpne lenken",
+    "sections": {
+      "language": "Språk",
+      "languageSubtitle": "Grensesnitt- og systemtillatelsesspråk",
+      "companion": "Følgesvenn",
+      "companionSubtitle": "Stemme- og offline-preferanser",
+      "deviceSafety": "Utstyr og sikkerhet",
+      "deviceSafetySubtitle": "NorthStar, foresatte og nødkontakter",
+      "privacy": "Personvern og data",
+      "privacySubtitle": "Historikk, eksport, sletting og policy",
+      "account": "Beretning",
+      "accountSubtitle": "Din nåværende VeryLoving økt"
+    },
+    "updateFailedTitle": "Innstilling lagret ikke",
+    "updateFailedMessage": "Vi kunne ikke redde den preferansen. Vennligst prøv igjen.",
+    "signOutFailedTitle": "Kunne ikke logge ut",
+    "signOutFailedMessage": "Økten din er fortsatt aktiv. Vennligst prøv igjen."
+  },
+  "contacts": {
+    "title": "Nødkontakter",
+    "subtitle": "Pålitelige personer tilgjengelig under sikkerhetsflyter.",
+    "addTitle": "Legg til nødkontakt",
+    "name": "Navn",
+    "namePlaceholder": "Kontaktnavn",
+    "phone": "Kontakttelefonnummer",
+    "add": "Legg til kontakt",
+    "empty": "Ingen nødkontakter lagt til ennå.",
+    "emptyTitle": "Ingen nødkontakter ennå",
+    "emptyMessage": "Legg til noen du stoler på slik at de er klare når en sikkerhetsstrøm trenger dem.",
+    "removeTitle": "Fjerne %{name}?",
+    "removeMessage": "Denne personen vil ikke lenger dukke opp i din nødstrøm.",
+    "nameRequired": "Skriv inn kontaktens navn.",
+    "saveFailedTitle": "Kontakt ikke lagret",
+    "saveFailedMessage": "Vi klarte ikke å redde denne kontakten. Sjekk detaljene og prøv igjen.",
+    "removeFailedTitle": "Kontakt ikke fjernet",
+    "removeFailedMessage": "Vi kunne ikke fjerne denne kontakten. Vennligst prøv igjen.",
+    "callAccessibility": "Ring %{name}",
+    "removeAccessibility": "Fjern %{name}"
+  },
+  "device": {
+    "title": "Enhetsadministrasjon",
+    "subtitle": "Administrer NorthStar-enheten din.",
+    "connected": "Connected · %{battery} % batteri",
+    "none": "Ingen tilkoblede enheter",
+    "disconnect": "Frakoblingsenhet",
+    "connect": "Koble til enhet"
+  },
+  "friends": {
+    "title": "Venner",
+    "subtitle": "Voktere, forespørsler og nødgraf.",
+    "addDemo": "Legg til demo-venn",
+    "emptyTitle": "Sikkerhetssirkelen din er tom",
+    "emptyMessage": "Betrodde venner og verger vil dukke opp her når de legges til.",
+    "newGuardian": "Ny vokter",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Venter"
+    }
+  },
+  "emergency": {
+    "title": "Nødsituasjon SOS",
+    "subtitle": "Eskaler kun når du trenger umiddelbar støtte.",
+    "body": "Dette varsler sikkerhetsflyten din og forbereder nødkontakter.",
+    "activate": "Aktiver SOS",
+    "callCompanion": "Kall AI følgesvenn",
+    "notificationTitle": "SOS aktivert",
+    "notificationBody": "Nødstrømmen din er klar.",
+    "readyTitle": "SOS klar",
+    "callContact": "Ringer %{name}?",
+    "addContact": "Legg til en nødkontakt i Innstillinger.",
+    "quickShareTitle": "Rask deling",
+    "quickShareMessage": "Lokasjonsdelingsstubben er klar. Koble til backend-share-endepunktet for å sende live-lenker."
+  },
+  "quickShare": {
+    "title": "Rask deling",
+    "subtitle": "Lokasjonsdelingsflyten er klar."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Dobbelttrykk på NorthStar for å slippe en sikkerhetsappelsin.",
+    "body": "Gesteringsruten er klar for BLE-hendelsesledning."
+  },
+  "debug": {
+    "title": "VeryLoving feilsøkingsside",
+    "subtitle": "Kun utbyggingsruten."
+  },
+  "errors": {
+    "voiceOffline": "Du virker offline. Meldingen din vil bli sendt når du gjenoppretter kontakten.",
+    "voiceQueued": "Melding lagret. Den vil bli sendt når stemmefølgesvennen kobler seg til igjen.",
+    "voiceRetrying": "Prøver å sende meldingen din igjen...",
+    "voiceConnecting": "Kobler deg trygt til stemmekameraten din...",
+    "microphone": "Mikrofontilgang er nødvendig for talesamtaler. Du kan aktivere det i Innstillinger, eller skrive en melding i stedet.",
+    "billing": "Den nettbaserte stemmefølgesvennen er midlertidig utilgjengelig. Du kan fortsette med den offline følgesvennen.",
+    "authentication": "Stemmefølgesvennen kunne ikke verifisere denne økten. Logg inn igjen eller bruk den offline følgesvennen foreløpig.",
+    "timeout": "Stemmekameraten brukte for lang tid på å svare. Sjekk tilkoblingen din og prøv igjen.",
+    "network": "Vi fikk ikke tak i stemmekameraten. Sjekk tilkoblingen din, prøv igjen eller fortsett offline.",
+    "genericVoice": "Noe avbrøt stemmeanropet. Prøv igjen, eller fortsett med offline-følgesvennen."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving dataeksport"
+  },
+  "notifications": {
+    "channelName": "Sikkerhetsvarsler"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving trenger mikrofontilgang for sikkerhet og AI ledsagersamtaler.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving bruker posisjonen din for sikkerhetskartet og nærliggende sikkerhetsfunksjoner.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving bruker din posisjon til å støtte trygg ankomst og nødstrøm.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving bruker bakgrunnsposisjon for sikker ankomst og nærliggende faresoner.",
+      "NSCameraUsageDescription": "VeryLoving bruker kameraet bare når du velger å ta et profil- eller sikkerhetsbilde.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving bruker bildebiblioteket ditt kun når du velger et profil- eller sikkerhetsbilde.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving bruker Bluetooth for å koble til dine NorthStar sikkerhetssmykker.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving bruker Bluetooth for å koble til dine NorthStar sikkerhetssmykker."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

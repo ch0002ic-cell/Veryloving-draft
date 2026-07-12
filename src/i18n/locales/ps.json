@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "اضافه کړه",
+    "apple": "Apple",
+    "back": "بېرته",
+    "call": "زنګ وهل",
+    "cancel": "لغوه کول",
+    "clear": "پاکه",
+    "close": "نږدې",
+    "connect": "وصل شه",
+    "connecting": "نښلول کېږی...",
+    "continue": "دوام ورکړه",
+    "delete": "حذف کړه",
+    "finish": "پای ته ورسوه",
+    "friends": "ملګری",
+    "google": "Google",
+    "home": "کور",
+    "loading": "بارېږی...",
+    "map": "نقشه",
+    "notNow": "اوس نه",
+    "remove": "لرې کول",
+    "retry": "بیا هڅه وکړه",
+    "retrying": "بیا هڅه وکړه",
+    "save": "ژغورنه",
+    "selected": "ټاکل شوی",
+    "send": "واستوه",
+    "settings": "تنظیمات",
+    "skip": "پریږده",
+    "skipForNow": "اوس لپاره پرېږده",
+    "skipTutorial": "ښوونیز پړاو پریږدئ",
+    "sos": "SOS",
+    "unknown": "نامعلوم",
+    "user": "VeryLoving کاروونکی",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "ژبه",
+    "subtitle": "هغه ژبه انتخاب کړئ چې په ټول اپلیکیشن کې کارول کیږی.",
+    "system": "د سیسټم اصلی حالت",
+    "search": "د لټون ژبې",
+    "noResults": "هیڅ ژبه ستا د لټون سره سمون نه خوری.",
+    "english": "انګلیسي",
+    "spanish": "هسپانوي",
+    "french": "فرانسوي ژبه",
+    "chineseSimplified": "چینایی (ساده شوی)"
+  },
+  "phone": {
+    "label": "د تلیفون شمېره",
+    "placeholder": "د تلیفون شمېره",
+    "selectCountry": "ټاکل شوی هېواد یا سیمه",
+    "searchCountry": "هېواد، کوډ، یا د زنګ وهلو مخکینی لټون وکړئ",
+    "noCountries": "هیڅ هېواد ستا د لټون سره برابر نه دی.",
+    "countryButton": "هیواد بدل کړم، اوس %{country} جمع %{callingCode}",
+    "inputAccessibility": "د تلیفون شمېره %{country}",
+    "required": "د تلیفون شمېره داخل کړه.",
+    "tooShort": "دا د تلیفون شمېره ډېره لنډه ده.",
+    "tooLong": "دا د تلیفون شمېره ډېره اوږده ده.",
+    "invalid": "د ټاکل شوی هېواد لپاره یو معتبر تلیفون شمېره داخل کړئ.",
+    "valid": "معتبر نړیوال تلیفون شمېره"
+  },
+  "auth": {
+    "onboardingTagline": "د \"زه ښه یم\" او \"مرستې ته اړتیا لرم\" ترمنځ د شخصی خوندیتوب ملګری یم.",
+    "createAccount": "حساب جوړ کړئ",
+    "continueOnboarding": "د شمولیت دوام ورکړئ",
+    "createSubtitle": "د خپل خوندیتوب ګراف د ساتنې لپاره د ننوتلو طریقه غوره کړئ.",
+    "phoneVerification": "د تلیفون تایید",
+    "sendCode": "کوډ واستوه",
+    "sendingCode": "کوډ لیږل...",
+    "verifyCode": "کوډ تایید کړه",
+    "sentTo": "لیږل شوی %{phone}",
+    "yourPhone": "ستا تلیفون",
+    "verificationCode": "د تایید کوډ",
+    "verify": "تایید کړه",
+    "verifying": "تایید...",
+    "invalidCode": "د تایید کوډ داخل کړه.",
+    "signInFailedTitle": "ننوتل ګډوډ شو",
+    "signInFailedMessage": "موږ ونه شو کولای چې نوم لیکنه بشپړه کړو. خپل اتصال وګوره او بیا هڅه وکړه.",
+    "googleUnavailableTitle": "Google ننوتل شتون نلری",
+    "googleUnavailableMessage": "د محلی پرمختیایی غونډې په کارولو سره. Native Google Sign-In د پراختیا په بڼه کار کوی.",
+    "northStarTitle": "NorthStar ګاڼې",
+    "northStarSubtitle": "همدا اوس جوړه کړئ یا دوام ورکړئ او وروسته یې اضافه کړئ.",
+    "northStarBody": "دا VL01 اغوستونکی وسیله کولی شی د ټپونو او اوږد فشار اشارو سره د خوندیتوب جریان فعال کړی.",
+    "setupJewelry": "ګاڼې نصب کړه",
+    "meetCapybear": "ما سره Capybear",
+    "meetCapybearSubtitle": "ستاسو نرم خوندیتوب ملګری په نقشه او زنګونو کې.",
+    "capybearBody": "Capybear کولی شی د کور حالت، ساتونکی حالت، اضطراری حالت، عذر زنګونه، او غږیز ملاتړ کې مرسته وکړی.",
+    "chooseVoice": "یو غږ انتخاب کړه",
+    "capybearReminder": "Capybear یادونه",
+    "remindersReady": "نرمه یادونې چمتو دی."
+  },
+  "permissions": {
+    "locationTitle": "د موقعیت خوندیتوب",
+    "locationSubtitle": "د نقشې، خطر زونونو، خوندی رسیدو، او د شرایطو لپاره SOS کارول کېږی.",
+    "locationBody": "VeryLoving د ځای پوښتنه کوی ترڅو سرپرستان پوه شی چې چیرته مرستې ته اړتیا وی. تاسو دا وروسته په Settings کې بدلولی شئ.",
+    "allowLocation": "ځای ته اجازه ورکړئ",
+    "notificationsTitle": "د خوندیتوب خبرتیاوې",
+    "notificationsSubtitle": "خبرتیاوې د چک ان او بیړنی پېښو ملاتړ کوی.",
+    "notificationsBody": "موږ یوازې د خوندیتوب لارښوونو، بیړنی تازه معلوماتو او هغو یادونو لپاره خبرتیاوې کاروو چې تاسو یې فعال کوئ.",
+    "enableNotifications": "خبرتیاوې فعاله کړئ",
+    "locationRationaleTitle": "موقعیت د خوندیتوب زمینه دقیقه ساتی",
+    "locationRationaleMessage": "VeryLoving ستاسو موقعیت د خوندیتوب نقشې، خطر زونونو، چټک شریکولو او د شرایطو لپاره SOS کاروی. تاسو دا وروسته په Settings کې بدلولی شئ.",
+    "notificationsRationaleTitle": "د خوندیتوب خبرتیاوې ته اړتیا لری",
+    "notificationsRationaleMessage": "VeryLoving د چک ان یادونه، بیړنی تازه معلومات، او د خوندیتوب لارښوونې لیږی چې تاسو ته یې فعال کوی. موږ د اعلانونو لپاره خبرتیاوې نه کاروو.",
+    "microphoneRationaleTitle": "مایکروفون د خوندیتوب زنګونو ځواک ورکوی",
+    "microphoneRationaleMessage": "VeryLoving یوازې هغه وخت مایکروفون کاروی کله چې ته د ملګری AI یا د خوندیتوب زنګ پیل کړې.",
+    "bluetoothRationaleTitle": "Bluetooth ستا د اغوستلو وړ نښلوی.",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth کاروی ترڅو له NorthStar ګاڼو سره جوړه شی، د اتصال حالت ولولی، او د اغوستلو وړ وسیله د خوندیتوب جریان فعال کړی.",
+    "cameraRationaleTitle": "کمره اختیاری ده",
+    "cameraRationaleMessage": "VeryLoving یوازې هغه وخت کامره کاروی کله چې تاسو د پروفایل عکس اخیستل یا د خوندیتوب عکس شریک کړئ."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving دا جریان د تنظیماتو او داشبورډ څخه شتون لری.",
+    "chooseVoiceTitle": "خپل غږ انتخاب کړه",
+    "chooseVoiceSubtitle": "هغه ملګری غږ غوره کړئ چې اورېدل یې تر ټولو خوندی وی.",
+    "homeTitle": "کورنی حالت",
+    "homeSubtitle": "د ورځنی خوندیتوب لپاره ارامه څارنه.",
+    "guardianTitle": "د ګارډین حالت",
+    "guardianSubtitle": "د باور وړ خلکو سره زمینه شریکه کړه.",
+    "emergencyTitle": "بیړنی حالت",
+    "emergencySubtitle": "پنځه ټکونه کولی شی SOS او ساتونکی خبرتیاوو ته ورسېږی.",
+    "excuseTitle": "بخښنه غواړم، زنګ",
+    "excuseSubtitle": "د ناارامه حالت پرېښودو لپاره یو مهربانه دلیل جوړ کړه.",
+    "safetyCallTitle": "د خوندیتوب زنګ",
+    "safetyCallSubtitle": "کله چې ملاتړ ته اړتیا لرې، د ریښتینی وخت ملګری زنګ پیل کړه.",
+    "practiceTitle": "د تمرین صحنه",
+    "practiceSubtitle": "په ټیټ فشار ډیمو کې د خوندیتوب جریان وازمویه."
+  },
+  "jewelry": {
+    "pairTitle": "جوړه NorthStar",
+    "pairSubtitle": "ګاڼې نږدې وساته کله چې سکین کوې.",
+    "scan": "د وسایلو لپاره سکین وکړئ",
+    "scanning": "نږدې سکین کوی...",
+    "noDevices": "تر اوسه نږدې NorthStar وسایل نه دی موندل شوی.",
+    "scanStartFailed": "Bluetooth سکین پیل نه شو. مهربانی وکړئ بیا هڅه وکړئ.",
+    "scanFailed": "موږ نږدې ګاڼې ونه موندلې. وګوره Bluetooth، نږدې NorthStar وساته، او بیا هڅه وکړه.",
+    "scanAccessFailed": "Bluetooth سکین پیل نه شو. د لاسرسی Bluetooth وګوره او بیا هڅه وکړه.",
+    "permissionDenied": "د نږدې وسیلې لاسرسی بند دی. په Settings کې Bluetooth ته لاسرسی اجازه ورکړئ، بیا بیا هڅه وکړئ.",
+    "connectTimeout": "NorthStar ډېر وخت ونیوه چې وصل شی. نږدې یې کړه او بیا هڅه وکړه.",
+    "connectFailed": "موږ نشو کولای له دې سره اړیکه NorthStar. وګوره چې چارج شوی او نږدې دی، بیا بیا هڅه وکړه.",
+    "emptyTitle": "تر اوسه نږدې وسایل نشته",
+    "emptyMessage": "NorthStar چارج او دې تلیفون ته نږدې وساته، بیا بیا سکین کړه.",
+    "searchingMessage": "نږدې NorthStar وسایل لټوم..."
+  },
+  "home": {
+    "subtitle": "د خوندیتوب ملګری داشبورډ",
+    "modeStatus": "%{mode} حالت",
+    "companionReady": "%{name} چمتو دی",
+    "readyBody": "غږ، نقشه، ګاڼې، او ساتونکی یوازې یو ټک لرې دی.",
+    "safetyCall": "د خوندیتوب زنګ",
+    "northStarDevice": "NorthStar وسیله",
+    "deviceConnected": "%{name} وصل دی · %{battery}٪",
+    "noDevice": "هیڅ وسیله نښلول شوې نه ده",
+    "manageDevice": "وسیله مدیریت کړه",
+    "mode": "حالت",
+    "modes": {
+      "home": "کور",
+      "guardian": "ساتونکی",
+      "emergency": "بیړنی حالت"
+    }
+  },
+  "map": {
+    "finding": "ستا ځای پیدا کول...",
+    "retry": "د بیا هڅې ځای",
+    "title": "د خوندیتوب نقشه",
+    "previewSubtitle": "Expo Go مخکتنه؛ Mapbox په پرمختیایی جوړښت کې رینډر کوی.",
+    "preview": "د نقشې مخکتنه",
+    "risk": "خطر: %{risk} · شعاع %{radius}m",
+    "refresh": "د تازه کولو ځای",
+    "refreshing": "ځای موندل...",
+    "updateFailed": "موږ ستا موقعیت تازه نه شو کولی. مهربانی وکړئ بیا هڅه وکړئ.",
+    "notRequested": "د موقعیت لاسرسی غوښتنه نه شوه. تاسو کولی شئ دا وروسته له Settings څخه فعال کړئ.",
+    "permissionOff": "د ځای لاسرسی بند دی. دا په Settings کې فعال کړئ ترڅو د خوندیتوب نقشه ستاسو په مرکز کې وی.",
+    "timeout": "ستا ځای له تمې زیات وخت نیسی. هغه ځای ته لاړ شه چې روښانه سیګنال ولری او بیا هڅه وکړه.",
+    "savedTitle": "خوندی شوی ځایونه",
+    "savedEmptyTitle": "تر اوسه خوندی ځایونه نشته",
+    "savedEmptyMessage": "هغه باوری ځایونه چې ته یې خوندی کړې، دلته به د چټک لاسرسی لپاره ښکاره شی.",
+    "zones": {
+      "crowding": "د شپې ناوخته ګڼه ګوڼه",
+      "lowLighting": "د ټیټې رڼا ساحه"
+    },
+    "risks": {
+      "low": "ټیټ",
+      "medium": "منځنۍ",
+      "high": "لوړ"
+    }
+  },
+  "safetyCall": {
+    "connecting": "نښلول کېږی...",
+    "offlineCompanion": "آفلاین ملګری",
+    "offline": "آفلاین",
+    "connected": "وصل",
+    "interrupted": "اړیکه پرې شوه",
+    "ready": "د وصل کېدو لپاره چمتو یم",
+    "connectingSecurely": "ستاسو د غږ ملګری سره په خوندی ډول نښلول کیږی...",
+    "messagesWaiting": {
+      "one": "%{count} پیغام د لیږلو لپاره انتظار کوی",
+      "other": "%{count} پیغامونه د لیږلو لپاره انتظار باسی"
+    },
+    "useOffline": "آفلاین ملګری وکاروئ",
+    "reconnect": "د غږ سره بیا وصل AI",
+    "typePlaceholder": "که خبرې کول سخت وی، وټایپ کړئ",
+    "endCall": "زنګ پای ته ورسېد",
+    "startCall": "زنګ پیل کړئ",
+    "emptyTitle": "ستاسو خبرې دلته پیلېږی",
+    "emptyMessage": "کله چې چمتو یې، زنګ پیل کړه یا پیغام ولیکه."
+  },
+  "chat": {
+    "waiting": "د اړیکې انتظار",
+    "notSent": "پیغام نه دی استول شوی.",
+    "retryAccessibility": "بیا هڅه وکړه چې پیغام واستول"
+  },
+  "history": {
+    "clearTitle": "روښانه د خبرو تاریخ؟",
+    "clearMessage": "دا د دې وسیلې AI خوندی شوی ملګری پیغامونه لرې کوی.",
+    "deleteTitle": "دا خبرې حذف کړې؟",
+    "cannotUndo": "دا بیرته نه شی بدلیدلی.",
+    "title": "د خبرو تاریخچه",
+    "subtitle": "AI ملګری پیغامونه په دې وسیله کې خوندی شوی دی.",
+    "empty": "تر اوسه هیڅ خبرې خوندی نه دی شوی.",
+    "emptyTitle": "تر اوسه خبرې نه دی شوی",
+    "emptyMessage": "ستاسو AI ملګری خبرې به دلته د لومړی زنګ وروسته ښکاره شی.",
+    "loadFailed": "موږ د خبرو تاریخچه نه شو پورته کولی. مهربانی وکړئ بیا هڅه وکړئ.",
+    "clearFailed": "موږ نشو کولای د خبرو تاریخ پاک کړو. مهربانی وکړئ بیا هڅه وکړئ.",
+    "deleteFailed": "موږ نشو کولای دا خبرې پاکې کړو. مهربانی وکړئ بیا هڅه وکړئ.",
+    "aiCompanion": "AI ملګری",
+    "resume": "رزومه",
+    "clearAll": "ټول تاریخ پاک کړئ",
+    "roles": {
+      "assistant": "ملګری",
+      "user": "ته"
+    }
+  },
+  "voices": {
+    "title": "زما د خوندیتوب غږونه",
+    "subtitle": "هغه ملګری غږ انتخاب کړه چې اورېدل یې سم وی.",
+    "test": "د ازموینې غږ",
+    "stop": "نمونه ودروه",
+    "selectionFailedTitle": "انتخاب خوندی نه شو",
+    "selectionFailedMessage": "مهربانی وکړئ بیا غږ انتخاب کړئ.",
+    "sampleFailedTitle": "نمونه شتون نلری",
+    "sampleFailedMessage": "دا د غږ نمونه نه شوه غږېدلې. مهربانی وکړئ بیا هڅه وکړئ.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "نرم، ارام، او ثبات ورکونکی"
+      },
+      "bestie": {
+        "name": "ملګرې",
+        "description": "روښانه، ډاډ ورکوونکې، خبرې کوونکی"
+      },
+      "boyfriend": {
+        "name": "یار",
+        "description": "ثابت، مینه ناک، حاضر"
+      },
+      "muscleMan": {
+        "name": "ماسټول مین",
+        "description": "باوری، محافظتی، هڅوونکی"
+      }
+    }
+  },
+  "settings": {
+    "voice": "غږ",
+    "changeVoice": "غږ بدل کړه",
+    "showCompanion": "د خپرونې ملګری",
+    "offlineMode": "آفلاین حالت",
+    "offlineModeSubtitle": "کله چې شبکه یا Hume اسناد شتون ونه لری، د ملګری ځوابونه وکاروئ.",
+    "privacyData": "محرمیت او معلومات",
+    "privacyBody": "په دې وسیله کې ذخیره شوی محلی معلومات صادر یا حذف کړئ.",
+    "preparingExport": "د صادراتو چمتووالی...",
+    "exportData": "زما معلومات صادر کړه",
+    "privacyPolicy": "د محرمیت پالیسی",
+    "deleting": "پاکول...",
+    "deleteAll": "ټول محلی معلومات حذف کړئ",
+    "deviceManagement": "د وسیلې مدیریت",
+    "emergencyContacts": "بیړنی اړیکې",
+    "signOut": "وتل",
+    "exportFailedTitle": "صادرات ناکام شول",
+    "exportFailedMessage": "اوس مهال ستاسو معلومات صادرولی نشی.",
+    "deleteConfirmTitle": "ټول محلی معلومات حذف کړو؟",
+    "deleteConfirmMessage": "دا ستاسو پروفایل، تنظیمات، اضطراری تماسونه، د خبرو تاریخچه، د اجازې یادونه، او محلی تصدیق غونډه له دې وسیلې څخه لرې کوی.",
+    "deleteEverything": "هر څه پاک کړه",
+    "deleteFailedTitle": "حذف ناکام شو",
+    "deleteFailedMessage": "اوس مهال محلی معلومات حذف نشم کولی.",
+    "linkFailed": "لینک نشی خلاصولی",
+    "sections": {
+      "language": "ژبه",
+      "languageSubtitle": "د انترفېس او سیسټم اجازه ژبه",
+      "companion": "ملګری",
+      "companionSubtitle": "د غږ او آفلاین خوښې",
+      "deviceSafety": "وسایل او خوندیتوب",
+      "deviceSafetySubtitle": "NorthStar، سرپرستان، او بیړنی اړیکې",
+      "privacy": "محرمیت او معلومات",
+      "privacySubtitle": "تاریخچه، صادرات، حذف، او پالیسۍ",
+      "account": "حساب",
+      "accountSubtitle": "ستا اوسنی VeryLoving"
+    },
+    "updateFailedTitle": "حالت خوندی نه شو",
+    "updateFailedMessage": "موږ دا ترجیح نه شو ساتلی. مهربانی وکړئ بیا هڅه وکړئ.",
+    "signOutFailedTitle": "نشو کولای له وتلو ووځی",
+    "signOutFailedMessage": "ستا غونډه لا هم فعاله ده. مهربانی وکړئ بیا هڅه وکړئ."
+  },
+  "contacts": {
+    "title": "بیړنی اړیکې",
+    "subtitle": "د خوندیتوب په جریان کې باوری خلک شتون لری.",
+    "addTitle": "بیړنی تماس اضافه کړئ",
+    "name": "نوم",
+    "namePlaceholder": "د تماس نوم",
+    "phone": "د تماس تلیفون شمېره",
+    "add": "تماس اضافه کړئ",
+    "empty": "تر اوسه بیړنی اړیکې نه دی اضافه شوی.",
+    "emptyTitle": "تر اوسه بیړنی اړیکې نشته",
+    "emptyMessage": "یو څوک اضافه کړئ چې باور پرې لرئ، تر څو چمتو وی کله چې د خوندیتوب جریان ورته اړتیا وی.",
+    "removeTitle": "لرې %{name}؟",
+    "removeMessage": "دا کس به نور ستاسو د بیړنی حالت کې نه ښکاری.",
+    "nameRequired": "د تماس نوم داخل کړئ.",
+    "saveFailedTitle": "تماس خوندی نه شو",
+    "saveFailedMessage": "موږ دا تماس ژغورلی نه شو. تفصیلات وګوره او بیا هڅه وکړه.",
+    "removeFailedTitle": "تماس نه دی لرې شوی",
+    "removeFailedMessage": "موږ دا تماس نه شو لرې کولی. مهربانی وکړئ بیا هڅه وکړئ.",
+    "callAccessibility": "زنګ %{name}",
+    "removeAccessibility": "لرې %{name}"
+  },
+  "device": {
+    "title": "د وسیلې مدیریت",
+    "subtitle": "خپل NorthStar مدیریت کړه.",
+    "connected": "وصل · %{battery}٪ بیټرۍ",
+    "none": "هیڅ وسیله نښلول شوې نه ده",
+    "disconnect": "د قطع کولو وسیله",
+    "connect": "Connect وسیله"
+  },
+  "friends": {
+    "title": "ملګری",
+    "subtitle": "ساتونکی، غوښتنې، او بیړنی ګراف.",
+    "addDemo": "د ډیمو ملګری اضافه کړئ",
+    "emptyTitle": "ستا د خوندیتوب حلقه خالی ده",
+    "emptyMessage": "باوری ملګری او سرپرستان به دلته راښکاره شی کله چې اضافه شی.",
+    "newGuardian": "نوی ګارډین",
+    "statuses": {
+      "guardian": "ساتونکی",
+      "pending": "انتظار کې دی"
+    }
+  },
+  "emergency": {
+    "title": "بیړنی SOS",
+    "subtitle": "یوازې هغه وخت چې عاجل ملاتړ ته اړتیا لرې، دا موضوع جدی کړه.",
+    "body": "دا به ستاسو د خوندیتوب جریان خبر کړی او بیړنی تماسونه چمتو کړی.",
+    "activate": "فعال SOS",
+    "callCompanion": "خپل ملګری AI زنګ ووهه",
+    "notificationTitle": "SOS فعال شو",
+    "notificationBody": "ستاسو اضطراری جریان چمتو دی.",
+    "readyTitle": "SOS",
+    "callContact": "زنګ %{name}؟",
+    "addContact": "په Settings کې بیړنی تماس اضافه کړئ.",
+    "quickShareTitle": "چټک شریک کول",
+    "quickShareMessage": "د موقعیت شریکولو سټب چمتو دی. د بیک اینډ شریک پای ټکی وصل کړئ ترڅو ژوندۍ لینکونه واستول شی."
+  },
+  "quickShare": {
+    "title": "چټک شریک کول",
+    "subtitle": "د موقعیت شریکولو جریان چمتو دی."
+  },
+  "capybearTap": {
+    "title": "Capybear ټاپ",
+    "subtitle": "خپل NorthStar دوه ځله ټک کړه چې یو خوندی نارنجی وغورځوې.",
+    "body": "د اشارې لاره د BLE ایونټ تارونو لپاره چمتو ده."
+  },
+  "debug": {
+    "title": "VeryLoving ډیبګ پاڼه",
+    "subtitle": "یوازې د پراختیا لاره."
+  },
+  "errors": {
+    "voiceOffline": "ته داسې ښکاری چې آف لاین یې. ستا پیغام به هغه وخت واستول شی کله چې بیا وصل شې.",
+    "voiceQueued": "پیغام خوندی شو. دا به هغه وخت واستول شی کله چې د غږ ملګری بیا وصل شی.",
+    "voiceRetrying": "بیا هڅه کوم خپل پیغام واستوم...",
+    "voiceConnecting": "ستاسو د غږ ملګری سره په خوندی ډول نښلول کیږی...",
+    "microphone": "د غږ زنګونو لپاره مایکروفون ته اړتیا ده. تاسو کولای شئ دا په Settings کې فعال کړئ، یا پیغام ولیکې.",
+    "billing": "آنلاین غږیز ملګری موقتی نه دی. ته کولی شې د آفلاین ملګری سره دوام ورکړې.",
+    "authentication": "د غږ ملګری دا غونډه تایید نه شوه کولی. بیا ننوتل وکړئ یا اوس مهال د آفلاین ملګری څخه استفاده وکړئ.",
+    "timeout": "د غږ ملګری ډېر وخت ونیوه چې ځواب ورکړی. خپل اتصال وګوره او بیا هڅه وکړه.",
+    "network": "موږ د غږ ملګری ته نه شو رسېدلی. خپل اتصال وګوره، بیا بیا هڅه وکړه یا آفلاین دوام ورکړه.",
+    "genericVoice": "یو څه د غږ زنګ ګډوډ کړ. بیا هڅه وکړه، یا له آفلاین ملګری سره دوام ورکړه."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving د معلوماتو صادرول"
+  },
+  "notifications": {
+    "channelName": "د خوندیتوب خبرتیاوې"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving د خوندیتوب او د ملګرو AI لپاره مایکروفون ته اړتیا لری.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving ستاسو موقعیت د خوندیتوب نقشه او نږدې خوندیتوب ځانګړتیاوو لپاره کاروی.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ستاسو موقعیت کاروی ترڅو خوندی راتګ او بیړنی جریان ملاتړ وکړی.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving د خوندی رسیدو او نږدې خطرناکې سیمې ځانګړتیاوو لپاره شالید موقعیت کاروی.",
+      "NSCameraUsageDescription": "VeryLoving یوازې هغه وخت کامره کاروی چې ته د پروفایل یا خوندیتوب عکس واخلی.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving یوازې هغه وخت ستاسو د عکسونو کتابتون کاروی کله چې تاسو پروفایل یا د خوندیتوب عکس انتخاب کړئ.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth کاروی چې ستاسو د خوندیتوب ګاڼې NorthStar وصل کړی.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth کاروی چې ستاسو د خوندیتوب ګاڼې NorthStar وصل کړی."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

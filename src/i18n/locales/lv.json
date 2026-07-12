@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Pievienot",
+    "apple": "Apple",
+    "back": "Atpakaļ",
+    "call": "Zvanīt",
+    "cancel": "Atcelt",
+    "clear": "Notīrīt",
+    "close": "Aizvērt",
+    "connect": "Savienojums",
+    "connecting": "Savienojums...",
+    "continue": "Turpināt",
+    "delete": "Dzēst",
+    "finish": "Pabeigt",
+    "friends": "Draugi",
+    "google": "Google",
+    "home": "Sākums",
+    "loading": "Ielāde ...",
+    "map": "Karte",
+    "notNow": "Ne tagad",
+    "remove": "Noņemt",
+    "retry": "Mēģināt atkārtoti",
+    "retrying": "Atkārtota mēģināšana",
+    "save": "Saglabāt",
+    "selected": "Atlasīts",
+    "send": "Nosūtīt",
+    "settings": "Iestatījumi",
+    "skip": "Izlaist",
+    "skipForNow": "Izlaist pagaidām",
+    "skipTutorial": "Izlaist apmācību",
+    "sos": "SOS",
+    "unknown": "Nav zināms",
+    "user": "VeryLoving lietotājs",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Valoda",
+    "subtitle": "Izvēlieties valodu, kas tiek izmantota visā lietotnē.",
+    "system": "Sistēmas noklusējums",
+    "search": "Meklēt valodas",
+    "noResults": "Neviena valoda neatbilst jūsu meklēšanai.",
+    "english": "Latviešu",
+    "spanish": "Spāņu",
+    "french": "Franču valoda",
+    "chineseSimplified": "Ķīniešu (vienkāršotā)"
+  },
+  "phone": {
+    "label": "Tālruņa numurs",
+    "placeholder": "Tālruņa numurs",
+    "selectCountry": "Izvēlieties valsti vai reģionu",
+    "searchCountry": "Meklēt valsti, kodu vai numuru sastādīšanas prefiksu",
+    "noCountries": "Neviena valsts neatbilst jūsu meklēšanas vaicājumam.",
+    "countryButton": "Mainīt valsti, pašlaik %{country} plus %{callingCode}",
+    "inputAccessibility": "Tālruņa numurs %{country}",
+    "required": "Ievadiet tālruņa numuru.",
+    "tooShort": "Šis tālruņa numurs ir pārāk īss.",
+    "tooLong": "Šis tālruņa numurs ir pārāk garš.",
+    "invalid": "Ievadiet derīgu tālruņa numuru atlasītajai valstij.",
+    "valid": "Derīgs starptautiskais tālruņa numurs"
+  },
+  "auth": {
+    "onboardingTagline": "Personīgais drošības pavadonis brīžiem starp \"Man viss ir labi\" un \"Man nepieciešama palīdzība\".",
+    "createAccount": "Izveidot kontu",
+    "continueOnboarding": "Turpināt pievienošanu",
+    "createSubtitle": "Izvēlieties pierakstīšanās metodi, lai aizsargātu savu drošības diagrammu.",
+    "phoneVerification": "Tālruņa verifikācija",
+    "sendCode": "Nosūtīt kodu",
+    "sendingCode": "Tiek sūtīts kods...",
+    "verifyCode": "Verificēt kodu",
+    "sentTo": "Nosūtīts uz %{phone}",
+    "yourPhone": "Jūsu tālrunis",
+    "verificationCode": "Verifikācijas kods",
+    "verify": "Pārbaudīt",
+    "verifying": "Pārbauda...",
+    "invalidCode": "Ievadiet verifikācijas kodu.",
+    "signInFailedTitle": "Pierakstīšanās pārtraukta",
+    "signInFailedMessage": "Mēs nevarējām pabeigt pierakstīšanos. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+    "googleUnavailableTitle": "Google Pierakstīšanās nav pieejama",
+    "googleUnavailableMessage": "Izmantojot vietējās attīstības sesiju. Vietējā Google pierakstīšanās darbojas izstrādes versijā.",
+    "northStarTitle": "NorthStar rotaslietas",
+    "northStarSubtitle": "Izveidojiet pārī tūlīt vai turpiniet un pievienojiet to vēlāk.",
+    "northStarBody": "VL01 valkājamā ierīce var izraisīt drošības plūsmas ar pieskārieniem un gariem nospiešanas žestiem.",
+    "setupJewelry": "Iestatiet rotaslietas",
+    "meetCapybear": "Iepazīstieties ar Capybear",
+    "meetCapybearSubtitle": "Jūsu maigais drošības pavadonis kartē un zvanos.",
+    "capybearBody": "Capybear var palīdzēt mājas režīmā, aizbildņa režīmā, ārkārtas režīmā, attaisnojuma zvanos un balss atbalstā.",
+    "chooseVoice": "Balss izvēle",
+    "capybearReminder": "Capybear atgādinājums",
+    "remindersReady": "Maigi atgādinājumi ir gatavi."
+  },
+  "permissions": {
+    "locationTitle": "Atrašanās vietas drošība",
+    "locationSubtitle": "Izmanto kartei, bīstamajām zonām, drošai ierašanās un SOS kontekstam.",
+    "locationBody": "VeryLoving lūdz atrašanās vietu, lai aizbildņi varētu saprast, kur var būt nepieciešama palīdzība. Vēlāk varat to mainīt sadaļā Iestatījumi.",
+    "allowLocation": "Atļaut atrašanās vietu",
+    "notificationsTitle": "Drošības brīdinājumi",
+    "notificationsSubtitle": "Paziņojumi atbalsta reģistrēšanos un ārkārtas gadījumus.",
+    "notificationsBody": "Mēs izmantojam paziņojumus tikai drošības uzvednēm, ārkārtas atjauninājumiem un jūsu iespējotiem atgādinājumiem.",
+    "enableNotifications": "Iespējot paziņojumus",
+    "locationRationaleTitle": "Atrašanās vieta nodrošina precīzu drošības kontekstu",
+    "locationRationaleMessage": "VeryLoving izmanto jūsu atrašanās vietu drošības kartei, bīstamajām zonām, ātrajai kopīgošanai un SOS kontekstam. Vēlāk varat to mainīt sadaļā Iestatījumi.",
+    "notificationsRationaleTitle": "Drošības brīdinājumiem ir nepieciešami paziņojumi",
+    "notificationsRationaleMessage": "VeryLoving nosūta atgādinājumus par reģistrēšanos, ārkārtas atjauninājumus un drošības uzvednes, ko iespējojat. Mēs neizmantojam paziņojumus reklāmām.",
+    "microphoneRationaleTitle": "Mikrofons nodrošina drošības zvanus",
+    "microphoneRationaleMessage": "VeryLoving izmanto mikrofonu tikai tad, kad sākat AI pavadoni vai drošības zvanu.",
+    "bluetoothRationaleTitle": "Bluetooth savieno valkājamo ierīci",
+    "bluetoothRationaleMessage": "VeryLoving izmanto Bluetooth, lai savienotu pārī ar NorthStar rotaslietām, nolasītu savienojuma statusu un aktivizētu drošības plūsmas no valkājamās ierīces.",
+    "cameraRationaleTitle": "Kamera nav obligāta",
+    "cameraRationaleMessage": "VeryLoving izmanto kameru tikai tad, ja izvēlaties uzņemt profila fotoattēlu vai kopīgot drošības attēlu."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving saglabā šo plūsmu pieejamu iestatījumos un informācijas panelī.",
+    "chooseVoiceTitle": "Izvēlieties savu balsi",
+    "chooseVoiceSubtitle": "Izvēlieties pavadoņa balsi, kuru dzirdēt ir visdrošāk.",
+    "homeTitle": "Mājas režīms",
+    "homeSubtitle": "Klusa uzraudzība ikdienas drošībai.",
+    "guardianTitle": "Aizbildņa režīms",
+    "guardianSubtitle": "Kopīgojiet kontekstu ar uzticamiem cilvēkiem.",
+    "emergencyTitle": "Ārkārtas režīms",
+    "emergencySubtitle": "Pieci pieskārieni var pāriet uz SOS un aizbildņa brīdinājumiem.",
+    "excuseTitle": "Attaisnojuma zvans",
+    "excuseSubtitle": "Izveidojiet graciozu iemeslu, lai atstātu neērtu situāciju.",
+    "safetyCallTitle": "Drošības zvans",
+    "safetyCallSubtitle": "Sāciet reāllaika pavadoņa zvanu, kad jums ir nepieciešams atbalsts.",
+    "practiceTitle": "Prakses aina",
+    "practiceSubtitle": "Izmēģiniet drošības plūsmas zema spiediena demonstrācijā."
+  },
+  "jewelry": {
+    "pairTitle": "Pārī NorthStar",
+    "pairSubtitle": "Skenēšanas laikā glabājiet rotaslietas tuvumā.",
+    "scan": "Ierīču skenēšana",
+    "scanning": "Skenēšana tuvumā...",
+    "noDevices": "Vēl nav atrastas tuvumā NorthStar ierīces.",
+    "scanStartFailed": "Bluetooth skenēšanu nevarēja sākt. Lūdzu, mēģiniet vēlreiz.",
+    "scanFailed": "Mēs nevarējām atrast tuvumā esošās rotaslietas. Pārbaudiet Bluetooth, turiet NorthStar tuvu un mēģiniet vēlreiz.",
+    "scanAccessFailed": "Bluetooth skenēšanu nevarēja sākt. Pārbaudiet Bluetooth piekļuvi un mēģiniet vēlreiz.",
+    "permissionDenied": "Tuvumā esošās ierīces piekļuve ir izslēgta. Atļaujiet Bluetooth piekļuvi sadaļā Iestatījumi un pēc tam mēģiniet vēlreiz.",
+    "connectTimeout": "NorthStar aizņēma pārāk ilgu laiku, lai izveidotu savienojumu. Pārvietojiet to tuvāk un mēģiniet vēlreiz.",
+    "connectFailed": "Mēs nevarējām izveidot savienojumu ar NorthStar. Pārbaudiet, vai tas ir uzlādēts un tuvumā, pēc tam mēģiniet vēlreiz.",
+    "emptyTitle": "Vēl nav tuvumā esošo ierīču",
+    "emptyMessage": "Turiet NorthStar uzlādētu un tuvu šim tālrunim, pēc tam skenējiet vēlreiz.",
+    "searchingMessage": "Meklējat tuvumā NorthStar ierīces..."
+  },
+  "home": {
+    "subtitle": "Drošības pavadoņa panelis",
+    "modeStatus": "%{mode} REŽĪMS",
+    "companionReady": "%{name} ir gatavs",
+    "readyBody": "Balss, karte, rotaslietas un aizbildņi ir viena pieskāriena attālumā.",
+    "safetyCall": "Drošības zvans",
+    "northStarDevice": "NorthStar ierīce",
+    "deviceConnected": "%{name} savienots · %{battery}%",
+    "noDevice": "Nav pievienota ierīce",
+    "manageDevice": "Pārvaldīt ierīci",
+    "mode": "Režīms",
+    "modes": {
+      "home": "Sākums",
+      "guardian": "Aizbildnis",
+      "emergency": "Ārkārtas situācija"
+    }
+  },
+  "map": {
+    "finding": "Atrašanās vietas atrašana...",
+    "retry": "Atkārtota mēģinājuma vieta",
+    "title": "Drošības karte",
+    "previewSubtitle": "Expo Go priekšskatījums; Mapbox renderē izstrādes būvējumā.",
+    "preview": "Kartes priekšskatījums",
+    "risk": "Risks: %{risk} · Rādiuss %{radius}m",
+    "refresh": "Atsvaidzināt atrašanās vietu",
+    "refreshing": "Atrašanās vietas atrašana...",
+    "updateFailed": "Mēs nevarējām atjaunināt jūsu atrašanās vietu. Lūdzu, mēģiniet vēlreiz.",
+    "notRequested": "Atrašanās vietas piekļuve netika pieprasīta. Vēlāk to var iespējot sadaļā Iestatījumi.",
+    "permissionOff": "Piekļuve atrašanās vietai ir izslēgta. Iespējojiet to iestatījumos, lai centrētu drošības karti uz jums.",
+    "timeout": "Jūsu atrašanās vieta aizņem ilgāku laiku, nekā paredzēts. Pārvietojieties kaut kur ar skaidrāku signālu un mēģiniet vēlreiz.",
+    "savedTitle": "Saglabātās vietas",
+    "savedEmptyTitle": "Vēl nav saglabātu vietu",
+    "savedEmptyMessage": "Saglabātās uzticamās vietas tiks parādītas šeit, lai ātri piekļūtu.",
+    "zones": {
+      "crowding": "Vēlu nakts drūzmēšanās",
+      "lowLighting": "Zema apgaismojuma zona"
+    },
+    "risks": {
+      "low": "zems",
+      "medium": "vidējs",
+      "high": "augsts"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Savienojums...",
+    "offlineCompanion": "Bezsaistes pavadonis",
+    "offline": "Bezsaistē",
+    "connected": "Savienots",
+    "interrupted": "Savienojums pārtraukts",
+    "ready": "Gatavs savienojumam",
+    "connectingSecurely": "Drošs savienojums ar savu balss pavadoni...",
+    "messagesWaiting": {
+      "one": "%{count} ziņojums, kas gaida nosūtīšanu",
+      "other": "%{count} ziņojumi, kas gaida nosūtīšanu"
+    },
+    "useOffline": "Bezsaistes pavadoņa izmantošana",
+    "reconnect": "Atkārtota savienojuma izveide ar balss AI",
+    "typePlaceholder": "Ierakstiet, ja runāt ir grūti",
+    "endCall": "Beigt zvanu",
+    "startCall": "Sākt zvanu",
+    "emptyTitle": "Jūsu saruna sākas šeit",
+    "emptyMessage": "Sāciet zvanu vai ierakstiet ziņojumu, kad esat gatavs."
+  },
+  "chat": {
+    "waiting": "Gaida savienojumu",
+    "notSent": "Ziņojums nav nosūtīts.",
+    "retryAccessibility": "Atkārtoti mēģiniet nosūtīt ziņojumu"
+  },
+  "history": {
+    "clearTitle": "Notīrīt sarunu vēsturi?",
+    "clearMessage": "Tādējādi no šīs ierīces tiek noņemti saglabātie AI pavadoņi.",
+    "deleteTitle": "Dzēst šo sarunu?",
+    "cannotUndo": "To nevar atsaukt.",
+    "title": "Sarunu vēsture",
+    "subtitle": "AI šajā ierīcē saglabātajiem pavadoņiem.",
+    "empty": "Vēl nav saglabātas sarunas.",
+    "emptyTitle": "Vēl nav sarunu",
+    "emptyMessage": "Jūsu AI pavadoņa sarunas tiks parādītas šeit pēc pirmā zvana.",
+    "loadFailed": "Mēs nevarējām ielādēt sarunu vēsturi. Lūdzu, mēģiniet vēlreiz.",
+    "clearFailed": "Mēs nevarējām notīrīt sarunu vēsturi. Lūdzu, mēģiniet vēlreiz.",
+    "deleteFailed": "Mēs nevarējām izdzēst šo sarunu. Lūdzu, mēģiniet vēlreiz.",
+    "aiCompanion": "AI pavadonis",
+    "resume": "Atsākt",
+    "clearAll": "Visas vēstures notīrīšana",
+    "roles": {
+      "assistant": "pavadonis",
+      "user": "jūs"
+    }
+  },
+  "voices": {
+    "title": "Manas drošības zvanu balsis",
+    "subtitle": "Izvēlieties pavadoņa balsi, kas jūtas pareizi dzirdēt.",
+    "test": "Balss pārbaude",
+    "stop": "Apturēt paraugu",
+    "selectionFailedTitle": "Atlase nav saglabāta",
+    "selectionFailedMessage": "Lūdzu, mēģiniet vēlreiz izvēlēties balsi.",
+    "sampleFailedTitle": "Paraugs nav pieejams",
+    "sampleFailedMessage": "Šo balss paraugu nevarēja atskaņot. Lūdzu, mēģiniet vēlreiz.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mīksts, mierīgs, zemējums"
+      },
+      "bestie": {
+        "name": "Labākais",
+        "description": "spilgts, pārliecinošs, sarunīgs"
+      },
+      "boyfriend": {
+        "name": "Draugs",
+        "description": "stabils, sirsnīgs, klātesošs"
+      },
+      "muscleMan": {
+        "name": "Muskuļu cilvēks",
+        "description": "pārliecināts, aizsargājošs, motivējošs"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Balss",
+    "changeVoice": "Balss maiņa",
+    "showCompanion": "Rādīt pavadoni",
+    "offlineMode": "Bezsaistes režīms",
+    "offlineModeSubtitle": "Izmantojiet komplektētas palīgatbildes, ja tīkla vai Hume akreditācijas dati nav pieejami.",
+    "privacyData": "Konfidencialitāte un dati",
+    "privacyBody": "Eksportējiet vai izdzēsiet šajā ierīcē saglabātos lokālos datus.",
+    "preparingExport": "Tiek gatavots eksports...",
+    "exportData": "Manu datu eksportēšana",
+    "privacyPolicy": "Privātuma politika",
+    "deleting": "Dzēšana...",
+    "deleteAll": "Visu lokālo datu dzēšana",
+    "deviceManagement": "Ierīču pārvaldība",
+    "emergencyContacts": "Ārkārtas kontaktinformācija",
+    "signOut": "Izrakstīšanās",
+    "exportFailedTitle": "Eksportēšana neizdevās",
+    "exportFailedMessage": "Šobrīd nevar eksportēt datus.",
+    "deleteConfirmTitle": "Dzēst visus lokālos datus?",
+    "deleteConfirmMessage": "Tādējādi no šīs ierīces tiek noņemts jūsu profils, iestatījumi, ārkārtas kontaktpersonas, sarunu vēsture, atļauju atgādinājumi un vietējā autentifikācijas sesija.",
+    "deleteEverything": "Dzēst visu",
+    "deleteFailedTitle": "Dzēšana neizdevās",
+    "deleteFailedMessage": "Šobrīd nevar izdzēst lokālos datus.",
+    "linkFailed": "Nevar atvērt saiti",
+    "sections": {
+      "language": "Valoda",
+      "languageSubtitle": "Interfeisa un sistēmas atļauju valoda",
+      "companion": "Pavadonis",
+      "companionSubtitle": "Balss un bezsaistes preferences",
+      "deviceSafety": "Ierīces un drošība",
+      "deviceSafetySubtitle": "NorthStar, aizbildņi un ārkārtas kontaktpersonas",
+      "privacy": "Konfidencialitāte un dati",
+      "privacySubtitle": "Vēsture, eksportēšana, dzēšana un politika",
+      "account": "Konts",
+      "accountSubtitle": "Jūsu pašreizējā VeryLoving sesija"
+    },
+    "updateFailedTitle": "Iestatījums nav saglabāts",
+    "updateFailedMessage": "Mēs nevarējām saglabāt šo izvēli. Lūdzu, mēģiniet vēlreiz.",
+    "signOutFailedTitle": "Nevarēja izrakstīties",
+    "signOutFailedMessage": "Jūsu sesija joprojām ir aktīva. Lūdzu, mēģiniet vēlreiz."
+  },
+  "contacts": {
+    "title": "Ārkārtas kontaktinformācija",
+    "subtitle": "Uzticami cilvēki, kas pieejami drošības plūsmu laikā.",
+    "addTitle": "Ārkārtas kontaktpersonas pievienošana",
+    "name": "Vārds",
+    "namePlaceholder": "Kontaktpersonas vārds",
+    "phone": "Kontakttālruņa numurs",
+    "add": "Kontaktpersonas pievienošana",
+    "empty": "Vēl nav pievienoti ārkārtas kontakti.",
+    "emptyTitle": "Vēl nav ārkārtas kontaktpersonu",
+    "emptyMessage": "Pievienojiet uzticamu personu, lai tā būtu gatava, kad tā būs nepieciešama drošības plūsmai.",
+    "removeTitle": "Noņemt %{name}?",
+    "removeMessage": "Šī persona vairs netiks parādīta jūsu ārkārtas plūsmā.",
+    "nameRequired": "Ievadiet kontaktpersonas vārdu.",
+    "saveFailedTitle": "Kontaktpersona nav saglabāta",
+    "saveFailedMessage": "Mēs nevarējām saglabāt šo kontaktu. Pārbaudiet informāciju un mēģiniet vēlreiz.",
+    "removeFailedTitle": "Kontakts nav noņemts",
+    "removeFailedMessage": "Mēs nevarējām noņemt šo kontaktpersonu. Lūdzu, mēģiniet vēlreiz.",
+    "callAccessibility": "Zvaniet %{name}",
+    "removeAccessibility": "Noņemt %{name}"
+  },
+  "device": {
+    "title": "Ierīču pārvaldība",
+    "subtitle": "Pārvaldiet savu NorthStar ierīci.",
+    "connected": "Savienots · %{battery}% akumulators",
+    "none": "Nav pievienotas ierīces",
+    "disconnect": "Atvienojiet ierīci",
+    "connect": "Ierīces pievienošana"
+  },
+  "friends": {
+    "title": "Draugi",
+    "subtitle": "Aizbildņi, pieprasījumi un ārkārtas grafiks.",
+    "addDemo": "Pievienot demonstrācijas draugu",
+    "emptyTitle": "Jūsu drošības loks ir tukšs",
+    "emptyMessage": "Uzticami draugi un aizbildņi parādīsies šeit, tiklīdz tie tiks pievienoti.",
+    "newGuardian": "Jaunais aizbildnis",
+    "statuses": {
+      "guardian": "Aizbildnis",
+      "pending": "Gaida"
+    }
+  },
+  "emergency": {
+    "title": "Ārkārtas SOS",
+    "subtitle": "Eskalējiet tikai tad, ja jums ir nepieciešams tūlītējs atbalsts.",
+    "body": "Tas paziņos jūsu drošības plūsmai un sagatavos ārkārtas kontaktus.",
+    "activate": "Aktivizējiet SOS",
+    "callCompanion": "Zvaniet AI pavadonim",
+    "notificationTitle": "SOS aktivizēts",
+    "notificationBody": "Jūsu ārkārtas plūsma ir gatava.",
+    "readyTitle": "SOS gatavs",
+    "callContact": "Zvaniet %{name}?",
+    "addContact": "Pievienojiet ārkārtas kontaktpersonu sadaļā Iestatījumi.",
+    "quickShareTitle": "Ātra kopīgošana",
+    "quickShareMessage": "Atrašanās vietas koplietošanas stublājs ir gatavs. Pievienojiet aizmugursistēmas koplietošanas galapunktu, lai sūtītu tiešraides saites."
+  },
+  "quickShare": {
+    "title": "Ātra kopīgošana",
+    "subtitle": "Atrašanās vietas koplietošanas plūsma ir gatava."
+  },
+  "capybearTap": {
+    "title": "Capybear pieskarieties",
+    "subtitle": "Veiciet dubultskārienu NorthStar, lai nomestu drošības apelsīnu.",
+    "body": "Žestu maršruts ir gatavs BLE notikumu elektroinstalācijai."
+  },
+  "debug": {
+    "title": "VeryLoving atkļūdošanas lapa",
+    "subtitle": "Tikai izstrādes maršruts."
+  },
+  "errors": {
+    "voiceOffline": "Jūs šķietat bezsaistē. Jūsu ziņojums tiks nosūtīts, kad atkal izveidosiet savienojumu.",
+    "voiceQueued": "Ziņojums saglabāts. Tas tiks nosūtīts, kad balss pavadonis atkal izveidos savienojumu.",
+    "voiceRetrying": "Mēģina nosūtīt ziņojumu vēlreiz...",
+    "voiceConnecting": "Drošs savienojums ar savu balss pavadoni...",
+    "microphone": "Balss zvaniem ir nepieciešama piekļuve mikrofonam. Varat to iespējot sadaļā Iestatījumi vai ierakstīt ziņojumu.",
+    "billing": "Tiešsaistes balss palīgs īslaicīgi nav pieejams. Varat turpināt ar bezsaistes pavadoni.",
+    "authentication": "Balss pavadonis nevarēja pārbaudīt šo sesiju. Pierakstieties vēlreiz vai pagaidām izmantojiet bezsaistes pavadoni.",
+    "timeout": "Balss pavadonim vajadzēja pārāk ilgu laiku, lai atbildētu. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+    "network": "Mēs nevarējām sasniegt balss pavadoni. Pārbaudiet savienojumu, pēc tam mēģiniet vēlreiz vai turpiniet bezsaistē.",
+    "genericVoice": "Kaut kas pārtrauca balss zvanu. Mēģiniet vēlreiz vai turpiniet ar bezsaistes pavadoni."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving datu eksportēšana"
+  },
+  "notifications": {
+    "channelName": "Drošības brīdinājumi"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ir nepieciešama piekļuve mikrofonam, lai nodrošinātu drošību un AI pavadoņa zvanus.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving izmanto jūsu atrašanās vietu drošības kartei un tuvumā esošajiem drošības līdzekļiem.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving izmanto jūsu atrašanās vietu, lai atbalstītu drošu ierašanos un ārkārtas plūsmas.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving izmanto fona atrašanās vietu drošai ierašanās un tuvumā esošajām bīstamajām zonām.",
+      "NSCameraUsageDescription": "VeryLoving izmanto kameru tikai tad, ja izvēlaties uzņemt profilu vai drošības fotoattēlu.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving izmanto jūsu fotoattēlu bibliotēku tikai tad, ja izvēlaties profilu vai drošības attēlu.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving izmanto Bluetooth, lai izveidotu savienojumu ar jūsu NorthStar drošības rotaslietām.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving izmanto Bluetooth, lai izveidotu savienojumu ar jūsu NorthStar drošības rotaslietām."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

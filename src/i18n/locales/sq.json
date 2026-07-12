@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Shtoni",
+    "apple": "Apple",
+    "back": "Mbrapa",
+    "call": "Thirrni",
+    "cancel": "Anulo",
+    "clear": "E qartë",
+    "close": "Mbylle",
+    "connect": "Lidheni",
+    "connecting": "Po lidhet...",
+    "continue": "Vazhdoni",
+    "delete": "Fshije",
+    "finish": "Përfundo",
+    "friends": "Miqtë",
+    "google": "Google",
+    "home": "Shtëpi",
+    "loading": "Po ngarkohet...",
+    "map": "Harta",
+    "notNow": "Jo tani",
+    "remove": "Hiq",
+    "retry": "Provo sërish",
+    "retrying": "Po provon sërish",
+    "save": "Ruaj",
+    "selected": "Zgjedhur",
+    "send": "Dërgo",
+    "settings": "Cilësimet",
+    "skip": "Kapërceni",
+    "skipForNow": "Kalo për momentin",
+    "skipTutorial": "Kapërceje tutorialin",
+    "sos": "SOS",
+    "unknown": "E panjohur",
+    "user": "përdorues VeryLoving",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Gjuha",
+    "subtitle": "Zgjidhni gjuhën e përdorur në të gjithë aplikacionin.",
+    "system": "Parazgjedhja e sistemit",
+    "search": "Kërkoni gjuhë",
+    "noResults": "Asnjë gjuhë nuk përputhet me kërkimin tuaj.",
+    "english": "anglisht",
+    "spanish": "spanjisht",
+    "french": "frëngjisht",
+    "chineseSimplified": "Kineze (e thjeshtuar)"
+  },
+  "phone": {
+    "label": "Numri i telefonit",
+    "placeholder": "Numri i telefonit",
+    "selectCountry": "Zgjidhni shtetin ose rajonin",
+    "searchCountry": "Kërkoni vendin, kodin ose prefiksin e telefonimit",
+    "noCountries": "Asnjë shtet nuk përputhet me kërkimin tuaj.",
+    "countryButton": "Ndrysho shtetin, aktualisht %{country} plus %{callingCode}",
+    "inputAccessibility": "Numri i telefonit për %{country}",
+    "required": "Futni një numër telefoni.",
+    "tooShort": "Ky numër telefoni është shumë i shkurtër.",
+    "tooLong": "Ky numër telefoni është shumë i gjatë.",
+    "invalid": "Futni një numër telefoni të vlefshëm për shtetin e zgjedhur.",
+    "valid": "Numër i vlefshëm i telefonit ndërkombëtar"
+  },
+  "auth": {
+    "onboardingTagline": "Një shoqërues sigurie personale për momentet midis \"Unë jam mirë\" dhe \"Kam nevojë për ndihmë\".",
+    "createAccount": "Krijo llogari",
+    "continueOnboarding": "Vazhdo me inboarding",
+    "createSubtitle": "Zgjidhni një metodë identifikimi për të mbrojtur grafikun tuaj të sigurisë.",
+    "phoneVerification": "Verifikimi i telefonit",
+    "sendCode": "Dërgo kodin",
+    "sendingCode": "Po dërgon kodin...",
+    "verifyCode": "Verifiko kodin",
+    "sentTo": "Dërguar te %{phone}",
+    "yourPhone": "telefonin tuaj",
+    "verificationCode": "Kodi i verifikimit",
+    "verify": "Verifiko",
+    "verifying": "Po verifikohet...",
+    "invalidCode": "Futni kodin e verifikimit.",
+    "signInFailedTitle": "Identifikimi u ndërpre",
+    "signInFailedMessage": "Nuk mundëm të përfundonim identifikimin. Kontrollo lidhjen tënde dhe provo sërish.",
+    "googleUnavailableTitle": "Google Hyrja nuk ofrohet",
+    "googleUnavailableMessage": "Përdorimi i një seance zhvillimi lokal. Native Google Hyrja funksionon në një version zhvillimi.",
+    "northStarTitle": "NorthStar bizhuteri",
+    "northStarSubtitle": "Çiftoje tani ose vazhdo dhe shtoje më vonë.",
+    "northStarBody": "Pajisja e veshjes VL01 mund të shkaktojë flukse sigurie me trokitje e lehtë dhe gjeste me shtypje të gjatë.",
+    "setupJewelry": "Vendosni bizhuteri",
+    "meetCapybear": "Njihuni me Capybear",
+    "meetCapybearSubtitle": "Shoqëruesi juaj i butë i sigurisë në hartë dhe në telefonata.",
+    "capybearBody": "Capybear mund të ndihmojë me modalitetin në shtëpi, modalitetin kujdestar, modalitetin e urgjencës, thirrjet justifikuese dhe mbështetjen zanore.",
+    "chooseVoice": "Zgjidhni një zë",
+    "capybearReminder": "Capybear rikujtues",
+    "remindersReady": "Përkujtuesit e butë janë gati."
+  },
+  "permissions": {
+    "locationTitle": "Siguria e vendndodhjes",
+    "locationSubtitle": "Përdoret për hartën, zonat e rrezikut, mbërritjen e sigurt dhe kontekstin SOS .",
+    "locationBody": "VeryLoving kërkon vendndodhjen në mënyrë që kujdestarët të kuptojnë se ku mund të nevojitet ndihma. Këtë mund ta ndryshosh më vonë te \"Cilësimet\".",
+    "allowLocation": "Lejo vendndodhjen",
+    "notificationsTitle": "Sinjalizimet e sigurisë",
+    "notificationsSubtitle": "Njoftimet mbështesin kontrollet dhe ngjarjet e urgjencës.",
+    "notificationsBody": "Ne përdorim vetëm njoftimet për kërkesat e sigurisë, përditësimet e urgjencës dhe përkujtuesit që ju aktivizoni.",
+    "enableNotifications": "Aktivizo njoftimet",
+    "locationRationaleTitle": "Vendndodhja e mban të saktë kontekstin e sigurisë",
+    "locationRationaleMessage": "VeryLoving përdor vendndodhjen tuaj për hartën e sigurisë, zonat e rrezikut, ndarjen e shpejtë dhe kontekstin SOS . Këtë mund ta ndryshosh më vonë te \"Cilësimet\".",
+    "notificationsRationaleTitle": "Sinjalizimet e sigurisë kanë nevojë për njoftime",
+    "notificationsRationaleMessage": "VeryLoving dërgon alarme rikujtuese për regjistrimin, përditësimet e urgjencës dhe kërkesat e sigurisë që ju aktivizoni. Ne nuk përdorim njoftime për reklama.",
+    "microphoneRationaleTitle": "Mikrofoni fuqizon thirrjet e sigurisë",
+    "microphoneRationaleMessage": "VeryLoving përdor mikrofonin tënd vetëm kur nis një telefonatë shoqëruese ose sigurie AI .",
+    "bluetoothRationaleTitle": "Bluetooth lidh pajisjen tuaj të veshur",
+    "bluetoothRationaleMessage": "VeryLoving përdor Bluetooth për t'u çiftuar me bizhuteritë NorthStar , për të lexuar statusin e lidhjes dhe për të aktivizuar flukset e sigurisë nga pajisjet e veshura.",
+    "cameraRationaleTitle": "Kamera është opsionale",
+    "cameraRationaleMessage": "VeryLoving përdor kamerën vetëm kur zgjidhni të bëni një fotografi profili ose të ndani një imazh sigurie."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving e mban këtë rrjedhë të disponueshme nga Cilësimet dhe paneli i kontrollit.",
+    "chooseVoiceTitle": "Zgjidhni zërin tuaj",
+    "chooseVoiceSubtitle": "Zgjidh zërin shoqërues që ndihet më i sigurt për t'u dëgjuar.",
+    "homeTitle": "Modaliteti në shtëpi",
+    "homeSubtitle": "Monitorim i qetë për sigurinë e përditshme.",
+    "guardianTitle": "Modaliteti i kujdestarit",
+    "guardianSubtitle": "Ndani kontekstin me njerëz të besuar.",
+    "emergencyTitle": "Mënyra e urgjencës",
+    "emergencySubtitle": "Pesë trokitje mund të përshkallëzohen në SOS dhe sinjalizimet e kujdestarit.",
+    "excuseTitle": "False telefononi",
+    "excuseSubtitle": "Krijoni një arsye të këndshme për të lënë një situatë të pakëndshme.",
+    "safetyCallTitle": "Thirrje sigurie",
+    "safetyCallSubtitle": "Filloni një telefonatë shoqëruese në kohë reale kur keni nevojë për mbështetje.",
+    "practiceTitle": "Skena praktike",
+    "practiceSubtitle": "Provoni flukset e sigurisë në një demonstrim me presion të ulët."
+  },
+  "jewelry": {
+    "pairTitle": "Çifti NorthStar",
+    "pairSubtitle": "Mbani bizhuteritë afër gjatë skanimit.",
+    "scan": "Skanoni për pajisje",
+    "scanning": "Po skanon në afërsi...",
+    "noDevices": "Nuk u gjet ende pajisje NorthStar në afërsi.",
+    "scanStartFailed": "Skanimi Bluetooth nuk mund të fillonte. Ju lutemi provoni përsëri.",
+    "scanFailed": "Nuk gjetëm bizhuteri aty pranë. Kontrolloni Bluetooth , mbajeni NorthStar afër dhe provoni përsëri.",
+    "scanAccessFailed": "Skanimi Bluetooth nuk mund të fillonte. Kontrollo qasjen Bluetooth dhe provo sërish.",
+    "permissionDenied": "Qasja në pajisjen në afërsi është joaktiv. Lejo qasjen Bluetooth te \"Cilësimet\", më pas provo sërish.",
+    "connectTimeout": "NorthStar iu desh shumë kohë për t'u lidhur. Afroje dhe provo sërish.",
+    "connectFailed": "Nuk mund të lidheshim me NorthStar . Kontrollo që është i karikuar dhe afër, më pas provo sërish.",
+    "emptyTitle": "Nuk ka ende pajisje në afërsi",
+    "emptyMessage": "Mbaje NorthStar të karikuar dhe afër këtij telefoni, më pas skanoje sërish.",
+    "searchingMessage": "Po kërkon pajisje NorthStar në afërsi..."
+  },
+  "home": {
+    "subtitle": "Paneli shoqërues i sigurisë",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} është gati",
+    "readyBody": "Zëri, harta, bizhuteritë dhe kujdestarët janë një trokitje e lehtë larg.",
+    "safetyCall": "Thirrje sigurie",
+    "northStarDevice": "pajisje NorthStar",
+    "deviceConnected": "%{name} lidhur · %{battery} %",
+    "noDevice": "Asnjë pajisje e lidhur",
+    "manageDevice": "Menaxho pajisjen",
+    "mode": "Modaliteti",
+    "modes": {
+      "home": "Shtëpi",
+      "guardian": "Kujdestar",
+      "emergency": "Emergjenca"
+    }
+  },
+  "map": {
+    "finding": "Duke gjetur vendndodhjen tuaj...",
+    "retry": "Provo sërish vendndodhjen",
+    "title": "Harta e sigurisë",
+    "previewSubtitle": "Expo Go parapamje; Mapbox jepet në një ndërtim zhvillimi.",
+    "preview": "Pamja paraprake e hartës",
+    "risk": "Rreziku: %{risk} · Rrezja %{radius} m",
+    "refresh": "Rifresko vendndodhjen",
+    "refreshing": "Gjetja e vendndodhjes...",
+    "updateFailed": "Nuk mundëm ta përditësojmë vendndodhjen tënde. Ju lutemi provoni përsëri.",
+    "notRequested": "Qasja në vendndodhje nuk u kërkua. Mund ta aktivizoni më vonë nga Cilësimet.",
+    "permissionOff": "Qasja në vendndodhje është joaktiv. Aktivizojeni atë te \"Cilësimet\" për të përqendruar hartën e sigurisë tek ju.",
+    "timeout": "Vendndodhja juaj po merr më shumë se sa pritej. Lëvizni diku me një sinjal më të qartë dhe provoni përsëri.",
+    "savedTitle": "Vendet e ruajtura",
+    "savedEmptyTitle": "Nuk ka ende vende të ruajtura",
+    "savedEmptyMessage": "Vendet e besuara që ruani do të shfaqen këtu për qasje të shpejtë.",
+    "zones": {
+      "crowding": "Grumbullim i natës vonë",
+      "lowLighting": "Zona me ndriçim të ulët"
+    },
+    "risks": {
+      "low": "të ulëta",
+      "medium": "e mesme",
+      "high": "lartë"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Po lidhet...",
+    "offlineCompanion": "Shoqërues jashtë linje",
+    "offline": "Jashtë linje",
+    "connected": "Lidhur",
+    "interrupted": "Lidhja u ndërpre",
+    "ready": "Gati për t'u lidhur",
+    "connectingSecurely": "Po lidhet në mënyrë të sigurt me shoqëruesin tuaj zanor...",
+    "messagesWaiting": {
+      "one": "Mesazh %{count} që pret të dërgohet",
+      "other": "%{count} mesazhe që presin të dërgohen"
+    },
+    "useOffline": "Përdorni shoqëruesin jashtë linje",
+    "reconnect": "Rilidhu me zërin AI",
+    "typePlaceholder": "Shkruani nëse të folurit është i vështirë",
+    "endCall": "Përfundo telefonatën",
+    "startCall": "Filloni thirrjen",
+    "emptyTitle": "Biseda juaj fillon këtu",
+    "emptyMessage": "Filloni thirrjen ose shkruani një mesazh kur të jeni gati."
+  },
+  "chat": {
+    "waiting": "Në pritje të lidhjes",
+    "notSent": "Mesazhi nuk u dërgua.",
+    "retryAccessibility": "Riprovoni të dërgoni mesazh"
+  },
+  "history": {
+    "clearTitle": "Të fshihet historiku i bisedave?",
+    "clearMessage": "Kjo heq mesazhet e ruajtura AI shoqëruese nga kjo pajisje.",
+    "deleteTitle": "Të fshihet kjo bisedë?",
+    "cannotUndo": "Kjo nuk mund të zhbëhet.",
+    "title": "Historia e bisedave",
+    "subtitle": "Mesazhet shoqëruese AI u ruajtën në këtë pajisje.",
+    "empty": "Asnjë bisedë nuk është ruajtur ende.",
+    "emptyTitle": "Nuk ka ende biseda",
+    "emptyMessage": "Bisedat tuaja shoqëruese AI do të shfaqen këtu pas telefonatës tuaj të parë.",
+    "loadFailed": "Nuk mundëm të ngarkonim historikun e bisedave. Ju lutemi provoni përsëri.",
+    "clearFailed": "Nuk mundëm të pastronim historinë e bisedave. Ju lutemi provoni përsëri.",
+    "deleteFailed": "Nuk mund ta fshinim atë bisedë. Ju lutemi provoni përsëri.",
+    "aiCompanion": "AI shoqërues",
+    "resume": "Rezyme",
+    "clearAll": "Pastro të gjithë historinë",
+    "roles": {
+      "assistant": "shoqërues",
+      "user": "ju"
+    }
+  },
+  "voices": {
+    "title": "Zërat e thirrjeve të mia të sigurisë",
+    "subtitle": "Zgjidhni zërin shoqërues që ndihet i duhuri për t'u dëgjuar.",
+    "test": "Testoni zërin",
+    "stop": "Ndaloni mostrën",
+    "selectionFailedTitle": "Zgjedhja nuk u ruajt",
+    "selectionFailedMessage": "Ju lutemi, provoni të zgjidhni sërish zërin.",
+    "sampleFailedTitle": "Mostra e padisponueshme",
+    "sampleFailedMessage": "Ky mostër zëri nuk mund të luhej. Ju lutemi provoni përsëri.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "i butë, i qetë, tokëzues"
+      },
+      "bestie": {
+        "name": "Më e mira",
+        "description": "e ndritshme, qetësuese, biseduese"
+      },
+      "boyfriend": {
+        "name": "i dashuri",
+        "description": "i qëndrueshëm, i dashur, i pranishëm"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "i sigurt, mbrojtës, motivues"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Zëri",
+    "changeVoice": "Ndrysho zërin",
+    "showCompanion": "Trego shokun",
+    "offlineMode": "Modaliteti jashtë linje",
+    "offlineModeSubtitle": "Përdorni përgjigjet shoqëruese të bashkuara kur kredencialet e rrjetit ose Hume nuk janë të disponueshme.",
+    "privacyData": "Privatësia dhe të dhënat",
+    "privacyBody": "Eksporto ose fshi të dhënat lokale të ruajtura në këtë pajisje.",
+    "preparingExport": "Përgatitja e eksportit...",
+    "exportData": "Eksporto të dhënat e mia",
+    "privacyPolicy": "Politika e privatësisë",
+    "deleting": "Po fshihet...",
+    "deleteAll": "Fshini të gjitha të dhënat lokale",
+    "deviceManagement": "Menaxhimi i pajisjes",
+    "emergencyContacts": "Kontaktet e urgjencës",
+    "signOut": "Dilni",
+    "exportFailedTitle": "Eksporti dështoi",
+    "exportFailedMessage": "Nuk mund të eksportohen të dhënat tuaja për momentin.",
+    "deleteConfirmTitle": "Të fshihen të gjitha të dhënat lokale?",
+    "deleteConfirmMessage": "Kjo heq profilin, cilësimet, kontaktet e urgjencës, historikun e bisedave, rikujtuesit e lejeve dhe sesionin lokal të vërtetimit nga kjo pajisje.",
+    "deleteEverything": "Fshij gjithçka",
+    "deleteFailedTitle": "Fshirja dështoi",
+    "deleteFailedMessage": "Nuk mund të fshihen të dhënat lokale për momentin.",
+    "linkFailed": "Lidhja nuk mund të hapet",
+    "sections": {
+      "language": "Gjuha",
+      "languageSubtitle": "Ndërfaqja dhe gjuha e lejes së sistemit",
+      "companion": "Shoqërues",
+      "companionSubtitle": "Preferencat zanore dhe jashtë linje",
+      "deviceSafety": "Pajisjet dhe siguria",
+      "deviceSafetySubtitle": "NorthStar , kujdestarët dhe kontaktet e urgjencës",
+      "privacy": "Privatësia dhe të dhënat",
+      "privacySubtitle": "Historia, eksporti, fshirja dhe politika",
+      "account": "Llogaria",
+      "accountSubtitle": "Sesioni juaj aktual VeryLoving"
+    },
+    "updateFailedTitle": "Cilësimi nuk u ruajt",
+    "updateFailedMessage": "Nuk mund ta ruanim atë preferencë. Ju lutemi provoni përsëri.",
+    "signOutFailedTitle": "Nuk mund të dilte",
+    "signOutFailedMessage": "Sesioni juaj është ende aktiv. Ju lutemi provoni përsëri."
+  },
+  "contacts": {
+    "title": "Kontaktet e urgjencës",
+    "subtitle": "Njerëz të besuar në dispozicion gjatë rrjedhave të sigurisë.",
+    "addTitle": "Shto kontakt urgjence",
+    "name": "Emri",
+    "namePlaceholder": "Emri i kontaktit",
+    "phone": "Kontaktoni numrin e telefonit",
+    "add": "Shto kontakt",
+    "empty": "Nuk është shtuar ende asnjë kontakt urgjence.",
+    "emptyTitle": "Nuk ka ende kontakte urgjence",
+    "emptyMessage": "Shtoni dikë të cilit i besoni, në mënyrë që të jenë gati kur t'i nevojiten një fluks sigurie.",
+    "removeTitle": "Të hiqet %{name} ?",
+    "removeMessage": "Ky person nuk do të shfaqet më në rrjedhën tuaj të urgjencës.",
+    "nameRequired": "Futni emrin e kontaktit.",
+    "saveFailedTitle": "Kontakti nuk u ruajt",
+    "saveFailedMessage": "Nuk mund ta ruanim këtë kontakt. Kontrolloni detajet dhe provoni përsëri.",
+    "removeFailedTitle": "Kontakti nuk u hoq",
+    "removeFailedMessage": "Nuk mund ta hiqnim këtë kontakt. Ju lutemi provoni përsëri.",
+    "callAccessibility": "Telefono %{name}",
+    "removeAccessibility": "Hiq %{name}"
+  },
+  "device": {
+    "title": "Menaxhimi i pajisjes",
+    "subtitle": "Menaxho pajisjen tuaj NorthStar .",
+    "connected": "Lidhur · %{battery} % bateri",
+    "none": "Nuk ka pajisje të lidhura",
+    "disconnect": "Shkëputni pajisjen",
+    "connect": "Lidh pajisjen"
+  },
+  "friends": {
+    "title": "Miqtë",
+    "subtitle": "Kujdestarët, kërkesat dhe grafiku i urgjencës.",
+    "addDemo": "Shto mik demo",
+    "emptyTitle": "Rrethi juaj i sigurisë është bosh",
+    "emptyMessage": "Miqtë dhe kujdestarët e besuar do të shfaqen këtu sapo të shtohen.",
+    "newGuardian": "Kujdestari i ri",
+    "statuses": {
+      "guardian": "Kujdestar",
+      "pending": "Në pritje"
+    }
+  },
+  "emergency": {
+    "title": "Urgjenca SOS",
+    "subtitle": "Përshkallëzoni vetëm kur keni nevojë për mbështetje të menjëhershme.",
+    "body": "Kjo do të njoftojë rrjedhën tuaj të sigurisë dhe do të përgatisë kontaktet e urgjencës.",
+    "activate": "Aktivizo SOS",
+    "callCompanion": "Telefono shokun AI",
+    "notificationTitle": "SOS u aktivizua",
+    "notificationBody": "Rrjedha juaj e urgjencës është gati.",
+    "readyTitle": "SOS gati",
+    "callContact": "Thirrni %{name} ?",
+    "addContact": "Shto një kontakt urgjence te \"Cilësimet\".",
+    "quickShareTitle": "Ndani shpejt",
+    "quickShareMessage": "Cung i ndarjes së vendndodhjes është gati. Lidhni pikën fundore të ndarjes së bazës së pasme për të dërguar lidhje të drejtpërdrejta."
+  },
+  "quickShare": {
+    "title": "Ndani shpejt",
+    "subtitle": "Rrjedha e ndarjes së vendndodhjes është gati."
+  },
+  "capybearTap": {
+    "title": "Capybear trokit",
+    "subtitle": "Prekni dy herë NorthStar tuaj për të hedhur një portokall sigurie.",
+    "body": "Itinerari i gjesteve është gati për lidhjen e ngjarjeve BLE."
+  },
+  "debug": {
+    "title": "Faqja e korrigjimit të VeryLoving",
+    "subtitle": "Rrugë vetëm për zhvillim."
+  },
+  "errors": {
+    "voiceOffline": "Dukesh jashtë linje. Mesazhi juaj do të dërgohet kur të rilidheni.",
+    "voiceQueued": "Mesazhi u ruajt. Do të dërgohet kur shoqëruesi zanor të rilidhet.",
+    "voiceRetrying": "Duke u përpjekur të dërgoni përsëri mesazhin tuaj...",
+    "voiceConnecting": "Po lidhet në mënyrë të sigurt me shoqëruesin tuaj zanor...",
+    "microphone": "Qasja në mikrofon nevojitet për thirrjet zanore. Mund ta aktivizoni te \"Cilësimet\" ose të shkruani një mesazh.",
+    "billing": "Shoqëruesi zanor në linjë është përkohësisht i padisponueshëm. Mund të vazhdosh me shoqëruesin jashtë linje.",
+    "authentication": "Shoqëruesi zanor nuk mund ta verifikonte këtë sesion. Identifikohu përsëri ose përdor shoqëruesin jashtë linje për momentin.",
+    "timeout": "Shoqëruesi i zërit mori shumë kohë për t'u përgjigjur. Kontrollo lidhjen tënde dhe provo sërish.",
+    "network": "Nuk arritëm dot shoqëruesin e zërit. Kontrollo lidhjen tënde, më pas provo sërish ose vazhdo jashtë linje.",
+    "genericVoice": "Diçka e ndërpreu thirrjen zanore. Provo sërish ose vazhdo me shoqëruesin jashtë linje."
+  },
+  "privacy": {
+    "exportTitle": "Eksportimi i të dhënave VeryLoving"
+  },
+  "notifications": {
+    "channelName": "Sinjalizimet e sigurisë"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ka nevojë për qasje në mikrofon për siguri dhe AI telefonata shoqëruese.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving përdor vendndodhjen tuaj për hartën e sigurisë dhe veçoritë e sigurisë në afërsi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving përdor vendndodhjen tuaj për të mbështetur flukset e mbërritjes së sigurt dhe të urgjencës.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving përdor vendndodhjen në sfond për veçoritë e mbërritjes së sigurt dhe të zonës së rrezikut në afërsi.",
+      "NSCameraUsageDescription": "VeryLoving përdor kamerën vetëm kur zgjidhni të bëni një fotografi profili ose sigurie.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving përdor bibliotekën tuaj të fotografive vetëm kur zgjidhni një profil ose imazh sigurie.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving përdor Bluetooth për t'u lidhur me bizhuteritë tuaja të sigurisë NorthStar .",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving përdor Bluetooth për t'u lidhur me bizhuteritë tuaja të sigurisë NorthStar ."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

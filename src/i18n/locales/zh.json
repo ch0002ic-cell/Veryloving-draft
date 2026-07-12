@@ -37,6 +37,8 @@
     "title": "语言",
     "subtitle": "选择应用中使用的语言。",
     "system": "跟随系统",
+    "search": "搜索语言",
+    "noResults": "没有符合搜索条件的语言。",
     "english": "英语",
     "spanish": "西班牙语",
     "french": "法语",

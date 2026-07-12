@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ouzhpennañ",
+    "apple": "Apple",
+    "back": "En-dro",
+    "call": "Galv",
+    "cancel": "Nullañ",
+    "clear": "Sklaer",
+    "close": "Serret",
+    "connect": "Kevreañ",
+    "connecting": "O kevreañ...",
+    "continue": "Kenderc'hel",
+    "delete": "Dilemel",
+    "finish": "Echuiñ",
+    "friends": "Mignoned",
+    "google": "Google",
+    "home": "Ti",
+    "loading": "O kargañ...",
+    "map": "Kartenn",
+    "notNow": "Ket bremañ",
+    "remove": "Dilemel",
+    "retry": "Klask en-dro",
+    "retrying": "O klask en-dro",
+    "save": "Enrollañ",
+    "selected": "Dibabet",
+    "send": "Kas",
+    "settings": "Arventennoù",
+    "skip": "Lamm",
+    "skipForNow": "Lamm evit bremañ",
+    "skipTutorial": "Lamm an hentenn",
+    "sos": "SOS",
+    "unknown": "Dianav",
+    "user": "VeryLoving implijer",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Yezh",
+    "subtitle": "Dibabit ar yezh implijet a-hed an arload.",
+    "system": "Dre ziouer ar reizhiad",
+    "search": "Klask yezhoù",
+    "noResults": "N'eus yezh ebet a glot gant ho klask.",
+    "english": "Brezhoneg",
+    "spanish": "Spagnoleg",
+    "french": "Galleg",
+    "chineseSimplified": "Sinaeg (Eeunaet)"
+  },
+  "phone": {
+    "label": "Niverenn bellgomz",
+    "placeholder": "Niverenn bellgomz",
+    "selectCountry": "Dibab bro pe rannvro",
+    "searchCountry": "Klask bro, kod, pe rakger ar pellgomz",
+    "noCountries": "N'eus bro ebet a glot gant ho klask.",
+    "countryButton": "Cheñch bro, bremañ %{country} mui %{callingCode}",
+    "inputAccessibility": "Niverenn bellgomz evit %{country}",
+    "required": "Lakait un niverenn bellgomz.",
+    "tooShort": "Re verr eo an niverenn bellgomz-mañ.",
+    "tooLong": "Re hir eo an niverenn bellgomz-mañ.",
+    "invalid": "Lakait un niverenn bellgomz reizh evit ar vro dibabet.",
+    "valid": "Niverenn bellgomz etrebroadel reizh"
+  },
+  "auth": {
+    "onboardingTagline": "Ur c'hevread surentez personel evit ar mareoù etre \"Mat on\" ha \"Ezhomm am eus sikour\".",
+    "createAccount": "Krouiñ ur gont",
+    "continueOnboarding": "Kenderc'hel gant an onboarding",
+    "createSubtitle": "Dibabit un doare kevreañ evit gwareziñ ho grafik diogelroez.",
+    "phoneVerification": "Gwiriekaat dre bellgomz",
+    "sendCode": "Kas ar c'hod",
+    "sendingCode": "Kas ar c'hod...",
+    "verifyCode": "Gwiriañ ar c'hod",
+    "sentTo": "Kaset da %{phone}",
+    "yourPhone": "ho pellgomzer",
+    "verificationCode": "Kod gwiriañ",
+    "verify": "Gwiriañ",
+    "verifying": "O gwiriañ...",
+    "invalidCode": "Lakait ar c'hod gwiriekaat.",
+    "signInFailedTitle": "Troc'het eo bet an enskrivadur",
+    "signInFailedMessage": "N'hon eus ket gallet echuiñ an enskrivadur. Gwiriit ho kevreadenn ha klaskit en-dro.",
+    "googleUnavailableTitle": "Google N'eo ket hegerz an enskrivadur",
+    "googleUnavailableMessage": "Implijout ur prantad diorren lec'hel. Native Google En em lugañ a ya en-dro en ur sevel diorren.",
+    "northStarTitle": "NorthStar bravigoù",
+    "northStarSubtitle": "Koublañ bremañ pe kenderc'hel hag ouzhpennañ anezhañ diwezhatoc'h.",
+    "northStarBody": "Ar VL01 gwiskañ a c'hell degas redoù surentez gant pouezañ ha jestroù pouezañ hir.",
+    "setupJewelry": "Lakaat ar bravigoù war-sav",
+    "meetCapybear": "Kemgav Capybear",
+    "meetCapybearSubtitle": "Ho c'hevread surentez dous war ar gartenn hag er galvoù.",
+    "capybearBody": "Capybear a c'hell sikour gant ar mod ti, ar mod gwazour, ar mod enkadenn, ar galvoù digarez hag ar skoazell dre gomz.",
+    "chooseVoice": "Dibab ur vouezh",
+    "capybearReminder": "Capybear soñj",
+    "remindersReady": "Prest eo ar soñjoù dous."
+  },
+  "permissions": {
+    "locationTitle": "Diogelroez al lec'h",
+    "locationSubtitle": "Implijet evit ar gartenn, an tachennoù dañjerus, an degouezh sur, hag an endro SOS.",
+    "locationBody": "VeryLoving a c'houlenn al lec'h evit ma c'hallfe ar gwazourien kompren pelec'h e c'hallfe bezañ ezhomm eus sikour. Gallout a rit cheñch an dra-se diwezhatoc'h en Arventennoù.",
+    "allowLocation": "Aotren al lec'hiadur",
+    "notificationsTitle": "Kemennadennoù diogelroez",
+    "notificationsSubtitle": "Ar c'hemennadennoù a skoazell an enskrivadurioù hag an darvoudoù prim.",
+    "notificationsBody": "N'implijomp kemennadennoù nemet evit goulennoù diogelroez, hizivadurioù en argerzh ha soñjoù a vez gweredekaet ganeoc'h.",
+    "enableNotifications": "Gweredekaat ar c'hemennadennoù",
+    "locationRationaleTitle": "Al lec'hiadur a zalc'h an amdro surentez reizh",
+    "locationRationaleMessage": "VeryLoving a implij ho lec'hiadur evit ar gartenn surentez, an takadoù dañjerus, ar rannañ buan hag an endro SOS. Gallout a rit cheñch an dra-se diwezhatoc'h en Arventennoù.",
+    "notificationsRationaleTitle": "Ezhomm zo eus kemennadennoù evit ar c'hemennoù surentez",
+    "notificationsRationaleMessage": "VeryLoving a gas evezhiadennoù enskrivañ, hizivadennoù en arvar, ha goulennoù diogelroez a vez gweredekaet ganeoc'h. Ne implijomp ket kemennadennoù evit ar bruderezh.",
+    "microphoneRationaleTitle": "Ar mikro a ro nerzh d'ar galvoù surentez",
+    "microphoneRationaleMessage": "VeryLoving ne implij ho mikro nemet pa grogit gant ur galv AI evit ur c'hompagnun pe ur galv surentez.",
+    "bluetoothRationaleTitle": "Bluetooth a gevre ho dafar gwiskañ",
+    "bluetoothRationaleMessage": "VeryLoving a implij Bluetooth evit pareañ gant NorthStar bravigoù, lenn stad ar c'hennask, ha degas redoù surentez eus ar gwiskañ.",
+    "cameraRationaleTitle": "Dibar eo ar c'hamera",
+    "cameraRationaleMessage": "VeryLoving ne implij ar c'hamera nemet pa zibabit tennañ ur foto profil pe rannañ ur skeudenn surentez."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving a vir ar red-mañ da vezañ hegerz diwar an arventennoù hag ar panel.",
+    "chooseVoiceTitle": "Dibabit ho mouezh",
+    "chooseVoiceSubtitle": "Dibabit ar vouezh a-gevret a seblant bezañ suroc'h da glevet.",
+    "homeTitle": "Mod ti",
+    "homeSubtitle": "Heuliañ sioul evit ar surentez pemdeziek.",
+    "guardianTitle": "Mod gwarezer",
+    "guardianSubtitle": "Rannañ an endalc'had gant tud a fiziañs enno.",
+    "emergencyTitle": "Mod enkadenn",
+    "emergencySubtitle": "Pemp pouezadenn a c'hell kreskiñ betek SOS ha kemennadennoù gwareziñ.",
+    "excuseTitle": "Galv digarez",
+    "excuseSubtitle": "Krouiñ un abeg plijus evit kuitaat ur stad diaes.",
+    "safetyCallTitle": "Galv surentez",
+    "safetyCallSubtitle": "Kregiñ gant ur galv kenlabourer e-pad an amzer gwirion pa vez ezhomm skoazell ganeoc'h.",
+    "practiceTitle": "Skeudenn pleustriñ",
+    "practiceSubtitle": "Klaskit ar redoù diogelroez en un diskouezadeg gwask izel."
+  },
+  "jewelry": {
+    "pairTitle": "Koublad NorthStar",
+    "pairSubtitle": "Dalc'hit ar bravigoù e-kichen e-pad ma vez skannet.",
+    "scan": "Skannañ evit an dafariadoù",
+    "scanning": "O skaniñ e-kichen...",
+    "noDevices": "N'eus ket bet kavet urzhiataer NorthStar e-kichen c'hoazh.",
+    "scanStartFailed": "Bluetooth n'eo ket bet gallet kregiñ gant ar skaniñ. Klaskit en-dro mar plij.",
+    "scanFailed": "N'hon eus ket gallet kavout bravigoù e-kichen. Gwiriañ Bluetooth, mirout NorthStar serr, ha klask en-dro.",
+    "scanAccessFailed": "Bluetooth n'eo ket bet gallet kregiñ gant ar skaniñ. Gwiriit Bluetooth mont e-barzh ha klaskit en-dro.",
+    "permissionDenied": "Diweredekaet eo ar moned d'an urzhiataer tost. Aotren Bluetooth mont e-barzh an arventennoù, ha klaskit en-dro.",
+    "connectTimeout": "NorthStar en deus padet re hir evit kennaskañ. Tostait anezhañ ha klaskit en-dro.",
+    "connectFailed": "N'hon eus ket gallet kevreañ ouzh NorthStar. Gwiriit hag-eñ eo karget ha tost, ha klaskit en-dro.",
+    "emptyTitle": "Ardivink ebet e-kichen c'hoazh",
+    "emptyMessage": "Dalc'hit NorthStar karget ha tost ouzh ar pellgomzer-mañ, ha skanit en-dro.",
+    "searchingMessage": "O klask NorthStar urzhiataer e-kichen..."
+  },
+  "home": {
+    "subtitle": "Panell-stur kenlabourer surentez",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} zo prest",
+    "readyBody": "Mouezh, kartenn, bravigoù ha gwazourien a zo un tamm pelloc'h.",
+    "safetyCall": "Galv surentez",
+    "northStarDevice": "NorthStar urzhiataer",
+    "deviceConnected": "%{name} kevreet · %{battery}%",
+    "noDevice": "N'eus urzhiataer ebet kevreet",
+    "manageDevice": "Merañ an dafariad",
+    "mode": "Mod",
+    "modes": {
+      "home": "Ti",
+      "guardian": "Guardian",
+      "emergency": "Urzh"
+    }
+  },
+  "map": {
+    "finding": "O kavout ho lec'hiadur...",
+    "retry": "Klask al lec'hiadur en-dro",
+    "title": "Kartenn surentez",
+    "previewSubtitle": "Expo Go rakwelet ; Mapbox a ginnig en ur sevel diorren.",
+    "preview": "Rakweledenn ar gartenn",
+    "risk": "Riskl : %{risk} · Radius %{radius}m",
+    "refresh": "Nevesaat al lec'hiadur",
+    "refreshing": "O kavout al lec'h...",
+    "updateFailed": "N'hon eus ket gallet hizivaat ho lec'hiadur. Klaskit en-dro mar plij.",
+    "notRequested": "N'eo ket bet goulennet mont e-barzh al lec'hiadur. Gallout a rit gweredekaat anezhañ diwezhatoc'h diwar arventennoù.",
+    "permissionOff": "Diweredekaet eo ar moned d'al lec'hiadur. Gweredekaat anezhañ en Arventennoù evit kreizennañ ar gartenn surentez warnoc'h.",
+    "timeout": "Padout a ra ho lec'hiadur hiroc'h eget gortozet. Dilec'hiañ en ul lec'h gant ur sinal sklaeroc'h ha klask en-dro.",
+    "savedTitle": "Lec'hioù enrollet",
+    "savedEmptyTitle": "Lec'h ebet enrollet c'hoazh",
+    "savedEmptyMessage": "Al lec'hioù fiziet hoc'h eus enrollet a zeuio war wel amañ evit mont buan.",
+    "zones": {
+      "crowding": "Poblañs diwezhat en noz",
+      "lowLighting": "Lec'h nebeut a sklêrijenn"
+    },
+    "risks": {
+      "low": "izel",
+      "medium": "kreiz",
+      "high": "uhel"
+    }
+  },
+  "safetyCall": {
+    "connecting": "O kevreañ...",
+    "offlineCompanion": "Kevread ezlinenn",
+    "offline": "Ezlinenn",
+    "connected": "Kevreet",
+    "interrupted": "Troc'het eo bet ar c'hennask",
+    "ready": "Prest da gevreañ",
+    "connectingSecurely": "Kevreañ en un doare sur ouzh ho kompagnunez mouezh...",
+    "messagesWaiting": {
+      "one": "%{count} kemennadenn o c'hortoz bezañ kaset",
+      "other": "%{count} kemennadennoù o c'hortoz bezañ kaset"
+    },
+    "useOffline": "Implijout ar c'hevread ezlinenn",
+    "reconnect": "Adstagañ ouzh ar vouezh AI",
+    "typePlaceholder": "Skrivit ma vez diaes komz",
+    "endCall": "Echu ar galv",
+    "startCall": "Kregiñ gant ar galv",
+    "emptyTitle": "Amañ e krog ho kaozeadenn",
+    "emptyMessage": "Kregiñ gant ar galv pe skrivañ ur gemennadenn pa viot prest."
+  },
+  "chat": {
+    "waiting": "O c'hortoz ar c'hennask",
+    "notSent": "N'eo ket bet kaset ur gemennadenn.",
+    "retryAccessibility": "Klask en-dro kas ur gemennadenn"
+  },
+  "history": {
+    "clearTitle": "Istor ar gaozeadennoù sklaer ?",
+    "clearMessage": "Gant-se e vez tennet ar c'hemennadennoù enrollet AI eus an urzhiataer-mañ.",
+    "deleteTitle": "Dilemel ar gaozeadenn-mañ ?",
+    "cannotUndo": "N'haller ket distreiñ.",
+    "title": "Istor ar gaozeadennoù",
+    "subtitle": "AI kemennadennoù kenlabour enrollet war an dafariad-mañ.",
+    "empty": "N'eus ket bet enrollet kaozeadenn ebet c'hoazh.",
+    "emptyTitle": "Kaoz ebet c'hoazh",
+    "emptyMessage": "Ho AI kaozeadennoù kenseurted a zeuio war wel amañ goude ho pellgomz kentañ.",
+    "loadFailed": "N'hon eus ket gallet kargañ istor ar gaozeadennoù. Klaskit en-dro mar plij.",
+    "clearFailed": "N'hon eus ket gallet diverkañ istor ar gaozeadennoù. Klaskit en-dro mar plij.",
+    "deleteFailed": "N'hon eus ket gallet dilemel ar gaozeadenn-se. Klaskit en-dro mar plij.",
+    "aiCompanion": "AI kompagnunez",
+    "resume": "Adkrog",
+    "clearAll": "Diverkañ an holl istor",
+    "roles": {
+      "assistant": "kompagnon",
+      "user": "c'hwi"
+    }
+  },
+  "voices": {
+    "title": "Ma mouezhioù galv surentez",
+    "subtitle": "Dibabit ar vouezh kenkoulz a sant mat da glevet.",
+    "test": "Mouezh test",
+    "stop": "Stop sample",
+    "selectionFailedTitle": "N'eo ket bet enrollet an dibab",
+    "selectionFailedMessage": "Klaskit dibab ar vouezh en-dro mar plij.",
+    "sampleFailedTitle": "Skouer n'eus ket",
+    "sampleFailedMessage": "N'haller ket c'hoari ar skouerenn vouezh-mañ. Klaskit en-dro mar plij.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "dous, sioul, dous"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "splann, sioulaat, kaozeal"
+      },
+      "boyfriend": {
+        "name": "Karedig",
+        "description": "stabil, karantezus, bremañ"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "fiziet ennon, gwarezet, broudet"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Mouezh",
+    "changeVoice": "Cheñch mouezh",
+    "showCompanion": "Kompagner diskouez",
+    "offlineMode": "Mod ezlinenn",
+    "offlineModeSubtitle": "Implijout respontoù kevredet strollet pa n'eo ket hegerz ar rouedad pe an titouroù Hume.",
+    "privacyData": "Prevezded & roadennoù",
+    "privacyBody": "Ezporzhiañ pe diverkañ ar roadennoù lec'hel enrollet war an dafariad-mañ.",
+    "preparingExport": "O prientiñ an ezporzhiañ...",
+    "exportData": "Ezporzhiañ ma roadennoù",
+    "privacyPolicy": "Politikerezh prevezded",
+    "deleting": "O tilemel...",
+    "deleteAll": "Dilemel an holl roadennoù lec'hel",
+    "deviceManagement": "Merañ an dafariad",
+    "emergencyContacts": "Darempredoù en arvar",
+    "signOut": "Dilemel",
+    "exportFailedTitle": "C'hwitet en deus an ezporzhiañ",
+    "exportFailedMessage": "N'haller ket ezporzhiañ ho roadennoù bremañ.",
+    "deleteConfirmTitle": "Dilemel an holl roadennoù lec'hel ?",
+    "deleteConfirmMessage": "Gant-se e vez tennet ho profil, ho arventennoù, ho darempredoù en arvar, ho istor kaozeadennoù, ho soñjoù aotreoù hag ho dalc'h gwiriekaat lec'hel diouzh an urzhiataer-mañ.",
+    "deleteEverything": "Dilemel pep tra",
+    "deleteFailedTitle": "C'hwitet en deus an dilemel",
+    "deleteFailedMessage": "N'haller ket dilemel ar roadennoù lec'hel bremañ.",
+    "linkFailed": "N'haller ket digeriñ al liamm",
+    "sections": {
+      "language": "Yezh",
+      "languageSubtitle": "Yezh aotreoù an etrefas hag ar reizhiad",
+      "companion": "Kompagnunez",
+      "companionSubtitle": "Dibarzhioù mouezh ha ezlinenn",
+      "deviceSafety": "Ardivinkoù ha surentez",
+      "deviceSafetySubtitle": "NorthStar, gwazourien, ha darempredoù en arvar",
+      "privacy": "Prevezded ha roadennoù",
+      "privacySubtitle": "Istor, ezporzhiañ, diverkañ ha politikerezh",
+      "account": "Kont",
+      "accountSubtitle": "Ho sesion VeryLoving bremañ"
+    },
+    "updateFailedTitle": "N'eo ket bet enrollet an arventennoù",
+    "updateFailedMessage": "N'hon eus ket gallet enrollañ an dibab-se. Klaskit en-dro mar plij.",
+    "signOutFailedTitle": "N'haller ket mont kuit",
+    "signOutFailedMessage": "Oberiant eo ho dalc'h c'hoazh. Klaskit en-dro mar plij."
+  },
+  "contacts": {
+    "title": "Darempredoù en arvar",
+    "subtitle": "Tud a fiziañs a c'haller kaout e-pad ar redadegoù surentez.",
+    "addTitle": "Ouzhpennañ darempredoù en arvar",
+    "name": "Anv",
+    "namePlaceholder": "Anv darempred",
+    "phone": "Niverenn bellgomz",
+    "add": "Ouzhpennañ darempred",
+    "empty": "N'eus bet ouzhpennet darempredoù en arvar ebet c'hoazh.",
+    "emptyTitle": "Darempred ebet evit ar prim c'hoazh",
+    "emptyMessage": "Ouzhpennañ unan bennak a fiziit ennañ evit ma vo prest pa vo ezhomm anezho gant ur strollad surentez.",
+    "removeTitle": "Dilemel %{name}?",
+    "removeMessage": "Ne vo ket mui gwelet an den-mañ en ho red-diwall.",
+    "nameRequired": "Lakait anv an darempred.",
+    "saveFailedTitle": "N'eo ket bet enrollet an darempred",
+    "saveFailedMessage": "N'hon eus ket gallet enrollañ an darempred-mañ. Gwiriit ar munudoù ha klaskit en-dro.",
+    "removeFailedTitle": "N'eo ket bet tennet an darempred",
+    "removeFailedMessage": "N'hon eus ket gallet lemel an darempred-mañ. Klaskit en-dro mar plij.",
+    "callAccessibility": "Galv %{name}",
+    "removeAccessibility": "Dilemel %{name}"
+  },
+  "device": {
+    "title": "Merañ an dafariad",
+    "subtitle": "Merañ ho NorthStar urzhiataer.",
+    "connected": "Kevreet · %{battery}% pilenn",
+    "none": "Ardivink ebet kevreet",
+    "disconnect": "Distagit an dafariad",
+    "connect": "Kevreañ an dafariad"
+  },
+  "friends": {
+    "title": "Mignoned",
+    "subtitle": "Gwarezourien, goulennoù, ha graf urzh.",
+    "addDemo": "Ouzhpennañ ur mignon demo",
+    "emptyTitle": "Goullo eo ho kreizenn surentez",
+    "emptyMessage": "Mignoned ha gwazourien fiziañs a zeuio war wel amañ ur wech ouzhpennet.",
+    "newGuardian": "New Guardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "E c'hortoz"
+    }
+  },
+  "emergency": {
+    "title": "Urzh SOS",
+    "subtitle": "Kreskañ nemet pa vez ezhomm eus skoazell diouzhtu.",
+    "body": "Gant-se e vo kelaouet ho red surentez ha prientet ho darempredoù en arvar.",
+    "activate": "Gweredekaat SOS",
+    "callCompanion": "Galv AI kompagnunez",
+    "notificationTitle": "SOS gweredekaet",
+    "notificationBody": "Prest eo ho red-diwall.",
+    "readyTitle": "SOS prest",
+    "callContact": "Pellgomz %{name}?",
+    "addContact": "Ouzhpennañ un darempred en arventennoù.",
+    "quickShareTitle": "Rannañ buan",
+    "quickShareMessage": "Prest eo ar pennad rannañ lec'hiadur. Kennaskañ ar poent dibenn rannañ a-dreñv evit kas liammoù bev."
+  },
+  "quickShare": {
+    "title": "Rannañ buan",
+    "subtitle": "Prest eo ar red rannañ lec'hiadur."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Pouezit div wech war ho NorthStar evit leuskel un orañjez surentez.",
+    "body": "Prest eo an hent jestroù evit ar c'hefluniadur darvoud BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pajenn difaziañ",
+    "subtitle": "Hent diorren hepken."
+  },
+  "errors": {
+    "voiceOffline": "Ezlinenn e seblant bezañ. Kaset e vo ho kemennadenn pa vo adkennasket.",
+    "voiceQueued": "Kemennadenn enrollet. Kaset e vo pa vo adkevreet ar c'hevread mouezh.",
+    "voiceRetrying": "O klask kas ho kemennadenn en-dro...",
+    "voiceConnecting": "Kevreañ en un doare sur ouzh ho kompagnunez mouezh...",
+    "microphone": "Ret eo kaout ur mikro evit ar galvoù dre gomz. Gallout a rit gweredekaat anezhañ en Arventennoù, pe skrivañ ur gemennadenn e-lec'h.",
+    "billing": "N'eo ket hegerz ar c'hevread mouezh enlinenn evit ur pennadig. Gallout a rit kenderc'hel gant ar c'hevread ezlinenn.",
+    "authentication": "N'hall ket ar c'hompagnunez mouezh gwiriañ an abadenn-mañ. En em lugañ en-dro pe implijout ar c'hevread ezlinenn evit ar mare.",
+    "timeout": "Re bell en deus padet ar c'hompagnunez mouezh evit respont. Gwiriit ho kevreadenn ha klaskit en-dro.",
+    "network": "N'hon eus ket gallet tizhout ar c'hompagnunez vouezh. Gwiriit ho kevreadenn, ha klaskit en-dro pe kendalc'hit ezlinenn.",
+    "genericVoice": "Un dra bennak en deus troc'het ar galv dre gomz. Klaskit en-dro, pe kendalc'hit gant ar c'hevread ezlinenn."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ezporzhiañ roadennoù"
+  },
+  "notifications": {
+    "channelName": "Kemennadennoù diogelroez"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving en deus ezhomm eus ur mikro evit ar surentez ha AI galvoù kenlabourerien.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving a implij ho lec'hiadur evit ar gartenn surentez hag ar perzhioù surentez tost.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving a implij ho lec'hiadur evit skoazellañ ar mont en-dro en un doare sur hag ar mont en-dro en arvar.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving a implij al lec'hiadur a-dreñv evit an elfennoù da erruout en un doare sur ha lec'hioù dañjerus tost.",
+      "NSCameraUsageDescription": "VeryLoving ne implij ar c'hamera nemet pa zibabit tennañ ur profil pe ur foto surentez.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving ne implij ho levraoueg luc'hskeudennoù nemet pa zibabit ur profil pe ur skeudenn surentez.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

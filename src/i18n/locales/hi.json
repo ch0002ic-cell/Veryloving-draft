@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "आगे कहना",
+    "apple": "Apple",
+    "back": "शर्त लगाना",
+    "call": "कॉल",
+    "cancel": "रद्द करना",
+    "clear": "साफ़ करें",
+    "close": "घुटनभरा",
+    "connect": "जुडिये",
+    "connecting": "कनेक्ट हो रहा है...",
+    "continue": "आगे बढ़ना",
+    "delete": "मिटाना",
+    "finish": "खत्म",
+    "friends": "साथियों,",
+    "google": "Google",
+    "home": "घर",
+    "loading": "लोड हो रहा है...",
+    "map": "नक्शा",
+    "notNow": "अभी नहीं",
+    "remove": "हटाना",
+    "retry": "पुनः प्रयास करें",
+    "retrying": "पुन: प्रयास करना",
+    "save": "सहेजें",
+    "selected": "चयनित",
+    "send": "भेजें",
+    "settings": "सेटिंग",
+    "skip": "छोड़ें",
+    "skipForNow": "अभी के लिए छोड़ें",
+    "skipTutorial": "ट्यूटोरियल छोड़ें",
+    "sos": "SOS",
+    "unknown": "अप्रसिद्घ व्यक्ति",
+    "user": "VeryLoving उपयोगकर्ता",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "भाषा",
+    "subtitle": "पूरे ऐप में उपयोग की जाने वाली भाषा चुनें।",
+    "system": "सिस्टम डिफ़ॉल्ट",
+    "search": "भाषाएँ खोजें",
+    "noResults": "आपकी खोज से कोई भी भाषा मेल नहीं खाती।",
+    "english": "अंग्रेज़ी",
+    "spanish": "स्पैनिश",
+    "french": "फ़्रेंच",
+    "chineseSimplified": "चीनी (सरलीकृत)"
+  },
+  "phone": {
+    "label": "फोन संख्या",
+    "placeholder": "फोन संख्या",
+    "selectCountry": "देश या क्षेत्र का चयन करें",
+    "searchCountry": "देश, कोड या डायलिंग उपसर्ग खोजें",
+    "noCountries": "आपकी खोज से कोई भी देश मेल नहीं खाता है.",
+    "countryButton": "देश बदलें, वर्तमान में %{country} प्लस %{callingCode}",
+    "inputAccessibility": "%{country} के लिए फोन नंबर",
+    "required": "एक फ़ोन नंबर दर्ज करें.",
+    "tooShort": "यह फोन नंबर बहुत छोटा है।",
+    "tooLong": "यह फोन नंबर बहुत लंबा है।",
+    "invalid": "चयनित देश के लिए एक मान्य फ़ोन नंबर दर्ज करें.",
+    "valid": "वैध अंतरराष्ट्रीय फोन नंबर"
+  },
+  "auth": {
+    "onboardingTagline": "\"मैं ठीक हूं\" और \"मुझे मदद चाहिए\" के बीच के क्षणों के लिए एक व्यक्तिगत सुरक्षा साथी।",
+    "createAccount": "खाता बनाएं",
+    "continueOnboarding": "ऑनबोर्डिंग के साथ जारी रखें",
+    "createSubtitle": "अपने सुरक्षा ग्राफ़ की सुरक्षा के लिए साइन-इन विधि चुनें।",
+    "phoneVerification": "फ़ोन सत्यापन",
+    "sendCode": "कोड भेजें",
+    "sendingCode": "कोड भेजना...",
+    "verifyCode": "कोड सत्यापित करें",
+    "sentTo": "%{phone} को भेजा गया",
+    "yourPhone": "आपका फ़ोन",
+    "verificationCode": "सत्यापन कोड",
+    "verify": "सत्यापित करें",
+    "verifying": "सत्यापित करना...",
+    "invalidCode": "पुष्टि करने वाला कोड डालें.",
+    "signInFailedTitle": "साइन-इन बाधित",
+    "signInFailedMessage": "हम साइन-इन पूरा नहीं कर सके। अपना कनेक्शन जाँचें और पुन: प्रयास करें.",
+    "googleUnavailableTitle": "Google साइन-इन अनुपलब्ध",
+    "googleUnavailableMessage": "स्थानीय विकास सत्र का उपयोग करना। मूल निवासी Google साइन-इन एक विकास निर्माण में काम करता है।",
+    "northStarTitle": "NorthStar गहने",
+    "northStarSubtitle": "अभी जोड़ी बनाएं या जारी रखें और बाद में जोड़ें।",
+    "northStarBody": "पहनने योग्य VL01 नल और लंबे प्रेस इशारों के साथ सुरक्षा प्रवाह को ट्रिगर कर सकता है।",
+    "setupJewelry": "गहने सेट अप करें",
+    "meetCapybear": "Capybear से मिलें",
+    "meetCapybearSubtitle": "मानचित्र पर और कॉल में आपका सौम्य सुरक्षा साथी।",
+    "capybearBody": "Capybear होम मोड, गार्जियन मोड, आपातकालीन मोड, बहाना कॉल और वॉयस सपोर्ट में मदद कर सकते हैं।",
+    "chooseVoice": "एक आवाज चुनें",
+    "capybearReminder": "Capybear अनुस्मारक",
+    "remindersReady": "कोमल अनुस्मारक तैयार हैं।"
+  },
+  "permissions": {
+    "locationTitle": "स्थान सुरक्षा",
+    "locationSubtitle": "मानचित्र, खतरे के क्षेत्र, सुरक्षित आगमन और SOS संदर्भ के लिए उपयोग किया जाता है।",
+    "locationBody": "VeryLoving स्थान मांगता है ताकि अभिभावक समझ सकें कि कहां मदद की आवश्यकता हो सकती है। आप इसे बाद में सेटिंग्स में बदल सकते हैं।",
+    "allowLocation": "स्थान की अनुमति दें",
+    "notificationsTitle": "सुरक्षा अलर्ट",
+    "notificationsSubtitle": "सूचनाएं चेक-इन और आपातकालीन घटनाओं का समर्थन करती हैं।",
+    "notificationsBody": "हम केवल सुरक्षा संकेतों, आपातकालीन अपडेट और आपके द्वारा सक्षम किए गए अनुस्मारक के लिए सूचनाओं का उपयोग करते हैं।",
+    "enableNotifications": "सूचनाएं सक्षम करें",
+    "locationRationaleTitle": "स्थान सुरक्षा संदर्भ को सटीक रखता है",
+    "locationRationaleMessage": "VeryLoving सुरक्षा मानचित्र, खतरे के क्षेत्र, त्वरित साझा करने और SOS संदर्भ के लिए आपके स्थान का उपयोग करता है। आप इसे बाद में सेटिंग्स में बदल सकते हैं।",
+    "notificationsRationaleTitle": "सुरक्षा अलर्ट के लिए सूचनाओं की आवश्यकता है",
+    "notificationsRationaleMessage": "VeryLoving चेक-इन रिमाइंडर, आपातकालीन अपडेट और सुरक्षा संकेत भेजता है जो आपको सक्षम बनाता है। हम विज्ञापनों के लिए सूचनाओं का उपयोग नहीं करते हैं।",
+    "microphoneRationaleTitle": "माइक्रोफ़ोन सुरक्षा कॉल को शक्ति देता है",
+    "microphoneRationaleMessage": "VeryLoving आपके माइक्रोफ़ोन का उपयोग केवल तभी करता है जब आप कोई AI साथी या सुरक्षा कॉल शुरू करते हैं।",
+    "bluetoothRationaleTitle": "Bluetooth आपके पहनने योग्य को जोड़ता है",
+    "bluetoothRationaleMessage": "VeryLoving NorthStar गहनों के साथ जोड़ी बनाने, कनेक्शन की स्थिति पढ़ने और पहनने योग्य से सुरक्षा प्रवाह को ट्रिगर करने के लिए Bluetooth का उपयोग करता है।",
+    "cameraRationaleTitle": "कैमरा वैकल्पिक है",
+    "cameraRationaleMessage": "VeryLoving कैमरे का उपयोग केवल तभी करते हैं जब आप प्रोफ़ाइल फ़ोटो लेना या सुरक्षा छवि साझा करना चुनते हैं।"
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving इस प्रवाह को सेटिंग्स और डैशबोर्ड से उपलब्ध रखता है।",
+    "chooseVoiceTitle": "अपनी आवाज़ चुनें",
+    "chooseVoiceSubtitle": "वह साथी आवाज चुनें जो सुनने में सबसे सुरक्षित लगे।",
+    "homeTitle": "होम मोड",
+    "homeSubtitle": "दैनिक सुरक्षा के लिए शांत निगरानी।",
+    "guardianTitle": "गार्जियन मोड",
+    "guardianSubtitle": "विश्वसनीय लोगों के साथ संदर्भ साझा करें।",
+    "emergencyTitle": "आपातकालीन मोड",
+    "emergencySubtitle": "पांच टैप SOS और अभिभावक अलर्ट तक बढ़ सकते हैं।",
+    "excuseTitle": "क्षमा करें कॉल",
+    "excuseSubtitle": "असहज स्थिति छोड़ने के लिए एक सुंदर कारण बनाएं।",
+    "safetyCallTitle": "सुरक्षा कॉल",
+    "safetyCallSubtitle": "जब आपको सहायता की आवश्यकता हो तो वास्तविक समय में साथी कॉल शुरू करें।",
+    "practiceTitle": "अभ्यास दृश्य",
+    "practiceSubtitle": "कम दबाव वाले डेमो में सुरक्षा प्रवाह का प्रयास करें।"
+  },
+  "jewelry": {
+    "pairTitle": "जोड़ी NorthStar",
+    "pairSubtitle": "स्कैन करते समय गहनों को पास में रखें।",
+    "scan": "उपकरणों के लिए स्कैन करें",
+    "scanning": "आस-पास स्कैनिंग ...",
+    "noDevices": "अभी तक आस-पास कोई NorthStar उपकरण नहीं मिला है।",
+    "scanStartFailed": "Bluetooth स्कैनिंग प्रारंभ नहीं हो सकी. कृपया पुन: प्रयास करें.",
+    "scanFailed": "हमें आस-पास के गहने नहीं मिले। Bluetooth की जाँच करें, NorthStar पास रखें और पुनः प्रयास करें.",
+    "scanAccessFailed": "Bluetooth स्कैनिंग प्रारंभ नहीं हो सकी. Bluetooth पहुँच की जाँच करें और पुन: प्रयास करें.",
+    "permissionDenied": "आस-पास डिवाइस का एक्सेस बंद है। सेटिंग्स में Bluetooth पहुँच की अनुमति दें, फिर पुन: प्रयास करें.",
+    "connectTimeout": "NorthStar कनेक्ट होने में बहुत अधिक समय लगा। इसे करीब ले जाएं और पुन: प्रयास करें।",
+    "connectFailed": "हम NorthStar से कनेक्ट नहीं हो सके। जांचें कि यह चार्ज है और आस-पास है, फिर पुन: प्रयास करें।",
+    "emptyTitle": "अभी तक कोई आस-पास का उपकरण नहीं",
+    "emptyMessage": "इस फोन को NorthStar चार्ज करके और पास रखें, फिर से स्कैन करें।",
+    "searchingMessage": "आस-पास NorthStar उपकरणों की तलाश में..."
+  },
+  "home": {
+    "subtitle": "सुरक्षा साथी डैशबोर्ड",
+    "modeStatus": "%{mode} मोड",
+    "companionReady": "%{name} तैयार है",
+    "readyBody": "आवाज, नक्शा, गहने और अभिभावक एक टैप दूर हैं।",
+    "safetyCall": "सुरक्षा कॉल",
+    "northStarDevice": "NorthStar डिवाइस",
+    "deviceConnected": "%{name} जुड़ा हुआ · %{battery}%",
+    "noDevice": "कोई डिवाइस कनेक्ट नहीं है",
+    "manageDevice": "डिवाइस प्रबंधित करें",
+    "mode": "मोड समूह",
+    "modes": {
+      "home": "घर",
+      "guardian": "अभिभावक",
+      "emergency": "आपातकालीन"
+    }
+  },
+  "map": {
+    "finding": "अपना स्थान ढूँढना...",
+    "retry": "स्थान पुनः प्रयास करें",
+    "title": "सुरक्षा मानचित्र",
+    "previewSubtitle": "Expo Go पूर्वावलोकन; Mapbox एक विकास निर्माण में प्रस्तुत करता है।",
+    "preview": "मानचित्र पूर्वावलोकन",
+    "risk": "जोखिम: %{risk} · त्रिज्या %{radius}m",
+    "refresh": "स्थान ताज़ा करें",
+    "refreshing": "स्थान ढूँढना...",
+    "updateFailed": "हम आपका स्थान अपडेट नहीं कर सके। कृपया पुन: प्रयास करें.",
+    "notRequested": "स्थान पहुँच का अनुरोध नहीं किया गया था. आप इसे बाद में सेटिंग्स से सक्षम कर सकते हैं।",
+    "permissionOff": "स्थान का उपयोग बंद है। सुरक्षा मानचित्र को आप पर केंद्रित करने के लिए सेटिंग्स में इसे सक्षम करें।",
+    "timeout": "आपके स्थान में अपेक्षा से अधिक समय लग रहा है। स्पष्ट संकेत के साथ कहीं ले जाएँ और पुनः प्रयास करें।",
+    "savedTitle": "सहेजे गए स्थान",
+    "savedEmptyTitle": "अभी तक कोई सहेजी गई जगह नहीं",
+    "savedEmptyMessage": "आपके द्वारा सहेजे गए विश्वसनीय स्थान त्वरित पहुंच के लिए यहां दिखाई देंगे।",
+    "zones": {
+      "crowding": "देर रात तक भीड़",
+      "lowLighting": "कम रोशनी वाला क्षेत्र"
+    },
+    "risks": {
+      "low": "संख्‍या आदि",
+      "medium": "मध्यम",
+      "high": "उच्च"
+    }
+  },
+  "safetyCall": {
+    "connecting": "कनेक्ट हो रहा है...",
+    "offlineCompanion": "ऑफ़लाइन साथी",
+    "offline": "ऑफ़लाइन",
+    "connected": "जुड़ा हुआ",
+    "interrupted": "कनेक्शन बाधित",
+    "ready": "कनेक्ट करने के लिए तैयार",
+    "connectingSecurely": "अपने वॉयस साथी से सुरक्षित रूप से कनेक्ट करना...",
+    "messagesWaiting": {
+      "one": "%{count} संदेश भेजने की प्रतीक्षा कर रहा है",
+      "other": "भेजने के लिए प्रतीक्षा कर रहे %{count} संदेश"
+    },
+    "useOffline": "ऑफ़लाइन साथी का उपयोग करें",
+    "reconnect": "वॉयस AI से पुनः कनेक्ट करें",
+    "typePlaceholder": "यदि बोलना कठिन है तो टाइप करें",
+    "endCall": "कॉल समाप्त करें",
+    "startCall": "कॉल शुरू करें",
+    "emptyTitle": "आपकी बातचीत यहीं से शुरू होती है",
+    "emptyMessage": "जब आप तैयार हों तो कॉल प्रारंभ करें या संदेश लिखें."
+  },
+  "chat": {
+    "waiting": "कनेक्शन की प्रतीक्षा कर रहा है",
+    "notSent": "संदेश नहीं भेजा गया.",
+    "retryAccessibility": "संदेश भेजने का पुन: प्रयास करें"
+  },
+  "history": {
+    "clearTitle": "बातचीत का इतिहास साफ़ करें?",
+    "clearMessage": "यह इस डिवाइस से सहेजे गए AI साथी संदेशों को हटा देता है।",
+    "deleteTitle": "इस वार्तालाप को हटाएं?",
+    "cannotUndo": "इसे पूर्ववत नहीं किया जा सकता है।",
+    "title": "बातचीत का इतिहास",
+    "subtitle": "AI साथी संदेश इस डिवाइस पर सहेजे गए हैं।",
+    "empty": "अभी तक कोई वार्तालाप सहेजा नहीं गया है।",
+    "emptyTitle": "अभी तक कोई बातचीत नहीं हुई",
+    "emptyMessage": "आपकी AI साथी वार्तालाप आपकी पहली कॉल के बाद यहां दिखाई देगी।",
+    "loadFailed": "हम बातचीत का इतिहास लोड नहीं कर सके। कृपया पुन: प्रयास करें.",
+    "clearFailed": "हम बातचीत के इतिहास को स्पष्ट नहीं कर सके। कृपया पुन: प्रयास करें.",
+    "deleteFailed": "हम उस बातचीत को डिलीट नहीं कर सके। कृपया पुन: प्रयास करें.",
+    "aiCompanion": "AI साथी",
+    "resume": "सारांश",
+    "clearAll": "सारा इतिहास साफ़ करें",
+    "roles": {
+      "assistant": "सहचर",
+      "user": "आप"
+    }
+  },
+  "voices": {
+    "title": "मेरी सुरक्षा कॉल आवाजें",
+    "subtitle": "वह साथी आवाज चुनें जो सुनने में सही लगे।",
+    "test": "आवाज का परीक्षण करें",
+    "stop": "नमूना रोकें",
+    "selectionFailedTitle": "चयन सहेजा नहीं गया",
+    "selectionFailedMessage": "कृपया फिर से आवाज चुनने का प्रयास करें।",
+    "sampleFailedTitle": "नमूना अनुपलब्ध",
+    "sampleFailedMessage": "यह ध्वनि नमूना नहीं चलाया जा सका. कृपया पुन: प्रयास करें.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "नरम, शांत, ग्राउंडिंग"
+      },
+      "bestie": {
+        "name": "बेस्टी",
+        "description": "उज्ज्वल, आश्वस्त, संवादी"
+      },
+      "boyfriend": {
+        "name": "बॉयफ्रेंड",
+        "description": "स्थिर, स्नेही, वर्तमान"
+      },
+      "muscleMan": {
+        "name": "मसलमैन",
+        "description": "आत्मविश्वासी, सुरक्षात्मक, प्रेरक"
+      }
+    }
+  },
+  "settings": {
+    "voice": "आवाज",
+    "changeVoice": "आवाज बदलें",
+    "showCompanion": "साथी दिखाएं",
+    "offlineMode": "ऑफ़लाइन मोड",
+    "offlineModeSubtitle": "जब नेटवर्क या Hume क्रेडेंशियल्स अनुपलब्ध हों, तो बंडल किए गए साथी प्रतिक्रियाओं का उपयोग करें.",
+    "privacyData": "गोपनीयता और डेटा",
+    "privacyBody": "इस डिवाइस पर संग्रहीत स्थानीय डेटा निर्यात करें या हटाएं.",
+    "preparingExport": "निर्यात की तैयारी ...",
+    "exportData": "मेरा डेटा निर्यात करें",
+    "privacyPolicy": "गोपनीयता नीति",
+    "deleting": "हटाना...",
+    "deleteAll": "सभी स्थानीय डेटा हटाएं",
+    "deviceManagement": "डिवाइस प्रबंधन",
+    "emergencyContacts": "आपातकालीन संपर्क",
+    "signOut": "साइन आउट करें",
+    "exportFailedTitle": "निर्यात विफल रहा",
+    "exportFailedMessage": "अभी अपना डेटा निर्यात करने में असमर्थ.",
+    "deleteConfirmTitle": "सभी स्थानीय डेटा हटाएं?",
+    "deleteConfirmMessage": "यह इस डिवाइस से आपकी प्रोफ़ाइल, सेटिंग्स, आपातकालीन संपर्क, वार्तालाप इतिहास, अनुमति अनुस्मारक और स्थानीय प्रमाणीकरण सत्र को हटा देता है।",
+    "deleteEverything": "सब कुछ मिटाना",
+    "deleteFailedTitle": "हटाना विफल रहा",
+    "deleteFailedMessage": "अभी स्थानीय डेटा हटाने में असमर्थ.",
+    "linkFailed": "लिंक खोलने में असमर्थ",
+    "sections": {
+      "language": "भाषा",
+      "languageSubtitle": "इंटरफ़ेस और सिस्टम अनुमति भाषा",
+      "companion": "सहचर",
+      "companionSubtitle": "आवाज और ऑफ़लाइन प्राथमिकताएं",
+      "deviceSafety": "उपकरण और सुरक्षा",
+      "deviceSafetySubtitle": "NorthStar, अभिभावक और आपातकालीन संपर्क",
+      "privacy": "गोपनीयता और डेटा",
+      "privacySubtitle": "इतिहास, निर्यात, हटाना और नीति",
+      "account": "उधार-खाता",
+      "accountSubtitle": "आपका वर्तमान VeryLoving सत्र"
+    },
+    "updateFailedTitle": "सेटिंग सहेजी नहीं गई",
+    "updateFailedMessage": "हम उस वरीयता को नहीं बचा सके। कृपया पुन: प्रयास करें.",
+    "signOutFailedTitle": "साइन आउट नहीं कर सका",
+    "signOutFailedMessage": "आपका सत्र अभी भी सक्रिय है. कृपया पुन: प्रयास करें."
+  },
+  "contacts": {
+    "title": "आपातकालीन संपर्क",
+    "subtitle": "सुरक्षा प्रवाह के दौरान उपलब्ध विश्वसनीय लोग।",
+    "addTitle": "आपातकालीन संपर्क जोड़ें",
+    "name": "नाम",
+    "namePlaceholder": "संपर्क नाम",
+    "phone": "संपर्क फोन नंबर",
+    "add": "संपर्क जोड़ें",
+    "empty": "अभी तक कोई आपातकालीन संपर्क नहीं जोड़ा गया है।",
+    "emptyTitle": "अभी तक कोई आपातकालीन संपर्क नहीं",
+    "emptyMessage": "किसी ऐसे व्यक्ति को जोड़ें जिस पर आप भरोसा करते हैं ताकि जब सुरक्षा प्रवाह को उनकी आवश्यकता हो तो वे तैयार रहें।",
+    "removeTitle": "%{name} निकालें?",
+    "removeMessage": "यह व्यक्ति अब आपके आपातकालीन प्रवाह में दिखाई नहीं देगा।",
+    "nameRequired": "संपर्क का नाम दर्ज करें.",
+    "saveFailedTitle": "संपर्क सहेजा नहीं गया",
+    "saveFailedMessage": "हम इस संपर्क को सहेज नहीं सके। विवरण जांचें और पुन: प्रयास करें.",
+    "removeFailedTitle": "संपर्क हटाया नहीं गया",
+    "removeFailedMessage": "हम इस संपर्क को हटा नहीं सके। कृपया पुन: प्रयास करें.",
+    "callAccessibility": "%{name} को कॉल करें",
+    "removeAccessibility": "%{name} निकालें"
+  },
+  "device": {
+    "title": "डिवाइस प्रबंधन",
+    "subtitle": "अपना NorthStar डिवाइस प्रबंधित करें।",
+    "connected": "जुड़ा हुआ · %{battery}% बैटरी",
+    "none": "कोई डिवाइस कनेक्ट नहीं है",
+    "disconnect": "डिवाइस को डिस्कनेक्ट करें",
+    "connect": "डिवाइस कनेक्ट करें"
+  },
+  "friends": {
+    "title": "साथियों,",
+    "subtitle": "अभिभावक, अनुरोध और आपातकालीन ग्राफ।",
+    "addDemo": "डेमो मित्र जोड़ें",
+    "emptyTitle": "आपका सुरक्षा चक्र खाली है",
+    "emptyMessage": "विश्वसनीय मित्र और अभिभावक जुड़ने के बाद यहां दिखाई देंगे।",
+    "newGuardian": "नया अभिभावक",
+    "statuses": {
+      "guardian": "अभिभावक",
+      "pending": "लंबित"
+    }
+  },
+  "emergency": {
+    "title": "आपातकालीन SOS",
+    "subtitle": "तभी आगे बढ़ें जब आपको तत्काल सहायता की आवश्यकता हो।",
+    "body": "यह आपके सुरक्षा प्रवाह को सूचित करेगा और आपातकालीन संपर्क तैयार करेगा।",
+    "activate": "SOS सक्रिय करें",
+    "callCompanion": "AI साथी को बुलाओ",
+    "notificationTitle": "SOS सक्रिय",
+    "notificationBody": "आपका आपातकालीन प्रवाह तैयार है।",
+    "readyTitle": "SOS तैयार",
+    "callContact": "%{name} कॉल करें?",
+    "addContact": "सेटिंग्स में एक आपातकालीन संपर्क जोड़ें।",
+    "quickShareTitle": "त्वरित शेयर",
+    "quickShareMessage": "स्थान साझाकरण स्टब तैयार है। लाइव लिंक भेजने के लिए बैकएंड शेयर एंडपॉइंट कनेक्ट करें।"
+  },
+  "quickShare": {
+    "title": "त्वरित शेयर",
+    "subtitle": "स्थान शेयर प्रवाह तैयार है।"
+  },
+  "capybearTap": {
+    "title": "Capybear टैप करें",
+    "subtitle": "एक सुरक्षा नारंगी गिराने के लिए अपने NorthStar को डबल-टैप करें।",
+    "body": "जेस्चर रूट BLE इवेंट वायरिंग के लिए तैयार है।"
+  },
+  "debug": {
+    "title": "VeryLoving डीबग पेज",
+    "subtitle": "केवल विकास का मार्ग।"
+  },
+  "errors": {
+    "voiceOffline": "आप ऑफ़लाइन लगते हैं। जब आप पुनः कनेक्ट करेंगे तो आपका संदेश भेजा जाएगा।",
+    "voiceQueued": "संदेश सहेजा गया। यह तब भेजा जाएगा जब वॉयस साथी फिर से कनेक्ट होगा।",
+    "voiceRetrying": "अपना संदेश फिर से भेजने की कोशिश कर रहा हूं...",
+    "voiceConnecting": "अपने वॉयस साथी से सुरक्षित रूप से कनेक्ट करना...",
+    "microphone": "वॉयस कॉल के लिए माइक्रोफ़ोन एक्सेस की आवश्यकता होती है। आप इसे सेटिंग्स में सक्षम कर सकते हैं, या इसके बजाय एक संदेश टाइप कर सकते हैं।",
+    "billing": "ऑनलाइन वॉयस साथी अस्थायी रूप से अनुपलब्ध है। आप ऑफ़लाइन साथी के साथ जारी रख सकते हैं।",
+    "authentication": "वॉइस साथी इस सत्र की पुष्टि नहीं कर सका। फिर से साइन इन करें या अभी के लिए ऑफ़लाइन साथी का उपयोग करें।",
+    "timeout": "आवाज साथी को जवाब देने में बहुत देर लगी। अपना कनेक्शन जाँचें और पुन: प्रयास करें.",
+    "network": "हम वॉयस कंपेनियन तक नहीं पहुंच सके। अपना कनेक्शन जांचें, फिर पुनः प्रयास करें या ऑफ़लाइन जारी रखें.",
+    "genericVoice": "किसी ने वॉयस कॉल को बाधित किया। पुन: प्रयास करें, या ऑफ़लाइन साथी के साथ जारी रखें।"
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving डेटा निर्यात"
+  },
+  "notifications": {
+    "channelName": "सुरक्षा अलर्ट"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving सुरक्षा और AI साथी कॉल के लिए माइक्रोफ़ोन एक्सेस की आवश्यकता होती है।",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving सुरक्षा मानचित्र और आस-पास की सुरक्षा सुविधाओं के लिए आपके स्थान का उपयोग करता है।",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving सुरक्षित-आगमन और आपातकालीन प्रवाह का समर्थन करने के लिए आपके स्थान का उपयोग करता है।",
+      "NSLocationAlwaysUsageDescription": "VeryLoving सुरक्षित-आगमन और आस-पास के खतरे-क्षेत्र सुविधाओं के लिए पृष्ठभूमि स्थान का उपयोग करता है।",
+      "NSCameraUsageDescription": "VeryLoving कैमरे का उपयोग केवल तभी करते हैं जब आप प्रोफ़ाइल या सुरक्षा फ़ोटो लेना चुनते हैं।",
+      "NSPhotoLibraryUsageDescription": "VeryLoving आपकी फोटो लाइब्रेरी का उपयोग केवल तभी करते हैं जब आप कोई प्रोफ़ाइल या सुरक्षा छवि चुनते हैं।",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving आपके NorthStar सुरक्षा गहनों से कनेक्ट करने के लिए Bluetooth का उपयोग करता है।",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving आपके NorthStar सुरक्षा गहनों से कनेक्ट करने के लिए Bluetooth का उपयोग करता है।"
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

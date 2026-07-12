@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ampio",
+    "apple": "Apple",
+    "back": "Miverina",
+    "call": "Antso",
+    "cancel": "Fanafoanana",
+    "clear": "Mazava",
+    "close": "Akaiky",
+    "connect": "Mampifandray",
+    "connecting": "Mampifandray...",
+    "continue": "Tohizo",
+    "delete": "Esory",
+    "finish": "Famaranana",
+    "friends": "Namana",
+    "google": "Google",
+    "home": "Trano",
+    "loading": "Loading ...",
+    "map": "Sarintany",
+    "notNow": "Tsy amin'izao fotoana izao",
+    "remove": "Esory",
+    "retry": "Andramo indray",
+    "retrying": "Manandrana indray",
+    "save": "Vonjeo",
+    "selected": "Voafantina",
+    "send": "Alefaso",
+    "settings": "Toe-javatra",
+    "skip": "Skip",
+    "skipForNow": "Mandehana amin'izao fotoana izao",
+    "skipTutorial": "Skip tutorial",
+    "sos": "SOS",
+    "unknown": "Tsy fantatra",
+    "user": "VeryLoving mpampiasa",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Fiteny",
+    "subtitle": "Safidio ny fiteny ampiasaina manerana ny fampiharana.",
+    "system": "Ny tsy fahombiazan'ny rafitra",
+    "search": "Fikarohana fiteny",
+    "noResults": "Tsy misy fiteny mifanaraka amin'ny fikarohanao.",
+    "english": "Anglisy",
+    "spanish": "Espaniola",
+    "french": "Frantsay",
+    "chineseSimplified": "Sinoa (notsorina)"
+  },
+  "phone": {
+    "label": "Nomeraon-telefaonina",
+    "placeholder": "Nomeraon-telefaonina",
+    "selectCountry": "Misafidiana firenena na faritra",
+    "searchCountry": "Tadiavo ny firenena, ny kaody, na ny tovona amin'ny fiantsoana",
+    "noCountries": "Tsy misy firenena mifanaraka amin'ny fikarohanao.",
+    "countryButton": "Manova firenena, amin'izao fotoana izao %{country} miampy %{callingCode}",
+    "inputAccessibility": "Nomeraon-telefaona ho an'ny %{country}",
+    "required": "Ampidiro ny nomeraon-telefaonina.",
+    "tooShort": "Fohy loatra ny nomeraon-telefaonina.",
+    "tooLong": "Lava loatra ny nomeraon-telefaonina.",
+    "invalid": "Ampidiro ny nomeraon-telefaona manan-kery ho an'ny firenena voafantina.",
+    "valid": "Nomeraon-telefaona iraisam-pirenena manan-kery"
+  },
+  "auth": {
+    "onboardingTagline": "Mpiara-miombon'antoka manokana ho an'ny fotoana eo anelanelan'ny \"Tsy maninona aho\" sy \"Mila fanampiana aho.\"",
+    "createAccount": "Mamorona kaonty",
+    "continueOnboarding": "Tohizo ny onboarding",
+    "createSubtitle": "Misafidiana fomba fisoratana anarana hiarovana ny sary fiarovana anao.",
+    "phoneVerification": "Fanamarinana an-telefaonina",
+    "sendCode": "Alefaso ny kaody",
+    "sendingCode": "Fandefasana kaody ...",
+    "verifyCode": "Manamarina ny kaody",
+    "sentTo": "Nalefa tany %{phone}",
+    "yourPhone": "Ny findainao",
+    "verificationCode": "Kaody fanamarinana",
+    "verify": "Manamarina",
+    "verifying": "Fanamarinana...",
+    "invalidCode": "Ampidiro ny kaody fanamarinana.",
+    "signInFailedTitle": "Tapaka ny fidirana",
+    "signInFailedMessage": "Tsy afaka nanatanteraka ny fisoratana anarana izahay. Jereo ny fifandraisanao ary andramo indray.",
+    "googleUnavailableTitle": "Google Tsy misy ny fidirana",
+    "googleUnavailableMessage": "Fampiasàna fivoriana fampandrosoana eo an-toerana. Ny Native Google Sign-In dia miasa amin'ny fananganana fampandrosoana.",
+    "northStarTitle": "NorthStar firavaka",
+    "northStarSubtitle": "Tsindrio izao na tohizo ary ampidiro taty aoriana.",
+    "northStarBody": "Ny VL01 wearable dia afaka miteraka fiarovana mikoriana amin'ny paompy sy ny fihetsika lava.",
+    "setupJewelry": "Manangana firavaka",
+    "meetCapybear": "Fantaro Capybear",
+    "meetCapybearSubtitle": "Ny mpiara-miombon'antoka aminao amin'ny sarintany sy amin'ny antso.",
+    "capybearBody": "Capybear afaka manampy amin'ny fomba an-trano, ny maody mpiambina, ny fomba vonjy taitra, ny antso fialan-tsiny, ary ny fanohanana ny feo.",
+    "chooseVoice": "Misafidiana feo",
+    "capybearReminder": "Capybear fampahatsiahivana",
+    "remindersReady": "Vonona ny fampahatsiahivana malefaka."
+  },
+  "permissions": {
+    "locationTitle": "Fiarovana ny toerana",
+    "locationSubtitle": "Ampiasaina ho an'ny sarintany, faritra mampidi-doza, fahatongavana azo antoka, ary SOS toe-javatra.",
+    "locationBody": "VeryLoving mangataka toerana mba hahafahan'ny mpiambina mahatakatra ny toerana mety ilaina fanampiana. Azonao atao ny manova izany any aoriana any amin'ny Settings.",
+    "allowLocation": "Avelao ny toerana",
+    "notificationsTitle": "Fanairana momba ny fiarovana",
+    "notificationsSubtitle": "Ny fampandrenesana dia manohana ny fanaraha-maso sy ny hetsika vonjy taitra.",
+    "notificationsBody": "Mampiasa fampandrenesana fotsiny izahay ho an'ny bitsika fiarovana, fanavaozana vonjy taitra, ary fampahatsiahivana azonao atao.",
+    "enableNotifications": "Alefaso ny fampandrenesana",
+    "locationRationaleTitle": "Ny toerana dia mitazona ny toe-javatra ara-piarovana marina",
+    "locationRationaleMessage": "VeryLoving dia mampiasa ny toerana misy anao ho an'ny sarintany fiarovana, faritra mampidi-doza, fizarana haingana, ary SOS toe-javatra. Azonao atao ny manova izany any aoriana any amin'ny Settings.",
+    "notificationsRationaleTitle": "Mila fampandrenesana ny fampandrenesana momba ny fiarovana",
+    "notificationsRationaleMessage": "VeryLoving mandefa fampahatsiahivana fanamarinana, fanavaozana vonjy taitra, ary bitsika fiarovana azonao atao. Tsy mampiasa fampandrenesana ho an'ny dokam-barotra izahay.",
+    "microphoneRationaleTitle": "Ny mikrô dia manome hery ny antso fiarovana",
+    "microphoneRationaleMessage": "VeryLoving mampiasa ny mikrô raha tsy manomboka ny mpiara-mitory AI na ny antso ho an'ny fiarovana.",
+    "bluetoothRationaleTitle": "Bluetooth mampifandray ny akanjonao",
+    "bluetoothRationaleMessage": "VeryLoving dia mampiasa Bluetooth mba hiaraka amin'ny firavaka NorthStar, hamaky ny satan'ny fifandraisana, ary hiteraka fiarovana avy amin'ny akanjo.",
+    "cameraRationaleTitle": "Ny fakantsary dia tsy azo atao",
+    "cameraRationaleMessage": "VeryLoving mampiasa ny fakantsary raha tsy misafidy ny haka sary ny mombamomba anao na hizara sary fiarovana."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving mitazona an'io mikoriana io azo alaina avy amin'ny Settings sy ny dashboard.",
+    "chooseVoiceTitle": "Safidio ny feonao",
+    "chooseVoiceSubtitle": "Misafidiana ilay feon'ny mpiara-mitory izay mahatsapa ho azo antoka indrindra ny mandre.",
+    "homeTitle": "Fomba an-trano",
+    "homeSubtitle": "Fanaraha-maso mangina ho an'ny fiarovana isan'andro.",
+    "guardianTitle": "Fomba mpiambina",
+    "guardianSubtitle": "Mizara ny zava-misy amin'ny olona azo itokisana.",
+    "emergencyTitle": "Fomba vonjy taitra",
+    "emergencySubtitle": "Ny paompy dimy dia mety hitombo amin'ny fanairana SOS sy mpiambina.",
+    "excuseTitle": "Antso fialan-tsiny",
+    "excuseSubtitle": "Mamorona antony mahafinaritra hialana amin'ny toe-javatra tsy mahazo aina.",
+    "safetyCallTitle": "Antso fiarovana",
+    "safetyCallSubtitle": "Atombohy ny antso amin'ny mpiara-miasa amin'ny fotoana tena izy rehefa mila fanohanana ianao.",
+    "practiceTitle": "Sehatra fanazaran-tena",
+    "practiceSubtitle": "Andramo ny fiarovana mikoriana ao amin'ny ambany tsindry demo."
+  },
+  "jewelry": {
+    "pairTitle": "Tsiroaroa NorthStar",
+    "pairSubtitle": "Tazomy eo akaiky eo ny firavaka rehefa manao scanning.",
+    "scan": "Scan ho an'ny fitaovana",
+    "scanning": "Scanning eo akaiky eo ...",
+    "noDevices": "Tsy mbola hita ny fitaovana NorthStar akaiky.",
+    "scanStartFailed": "Bluetooth tsy afaka nanomboka ny scanning. Azafady mba andramo indray.",
+    "scanFailed": "Tsy nahita firavaka teo akaiky teo izahay. Jereo Bluetooth, ataovy akaiky NorthStar ary andramo indray.",
+    "scanAccessFailed": "Bluetooth tsy afaka nanomboka ny scanning. Jereo Bluetooth fidirana ary andramo indray.",
+    "permissionDenied": "Tapaka ny fidirana amin'ny fitaovana akaiky. Avelao Bluetooth hiditra ao amin'ny Settings, ary andramo indray.",
+    "connectTimeout": "NorthStar naharitra ela loatra ny fifandraisana. Ampidiro akaiky kokoa izany ary andramo indray.",
+    "connectFailed": "Tsy afaka nifandray tamin'ny NorthStar izahay. Hamarino fa voampanga sy eo akaiky eo izy io, avy eo andramo indray.",
+    "emptyTitle": "Tsy mbola misy fitaovana akaiky",
+    "emptyMessage": "Tazomy NorthStar voampanga sy akaikin'ity telefaonina ity, avy eo scan indray.",
+    "searchingMessage": "Mitady fitaovana NorthStar eo akaiky eo ..."
+  },
+  "home": {
+    "subtitle": "Dashboard mpiara-miombon'antoka amin'ny fiarovana",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} vonona",
+    "readyBody": "Ny feo, ny sarintany, ny firavaka ary ny mpiambina dia paompy iray lavitra.",
+    "safetyCall": "Antso fiarovana",
+    "northStarDevice": "NorthStar fitaovana",
+    "deviceConnected": "%{name} mifandray · %{battery}%",
+    "noDevice": "Tsy misy fitaovana mifandray",
+    "manageDevice": "Mitantana fitaovana",
+    "mode": "Fomba fiasa",
+    "modes": {
+      "home": "Trano",
+      "guardian": "Mpiambina",
+      "emergency": "Vonjy taitra"
+    }
+  },
+  "map": {
+    "finding": "Tadiavo ny toerana misy anao ...",
+    "retry": "Avereno andramo ny toerana",
+    "title": "Sarintany fiarovana",
+    "previewSubtitle": "Expo Go topi-maso; Mapbox dia miteraka fananganana fampandrosoana.",
+    "preview": "Topimaso amin'ny sarintany",
+    "risk": "Risika: %{risk} · Radius %{radius}m",
+    "refresh": "Hamelombelona ny toerana",
+    "refreshing": "Fitadiavana toerana ...",
+    "updateFailed": "Tsy afaka manavao ny toerana misy anao izahay. Azafady mba andramo indray.",
+    "notRequested": "Tsy nangatahana ny fidirana amin'ny toerana. Azonao atao ny mampandeha azy any aoriana avy amin'ny Settings.",
+    "permissionOff": "Tapaka ny fidirana amin'ny toerana. Alefaso ao amin'ny Settings izany mba hampifantohan'ny sarintany fiarovana aminao.",
+    "timeout": "Ny toerana misy anao dia maharitra ela kokoa noho ny nantenaina. Mifindra any amin'ny toerana iray miaraka amin'ny famantarana mazava kokoa ary andramo indray.",
+    "savedTitle": "Toerana voavonjy",
+    "savedEmptyTitle": "Tsy mbola misy toerana voatahiry",
+    "savedEmptyMessage": "Ny toerana azo itokisana izay tehirizinao dia hiseho eto ho an'ny fidirana haingana.",
+    "zones": {
+      "crowding": "Vahoaka amin'ny alina",
+      "lowLighting": "Faritra jiro ambany"
+    },
+    "risks": {
+      "low": "ambany",
+      "medium": "Antonony",
+      "high": "avo"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Mampifandray...",
+    "offlineCompanion": "Mpiara-mitory ivelan'ny aterineto",
+    "offline": "Ivelan'ny aterineto",
+    "connected": "Mifandray",
+    "interrupted": "Tapaka ny fifandraisana",
+    "ready": "Vonona ny hifandray",
+    "connectingSecurely": "Mifandray tsara amin'ny feonao mpiara-miasa...",
+    "messagesWaiting": {
+      "one": "%{count} hafatra miandry ny fandefasana",
+      "other": "%{count} hafatra miandry ny fandefasana"
+    },
+    "useOffline": "Ampiasao ny mpiara-miasa ivelan'ny aterineto",
+    "reconnect": "Ampifandraiso amin'ny feo AI",
+    "typePlaceholder": "Soraty raha sarotra ny miteny",
+    "endCall": "Famaranana ny antso",
+    "startCall": "Atombohy ny antso",
+    "emptyTitle": "Manomboka eto ny resadresaka ataonao",
+    "emptyMessage": "Atombohy ny antso na manoratra hafatra rehefa vonona ianao."
+  },
+  "chat": {
+    "waiting": "Miandry ny fifandraisana",
+    "notSent": "Tsy nalefa ny hafatra.",
+    "retryAccessibility": "Avereno mandefa hafatra"
+  },
+  "history": {
+    "clearTitle": "Tantara mazava momba ny resaka?",
+    "clearMessage": "Esorina amin'ity fitaovana ity ireo hafatra namany AI voatahiry avy amin'ity fitaovana ity.",
+    "deleteTitle": "Fafao ity resaka ity?",
+    "cannotUndo": "Tsy azo averina izany.",
+    "title": "Tantaran'ny resadresaka",
+    "subtitle": "AI hafatra mpiara-mitory voatahiry ao amin'ity fitaovana ity.",
+    "empty": "Tsy mbola nisy resaka voavonjy.",
+    "emptyTitle": "Tsy mbola misy resaka",
+    "emptyMessage": "Hiseho eto ny resadresaka AI mpiara-miasa aminao aorian'ny antso voalohany.",
+    "loadFailed": "Tsy afaka nampiditra ny tantaran'ny resaka izahay. Azafady mba andramo indray.",
+    "clearFailed": "Tsy afaka nanazava ny tantaran'ny resaka izahay. Azafady mba andramo indray.",
+    "deleteFailed": "Tsy afaka namafa izany resaka izany izahay. Azafady mba andramo indray.",
+    "aiCompanion": "AI mpiara-mitory",
+    "resume": "Resume",
+    "clearAll": "Esory ny tantara rehetra",
+    "roles": {
+      "assistant": "mpiara-mitory",
+      "user": "ianao"
+    }
+  },
+  "voices": {
+    "title": "Ny feo miantso ny fiarovana",
+    "subtitle": "Safidio ilay feon'ilay mpiara-mitory izay mahatsapa fa mety ny hihaino.",
+    "test": "Fitsapana feo",
+    "stop": "Atsaharo ny santionany",
+    "selectionFailedTitle": "Tsy voatahiry ny fifantenana",
+    "selectionFailedMessage": "Andramo indray ny mifidy ilay feo.",
+    "sampleFailedTitle": "Santionany tsy misy",
+    "sampleFailedMessage": "Tsy azo alefa io santionany amin'ny feo io. Azafady mba andramo indray.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "malefaka, tony, miorina amin'ny tany"
+      },
+      "bestie": {
+        "name": "Ny tsara indrindra",
+        "description": "mamirapiratra, mampitoky, mifampiresaka"
+      },
+      "boyfriend": {
+        "name": "Olon-tiany",
+        "description": "tsy miovaova, be fitiavana, ankehitriny"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "matoky tena, miaro, mandrisika"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Feo",
+    "changeVoice": "Manova feo",
+    "showCompanion": "Asehoy ny mpiara-mitory",
+    "offlineMode": "Fomba ivelan'ny aterineto",
+    "offlineModeSubtitle": "Ampiasao ny valinteny miaraka amin'ny mpiara-miombon'antoka rehefa tsy misy ny fahazoan-dàlana ho an'ny tambajotra na Hume.",
+    "privacyData": "Fiainana manokana sy angon-drakitra",
+    "privacyBody": "Manondrana na mamafa ny angon-drakitra eo an-toerana voatahiry ao amin'ity fitaovana ity.",
+    "preparingExport": "Fanomanana ny fanondranana ...",
+    "exportData": "Manondrana ny angon-drakitra",
+    "privacyPolicy": "Politika momba ny tsiambaratelo",
+    "deleting": "Ny famafana ...",
+    "deleteAll": "Fafao ny angon-drakitra rehetra eo an-toerana",
+    "deviceManagement": "Fitantanana fitaovana",
+    "emergencyContacts": "Fifandraisana vonjy taitra",
+    "signOut": "Misoratra anarana",
+    "exportFailedTitle": "Tsy nahomby ny fanondranana",
+    "exportFailedMessage": "Tsy azonao atao ny manondrana ny angon-drakitrao amin'izao fotoana izao.",
+    "deleteConfirmTitle": "Esory daholo ny angon-drakitra eo an-toerana?",
+    "deleteConfirmMessage": "Izany dia manaisotra ny mombamomba anao, ny toe-javatra, ny fifandraisana vonjy taitra, ny tantaran'ny resaka, ny fampahatsiahivana fahazoan-dàlana, ary ny fivoriana fanamarinana eo an-toerana avy amin'ity fitaovana ity.",
+    "deleteEverything": "Fafao ny zava-drehetra",
+    "deleteFailedTitle": "Tsy nahomby ny famafana",
+    "deleteFailedMessage": "Tsy afaka mamafa ny angon-drakitra eo an-toerana amin'izao fotoana izao.",
+    "linkFailed": "Tsy afaka manokatra rohy",
+    "sections": {
+      "language": "Fiteny",
+      "languageSubtitle": "Fiteny fahazoan-dàlana sy rafitra",
+      "companion": "Mpiara-mitory",
+      "companionSubtitle": "Feo sy safidy ivelan'ny aterineto",
+      "deviceSafety": "Fitaovana sy fiarovana",
+      "deviceSafetySubtitle": "NorthStar, mpiambina ary fifandraisana vonjy taitra",
+      "privacy": "Fiainana manokana sy angon-drakitra",
+      "privacySubtitle": "Tantara, fanondranana, famafana ary politika",
+      "account": "Kaonty",
+      "accountSubtitle": "Ny fotoam-pivoriana VeryLoving amin'izao fotoana izao"
+    },
+    "updateFailedTitle": "Tsy voatahiry ny toe-javatra",
+    "updateFailedMessage": "Tsy afaka nanavotra izany safidy izany izahay. Azafady mba andramo indray.",
+    "signOutFailedTitle": "Tsy afaka misoratra anarana",
+    "signOutFailedMessage": "Mbola mavitrika ny fotoam-pivoriana. Azafady mba andramo indray."
+  },
+  "contacts": {
+    "title": "Fifandraisana vonjy taitra",
+    "subtitle": "Olona azo itokisana mandritra ny fikorianan'ny fiarovana.",
+    "addTitle": "Ampio fifandraisana vonjy taitra",
+    "name": "Anarana",
+    "namePlaceholder": "Anaran'ny fifandraisana",
+    "phone": "Nomeraon-telefaonina fifandraisana",
+    "add": "Ampio fifandraisana",
+    "empty": "Tsy mbola nisy fifandraisana vonjy taitra nampiana.",
+    "emptyTitle": "Tsy mbola misy fifandraisana vonjy taitra",
+    "emptyMessage": "Ampio olona atokisanao mba ho vonona izy ireo rehefa mila azy ireo ny fikorianan'ny fiarovana.",
+    "removeTitle": "Esory %{name}?",
+    "removeMessage": "Tsy hiseho ao amin'ny fizotran'ny vonjy taitra intsony io olona io.",
+    "nameRequired": "Ampidiro ny anaran'ny mpifandray.",
+    "saveFailedTitle": "Fifandraisana tsy voatahiry",
+    "saveFailedMessage": "Tsy afaka namonjy an'io fifandraisana io izahay. Jereo ny antsipiriany ary andramo indray.",
+    "removeFailedTitle": "Fifandraisana tsy nesorina",
+    "removeFailedMessage": "Tsy afaka nanaisotra an'io fifandraisana io izahay. Azafady mba andramo indray.",
+    "callAccessibility": "Antsoy %{name}",
+    "removeAccessibility": "Esory %{name}"
+  },
+  "device": {
+    "title": "Fitantanana fitaovana",
+    "subtitle": "Mitantana ny fitaovanao NorthStar.",
+    "connected": "Mifandray · %{battery}% bateria",
+    "none": "Tsy misy fitaovana mifandray",
+    "disconnect": "Esory ny fitaovana",
+    "connect": "Mampifandray fitaovana"
+  },
+  "friends": {
+    "title": "Namana",
+    "subtitle": "Mpiambina, fangatahana ary sary vonjy taitra.",
+    "addDemo": "Ampio namana demo",
+    "emptyTitle": "Foana ny faribolana fiarovana anao",
+    "emptyMessage": "Ny namana sy ny mpiambina azo itokisana dia hiseho eto raha vao ampiana izy ireo.",
+    "newGuardian": "Mpiambina vaovao",
+    "statuses": {
+      "guardian": "Mpiambina",
+      "pending": "Miandry"
+    }
+  },
+  "emergency": {
+    "title": "Vonjy taitra SOS",
+    "subtitle": "Mivoatra raha tsy mila fanohanana avy hatrany ianao.",
+    "body": "Izany dia hampahafantatra ny fiarovana anao ary hanomana fifandraisana vonjy taitra.",
+    "activate": "Ampidiro SOS",
+    "callCompanion": "Antsoy AI mpiara-mitory",
+    "notificationTitle": "SOS mavitrika",
+    "notificationBody": "Vonona ny fikorianan'ny vonjy taitra.",
+    "readyTitle": "SOS vonona",
+    "callContact": "Miantso %{name}?",
+    "addContact": "Manampia fifandraisana vonjy taitra ao amin'ny Settings.",
+    "quickShareTitle": "Fizarana haingana",
+    "quickShareMessage": "Vonona ny stub fizarana toerana. Ampifandraiso ny endpoint fizarana backend mba handefasana rohy mivantana."
+  },
+  "quickShare": {
+    "title": "Fizarana haingana",
+    "subtitle": "Vonona ny fizotran'ny fizarana toerana."
+  },
+  "capybearTap": {
+    "title": "Capybear paompy",
+    "subtitle": "Tsindrio indroa ny NorthStar mba handatsaka voasary fiarovana.",
+    "body": "Ny làlan'ny fihetsika dia vonona ho an'ny tariby hetsika BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pejy debug",
+    "subtitle": "Lalana fampandrosoana fotsiny."
+  },
+  "errors": {
+    "voiceOffline": "Toa ivelan'ny aterineto ianao. Halefa ny hafatrao rehefa mifandray indray ianao.",
+    "voiceQueued": "Voavonjy ny hafatra. Halefa izany rehefa mifandray indray ny mpiara-mitory amin'ny feo.",
+    "voiceRetrying": "Andramo indray ny mandefa ny hafatrao ...",
+    "voiceConnecting": "Mifandray tsara amin'ny feonao mpiara-miasa...",
+    "microphone": "Ilaina ny fidirana amin'ny mikrô ho an'ny antso am-peo. Azonao atao ny mampandeha azy ao amin'ny Settings, na manoratra hafatra ho solon'izany.",
+    "billing": "Tsy azo ampiasaina vetivety ny feo an-tserasera. Azonao atao ny manohy miaraka amin'ny mpiara-miasa ivelan'ny aterineto.",
+    "authentication": "Tsy afaka nanamarina ity fivoriana ity ilay mpiara-mitory amin'ny feo. Midira indray na ampiasao ny mpiara-miasa ivelan'ny aterineto amin'izao fotoana izao.",
+    "timeout": "Naharitra ela loatra ny feo mpiara-mitory mba hamaly. Jereo ny fifandraisanao ary andramo indray.",
+    "network": "Tsy afaka nanatona ilay feo mpiara-mitory izahay. Jereo ny fifandraisanao, andramo indray na tohizo ivelan'ny aterineto.",
+    "genericVoice": "Nisy zavatra nanapaka ny antso am-peo. Andramo indray na tohizo amin'ny mpiara-miasa ivelan'ny aterineto."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving fanondranana data"
+  },
+  "notifications": {
+    "channelName": "Fanairana momba ny fiarovana"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving dia mila fidirana amin'ny mikrô ho an'ny fiarovana sy ny antso AI mpiara-miasa.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving dia mampiasa ny toerana misy anao ho an'ny sarintany fiarovana sy ny fiarovana akaiky.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving dia mampiasa ny toerana misy anao hanohanana ny fahatongavana azo antoka sy ny fikorianan'ny vonjy taitra.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving dia mampiasa toerana ambadika ho an'ny fahatongavana azo antoka sy ny faritra mampidi-doza akaiky.",
+      "NSCameraUsageDescription": "VeryLoving mampiasa ny fakantsary raha tsy misafidy ny haka ny mombamomba na ny sary fiarovana.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving mampiasa ny tranomboky sarinao raha tsy misafidy ny mombamomba anao na sary azo antoka.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

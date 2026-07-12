@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Add",
+    "apple": "Apple",
+    "back": "Retro",
+    "call": "Vocatio",
+    "cancel": "Cancel",
+    "clear": "Patet",
+    "close": "Close",
+    "connect": "Connect",
+    "connecting": "Connectens...",
+    "continue": "continue",
+    "delete": "Delere",
+    "finish": "perago",
+    "friends": "amici",
+    "google": "Google",
+    "home": "Home",
+    "loading": "Loading...",
+    "map": "Map",
+    "notNow": "Non nunc",
+    "remove": "Aufer",
+    "retry": "Retry",
+    "retrying": "Retrying",
+    "save": "Servare",
+    "selected": "electus",
+    "send": "Mitte",
+    "settings": "Occasus",
+    "skip": "Skip",
+    "skipForNow": "Skip nunc",
+    "skipTutorial": "Skip Nullam",
+    "sos": "SOS",
+    "unknown": "Ignota",
+    "user": "VeryLoving user",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Linguae",
+    "subtitle": "Elige per app usus lingua.",
+    "system": "Ratio default",
+    "search": "Quaerere linguas",
+    "noResults": "Nullae linguae tuae quaestioni congruit.",
+    "english": "Anglicus",
+    "spanish": "hispanice",
+    "french": "Gallica",
+    "chineseSimplified": "Seres (facilius)"
+  },
+  "phone": {
+    "label": "Numerus telephonicus",
+    "placeholder": "Numerus telephonicus",
+    "selectCountry": "Lego regione vel regione",
+    "searchCountry": "Quaere patriam, codicem, vel praepositionem dialing",
+    "noCountries": "Nullae nationes quaestioni tuae aequant.",
+    "countryButton": "Muta terra, currently %{country} plus %{callingCode}",
+    "inputAccessibility": "Phone numerus ad %{country}",
+    "required": "Intra in phone numerus.",
+    "tooShort": "hic numerus telephonicus brevior est.",
+    "tooLong": "This numerus telephonicus nimis longum est.",
+    "invalid": "Intra validum numerum telephonicum pro delectis patria.",
+    "valid": "Valet internationalis numerus telephonicus"
+  },
+  "auth": {
+    "onboardingTagline": "Socius salutis personalis pro momentis inter \"valeo\" et \"auxilio egeo.\"",
+    "createAccount": "Create account",
+    "continueOnboarding": "Continue cum onboarding",
+    "createSubtitle": "Elige signum in ratione salutis graph.",
+    "phoneVerification": "Phone verificationem",
+    "sendCode": "Mitte codice",
+    "sendingCode": "Mittens codicem...",
+    "verifyCode": "Quin code",
+    "sentTo": "Ad %{phone}",
+    "yourPhone": "your phone",
+    "verificationCode": "Verificationis codice",
+    "verify": "Quin",
+    "verifying": "Verifying.",
+    "invalidCode": "Enter tesseram.",
+    "signInFailedTitle": "Adscribe in intermisso",
+    "signInFailedMessage": "Non potuimus perficere signum-in. Reprehendo vestri nexum et iterum conare.",
+    "googleUnavailableTitle": "Google Sign-in unavailable",
+    "googleUnavailableMessage": "Sessionem localem evolutionis adhibens. Nativa Google Sign-In operibus in evolutione constructum.",
+    "northStarTitle": "NorthStar jewelry",
+    "northStarSubtitle": "Par nunc, vel perge et postea add.",
+    "northStarBody": "The VL01 wearable potest trigger salutem cum taps et diu gestus prelo fluit.",
+    "setupJewelry": "Levate ornamentum",
+    "meetCapybear": "Occursum Capybear",
+    "meetCapybearSubtitle": "Tuam mitem salutem in charta et in vocatione comes.",
+    "capybearBody": "Capybear adiuvare potest cum modo domi, modum custodem, modum subitis, excusationem invocat, et vocis sustentationem.",
+    "chooseVoice": "Elige vocem",
+    "capybearReminder": "Capybear commonitorium",
+    "remindersReady": "Benigna monimenta parata sunt."
+  },
+  "permissions": {
+    "locationTitle": "Locus salutem",
+    "locationSubtitle": "Usus est pro charta geographica, zonis periculi, adventus tutum, et contextus SOS.",
+    "locationBody": "VeryLoving locum petit ut custodes intelligere possint ubi auxilium opus sit. Hoc postea in Occasus mutare potes.",
+    "allowLocation": "Patitur locus",
+    "notificationsTitle": "salus summis",
+    "notificationsSubtitle": "Notificationes support reprehendo-ins et subitis events.",
+    "notificationsBody": "Tantum notificationes ad salutem adhibemus suadet, subitis updates et commonitiones quas potes.",
+    "enableNotifications": "Admitte notificationes",
+    "locationRationaleTitle": "Locus servat salutem contextu accurate",
+    "locationRationaleMessage": "VeryLoving Loco tuo utitur ad tabulam salutem, zonam periculi, partem vivam, et SOS contextu. Hoc postea in Occasus mutare potes.",
+    "notificationsRationaleTitle": "In summis eget salutem notificationes",
+    "notificationsRationaleMessage": "VeryLoving reprehendo-in commonitionibus, subitis updates, et salutem suggerere ut possis. Acta Vicimediorum non utimur.",
+    "microphoneRationaleTitle": "Tortor potentiae salutem vocat",
+    "microphoneRationaleMessage": "VeryLoving tortor ligula tua utitur tantum, cum comitem aut salutem vocationis AI incipe.",
+    "bluetoothRationaleTitle": "Bluetooth Coniungit tuum wearable",
+    "bluetoothRationaleMessage": "VeryLoving utitur Bluetooth ad par cum ornamento NorthStar, nexum status lege, et salus felis fluit ex debili.",
+    "cameraRationaleTitle": "Camera ad libitum",
+    "cameraRationaleMessage": "VeryLoving utitur camera tantum cum voles accipere a profile photo vel participes in salute imaginis."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving Hunc fluentem praesto retinet ex Occasus et ashboardday.",
+    "chooseVoiceTitle": "Elige vocem tuam",
+    "chooseVoiceSubtitle": "Carpe vocem, quae tutissimum esse sentit, audire.",
+    "homeTitle": "Domus modus",
+    "homeSubtitle": "Quies magna pro quotidiana salute.",
+    "guardianTitle": "Custos modus",
+    "guardianSubtitle": "Contextus cum fideli populo.",
+    "emergencyTitle": "Subitis modus",
+    "emergencySubtitle": "Quinque tapsas SOS et summos custodes evolare possunt.",
+    "excuseTitle": "Excusatio vocationis",
+    "excuseSubtitle": "Facere causam venustam ut incommoda relinquat condicionem.",
+    "safetyCallTitle": "salus vocatio",
+    "safetyCallSubtitle": "Satus verus-vicis particeps vocatio cum auxilio indigetis.",
+    "practiceTitle": "Practice scaena",
+    "practiceSubtitle": "Experiri salus fluit in deprimente demo."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Ornamentum prope intuens serva.",
+    "scan": "Scan ad machinas",
+    "scanning": "ENARRATIO prope...",
+    "noDevices": "No prope inventa NorthStar adhuc inventa.",
+    "scanStartFailed": "Bluetooth ENARRATIO incipere non potuit. Quaeso, iterum conare.",
+    "scanFailed": "Prope ornamentum invenire non potuimus. Perscribe Bluetooth, claude NorthStar, et iterum conare.",
+    "scanAccessFailed": "Bluetooth ENARRATIO incipere non potuit. Reprehendo accessum Bluetooth et iterum conare.",
+    "permissionDenied": "Prope-fabrica aditum non vigilat. Patitur accessum Bluetooth in Occasus, deinde iterum conare.",
+    "connectTimeout": "NorthStar nimis longum est coniungere. Propius move et iterum conare.",
+    "connectFailed": "Non potuimus coniungere cum NorthStar. Compesce quod accusatus est et prope, deinde iterum conare.",
+    "emptyTitle": "Non tamen prope cogitationes",
+    "emptyMessage": "Custodite NorthStar praecepit ac iuxta telephonum hoc, deinde iterum lustra.",
+    "searchingMessage": "Quaero consilia NorthStar prope..."
+  },
+  "home": {
+    "subtitle": "Salus particeps ashboardday",
+    "modeStatus": "%{mode} INSTITUTUM",
+    "companionReady": "%{name} Paratum est",
+    "readyBody": "Vox, tabula, ornamenta et custodes unum sonum absunt.",
+    "safetyCall": "salus vocatio",
+    "northStarDevice": "NorthStar device",
+    "deviceConnected": "%{name} connexa · %{battery}%",
+    "noDevice": "Nulla fabrica connexa",
+    "manageDevice": "Curo fabrica",
+    "mode": "Modus",
+    "modes": {
+      "home": "Home",
+      "guardian": "Custos",
+      "emergency": "Subitis"
+    }
+  },
+  "map": {
+    "finding": "Locum tuum inveniens...",
+    "retry": "Retry locus",
+    "title": "Salus map",
+    "previewSubtitle": "Expo Go praevisum; Mapbox in evolutione constructum reddit.",
+    "preview": "Map preview",
+    "risk": "Periculum: %{risk} · Radius %{radius}m",
+    "refresh": "Renovare locus",
+    "refreshing": "Locum invenire...",
+    "updateFailed": "Locus update vestri non potuimus. Quaeso, iterum conare.",
+    "notRequested": "Location accessum non postulavit. Postea ex Occasus efficere potes.",
+    "permissionOff": "Location accessum non vigilat. Fac in Occasus ut centrum securitatis in te describatur.",
+    "timeout": "Locus tuus diutius quam expectatur tenet. Alicubi signo clariore move et iterum conare.",
+    "savedTitle": "Salvus locis",
+    "savedEmptyTitle": "Non tamen locis salvus erit",
+    "savedEmptyMessage": "Loca quae servas credita facile hic accessus apparebit.",
+    "zones": {
+      "crowding": "Nox creber",
+      "lowLighting": "Humilis lucendi regio"
+    },
+    "risks": {
+      "low": "low",
+      "medium": "medium",
+      "high": "summus"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Connectens...",
+    "offlineCompanion": "Offline companion",
+    "offline": "Offline",
+    "connected": "Coniuncta",
+    "interrupted": "Connection interrumpitur",
+    "ready": "Promptus ad coniungere",
+    "connectingSecurely": "Coniungens secure voce tua comes ...",
+    "messagesWaiting": {
+      "one": "%{count} Nuntius exspectans mittere",
+      "other": "%{count} nuntiis expectans mittere"
+    },
+    "useOffline": "usus comes",
+    "reconnect": "Reconnect ad vocem AI",
+    "typePlaceholder": "Typus si loqui durum est",
+    "endCall": "finis vocationis",
+    "startCall": "Satus vocatio",
+    "emptyTitle": "Colloquium tuum hic incipit",
+    "emptyMessage": "Initium vocationis seu typus nuntius cum velis."
+  },
+  "chat": {
+    "waiting": "Expectans nexum",
+    "notSent": "Nuntius non missus.",
+    "retryAccessibility": "Retry mittens nuntium"
+  },
+  "history": {
+    "clearTitle": "Serena colloquii historia?",
+    "clearMessage": "This removet salvus AI sodalis nuntiis ab hac fabrica.",
+    "deleteTitle": "Conversationem hanc delere?",
+    "cannotUndo": "Hoc fieri infectum non potest.",
+    "title": "Colloquium historicum",
+    "subtitle": "AI Socius mandata hac arte servavit.",
+    "empty": "No colloquia adhuc servata sunt.",
+    "emptyTitle": "Nulla colloquia adhuc",
+    "emptyMessage": "Colloquia sodalis tui AI post primam vocationem hic apparebunt.",
+    "loadFailed": "Colloquium historicum onerare non potuimus. Quaeso, iterum conare.",
+    "clearFailed": "Colloquium historicum purgare non potuimus. Quaeso, iterum conare.",
+    "deleteFailed": "Colloquium illud delere non potuimus. Quaeso, iterum conare.",
+    "aiCompanion": "AI companion",
+    "resume": "Proin",
+    "clearAll": "Patet omnem historiam",
+    "roles": {
+      "assistant": "comes",
+      "user": "you"
+    }
+  },
+  "voices": {
+    "title": "Salus mea voces",
+    "subtitle": "Socium elige vocis audiendi recte sentientem.",
+    "test": "Test vox",
+    "stop": "Nolite sample",
+    "selectionFailedTitle": "Electio non servata est",
+    "selectionFailedMessage": "Quaeso, iterum experiri vocem eligens.",
+    "sampleFailedTitle": "Sample unavailable",
+    "sampleFailedMessage": "Haec vox specimen lusi esse non potuit. Quaeso, iterum conare.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mollis, tranquillitas, grounding"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "clara, blanda, sermonem"
+      },
+      "boyfriend": {
+        "name": "boyfriend",
+        "description": "stabilis, affectuosa, present!"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "confidens, tutela, motiva"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Vox",
+    "changeVoice": "Mutatio vocis",
+    "showCompanion": "Ostende socium",
+    "offlineMode": "Offline modus",
+    "offlineModeSubtitle": "Socius respondeo bundled utere cum retiacula vel documentorum Hume perpendat.",
+    "privacyData": "Secretum & data",
+    "privacyBody": "Export vel delebit notitia loci in hac fabrica condita.",
+    "preparingExport": "Praeparans export...",
+    "exportData": "Export meum data",
+    "privacyPolicy": "Secretum consilium",
+    "deleting": "Deletio...",
+    "deleteAll": "Delere omnes loci notitia",
+    "deviceManagement": "Device administratione",
+    "emergencyContacts": "Contactus subitis",
+    "signOut": "Exire",
+    "exportFailedTitle": "Export defecit",
+    "exportFailedMessage": "'Non nunc export vestri notitia.",
+    "deleteConfirmTitle": "Omnes loci notitia delere?",
+    "deleteConfirmMessage": "Hic profile, occasus, notiones subitis, colloquium historicum, permissio commonitionum, et loci auth sessionis ab hac arte removet.",
+    "deleteEverything": "Delere omnia",
+    "deleteFailedTitle": "Deletionem defuit",
+    "deleteFailedMessage": "'Non loci notitia nunc delere.",
+    "linkFailed": "'Non aperire link",
+    "sections": {
+      "language": "Linguae",
+      "languageSubtitle": "Interface and system permission linguae",
+      "companion": "Socius",
+      "companionSubtitle": "Vox et optiones offline",
+      "deviceSafety": "Cogitationes et salutem",
+      "deviceSafetySubtitle": "NorthStar, custodes et contactus subitis",
+      "privacy": "Secretum ac data",
+      "privacySubtitle": "Historia, exportatio, deletio et consilium",
+      "account": "Ratio",
+      "accountSubtitle": "Tua current VeryLoving sessionis"
+    },
+    "updateFailedTitle": "Profecta non servata est",
+    "updateFailedMessage": "Non potuimus hoc praerogativa salvum facere. Quaeso, iterum conare.",
+    "signOutFailedTitle": "Non subscribere e",
+    "signOutFailedMessage": "Sessionis tuae adhuc activae est. Quaeso, iterum conare."
+  },
+  "contacts": {
+    "title": "Contactus subitis",
+    "subtitle": "Tusted people available in salute fluit.",
+    "addTitle": "Add subitis contactum",
+    "name": "Nomen",
+    "namePlaceholder": "Nomen contactus",
+    "phone": "Contactus numerus telephonicus",
+    "add": "Adde contactum",
+    "empty": "No subitis contactus additur adhuc.",
+    "emptyTitle": "Non subitis contactus tamen",
+    "emptyMessage": "Adde aliquem confidis sic parati sunt cum salus his indiget.",
+    "removeTitle": "Aufer %{name}?",
+    "removeMessage": "Haec persona non apparebit in subitis fluxus.",
+    "nameRequired": "Intra noti nomen.",
+    "saveFailedTitle": "Contactus non servata est",
+    "saveFailedMessage": "Hunc contactum servare non potuimus. Reprehendo singula et iterum tenta.",
+    "removeFailedTitle": "Contactus non remotus",
+    "removeFailedMessage": "Hunc contactum removere non potuimus. Quaeso, iterum conare.",
+    "callAccessibility": "Vocatio %{name}",
+    "removeAccessibility": "Remove %{name}"
+  },
+  "device": {
+    "title": "Device administratione",
+    "subtitle": "Curo tuum NorthStar fabrica.",
+    "connected": "Connexa · %{battery}% altilium",
+    "none": "Non cogitationes connexae",
+    "disconnect": "Disconnect fabrica",
+    "connect": "Iungo fabrica"
+  },
+  "friends": {
+    "title": "amici",
+    "subtitle": "Custodes, peticiones, et utili graphi.",
+    "addDemo": "Addere demo amicus",
+    "emptyTitle": "Tuam salutem circulus inanis",
+    "emptyMessage": "Fideles amici et custodes hic semel adduntur.",
+    "newGuardian": "Novus Custos",
+    "statuses": {
+      "guardian": "Custos",
+      "pending": "Eviewray"
+    }
+  },
+  "emergency": {
+    "title": "Emergency SOS",
+    "subtitle": "Escalate solum cum praesenti auxilio opus est.",
+    "body": "Hoc certiorem faciet salutem tuam fluxus et subitis contactus para.",
+    "activate": "Activate SOS",
+    "callCompanion": "Voca AI comitem",
+    "notificationTitle": "SOS activated",
+    "notificationBody": "Subitis fluxus tuus paratus est.",
+    "readyTitle": "SOS paratus",
+    "callContact": "Voca %{name}?",
+    "addContact": "subitis contactus in Occasus addere.",
+    "quickShareTitle": "Velox share",
+    "quickShareMessage": "Location sharing stipulas parata est. Coniungere terminum ad participes backend terminos vivos nexus mittere."
+  },
+  "quickShare": {
+    "title": "Velox share",
+    "subtitle": "Location participes fluxus paratus est."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Double-tap tuum NorthStar ut gutta salus orange.",
+    "body": "Gestura via parata est eventu wiring BLE."
+  },
+  "debug": {
+    "title": "VeryLoving debug page",
+    "subtitle": "Progressus solum itineris."
+  },
+  "errors": {
+    "voiceOffline": "Videris online. Epistula tua mittetur cum reconnect.",
+    "voiceQueued": "Nuntius servatus est. Mittetur cum voce comes reconnects.",
+    "voiceRetrying": "Conatus mittere nuntium tuum iterum...",
+    "voiceConnecting": "Coniungens secure voce tua comes ...",
+    "microphone": "Microphone accessus necessarius est ad vocem vocat. In Occasus id efficere potes, vel nuntium pro typus.",
+    "billing": "Sodalis vox online tempus inaccessibile est. Pergere potes cum socio online.",
+    "authentication": "Socius vocem hanc sessionem comprobare non potuit. Sign in again or use the member for now.",
+    "timeout": "Nimis longum est respondere comes vox. Reprehendo vestri nexum et iterum conare.",
+    "network": "Socium vocis attingere non potuimus. Compesce nexum tuum, deinde iterum conare vel pergere offline.",
+    "genericVoice": "Vocem vocationis aliquid interrupit. Iterum conare, vel perge cum socio online."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data export"
+  },
+  "notifications": {
+    "channelName": "salus summis"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving tortor ligula, facilisis accessum ad salutem et ad socium AI vocat.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving loco tuo utitur ad tabulam tutandam et ad lineamenta prope salutem.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving loco tuo utitur ad tutam adventum et necessitatem fluit.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving loco usus background est ad features tutum adventus et prope periculi zonam.",
+      "NSCameraUsageDescription": "VeryLoving camera utitur tantum cum profile aut salutem photo accipere voles.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving bibliotheca tua photo utitur tantum cum figuram vel imaginem salutis accipias.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

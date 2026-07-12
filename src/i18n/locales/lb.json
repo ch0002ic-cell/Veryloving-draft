@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Derbäi setzen",
+    "apple": "Apple",
+    "back": "Zréck",
+    "call": "Ruff",
+    "cancel": "Ofbriechen",
+    "clear": "Kloer",
+    "close": "Zoumaachen",
+    "connect": "Verbënnt Iech",
+    "connecting": "Verbannen...",
+    "continue": "Weiderfueren",
+    "delete": "Läschen",
+    "finish": "Ofschloss",
+    "friends": "Frënn",
+    "google": "Google",
+    "home": "Heem",
+    "loading": "Lued...",
+    "map": "Kaart",
+    "notNow": "Net elo",
+    "remove": "Ewechhuelen",
+    "retry": "Neiversuch",
+    "retrying": "Nei Probéier",
+    "save": "Retten",
+    "selected": "Ausgewielt",
+    "send": "Schécken",
+    "settings": "Ëmfeld",
+    "skip": "Skip",
+    "skipForNow": "Iwwersprang fir d'éischt",
+    "skipTutorial": "Tutorial iwwersprangen",
+    "sos": "SOS",
+    "unknown": "Onbekannt",
+    "user": "VeryLoving Benotzer",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Sprooch",
+    "subtitle": "Wielt d'Sprooch, déi an der ganzer App benotzt gëtt.",
+    "system": "Systemstandard",
+    "search": "Sichsproochen",
+    "noResults": "Keng Sproochen entspriechen denger Sich.",
+    "english": "Englesch",
+    "spanish": "Spuenesch",
+    "french": "Franséisch",
+    "chineseSimplified": "Chinesesch (vereinfacht)"
+  },
+  "phone": {
+    "label": "Telefonsnummer",
+    "placeholder": "Telefonsnummer",
+    "selectCountry": "Wielt Land oder Regioun aus",
+    "searchCountry": "Sich no Land, Code oder Wielpräfix",
+    "noCountries": "Keng Länner entspriechen Ärer Sich.",
+    "countryButton": "Land wiesselen, aktuell %{country} plus %{callingCode}",
+    "inputAccessibility": "Telefonsnummer fir %{country}",
+    "required": "Gitt eng Telefonsnummer an.",
+    "tooShort": "Dës Telefonsnummer ass ze kuerz.",
+    "tooLong": "Dës Telefonsnummer ass ze laang.",
+    "invalid": "Gitt eng gülteg Telefonsnummer vum ausgewielte Land an.",
+    "valid": "Gëlteg international Telefonsnummer"
+  },
+  "auth": {
+    "onboardingTagline": "E perséinleche Sécherheetsbegleeder fir d'Momenter tëscht \"Ech sinn okay\" an \"Ech brauch Hëllef.\"",
+    "createAccount": "Erstellt e Kont",
+    "continueOnboarding": "Fuert mat der Onboarding weider",
+    "createSubtitle": "Wielt eng Umeldungsmethod fir Äre Sécherheetsgraph ze schützen.",
+    "phoneVerification": "Telefonsverifizéierung",
+    "sendCode": "Code schécken",
+    "sendingCode": "Code schécken...",
+    "verifyCode": "Code verifizéieren",
+    "sentTo": "Geschéckt op %{phone}",
+    "yourPhone": "Däin Telefon",
+    "verificationCode": "Verifikatiounscode",
+    "verify": "Verifizéieren",
+    "verifying": "Verifizéieren...",
+    "invalidCode": "Gitt de Verifizéierungscode an.",
+    "signInFailedTitle": "Umeldung ënnerbrach",
+    "signInFailedMessage": "Mir konnten d'Umeldung net fäerdeg maachen. Kontrolléier deng Verbindung a probéier nach eng Kéier.",
+    "googleUnavailableTitle": "Google Umellen net verfügbar",
+    "googleUnavailableMessage": "Mat enger lokaler Entwécklungssessioun. Native Google Sign-In funktionéiert an engem Entwécklungsbau.",
+    "northStarTitle": "NorthStar Bijouen",
+    "northStarSubtitle": "Koppel elo oder fuert weider a füügt et spéider derbäi.",
+    "northStarBody": "D'VL01 Wearable kann Sécherheetsflëss mat Taps a laange Pressgesten ausléisen.",
+    "setupJewelry": "Bijouen opstellen",
+    "meetCapybear": "Trefft Capybear",
+    "meetCapybearSubtitle": "Äre sanfte Sécherheetsbegleeder op der Kaart an an den Uruff.",
+    "capybearBody": "Capybear kann hëllefen beim Heemmodus, Guardian-Modus, Noutfallmodus, Entschëllegungsuruff an Stëmmunterstëtzung.",
+    "chooseVoice": "Wielt eng Stëmm",
+    "capybearReminder": "Capybear Erënnerung",
+    "remindersReady": "Sanft Erënnerungen si prett."
+  },
+  "permissions": {
+    "locationTitle": "Sécherheet vun der Plaz",
+    "locationSubtitle": "Benotzt fir d'Kaart, Geforzonen, sécher Arrivée an SOS Kontext.",
+    "locationBody": "VeryLoving freet no der Plaz, sou datt d'Erwuessener verstoen, wou Hëllef gebraucht ka ginn. Du kanns dat spéider an den Astellungen änneren.",
+    "allowLocation": "Erlaaben d'Plaz",
+    "notificationsTitle": "Sécherheetswarnungen",
+    "notificationsSubtitle": "Notifikatiounen ënnerstëtzen Check-ins an Noutfäll.",
+    "notificationsBody": "Mir benotzen nëmmen Notifikatiounen fir Sécherheetshinweiser, Noutfall-Updates an Erënnerungen, déi Dir aktivéiert hutt.",
+    "enableNotifications": "Notifikatiounen aktivéieren",
+    "locationRationaleTitle": "D'Plaz hält de Sécherheetskontext präzis",
+    "locationRationaleMessage": "VeryLoving benotzt Är Positioun fir d'Sécherheetskaart, Geforzonen, Quick Share an SOS Kontext. Du kanns dat spéider an den Astellungen änneren.",
+    "notificationsRationaleTitle": "Sécherheetswarnungen brauchen Notifikatiounen",
+    "notificationsRationaleMessage": "VeryLoving schéckt Check-in Erënnerungen, Noutfallupdates an Sécherheetshinweiser, déi s du aktivéiers. Mir benotzen keng Notifikatiounen fir Reklammen.",
+    "microphoneRationaleTitle": "Mikrofon ënnerstëtzt Sécherheetsruffer",
+    "microphoneRationaleMessage": "VeryLoving benotzt Äre Mikro nëmmen, wann Dir en AI Begleeder oder Sécherheetsuruff ufänkt.",
+    "bluetoothRationaleTitle": "Bluetooth verbënnt däi Wearable",
+    "bluetoothRationaleMessage": "VeryLoving benotzt Bluetooth fir mat NorthStar Bijouen ze kombinéieren, de Verbindungsstatus ze liesen an d'Sécherheetsflëss vum Wearable auszeléisen.",
+    "cameraRationaleTitle": "D'Kamera ass optional",
+    "cameraRationaleMessage": "VeryLoving benotzt d'Kamera nëmmen, wann Dir decidéiert eng Profilfoto ze maachen oder e Sécherheetsbild ze deelen."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving hält dëse Floss iwwer d'Astellungen an d'Dashboard zougänglech.",
+    "chooseVoiceTitle": "Wielt Är Stëmm",
+    "chooseVoiceSubtitle": "Wielt déi Begleederstëmm, déi am séchersten ze héieren ass.",
+    "homeTitle": "Heemmodus",
+    "homeSubtitle": "Roueg Iwwerwaachung fir deeglech Sécherheet.",
+    "guardianTitle": "Guardian-Modus",
+    "guardianSubtitle": "Deelt Kontext mat vertraute Leit.",
+    "emergencyTitle": "Noutmodus",
+    "emergencySubtitle": "Fënnef Taps kënnen op SOS an Guardian Alarmer eskaléieren.",
+    "excuseTitle": "Entschëllegt, Uruff",
+    "excuseSubtitle": "Schaaft eng elegant Ursaach fir eng onbequem Situatioun ze verloossen.",
+    "safetyCallTitle": "Sécherheetsruff",
+    "safetyCallSubtitle": "Start en Echtzäit-Begleeder-Uruff wann Dir Ënnerstëtzung braucht.",
+    "practiceTitle": "Übungsszen",
+    "practiceSubtitle": "Probéiert d'Sécherheetsflëss an engem Nidderegdrock-Demo."
+  },
+  "jewelry": {
+    "pairTitle": "Koppel NorthStar",
+    "pairSubtitle": "Halt d'Bijouen no beim Scannen.",
+    "scan": "Scan no Geräter",
+    "scanning": "Scannen an der Géigend...",
+    "noDevices": "Nach keng NorthStar Apparater an der Géigend fonnt.",
+    "scanStartFailed": "Bluetooth'Scannen konnt net starten. Probéiert et nach eng Kéier.",
+    "scanFailed": "Mir hu keng Bijouen an der Géigend fonnt. Kontrolléiert Bluetooth, haalt NorthStar no bei Iech, a probéiert nach eng Kéier.",
+    "scanAccessFailed": "Bluetooth'Scannen konnt net starten. Kontrolléier Bluetooth Zougang a probéier nach eng Kéier.",
+    "permissionDenied": "Den Zougang zum Noperschaft ass ausgeschalt. Erlaabt Bluetooth Zougang an den Astellungen, da probéiert et nach eng Kéier.",
+    "connectTimeout": "NorthStar huet ze laang gebraucht fir ze verbannen. Beweeg et méi no a probéier nach eng Kéier.",
+    "connectFailed": "Mir konnten net mat NorthStar verbannen. Kontrolléier ob et gelueden ass an no bei ass, da probéier et nach eng Kéier.",
+    "emptyTitle": "Nach keng Apparater an der Géigend",
+    "emptyMessage": "Halt NorthStar opgelueden an no bei dësem Telefon, dann scannen nach eng Kéier.",
+    "searchingMessage": "Ech sichen no NorthStar Apparater an der Géigend..."
+  },
+  "home": {
+    "subtitle": "Sécherheetsbegleeder-Dashboard",
+    "modeStatus": "%{mode} MODUS",
+    "companionReady": "%{name} ass prett",
+    "readyBody": "Stëmm, Kaart, Bijouen a Wächter sinn nëmmen ee Klick ewech.",
+    "safetyCall": "Sécherheetsruff",
+    "northStarDevice": "NorthStar Apparat",
+    "deviceConnected": "%{name} verbonnen · %{battery}%",
+    "noDevice": "Keen Apparat ugeschloss",
+    "manageDevice": "Gestiounsapparat",
+    "mode": "Modus",
+    "modes": {
+      "home": "Heem",
+      "guardian": "Guardian",
+      "emergency": "Noutfall"
+    }
+  },
+  "map": {
+    "finding": "Är Plaz fannen...",
+    "retry": "Retry-Standuert",
+    "title": "Sécherheetskaart",
+    "previewSubtitle": "Expo Go Virschau; Mapbox rendert an engem Entwécklungs-Build.",
+    "preview": "Kaartevirschau",
+    "risk": "Risiko: %{risk} · Radius %{radius}m",
+    "refresh": "Standuert erfrëschen",
+    "refreshing": "Plaz fannen...",
+    "updateFailed": "Mir konnten Är Positioun net aktualiséieren. Probéiert et nach eng Kéier.",
+    "notRequested": "Zougang zur Plaz gouf net gefrot. Dir kënnt et spéider iwwer d'Astellungen aktivéieren.",
+    "permissionOff": "Zougang zur Plaz ass aus. Aktivéier et an den Astellungen, fir d'Sécherheetskaart op dech ze zentréieren.",
+    "timeout": "Deng Plaz dauert méi laang wéi erwaart. Géi op eng Plaz mat engem méi kloere Signal a probéier nach eng Kéier.",
+    "savedTitle": "Gespäichert Plazen",
+    "savedEmptyTitle": "Nach keng gespäichert Plazen",
+    "savedEmptyMessage": "Vertraut Plazen, déi Dir späichert, erschéngen hei fir séier Zougang.",
+    "zones": {
+      "crowding": "Spéit Nuecht Gedréckt",
+      "lowLighting": "Beräich mat niddreger Beliichtung"
+    },
+    "risks": {
+      "low": "Niddereg",
+      "medium": "Medium",
+      "high": "héich"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Verbannen...",
+    "offlineCompanion": "Offline Begleeder",
+    "offline": "Offline",
+    "connected": "Verbonnen",
+    "interrupted": "Verbindung ënnerbrach",
+    "ready": "Bereet fir ze verbannen",
+    "connectingSecurely": "Verbindunge sécher mat dengem Stëmmbegleeder...",
+    "messagesWaiting": {
+      "one": "%{count} Noriicht waart fir geschéckt ze ginn",
+      "other": "%{count} Messagen, déi drop waarden, geschéckt ze ginn"
+    },
+    "useOffline": "Benotz offline Companion",
+    "reconnect": "Verbënnt erëm mat Stëmm AI",
+    "typePlaceholder": "Tippen, wann et schwéier ass ze schwätzen",
+    "endCall": "Enn vum Uruff",
+    "startCall": "Start Call",
+    "emptyTitle": "Är Gespréich fänkt hei un",
+    "emptyMessage": "Fänkt den Uruff un oder tippt eng Noriicht wann Dir prett sidd."
+  },
+  "chat": {
+    "waiting": "Waarden op d'Verbindung",
+    "notSent": "Noriicht net geschéckt.",
+    "retryAccessibility": "Probéiert nach eng Kéier d'Noriicht ze schécken"
+  },
+  "history": {
+    "clearTitle": "Kloer Gespréichsgeschicht?",
+    "clearMessage": "Dëst läscht gespäichert AI Begleedermessagen vun dësem Apparat.",
+    "deleteTitle": "Dës Gespréich läschen?",
+    "cannotUndo": "Dat kann net zréckgeholl ginn.",
+    "title": "Gespréichsgeschicht",
+    "subtitle": "AI Begleeder-Messagen, déi op dësem Apparat gespäichert sinn.",
+    "empty": "Nach keng Gespréicher gespäichert.",
+    "emptyTitle": "Nach keng Gespréicher",
+    "emptyMessage": "Är AI Begleeder Gespréicher ginn hei no Ärem éischte Uruff ugewisen.",
+    "loadFailed": "Mir konnten d'Gespréichsgeschicht net lueden. Probéiert et nach eng Kéier.",
+    "clearFailed": "Mir konnten d'Gespréichsgeschicht net läschen. Probéiert et nach eng Kéier.",
+    "deleteFailed": "Mir konnten dat Gespréich net läschen. Probéiert et nach eng Kéier.",
+    "aiCompanion": "AI Begleeder",
+    "resume": "Résumé",
+    "clearAll": "All Geschicht läschen.",
+    "roles": {
+      "assistant": "Begleeder",
+      "user": "Du"
+    }
+  },
+  "voices": {
+    "title": "Meng Sécherheetsruff-Stëmmen",
+    "subtitle": "Wielt déi Begleederstëmm, déi richteg fillt fir ze héieren.",
+    "test": "Teststëmm",
+    "stop": "Stop-Sample",
+    "selectionFailedTitle": "Auswiel net gespäichert",
+    "selectionFailedMessage": "Probéier w.e.g. nach eng Kéier d'Stëmm ze wielen.",
+    "sampleFailedTitle": "Beispill net verfügbar",
+    "sampleFailedMessage": "Dës Stëmmprobe konnt net ofgespillt ginn. Probéiert et nach eng Kéier.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mëll, roueg, erdend"
+      },
+      "bestie": {
+        "name": "Bestie Frëndin",
+        "description": "hell, berouegend, gespréichsfäeg"
+      },
+      "boyfriend": {
+        "name": "Frënd",
+        "description": "stänneg, léif, präsent"
+      },
+      "muscleMan": {
+        "name": "Muskelmann",
+        "description": "selbstbewosst, beschützend, motivéierend"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Stëmm",
+    "changeVoice": "Stëmm änneren",
+    "showCompanion": "Show-Begleeder",
+    "offlineMode": "Offline-Modus",
+    "offlineModeSubtitle": "Benotzt zesummegebonnen Begleeder-Äntwerten, wann d'Netzwierk- oder Hume Zougangsdaten net verfügbar sinn.",
+    "privacyData": "Privatsphär & Donnéeën",
+    "privacyBody": "Exportéiert oder läscht déi lokal Donnéeën, déi op dësem Apparat gespäichert sinn.",
+    "preparingExport": "Den Export preparéieren...",
+    "exportData": "Exportéiert meng Donnéeën",
+    "privacyPolicy": "Privatsphärpolitik",
+    "deleting": "Läschen...",
+    "deleteAll": "Läscht all lokal Donnéeën",
+    "deviceManagement": "Geräteverwaltung",
+    "emergencyContacts": "Noutfallkontakter",
+    "signOut": "Ausloggen",
+    "exportFailedTitle": "Export ass gescheitert",
+    "exportFailedMessage": "Ech kann Är Donnéeën de Moment net exportéieren.",
+    "deleteConfirmTitle": "All lokal Donnéeën läschen?",
+    "deleteConfirmMessage": "Dëst läscht Äre Profil, Astellungen, Noutkontakter, Gespréichsgeschicht, Erlaabniserënnerungen an lokal Authentie-Sessioun vun dësem Apparat.",
+    "deleteEverything": "Läsch alles",
+    "deleteFailedTitle": "D'Läschung ass gescheitert",
+    "deleteFailedMessage": "Ech kann aktuell keng lokal Donnéeën läschen.",
+    "linkFailed": "Link kann net opgemaach ginn",
+    "sections": {
+      "language": "Sprooch",
+      "languageSubtitle": "Interface an Systempermissiounssprooch",
+      "companion": "Begleeder",
+      "companionSubtitle": "Stëmm- a Offline-Preferenzen",
+      "deviceSafety": "Apparater a Sécherheet",
+      "deviceSafetySubtitle": "NorthStar, Erzéiungsleit an Noutfallkontakter",
+      "privacy": "Privatsphär a Donnéeën",
+      "privacySubtitle": "Geschicht, Export, Läschung a Politik",
+      "account": "Kont",
+      "accountSubtitle": "Deng aktuell VeryLoving Sessioun"
+    },
+    "updateFailedTitle": "Astellung net gespäichert",
+    "updateFailedMessage": "Mir konnten déi Preferenz net retten. Probéiert et nach eng Kéier.",
+    "signOutFailedTitle": "Konnt net ausgecheckt ginn",
+    "signOutFailedMessage": "Deng Sessioun ass nach aktiv. Probéiert et nach eng Kéier."
+  },
+  "contacts": {
+    "title": "Noutfallkontakter",
+    "subtitle": "Vertraut Leit während Sécherheetsflëss disponibel.",
+    "addTitle": "Noutkontakt derbäisetzen",
+    "name": "Numm",
+    "namePlaceholder": "Kontaktnumm",
+    "phone": "Kontakttelefonnummer",
+    "add": "Kontakt derbäisetzen",
+    "empty": "Nach keng Noutkontakter dobäi.",
+    "emptyTitle": "Nach keng Noutfallkontakter",
+    "emptyMessage": "Füügt een derbäi, dem Dir vertraut, sou datt hien prett ass, wann e Sécherheetsfloss en brauch.",
+    "removeTitle": "Ewechhuelen %{name}?",
+    "removeMessage": "Dës Persoun wäert net méi an Ärem Noutfall-Flow optrieden.",
+    "nameRequired": "Gitt den Numm vum Kontakt an.",
+    "saveFailedTitle": "Kontakt net gespäichert",
+    "saveFailedMessage": "Mir konnten dëse Kontakt net retten. Kuck d'Detailer no a probéier nach eng Kéier.",
+    "removeFailedTitle": "Kontakt net ewechgeholl",
+    "removeFailedMessage": "Mir konnten dëse Kontakt net ewechhuelen. Probéiert et nach eng Kéier.",
+    "callAccessibility": "Ruff %{name} un",
+    "removeAccessibility": "Huelt %{name}"
+  },
+  "device": {
+    "title": "Geräteverwaltung",
+    "subtitle": "Verwalten Äre NorthStar Apparat.",
+    "connected": "Verbonnen · %{battery}% Batterie",
+    "none": "Keng ugeschloss Apparater",
+    "disconnect": "Trennapparat",
+    "connect": "Verbindungsapparat"
+  },
+  "friends": {
+    "title": "Frënn",
+    "subtitle": "Guardians, Ufroën an Noutfall-Graph.",
+    "addDemo": "Demo-Frënd derbäisetzen",
+    "emptyTitle": "Äre Sécherheetskrees ass eidel",
+    "emptyMessage": "Vertraute Frënn a Betreier erschéngen hei, wann se derbäigesat ginn.",
+    "newGuardian": "Neie Wächter",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Ausgaang"
+    }
+  },
+  "emergency": {
+    "title": "Noutfall SOS",
+    "subtitle": "Eskaléiert nëmmen, wann Dir direkt Ënnerstëtzung braucht.",
+    "body": "Dëst informéiert Äre Sécherheetsfloss a preparéiert Noutkontakter.",
+    "activate": "Aktivéiert SOS",
+    "callCompanion": "Ruff AI Begleeder un",
+    "notificationTitle": "SOS aktivéiert",
+    "notificationBody": "Äre Noutfloss ass prett.",
+    "readyTitle": "SOS prett",
+    "callContact": "Ruff %{name} un?",
+    "addContact": "Füügt en Noutfallkontakt an den Astellungen derbäi.",
+    "quickShareTitle": "Séier deelen",
+    "quickShareMessage": "De Standuertdeelungs-Stub ass prett. Verbënnt den Backend-Share-Endpunkt fir Live-Linken ze schécken."
+  },
+  "quickShare": {
+    "title": "Séier deelen",
+    "subtitle": "De Location Share Flow ass prett."
+  },
+  "capybearTap": {
+    "title": "Capybear Tap",
+    "subtitle": "Zweet Klick op deng NorthStar fir eng Sécherheetsorange ze falen.",
+    "body": "D'Gestenroute ass prett fir d'BLE Event Verkabelung."
+  },
+  "debug": {
+    "title": "VeryLoving Debug-Säit",
+    "subtitle": "Nëmmen Entwécklungsroute."
+  },
+  "errors": {
+    "voiceOffline": "Du schéngs offline ze sinn. Är Noriicht gëtt geschéckt, wann Dir erëm Kontakt hutt.",
+    "voiceQueued": "Noriicht gespäichert. Et gëtt geschéckt, wann de Stëmmbegleeder erëm verbënnt.",
+    "voiceRetrying": "Ech probéieren deng Noriicht nach eng Kéier ze schécken...",
+    "voiceConnecting": "Verbindunge sécher mat dengem Stëmmbegleeder...",
+    "microphone": "Mikrofonzougang ass néideg fir Stëmmruff. Dir kënnt et an den Astellungen aktivéieren oder amplaz eng Noriicht aginn.",
+    "billing": "Den Online-Stëmmbegleeder ass temporär net verfügbar. Dir kënnt mat dem offline Begleeder weiderfueren.",
+    "authentication": "De Stëmmbegleeder konnt dës Sessioun net verifizéieren. Mellt Iech nach eng Kéier un oder benotzt de Offline-Begleeder fir d'éischt.",
+    "timeout": "De Stëmmbegleeder huet ze laang gebraucht fir ze äntweren. Kontrolléier deng Verbindung a probéier nach eng Kéier.",
+    "network": "Mir konnten de Stëmmbegleeder net erreechen. Kontrolléier deng Verbindung, da probéier et nach eng Kéier oder bleif offline.",
+    "genericVoice": "Eppes huet den Uruff ënnerbrach. Probéier nach eng Kéier, oder fuert mat dem offline Begleeder weider."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving Datenexport"
+  },
+  "notifications": {
+    "channelName": "Sécherheetswarnungen"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving brauch Mikrofonzougang fir Sécherheet an AI Begleeder-Uruff.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving benotzt Är Plaz fir d'Sécherheetskaart an d'Sécherheetsfeatures an der Géigend.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving benotzt Är Standuert fir sécher Arrivée an Noutflëss z'ënnerstëtzen.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving benotzt Hannergrondlag fir sécher Arrivée an no bei Geforenzonen.",
+      "NSCameraUsageDescription": "VeryLoving benotzt d'Kamera nëmmen, wann Dir eng Profil- oder Sécherheetsfoto maache wëllt.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving benotzt Är Fotobibliothéik nëmmen, wann Dir e Profil oder Sécherheetsbild wielt.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving benotzt Bluetooth fir mat Ärem NorthStar Sécherheetsschmuck ze verbannen.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving benotzt Bluetooth fir mat Ärem NorthStar Sécherheetsschmuck ze verbannen."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

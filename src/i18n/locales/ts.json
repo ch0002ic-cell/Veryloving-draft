@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Engetelani",
+    "apple": "Apple",
+    "back": "Ku tlhelela endzhaku",
+    "call": "Fonela",
+    "cancel": "Ku khansela",
+    "clear": "Ku basisa",
+    "close": "Ku pfala",
+    "connect": "Ku hlanganisa",
+    "connecting": "Ku hlanganisa...",
+    "continue": "Yana emahlweni",
+    "delete": "Ku susa",
+    "finish": "Ku heta",
+    "friends": "Vanghana",
+    "google": "Google",
+    "home": "Ekaya",
+    "loading": "Ku layicha...",
+    "map": "Mepe",
+    "notNow": "A hi sweswi",
+    "remove": "Susa",
+    "retry": "Ringeta nakambe",
+    "retrying": "Ku ringeta nakambe",
+    "save": "Hlayisa",
+    "selected": "Ku hlawuriwile",
+    "send": "Rhumela",
+    "settings": "Swiyimiso",
+    "skip": "Tlula",
+    "skipForNow": "Tlula sweswi",
+    "skipTutorial": "Tlula dyondzo",
+    "sos": "SOS",
+    "unknown": "A swi tiviwi",
+    "user": "VeryLoving mutirhisi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ririmi",
+    "subtitle": "Hlawula ririmi leri tirhisiweke eka app hinkwayo.",
+    "system": "Ku tiveka ka sisiteme",
+    "search": "Ku lavisisa tindzimi",
+    "noResults": "Ku hava tindzimi leti fambelanaka na ku lavisisa ka wena.",
+    "english": "Xitsonga",
+    "spanish": "Xipaniya",
+    "french": "Xifurwa",
+    "chineseSimplified": "Xichayina (Xi olovisiwa) ."
+  },
+  "phone": {
+    "label": "Nomboro ya riqingho",
+    "placeholder": "Nomboro ya riqingho",
+    "selectCountry": "Hlawula tiko kumbe xifundzha",
+    "searchCountry": "Lavisisa tiko, khodi, kumbe xirhangi xo bela riqingho",
+    "noCountries": "A ku na matiko lama fambelanaka na ku lavisisa ka wena.",
+    "countryButton": "Cinca tiko, sweswi %{country} ku engeteriwa %{callingCode}",
+    "inputAccessibility": "Nomboro ya riqingho ya %{country}",
+    "required": "Nghenisa nomboro ya riqingho.",
+    "tooShort": "Nomboro leyi ya riqingho yi komile ngopfu.",
+    "tooLong": "Nomboro leyi ya riqingho yi lehe ngopfu.",
+    "invalid": "Tsala nomboro ya riqingho leyi tirhaka ya tiko leri hlawuriweke.",
+    "valid": "Nomboro ya riqingho ya matiko ya misava leyi tirhaka"
+  },
+  "auth": {
+    "onboardingTagline": "Munghana wa vuhlayiseki bya munhu hi xiyexe eka minkarhi leyi nga exikarhi ka “Ndzi kahle” na “Ndzi lava mpfuno.”",
+    "createAccount": "Endla akhawunti",
+    "continueOnboarding": "Yana emahlweni na ku onboarding",
+    "createSubtitle": "Hlawula ndlela yo nghena ku sirhelela girafu ya wena ya vuhlayiseki.",
+    "phoneVerification": "Ku tiyisisiwa hi riqingho",
+    "sendCode": "Rhumela khodi",
+    "sendingCode": "Ku rhumela khodi...",
+    "verifyCode": "Tiyisisa khodi",
+    "sentTo": "Yi rhumeriwe eka %{phone}",
+    "yourPhone": "foni ya wena",
+    "verificationCode": "Khodi yo tiyisisa",
+    "verify": "Tiyisisa",
+    "verifying": "Ku tiyisisa...",
+    "invalidCode": "Nghenisa khodi ya ku tiyisisa.",
+    "signInFailedTitle": "Ku nghena swi kavanyetiwile",
+    "signInFailedMessage": "A hi swi kotanga ku hetisa ku nghena. Languta vuhlanganisi bya wena ivi u ringeta nakambe.",
+    "googleUnavailableTitle": "Google Ku nghena a swi kumeki",
+    "googleUnavailableMessage": "Ku tirhisa xiyenge xa nhluvukiso wa ndhawu. Native Google Ku nghena swi tirha eka ku aka ka nhluvukiso.",
+    "northStarTitle": "NorthStar vuhlalu",
+    "northStarSubtitle": "Pair sweswi kutani u ya emahlweni u yi engetela endzhaku.",
+    "northStarBody": "Xilo lexi ambariwaka xa VL01 xi nga hlohlotela ku khuluka ka vuhlayiseki hi tipompi na swikombiso swo leha swa ku tshikilela.",
+    "setupJewelry": "Ku veka swin’wetsin’wetsi",
+    "meetCapybear": "Hlangana na Capybear .",
+    "meetCapybearSubtitle": "Munghana wa wena wa vuhlayiseki wo olova emepeni na le ka tifoyini.",
+    "capybearBody": "Capybear yi nga pfuna hi movha wa le kaya, movha wa murindzi, movha wa xihatla, ku bela swivangelo, na nseketelo wa rito.",
+    "chooseVoice": "Hlawula rito",
+    "capybearReminder": "Capybear xitsundzuxo",
+    "remindersReady": "Switsundzuxo swo olova swi lunghekile."
+  },
+  "permissions": {
+    "locationTitle": "Vuhlayiseki bya ndhawu",
+    "locationSubtitle": "Yi tirhisiwa eka mepe, tindhawu ta khombo, ku fika loku hlayisekeke, na SOS mongo.",
+    "locationBody": "VeryLoving yi kombela ndhawu leswaku vahlayisi va ta twisisa laha mpfuneto wu nga lavekaka kona. U nga cinca leswi endzhaku eka Switirhisiwa.",
+    "allowLocation": "Pfumelela ndhawu",
+    "notificationsTitle": "Switsundzuxo swa vuhlayiseki",
+    "notificationsSubtitle": "Switiviso swi seketela ku nghena na swiendlakalo swa xihatla.",
+    "notificationsBody": "Hi tirhisa ntsena switiviso swa switsundzuxo swa vuhlayiseki, ku pfuxetiwa ka xihatla, na switsundzuxo leswi u swi pfumelelaka.",
+    "enableNotifications": "Endla leswaku switiviso swi tirha",
+    "locationRationaleTitle": "Ndhawu yi hlayisa mongo wa vuhlayiseki wu ri lowu kongomeke",
+    "locationRationaleMessage": "VeryLoving yi tirhisa ndhawu ya wena eka mepe wa vuhlayiseki, tindhawu ta khombo, ku avelana hi ku hatlisa, na SOS mongo. U nga cinca leswi endzhaku eka Switirhisiwa.",
+    "notificationsRationaleTitle": "Switsundzuxo swa vuhlayiseki swi lava switiviso",
+    "notificationsRationaleMessage": "VeryLoving yi rhumela switsundzuxo swo nghena, ku pfuxetiwa ka xihatla, na switsundzuxo swa vuhlayiseki leswi u swi pfumelelaka. A hi tirhisi switiviso swa swinavetiso.",
+    "microphoneRationaleTitle": "Microphone yi nyika matimba eka tifoyini ta vuhlayiseki",
+    "microphoneRationaleMessage": "VeryLoving yi tirhisa microphone ya wena ntsena loko u sungula AI munghana kumbe riqingho ra vuhlayiseki.",
+    "bluetoothRationaleTitle": "Bluetooth yi hlanganisa wearable ya wena",
+    "bluetoothRationaleMessage": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na NorthStar vuhlalu, ku hlaya xiyimo xa vuhlanganisi, na ku hlohlotela ku khuluka ka vuhlayiseki ku suka eka leswi ambariwaka.",
+    "cameraRationaleTitle": "Khamera i ya ku hlawula",
+    "cameraRationaleMessage": "VeryLoving yi tirhisa khamera ntsena loko u hlawula ku teka xifaniso xa phurofayili kumbe ku avelana xifaniso xa vuhlayiseki."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving yi hlayisa ku khuluka loku ku kumeka ku suka eka Switirhisiwa na dashboard.",
+    "chooseVoiceTitle": "Hlawula rito ra wena",
+    "chooseVoiceSubtitle": "Hlawula rito ra munghana leri titwaka ri hlayisekile swinene ku ri twa.",
+    "homeTitle": "Mode ya le kaya",
+    "homeSubtitle": "Ku vekiwa tihlo hi ku rhula eka vuhlayiseki bya siku na siku.",
+    "guardianTitle": "Mode ya murindzi",
+    "guardianSubtitle": "Avela mongo na vanhu lava tshembekaka.",
+    "emergencyTitle": "Mode ya xihatla",
+    "emergencySubtitle": "Tipompi ta ntlhanu ti nga tlakuka ku ya eka SOS na switsundzuxo swa murindzi.",
+    "excuseTitle": "Foni yo rivalela",
+    "excuseSubtitle": "Endla xivangelo xo saseka xo siya xiyimo lexi nga nyawuriki.",
+    "safetyCallTitle": "Foni ya vuhlayiseki",
+    "safetyCallSubtitle": "Sungula riqingho ra munghana wa nkarhi wa xiviri loko u lava nseketelo.",
+    "practiceTitle": "Xifaniso xo titoloveta",
+    "practiceSubtitle": "Ringeta ku khuluka ka vuhlayiseki eka demo ya ntshikelelo wa le hansi."
+  },
+  "jewelry": {
+    "pairTitle": "Mpatswa NorthStar .",
+    "pairSubtitle": "Hlayisa vuhlalu ekusuhi loko u ri karhi u skena.",
+    "scan": "Skena ku kuma switirhisiwa",
+    "scanning": "Ku skena ekusuhi na...",
+    "noDevices": "Ku hava switirhisiwa swa NorthStar swa le kusuhi leswi kumiweke ku fikela sweswi.",
+    "scanStartFailed": "Bluetooth ku skena a ku swi kotanga ku sungula. Hi kombela u ringeta nakambe.",
+    "scanFailed": "A hi kumanga vuhlalu bya le kusuhi. Languta Bluetooth, hlayisa NorthStar ekusuhi, kutani u ringeta nakambe.",
+    "scanAccessFailed": "Bluetooth ku skena a ku swi kotanga ku sungula. Languta Bluetooth mfikelelo kutani u ringeta nakambe.",
+    "permissionDenied": "Mfikelelo wa xitirhisiwa xa le kusuhi wu timiwile. Pfumelela Bluetooth ku nghena eka Switirhisiwa, kutani u ringeta nakambe.",
+    "connectTimeout": "NorthStar swi teke nkarhi wo leha swinene ku hlanganisa. Yi tshinete ekusuhi ivi u ringeta nakambe.",
+    "connectFailed": "A hi swi kotanga ku hlanganisa na NorthStar. Languta leswaku yi chajiwe naswona yi le kusuhi, kutani u ringeta nakambe.",
+    "emptyTitle": "A ku na switirhisiwa swa le kusuhi ku fikela sweswi",
+    "emptyMessage": "Hlayisa NorthStar yi chajiwile naswona yi ri ekusuhi na riqingho leri, kutani u tlhela u skena.",
+    "searchingMessage": "U lava switirhisiwa swa NorthStar ekusuhi..."
+  },
+  "home": {
+    "subtitle": "Dashboard ya mutirhisani wa vuhlayiseki",
+    "modeStatus": "%{mode} XIYIMO XA LE HENHLA",
+    "companionReady": "%{name} yi lunghekile",
+    "readyBody": "Rito, mepe, vuhlalu, na vahlayisi swi le kule hi pompi yin’we.",
+    "safetyCall": "Foni ya vuhlayiseki",
+    "northStarDevice": "NorthStar xitirhisiwa",
+    "deviceConnected": "%{name} ku hlanganisiwile · %{battery}%",
+    "noDevice": "Ku hava xitirhisiwa lexi hlanganisiweke",
+    "manageDevice": "Lawula xitirhisiwa",
+    "mode": "Mode",
+    "modes": {
+      "home": "Ekaya",
+      "guardian": "Murindzi",
+      "emergency": "Xiyimo xa xihatla"
+    }
+  },
+  "map": {
+    "finding": "Ku kuma ndhawu ya wena...",
+    "retry": "Ringeta ndhawu nakambe",
+    "title": "Mepe wa vuhlayiseki",
+    "previewSubtitle": "Expo Go xikombiso xa le mahlweni; Mapbox yi hundzisela eka ku aka ka nhluvukiso.",
+    "preview": "Ku langutiwa ka mepe",
+    "risk": "Khombo: %{risk} · Radius %{radius}m",
+    "refresh": "Ndhawu yo pfuxeta",
+    "refreshing": "Ku kuma ndhawu...",
+    "updateFailed": "A hi swi kotanga ku pfuxeta ndhawu ya wena. Hi kombela u ringeta nakambe.",
+    "notRequested": "Mfikelelo wa ndhawu a wu komberiwanga. U nga yi pfumelela endzhaku ku suka eka Switirhisiwa.",
+    "permissionOff": "Ku nghena ka ndhawu ku timiwile. Yi pfumelele eka Switirhisiwa leswaku yi veka mepe wa vuhlayiseki exikarhi eka wena.",
+    "timeout": "Ndhawu ya wena yi teka nkarhi wo leha ku tlula lowu a wu languteriwile. Suka kun’wana hi xikombiso lexi nga erivaleni ivi u ringeta nakambe.",
+    "savedTitle": "Tindzhawu leti hlayisiweke",
+    "savedEmptyTitle": "A ku na tindhawu leti hlayisiweke ku fikela sweswi",
+    "savedEmptyMessage": "Tindzhawu leti tshembekaka leti u ti hlayisaka ti ta humelela laha leswaku u ta kota ku ti fikelela hi ku hatlisa.",
+    "zones": {
+      "crowding": "Ku tala ka vanhu nivusiku swinene",
+      "lowLighting": "Ndhawu ya ku voninga ka le hansi"
+    },
+    "risks": {
+      "low": "ehansi",
+      "medium": "xikarhi",
+      "high": "hi le henhla"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Ku hlanganisa...",
+    "offlineCompanion": "Mufambisi wa le handle ka inthanete",
+    "offline": "Ehandle ka inthanete",
+    "connected": "Ku hlanganisiwa",
+    "interrupted": "Nhlanganiso wu kavanyetiwile",
+    "ready": "U lunghekele ku hlanganisa",
+    "connectingSecurely": "Ku hlanganisa hi ndlela leyi sirhelelekeke eka munghana wa wena wa rito...",
+    "messagesWaiting": {
+      "one": "%{count} rungula ri yimele ku rhumeriwa",
+      "other": "%{count} marungula lama yimeleke ku rhumeriwa"
+    },
+    "useOffline": "Tirhisa munghana wa le handle ka inthanete",
+    "reconnect": "Tihlanganise nakambe na rito AI",
+    "typePlaceholder": "Thayipa loko ku vulavula swi tika",
+    "endCall": "End call",
+    "startCall": "Sungula ku bela riqingho",
+    "emptyTitle": "Bulo ra wena ri sungula laha",
+    "emptyMessage": "Sungula riqingho kutani u thayipa rungula loko u lunghekile."
+  },
+  "chat": {
+    "waiting": "Ku yimela ku hlanganisiwa",
+    "notSent": "Rihungu a ri rhumeriwanga.",
+    "retryAccessibility": "Ringeta nakambe ku rhumela rungula"
+  },
+  "history": {
+    "clearTitle": "Matimu ya mbulavurisano lama nga erivaleni?",
+    "clearMessage": "Leswi swi susa marungula ya AI ya munghana lama hlayisiweke eka xitirhisiwa lexi.",
+    "deleteTitle": "Susa mbulavurisano lowu?",
+    "cannotUndo": "Leswi a swi nge tlheriseriwi endzhaku.",
+    "title": "Matimu ya mbulavurisano",
+    "subtitle": "AI marungula ya munghana ya hlayisiwile eka xitirhisiwa lexi.",
+    "empty": "A ku na mabulo lama hlayisiweke ku fikela sweswi.",
+    "emptyTitle": "A ku na mabulo ku fikela sweswi",
+    "emptyMessage": "Mabulo ya wena ya AI ya munghana ya ta humelela laha endzhaku ka riqingho ra wena ro sungula.",
+    "loadFailed": "A hi swi kotanga ku layicha matimu ya mbulavurisano. Hi kombela u ringeta nakambe.",
+    "clearFailed": "A hi swi kotanga ku basisa matimu ya mbulavurisano. Hi kombela u ringeta nakambe.",
+    "deleteFailed": "A hi swi kotanga ku susa mbulavurisano wolowo. Hi kombela u ringeta nakambe.",
+    "aiCompanion": "AI munghana",
+    "resume": "Ku sungula nakambe",
+    "clearAll": "Hluvula matimu hinkwawo",
+    "roles": {
+      "assistant": "munghana na yena",
+      "user": "wena"
+    }
+  },
+  "voices": {
+    "title": "Marito ya mina ya riqingho ra vuhlayiseki",
+    "subtitle": "Hlawula rito ra munghana leri titwaka ri ri kahle ku ri twa.",
+    "test": "Xikambelo xa rito",
+    "stop": "Xikombiso xo yima",
+    "selectionFailedTitle": "Nhlawulo a wu hlayisiwanga",
+    "selectionFailedMessage": "Hi kombela u ringeta ku hlawula rito nakambe.",
+    "sampleFailedTitle": "Xikombiso a xi kumeki",
+    "sampleFailedMessage": "Xikombiso lexi xa rito a xi nga tlangiwi. Hi kombela u ringeta nakambe.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ku olova, ku rhula, ku va ehansi"
+      },
+      "bestie": {
+        "name": "Bestie wa xisati",
+        "description": "ku vangama, ku tiyisisa, ku burisana"
+      },
+      "boyfriend": {
+        "name": "Mufana wa yena",
+        "description": "ku tiyimisela, ku va na rirhandzu, ku va kona"
+      },
+      "muscleMan": {
+        "name": "Mutirhi wa misiha",
+        "description": "ku titshemba, ku sirhelela, ku hlohlotela"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Rito",
+    "changeVoice": "Cinca rito",
+    "showCompanion": "Kombisa munghana",
+    "offlineMode": "Mode ya le handle ka inthanete",
+    "offlineModeSubtitle": "Tirhisa tinhlamulo ta vanghana leti hlanganisiweke loko switifiketi swa netiweke kumbe Hume swi nga kumeki.",
+    "privacyData": "Vuhlayisi bya xihundla & data",
+    "privacyBody": "Rhumela ehandle kumbe ku susa datha ya laha kaya leyi hlayisiweke eka xitirhisiwa lexi.",
+    "preparingExport": "Ku lulamisela ku rhumela ematikweni mambe...",
+    "exportData": "Rhumela ehandle data ya mina",
+    "privacyPolicy": "Pholisi ya vuhlayiseki bya vuxokoxoko",
+    "deleting": "Ku susa...",
+    "deleteAll": "Susa datha hinkwayo ya laha kaya",
+    "deviceManagement": "Vulawuri bya switirhisiwa",
+    "emergencyContacts": "Vuxaka bya xihatla",
+    "signOut": "Tsayina ehandle",
+    "exportFailedTitle": "Ku rhumela ehandle swi tsandzekile",
+    "exportFailedMessage": "A wu swi koti ku rhumela ehandle data ya wena sweswi.",
+    "deleteConfirmTitle": "Susa datha hinkwayo ya laha kaya?",
+    "deleteConfirmMessage": "Leswi swi susa phurofayili ya wena, swiletelo, vuhlanganisi bya xihatla, matimu ya mbulavurisano, switsundzuxo swa mpfumelelo, na nkarhi wa vuhlayiseki bya laha kaya eka xitirhisiwa lexi.",
+    "deleteEverything": "Susa hinkwaswo",
+    "deleteFailedTitle": "Ku susiwa ku tsandzekile",
+    "deleteFailedMessage": "A swi koteki ku susa datha ya laha kaya sweswi.",
+    "linkFailed": "A swi koteki ku pfula xihlanganisi",
+    "sections": {
+      "language": "Ririmi",
+      "languageSubtitle": "Ririmi ra mpfumelelo wa vuhlanganisi na sisiteme",
+      "companion": "Munghana na yena",
+      "companionSubtitle": "Swihlawulekisi swa rito na swa le handle ka inthanete",
+      "deviceSafety": "Switirhisiwa na vuhlayiseki",
+      "deviceSafetySubtitle": "NorthStar, vahlayisi, na vahlanganisi va xihatla",
+      "privacy": "Vuhlayisi bya xihundla na datha",
+      "privacySubtitle": "Matimu, ku rhumela ematikweni mambe, ku susa, na pholisi",
+      "account": "Xibalo xa xibalo",
+      "accountSubtitle": "Xiyenge xa wena xa sweswi xa VeryLoving"
+    },
+    "updateFailedTitle": "Setting a yi hlayisiwanga",
+    "updateFailedMessage": "A hi swi kotanga ku hlayisa ku tsakela koloko. Hi kombela u ringeta nakambe.",
+    "signOutFailedTitle": "A nga swi kotanga ku huma",
+    "signOutFailedMessage": "Xiyenge xa wena xa ha tirha. Hi kombela u ringeta nakambe."
+  },
+  "contacts": {
+    "title": "Vuxaka bya xihatla",
+    "subtitle": "Vanhu lava tshembekaka lava kumekaka hi nkarhi wa ku khuluka ka vuhlayiseki.",
+    "addTitle": "Engetela vuhlanganisi bya xihatla",
+    "name": "Vito",
+    "namePlaceholder": "Vito ra vuhlanganisi",
+    "phone": "Nomboro ya riqingho yo tihlanganisa",
+    "add": "Engetela xihlanganisi",
+    "empty": "A ku na vuhlanganisi bya xihatla lebyi engeteriweke ku fikela sweswi.",
+    "emptyTitle": "A ku na vuhlanganisi bya xihatla ku fikela sweswi",
+    "emptyMessage": "Engetela munhu loyi u n’wi tshembaka leswaku a ta va a lunghekile loko ku khuluka ka vuhlayiseki ku n’wi lava.",
+    "removeTitle": "Susa %{name}?",
+    "removeMessage": "Munhu loyi a nge he humeleli eka ku khuluka ka wena ka xihatla.",
+    "nameRequired": "Tsala vito ra muhlanganisi.",
+    "saveFailedTitle": "Ku tihlanganisa a ku hlayisiwanga",
+    "saveFailedMessage": "A hi swi kotanga ku hlayisa vuhlanganisi lebyi. Languta vuxokoxoko ivi u ringeta nakambe.",
+    "removeFailedTitle": "Ku tihlanganisa a ku susiwa",
+    "removeFailedMessage": "A hi swi kotanga ku susa ku hlangana loku. Hi kombela u ringeta nakambe.",
+    "callAccessibility": "Fonela %{name} .",
+    "removeAccessibility": "Susa %{name} ."
+  },
+  "device": {
+    "title": "Vulawuri bya switirhisiwa",
+    "subtitle": "Lawula xitirhisiwa xa wena xa NorthStar.",
+    "connected": "Ku hlanganisiwile · %{battery}% betri",
+    "none": "Ku hava switirhisiwa leswi hlanganisiweke",
+    "disconnect": "Hluvula xitirhisiwa",
+    "connect": "Ku hlanganisa xitirhisiwa"
+  },
+  "friends": {
+    "title": "Vanghana",
+    "subtitle": "Vahlayisi, swikombelo, na girafu ya xihatla.",
+    "addDemo": "Engetela munghana wa demo",
+    "emptyTitle": "Xirhendzevutani xa wena xa vuhlayiseki a xi na nchumu",
+    "emptyMessage": "Vanghana na vahlayisi lava tshembekaka va ta humelela laha loko va engeteriwile.",
+    "newGuardian": "Murindzi lontshwa",
+    "statuses": {
+      "guardian": "Murindzi",
+      "pending": "Ku yimerile"
+    }
+  },
+  "emergency": {
+    "title": "Xiyimo xa xihatla SOS",
+    "subtitle": "Escalate ntsena loko u lava nseketelo wa xihatla.",
+    "body": "Leswi swi ta tivisa ku khuluka ka vuhlayiseki bya wena na ku lulamisela vuhlanganisi bya xihatla.",
+    "activate": "Ku endla leswaku SOS .",
+    "callCompanion": "Fonela AI munghana",
+    "notificationTitle": "SOS yi tirhisiwile",
+    "notificationBody": "Ku khuluka ka wena ka xihatla ku lunghekile.",
+    "readyTitle": "SOS swi lunghekile",
+    "callContact": "Fonela %{name}?",
+    "addContact": "Engetela xihlanganisi xa xihatla eka Switirhisiwa.",
+    "quickShareTitle": "Ku avelana hi ku hatlisa",
+    "quickShareMessage": "Stub yo avelana ndhawu yi lunghekile. Hlanganisa ndhawu yo hetelela ya ku avelana ka le ndzhaku ku rhumela swihlanganisi leswi hanyaka."
+  },
+  "quickShare": {
+    "title": "Ku avelana hi ku hatlisa",
+    "subtitle": "Ku khuluka ka ku avelana ka ndhawu ku lunghekile."
+  },
+  "capybearTap": {
+    "title": "Capybear khoma",
+    "subtitle": "Tikhoma kambirhi NorthStar ya wena ku hoxa orenji ya vuhlayiseki.",
+    "body": "Ndlela ya swikombiso yi lulamerile ku endla tiwayiri ta xiendlakalo xa BLE."
+  },
+  "debug": {
+    "title": "VeryLoving tluka ra ku lulamisa swihoxo",
+    "subtitle": "Ndlela ya nhluvukiso ntsena."
+  },
+  "errors": {
+    "voiceOffline": "U vonaka u nga ri eka inthanete. Rungula ra wena ri ta rhumeriwa loko u tlhela u hlanganisa.",
+    "voiceQueued": "Rihungu ri hlayisiwile. Yi ta rhumeriwa loko munghana wa rito a tlhela a hlanganisa.",
+    "voiceRetrying": "Ku ringeta ku rhumela rungula ra wena nakambe...",
+    "voiceConnecting": "Ku hlanganisa hi ndlela leyi sirhelelekeke eka munghana wa wena wa rito...",
+    "microphone": "Mfikelelo wa microphone wa laveka eka ku bela riqingho hi rito. U nga yi pfumelela eka Switirhisiwa, kutani u thayipa rungula ematshan’weni ya sweswo.",
+    "billing": "Mufambisi wa rito wa inthanete a nga kumeki swa xinkarhana. U nga ya emahlweni na munghana wa le handle ka inthanete.",
+    "authentication": "Mufambisi wa rito a nga swi kotanga ku tiyisisa xiyenge lexi. Nghena nakambe kutani u tirhisa munghana wa le handle ka inthanete sweswi.",
+    "timeout": "Munghana wa rito u teke nkarhi wo leha swinene ku hlamula. Languta vuhlanganisi bya wena ivi u ringeta nakambe.",
+    "network": "A hi swi kotanga ku fikelela munghana wa rito. Languta vuhlanganisi bya wena, kutani u ringeta nakambe kutani u ya emahlweni u nga ri eka inthanete.",
+    "genericVoice": "Xin’wana xi kavanyete riqingho ra rito. Ringeta nakambe, kutani u ya emahlweni na munghana loyi a nga riki eka inthanete."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ku rhumeriwa ka datha"
+  },
+  "notifications": {
+    "channelName": "Switsundzuxo swa vuhlayiseki"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving yi lava mfikelelo wa microphone ku hlayiseka na AI ku bela riqingho ra munghana.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving yi tirhisa ndhawu ya wena eka mepe wa vuhlayiseki na switirhisiwa swa vuhlayiseki swa le kusuhi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving yi tirhisa ndhawu ya wena ku seketela ku khuluka ka ku fika loku hlayisekeke na ka xihatla.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving yi tirhisa ndhawu ya le ndzhaku ya ku fika loku hlayisekeke na swihlawulekisi swa ndhawu ya khombo ya le kusuhi.",
+      "NSCameraUsageDescription": "VeryLoving yi tirhisa khamera ntsena loko u hlawula ku teka xifaniso xa profile kumbe xa vuhlayiseki.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving yi tirhisa layiburari ya wena ya swifaniso ntsena loko u hlawula xifaniso xa phurofayili kumbe xa vuhlayiseki.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

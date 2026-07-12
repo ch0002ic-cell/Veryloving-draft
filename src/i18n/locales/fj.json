@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Kuria",
+    "apple": "Apple",
+    "back": "Lesu",
+    "call": "Veikacivi",
+    "cancel": "Bokoci",
+    "clear": "Vakamatatataka",
+    "close": "Sogota",
+    "connect": "Semati",
+    "connecting": "Veisemati...",
+    "continue": "Tomana",
+    "delete": "Bokoca",
+    "finish": "Vakacavara",
+    "friends": "iTokani",
+    "google": "Google",
+    "home": "Vale",
+    "loading": "Vakavodoki...",
+    "map": "Mape",
+    "notNow": "Sega ena gauna oqo",
+    "remove": "Vagalalataki",
+    "retry": "Tovolea tale",
+    "retrying": "Tovolea tale",
+    "save": "Vakabula",
+    "selected": "Digitaki",
+    "send": "Vakauta",
+    "settings": "iTuvatuva",
+    "skip": "Levea",
+    "skipForNow": "Levea ena gauna oqo",
+    "skipTutorial": "Levea na tutorial",
+    "sos": "SOS",
+    "unknown": "Sega ni kilai",
+    "user": "VeryLoving vakayagataka",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Vosa",
+    "subtitle": "Digitaka na vosa e vakayagataki ena app taucoko.",
+    "system": "Lalai ni ivakarau",
+    "search": "Vosa ni vakasaqaqara",
+    "noResults": "E sega ni dua na vosa e tautauvata kei na nomu vakasaqaqara.",
+    "english": "Vakavalagi",
+    "spanish": "Vaka-Sipeni",
+    "french": "Varanise",
+    "chineseSimplified": "Jaina (Vakarawarawataki)"
+  },
+  "phone": {
+    "label": "Naba ni talevoni",
+    "placeholder": "Naba ni talevoni",
+    "selectCountry": "Digitaka na matanitu se iwasewase",
+    "searchCountry": "Vakasaqara na matanitu, nabavuni, se qiriti taumada",
+    "noCountries": "E sega ni dua na matanitu e tautauvata kei na nomu vakasaqaqara.",
+    "countryButton": "Veisautaka na vanua, %{country} ena gauna oqo kei na %{callingCode}",
+    "inputAccessibility": "Naba ni talevoni ni %{country}",
+    "required": "Vakacuruma e dua na naba ni talevoni.",
+    "tooShort": "Sa rui lekaleka na naba ni talevoni oqo.",
+    "tooLong": "Sa rui balavu na naba ni talevoni oqo.",
+    "invalid": "Vakacuruma e dua na naba ni talevoni e bula tiko me baleta na matanitu sa digitaki.",
+    "valid": "Naba bula ni talevoni ni veiyasai vuravura"
+  },
+  "auth": {
+    "onboardingTagline": "E dua na itokani ni veitaqomaki yadudua ena maliwa ni \"Au vinaka tiko\" kei na \"Au gadreva na veivuke.\"",
+    "createAccount": "Tauyavutaka na akaude",
+    "continueOnboarding": "Tomana na onboarding",
+    "createSubtitle": "Digitaka e dua na iwalewale ni curu me taqomaki kina na nomu droini ni tataqomaki.",
+    "phoneVerification": "Veivakadeitaki ena talevoni",
+    "sendCode": "Vakauta na nabavuni",
+    "sendingCode": "Vakauta na nabavuni...",
+    "verifyCode": "Vakadeitaka na nabavuni",
+    "sentTo": "Vakau ki na %{phone}",
+    "yourPhone": "nomu talevoni",
+    "verificationCode": "Nabavuni ni veivakadeitaki",
+    "verify": "Vakadeitaka",
+    "verifying": "Vakadeitaki...",
+    "invalidCode": "Vakacuruma na nabavuni ni veivakadeitaki.",
+    "signInFailedTitle": "Takosovi na curu yani",
+    "signInFailedMessage": "Keitou sega ni rawa ni vakacavara na curu ki loma. Raica na nomu isema ka tovolea tale.",
+    "googleUnavailableTitle": "Google Sega ni tiko na Curu Yani",
+    "googleUnavailableMessage": "Vakayagataki ni dua na soqoni ni veivakatorocaketaki ena noda vanua. Na Native Google Sign-In e cakacaka ena dua na tarai cake ni veivakatorocaketaki.",
+    "northStarTitle": "NorthStar iyaya",
+    "northStarSubtitle": "Veisaqasaqa ena gauna oqo se tomana ka qai vakuria vakamalua.",
+    "northStarBody": "Na VL01 wearable e rawa ni vakavuna na drodro ni veitaqomaki ena taps kei na ivakatakilakila balavu.",
+    "setupJewelry": "Vakarautaka na iukuuku",
+    "meetCapybear": "Sotavi Capybear",
+    "meetCapybearSubtitle": "Nomu itokani malumu ni veitaqomaki ena mape kei na veikacivi.",
+    "capybearBody": "Capybear rawa ni veivuke ena ivakarau ni vale, ivakarau ni ivakatawa, ivakarau ni leqa tubukoso, veikacivi ni veiulubale, kei na veitokoni ni domo.",
+    "chooseVoice": "Digitaka e dua na domo",
+    "capybearReminder": "Capybear ivakananumi",
+    "remindersReady": "Sa vakarau tu na veivakananumi malumu."
+  },
+  "permissions": {
+    "locationTitle": "Taqomaki ni vanua",
+    "locationSubtitle": "Vakayagataki me baleta na mape, vanua rerevaki, taqomaki ni yaco mai, kei na SOS ni vanua.",
+    "locationBody": "VeryLoving kerea na vanua me rawa ni ra kila kina na dauveisusu na vanua e gadrevi kina na veivuke. E rawa ni o veisautaka oqo ena dua na gauna mai muri ena iTuvatuva.",
+    "allowLocation": "Vakatara na vanua",
+    "notificationsTitle": "Qaqarauni ni tataqomaki",
+    "notificationsSubtitle": "Na notisi e tokona na jeke kei na leqa tubukoso.",
+    "notificationsBody": "Keitou vakayagataka ga na notisi me baleta na veivakauqeti ni tataqomaki, vakavoui ni leqa tubukoso, kei na veivakananumi o vakayagataka.",
+    "enableNotifications": "Vakatara na notisi",
+    "locationRationaleTitle": "Na vanua e dodonu kina na itukutuku ni veitaqomaki",
+    "locationRationaleMessage": "VeryLoving vakayagataka na vanua o tiko kina me baleta na mape ni veitaqomaki, vanua rerevaki, wasei totolo, kei na itukutuku SOS. E rawa ni o veisautaka oqo ena dua na gauna mai muri ena iTuvatuva.",
+    "notificationsRationaleTitle": "Gadrevi na notisi ni veivakasalataki ni tataqomaki",
+    "notificationsRationaleMessage": "VeryLoving vakauta na ivakananumi ni curu, vakavoui ni leqa tubukoso, kei na veivakauqeti ni tataqomaki o vakayagataka. Eda sega ni vakayagataka na notisi me baleta na ads.",
+    "microphoneRationaleTitle": "Microphone kaukauwa na veikacivi ni veitaqomaki",
+    "microphoneRationaleMessage": "VeryLoving vakayagataka ga na nomu microphone ni ko tekivuna e dua na AI na itokani se veitaqomaki.",
+    "bluetoothRationaleTitle": "Bluetooth semata na nomu wearable",
+    "bluetoothRationaleMessage": "VeryLoving vakayagataka na Bluetooth me veisotari kei na NorthStar na iyaya ni iukuuku, wilika na ituvaki ni isema ka vakavuna na drodro ni veitaqomaki mai na wearable.",
+    "cameraRationaleTitle": "E digitaki na itaba",
+    "cameraRationaleMessage": "VeryLoving vakayagataka ga na itaba ni o digitaka mo taura e dua na itaba se wasea e dua na iyaloyalo ni veitaqomaki."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving maroroya na drodro oqo mai na Settings kei na dashboard.",
+    "chooseVoiceTitle": "Digitaka na domomu",
+    "chooseVoiceSubtitle": "Digitaka na domo ni itokani e taqomaki vinaka duadua mo rogoca.",
+    "homeTitle": "Ivakarau ni vale",
+    "homeSubtitle": "Vakadikevi vakamalua me baleta na veitaqomaki e veisiga.",
+    "guardianTitle": "Ivakarau ni ivakatawa",
+    "guardianSubtitle": "Wasea na itukutuku kei ira na tamata nuitaki.",
+    "emergencyTitle": "Ivakarau ni leqa tubukoso",
+    "emergencySubtitle": "E rawa ni toso cake na lima na tavi ki na SOS kei na veivakayadrati ni ivakatawa.",
+    "excuseTitle": "Kaci ni iulubale",
+    "excuseSubtitle": "Bulia e dua na vuna vinaka mo biuta kina e dua na ituvaki dredre.",
+    "safetyCallTitle": "Kaci ni veitaqomaki",
+    "safetyCallSubtitle": "Tekivuna e dua na veikacivi ni itokani ena gauna dina ni o gadreva na veitokoni.",
+    "practiceTitle": "Vanua ni vakatovotovo",
+    "practiceSubtitle": "Tovolea na drodro ni veitaqomaki ena dua na demo low-pressure."
+  },
+  "jewelry": {
+    "pairTitle": "Pair NorthStar",
+    "pairSubtitle": "Maroroya voleka na iyaya ni ko vakadikevi tiko.",
+    "scan": "Vakadikeva na gacagaca",
+    "scanning": "Vakadidike voleka...",
+    "noDevices": "Se bera ni kune e dua na gacagaca NorthStar voleka.",
+    "scanStartFailed": "Bluetooth sega ni rawa ni tekivu na scan. Yalovinaka tovolea tale.",
+    "scanFailed": "Keitou a sega ni kunea rawa na iyaya voleka. Dikeva Bluetooth, NorthStar toka vakavoleka, ka tovolea tale.",
+    "scanAccessFailed": "Bluetooth sega ni rawa ni tekivu na scan. Raica Bluetooth curu ka tovolea tale.",
+    "permissionDenied": "Sa bokoci na curu ki na misini voleka. Vakatara Bluetooth curu ki na iTuvatuva, qai tovolea tale.",
+    "connectTimeout": "NorthStar taura e dua na gauna balavu me semati kina. Tosoya voleka ka tovolea tale.",
+    "connectFailed": "Keitou a sega ni rawa ni sema ki na NorthStar. Raica ni sa saumi ka voleka, qai tovolea tale.",
+    "emptyTitle": "Se bera ni dua na gacagaca volekata",
+    "emptyMessage": "Vakasinaiti NorthStar ka volekata na talevoni oqo, qai scan tale.",
+    "searchingMessage": "Vakasaqara NorthStar gacagaca voleka..."
+  },
+  "home": {
+    "subtitle": "Dashboard ni veitokani ni veitaqomaki",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} sa vakarau tu",
+    "readyBody": "Domo, mape, iukuuku, kei na ivakatawa e dua na tabaki yawa.",
+    "safetyCall": "Kaci ni veitaqomaki",
+    "northStarDevice": "NorthStar gacagaca",
+    "deviceConnected": "%{name} semati · %{battery}%",
+    "noDevice": "Sega ni dua na misini e semati",
+    "manageDevice": "Vakatulewataka na misini",
+    "mode": "iVakarau",
+    "modes": {
+      "home": "Vale",
+      "guardian": "iVakatawa",
+      "emergency": "Leqa tubukoso"
+    }
+  },
+  "map": {
+    "finding": "Kunea na vanua o tiko kina...",
+    "retry": "Tovolea tale na vanua",
+    "title": "Mape ni veitaqomaki",
+    "previewSubtitle": "Expo Go preview; Mapbox renders ena dua na tarai cake ni veivakatorocaketaki.",
+    "preview": "Preview ni mape",
+    "risk": "Ririkotaki: %{risk} · Radius %{radius}m",
+    "refresh": "Vakavouya na vanua",
+    "refreshing": "Kunea na vanua...",
+    "updateFailed": "Keitou sega ni rawa ni vakavouya na vanua o tiko kina. Yalovinaka tovolea tale.",
+    "notRequested": "A sega ni kerei na curu ki na vanua. E rawa ni o vakayagataka e muri mai na Settings.",
+    "permissionOff": "Sa bokoca na vanua ni curu. Vakatara ena Settings me vakadonuya vei iko na mape ni veitaqomaki.",
+    "timeout": "E taura e dua na gauna balavu mai na ka e namaki tiko na nomu vanua. Toso ki na dua na vanua e matata cake na sikinala ka tovolea tale.",
+    "savedTitle": "Vanua maroroi",
+    "savedEmptyTitle": "Se bera ni dua na vanua maroroi",
+    "savedEmptyMessage": "Na veivanua nuitaki o maroroya ena laurai eke me rawa ni curu vakatotolo.",
+    "zones": {
+      "crowding": "Osooso ena bogi levu",
+      "lowLighting": "Vanua ni cina lailai"
+    },
+    "risks": {
+      "low": "E ra",
+      "medium": "Vakarauta",
+      "high": "cecere"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Veisemati...",
+    "offlineCompanion": "Itokani ena offline",
+    "offline": "Sega ni taudaku",
+    "connected": "Veisemati",
+    "interrupted": "Tamusuki na isema",
+    "ready": "Vakarau mo sema",
+    "connectingSecurely": "Semati vakavinaka ki na nomu itokani ni domo...",
+    "messagesWaiting": {
+      "one": "%{count} na itukutuku e wawa tu me vakau",
+      "other": "%{count} na itukutuku e wawa tu me vakau"
+    },
+    "useOffline": "Vakayagataka na itokani ena offline",
+    "reconnect": "Semati tale ki na domo AI",
+    "typePlaceholder": "Taipataka kevaka e dredre na vosa",
+    "endCall": "Cava na veikacivi",
+    "startCall": "Tekivu na veikacivi",
+    "emptyTitle": "Na nomu veivosaki e tekivu eke",
+    "emptyMessage": "Tekivuna na qiri se taipataka e dua na itukutuku ni ko sa vakarau tu."
+  },
+  "chat": {
+    "waiting": "Waraka tiko na isema",
+    "notSent": "Sega ni vakau na itukutuku.",
+    "retryAccessibility": "Tovolea tale me vakauta na itukutuku"
+  },
+  "history": {
+    "clearTitle": "E matata na itukutuku ni veivosaki?",
+    "clearMessage": "Oqo ena vagalalataki kina na itukutuku maroroi AI veitokani mai na gacagaca oqo.",
+    "deleteTitle": "Bokoca na veivosaki oqo?",
+    "cannotUndo": "Oqo e sega ni rawa ni vakasukai tale.",
+    "title": "iTukutuku ni veivosaki",
+    "subtitle": "AI na itukutuku veitokani e maroroi tu ena misini oqo.",
+    "empty": "Se bera ni maroroi na veivosaki.",
+    "emptyTitle": "Se bera ni veivosaki",
+    "emptyMessage": "Na nomudrau veivosaki AI veitokani ena basika eke ni oti na imatai ni nomu qiri.",
+    "loadFailed": "Keitou sega ni rawa ni vakavodoka na itukutuku ni veivosaki. Yalovinaka tovolea tale.",
+    "clearFailed": "Keitou sega ni rawa ni vakamatatataka na itukutuku ni veivosaki. Yalovinaka tovolea tale.",
+    "deleteFailed": "Keitou sega ni rawa ni bokoca na veivosaki oya. Yalovinaka tovolea tale.",
+    "aiCompanion": "AI itokani",
+    "resume": "Tomana tale",
+    "clearAll": "Vagalalataka kece na itukutuku makawa",
+    "roles": {
+      "assistant": "itokani",
+      "user": "o iko"
+    }
+  },
+  "voices": {
+    "title": "Na domoqu ni kaci ni veitaqomaki",
+    "subtitle": "Digitaka na domo ni itokani e dodonu me rogoca.",
+    "test": "Vakatovolei na domo",
+    "stop": "Tarova na sabolo",
+    "selectionFailedTitle": "Sega ni maroroi na digidigi",
+    "selectionFailedMessage": "Yalovinaka tovolea mo digitaka tale na domo.",
+    "sampleFailedTitle": "Sega ni tiko na sabolo",
+    "sampleFailedMessage": "A sega ni rawa ni vakatagitaki na sabolo ni domo oqo. Yalovinaka tovolea tale.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "malumu, malumu, vakadeitaki"
+      },
+      "bestie": {
+        "name": "Vinaka duadua",
+        "description": "rarama, veivakadeitaki, veivosaki"
+      },
+      "boyfriend": {
+        "name": "Na itau tagane",
+        "description": "tudei, dauloloma, ena gauna oqo"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "nuidei, veitaqomaki, veivakauqeti"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Domo",
+    "changeVoice": "Veisautaka na domo",
+    "showCompanion": "Vakaraitaka na itokani",
+    "offlineMode": "Ivakarau ni offline",
+    "offlineModeSubtitle": "Vakayagataka na isaunitaro ni itokani ena gauna e sega ni tiko kina na ilawalawa vakacakacaka se Hume na kena ivakatakilakila.",
+    "privacyData": "Na iTukutuku kei na iTukutuku",
+    "privacyBody": "Vakauta se bokoca na itukutuku ni vanua e maroroi tu ena misini oqo.",
+    "preparingExport": "Vakarautaki ni veikauyaki...",
+    "exportData": "Vakauta na noqu itukutuku",
+    "privacyPolicy": "Lawatu ni veitaqomaki",
+    "deleting": "Bokoci...",
+    "deleteAll": "Bokoca kece na itukutuku ni noda vanua",
+    "deviceManagement": "Qaravi ni gacagaca",
+    "emergencyContacts": "Veitaratara ena leqa tubukoso",
+    "signOut": "Saini tani",
+    "exportFailedTitle": "A sega ni rawa na vakau yani",
+    "exportFailedMessage": "Sega ni rawa ni vakauta na nomu itukutuku ena gauna sara ga oqo.",
+    "deleteConfirmTitle": "Bokoca kece na itukutuku ni noda vanua?",
+    "deleteConfirmMessage": "Oqo ena kauta laivi na nomu itukutuku, ituvaki, veitaratara ena leqa tubukoso, itukutuku ni veivosaki, veivakananumi ni veivakadonui, kei na soqoni ni auth ni vanua mai na gacagaca oqo.",
+    "deleteEverything": "Bokoca na veika kece",
+    "deleteFailedTitle": "Sega ni rawa na bokoci",
+    "deleteFailedMessage": "Sega ni rawa ni bokoca na itukutuku ni noda vanua ena gauna sara ga oqo.",
+    "linkFailed": "Sega ni rawa ni dolava na isema",
+    "sections": {
+      "language": "Vosa",
+      "languageSubtitle": "Vosa ni veivakadonui ni veitaratara kei na ivakarau",
+      "companion": "iTokani",
+      "companionSubtitle": "Domo kei na offline",
+      "deviceSafety": "Na iyaya kei na veitaqomaki",
+      "deviceSafetySubtitle": "NorthStar, dauveisusu, kei na veitaratara ena leqa tubukoso",
+      "privacy": "Na itataqomaki kei na itukutuku",
+      "privacySubtitle": "iTukutuku, vakau yani, bokoci kei na lawatu",
+      "account": "Akaude",
+      "accountSubtitle": "Na nomu soqoni ni VeryLoving tiko oqo"
+    },
+    "updateFailedTitle": "Sega ni maroroi na ituvaki",
+    "updateFailedMessage": "Eda sega ni rawa ni maroroya na digidigi oya. Yalovinaka tovolea tale.",
+    "signOutFailedTitle": "Sega ni rawa ni curu tani",
+    "signOutFailedMessage": "E se bulabula tiko ga na nomu soqoni. Yalovinaka tovolea tale."
+  },
+  "contacts": {
+    "title": "Veitaratara ena leqa tubukoso",
+    "subtitle": "O ira na tamata nuitaki era tiko ena gauna ni veitaqomaki.",
+    "addTitle": "Kuria na veitaratara ni leqa tubukoso",
+    "name": "Yaca",
+    "namePlaceholder": "Yaca ni veitaratara",
+    "phone": "Naba ni talevoni ni veitaratara",
+    "add": "Kuria na veitaratara",
+    "empty": "Se bera ni vakuri e dua na veitaratara ni leqa tubukoso.",
+    "emptyTitle": "Se bera ni dua na veitaratara ena leqa tubukoso",
+    "emptyMessage": "Kuria e dua o nuitaka me rawa ni ra tu vakarau ena gauna e gadrevi kina e dua na sala ni veitaqomaki.",
+    "removeTitle": "Vagalalataki %{name}?",
+    "removeMessage": "Na tamata oqo ena sega tale ni basika ena nomu sala ni leqa tubukoso.",
+    "nameRequired": "Vakacuruma na yaca ni veitaratara.",
+    "saveFailedTitle": "Sega ni maroroi na veitaratara",
+    "saveFailedMessage": "Keitou a sega ni rawa ni maroroya na veitaratara oqo. Raica na kena matailalai ka tovolea tale.",
+    "removeFailedTitle": "Sega ni vagalalataki na veitaratara",
+    "removeFailedMessage": "Keitou a sega ni rawa ni kauta laivi na veitaratara oqo. Yalovinaka tovolea tale.",
+    "callAccessibility": "Qiriti %{name}",
+    "removeAccessibility": "Vagalalataki %{name}"
+  },
+  "device": {
+    "title": "Qaravi ni gacagaca",
+    "subtitle": "Vakatulewataka na nomu NorthStar gacagaca.",
+    "connected": "Veisemati · %{battery}% vakabateri",
+    "none": "Sega ni dua na gacagaca e semati",
+    "disconnect": "Tagutuva na gacagaca",
+    "connect": "Semata na misini"
+  },
+  "friends": {
+    "title": "iTokani",
+    "subtitle": "Dauveisusu, kerekere, kei na ivolakabi ni leqa tubukoso.",
+    "addDemo": "Kuria na itokani demo",
+    "emptyTitle": "Sa lala tu na nomu iwirini ni veitaqomaki",
+    "emptyMessage": "Era na basika eke na itokani nuitaki kei na ivakatawa ni ra sa vakuri kina.",
+    "newGuardian": "iVakatawa Vou",
+    "statuses": {
+      "guardian": "iVakatawa",
+      "pending": "Wawa tu"
+    }
+  },
+  "emergency": {
+    "title": "Leqa tubukoso SOS",
+    "subtitle": "Vakatorocaketaki ga ena gauna o gadreva kina na veitokoni vakatotolo.",
+    "body": "Oqo ena vakaraitaki kina na nomu veitaqomaki ka vakarautaka na veitaratara ena leqa tubukoso.",
+    "activate": "Vakabulabulataka na SOS",
+    "callCompanion": "Qirita AI itokani",
+    "notificationTitle": "SOS vakabulabulataki",
+    "notificationBody": "Sa vakarau tu na nomu drodro ni leqa tubukoso.",
+    "readyTitle": "SOS vakarau tu",
+    "callContact": "Qiriti %{name}?",
+    "addContact": "Kuria e dua na veitaratara ni leqa tubukoso ena Settings.",
+    "quickShareTitle": "Wasei totolo",
+    "quickShareMessage": "Sa vakarau tu na vu ni veiwasei ni vanua. Semata na icavacava ni backend share me vakauta na isema bula."
+  },
+  "quickShare": {
+    "title": "Wasei totolo",
+    "subtitle": "Sa vakarau tu na drodro ni veiwasei ni vanua."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Tabaka vakarua na nomu NorthStar mo vakalutuma e dua na moli ni veitaqomaki.",
+    "body": "Sa vakarau tu na gaunisala ni ivakatakilakila me baleta na wiring ni soqo ni BLE."
+  },
+  "debug": {
+    "title": "VeryLoving tabana ni debug",
+    "subtitle": "Sala ni veivakatorocaketaki walega."
+  },
+  "errors": {
+    "voiceOffline": "E vaka mo offline. Ena vakau yani na nomu itukutuku ni ko sa sema tale.",
+    "voiceQueued": "Sa maroroi na itukutuku. Ena vakau yani ni sa sema tale na itokani ni domo.",
+    "voiceRetrying": "Tovolea mo vakauta tale na nomu itukutuku...",
+    "voiceConnecting": "Semati vakavinaka ki na nomu itokani ni domo...",
+    "microphone": "E gadrevi na microphone me baleta na veikacivi ni domo. E rawa ni o vakayagataka ena Settings, se taipataka e dua na itukutuku.",
+    "billing": "Ena sega ni tiko vakawawa na itokani ni domo ena initaneti. E rawa ni o tomana vata kei na itokani ena offline.",
+    "authentication": "A sega ni rawa vua na itokani ni domo me vakadeitaka na soqoni oqo. Curu tale se vakayagataka na itokani ena offline ena gauna oqo.",
+    "timeout": "A taura e dua na gauna balavu me sauma mai na itokani ni domo. Raica na nomu isema ka tovolea tale.",
+    "network": "Keirau sega ni tarai koya rawa na itokani ni domo. Raica na nomu isema ka qai tovolea tale se tomana ena offline.",
+    "genericVoice": "E dua na ka e takosova na kaci ni domo. Tovolea tale, se tomana vata kei na itokani ena offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving vakau itukutuku"
+  },
+  "notifications": {
+    "channelName": "Qaqarauni ni tataqomaki"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving gadreva na microphone me baleta na veitaqomaki kei na AI veikacivi ni itokani.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving vakayagataka na nomu vanua me baleta na mape ni tataqomaki kei na veitaqomaki voleka.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving vakayagataka na vanua o tiko kina me tokona na taqomaki ni yaco mai kei na leqa tubukoso.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving vakayagataka na vanua e muri me baleta na taqomaki ni yaco mai kei na vanua rerevaki voleka.",
+      "NSCameraUsageDescription": "VeryLoving vakayagataka ga na itaba ni o digitaka mo taura e dua na itaba ni itukutuku se itaba ni tataqomaki.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving vakayagataka ga na nomu laibari ni itaba ni o digitaka e dua na itukutuku se iyaloyalo ni veitaqomaki.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

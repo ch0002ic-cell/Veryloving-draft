@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Adaugă",
+    "apple": "Apple",
+    "back": "Înapoi",
+    "call": "Apel",
+    "cancel": "Anulează",
+    "clear": "Clar",
+    "close": "Închide",
+    "connect": "Conectează-te",
+    "connecting": "Conectând...",
+    "continue": "Continuă",
+    "delete": "Șterge",
+    "finish": "Finish",
+    "friends": "Prieteni",
+    "google": "Google",
+    "home": "Acasă",
+    "loading": "Se încarcă...",
+    "map": "Hartă",
+    "notNow": "Nu acum",
+    "remove": "Îndepărtează",
+    "retry": "Reîncercare",
+    "retrying": "Reîncercarea",
+    "save": "Salvează",
+    "selected": "Selectat",
+    "send": "Trimite",
+    "settings": "Decoruri",
+    "skip": "Sari",
+    "skipForNow": "Sari deocamdată",
+    "skipTutorial": "Sari peste tutorial",
+    "sos": "SOS",
+    "unknown": "Necunoscut",
+    "user": "VeryLoving utilizator",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Limbă",
+    "subtitle": "Alege limba folosită pe tot parcursul aplicației.",
+    "system": "Implicit al sistemului",
+    "search": "Limbi de căutare",
+    "noResults": "Nicio limbă nu corespunde căutării tale.",
+    "english": "Engleză",
+    "spanish": "Spaniolă",
+    "french": "Franceză",
+    "chineseSimplified": "Chineză (Simplificat)"
+  },
+  "phone": {
+    "label": "Număr de telefon",
+    "placeholder": "Număr de telefon",
+    "selectCountry": "Țară sau regiune selectată",
+    "searchCountry": "Căutați țara, codul sau prefixul de apelare",
+    "noCountries": "Nicio țară nu corespunde căutării tale.",
+    "countryButton": "Schimbă țara, în prezent %{country} plus %{callingCode}",
+    "inputAccessibility": "Număr de telefon pentru %{country}",
+    "required": "Introdu un număr de telefon.",
+    "tooShort": "Acest număr de telefon este prea scurt.",
+    "tooLong": "Acest număr de telefon e prea lung.",
+    "invalid": "Introduceți un număr de telefon valid pentru țara selectată.",
+    "valid": "Număr internațional valid de telefon"
+  },
+  "auth": {
+    "onboardingTagline": "Un companion personal de siguranță pentru momentele dintre \"Sunt bine\" și \"Am nevoie de ajutor\".",
+    "createAccount": "Creează cont",
+    "continueOnboarding": "Continuă cu onboarding-ul",
+    "createSubtitle": "Alege o metodă de autentificare pentru a-ți proteja graficul de siguranță.",
+    "phoneVerification": "Verificare telefonică",
+    "sendCode": "Cod de trimitere",
+    "sendingCode": "Trimitem cod...",
+    "verifyCode": "Verifică codul",
+    "sentTo": "Trimis la %{phone}",
+    "yourPhone": "telefonul tău",
+    "verificationCode": "Cod de verificare",
+    "verify": "Verifică",
+    "verifying": "Verificare...",
+    "invalidCode": "Introduceți codul de verificare.",
+    "signInFailedTitle": "Autentificarea întreruptă",
+    "signInFailedMessage": "Nu am reușit să finalizăm înregistrarea. Verifică conexiunea și încearcă din nou.",
+    "googleUnavailableTitle": "Google Autentificare indisponibilă",
+    "googleUnavailableMessage": "Folosind o sesiune locală de dezvoltare. Native Google Log-In funcționează într-o construcție de dezvoltare.",
+    "northStarTitle": "NorthStar bijuterii",
+    "northStarSubtitle": "Împerechează acum sau continuă și adaugă mai târziu.",
+    "northStarBody": "Dispozitivul VL01 purtabil poate declanșa fluxuri de siguranță prin atingeri și gesturi de apăsare lungă.",
+    "setupJewelry": "Montează bijuterii",
+    "meetCapybear": "Fă cunoștință cu Capybear",
+    "meetCapybearSubtitle": "Tovarășul tău blând de siguranță pe hartă și în apeluri.",
+    "capybearBody": "Capybear poate ajuta cu modul acasă, modul tutore, modul de urgență, apelurile de scuză și suportul vocal.",
+    "chooseVoice": "Alege o voce",
+    "capybearReminder": "Capybear reamintire",
+    "remindersReady": "Sunt gata memento-uri blânde."
+  },
+  "permissions": {
+    "locationTitle": "Siguranța locației",
+    "locationSubtitle": "Folosit pentru hartă, zone periculoase, sosire sigură și SOS context.",
+    "locationBody": "VeryLoving cere locația pentru ca tutorii să poată înțelege unde ar putea fi nevoie de ajutor. Poți schimba asta mai târziu în Setări.",
+    "allowLocation": "Permite localizarea",
+    "notificationsTitle": "Alerte de siguranță",
+    "notificationsSubtitle": "Notificările susțin verificările și evenimentele de urgență.",
+    "notificationsBody": "Folosim notificări doar pentru comenzile de siguranță, actualizările de urgență și memento-urile pe care le activezi.",
+    "enableNotifications": "Activează notificările",
+    "locationRationaleTitle": "Locația menține contextul de siguranță corect",
+    "locationRationaleMessage": "VeryLoving folosește locația ta pentru harta siguranței, zonele de pericol, partajare rapidă și SOS context. Poți schimba asta mai târziu în Setări.",
+    "notificationsRationaleTitle": "Alertele de siguranță necesită notificări",
+    "notificationsRationaleMessage": "VeryLoving trimite memento-uri de check-in, actualizări de urgență și instrucțiuni de siguranță pe care le activezi. Nu folosim notificări pentru reclame.",
+    "microphoneRationaleTitle": "Microfonul alimentează apelurile de siguranță",
+    "microphoneRationaleMessage": "VeryLoving folosește microfonul doar când începi un AI companion sau un apel de siguranță.",
+    "bluetoothRationaleTitle": "Bluetooth conectează obiectul tău purtativ",
+    "bluetoothRationaleMessage": "VeryLoving folosește Bluetooth pentru a se asocia cu bijuteriile NorthStar, a citi starea conexiunii și a declanșa fluxurile de siguranță din dispozitiv purtabil.",
+    "cameraRationaleTitle": "Camera este opțională",
+    "cameraRationaleMessage": "VeryLoving folosește camera doar atunci când alegi să faci o fotografie de profil sau să distribui o imagine de siguranță."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving menține acest flux disponibil din Setări și din dashboard.",
+    "chooseVoiceTitle": "Alege-ți vocea",
+    "chooseVoiceSubtitle": "Alege vocea companionului care pare cea mai sigură de auzit.",
+    "homeTitle": "Modul Home",
+    "homeSubtitle": "Monitorizare silențioasă pentru siguranța zilnică.",
+    "guardianTitle": "Modul Guardian",
+    "guardianSubtitle": "Împărtășește context cu persoane de încredere.",
+    "emergencyTitle": "Mod de urgență",
+    "emergencySubtitle": "Cinci atingeri pot escalada la alerte SOS și tutore.",
+    "excuseTitle": "Scuzați-vă la apel",
+    "excuseSubtitle": "Creează un motiv elegant să pleci dintr-o situație inconfortabilă.",
+    "safetyCallTitle": "Apel de siguranță",
+    "safetyCallSubtitle": "Începe un apel de companie în timp real atunci când ai nevoie de sprijin.",
+    "practiceTitle": "Scena de antrenament",
+    "practiceSubtitle": "Încearcă fluxurile de siguranță într-o demonstrație cu presiune joasă."
+  },
+  "jewelry": {
+    "pairTitle": "Pereche NorthStar",
+    "pairSubtitle": "Ține bijuteriile aproape în timp ce scanezi.",
+    "scan": "Scanare pentru dispozitive",
+    "scanning": "Scanează în apropiere...",
+    "noDevices": "Nu s-au găsit încă dispozitive NorthStar în apropiere.",
+    "scanStartFailed": "Bluetooth scanare nu a putut începe. Vă rog să încercați din nou.",
+    "scanFailed": "Nu am găsit bijuterii în apropiere. Verifică Bluetooth, ține-NorthStar aproape și încearcă din nou.",
+    "scanAccessFailed": "Bluetooth scanare nu a putut începe. Verifică Bluetooth acces și încearcă din nou.",
+    "permissionDenied": "Accesul la dispozitivele din apropiere este oprit. Permite-Bluetooth acces în Setări, apoi încearcă din nou.",
+    "connectTimeout": "NorthStar durat prea mult să se conecteze. Apropie-te și încearcă din nou.",
+    "connectFailed": "Nu ne-am putut conecta cu NorthStar. Verifică dacă este încărcat și în apropiere, apoi încearcă din nou.",
+    "emptyTitle": "Încă nu există dispozitive în apropiere",
+    "emptyMessage": "ȚineNorthStar încărcat și aproape de telefon, apoi scanează din nou.",
+    "searchingMessage": "Caut NorthStar dispozitive prin apropiere..."
+  },
+  "home": {
+    "subtitle": "Bordul companion de siguranță",
+    "modeStatus": "%{mode} MOD",
+    "companionReady": "%{name} este gata",
+    "readyBody": "Vocea, harta, bijuteriile și gardienii sunt la o singură atingere distanță.",
+    "safetyCall": "Apel de siguranță",
+    "northStarDevice": "NorthStar dispozitiv",
+    "deviceConnected": "%{name} conectat · %{battery}%",
+    "noDevice": "Niciun dispozitiv conectat",
+    "manageDevice": "Gestionează dispozitivul",
+    "mode": "Mod",
+    "modes": {
+      "home": "Acasă",
+      "guardian": "Guardian",
+      "emergency": "Urgență"
+    }
+  },
+  "map": {
+    "finding": "Să-ți găsești locația...",
+    "retry": "Locația reîncercărilor",
+    "title": "Harta siguranței",
+    "previewSubtitle": "Expo Go previzualizare; Mapbox randă într-o construcție de dezvoltare.",
+    "preview": "Previzualizare a hărții",
+    "risk": "Risc: %{risk} · Raza %{radius}m",
+    "refresh": "Locație de reîmprospătare",
+    "refreshing": "Găsirea locației...",
+    "updateFailed": "Nu am putut actualiza locația dumneavoastră. Vă rog să încercați din nou.",
+    "notRequested": "Nu s-a cerut acces la locație. Îl poți activa mai târziu din Setări.",
+    "permissionOff": "Accesul la locație este greșit. Activează-l în Setări pentru a centra harta de siguranță pe tine.",
+    "timeout": "Locația ta durează mai mult decât te așteptai. Mută-te undeva cu un semnal mai clar și încearcă din nou.",
+    "savedTitle": "Locuri salvate",
+    "savedEmptyTitle": "Încă nu sunt locuri salvate",
+    "savedEmptyMessage": "Locurile de încredere pe care le salvezi vor apărea aici pentru acces rapid.",
+    "zones": {
+      "crowding": "Aglomerație târzie în noapte",
+      "lowLighting": "Zonă de lumină slabă"
+    },
+    "risks": {
+      "low": "joasă",
+      "medium": "Mediu",
+      "high": "Sus"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Conectând...",
+    "offlineCompanion": "Companion offline",
+    "offline": "Offline",
+    "connected": "Conectat",
+    "interrupted": "Conexiunea întreruptă",
+    "ready": "Gata de conectare",
+    "connectingSecurely": "Conectându-te sigur la companionul tău vocal...",
+    "messagesWaiting": {
+      "one": "%{count} mesaj așteptând să fie trimis",
+      "other": "%{count} mesaje care așteaptă să fie trimise"
+    },
+    "useOffline": "Folosește companionul offline",
+    "reconnect": "Reconectează-te la AI vocală",
+    "typePlaceholder": "Scrie dacă vorbitul este dificil",
+    "endCall": "Sfârșit al apelului",
+    "startCall": "Începeți apelul",
+    "emptyTitle": "Conversația ta începe aici",
+    "emptyMessage": "Începe apelul sau tastează un mesaj când ești gata."
+  },
+  "chat": {
+    "waiting": "Așteptând conexiunea",
+    "notSent": "Mesaj netrimis.",
+    "retryAccessibility": "Reîncearcă trimiterea mesajului"
+  },
+  "history": {
+    "clearTitle": "Istoricul conversațiilor curat?",
+    "clearMessage": "Acest lucru elimină mesajele salvate AI companion de pe acest dispozitiv.",
+    "deleteTitle": "Șterge această conversație?",
+    "cannotUndo": "Acest lucru nu poate fi anulat.",
+    "title": "Istoricul conversațiilor",
+    "subtitle": "AI mesajele companion salvate pe acest dispozitiv.",
+    "empty": "Nicio conversație salvată încă.",
+    "emptyTitle": "Nicio conversație încă",
+    "emptyMessage": "Conversațiile tale AI companion vor apărea aici după primul apel.",
+    "loadFailed": "Nu am putut încărca istoricul conversațiilor. Vă rog să încercați din nou.",
+    "clearFailed": "Nu am reușit să ștergem istoricul conversațiilor. Vă rog să încercați din nou.",
+    "deleteFailed": "Nu puteam șterge acea conversație. Vă rog să încercați din nou.",
+    "aiCompanion": "AI companion",
+    "resume": "Recapitulare",
+    "clearAll": "Șterge tot istoricul",
+    "roles": {
+      "assistant": "Companion",
+      "user": "Tu"
+    }
+  },
+  "voices": {
+    "title": "Vocile mele de siguranță",
+    "subtitle": "Alege vocea companionului care ți se pare potrivită să o aud.",
+    "test": "Voce de test",
+    "stop": "Eșantion de oprire",
+    "selectionFailedTitle": "Selecție nesalvată",
+    "selectionFailedMessage": "Te rog să alegi din nou vocea.",
+    "sampleFailedTitle": "Exemplu indisponibil",
+    "sampleFailedMessage": "Acest sample vocal nu a putut fi redat. Vă rog să încercați din nou.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "Blând, calm, ancorantă"
+      },
+      "bestie": {
+        "name": "Cea mai bună prietenă",
+        "description": "luminoasă, liniștitoare, conversațională"
+      },
+      "boyfriend": {
+        "name": "Iubit",
+        "description": "Constant, afectuos, prezent"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "încrezătoare, protectoare, motivante"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Voce",
+    "changeVoice": "Schimbă vocea",
+    "showCompanion": "Companion de emisiune",
+    "offlineMode": "Modul offline",
+    "offlineModeSubtitle": "Folosește răspunsuri complementare incluse atunci când rețeaua sau credențialele Hume nu sunt disponibile.",
+    "privacyData": "Confidențialitate și date",
+    "privacyBody": "Exportă sau șterge datele locale stocate pe acest dispozitiv.",
+    "preparingExport": "Pregătirea exportului...",
+    "exportData": "Export datele mele",
+    "privacyPolicy": "Politica de confidențialitate",
+    "deleting": "Șterg...",
+    "deleteAll": "Șterge toate datele locale",
+    "deviceManagement": "Gestionarea dispozitivelor",
+    "emergencyContacts": "Contacte de urgență",
+    "signOut": "Deconectează-te",
+    "exportFailedTitle": "Exportul a eșuat",
+    "exportFailedMessage": "Nu pot exporta datele tale în acest moment.",
+    "deleteConfirmTitle": "Șterge toate datele locale?",
+    "deleteConfirmMessage": "Aceasta elimină profilul, setările, contactele de urgență, istoricul conversațiilor, memento-urile de permisiuni și sesiunea locală de autentificare de pe acest dispozitiv.",
+    "deleteEverything": "Șterge totul",
+    "deleteFailedTitle": "Ștergerea a eșuat",
+    "deleteFailedMessage": "Nu pot șterge datele locale în acest moment.",
+    "linkFailed": "Nu se poate deschide linkul",
+    "sections": {
+      "language": "Limbă",
+      "languageSubtitle": "Interfață și limbajul permisiunilor sistemului",
+      "companion": "Companion",
+      "companionSubtitle": "Preferințe vocale și offline",
+      "deviceSafety": "Dispozitive și siguranță",
+      "deviceSafetySubtitle": "NorthStar, gardieni și contacte de urgență",
+      "privacy": "Confidențialitate și date",
+      "privacySubtitle": "Istoric, export, ștergere și politică",
+      "account": "Cont",
+      "accountSubtitle": "Sesiunea ta actuală de VeryLoving"
+    },
+    "updateFailedTitle": "Setarea nu a fost salvată",
+    "updateFailedMessage": "Nu am putut păstra această preferință. Vă rog să încercați din nou.",
+    "signOutFailedTitle": "Nu am putut să mă deconectez",
+    "signOutFailedMessage": "Sesiunea ta este încă activă. Vă rog să încercați din nou."
+  },
+  "contacts": {
+    "title": "Contacte de urgență",
+    "subtitle": "Persoane de încredere disponibile în timpul fluxurilor de siguranță.",
+    "addTitle": "Adaugă contact de urgență",
+    "name": "Nume",
+    "namePlaceholder": "Nume de contact",
+    "phone": "Număr de telefon de contact",
+    "add": "Adaugă contact",
+    "empty": "Nu au fost adăugate încă contacte de urgență.",
+    "emptyTitle": "Încă nu există contacte de urgență",
+    "emptyMessage": "Adaugă pe cineva în care ai încredere, ca să fie pregătit când are nevoie de un flux de siguranță.",
+    "removeTitle": "Să %{name}?",
+    "removeMessage": "Această persoană nu va mai apărea în fluxul tău de urgență.",
+    "nameRequired": "Introduceți numele contactului.",
+    "saveFailedTitle": "Contact nesalvat",
+    "saveFailedMessage": "Nu am putut salva acest contact. Verifică detaliile și încearcă din nou.",
+    "removeFailedTitle": "Contact neeliminat",
+    "removeFailedMessage": "Nu am putut elimina acest contact. Vă rog să încercați din nou.",
+    "callAccessibility": "Sună%{name}",
+    "removeAccessibility": "Scoate %{name}"
+  },
+  "device": {
+    "title": "Gestionarea dispozitivelor",
+    "subtitle": "Gestionează-ți dispozitivul NorthStar.",
+    "connected": "Conectat · %{battery}% baterie",
+    "none": "Niciun dispozitiv conectat",
+    "disconnect": "Dispozitiv de deconectare",
+    "connect": "Conectează dispozitivul"
+  },
+  "friends": {
+    "title": "Prieteni",
+    "subtitle": "Gardieni, cereri și grafic de urgență.",
+    "addDemo": "Adaugă prieten demo",
+    "emptyTitle": "Cercul tău de siguranță este gol",
+    "emptyMessage": "Prieteni și tutori de încredere vor apărea aici odată ce vor fi adăugați.",
+    "newGuardian": "Noul Gardian",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "În așteptare"
+    }
+  },
+  "emergency": {
+    "title": "Urgență SOS",
+    "subtitle": "Escaladează doar când ai nevoie de sprijin imediat.",
+    "body": "Acest lucru va notifica fluxul de siguranță și va pregăti contactele de urgență.",
+    "activate": "Activează SOS",
+    "callCompanion": "Cheamă AI companion",
+    "notificationTitle": "SOS activat",
+    "notificationBody": "Fluxul de urgență este pregătit.",
+    "readyTitle": "SOS gata",
+    "callContact": "Sun %{name}?",
+    "addContact": "Adaugă un contact de urgență în Setări.",
+    "quickShareTitle": "Împărtășește rapid",
+    "quickShareMessage": "Stubul de partajare a locației este gata. Conectează endpoint-ul de partajare din backend pentru a trimite linkuri live."
+  },
+  "quickShare": {
+    "title": "Împărtășește rapid",
+    "subtitle": "Fluxul de partajare a locației este gata."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Atinge dublu NorthStar pentru a lăsa o portocalie de siguranță.",
+    "body": "Ruta gesturilor este pregătită pentru cablarea evenimentelor BLE."
+  },
+  "debug": {
+    "title": "VeryLoving pagina de depanare",
+    "subtitle": "Rută doar pentru dezvoltare."
+  },
+  "errors": {
+    "voiceOffline": "Pari offline. Mesajul tău va fi trimis când te reconectezi.",
+    "voiceQueued": "Mesaj salvat. Va fi trimis când companionul vocal se reconectează.",
+    "voiceRetrying": "Încerc să-ți trimit din nou mesajul...",
+    "voiceConnecting": "Conectându-te sigur la companionul tău vocal...",
+    "microphone": "Este necesar acces la microfon pentru apelurile vocale. Îl poți activa în Setări sau poți scrie un mesaj în schimb.",
+    "billing": "Companionul vocal online este temporar indisponibil. Poți continua cu companionul offline.",
+    "authentication": "Companionul vocal nu a putut confirma această sesiune. Conectează-te din nou sau folosește companionul offline pentru moment.",
+    "timeout": "Companionul vocal a răspuns prea târziu. Verifică conexiunea și încearcă din nou.",
+    "network": "Nu am putut ajunge la companionul vocii. Verifică conexiunea, apoi încearcă din nou sau continuă offline.",
+    "genericVoice": "Ceva a întrerupt apelul vocal. Încearcă din nou sau continuă cu companionul offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving exportul datelor"
+  },
+  "notifications": {
+    "channelName": "Alerte de siguranță"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving nevoie de acces la microfon pentru siguranță și pentru apeluri AI însoțitori.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving folosește locația ta pentru harta siguranței și pentru funcțiile de siguranță din apropiere.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving folosește locația ta pentru a susține fluxurile de sosire în siguranță și cele de urgență.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving folosește locația de fundal pentru sosirea în siguranță și pentru zonele de pericol din apropiere.",
+      "NSCameraUsageDescription": "VeryLoving folosește camera doar când alegi să faci o fotografie de profil sau de siguranță.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving folosește biblioteca foto doar când alegi o imagine de profil sau de siguranță.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving folosește Bluetooth pentru a se conecta la bijuteriile tale de siguranță NorthStar.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving folosește Bluetooth pentru a se conecta la bijuteriile tale de siguranță NorthStar."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Tambahkan",
+    "apple": "Apple",
+    "back": "Kembali",
+    "call": "Panggilan",
+    "cancel": "Batalkan",
+    "clear": "Jelas",
+    "close": "Tutup",
+    "connect": "Terhubung",
+    "connecting": "Menghubungkan...",
+    "continue": "Lanjutkan",
+    "delete": "Hapus",
+    "finish": "Selesai",
+    "friends": "Teman",
+    "google": "Google",
+    "home": "Beranda",
+    "loading": "Memuat...",
+    "map": "Peta",
+    "notNow": "Tidak sekarang",
+    "remove": "Hapus",
+    "retry": "Coba lagi",
+    "retrying": "Mencoba lagi",
+    "save": "Simpan",
+    "selected": "Pilihan",
+    "send": "Kirim",
+    "settings": "Pengaturan",
+    "skip": "Lewati",
+    "skipForNow": "Lewati untuk saat ini",
+    "skipTutorial": "Lewati tutorial",
+    "sos": "SOS",
+    "unknown": "Tidak diketahui",
+    "user": "VeryLoving pengguna",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Bahasa",
+    "subtitle": "Pilih bahasa yang digunakan di seluruh aplikasi.",
+    "system": "Default sistem",
+    "search": "Bahasa penelusuran",
+    "noResults": "Tidak ada bahasa yang cocok dengan penelusuran Anda.",
+    "english": "Indonesia",
+    "spanish": "Spanyol",
+    "french": "Prancis",
+    "chineseSimplified": "Mandarin (Sederhana)"
+  },
+  "phone": {
+    "label": "Nomor telepon",
+    "placeholder": "Nomor telepon",
+    "selectCountry": "Pilih negara atau wilayah",
+    "searchCountry": "Mencari negara, kode, atau awalan panggilan",
+    "noCountries": "Tidak ada negara yang cocok dengan penelusuran Anda.",
+    "countryButton": "Ubah negara, saat ini %{country} plus %{callingCode}",
+    "inputAccessibility": "Nomor telepon untuk %{country}",
+    "required": "Masukkan nomor telepon.",
+    "tooShort": "Nomor telepon ini terlalu pendek.",
+    "tooLong": "Nomor telepon ini terlalu panjang.",
+    "invalid": "Masukkan nomor telepon yang valid untuk negara yang dipilih.",
+    "valid": "Nomor telepon internasional yang valid"
+  },
+  "auth": {
+    "onboardingTagline": "Pendamping keselamatan pribadi untuk momen antara \"Saya baik-baik saja\" dan \"Saya butuh bantuan.\"",
+    "createAccount": "Buat akun",
+    "continueOnboarding": "Lanjutkan dengan orientasi",
+    "createSubtitle": "Pilih metode masuk untuk melindungi grafik keamanan Anda.",
+    "phoneVerification": "Verifikasi telepon",
+    "sendCode": "Kirim kode",
+    "sendingCode": "Mengirim kode...",
+    "verifyCode": "Verifikasi kode",
+    "sentTo": "Dikirim ke %{phone}",
+    "yourPhone": "Ponsel Anda",
+    "verificationCode": "Kode verifikasi",
+    "verify": "Verifikasi",
+    "verifying": "Memverifikasi...",
+    "invalidCode": "Masukkan kode verifikasi.",
+    "signInFailedTitle": "Login terganggu",
+    "signInFailedMessage": "Kami tidak dapat menyelesaikan login. Periksa koneksi Anda dan coba lagi.",
+    "googleUnavailableTitle": "Google Login tidak tersedia",
+    "googleUnavailableMessage": "Menggunakan sesi pengembangan lokal. Native Google Sign-In berfungsi dalam build pengembangan.",
+    "northStarTitle": "NorthStar perhiasan",
+    "northStarSubtitle": "Pasangkan sekarang atau lanjutkan dan tambahkan nanti.",
+    "northStarBody": "VL01 yang dapat dikenakan dapat memicu aliran keamanan dengan ketukan dan gerakan tekan lama.",
+    "setupJewelry": "Siapkan perhiasan",
+    "meetCapybear": "Temui Capybear",
+    "meetCapybearSubtitle": "Pendamping keselamatan Anda yang lembut di peta dan dalam panggilan.",
+    "capybearBody": "Capybear dapat membantu dengan mode rumah, mode wali, mode darurat, panggilan alasan, dan dukungan suara.",
+    "chooseVoice": "Memilih suara",
+    "capybearReminder": "Capybear pengingat",
+    "remindersReady": "Pengingat lembut sudah siap."
+  },
+  "permissions": {
+    "locationTitle": "Keamanan lokasi",
+    "locationSubtitle": "Digunakan untuk peta, zona bahaya, kedatangan aman, dan konteks SOS.",
+    "locationBody": "VeryLoving meminta lokasi sehingga wali dapat memahami di mana bantuan mungkin dibutuhkan. Anda dapat mengubahnya nanti di Pengaturan.",
+    "allowLocation": "Mengizinkan lokasi",
+    "notificationsTitle": "Peringatan keselamatan",
+    "notificationsSubtitle": "Notifikasi mendukung check-in dan peristiwa darurat.",
+    "notificationsBody": "Kami hanya menggunakan pemberitahuan untuk petunjuk keselamatan, pembaruan darurat, dan pengingat yang Anda aktifkan.",
+    "enableNotifications": "Mengaktifkan notifikasi",
+    "locationRationaleTitle": "Lokasi menjaga konteks keselamatan tetap akurat",
+    "locationRationaleMessage": "VeryLoving menggunakan lokasi Anda untuk peta keselamatan, zona bahaya, berbagi cepat, dan konteks SOS. Anda dapat mengubahnya nanti di Pengaturan.",
+    "notificationsRationaleTitle": "Peringatan keselamatan memerlukan pemberitahuan",
+    "notificationsRationaleMessage": "VeryLoving mengirimkan pengingat check-in, pembaruan darurat, dan petunjuk keselamatan yang Anda aktifkan. Kami tidak menggunakan notifikasi untuk iklan.",
+    "microphoneRationaleTitle": "Mikrofon memberi daya pada panggilan keselamatan",
+    "microphoneRationaleMessage": "VeryLoving menggunakan mikrofon hanya saat Anda memulai panggilan pendamping atau keamanan AI.",
+    "bluetoothRationaleTitle": "Bluetooth menghubungkan perangkat yang dapat dikenakan",
+    "bluetoothRationaleMessage": "VeryLoving menggunakan Bluetooth untuk memasangkan dengan perhiasan NorthStar, membaca status koneksi, dan memicu aliran keamanan dari perangkat yang dapat dikenakan.",
+    "cameraRationaleTitle": "Kamera bersifat opsional",
+    "cameraRationaleMessage": "VeryLoving menggunakan kamera hanya jika Anda memilih untuk mengambil foto profil atau membagikan gambar keselamatan."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving membuat alur ini tetap tersedia dari Pengaturan dan dasbor.",
+    "chooseVoiceTitle": "Pilih suara Anda",
+    "chooseVoiceSubtitle": "Pilih suara pendamping yang terasa paling aman untuk didengar.",
+    "homeTitle": "Mode rumah",
+    "homeSubtitle": "Pemantauan tenang untuk keselamatan sehari-hari.",
+    "guardianTitle": "Mode penjaga",
+    "guardianSubtitle": "Bagikan konteks dengan orang tepercaya.",
+    "emergencyTitle": "Mode darurat",
+    "emergencySubtitle": "Lima ketukan dapat meningkat menjadi peringatan SOS dan wali.",
+    "excuseTitle": "Panggilan alasan",
+    "excuseSubtitle": "Ciptakan alasan yang anggun untuk meninggalkan situasi yang tidak nyaman.",
+    "safetyCallTitle": "Panggilan keamanan",
+    "safetyCallSubtitle": "Mulai panggilan pendamping waktu nyata saat Anda membutuhkan dukungan.",
+    "practiceTitle": "Adegan latihan",
+    "practiceSubtitle": "Cobalah aliran keamanan dalam demo tekanan rendah."
+  },
+  "jewelry": {
+    "pairTitle": "Pasangkan NorthStar",
+    "pairSubtitle": "Simpan perhiasan di dekat saat memindai.",
+    "scan": "Pindai perangkat",
+    "scanning": "Memindai di dekatnya...",
+    "noDevices": "Belum ada perangkat NorthStar terdekat yang ditemukan.",
+    "scanStartFailed": "Bluetooth pemindaian tidak dapat dimulai. Silakan coba lagi.",
+    "scanFailed": "Kami tidak dapat menemukan perhiasan di dekatnya. Periksa Bluetooth, jaga NorthStar dekat, dan coba lagi.",
+    "scanAccessFailed": "Bluetooth pemindaian tidak dapat dimulai. Periksa akses Bluetooth dan coba lagi.",
+    "permissionDenied": "Akses perangkat terdekat dinonaktifkan. Izinkan akses Bluetooth di Pengaturan, lalu coba lagi.",
+    "connectTimeout": "NorthStar butuh waktu terlalu lama untuk terhubung. Pindahkan lebih dekat dan coba lagi.",
+    "connectFailed": "Kami tidak dapat terhubung ke NorthStar. Periksa apakah sudah terisi daya dan berada di dekatnya, lalu coba lagi.",
+    "emptyTitle": "Belum ada perangkat terdekat",
+    "emptyMessage": "Simpan NorthStar isi daya dan dekat dengan ponsel ini, lalu pindai lagi.",
+    "searchingMessage": "Mencari perangkat NorthStar terdekat..."
+  },
+  "home": {
+    "subtitle": "Dasbor pendamping keselamatan",
+    "modeStatus": "MODE %{mode}",
+    "companionReady": "%{name} sudah siap",
+    "readyBody": "Suara, peta, perhiasan, dan penjaga berjarak satu ketukan.",
+    "safetyCall": "Panggilan keamanan",
+    "northStarDevice": "NorthStar perangkat",
+    "deviceConnected": "%{name} terhubung · %{battery}%",
+    "noDevice": "Tidak ada perangkat yang terhubung",
+    "manageDevice": "Mengelola perangkat",
+    "mode": "Mode",
+    "modes": {
+      "home": "Beranda",
+      "guardian": "Penjaga",
+      "emergency": "Darurat"
+    }
+  },
+  "map": {
+    "finding": "Menemukan lokasi Anda...",
+    "retry": "Coba lagi lokasi",
+    "title": "Peta keamanan",
+    "previewSubtitle": "Expo Go pratinjau; Mapbox render dalam build pengembangan.",
+    "preview": "Pratinjau peta",
+    "risk": "Risiko: %{risk} · Radius %{radius}m",
+    "refresh": "Segarkan lokasi",
+    "refreshing": "Menemukan lokasi...",
+    "updateFailed": "Kami tidak dapat memperbarui lokasi Anda. Silakan coba lagi.",
+    "notRequested": "Akses lokasi tidak diminta. Anda dapat mengaktifkannya nanti dari Pengaturan.",
+    "permissionOff": "Akses lokasi dimatikan. Aktifkan di Pengaturan untuk memusatkan peta keselamatan pada Anda.",
+    "timeout": "Lokasi Anda memakan waktu lebih lama dari yang diharapkan. Pindah ke suatu tempat dengan sinyal yang lebih jelas dan coba lagi.",
+    "savedTitle": "Tempat yang disimpan",
+    "savedEmptyTitle": "Belum ada tempat tersimpan",
+    "savedEmptyMessage": "Tempat tepercaya yang Anda simpan akan muncul di sini untuk akses cepat.",
+    "zones": {
+      "crowding": "Keramaian larut malam",
+      "lowLighting": "Area pencahayaan rendah"
+    },
+    "risks": {
+      "low": "rendah",
+      "medium": "sedang",
+      "high": "tinggi"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Menghubungkan...",
+    "offlineCompanion": "Pendamping offline",
+    "offline": "Offline",
+    "connected": "Terhubung",
+    "interrupted": "Koneksi terputus",
+    "ready": "Siap terhubung",
+    "connectingSecurely": "Menghubungkan dengan aman ke pendamping suara Anda...",
+    "messagesWaiting": {
+      "one": "%{count} pesan yang menunggu untuk dikirim",
+      "other": "%{count} pesan yang menunggu untuk dikirim"
+    },
+    "useOffline": "Menggunakan pendamping offline",
+    "reconnect": "Sambungkan kembali ke AI suara",
+    "typePlaceholder": "Ketik jika berbicara sulit",
+    "endCall": "Akhiri panggilan",
+    "startCall": "Mulai panggilan",
+    "emptyTitle": "Percakapan Anda dimulai di sini",
+    "emptyMessage": "Mulai panggilan atau ketik pesan saat Anda siap."
+  },
+  "chat": {
+    "waiting": "Menunggu koneksi",
+    "notSent": "Pesan tidak terkirim.",
+    "retryAccessibility": "Coba lagi mengirim pesan"
+  },
+  "history": {
+    "clearTitle": "Riwayat percakapan yang jelas?",
+    "clearMessage": "Ini menghapus pesan pendamping AI yang disimpan dari perangkat ini.",
+    "deleteTitle": "Menghapus percakapan ini?",
+    "cannotUndo": "Ini tidak dapat dibatalkan.",
+    "title": "Riwayat percakapan",
+    "subtitle": "AI pesan pendamping yang disimpan di perangkat ini.",
+    "empty": "Belum ada percakapan yang disimpan.",
+    "emptyTitle": "Belum ada percakapan",
+    "emptyMessage": "Percakapan pendamping AI Anda akan muncul di sini setelah panggilan pertama Anda.",
+    "loadFailed": "Kami tidak dapat memuat riwayat percakapan. Silakan coba lagi.",
+    "clearFailed": "Kami tidak bisa menghapus riwayat percakapan. Silakan coba lagi.",
+    "deleteFailed": "Kami tidak dapat menghapus percakapan itu. Silakan coba lagi.",
+    "aiCompanion": "AI pendamping",
+    "resume": "Lanjutkan",
+    "clearAll": "Hapus semua riwayat",
+    "roles": {
+      "assistant": "pendamping",
+      "user": "Anda"
+    }
+  },
+  "voices": {
+    "title": "Suara panggilan keselamatan saya",
+    "subtitle": "Pilih suara pendamping yang terasa tepat untuk didengar.",
+    "test": "Uji suara",
+    "stop": "Menghentikan sampel",
+    "selectionFailedTitle": "Pilihan tidak disimpan",
+    "selectionFailedMessage": "Silakan coba pilih suara lagi.",
+    "sampleFailedTitle": "Sampel tidak tersedia",
+    "sampleFailedMessage": "Sampel suara ini tidak dapat diputar. Silakan coba lagi.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "lembut, tenang, membumi"
+      },
+      "bestie": {
+        "name": "Sahabat",
+        "description": "cerah, meyakinkan, percakapan"
+      },
+      "boyfriend": {
+        "name": "Pacar",
+        "description": "mantap, penuh kasih sayang, hadir"
+      },
+      "muscleMan": {
+        "name": "Manusia otot",
+        "description": "percaya diri, protektif, memotivasi"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Suara",
+    "changeVoice": "Mengubah suara",
+    "showCompanion": "Tampilkan pendamping",
+    "offlineMode": "Mode offline",
+    "offlineModeSubtitle": "Gunakan respons pengiring yang dibundel saat kredensial jaringan atau Hume tidak tersedia.",
+    "privacyData": "Privasi & data",
+    "privacyBody": "Ekspor atau hapus data lokal yang tersimpan di perangkat ini.",
+    "preparingExport": "Mempersiapkan ekspor...",
+    "exportData": "Ekspor data saya",
+    "privacyPolicy": "Kebijakan privasi",
+    "deleting": "Menghapus...",
+    "deleteAll": "Menghapus semua data lokal",
+    "deviceManagement": "Manajemen perangkat",
+    "emergencyContacts": "Kontak darurat",
+    "signOut": "Keluar",
+    "exportFailedTitle": "Ekspor gagal",
+    "exportFailedMessage": "Tidak dapat mengekspor data Anda saat ini.",
+    "deleteConfirmTitle": "Menghapus semua data lokal?",
+    "deleteConfirmMessage": "Ini menghapus profil, pengaturan, kontak darurat, riwayat percakapan, pengingat izin, dan sesi autentikasi lokal dari perangkat ini.",
+    "deleteEverything": "Hapus semuanya",
+    "deleteFailedTitle": "Penghapusan gagal",
+    "deleteFailedMessage": "Tidak dapat menghapus data lokal saat ini.",
+    "linkFailed": "Tidak dapat membuka tautan",
+    "sections": {
+      "language": "Bahasa",
+      "languageSubtitle": "Antarmuka dan bahasa izin sistem",
+      "companion": "Pendamping",
+      "companionSubtitle": "Preferensi suara dan offline",
+      "deviceSafety": "Perangkat dan keamanan",
+      "deviceSafetySubtitle": "NorthStar, wali, dan kontak darurat",
+      "privacy": "Privasi dan data",
+      "privacySubtitle": "Riwayat, ekspor, penghapusan, dan kebijakan",
+      "account": "Akun",
+      "accountSubtitle": "Sesi VeryLoving Anda saat ini"
+    },
+    "updateFailedTitle": "Pengaturan tidak disimpan",
+    "updateFailedMessage": "Kami tidak dapat menyelamatkan preferensi itu. Silakan coba lagi.",
+    "signOutFailedTitle": "Tidak dapat keluar",
+    "signOutFailedMessage": "Sesi Anda masih aktif. Silakan coba lagi."
+  },
+  "contacts": {
+    "title": "Kontak darurat",
+    "subtitle": "Orang tepercaya tersedia selama arus keselamatan.",
+    "addTitle": "Menambahkan kontak darurat",
+    "name": "Nama",
+    "namePlaceholder": "Nama kontak",
+    "phone": "Nomor telepon kontak",
+    "add": "Tambahkan kontak",
+    "empty": "Belum ada kontak darurat yang ditambahkan.",
+    "emptyTitle": "Belum ada kontak darurat",
+    "emptyMessage": "Tambahkan seseorang yang Anda percayai sehingga mereka siap saat alur keamanan membutuhkannya.",
+    "removeTitle": "Hapus %{name}?",
+    "removeMessage": "Orang ini tidak akan lagi muncul dalam alur darurat Anda.",
+    "nameRequired": "Masukkan nama kontak.",
+    "saveFailedTitle": "Kontak tidak disimpan",
+    "saveFailedMessage": "Kami tidak dapat menyimpan kontak ini. Periksa detailnya dan coba lagi.",
+    "removeFailedTitle": "Kontak tidak dihapus",
+    "removeFailedMessage": "Kami tidak dapat menghapus kontak ini. Silakan coba lagi.",
+    "callAccessibility": "Hubungi %{name}",
+    "removeAccessibility": "Hapus %{name}"
+  },
+  "device": {
+    "title": "Manajemen perangkat",
+    "subtitle": "Kelola perangkat NorthStar Anda.",
+    "connected": "Terhubung · %{battery}% baterai",
+    "none": "Tidak ada perangkat yang terhubung",
+    "disconnect": "Putuskan sambungan perangkat",
+    "connect": "Hubungkan perangkat"
+  },
+  "friends": {
+    "title": "Teman",
+    "subtitle": "Grafik wali, permintaan, dan darurat.",
+    "addDemo": "Tambahkan teman demo",
+    "emptyTitle": "Lingkaran pengaman Anda kosong",
+    "emptyMessage": "Teman dan wali tepercaya akan muncul di sini setelah ditambahkan.",
+    "newGuardian": "Penjaga Baru",
+    "statuses": {
+      "guardian": "Penjaga",
+      "pending": "Tertunda"
+    }
+  },
+  "emergency": {
+    "title": "SOS darurat",
+    "subtitle": "Eskalasi hanya ketika Anda membutuhkan dukungan segera.",
+    "body": "Ini akan memberi tahu alur keselamatan Anda dan menyiapkan kontak darurat.",
+    "activate": "Aktifkan SOS",
+    "callCompanion": "Hubungi AI pendamping",
+    "notificationTitle": "SOS diaktifkan",
+    "notificationBody": "Aliran darurat Anda sudah siap.",
+    "readyTitle": "SOS siap",
+    "callContact": "Hubungi %{name}?",
+    "addContact": "Tambahkan kontak darurat di Pengaturan.",
+    "quickShareTitle": "Bagikan cepat",
+    "quickShareMessage": "Rintisan berbagi lokasi sudah siap. Hubungkan titik akhir berbagi backend untuk mengirim tautan langsung."
+  },
+  "quickShare": {
+    "title": "Bagikan cepat",
+    "subtitle": "Alur berbagi lokasi sudah siap."
+  },
+  "capybearTap": {
+    "title": "Capybear ketuk",
+    "subtitle": "Ketuk dua kali NorthStar Anda untuk menjatuhkan jeruk pengaman.",
+    "body": "Rute gerakan siap untuk kabel acara BLE."
+  },
+  "debug": {
+    "title": "VeryLoving halaman debug",
+    "subtitle": "Rute khusus pengembangan."
+  },
+  "errors": {
+    "voiceOffline": "Anda tampak offline. Pesan Anda akan dikirim saat Anda terhubung kembali.",
+    "voiceQueued": "Pesan disimpan. Ini akan dikirim saat pendamping suara terhubung kembali.",
+    "voiceRetrying": "Mencoba mengirim pesan lagi...",
+    "voiceConnecting": "Menghubungkan dengan aman ke pendamping suara Anda...",
+    "microphone": "Akses mikrofon diperlukan untuk panggilan suara. Anda dapat mengaktifkannya di Pengaturan, atau mengetikkan pesan sebagai gantinya.",
+    "billing": "Pendamping suara online untuk sementara tidak tersedia. Anda dapat melanjutkan dengan pendamping offline.",
+    "authentication": "Pendamping suara tidak dapat memverifikasi sesi ini. Masuk lagi atau gunakan pendamping offline untuk saat ini.",
+    "timeout": "Pendamping suara itu butuh waktu terlalu lama untuk merespons. Periksa koneksi Anda dan coba lagi.",
+    "network": "Kami tidak bisa menghubungi pendamping suara. Periksa koneksi Anda, lalu coba lagi atau lanjutkan offline.",
+    "genericVoice": "Sesuatu mengganggu panggilan suara. Coba lagi, atau lanjutkan dengan pendamping offline."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving ekspor data"
+  },
+  "notifications": {
+    "channelName": "Peringatan keselamatan"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving membutuhkan akses mikrofon untuk keamanan dan panggilan pendamping AI.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving menggunakan lokasi Anda untuk peta keselamatan dan fitur keselamatan terdekat.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving menggunakan lokasi Anda untuk mendukung kedatangan yang aman dan arus darurat.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving menggunakan lokasi latar belakang untuk kedatangan aman dan fitur zona bahaya terdekat.",
+      "NSCameraUsageDescription": "VeryLoving menggunakan kamera hanya jika Anda memilih untuk mengambil foto profil atau keselamatan.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving menggunakan perpustakaan foto Anda hanya jika Anda memilih profil atau gambar keamanan.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving menggunakan Bluetooth untuk terhubung ke perhiasan keselamatan NorthStar Anda.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving menggunakan Bluetooth untuk terhubung ke perhiasan keselamatan NorthStar Anda."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

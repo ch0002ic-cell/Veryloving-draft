@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Ɓeydu",
+    "apple": "Apple",
+    "back": "Ɓaawo",
+    "call": "Noddu",
+    "cancel": "Woppu",
+    "clear": "Laaɓtu",
+    "close": "Uddude",
+    "connect": "Jokkondirde",
+    "connecting": "Jokkondirde...",
+    "continue": "Jokkude",
+    "delete": "Mumtu",
+    "finish": "Timmin",
+    "friends": "Sehilaaɓe",
+    "google": "Google",
+    "home": "Suudu",
+    "loading": "Lowde...",
+    "map": "Kartal",
+    "notNow": "Wonaa jooni",
+    "remove": "Ittu",
+    "retry": "Endu kadi",
+    "retrying": "Etaade kadi",
+    "save": "Hisnu",
+    "selected": "Cuɓaaɗo",
+    "send": "Neldu",
+    "settings": "Ceŋorɗe",
+    "skip": "Diwtu",
+    "skipForNow": "Skip ngam jooni",
+    "skipTutorial": "Skip jaŋde",
+    "sos": "SOS",
+    "unknown": "Anndaaka",
+    "user": "VeryLoving kuutortooɗo",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ɗemngal",
+    "subtitle": "Suɓo ɗemngal kuutorteengal e nder app oo fof.",
+    "system": "Ko mbaydi njuɓɓudi",
+    "search": "Ɗemɗe njiylawu",
+    "noResults": "Alaa ɗemngal nanndungal e njiylawu maa.",
+    "english": "Engele",
+    "spanish": "Españool",
+    "french": "Ɗemngal Farayse",
+    "chineseSimplified": "Sinuwaa (Koolaaɗo)"
+  },
+  "phone": {
+    "label": "Limoore telefoŋ",
+    "placeholder": "Limoore telefoŋ",
+    "selectCountry": "Suɓo leydi walla diiwaan",
+    "searchCountry": "Yiylo leydi, kod, walla jokkorgal noddaango",
+    "noCountries": "Alaa leyɗe nannduɗe e njiylawu maa.",
+    "countryButton": "Waylude leydi, jooni %{country} ɓeyda %{callingCode}",
+    "inputAccessibility": "Limoore telefoŋ ngam %{country}",
+    "required": "Naatnu tonngoode telefoŋ.",
+    "tooShort": "Ngol tonngoode telefoŋ ina juuti no feewi.",
+    "tooLong": "Ngol tonngoode telefoŋ ina juuti sanne.",
+    "invalid": "Naatnu tonngoode telefoŋ moƴƴere wonande leydi cuɓaandi ndii.",
+    "valid": "Limoore telefoŋ hakkunde leyɗeele moƴƴo"
+  },
+  "auth": {
+    "onboardingTagline": "Sehil kisal neɗɗo ngam wakkatiiji hakkunde “miɗo laaɓi” e “miɗo haani ballal.”",
+    "createAccount": "Sos konte",
+    "continueOnboarding": "Jokkude e onboarding",
+    "createSubtitle": "Suɓo feere naatnude ngam reende nate kisal maa.",
+    "phoneVerification": "Hoolkiso telefoŋ",
+    "sendCode": "Neldu kodde",
+    "sendingCode": "Neldude kod...",
+    "verifyCode": "Hoolkiso kodde",
+    "sentTo": "Neldaama to %{phone}",
+    "yourPhone": "telefoŋ maa",
+    "verificationCode": "Kod hoolkiso",
+    "verify": "Hoolkiso",
+    "verifying": "Hoolkisaade...",
+    "invalidCode": "Naatnu kod hoolkiso.",
+    "signInFailedTitle": "Naatgol taƴaama",
+    "signInFailedMessage": "Min mbaawaano timminde naatgol. Ƴeewto jokkorde maa, ƴeewto kadi.",
+    "googleUnavailableTitle": "Google Naatgol ngol alaa",
+    "googleUnavailableMessage": "Naftoraade jonnde ƴellitaare nokkuure. Naatgol Google native ina gollira e nder mahngo ɓamtaare.",
+    "northStarTitle": "NorthStar jeewte",
+    "northStarSubtitle": "Pair jooni walla jokku ɓeydu ɗum caggal.",
+    "northStarBody": "VL01 wearable ina waawi udditde doggol kisal e tappirɗe e geɗe juutɗe.",
+    "setupJewelry": "Setde jeewte",
+    "meetCapybear": "Njokkondira e Capybear",
+    "meetCapybearSubtitle": "Sehil maa kisal leefɗo e dow kartal e nder noddaango.",
+    "capybearBody": "Capybear ina waawi wallude e mbaadi galle, mbaadi gardinooɗo, mbaadi caɗtundi, noddaango yaafuya, e ballal daande.",
+    "chooseVoice": "Suɓo daande",
+    "capybearReminder": "Capybear siftorde",
+    "remindersReady": "Siftorde leefnde ina hesɗi."
+  },
+  "permissions": {
+    "locationTitle": "Kisal nokku",
+    "locationSubtitle": "Hutortee ko e kartal, nokkuuji kulɓiniiɗi, gargol kisal, e SOS ngonka.",
+    "locationBody": "VeryLoving naamndii nokku ngam gardiiɗo ina waawa faamde ɗo ballal waawi haajde. Aɗa waawi waylude ɗum caggal e nder Cuɓe.",
+    "allowLocation": "Jaɓ nokku",
+    "notificationsTitle": "Jeertinaali kisal",
+    "notificationsSubtitle": "Notifikaaji ina mballita e ƴeewndorɗe e kewuuji caɗtuɗi.",
+    "notificationsBody": "Min kuutortoo tan ko humpitooji ngam humpitaade kisal, keso, e siftorde nde softinir-ɗaa.",
+    "enableNotifications": "Softina humpitooji",
+    "locationRationaleTitle": "Nokku ina jogoo ngonka kisal laaɓtuka",
+    "locationRationaleMessage": "VeryLoving huutortoo ko nokku maa ngam kartal kisal, nokkuuji kulɓiniiɗi, renndinde yaawnde, e SOS ngonka. Aɗa waawi waylude ɗum caggal e nder Cuɓe.",
+    "notificationsRationaleTitle": "Jeertinaango kisal ina haani humpiteede",
+    "notificationsRationaleMessage": "VeryLoving neldata ko siftorde ƴeewndo, kesɗitingol cakkitiingol, e jamirooje kisal ɗe softinir-ɗaa. Min kuutortaako humpitooji ngam yeeyde.",
+    "microphoneRationaleTitle": "Mikro ina semmbina noddaango kisal",
+    "microphoneRationaleMessage": "VeryLoving huutortoo ko mikroo maa tan so a fuɗɗiima noddaango AI sehil walla noddaango kisal.",
+    "bluetoothRationaleTitle": "Bluetooth ina jokkondiri e ɓoornotooɗo maa",
+    "bluetoothRationaleMessage": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jewelry, janngude ngonka jokkorde, e udditde doole kisal ummoraade e ɓoorneteeɗo.",
+    "cameraRationaleTitle": "Kamera ko cuɓal",
+    "cameraRationaleMessage": "VeryLoving huutortoo ko kamera tan so a suɓiima ƴettude foto lowre walla renndinde natal kisal."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving ina jokki e ndee doggol e nder Cuɓe e dashboard.",
+    "chooseVoiceTitle": "Cuɓo daande maa",
+    "chooseVoiceSubtitle": "Suɓo daande sehil ɓurnde welde e nande.",
+    "homeTitle": "Mode galle",
+    "homeSubtitle": "Ƴeewndo deeƴngo ngam kisal ñalnde kala.",
+    "guardianTitle": "Mode gardiiɗo",
+    "guardianSubtitle": "Rokkude konngol e yimɓe hoolaaɓe.",
+    "emergencyTitle": "Mode urgence",
+    "emergencySubtitle": "Tappirɗe joy ina mbaawi ɓeydaade haa SOS e jeertinaango gardiiɗo.",
+    "excuseTitle": "Yaafuya noddaango",
+    "excuseSubtitle": "Sosde daliilu moƴƴo ngam yaltude ngonka ka weldaani.",
+    "safetyCallTitle": "Noddaango kisal",
+    "safetyCallSubtitle": "Fuɗɗo noddaango sehil e sahaa tigi-rigi so aɗa yiɗi ballal.",
+    "practiceTitle": "Dingiral gollal",
+    "practiceSubtitle": "Ƴeewto jolɗe kisal e nder demo lowre."
+  },
+  "jewelry": {
+    "pairTitle": "Ɗaɗi NorthStar",
+    "pairSubtitle": "Aɗtu jeewte ɗee sara maa nde skanndata.",
+    "scan": "Skannde ngam kaɓirɗe",
+    "scanning": "Skannde ko ɓadii...",
+    "noDevices": "Alaa kaɓirɗe NorthStar ɓadiiɗe tawaa tawo.",
+    "scanStartFailed": "Bluetooth skannde waawaano fuɗɗaade. Tiiɗno enndu kadi.",
+    "scanFailed": "Min mbaawaano yiyde jeewte saraaji. Ƴeewto Bluetooth, jogo NorthStar ɓadiiɗo, enndit kadi.",
+    "scanAccessFailed": "Bluetooth skannde waawaano fuɗɗaade. Ƴeewto Bluetooth naatgol ngol, ƴeewto kadi.",
+    "permissionDenied": "Naatgol kaɓirgol ɓadiiɗo ina muusi. Jaɓ Bluetooth naatde e Dottaaɗe, caggal ɗuum ƴeewto.",
+    "connectTimeout": "NorthStar juutii no feewi ngam jokkondirde. Ɓadtin ɗum, ƴeewto kadi.",
+    "connectFailed": "Min mbaawaano jokkondirde e NorthStar. Ƴeewto so ina charge e saraaji, caggal ɗuum ƴeewto.",
+    "emptyTitle": "Alaa kaɓirɗe ɓadiiɗe tawo",
+    "emptyMessage": "Waɗde NorthStar charged e ɓadtaade ooɗoo telefoŋ, caggal ɗuum skannde kadi.",
+    "searchingMessage": "Njiylawu NorthStar kaɓirɗe ɓadiiɗe..."
+  },
+  "home": {
+    "subtitle": "Daasbord sehil kisal",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ina hesɗi",
+    "readyBody": "Daande, kartal, jeewte, e reenooɓe ko tap gooto.",
+    "safetyCall": "Noddaango kisal",
+    "northStarDevice": "NorthStar kaɓirgal",
+    "deviceConnected": "%{name} jokkondirɗo · %{battery}%",
+    "noDevice": "Alaa kaɓirgal jokkondirngal",
+    "manageDevice": "Njuɓɓudi kaɓirgal",
+    "mode": "Mode",
+    "modes": {
+      "home": "Saare",
+      "guardian": "Gardiiɗo",
+      "emergency": "Haawnaaki"
+    }
+  },
+  "map": {
+    "finding": "Yiytude nokku maa...",
+    "retry": "Njiylawu nokku",
+    "title": "Kartal kisal",
+    "previewSubtitle": "Expo Go ƴeewndo; Mapbox renndinde e nder mahdi ɓamtaare.",
+    "preview": "Yiyngo kartal",
+    "risk": "Riis: %{risk} · Rajo %{radius}m",
+    "refresh": "Hesɗitin nokku",
+    "refreshing": "Yiytude nokku...",
+    "updateFailed": "Min mbaawaano hesɗitinde nokkuure maa. Tiiɗno enndu kadi.",
+    "notRequested": "Heɓde nokku oo ɗaɓɓaaka. Aɗa waawi softinde ɗum caggal ɗuum ummoraade e Cuɓe.",
+    "permissionOff": "Naatgol nokku ina muusi. Softin ɗum e nder Cuɓe ngam senngo kartal kisal e dow maa.",
+    "timeout": "Nokku maa ina juuta ko ɓuri ko cikkuɗaa. Moƴƴin nokku mo maande mum ɓuri laaɓtude, ƴeewto-ɗaa kadi.",
+    "savedTitle": "Nokkuuji kisnaaɗi",
+    "savedEmptyTitle": "Alaa nokkuuji kisnaaɗi tawo",
+    "savedEmptyMessage": "Nokkuuji koolniiɗi ɗi resndu-ɗaa maa peeñ ɗoo ngam yaawde heɓde.",
+    "zones": {
+      "crowding": "Ɓooygol jamma",
+      "lowLighting": "Nokku ɗo annoore mum famɗi"
+    },
+    "risks": {
+      "low": "les",
+      "medium": "hakkunde",
+      "high": "toowɗo"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Jokkondirde...",
+    "offlineCompanion": "Sehil mo alaa e laylaytol",
+    "offline": "Ko aldaa e laylaytol",
+    "connected": "Jokkondirɗo",
+    "interrupted": "Jokkondiral taƴaama",
+    "ready": "Heɓi jokkondirde",
+    "connectingSecurely": "Jokkondirde e kisal e sehil daande maa...",
+    "messagesWaiting": {
+      "one": "%{count} mesaas ina fadi neldude",
+      "other": "%{count} mesasuuji ina padi neldude"
+    },
+    "useOffline": "Kuutoro sehil mo alaa e laylaytol",
+    "reconnect": "Jokkondirde e daande AI",
+    "typePlaceholder": "Winndu so haalde ina tiiɗi",
+    "endCall": "Noddaango joofngo",
+    "startCall": "Fuɗɗo noddaango",
+    "emptyTitle": "Jeewte mon fuɗɗotoo ko ɗo",
+    "emptyMessage": "Fuɗɗo noddaango walla winndu mesaas so aɗa hebii."
+  },
+  "chat": {
+    "waiting": "Ɗaɓɓude jokkondiral",
+    "notSent": "Mesaas neldaaka.",
+    "retryAccessibility": "Eto neldude mesaas"
+  },
+  "history": {
+    "clearTitle": "Laɓɓin daartol yeewtere?",
+    "clearMessage": "Ɗuum ittata ko AI mesasuuji sehilaaɓe hisnaaɗi e ndee kaɓirgol.",
+    "deleteTitle": "Momtude ndee yeewtere?",
+    "cannotUndo": "Ɗum waawaa ruttaade.",
+    "title": "Daartol yeewtere",
+    "subtitle": "AI mesasuuji sehilaaɓe keɓtinaaɗi e ooɗoo kaɓirgol.",
+    "empty": "Alaa jeewte keɓaaɗe tawo.",
+    "emptyTitle": "Alaa jeewte mbaɗaama tawo",
+    "emptyMessage": "Jeewte maa AI sehil maa peeñ ɗoo caggal noddaango maa gadano.",
+    "loadFailed": "Min mbaawaano loowde daartol yeewtere. Tiiɗno enndu kadi.",
+    "clearFailed": "Min mbaawaano laaɓtinde daartol yeewtere. Tiiɗno enndu kadi.",
+    "deleteFailed": "Min mbaawaa momtude ndeen yeewtere. Tiiɗno enndu kadi.",
+    "aiCompanion": "AI sehil",
+    "resume": "Fuɗɗoode",
+    "clearAll": "Laɓɓin daartol fof",
+    "roles": {
+      "assistant": "sehil",
+      "user": "aan"
+    }
+  },
+  "voices": {
+    "title": "Daandeeji noddaango kisal am",
+    "subtitle": "Suɓo daande sehil nde njiɗɗaa nande.",
+    "test": "Daande jarriborde",
+    "stop": "Dartin sample",
+    "selectionFailedTitle": "Suɓngo ngoo hisnaaka",
+    "selectionFailedMessage": "Etoo suɓaade daande ndee kadi.",
+    "sampleFailedTitle": "Sample unavailable",
+    "sampleFailedMessage": "This voice sample could not be played. Tiiɗno enndu kadi.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "softuɗo, deeƴɗo, leydi"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "bright, reassuring, conversational"
+      },
+      "boyfriend": {
+        "name": "Boyfriend",
+        "description": "steady, affectionate, present"
+      },
+      "muscleMan": {
+        "name": "Gorko ɓaleejo",
+        "description": "confident, protective, motivating"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Daande",
+    "changeVoice": "Waylu daande",
+    "showCompanion": "Hollit sehil",
+    "offlineMode": "Offline mode",
+    "offlineModeSubtitle": "Hutoro jaabawuuli sehilaaɓe denndaaɗi so tawii lowre ndee walla Hume seedanteeje ɗee ngalaa.",
+    "privacyData": "Sirlu & dokke",
+    "privacyBody": "Yaltin walla momtu dokke nokkuuje mooftaaɗe e ndee kaɓirgol.",
+    "preparingExport": "Peewnugol yaltinnde...",
+    "exportData": "Yaltin dokke am",
+    "privacyPolicy": "Politik sirlu",
+    "deleting": "Momtude...",
+    "deleteAll": "Mumtu denndaangal dokke nokkuuje",
+    "deviceManagement": "Njuɓɓudi kaɓirɗe",
+    "emergencyContacts": "Jokkondiral e caɗeele",
+    "signOut": "Yaltu",
+    "exportFailedTitle": "Njaltugol ngol ronkaama",
+    "exportFailedMessage": "Waawaa yaltinde dokke maa jooni.",
+    "deleteConfirmTitle": "Mumtude denndaangal dokke nokkuuje?",
+    "deleteConfirmMessage": "Ɗuum ittata ko nate maa, dottaaɗe maa, jokkorɗe maa, daartol yeewtere maa, siftorde yamiroore maa, e jonnde hoolkiso nokkuure e ndee kaɓirgol.",
+    "deleteEverything": "Mumtu kala ko woni",
+    "deleteFailedTitle": "Mumtugol ngol ronkaama",
+    "deleteFailedMessage": "Waawaa momtude dokke nokkuuje jooni.",
+    "linkFailed": "Waawaa udditaade jokkorde",
+    "sections": {
+      "language": "Ɗemngal",
+      "languageSubtitle": "Ɗemngal jokkorgal e yamiroore system",
+      "companion": "Sehil",
+      "companionSubtitle": "Daande e ɓure ɗe ngonaa e laylaytol",
+      "deviceSafety": "Kaɓirɗe e kisal",
+      "deviceSafetySubtitle": "NorthStar, reenooɓe, e jokkondiral e sahaa caɗtuɗo",
+      "privacy": "Sirlu e dokke",
+      "privacySubtitle": "Daartol, yaltinnde, momtugol, e politik",
+      "account": "Konte",
+      "accountSubtitle": "Joɗnde maa VeryLoving jooni"
+    },
+    "updateFailedTitle": "Setting oo hisnaaka",
+    "updateFailedMessage": "Min mbaawaano hisnude ndeen ɓural. Tiiɗno enndu kadi.",
+    "signOutFailedTitle": "Waawaa yaltude",
+    "signOutFailedMessage": "Joɗnde maa ina jokki haa jooni. Tiiɗno enndu kadi."
+  },
+  "contacts": {
+    "title": "Jokkondiral e sahaa",
+    "subtitle": "Yimɓe hoolaaɓe ina ngoodi e sahaa doggol kisal.",
+    "addTitle": "Ɓeydu jokkondiral ɓuuɓngal",
+    "name": "Innde",
+    "namePlaceholder": "Innde jokkorde",
+    "phone": "Limoore telefoŋ jokkondirɗo",
+    "add": "Ɓeydu jokkondiral",
+    "empty": "Alaa jokkondiral urgence ɓeydaama tawo.",
+    "emptyTitle": "Alaa jokkondiral urgence tawo",
+    "emptyMessage": "Addude neɗɗo mo hoolaaki ngam ɓe mbaawa hesɗitinde nde safety flow ina haani ɓe.",
+    "removeTitle": "Ittugol %{name}?",
+    "removeMessage": "Oo neɗɗo natta feeñde e doggol maa emergency.",
+    "nameRequired": "Naatnu innde jokkorde ndee.",
+    "saveFailedTitle": "Jokkondiral ngal hisnaaka",
+    "saveFailedMessage": "Min mbaawaano hisnude ndee jokkorde. Ƴeewto defte ɗee, ƴeewto kadi.",
+    "removeFailedTitle": "Jokkondiral ngal ittaaka",
+    "removeFailedMessage": "Min mbaawaano ittude ndee jokkorde. Tiiɗno enndu kadi.",
+    "callAccessibility": "Noddu %{name}",
+    "removeAccessibility": "Ittugol %{name}"
+  },
+  "device": {
+    "title": "Njuɓɓudi kaɓirɗe",
+    "subtitle": "Njuɓɓudi kaɓirgal maa NorthStar.",
+    "connected": "Jokkondirɗo · %{battery}% batiri",
+    "none": "Alaa kaɓirɗe jokkondirɗe",
+    "disconnect": "Ceerno kaɓirgal",
+    "connect": "Jokkondirde e kaɓirgal"
+  },
+  "friends": {
+    "title": "Sehilaaɓe",
+    "subtitle": "Gardiiɓe, ɗaɓɓaande, e grafik emergency.",
+    "addDemo": "Ɓeydu sehil demo",
+    "emptyTitle": "Taarde kisal maa ina woodi",
+    "emptyMessage": "Sehilaaɓe e reenooɓe hoolaaɓe maa peeñ ɗoo so ɓe ɓeydaama.",
+    "newGuardian": "Gardinooɗo keso",
+    "statuses": {
+      "guardian": "Gardiiɗo",
+      "pending": "ina fadi"
+    }
+  },
+  "emergency": {
+    "title": "Caɗeele SOS",
+    "subtitle": "Escalate tan ko nde aɗa sokli ballal ko yaawi.",
+    "body": "Ɗuum maa humpit doggol kisal maa e peewnugol jokkondiral e sahaa caɗtuɗo.",
+    "activate": "Softina SOS",
+    "callCompanion": "Noddu AI sehil",
+    "notificationTitle": "SOS ina huutoree",
+    "notificationBody": "Doggol maa emergency ina hesɗi.",
+    "readyTitle": "SOS ina hesɗi",
+    "callContact": "Noddu %{name}?",
+    "addContact": "Ɓeydu jokkorde ɓuuɓnde e nder Dottaaɗe.",
+    "quickShareTitle": "Rendinde ko yaawi",
+    "quickShareMessage": "Nokku renndinde stub ina hesɗi. Jokkondir e toɓɓere joofnirde renndinde backend ngam neldude jokkorɗe nguurndam."
+  },
+  "quickShare": {
+    "title": "Rendinde ko yaawi",
+    "subtitle": "Nokku share flow ina hesɗi."
+  },
+  "capybearTap": {
+    "title": "Capybear tappirde",
+    "subtitle": "Tappu NorthStar maa laabi ɗiɗi ngam jippinde oraas kisal.",
+    "body": "Laawol geɗel ina hesɗi ngam wiring kewu BLE."
+  },
+  "debug": {
+    "title": "VeryLoving hello debug",
+    "subtitle": "Laawol ɓamtaare tan."
+  },
+  "errors": {
+    "voiceOffline": "Aɗa nanndi e neɗɗo mo alaa e laylaytol. Mesaas maa neldee so a jokkondirii.",
+    "voiceQueued": "Nelal hisnaama. Ma ɗum nelde so sehil daande oo jokkondirii.",
+    "voiceRetrying": "Etaade neldude mesaas maa kadi...",
+    "voiceConnecting": "Jokkondirde e kisal e sehil daande maa...",
+    "microphone": "Naatgol mikroo ina haani ngam noddaango daande. Aɗa waawi softinde ɗum e Cuɓe, walla winndude mesaas e nokku mum.",
+    "billing": "Sehil daande internet oo heɓaaka e sahaa. Aɗa waawi jokkude e sehil mo alaa e laylaytol.",
+    "authentication": "Sehil daande oo waawaa hoolkisaade ndee jonnde. Naat kadi walla huutoro sehil mo alaa jokkorgal jooni.",
+    "timeout": "Sehil daande oo juutii no feewi ngam jaabaade. Ƴeewto jokkorde maa, ƴeewto kadi.",
+    "network": "Min mbaawaano yettaade sehil daande. Ƴeewto jokkorde maa, caggal ɗuum ƴeewto walla jokku tawa aɗa woni e jokkorde.",
+    "genericVoice": "Won ko taƴi noddaango daande ngoo. Enndu kadi, walla jokku e sehil mo alaa jokkorgal."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving yaltinnde dokke"
+  },
+  "notifications": {
+    "channelName": "Jeertinaali kisal"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving ina haani heɓde mikroo ngam kisal e noddaali AI sehilaaɓe.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving huutortoo ko nokku maa ngam kartal kisal e geɗe kisal ɓadiiɗe.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving huutortoo ko nokku maa ngam wallitde gartugol kisal e yah-ngartaa.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving huutortoo ko nokku caggal ngam yettaade kisal e sifaaji nokkuuji kulɓiniiɗi ɓadiiɗi.",
+      "NSCameraUsageDescription": "VeryLoving huutortoo ko kamera tan so a suɓiima ƴettude foto nate walla foto kisal.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving huutortoo ko defterdu foto maa tan so a suɓiima natal nate walla kisal.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jeewte kisal maa.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jeewte kisal maa."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

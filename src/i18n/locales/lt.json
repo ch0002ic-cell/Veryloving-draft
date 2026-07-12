@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Pridėti",
+    "apple": "Apple",
+    "back": "Atgal",
+    "call": "Skambinti",
+    "cancel": "Atšaukti",
+    "clear": "Išvalyti",
+    "close": "Uždaryti",
+    "connect": "Prisijungti",
+    "connecting": "Jungiamasi...",
+    "continue": "Tęsti",
+    "delete": "Ištrinti",
+    "finish": "Baigti",
+    "friends": "Draugai",
+    "google": "Google",
+    "home": "Pradžia",
+    "loading": "Įkeliama...",
+    "map": "Žemėlapis",
+    "notNow": "Ne dabar",
+    "remove": "Pašalinti",
+    "retry": "Bandyti dar kartą",
+    "retrying": "Bandymas iš naujo",
+    "save": "Išsaugoti",
+    "selected": "Pasirinkta",
+    "send": "Siųsti",
+    "settings": "Nustatymai",
+    "skip": "Praleisti",
+    "skipForNow": "Kol kas praleisti",
+    "skipTutorial": "Praleisti mokymo programą",
+    "sos": "SOS",
+    "unknown": "Nežinoma",
+    "user": "VeryLoving vartotojas",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Kalba",
+    "subtitle": "Pasirinkite visoje programoje naudojamą kalbą.",
+    "system": "Numatytoji sistema",
+    "search": "Ieškoti kalbų",
+    "noResults": "Nė viena kalba neatitinka jūsų paieškos.",
+    "english": "Anglų",
+    "spanish": "Ispanų",
+    "french": "Prancūzų",
+    "chineseSimplified": "Kinų (supaprastinta)"
+  },
+  "phone": {
+    "label": "Telefono numeris",
+    "placeholder": "Telefono numeris",
+    "selectCountry": "Pasirinkite šalį arba regioną",
+    "searchCountry": "Ieškoti šalies, kodo arba rinkimo priešdėlio",
+    "noCountries": "Nė viena šalis neatitinka jūsų paieškos.",
+    "countryButton": "Keisti šalį, šiuo metu %{country} plius %{callingCode}",
+    "inputAccessibility": "Telefono numeris %{country}",
+    "required": "Įveskite telefono numerį.",
+    "tooShort": "Šis telefono numeris per trumpas.",
+    "tooLong": "Šis telefono numeris per ilgas.",
+    "invalid": "Įveskite galiojantį pasirinktos šalies telefono numerį.",
+    "valid": "Galiojantis tarptautinis telefono numeris"
+  },
+  "auth": {
+    "onboardingTagline": "Asmeninis saugumo palydovas akimirkoms tarp \"Man viskas gerai\" ir \"Man reikia pagalbos\".",
+    "createAccount": "Sukurti paskyrą",
+    "continueOnboarding": "Tęsti parengimą",
+    "createSubtitle": "Pasirinkite prisijungimo būdą, kad apsaugotumėte saugos diagramą.",
+    "phoneVerification": "Telefono patvirtinimas",
+    "sendCode": "Siųsti kodą",
+    "sendingCode": "Siunčiamas kodas...",
+    "verifyCode": "Patikrinti kodą",
+    "sentTo": "Išsiųsta %{phone}",
+    "yourPhone": "Jūsų telefonas",
+    "verificationCode": "Patvirtinimo kodas",
+    "verify": "Patikrinti",
+    "verifying": "Tikrinama...",
+    "invalidCode": "Įveskite patvirtinimo kodą.",
+    "signInFailedTitle": "Prisijungimas nutrauktas",
+    "signInFailedMessage": "Nepavyko užbaigti prisijungimo. Patikrinkite ryšį ir bandykite dar kartą.",
+    "googleUnavailableTitle": "Google Prisijungimas nepasiekiamas",
+    "googleUnavailableMessage": "Naudojant vietos plėtros sesiją. \"Native Google Sign-In\" veikia kūrimo versijoje.",
+    "northStarTitle": "NorthStar papuošalai",
+    "northStarSubtitle": "Susiekite dabar arba tęskite ir pridėkite vėliau.",
+    "northStarBody": "Nešiojamas VL01 gali sukelti saugos srautus bakstelėjimais ir ilgais paspaudimo gestais.",
+    "setupJewelry": "Papuošalų nustatymas",
+    "meetCapybear": "Susipažinkite su Capybear",
+    "meetCapybearSubtitle": "Jūsų švelnus saugos palydovas žemėlapyje ir skambučiuose.",
+    "capybearBody": "Capybear gali padėti naudoti namų režimą, globėjo režimą, skubios pagalbos režimą, pasiteisinimo skambučius ir palaikymą balsu.",
+    "chooseVoice": "Pasirinkite balsą",
+    "capybearReminder": "Capybear priminimas",
+    "remindersReady": "Švelnūs priminimai yra paruošti."
+  },
+  "permissions": {
+    "locationTitle": "Vietos sauga",
+    "locationSubtitle": "Naudojamas žemėlapiui, pavojaus zonoms, saugiam atvykimui ir SOS kontekstui.",
+    "locationBody": "VeryLoving prašo vietos, kad globėjai suprastų, kur gali prireikti pagalbos. Vėliau tai galite pakeisti skiltyje \"Settings\".",
+    "allowLocation": "Leisti vietą",
+    "notificationsTitle": "Saugos įspėjimai",
+    "notificationsSubtitle": "Pranešimai palaiko registraciją ir kritinius įvykius.",
+    "notificationsBody": "Pranešimus naudojame tik saugos raginimams, kritinių situacijų naujinimams ir jūsų įgalintiems priminimams.",
+    "enableNotifications": "Įgalinti pranešimus",
+    "locationRationaleTitle": "Vieta užtikrina tikslų saugos kontekstą",
+    "locationRationaleMessage": "VeryLoving naudoja jūsų buvimo vietą saugos žemėlapiui, pavojaus zonoms, greitajam bendrinimui ir SOS kontekstui. Vėliau tai galite pakeisti skiltyje \"Settings\".",
+    "notificationsRationaleTitle": "Saugos įspėjimams reikia pranešimų",
+    "notificationsRationaleMessage": "VeryLoving siunčia priminimus apie atvykimą, skubios pagalbos atnaujinimus ir saugos raginimus, kuriuos įjungiate. Skelbimams pranešimų nenaudojame.",
+    "microphoneRationaleTitle": "Mikrofonas maitina saugos skambučius",
+    "microphoneRationaleMessage": "VeryLoving naudoja mikrofoną tik tada, kai pradedate AI kompanioną arba saugos skambutį.",
+    "bluetoothRationaleTitle": "Bluetooth sujungia nešiojamąjį įrenginį",
+    "bluetoothRationaleMessage": "VeryLoving naudoja Bluetooth, kad susietų su NorthStar papuošalais, nuskaitytų ryšio būseną ir suaktyvintų saugos srautus iš nešiojamojo įrenginio.",
+    "cameraRationaleTitle": "Fotoaparatas neprivalomas",
+    "cameraRationaleMessage": "VeryLoving naudoja fotoaparatą tik tada, kai pasirenkate padaryti profilio nuotrauką arba bendrinti saugos vaizdą."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving išlaiko šį srautą iš parametrų ir ataskaitų srities.",
+    "chooseVoiceTitle": "Pasirinkite savo balsą",
+    "chooseVoiceSubtitle": "Pasirinkite kompaniono balsą, kurį saugiausia girdėti.",
+    "homeTitle": "Namų režimas",
+    "homeSubtitle": "Tylus stebėjimas kasdieniam saugumui.",
+    "guardianTitle": "Globėjo režimas",
+    "guardianSubtitle": "Bendrinkite kontekstą su patikimais žmonėmis.",
+    "emergencyTitle": "Avarinis režimas",
+    "emergencySubtitle": "Penki bakstelėjimai gali būti perkelti į SOS ir globėjų įspėjimus.",
+    "excuseTitle": "Pasiteisinimo skambutis",
+    "excuseSubtitle": "Sukurkite grakščią priežastį palikti nepatogią situaciją.",
+    "safetyCallTitle": "Saugos skambutis",
+    "safetyCallSubtitle": "Pradėkite kompanionų skambutį realiuoju laiku, kai jums reikia pagalbos.",
+    "practiceTitle": "Praktikos scena",
+    "practiceSubtitle": "Išbandykite saugos srautus žemo slėgio demonstracijoje."
+  },
+  "jewelry": {
+    "pairTitle": "Susieti NorthStar",
+    "pairSubtitle": "Nuskaitymo metu laikykite papuošalus šalia.",
+    "scan": "Nuskaitykite įrenginius",
+    "scanning": "Skenuojama netoliese...",
+    "noDevices": "Netoliese esančių NorthStar įrenginių dar nerasta.",
+    "scanStartFailed": "Bluetooth nuskaitymo pradėti nepavyko. Bandykite dar kartą.",
+    "scanFailed": "Netoliese negalėjome rasti papuošalų. Patikrinkite Bluetooth, laikykite NorthStar arti ir bandykite dar kartą.",
+    "scanAccessFailed": "Bluetooth nuskaitymo pradėti nepavyko. Patikrinkite Bluetooth prieigą ir bandykite dar kartą.",
+    "permissionDenied": "Netoliese esančio įrenginio prieiga išjungta. Leiskite Bluetooth prieigą skiltyje \"Settings\", tada bandykite dar kartą.",
+    "connectTimeout": "NorthStar užtruko per ilgai prisijungti. Perkelkite jį arčiau ir bandykite dar kartą.",
+    "connectFailed": "Negalėjome prisijungti prie NorthStar. Patikrinkite, ar jis įkrautas ir netoliese, tada bandykite dar kartą.",
+    "emptyTitle": "Netoliese esančių įrenginių dar nėra",
+    "emptyMessage": "Laikykite NorthStar įkrautą ir arti šio telefono, tada nuskaitykite dar kartą.",
+    "searchingMessage": "Ieškote netoliese esančių NorthStar įrenginių..."
+  },
+  "home": {
+    "subtitle": "Saugos palydovo prietaisų skydelis",
+    "modeStatus": "%{mode} REŽIMAS",
+    "companionReady": "%{name} paruošta",
+    "readyBody": "Balsas, žemėlapis, papuošalai ir sergėtojai yra vienu bakstelėjimu.",
+    "safetyCall": "Saugos skambutis",
+    "northStarDevice": "NorthStar įrenginys",
+    "deviceConnected": "%{name} prijungtas · %{battery}%",
+    "noDevice": "Įrenginys neprijungtas",
+    "manageDevice": "Tvarkyti įrenginį",
+    "mode": "Režimas",
+    "modes": {
+      "home": "Pradžia",
+      "guardian": "Globėjas",
+      "emergency": "Avarinis"
+    }
+  },
+  "map": {
+    "finding": "Randate savo vietą...",
+    "retry": "Pakartotinio bandymo vieta",
+    "title": "Saugos žemėlapis",
+    "previewSubtitle": "Expo Go peržiūra; Mapbox atvaizduojamas kūrimo versijoje.",
+    "preview": "Žemėlapio peržiūra",
+    "risk": "Rizika: %{risk} · Spindulys %{radius}m",
+    "refresh": "Atnaujinti vietą",
+    "refreshing": "Randama vieta...",
+    "updateFailed": "Nepavyko atnaujinti jūsų buvimo vietos. Bandykite dar kartą.",
+    "notRequested": "Prieigos prie vietos užklausa nepateikta. Vėliau galite jį įjungti nustatymuose.",
+    "permissionOff": "Prieiga prie vietos išjungta. Įjunkite jį nustatymuose, kad saugos žemėlapis būtų sutelktas į jus.",
+    "timeout": "Jūsų vieta užtrunka ilgiau nei tikėtasi. Perkelkite kur nors su aiškesniu signalu ir bandykite dar kartą.",
+    "savedTitle": "Išsaugotos vietos",
+    "savedEmptyTitle": "Dar nėra išsaugotų vietų",
+    "savedEmptyMessage": "Čia bus rodomos išsaugotos patikimos vietos, kad galėtumėte greitai pasiekti.",
+    "zones": {
+      "crowding": "Vėlyvą naktį minios",
+      "lowLighting": "Prasto apšvietimo sritis"
+    },
+    "risks": {
+      "low": "žemas",
+      "medium": "Vidutinis",
+      "high": "aukštas"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Jungiamasi...",
+    "offlineCompanion": "Autonominis pagalbininkas",
+    "offline": "Neprisijungęs",
+    "connected": "Prijungtas",
+    "interrupted": "Ryšys nutrūko",
+    "ready": "Paruošta prisijungti",
+    "connectingSecurely": "Saugus prisijungimas prie balso kompaniono...",
+    "messagesWaiting": {
+      "one": "%{count} pranešimas, laukiantis išsiuntimo",
+      "other": "%{count} pranešimai, laukiantys išsiuntimo"
+    },
+    "useOffline": "Naudoti autonominį palydovą",
+    "reconnect": "Iš naujo prisijunkite prie balso AI",
+    "typePlaceholder": "Įveskite, jei sunku kalbėti",
+    "endCall": "Baigti skambutį",
+    "startCall": "Pradėti skambutį",
+    "emptyTitle": "Jūsų pokalbis prasideda čia",
+    "emptyMessage": "Pradėkite skambutį arba įveskite pranešimą, kai būsite pasiruošę."
+  },
+  "chat": {
+    "waiting": "Laukiama ryšio",
+    "notSent": "Pranešimas neišsiųstas.",
+    "retryAccessibility": "Pakartoti bandymą siųsti pranešimą"
+  },
+  "history": {
+    "clearTitle": "Išvalyti pokalbių istoriją?",
+    "clearMessage": "Tai pašalina išsaugotus AI papildomus pranešimus iš šio įrenginio.",
+    "deleteTitle": "Naikinti šį pokalbį?",
+    "cannotUndo": "To anuliuoti negalima.",
+    "title": "Pokalbių retrospektyva",
+    "subtitle": "AI šiame įrenginyje išsaugotus papildomus pranešimus.",
+    "empty": "Dar neišsaugota jokių pokalbių.",
+    "emptyTitle": "Pokalbių dar nėra",
+    "emptyMessage": "Jūsų AI kompanionų pokalbiai bus rodomi čia po pirmojo skambučio.",
+    "loadFailed": "Nepavyko įkelti pokalbių istorijos. Bandykite dar kartą.",
+    "clearFailed": "Negalėjome išvalyti pokalbių istorijos. Bandykite dar kartą.",
+    "deleteFailed": "Negalėjome ištrinti šio pokalbio. Bandykite dar kartą.",
+    "aiCompanion": "AI kompanionas",
+    "resume": "santrauka",
+    "clearAll": "Išvalyti visą istoriją",
+    "roles": {
+      "assistant": "kompanionas",
+      "user": "jūs"
+    }
+  },
+  "voices": {
+    "title": "Mano saugos skambučio balsai",
+    "subtitle": "Pasirinkite kompanioną balsą, kuris jaučiasi teisingas girdėti.",
+    "test": "Bandomasis balsas",
+    "stop": "Sustabdyti mėginį",
+    "selectionFailedTitle": "Pažymėta vieta neįrašyta",
+    "selectionFailedMessage": "Bandykite pasirinkti balsą dar kartą.",
+    "sampleFailedTitle": "Pavyzdžio nėra",
+    "sampleFailedMessage": "Šio balso pavyzdžio paleisti nepavyko. Bandykite dar kartą.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "minkštas, ramus, įžeminantis"
+      },
+      "bestie": {
+        "name": "Geriausias",
+        "description": "ryškus, raminantis, pokalbis"
+      },
+      "boyfriend": {
+        "name": "Vaikinas",
+        "description": "pastovus, meilus, esamas"
+      },
+      "muscleMan": {
+        "name": "Raumenų žmogus",
+        "description": "pasitikintis savimi, saugantis, motyvuojantis"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Balsas",
+    "changeVoice": "Keisti balsą",
+    "showCompanion": "Rodyti kompanioną",
+    "offlineMode": "Režimas neprisijungus",
+    "offlineModeSubtitle": "Naudokite susietus papildomus atsakymus, kai tinklo arba Hume kredencialai nepasiekiami.",
+    "privacyData": "Privatumas ir duomenys",
+    "privacyBody": "Eksportuokite arba ištrinkite šiame įrenginyje saugomus vietinius duomenis.",
+    "preparingExport": "Ruošiamasi eksportuoti...",
+    "exportData": "Eksportuoti mano duomenis",
+    "privacyPolicy": "Privatumo politika",
+    "deleting": "Ištrynimas...",
+    "deleteAll": "Naikinti visus vietinius duomenis",
+    "deviceManagement": "Įrenginių valdymas",
+    "emergencyContacts": "Skubios pagalbos kontaktai",
+    "signOut": "Atsijungti",
+    "exportFailedTitle": "Eksportuoti nepavyko",
+    "exportFailedMessage": "Šiuo metu neįmanoma eksportuoti duomenų.",
+    "deleteConfirmTitle": "Naikinti visus vietinius duomenis?",
+    "deleteConfirmMessage": "Iš šio įrenginio pašalinamas jūsų profilis, nustatymai, kritinės padėties kontaktai, pokalbių istorija, leidimų priminimai ir vietinis autentifikavimo seansas.",
+    "deleteEverything": "Ištrinti viską",
+    "deleteFailedTitle": "Naikinti nepavyko",
+    "deleteFailedMessage": "Šiuo metu neįmanoma panaikinti vietinių duomenų.",
+    "linkFailed": "Neįmanoma atidaryti saito",
+    "sections": {
+      "language": "Kalba",
+      "languageSubtitle": "Sąsajos ir sistemos leidimų kalba",
+      "companion": "Kompanionas",
+      "companionSubtitle": "Balso ir neprisijungus nuostatos",
+      "deviceSafety": "Prietaisai ir sauga",
+      "deviceSafetySubtitle": "NorthStar, globėjai ir skubios pagalbos kontaktai",
+      "privacy": "Privatumas ir duomenys",
+      "privacySubtitle": "Istorija, eksportavimas, naikinimas ir politika",
+      "account": "Sąskaita",
+      "accountSubtitle": "Jūsų dabartinis VeryLoving seansas"
+    },
+    "updateFailedTitle": "Nustatymas neišsaugotas",
+    "updateFailedMessage": "Mes negalėjome išsaugoti šios pirmenybės. Bandykite dar kartą.",
+    "signOutFailedTitle": "Nepavyko atsijungti",
+    "signOutFailedMessage": "Jūsų seansas vis dar aktyvus. Bandykite dar kartą."
+  },
+  "contacts": {
+    "title": "Skubios pagalbos kontaktai",
+    "subtitle": "Patikimi žmonės pasiekiami saugos srautų metu.",
+    "addTitle": "Pridėti skubios pagalbos kontaktą",
+    "name": "Vardas, pavadinimas",
+    "namePlaceholder": "Kontaktinis vardas",
+    "phone": "Kontaktinis telefono numeris",
+    "add": "Pridėti kontaktą",
+    "empty": "Dar nepridėta jokių skubios pagalbos kontaktų.",
+    "emptyTitle": "Dar nėra skubios pagalbos kontaktų",
+    "emptyMessage": "Pridėkite asmenį, kuriuo pasitikite, kad jis būtų pasirengęs, kai jo prireiks saugos srautui.",
+    "removeTitle": "Pašalinti %{name}?",
+    "removeMessage": "Šis asmuo nebebus rodomas jūsų skubios pagalbos sraute.",
+    "nameRequired": "Įveskite kontakto vardą.",
+    "saveFailedTitle": "Kontaktas neišsaugotas",
+    "saveFailedMessage": "Nepavyko įrašyti šio kontakto. Patikrinkite išsamią informaciją ir bandykite dar kartą.",
+    "removeFailedTitle": "Kontaktas nepašalintas",
+    "removeFailedMessage": "Nepavyko pašalinti šio kontakto. Bandykite dar kartą.",
+    "callAccessibility": "Skambinkite %{name}",
+    "removeAccessibility": "Pašalinti %{name}"
+  },
+  "device": {
+    "title": "Įrenginių valdymas",
+    "subtitle": "Tvarkykite NorthStar įrenginį.",
+    "connected": "Prijungta · %{battery}% baterija",
+    "none": "Nėra prijungtų įrenginių",
+    "disconnect": "Atjunkite įrenginį",
+    "connect": "Prijungti įrenginį"
+  },
+  "friends": {
+    "title": "Draugai",
+    "subtitle": "Globėjai, prašymai ir skubios pagalbos grafikas.",
+    "addDemo": "Pridėti demonstracinį draugą",
+    "emptyTitle": "Jūsų saugos ratas tuščias",
+    "emptyMessage": "Patikimi draugai ir globėjai bus rodomi čia, kai jie bus pridėti.",
+    "newGuardian": "Naujas sargas",
+    "statuses": {
+      "guardian": "Globėjas",
+      "pending": "Laukiama"
+    }
+  },
+  "emergency": {
+    "title": "Avarinė SOS",
+    "subtitle": "Eskaluokite tik tada, kai jums reikia neatidėliotinos pagalbos.",
+    "body": "Tai praneš apie jūsų saugos srautą ir paruoš skubios pagalbos kontaktus.",
+    "activate": "Aktyvinti SOS",
+    "callCompanion": "Skambinkite AI kompanionui",
+    "notificationTitle": "SOS suaktyvintas",
+    "notificationBody": "Jūsų avarinis srautas paruoštas.",
+    "readyTitle": "SOS paruošta",
+    "callContact": "Skambinkite %{name}?",
+    "addContact": "Pridėkite skubios pagalbos kontaktą skiltyje \"Settings\".",
+    "quickShareTitle": "Greitas bendrinimas",
+    "quickShareMessage": "Vietos bendrinimo stub yra paruoštas. Prijunkite vidinio bendrinimo galinį punktą, kad siųstumėte tiesiogines nuorodas."
+  },
+  "quickShare": {
+    "title": "Greitas bendrinimas",
+    "subtitle": "Vietos bendrinimo srautas paruoštas."
+  },
+  "capybearTap": {
+    "title": "Capybear bakstelėkite",
+    "subtitle": "Dukart bakstelėkite NorthStar, kad numestumėte apsauginį apelsiną.",
+    "body": "Gestų maršrutas paruoštas BLE įvykio laidams."
+  },
+  "debug": {
+    "title": "VeryLoving derinimo puslapis",
+    "subtitle": "Tik kūrimo maršrutas."
+  },
+  "errors": {
+    "voiceOffline": "Atrodo, kad neprisijungęs. Jūsų pranešimas bus išsiųstas, kai vėl prisijungsite.",
+    "voiceQueued": "Žinutė išsaugota. Jis bus išsiųstas, kai balso kompanionas vėl prisijungs.",
+    "voiceRetrying": "Bandoma siųsti pranešimą dar kartą...",
+    "voiceConnecting": "Saugus prisijungimas prie balso kompaniono...",
+    "microphone": "Balso skambučiams reikalinga prieiga prie mikrofono. Galite jį įjungti nustatymuose arba įvesti pranešimą.",
+    "billing": "Internetinis balso pagalbininkas laikinai nepasiekiamas. Galite tęsti naudodami autonominį kompanioną.",
+    "authentication": "Balso kompanionui nepavyko patikrinti šio seanso. Prisijunkite dar kartą arba kol kas naudokite pagalbinę priemonę neprisijungus.",
+    "timeout": "Balso kompanionas užtruko per ilgai atsakyti. Patikrinkite ryšį ir bandykite dar kartą.",
+    "network": "Negalėjome susisiekti su balso kompanionu. Patikrinkite ryšį, tada bandykite dar kartą arba tęskite neprisijungę.",
+    "genericVoice": "Kažkas nutraukė balso skambutį. Bandykite dar kartą arba tęskite naudodami autonominį palydovą."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving duomenų eksportas"
+  },
+  "notifications": {
+    "channelName": "Saugos įspėjimai"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving reikia prieigos prie mikrofono, kad būtų užtikrintas saugumas ir AI papildomi skambučiai.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving naudoja jūsų buvimo vietą saugos žemėlapiui ir netoliese esančioms saugos funkcijoms.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving naudoja jūsų buvimo vietą, kad palaikytų saugų atvykimą ir skubios pagalbos srautus.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving naudoja foninę vietą saugiam atvykimui ir netoliese esančioms pavojaus zonos funkcijoms.",
+      "NSCameraUsageDescription": "VeryLoving naudoja fotoaparatą tik tada, kai pasirenkate fotografuoti profilį arba saugos nuotrauką.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving naudoja nuotraukų biblioteką tik tada, kai pasirenkate profilį arba saugos vaizdą.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving naudoja Bluetooth prisijungti prie NorthStar saugos papuošalų.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving naudoja Bluetooth prisijungti prie NorthStar saugos papuošalų."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

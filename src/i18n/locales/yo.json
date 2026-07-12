@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Fi kun",
+    "apple": "Apple",
+    "back": "Pada",
+    "call": "Ipe",
+    "cancel": "Fagilee",
+    "clear": "Ko o",
+    "close": "Sunmọ",
+    "connect": "Sopọ",
+    "connecting": "Nsopọ...",
+    "continue": "Tẹsiwaju",
+    "delete": "Paarẹ",
+    "finish": "Pari",
+    "friends": "Awọn ọrẹ",
+    "google": "Google",
+    "home": "Ile",
+    "loading": "N kojọpọ...",
+    "map": "Map",
+    "notNow": "Ko bayi",
+    "remove": "Yọ kuro",
+    "retry": "Tun gbiyanju",
+    "retrying": "Ngbiyanju",
+    "save": "Fipamọ",
+    "selected": "Ti yan",
+    "send": "Firanṣẹ",
+    "settings": "Eto",
+    "skip": "Rekọja",
+    "skipForNow": "Rekọja fun bayi",
+    "skipTutorial": "Rekọja ikẹkọ",
+    "sos": "SOS",
+    "unknown": "Aimọ",
+    "user": "VeryLoving olumulo",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Ede",
+    "subtitle": "Yan ede ti a lo jakejado app naa.",
+    "system": "Ayipada eto",
+    "search": "Wa awọn ede",
+    "noResults": "Ko si ede ti o baamu wiwa rẹ.",
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "Faranse",
+    "chineseSimplified": "Kannada (Irọrun)"
+  },
+  "phone": {
+    "label": "Nomba fonu",
+    "placeholder": "Nomba fonu",
+    "selectCountry": "Yan orilẹ-ede tabi agbegbe",
+    "searchCountry": "Ṣawari orilẹ-ede, koodu, tabi pipe pipe",
+    "noCountries": "Ko si orilẹ-ede ti o baamu wiwa rẹ.",
+    "countryButton": "Yi orilẹ-ede pada, lọwọlọwọ %{country} plus %{callingCode}",
+    "inputAccessibility": "Nọmba foonu fun %{country}",
+    "required": "Tẹ nọmba foonu kan sii.",
+    "tooShort": "Nọmba foonu yi kuru ju.",
+    "tooLong": "Nọmba foonu yi ti gun ju.",
+    "invalid": "Tẹ nọmba foonu to wulo fun orilẹ-ede ti o yan.",
+    "valid": "Wulo nọmba foonu okeere"
+  },
+  "auth": {
+    "onboardingTagline": "Alabaṣepọ aabo ara ẹni fun awọn akoko laarin “Mo wa dara” ati “Mo nilo iranlọwọ.”",
+    "createAccount": "Se akanti fun ra re",
+    "continueOnboarding": "Tẹsiwaju pẹlu onboarding",
+    "createSubtitle": "Yan ọna iwọle lati daabobo aworan atọka aabo rẹ.",
+    "phoneVerification": "ijerisi foonu",
+    "sendCode": "Fi koodu ranṣẹ",
+    "sendingCode": "Nfi koodu ranṣẹ...",
+    "verifyCode": "Daju koodu",
+    "sentTo": "Ti firanṣẹ si %{phone}",
+    "yourPhone": "foonu rẹ",
+    "verificationCode": "Kodu afimo",
+    "verify": "Jẹrisi",
+    "verifying": "Ìmúdájú...",
+    "invalidCode": "Tẹ koodu idaniloju sii.",
+    "signInFailedTitle": "Idilọwọ iwọle",
+    "signInFailedMessage": "A ko le pari iwọle. Ṣayẹwo asopọ rẹ ki o tun gbiyanju lẹẹkansi.",
+    "googleUnavailableTitle": "Google Wọle ko si",
+    "googleUnavailableMessage": "Lilo igba idagbasoke agbegbe. Ilu abinibi Google Wọle n ṣiṣẹ ni kikọ idagbasoke kan.",
+    "northStarTitle": "NorthStar ohun ọṣọ",
+    "northStarSubtitle": "So pọ ni bayi tabi tẹsiwaju ki o ṣafikun nigbamii.",
+    "northStarBody": "TheVL01 wearable le ma nfa awọn ṣiṣan ailewu pẹlu taps ati awọn afarajuwe titẹ gigun.",
+    "setupJewelry": "Ṣeto ohun ọṣọ",
+    "meetCapybear": "Pade Capybear",
+    "meetCapybearSubtitle": "Alabaṣepọ aabo onirẹlẹ lori maapu ati ninu awọn ipe.",
+    "capybearBody": "Capybear le ṣe iranlọwọ pẹlu ipo ile, ipo alabojuto, ipo pajawiri, awọn ipe awawi, ati atilẹyin ohun.",
+    "chooseVoice": "Yan ohun kan",
+    "capybearReminder": "Capybear olurannileti",
+    "remindersReady": "Awọn olurannileti onirẹlẹ ti ṣetan."
+  },
+  "permissions": {
+    "locationTitle": "Ailewu ipo",
+    "locationSubtitle": "Ti a lo fun maapu naa, awọn agbegbe eewu, dide ailewu, ati SOS ọrọ-ọrọ.",
+    "locationBody": "VeryLoving beere fun ipo ki awọn alabojuto le ni oye ibiti iranlọwọ le nilo. O le yi eyi pada nigbamii ni Eto.",
+    "allowLocation": "Gba ipo",
+    "notificationsTitle": "Awọn itaniji aabo",
+    "notificationsSubtitle": "Awọn iwifunni ṣe atilẹyin awọn iṣayẹwo ati awọn iṣẹlẹ pajawiri.",
+    "notificationsBody": "A lo awọn iwifunni nikan fun awọn itara aabo, awọn imudojuiwọn pajawiri, ati awọn olurannileti ti o mu ṣiṣẹ.",
+    "enableNotifications": "Mu awọn iwifunni ṣiṣẹ",
+    "locationRationaleTitle": "Ipo jẹ ki ọrọ-ọrọ ailewu jẹ deede",
+    "locationRationaleMessage": "VeryLoving nlo ipo rẹ fun maapu aabo, awọn agbegbe eewu, pinpin iyara, ati SOS ipo. O le yi eyi pada nigbamii ni Eto.",
+    "notificationsRationaleTitle": "Awọn itaniji aabo nilo awọn iwifunni",
+    "notificationsRationaleMessage": "VeryLoving nfiranṣẹ awọn olurannileti wiwa wọle, awọn imudojuiwọn pajawiri, ati awọn igbesẹ aabo ti o mu ṣiṣẹ. A ko lo awọn iwifunni fun ipolowo.",
+    "microphoneRationaleTitle": "Gbohungbo agbara awọn ipe ailewu",
+    "microphoneRationaleMessage": "VeryLoving nlo gbohungbohun rẹ nikan nigbati o ba bẹrẹ AI ẹlẹgbẹ tabi ipe aabo.",
+    "bluetoothRationaleTitle": "Bluetooth so wearable rẹ pọ",
+    "bluetoothRationaleMessage": "VeryLoving nlo Bluetooth lati so pọ pẹlu NorthStar ohun ọṣọ, ka ipo asopọ, ati okunfa aabo sisan lati awọn wearable.",
+    "cameraRationaleTitle": "Kamẹra jẹ iyan",
+    "cameraRationaleMessage": "VeryLoving nlo kamẹra nikan nigbati o yan lati ya fọto profaili tabi pin aworan ailewu kan."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving jẹ ki sisan yii wa lati Eto ati dasibodu naa.",
+    "chooseVoiceTitle": "Yan ohun rẹ",
+    "chooseVoiceSubtitle": "Yan ohùn ẹlẹgbẹ ti o ni ailewu julọ lati gbọ.",
+    "homeTitle": "Ipo ile",
+    "homeSubtitle": "Abojuto idakẹjẹ fun aabo ojoojumọ.",
+    "guardianTitle": "Ipo oluso",
+    "guardianSubtitle": "Pin ọrọ-ọrọ pẹlu awọn eniyan ti o gbẹkẹle.",
+    "emergencyTitle": "Ipo pajawiri",
+    "emergencySubtitle": "Tẹ ni kia kia marun le pọ si SOS ati awọn itaniji alabojuto.",
+    "excuseTitle": "Ipe awawi",
+    "excuseSubtitle": "Ṣẹda idi ore-ọfẹ lati lọ kuro ni ipo ti korọrun.",
+    "safetyCallTitle": "Ipe aabo",
+    "safetyCallSubtitle": "Bẹrẹ ipe alabagbepo akoko gidi nigbati o nilo atilẹyin.",
+    "practiceTitle": "Ṣiṣe ìran",
+    "practiceSubtitle": "Gbiyanju awọn ṣiṣan aabo ni demo titẹ-kekere."
+  },
+  "jewelry": {
+    "pairTitle": "So NorthStar",
+    "pairSubtitle": "Jeki awọn ohun ọṣọ wa nitosi lakoko ti o n ṣayẹwo.",
+    "scan": "Ṣayẹwo fun awọn ẹrọ",
+    "scanning": "Ṣiṣayẹwo wa nitosi...",
+    "noDevices": "Ko si ohun elo NorthStar nitosi sibẹsibẹ.",
+    "scanStartFailed": "Bluetooth ọlọjẹ ko le bẹrẹ. Jọwọ gbiyanju lẹẹkansi.",
+    "scanFailed": "A ko le ri awọn ohun ọṣọ nitosi. Ṣayẹwo Bluetooth, tọju NorthStar sunmọ, ki o si gbiyanju lẹẹkansi.",
+    "scanAccessFailed": "Bluetooth ayẹwo ko le bẹrẹ. Ṣayẹwo Bluetooth wiwọle ki o si gbiyanju lẹẹkansi.",
+    "permissionDenied": "Wiwọle si ẹrọ ti o wa nitosi wa ni pipa. Gba Bluetooth wọle sinu Eto, lẹhinna gbiyanju lẹẹkansi.",
+    "connectTimeout": "NorthStar gba akoko pupọ lati sopọ. Gbe e sunmọ ki o tun gbiyanju lẹẹkansi.",
+    "connectFailed": "A ko le sopọ si NorthStar. Ṣayẹwo pe o ti gba agbara ati nitosi, lẹhinna gbiyanju lẹẹkansi.",
+    "emptyTitle": "Ko si awọn ẹrọ to wa nitosi sibẹsibẹ",
+    "emptyMessage": "Jeki idiyele NorthStar ati sunmọ foonu yii, lẹhinna ṣayẹwo lẹẹkansi.",
+    "searchingMessage": "Nwa NorthStar awọn ẹrọ nitosi..."
+  },
+  "home": {
+    "subtitle": "Dasibodu ẹlẹgbẹ aabo",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} ti šetan",
+    "readyBody": "Ohùn, maapu, awọn ohun-ọṣọ, ati awọn alabojuto jẹ ọkan tẹ ni kia kia.",
+    "safetyCall": "Ipe aabo",
+    "northStarDevice": "NorthStar ẹrọ",
+    "deviceConnected": "%{name} ti sopọ · %{battery}%",
+    "noDevice": "Ko si ẹrọ ti o sopọ",
+    "manageDevice": "Ṣakoso ẹrọ",
+    "mode": "Ipo",
+    "modes": {
+      "home": "Ile",
+      "guardian": "Oluso",
+      "emergency": "Pajawiri"
+    }
+  },
+  "map": {
+    "finding": "Wiwa ipo rẹ...",
+    "retry": "Tun ipo wo",
+    "title": "maapu aabo",
+    "previewSubtitle": "Expo Go awotẹlẹ; Mapbox ṣe ni kikọ idagbasoke kan.",
+    "preview": "Awotẹlẹ maapu",
+    "risk": "Ewu: %{risk} · Radius %{radius}m",
+    "refresh": "Tuntun ipo",
+    "refreshing": "Wiwa ipo...",
+    "updateFailed": "A ko le ṣe imudojuiwọn ipo rẹ. Jọwọ gbiyanju lẹẹkansi.",
+    "notRequested": "A ko beere wiwọle si ipo. O le mu ṣiṣẹ nigbamii lati Eto.",
+    "permissionOff": "Wiwọle ipo wa ni pipa. Mu ṣiṣẹ ni Eto lati aarin maapu ailewu lori rẹ.",
+    "timeout": "Ipo rẹ n gba to gun ju ti a reti lọ. Gbe lọ si ibikan pẹlu ifihan ti o mọ ki o gbiyanju lẹẹkansi.",
+    "savedTitle": "Awọn aaye ti a fipamọ",
+    "savedEmptyTitle": "Ko si awọn aaye ti o fipamọ sibẹsibẹ",
+    "savedEmptyMessage": "Awọn aaye igbẹkẹle ti o fipamọ yoo han nibi fun iraye si yara.",
+    "zones": {
+      "crowding": "Gbigbo oru",
+      "lowLighting": "Agbegbe ina kekere"
+    },
+    "risks": {
+      "low": "kekere",
+      "medium": "alabọde",
+      "high": "ga"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Nsopọ...",
+    "offlineCompanion": "Ẹgbẹ aisinipo",
+    "offline": "Aisinipo",
+    "connected": "Ti sopọ",
+    "interrupted": "Asopọmọra Idilọwọ",
+    "ready": "Ṣetan lati sopọ",
+    "connectingSecurely": "Nsopọ ni aabo si ẹlẹgbẹ ohun rẹ...",
+    "messagesWaiting": {
+      "one": "%{count} ifiranṣẹ ti nduro lati firanṣẹ",
+      "other": "%{count} awọn ifiranṣẹ ti nduro lati firanṣẹ"
+    },
+    "useOffline": "Lo aisinipo ẹlẹgbẹ",
+    "reconnect": "Tun sopọ si ohun AI",
+    "typePlaceholder": "Tẹ bi sisọ ba le",
+    "endCall": "Pari ipe",
+    "startCall": "Bẹrẹ ipe",
+    "emptyTitle": "Ọrọ sisọ rẹ bẹrẹ nibi",
+    "emptyMessage": "Bẹrẹ ipe tabi tẹ ifiranṣẹ sii nigbati o ba ṣetan."
+  },
+  "chat": {
+    "waiting": "Nduro de asopọ",
+    "notSent": "A ko fi ifiranṣẹ ranṣẹ.",
+    "retryAccessibility": "Tun gbiyanju fifiranṣẹ"
+  },
+  "history": {
+    "clearTitle": "Ko itan ibaraẹnisọrọ kuro?",
+    "clearMessage": "Eyi yọ awọn ifipamọ AI awọn ifiranṣẹ ẹlẹgbẹ kuro ninu ẹrọ yii.",
+    "deleteTitle": "Pa ibaraẹnisọrọ yii rẹ bi?",
+    "cannotUndo": "Eyi ko le ṣe atunṣe.",
+    "title": "Itan ibaraẹnisọrọ",
+    "subtitle": "AI awọn ifiranṣẹ ẹlẹgbẹ ti a fipamọ sori ẹrọ yii.",
+    "empty": "Ko si awọn ibaraẹnisọrọ ti o fipamọ sibẹsibẹ.",
+    "emptyTitle": "Ko si awọn ibaraẹnisọrọ sibẹsibẹ",
+    "emptyMessage": "Awọn ibaraẹnisọrọ AI ẹlẹgbẹ rẹ yoo han nibi lẹhin ipe akọkọ rẹ.",
+    "loadFailed": "A ko le kojọpọ itan ibaraẹnisọrọ. Jọwọ gbiyanju lẹẹkansi.",
+    "clearFailed": "A ko le ko itan-akọọlẹ ibaraẹnisọrọ kuro. Jọwọ gbiyanju lẹẹkansi.",
+    "deleteFailed": "A ko le pa ibaraẹnisọrọ yẹn rẹ. Jọwọ gbiyanju lẹẹkansi.",
+    "aiCompanion": "AI ẹlẹgbẹ",
+    "resume": "Tẹsiwaju",
+    "clearAll": "Pa gbogbo itan kuro",
+    "roles": {
+      "assistant": "ẹlẹgbẹ",
+      "user": "iwo"
+    }
+  },
+  "voices": {
+    "title": "Awọn ohun ipe aabo mi",
+    "subtitle": "Yan ohùn ẹlẹgbẹ ti o ni itara lati gbọ.",
+    "test": "Idanwo ohun",
+    "stop": "Duro apẹẹrẹ",
+    "selectionFailedTitle": "Aṣayan ko ni fipamọ",
+    "selectionFailedMessage": "Jọwọ gbiyanju yiyan ohun lẹẹkansi.",
+    "sampleFailedTitle": "Ayẹwo ko si",
+    "sampleFailedMessage": "Ayẹwo ohun yii ko le dun. Jọwọ gbiyanju lẹẹkansi.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "asọ, tunu, grounding"
+      },
+      "bestie": {
+        "name": "Bestie",
+        "description": "imọlẹ, ifọkanbalẹ, ibaraẹnisọrọ"
+      },
+      "boyfriend": {
+        "name": "Ọ̀rẹ́kùnrin",
+        "description": "duro, ìfẹni, bayi"
+      },
+      "muscleMan": {
+        "name": "Okunrin isan",
+        "description": "igboya, aabo, imoriya"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ohùn",
+    "changeVoice": "Yi ohun pada",
+    "showCompanion": "Ṣe afihan ẹlẹgbẹ",
+    "offlineMode": "Ipo aisinipo",
+    "offlineModeSubtitle": "Lo awọn idahun ẹlẹgbẹ idapọ nigbati nẹtiwọki tabi Hume awọn iwe-ẹri ko si.",
+    "privacyData": "Ìpamọ & data",
+    "privacyBody": "Ṣe okeere tabi paarẹ data agbegbe ti o fipamọ sori ẹrọ.",
+    "preparingExport": "Ngbaradi okeere...",
+    "exportData": "Ṣe okeere data mi",
+    "privacyPolicy": "Ilana asiri",
+    "deleting": "Nparẹ...",
+    "deleteAll": "Pa gbogbo data agbegbe rẹ",
+    "deviceManagement": "Iṣakoso ẹrọ",
+    "emergencyContacts": "Awọn olubasọrọ pajawiri",
+    "signOut": "ifowosi jada",
+    "exportFailedTitle": "Gbigbe okeere kuna",
+    "exportFailedMessage": "Ko le ṣe okeere data rẹ ni bayi.",
+    "deleteConfirmTitle": "Pa gbogbo data agbegbe rẹ bi?",
+    "deleteConfirmMessage": "Eyi yoo yọ profaili rẹ kuro, eto, awọn olubasọrọ pajawiri, itan-ibaraẹnisọrọ, awọn olurannileti igbanilaaye, ati igba ifọwọsi agbegbe lati ẹrọ yii.",
+    "deleteEverything": "Pa ohun gbogbo rẹ",
+    "deleteFailedTitle": "Iparẹ kuna",
+    "deleteFailedMessage": "Ko le pa data agbegbe rẹ ni bayi.",
+    "linkFailed": "Ko le ṣii ọna asopọ",
+    "sections": {
+      "language": "Ede",
+      "languageSubtitle": "Ni wiwo ati ede igbanilaaye eto",
+      "companion": "Alábàákẹ́gbẹ́",
+      "companionSubtitle": "Ohùn ati awọn ayanfẹ aisinipo",
+      "deviceSafety": "Awọn ẹrọ ati ailewu",
+      "deviceSafetySubtitle": "NorthStar, alabojuto, ati awọn olubasọrọ pajawiri",
+      "privacy": "Ìpamọ ati data",
+      "privacySubtitle": "Itan, okeere, piparẹ, ati eto imulo",
+      "account": "Iroyin",
+      "accountSubtitle": "Ikoko VeryLoving lọwọlọwọ rẹ"
+    },
+    "updateFailedTitle": "Ṣeto ko ni fipamọ",
+    "updateFailedMessage": "A ko le fi ayanfẹ yẹn pamọ. Jọwọ gbiyanju lẹẹkansi.",
+    "signOutFailedTitle": "Ko le jade",
+    "signOutFailedMessage": "Ikoko rẹ ṣi ṣiṣẹ. Jọwọ gbiyanju lẹẹkansi."
+  },
+  "contacts": {
+    "title": "Awọn olubasọrọ pajawiri",
+    "subtitle": "Awọn eniyan ti o gbẹkẹle wa lakoko awọn ṣiṣan ailewu.",
+    "addTitle": "Fi olubasọrọ pajawiri kun",
+    "name": "Oruko",
+    "namePlaceholder": "Orukọ olubasọrọ",
+    "phone": "Nọmba foonu olubasọrọ",
+    "add": "Fi olubasọrọ kun",
+    "empty": "Ko si awọn olubasọrọ pajawiri ti a ṣafikun sibẹsibẹ.",
+    "emptyTitle": "Ko si awọn olubasọrọ pajawiri sibẹsibẹ",
+    "emptyMessage": "Ṣafikun ẹnikan ti o gbẹkẹle ki wọn ṣetan nigbati ṣiṣan ailewu nilo wọn.",
+    "removeTitle": "Yọ %{name} kuro?",
+    "removeMessage": "Eniyan yii ko ni farahan ninu sisan pajawiri rẹ mọ.",
+    "nameRequired": "Tẹ orukọ olubasọrọ sii.",
+    "saveFailedTitle": "Olubasọrọ ko ni ipamọ",
+    "saveFailedMessage": "A ko le fi olubasọrọ yi pamọ. Ṣayẹwo awọn alaye naa ki o tun gbiyanju lẹẹkansi.",
+    "removeFailedTitle": "Olubasọrọ ko yọkuro",
+    "removeFailedMessage": "A ko le yọ olubasọrọ yii kuro. Jọwọ gbiyanju lẹẹkansi.",
+    "callAccessibility": "Pe %{name}",
+    "removeAccessibility": "Yọ %{name}"
+  },
+  "device": {
+    "title": "Iṣakoso ẹrọ",
+    "subtitle": "Ṣakoso ẹrọ NorthStar rẹ.",
+    "connected": "Ti sopọ · %{battery}% batiri",
+    "none": "Ko si awọn ẹrọ ti o sopọ",
+    "disconnect": "Ge asopọ ẹrọ",
+    "connect": "So ẹrọ pọ"
+  },
+  "friends": {
+    "title": "Awọn ọrẹ",
+    "subtitle": "Awọn oluṣọ, awọn ibeere, ati aworan pajawiri.",
+    "addDemo": "Fi ọrẹ demo",
+    "emptyTitle": "Ayika aabo rẹ ti ṣofo",
+    "emptyMessage": "Awọn ọrẹ ti o gbẹkẹle ati awọn alabojuto yoo han nibi ni kete ti wọn ba ṣafikun.",
+    "newGuardian": "Oluso Titun",
+    "statuses": {
+      "guardian": "Oluso",
+      "pending": "Ni isunmọtosi"
+    }
+  },
+  "emergency": {
+    "title": "Pajawiri SOS",
+    "subtitle": "Ilọsiwaju nikan nigbati o nilo atilẹyin lẹsẹkẹsẹ.",
+    "body": "Eyi yoo sọ fun sisan aabo rẹ ati mura awọn olubasọrọ pajawiri.",
+    "activate": "Mu SOS ṣiṣẹ",
+    "callCompanion": "Pe AI ẹlẹgbẹ",
+    "notificationTitle": "SOS ti mu ṣiṣẹ",
+    "notificationBody": "Sisan pajawiri rẹ ti šetan.",
+    "readyTitle": "SOS setan",
+    "callContact": "Pe %{name}?",
+    "addContact": "Fi olubasọrọ pajawiri kun ni Eto.",
+    "quickShareTitle": "Pipin ni kiakia",
+    "quickShareMessage": "stub pinpin ipo ti šetan. So aaye ipari ipin ẹhin lati firanṣẹ awọn ọna asopọ laaye."
+  },
+  "quickShare": {
+    "title": "Pipin ni kiakia",
+    "subtitle": "Ṣiṣan pinpin ipo ti šetan."
+  },
+  "capybearTap": {
+    "title": "Capybear tẹ ni kia kia",
+    "subtitle": "Tẹ NorthStar rẹ lẹẹmeji lati ju osan aabo kan silẹ.",
+    "body": "Ipa-ọna afarajuwe ti ṣetan fun wiwọ iṣẹlẹ iṣẹlẹ BLE."
+  },
+  "debug": {
+    "title": "VeryLoving oju-iwe yokokoro",
+    "subtitle": "Ọna idagbasoke-nikan."
+  },
+  "errors": {
+    "voiceOffline": "O dabi aisinipo. Ifiranṣẹ rẹ yoo ranṣẹ nigbati o ba tun sopọ.",
+    "voiceQueued": "Fifiranṣẹ pamọ. Yoo firanṣẹ nigbati ẹlẹgbẹ ohun ba tun sopọ.",
+    "voiceRetrying": "Gbiyanju lati fi ifiranṣẹ rẹ ranṣẹ lẹẹkansi...",
+    "voiceConnecting": "Nsopọ ni aabo si ẹlẹgbẹ ohun rẹ...",
+    "microphone": "A nilo wiwọle si gbohungbohun fun awọn ipe ohun. O le muu ṣiṣẹ ni Eto, tabi tẹ ifiranṣẹ dipo.",
+    "billing": "Ẹgbẹ ohun ori ayelujara ko si fun igba diẹ. O le tẹsiwaju pẹlu aisinipo ẹlẹgbẹ.",
+    "authentication": "Alabaṣepọ ohun ko le jẹrisi igba yii. Wọle lẹẹkansi tabi lo ẹlẹgbẹ aisinipo fun bayi.",
+    "timeout": "Alabaṣepọ ohun naa pẹ ju lati dahun. Ṣayẹwo asopọ rẹ ki o tun gbiyanju lẹẹkansi.",
+    "network": "A ko le de ọdọ ẹlẹgbẹ ohun. Ṣayẹwo asopọ rẹ, lẹhinna gbiyanju lẹẹkansi tabi tẹsiwaju offline.",
+    "genericVoice": "Nkankan da ipe ohun duro. Gbiyanju lẹẹkansi, tabi tẹsiwaju pẹlu aisinipo ẹlẹgbẹ."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving data okeere"
+  },
+  "notifications": {
+    "channelName": "Awọn itaniji aabo"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving nilo iraye si gbohungbohun fun aabo ati AI awọn ipe ẹlẹgbẹ.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving nlo ipo rẹ fun maapu aabo ati awọn ẹya aabo nitosi.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving nlo ipo rẹ lati ṣe atilẹyin wiwa-ailewu ati ṣiṣan pajawiri.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving n lo ipo abẹlẹ fun wiwa-ailewu ati awọn ẹya agbegbe-ewu nitosi.",
+      "NSCameraUsageDescription": "VeryLoving nlo kamẹra nikan nigbati o yan lati ya profaili tabi fọto ailewu.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving nlo ile-ikawe fọto rẹ nikan nigbati o yan profaili kan tabi aworan ailewu.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving nlo Bluetooth lati sopọ si NorthStar ohun ọṣọ aabo rẹ.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving nlo Bluetooth lati sopọ si NorthStar ohun ọṣọ aabo rẹ."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

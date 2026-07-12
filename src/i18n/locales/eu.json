@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Gehitu",
+    "apple": "Apple",
+    "back": "Atzera",
+    "call": "Deia",
+    "cancel": "Bertan behera utzi",
+    "clear": "Garbi",
+    "close": "Itxi",
+    "connect": "Konektatu",
+    "connecting": "Konektatzen...",
+    "continue": "Jarraitu",
+    "delete": "Ezabatu",
+    "finish": "Amaiera",
+    "friends": "Lagunak",
+    "google": "Google",
+    "home": "Etxea",
+    "loading": "Kargatzen...",
+    "map": "Mapa",
+    "notNow": "Ez orain",
+    "remove": "Kendu",
+    "retry": "Berriro saiatu",
+    "retrying": "Berriro saiatu",
+    "save": "Gorde",
+    "selected": "Hautatuak",
+    "send": "Bidali",
+    "settings": "Ezarpenak",
+    "skip": "Salto egin",
+    "skipForNow": "Momentuz salto egin",
+    "skipTutorial": "Tutoriala saltatu",
+    "sos": "SOS",
+    "unknown": "Ezezaguna",
+    "user": "VeryLoving erabiltzailea",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Hizkuntza",
+    "subtitle": "Aukeratu aplikazio osoan zehar erabiltzen den hizkuntza.",
+    "system": "Sistemaren lehenetsia",
+    "search": "Bilaketa hizkuntzak",
+    "noResults": "Ez hizkuntza bat zure bilaketarako.",
+    "english": "Ingelesa",
+    "spanish": "Gaztelania",
+    "french": "Frantsesa",
+    "chineseSimplified": "Txinera (Sinplifikatua)"
+  },
+  "phone": {
+    "label": "Telefono zenbakia",
+    "placeholder": "Telefono zenbakia",
+    "selectCountry": "Hautatu herrialde edo eskualde",
+    "searchCountry": "Bilatu herrialdea, kodea edo deitzeko aurrizkia",
+    "noCountries": "Ez zure bilaketa bat datorren herrialderik.",
+    "countryButton": "Herrialdea aldatu, une honetan %{country} eta %{callingCode}",
+    "inputAccessibility": "Telefono zenbakia %{country}",
+    "required": "Sartu telefono zenbaki bat.",
+    "tooShort": "Telefono zenbaki hau laburregia da.",
+    "tooLong": "Telefono zenbaki hau luzeegia da.",
+    "invalid": "Sartu aukeratutako herrialdeko telefono zenbaki balioduna.",
+    "valid": "Nazioarteko telefono zenbaki balioduna"
+  },
+  "auth": {
+    "onboardingTagline": "\"Ondo nago\" eta \"Laguntza behar dut\" arteko uneetarako segurtasun pertsonaleko lagun bat.",
+    "createAccount": "Kontua sortu",
+    "continueOnboarding": "Jarraitu onboarding-arekin",
+    "createSubtitle": "Aukeratu saioa hasteko metodo bat zure segurtasun grafikoa babesteko.",
+    "phoneVerification": "Telefono bidezko egiaztapena",
+    "sendCode": "Bidali kodea",
+    "sendingCode": "Kodea bidaltzen...",
+    "verifyCode": "Kodea egiaztatu",
+    "sentTo": "Bidali %{phone}",
+    "yourPhone": "Zure telefonoa",
+    "verificationCode": "Egiaztapen kodea",
+    "verify": "Egiaztatu",
+    "verifying": "Egiaztatzen...",
+    "invalidCode": "Sartu egiaztapen kodea.",
+    "signInFailedTitle": "Saioa hastea eten da",
+    "signInFailedMessage": "Ezin izan genuen saioa osatu. Egiaztatu zure konexioa eta saiatu berriro.",
+    "googleUnavailableTitle": "Google Saioa hasi gabe",
+    "googleUnavailableMessage": "Tokiko garapen saio bat erabiliz. Native Google Sign-In garapen eraikuntzan funtzionatzen du.",
+    "northStarTitle": "NorthStar bitxiak",
+    "northStarSubtitle": "Orain parekatu edo jarraitu eta gero gehitu.",
+    "northStarBody": "VL01 jantzigarriak segurtasun fluxuak aktibatu ditzake ukitu eta sakatze luzeekin.",
+    "setupJewelry": "Bitxiak prestatu",
+    "meetCapybear": "Ezagutu Capybear",
+    "meetCapybearSubtitle": "Zure segurtasun lagun atsegina mapan eta deietan.",
+    "capybearBody": "Capybear etxeko moduan, zaindari moduan, larrialdi moduan, barkamen-deietan eta ahots-laguntzan lagundu dezake.",
+    "chooseVoice": "Aukeratu ahots bat",
+    "capybearReminder": "Capybear gogorarazpena",
+    "remindersReady": "Gogorarazpen leunak prest daude."
+  },
+  "permissions": {
+    "locationTitle": "Kokapen segurtasuna",
+    "locationSubtitle": "Maparako, arrisku eremuetarako, iristeko segurtasunez eta SOS testuinguruarentzat erabiltzen da.",
+    "locationBody": "VeryLoving eskatzen du non laguntza behar den ulertzeko. Hau geroago alda dezakezu Ezarpenetan.",
+    "allowLocation": "Kokapen baimena",
+    "notificationsTitle": "Segurtasun alertak",
+    "notificationsSubtitle": "Jakinarazpenek check-in eta larrialdi ekitaldiak laguntzen dituzte.",
+    "notificationsBody": "Jakinarazpenak soilik erabiltzen ditugu segurtasun eskaeretarako, larrialdi eguneraketetarako eta zuk gaitzen dituzun gogorarazpenetarako.",
+    "enableNotifications": "Gaitu jakinarazpenak",
+    "locationRationaleTitle": "Kokapenak segurtasun testuingurua zehatza mantentzen du",
+    "locationRationaleMessage": "VeryLoving zure kokapena erabiltzen du segurtasun maparako, arrisku eremuak, partekatze azkarra eta SOS testuingururako. Hau geroago alda dezakezu Ezarpenetan.",
+    "notificationsRationaleTitle": "Segurtasun alertek jakinarazpenak behar dituzte",
+    "notificationsRationaleMessage": "VeryLoving check-in oroigarriak, larrialdi eguneraketak eta segurtasun aginduak bidaltzen dizkizu. Ez dugu jakinarazpenik erabiltzen iragarkietan.",
+    "microphoneRationaleTitle": "Mikrofonoak segurtasun deiak elikatzen ditu",
+    "microphoneRationaleMessage": "VeryLoving mikrofonoa soilik erabiltzen du lagun edo segurtasun deia hasten duzuneanAI.",
+    "bluetoothRationaleTitle": "Bluetooth zure jantzigarria konektatzen du",
+    "bluetoothRationaleMessage": "VeryLoving Bluetooth erabiltzen du bitxiekin pareNorthStarkatzeko, konexioaren egoera irakurtzeko eta jantzigarriaren segurtasun fluxuak aktibatzeko.",
+    "cameraRationaleTitle": "Kamera aukerakoa da",
+    "cameraRationaleMessage": "VeryLoving kamera bakarrik erabiltzen du profil argazki bat ateratzea edo segurtasun irudi bat partekatzea aukeratzen duzunean."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving fluxu hau eskuragarri mantentzen du Ezarpenetatik eta dashboard-etik.",
+    "chooseVoiceTitle": "Aukeratu zure ahotsa",
+    "chooseVoiceSubtitle": "Aukeratu entzuteko seguruena den lagun ahotsa.",
+    "homeTitle": "Etxe modua",
+    "homeSubtitle": "Eguneroko segurtasunerako zaintza isila.",
+    "guardianTitle": "Guardian modua",
+    "guardianSubtitle": "Partekatu testuingurua konfiantzazko pertsonekin.",
+    "emergencyTitle": "Larrialdi modua",
+    "emergencySubtitle": "Bost ukipenek SOS eta zaindariaren alertetara igo daitezke.",
+    "excuseTitle": "Barkamena deia",
+    "excuseSubtitle": "Sortu arrazoi dotore bat egoera deseroso batetik alde egiteko.",
+    "safetyCallTitle": "Segurtasun deia",
+    "safetyCallSubtitle": "Laguntza behar duzunean, laguntzaile deia denbora errealean hasi.",
+    "practiceTitle": "Praktika eszena",
+    "practiceSubtitle": "Saiatu segurtasun-fluxuak presio baxuko demo batean."
+  },
+  "jewelry": {
+    "pairTitle": "Bikote NorthStar",
+    "pairSubtitle": "Eraman bitxiak ondoan eskaneatzen duzun bitartean.",
+    "scan": "Gailuak bilatzeko eskaneatzea",
+    "scanning": "Gertu eskaneatzen...",
+    "noDevices": "Oraindik ez da NorthStar gailurik aurkitu.",
+    "scanStartFailed": "Bluetooth eskaneatzea ezin izan zen hasi. Mesedez, saiatu berriro.",
+    "scanFailed": "Ez genuen inguruko bitxirik aurkitu. Egiaztatu Bluetooth, NorthStar gertu mantendu eta saiatu berriro.",
+    "scanAccessFailed": "Bluetooth eskaneatzea ezin izan zen hasi. Egiaztatu Bluetooth sarbidea eta saiatu berriro.",
+    "permissionDenied": "Gailu hurbileko sarbidea itzalita. Utzi Bluetooth sarbidea ezarpenetan, eta saiatu berriro.",
+    "connectTimeout": "NorthStar konektatzeko denbora gehiegi behar izan zuen. Hurbildu eta saiatu berriro.",
+    "connectFailed": "Ez genuen konektatu ahal NorthStar. Egiaztatu kargatuta dagoela eta gertu dagoela, eta saiatu berriro.",
+    "emptyTitle": "Oraindik ez inguruko gailurik",
+    "emptyMessage": "Mantendu NorthStar kargatuta eta telefono honen ondoan, eta berriro eskaneatu.",
+    "searchingMessage": "Gailu NorthStar inguruan bilatzen..."
+  },
+  "home": {
+    "subtitle": "Segurtasun laguntzaile dashboard-a",
+    "modeStatus": "%{mode} MODE",
+    "companionReady": "%{name} prest",
+    "readyBody": "Ahotsa, mapa, bitxiak eta zaindariak ukitu bakar batera daude.",
+    "safetyCall": "Segurtasun deia",
+    "northStarDevice": "NorthStar gailua",
+    "deviceConnected": "%{name} konektatuta · %{battery}%",
+    "noDevice": "Ez gailurik konektatuta",
+    "manageDevice": "Kudeatu gailua",
+    "mode": "Modua",
+    "modes": {
+      "home": "Etxea",
+      "guardian": "Guardian",
+      "emergency": "Larrialdia"
+    }
+  },
+  "map": {
+    "finding": "Zure kokapena aurkitzea...",
+    "retry": "Berriro saiakera kokapena",
+    "title": "Segurtasun mapa",
+    "previewSubtitle": "Expo Go aurrebista; Mapbox garapen eraikuntza batean renderizatzen da.",
+    "preview": "Maparen aurrebista",
+    "risk": "Arriskua: %{risk} · Erradioa %{radius}m",
+    "refresh": "Berritze kokapena",
+    "refreshing": "Kokapena aurkitzea...",
+    "updateFailed": "Ez genuen zure kokapena eguneratu ahal izan. Mesedez, saiatu berriro.",
+    "notRequested": "Kokapenaren sarbidea ez zen eskatu. Geroago Ezarpenetatik gaitu dezakezu.",
+    "permissionOff": "Kokapenaren sarbidea desegokia da. Ezarpenetan gaitu segurtasun mapa zuregan zentratzeko.",
+    "timeout": "Zure kokapena espero baino luzeagoa da. Mugitu leku batera seinale argiago batekin eta saiatu berriro.",
+    "savedTitle": "Gordetako lekuak",
+    "savedEmptyTitle": "Oraindik ez gordetako lekurik",
+    "savedEmptyMessage": "Gordetzen dituzun leku fidagarriak hemen agertuko dira azkar sartzeko.",
+    "zones": {
+      "crowding": "Gau iluneko jendetza",
+      "lowLighting": "Argi gutxiko eremua"
+    },
+    "risks": {
+      "low": "baxua",
+      "medium": "Medium",
+      "high": "altua"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Konektatzen...",
+    "offlineCompanion": "Lineaz kanpoko laguntzailea",
+    "offline": "Offline",
+    "connected": "Konektatuta",
+    "interrupted": "Konexioa eten da",
+    "ready": "Konektatzeko prest",
+    "connectingSecurely": "Zure ahots lagunarekin segurtasunez konektatzea...",
+    "messagesWaiting": {
+      "one": "%{count} mezua bidaltzeko zain",
+      "other": "%{count} mezuak bidaltzeko zain"
+    },
+    "useOffline": "Erabili offline laguntzailea",
+    "reconnect": "Berriro konektatu ahotsarekin AI",
+    "typePlaceholder": "Idatzi hitz egitea zaila denean",
+    "endCall": "Deiaren amaiera",
+    "startCall": "Deia hasi",
+    "emptyTitle": "Zure elkarrizketa hemen hasten da",
+    "emptyMessage": "Deia hasi edo idatzi mezu bat prest zaudenean."
+  },
+  "chat": {
+    "waiting": "Konexioa itxaroten",
+    "notSent": "Mezua ez da bidali.",
+    "retryAccessibility": "Berriro mezua bidaltzen saiatu"
+  },
+  "history": {
+    "clearTitle": "Elkarrizketa historia garbia?",
+    "clearMessage": "Honek gailu honetatik gordetako AI laguntzaile mezuak kentzen ditu.",
+    "deleteTitle": "Ezabatu elkarrizketa hau?",
+    "cannotUndo": "Hau ezin da desegin.",
+    "title": "Elkarrizketaren historia",
+    "subtitle": "AI laguntzaile mezuak gailu honetan gordeta.",
+    "empty": "Oraindik ez dut elkarrizketa gorde.",
+    "emptyTitle": "Oraindik ez elkarrizketarik",
+    "emptyMessage": "Zure AI lagun elkarrizketak hemen agertuko dira lehen deiaren ondoren.",
+    "loadFailed": "Ez genuen elkarrizketa historia kargatu ahal izan. Mesedez, saiatu berriro.",
+    "clearFailed": "Ez genuen elkarrizketa historia garbitu. Mesedez, saiatu berriro.",
+    "deleteFailed": "Ez genuen elkarrizketa hori ezabatu ahal izan. Mesedez, saiatu berriro.",
+    "aiCompanion": "AI laguntzailea",
+    "resume": "Curriculuma",
+    "clearAll": "Historia guztia garbitu",
+    "roles": {
+      "assistant": "Laguntzailea",
+      "user": "Zu"
+    }
+  },
+  "voices": {
+    "title": "Nire segurtasun dei ahotsak",
+    "subtitle": "Aukeratu entzuteko egokia den lagun ahotsa.",
+    "test": "Test ahotsa",
+    "stop": "Gelditu lagina",
+    "selectionFailedTitle": "Hautaketa gorde gabea",
+    "selectionFailedMessage": "Mesedez, saiatu berriro ahotsa aukeratzen.",
+    "sampleFailedTitle": "Adibidea eskuragarri ez",
+    "sampleFailedMessage": "Ahots lagin hau ezin izan zen erreproduzitu. Mesedez, saiatu berriro.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "leuna, lasaia, oinarritzen dena"
+      },
+      "bestie": {
+        "name": "Lagunik onena",
+        "description": "Argia, lasaitzailea, elkarrizketa modukoa"
+      },
+      "boyfriend": {
+        "name": "Mutil-laguna",
+        "description": "egonkorra, maitagarria, orainaldia"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "konfiantzazkoa, babesle, motibatzailea"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Ahotsa",
+    "changeVoice": "Aldatu ahotsa",
+    "showCompanion": "Ikuskizun laguntzailea",
+    "offlineMode": "Offline modua",
+    "offlineModeSubtitle": "Erabili laguntzaile erantzun multzoak sareak edo Hume kredentzialak eskuragarri ez daudenean.",
+    "privacyData": "Pribatutasuna eta datuak",
+    "privacyBody": "Esportatu edo ezabatu gailu honetan gordetako tokiko datuak.",
+    "preparingExport": "Esportazioa prestatzen...",
+    "exportData": "Nire datuak esportatu",
+    "privacyPolicy": "Pribatutasun politika",
+    "deleting": "Ezabatzen...",
+    "deleteAll": "Ezabatu datu lokal guztiak",
+    "deviceManagement": "Gailuen kudeaketa",
+    "emergencyContacts": "Larrialdi kontaktuak",
+    "signOut": "Irten saioa",
+    "exportFailedTitle": "Esportazioa huts egin zuen",
+    "exportFailedMessage": "Ezin dut zure datuak esportatu orain.",
+    "deleteConfirmTitle": "Datu lokal guztiak ezabatu?",
+    "deleteConfirmMessage": "Honek zure profila, ezarpenak, larrialdi kontaktuak, elkarrizketa historia, baimen gogorarazpenak eta tokiko baimen saioa kentzen ditu gailu honetatik.",
+    "deleteEverything": "Ezabatu dena",
+    "deleteFailedTitle": "Ezabatzea huts egin du",
+    "deleteFailedMessage": "Ezin dut orain tokiko datuak ezabatu.",
+    "linkFailed": "Ezinezkoa da esteka irekitzea",
+    "sections": {
+      "language": "Hizkuntza",
+      "languageSubtitle": "Interfazea eta sistemaren baimen hizkuntza",
+      "companion": "Laguntzailea",
+      "companionSubtitle": "Ahots eta offline lehentasunak",
+      "deviceSafety": "Gailuak eta segurtasuna",
+      "deviceSafetySubtitle": "NorthStar, zaindariak eta larrialdi kontaktuak",
+      "privacy": "Pribatutasuna eta datuak",
+      "privacySubtitle": "Historia, esportazioa, ezabatzea eta politika",
+      "account": "Kontua",
+      "accountSubtitle": "Zure egungo VeryLoving saioa"
+    },
+    "updateFailedTitle": "Ezarpena ez da gorde",
+    "updateFailedMessage": "Ezin izan genuen lehentasun hori gorde. Mesedez, saiatu berriro.",
+    "signOutFailedTitle": "Ezin izan nuen irten",
+    "signOutFailedMessage": "Zure saioa oraindik aktiboa da. Mesedez, saiatu berriro."
+  },
+  "contacts": {
+    "title": "Larrialdi kontaktuak",
+    "subtitle": "Segurtasun fluxuetan pertsona fidagarriak daude.",
+    "addTitle": "Larrialdi kontaktua gehitu",
+    "name": "Izena",
+    "namePlaceholder": "Harremanetarako izena",
+    "phone": "Harremanetarako telefono zenbakia",
+    "add": "Kontaktua gehitu",
+    "empty": "Oraindik ez da larrialdi kontakturik gehitu.",
+    "emptyTitle": "Oraindik ez larrialdi kontakturik",
+    "emptyMessage": "Konfiantza duzun norbait gehitu, segurtasun fluxuak behar duenean prest egon daitezen.",
+    "removeTitle": "Kendu %{name}?",
+    "removeMessage": "Pertsona hau ez da gehiago agertuko zure larrialdi fluxuan.",
+    "nameRequired": "Sartu kontaktuaren izena.",
+    "saveFailedTitle": "Kontaktua gorde gabe",
+    "saveFailedMessage": "Ezin izan genuen kontaktu hau salbatu. Xehetasunak begiratu eta berriro saiatu.",
+    "removeFailedTitle": "Kontaktua kendu gabe",
+    "removeFailedMessage": "Ezin izan genuen kontaktu hori kendu. Mesedez, saiatu berriro.",
+    "callAccessibility": "Deitu %{name}",
+    "removeAccessibility": "Kendu %{name}"
+  },
+  "device": {
+    "title": "Gailuen kudeaketa",
+    "subtitle": "Kudeatu zure NorthStar gailua.",
+    "connected": "Konektatuta · %{battery}% bateria",
+    "none": "Ez gailurik konektatuta",
+    "disconnect": "Deskonektatzeko gailua",
+    "connect": "Konektatu gailua"
+  },
+  "friends": {
+    "title": "Lagunak",
+    "subtitle": "Zaindariak, eskaerak eta larrialdi grafikoa.",
+    "addDemo": "Gehitu demo laguna",
+    "emptyTitle": "Zure segurtasun zirkulua hutsik",
+    "emptyMessage": "Lagun eta zaindari fidagarriak hemen agertuko dira gehitu ondoren.",
+    "newGuardian": "Zaindari Berria",
+    "statuses": {
+      "guardian": "Guardian",
+      "pending": "Itxaroten"
+    }
+  },
+  "emergency": {
+    "title": "Larrialdi SOS",
+    "subtitle": "Eskalatu laguntza azkarra behar duzunean bakarrik.",
+    "body": "Honek zure segurtasun fluxua jakinaraziko du eta larrialdi kontaktuak prestatuko ditu.",
+    "activate": "Aktibatu SOS",
+    "callCompanion": "Deitu lagun AI",
+    "notificationTitle": "SOS aktibatu zen",
+    "notificationBody": "Zure larrialdi fluxua prest.",
+    "readyTitle": "SOS prest",
+    "callContact": "Deitu %{name}?",
+    "addContact": "Gehitu larrialdi kontaktu bat Ezarpenetan.",
+    "quickShareTitle": "Partekatze azkarra",
+    "quickShareMessage": "Kokapena partekatzeko laburpena prest. Konektatu atzeko aldeko partekatze puntua zuzeneko loturak bidaltzeko."
+  },
+  "quickShare": {
+    "title": "Partekatze azkarra",
+    "subtitle": "Kokapen partekatze fluxua prest."
+  },
+  "capybearTap": {
+    "title": "Capybear tap",
+    "subtitle": "Bikoitza ukitu NorthStar laranja seguru bat botatzeko.",
+    "body": "Keinu ibilbidea prest BLE ekitaldi kableatzeko."
+  },
+  "debug": {
+    "title": "VeryLoving debug orria",
+    "subtitle": "Garapen bakarreko bidea."
+  },
+  "errors": {
+    "voiceOffline": "Offline zaudela dirudi. Zure mezua berriro konektatzen zarenean bidaliko da.",
+    "voiceQueued": "Mezua gordeta. Ahots laguna berriro konektatzen denean bidaliko da.",
+    "voiceRetrying": "Zure mezua berriro bidaltzen saiatzen...",
+    "voiceConnecting": "Zure ahots lagunarekin segurtasunez konektatzea...",
+    "microphone": "Mikrofono sarbidea behar da ahots deiak egiteko. Ezarpenetan gaitu dezakezu, edo mezu bat idatzi dezakezu.",
+    "billing": "Online ahots laguntzailea aldi baterako ez erabilgarri. Lineaz kanpoko lagunarekin jarraitu dezakezu.",
+    "authentication": "Ahots lagunak ezin izan zuen saio hau egiaztatu. Berriro saioa hasi edo offline laguntzailea erabili oraingoz.",
+    "timeout": "Ahots lagunak erantzuteko denbora gehiegi hartu zuen. Egiaztatu zure konexioa eta saiatu berriro.",
+    "network": "Ez genuen ahots lagunarekin harremanetan jarri. Egiaztatu zure konexioa, gero saiatu berriro edo jarraitu offline.",
+    "genericVoice": "Zerbaitek ahots-deia eten zuen. Saiatu berriro, edo jarraitu offline lagunarekin."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving datuen esportazioa"
+  },
+  "notifications": {
+    "channelName": "Segurtasun alertak"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving mikrofono sarbidea behar du segurtasunerako eta laguntzaile deiak AI egiteko.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving zure kokapena erabiltzen du segurtasun mapa eta inguruko segurtasun ezaugarrietarako.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving zure kokapena erabiltzen du iristeko eta larrialdi fluxuak babesteko.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving atzeko planoko kokapena erabiltzen du segurtasun iristeko eta inguruko arrisku eremuko ezaugarriak egiteko.",
+      "NSCameraUsageDescription": "VeryLoving kamera bakarrik erabiltzen du profil edo segurtasun argazki bat ateratzeko aukeratzen duzunean.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving zure argazki liburutegia soilik erabiltzen du profil edo segurtasun irudi bat aukeratzen duzunean.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth erabiltzen du zure NorthStar segurtasun bitxietara konektatzeko.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth erabiltzen du zure NorthStar segurtasun bitxietara konektatzeko."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

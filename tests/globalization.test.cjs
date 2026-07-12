@@ -4,8 +4,10 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const {
   getTranslationKeys,
+  isRTLLanguage,
   normalizeLanguageCode,
   resolveLanguage,
+  supportedLanguages,
   translateForLocale,
   translations
 } = require('../src/i18n/core');
@@ -94,7 +96,7 @@ test('country options are complete, localized, and searchable by dialing code', 
 test('translated strings preserve every interpolation placeholder', () => {
   for (const key of getTranslationKeys(translations.en)) {
     const englishTokens = interpolationTokens(valueAtPath(translations.en, key));
-    for (const locale of ['es', 'fr', 'zh']) {
+    for (const locale of supportedLanguages.filter((language) => language !== 'en')) {
       assert.deepEqual(
         interpolationTokens(valueAtPath(translations[locale], key)),
         englishTokens,
@@ -108,9 +110,12 @@ test('language resolution supports regional tags, system preference, and fallbac
   assert.equal(normalizeLanguageCode('es-MX'), 'es');
   assert.equal(normalizeLanguageCode('fr-CA'), 'fr');
   assert.equal(normalizeLanguageCode('zh-Hans-CN'), 'zh');
+  assert.equal(normalizeLanguageCode('ar-SA'), 'ar');
+  assert.equal(normalizeLanguageCode('de-DE'), 'de');
   assert.equal(resolveLanguage('system', [{ languageTag: 'es-ES' }]), 'es');
   assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hans' }]), 'zh');
-  assert.equal(resolveLanguage('system', [{ languageTag: 'de-DE' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'ja-JP' }]), 'ja');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'ae-AF' }]), 'en');
   assert.equal(resolveLanguage('en', [{ languageTag: 'es-ES' }]), 'en');
   assert.equal(translateForLocale('es', 'auth.createAccount'), 'Crear cuenta');
   assert.equal(translateForLocale('fr', 'auth.createAccount'), 'Créer un compte');
@@ -130,11 +135,21 @@ test('language resolution supports regional tags, system preference, and fallbac
   );
 });
 
+test('RTL language resolution is driven by catalog metadata', () => {
+  assert.equal(isRTLLanguage('ar-SA'), true);
+  assert.equal(isRTLLanguage('he-IL'), true);
+  assert.equal(isRTLLanguage('ur-PK'), true);
+  assert.equal(isRTLLanguage('de-DE'), false);
+  assert.equal(isRTLLanguage('ae'), true);
+  assert.equal(isRTLLanguage('zz'), false);
+});
+
 test('Expo config derives native locale declarations from the language catalog', () => {
   const config = require('../app.config')();
   const localizationPlugin = config.plugins.find((plugin) => Array.isArray(plugin) && plugin[0] === 'expo-localization');
-  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, ['en', 'es', 'fr', 'zh']);
-  assert.deepEqual(localizationPlugin[1].supportedLocales.android, ['en', 'es', 'fr', 'zh']);
+  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, supportedLanguages);
+  assert.deepEqual(localizationPlugin[1].supportedLocales.android, supportedLanguages);
+  assert.equal(supportedLanguages.length, 155);
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
   assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
   assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);

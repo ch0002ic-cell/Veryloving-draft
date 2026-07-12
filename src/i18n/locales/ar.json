@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "إضافة",
+    "apple": "Apple",
+    "back": "رجوع",
+    "call": "اتصال",
+    "cancel": "إلغاء",
+    "clear": "مسح",
+    "close": "إغلاق",
+    "connect": "اتصال",
+    "connecting": "جارٍ الاتصال...",
+    "continue": "متابعة",
+    "delete": "حذف",
+    "finish": "إنهاء",
+    "friends": "الأصدقاء",
+    "google": "Google",
+    "home": "الصفحة الرئيسية",
+    "loading": "جارٍ التحميل...",
+    "map": "الخريطة",
+    "notNow": "ليس الآن",
+    "remove": "إزالة",
+    "retry": "إعادة المحاولة",
+    "retrying": "إعادة المحاولة",
+    "save": "حفظ",
+    "selected": "محدد",
+    "send": "إرسال",
+    "settings": "الإعدادات",
+    "skip": "تخطي",
+    "skipForNow": "تخطي الآن",
+    "skipTutorial": "تخطي البرنامج التعليمي",
+    "sos": "SOS",
+    "unknown": "غير معروف",
+    "user": "VeryLoving مستخدم",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "اللغة",
+    "subtitle": "اختر اللغة المستخدمة في جميع أنحاء app.",
+    "system": "النظام الافتراضي",
+    "search": "لغات البحث",
+    "noResults": "لا توجد لغات تطابق بحثك.",
+    "english": "الإنجليزية",
+    "spanish": "الإسبانية",
+    "french": "الفرنسية",
+    "chineseSimplified": "الصينية (المبسط)"
+  },
+  "phone": {
+    "label": "رقم الهاتف",
+    "placeholder": "رقم الهاتف",
+    "selectCountry": "حدد البلد أو المنطقة",
+    "searchCountry": "البحث عن البلد أو الرمز أو بادئة الاتصال",
+    "noCountries": "لا توجد بلدان تتطابق مع بحثك.",
+    "countryButton": "قم بتغيير البلد حاليًا %{country} plus %{callingCode}",
+    "inputAccessibility": "رقم هاتف %{country}",
+    "required": "أدخل رقم هاتف.",
+    "tooShort": "رقم الهاتف هذا قصير جدًا.",
+    "tooLong": "رقم الهاتف هذا طويل جدًا.",
+    "invalid": "أدخل رقم هاتف صالح للبلد المحدد.",
+    "valid": "رقم هاتف دولي صالح"
+  },
+  "auth": {
+    "onboardingTagline": "رفيق أمان شخصي للحظات بين \"أنا بخير\" و\"أحتاج إلى مساعدة\".",
+    "createAccount": "إنشاء حساب",
+    "continueOnboarding": "متابعة الإعداد",
+    "createSubtitle": "اختر تسجيل دخول طريقة لحماية الرسم البياني للسلامة.",
+    "phoneVerification": "التحقق عبر الهاتف",
+    "sendCode": "إرسال الرمز",
+    "sendingCode": "إرسال الرمز...",
+    "verifyCode": "التحقق من الرمز",
+    "sentTo": "تم الإرسال إلى %{phone}",
+    "yourPhone": "الخاص بك الهاتف",
+    "verificationCode": "رمز التحقق",
+    "verify": "تحقق",
+    "verifying": "جارٍ التحقق...",
+    "invalidCode": "أدخل رمز التحقق.",
+    "signInFailedTitle": "تمت مقاطعة تسجيل الدخول",
+    "signInFailedMessage": "لم نتمكن من إكمال تسجيل الدخول. تحقق من اتصالك وحاول مرة أخرى.",
+    "googleUnavailableTitle": "Google تسجيل الدخول غير متاح",
+    "googleUnavailableMessage": "باستخدام جلسة تطوير محلية. يعمل تسجيل الدخول الأصلي Google في بناء التطوير.",
+    "northStarTitle": "NorthStar المجوهرات",
+    "northStarSubtitle": "إقرانها الآن أو تابعها وأضفها لاحقًا.",
+    "northStarBody": "يمكن أن يؤدي الجهاز القابل للارتداء VL01 إلى تشغيل تدفقات الأمان من خلال النقرات وإيماءات الضغط لفترة طويلة.",
+    "setupJewelry": "تعيين up Jewelry",
+    "meetCapybear": "تعرّف على Capybear",
+    "meetCapybearSubtitle": "رفيقك اللطيف للسلامة على الخريطة وفي المكالمات.",
+    "capybearBody": "Capybear يمكنه المساعدة في وضع المنزل، ووضع الوصي، ووضع الطوارئ، وعذر المكالمات، والدعم الصوتي.",
+    "chooseVoice": "اختيار صوت",
+    "capybearReminder": "Capybear تذكير",
+    "remindersReady": "التذكيرات اللطيفة جاهزة."
+  },
+  "permissions": {
+    "locationTitle": "أمان الموقع",
+    "locationSubtitle": "تُستخدم للخريطة ومناطق الخطر والوصول الآمن وسياق SOS.",
+    "locationBody": "VeryLoving يطلب الموقع حتى يتمكن الأوصياء من فهم المكان الذي قد تكون هناك حاجة للمساعدة فيه. يمكنك تغيير هذا لاحقًا في الإعدادات.",
+    "allowLocation": "السماح بالموقع",
+    "notificationsTitle": "تنبيهات السلامة",
+    "notificationsSubtitle": "تدعم الإشعارات عمليات تسجيل الوصول وأحداث الطوارئ.",
+    "notificationsBody": "نحن نستخدم فقط الإشعارات الخاصة بمطالبات السلامة وتحديثات الطوارئ والتذكيرات التي تقوم بتمكينها.",
+    "enableNotifications": "تمكين الإشعارات",
+    "locationRationaleTitle": "يحافظ الموقع على دقة سياق الأمان",
+    "locationRationaleMessage": "يستخدم VeryLoving موقعك لخريطة الأمان ومناطق الخطر والمشاركة السريعة وسياق SOS. يمكنك تغيير ذلك لاحقًا في الإعدادات.",
+    "notificationsRationaleTitle": "تنبيهات السلامة تحتاج إلى إشعارات",
+    "notificationsRationaleMessage": "VeryLoving ترسل تذكيرات تسجيل الوصول وتحديثات الطوارئ ومطالبات السلامة التي تقوم بتمكينها. نحن لا نستخدم إشعارات الإعلانات.",
+    "microphoneRationaleTitle": "يقوم الميكروفون بتشغيل مكالمات الأمان",
+    "microphoneRationaleMessage": "VeryLoving يستخدم الميكروفون فقط عند بدء AI مكالمة مرافقة أو مكالمة أمان.",
+    "bluetoothRationaleTitle": "Bluetooth يربط جهازك القابل للارتداء",
+    "bluetoothRationaleMessage": "VeryLoving يستخدم Bluetooth للاقتران مع مجوهرات NorthStar، وقراءة حالة الاتصال، وتشغيل تدفقات الأمان من الجهاز القابل للارتداء.",
+    "cameraRationaleTitle": "الكاميرا اختيارية",
+    "cameraRationaleMessage": "VeryLoving تستخدم الكاميرا فقط عندما تختار التقاط صورة للملف الشخصي أو مشاركة عنصر أمان. image."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving يبقي هذا التدفق متاحًا من الإعدادات ولوحة التحكم.",
+    "chooseVoiceTitle": "اختر صوتك",
+    "chooseVoiceSubtitle": "اختر الصوت المصاحب الذي تشعر بأنه أكثر أمانًا لسماعه.",
+    "homeTitle": "وضع المنزل",
+    "homeSubtitle": "مراقبة هادئة يوميًا الأمان.",
+    "guardianTitle": "وضع الوصي",
+    "guardianSubtitle": "مشاركة السياق مع الأشخاص الموثوق بهم.",
+    "emergencyTitle": "وضع الطوارئ",
+    "emergencySubtitle": "يمكن تصعيد خمس نقرات إلى SOS وتنبيهات الوصي.",
+    "excuseTitle": "مكالمة العذر",
+    "excuseSubtitle": "اخلق سببًا لطيفًا لترك موقف غير مريح.",
+    "safetyCallTitle": "مكالمة الأمان",
+    "safetyCallSubtitle": "ابدأ مكالمة مصاحبة في الوقت الفعلي عندما تحتاج إلى الدعم.",
+    "practiceTitle": "مشهد تدريبي",
+    "practiceSubtitle": "جرب تدفقات الأمان في عرض توضيحي للضغط المنخفض."
+  },
+  "jewelry": {
+    "pairTitle": "إقران NorthStar",
+    "pairSubtitle": "احتفظ بالمجوهرات بالقرب منك أثناء المسح.",
+    "scan": "البحث عن الأجهزة",
+    "scanning": "جارٍ البحث عن الأجهزة القريبة...",
+    "noDevices": "لم يتم العثور على أجهزة NorthStar قريبة حتى الآن.",
+    "scanStartFailed": "تعذر بدء المسح Bluetooth. يرجى المحاولة مرة أخرى.",
+    "scanFailed": "لم نتمكن من العثور على مجوهرات قريبة. حدد Bluetooth، وأبق NorthStar قريبًا، وحاول مرة أخرى.",
+    "scanAccessFailed": "Bluetooth تعذر بدء المسح. تحقق من الوصول إلى Bluetooth وحاول مرة أخرى.",
+    "permissionDenied": "تم إيقاف الوصول إلى الأجهزة القريبة. اسمح لـ Bluetooth بالوصول في الإعدادات، ثم حاول مرة أخرى.",
+    "connectTimeout": "استغرق NorthStar وقتًا طويلاً للاتصال. قم بتقريبه وحاول مرة أخرى.",
+    "connectFailed": "تعذر علينا الاتصال بـ NorthStar. تأكد من أنه مشحون وقريب، ثم حاول مرة أخرى.",
+    "emptyTitle": "لا توجد أجهزة قريبة حتى الآن",
+    "emptyMessage": "احتفظ بـ NorthStar مشحونًا وقريبًا من هذا الهاتف، ثم قم بالمسح الضوئي مرة أخرى.",
+    "searchingMessage": "جارٍ البحث عن NorthStar من الأجهزة القريبة..."
+  },
+  "home": {
+    "subtitle": "رفيق الأمان لوحة القيادة",
+    "modeStatus": "%{mode} الوضع",
+    "companionReady": "%{name} جاهز",
+    "readyBody": "الصوت والخريطة والمجوهرات والأوصياء على بعد نقرة واحدة.",
+    "safetyCall": "مكالمة الأمان",
+    "northStarDevice": "NorthStar الجهاز",
+    "deviceConnected": "%{name} متصل · %{battery}%",
+    "noDevice": "لا يوجد جهاز متصل",
+    "manageDevice": "إدارة الجهاز",
+    "mode": "الوضع",
+    "modes": {
+      "home": "الصفحة الرئيسية",
+      "guardian": "الجارديان",
+      "emergency": "الطوارئ"
+    }
+  },
+  "map": {
+    "finding": "العثور على موقعك...",
+    "retry": "إعادة محاولة الموقع",
+    "title": "خريطة الأمان",
+    "previewSubtitle": "Expo Go معاينة; يتم عرض Mapbox في بناء التطوير.",
+    "preview": "معاينة الخريطة",
+    "risk": "الخطر: %{risk} · نصف القطر %{radius}m",
+    "refresh": "تحديث الموقع",
+    "refreshing": "العثور على الموقع...",
+    "updateFailed": "لم نتمكن من تحديث موقعك. يرجى المحاولة مرة أخرى.",
+    "notRequested": "لم يتم طلب الوصول إلى الموقع. يمكنك تمكينه لاحقًا من الإعدادات.",
+    "permissionOff": "الوصول إلى الموقع متوقف. قم بتمكينه في \"الإعدادات\" لتوسيط خريطة الأمان عليك.",
+    "timeout": "يستغرق موقعك وقتًا أطول من المتوقع. انتقل إلى مكان ما بإشارة أكثر وضوحًا وحاول مرة أخرى.",
+    "savedTitle": "الأماكن المحفوظة",
+    "savedEmptyTitle": "لم يتم حفظ أي أماكن بعد",
+    "savedEmptyMessage": "ستظهر هنا الأماكن الموثوق بها التي تحفظها للوصول السريع.",
+    "zones": {
+      "crowding": "الازدحام في وقت متأخر من الليل",
+      "lowLighting": "منطقة منخفضة الإضاءة"
+    },
+    "risks": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "high": "مرتفع"
+    }
+  },
+  "safetyCall": {
+    "connecting": "جارٍ الاتصال...",
+    "offlineCompanion": "رفيق غير متصل",
+    "offline": "غير متصل",
+    "connected": "متصل",
+    "interrupted": "تم انقطاع الاتصال",
+    "ready": "جاهز للاتصال",
+    "connectingSecurely": "يتم الاتصال بصوتك بشكل آمن رفيق...",
+    "messagesWaiting": {
+      "one": "%{count} رسالة في انتظار الإرسال",
+      "other": "%{count} رسائل في انتظار الإرسال"
+    },
+    "useOffline": "استخدام رفيق في وضع عدم الاتصال",
+    "reconnect": "أعد الاتصال بالصوت AI",
+    "typePlaceholder": "اكتب إذا كان التحدث هو صعب",
+    "endCall": "إنهاء المكالمة",
+    "startCall": "بدء المكالمة",
+    "emptyTitle": "محادثتك تبدأ هنا",
+    "emptyMessage": "ابدأ المكالمة أو اكتب رسالة عندما تكون جاهزًا."
+  },
+  "chat": {
+    "waiting": "في انتظار الاتصال",
+    "notSent": "الرسالة ليست تم الإرسال.",
+    "retryAccessibility": "إعادة محاولة إرسال الرسالة"
+  },
+  "history": {
+    "clearTitle": "مسح سجل المحادثات؟",
+    "clearMessage": "يؤدي هذا إلى إزالة AI من الرسائل المصاحبة المحفوظة من هذا الجهاز.",
+    "deleteTitle": "هل تريد حذف هذه المحادثة؟",
+    "cannotUndo": "لا يمكن التراجع عن هذا.",
+    "title": "سجل المحادثات",
+    "subtitle": "AI الرسائل المصاحبة المحفوظة على هذا الجهاز.",
+    "empty": "لم يتم حفظ أي محادثات حتى الآن.",
+    "emptyTitle": "لم يتم حفظ أي محادثات بعد",
+    "emptyMessage": "ستظهر المحادثات المصاحبة AI هنا بعد مكالمتك الأولى.",
+    "loadFailed": "لم نتمكن من تحميل سجل المحادثات. يرجى المحاولة مرة أخرى.",
+    "clearFailed": "لم نتمكن من مسح سجل المحادثات. يرجى المحاولة مرة أخرى.",
+    "deleteFailed": "لم نتمكن من حذف تلك المحادثة. يرجى المحاولة مرة أخرى.",
+    "aiCompanion": "AI رفيق",
+    "resume": "استئناف",
+    "clearAll": "مسح كل السجل",
+    "roles": {
+      "assistant": "رفيق",
+      "user": "أنت"
+    }
+  },
+  "voices": {
+    "title": "أصوات مكالماتي الآمنة",
+    "subtitle": "اختر الصوت المصاحب الذي تشعر أنه من المناسب سماعه.",
+    "test": "اختبر الصوت",
+    "stop": "أوقف العينة",
+    "selectionFailedTitle": "لم يتم حفظ التحديد",
+    "selectionFailedMessage": "يُرجى محاولة اختيار الصوت مرة أخرى.",
+    "sampleFailedTitle": "العينة غير متاحة",
+    "sampleFailedMessage": "تعذر تشغيل هذه العينة الصوتية. يرجى المحاولة مرة أخرى.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "ناعمة وهادئة وهادئة"
+      },
+      "bestie": {
+        "name": "حبيبتي",
+        "description": "ذكية ومطمئنة ومتحدثة"
+      },
+      "boyfriend": {
+        "name": "صديق",
+        "description": "ثابت، حنون، حاضر"
+      },
+      "muscleMan": {
+        "name": "رجل عضلي",
+        "description": "واثق، وقائي، محفز"
+      }
+    }
+  },
+  "settings": {
+    "voice": "الصوت",
+    "changeVoice": "تغيير الصوت",
+    "showCompanion": "إظهار الرفيق",
+    "offlineMode": "وضع عدم الاتصال بالإنترنت",
+    "offlineModeSubtitle": "استخدم الاستجابات المصاحبة المجمعة عندما تكون بيانات اعتماد الشبكة أو Hume غير متاحة.",
+    "privacyData": "الخصوصية والبيانات",
+    "privacyBody": "تصدير أو حذف البيانات المحلية المخزنة على هذا الجهاز.",
+    "preparingExport": "جارٍ تحضير التصدير...",
+    "exportData": "تصدير بياناتي",
+    "privacyPolicy": "سياسة الخصوصية",
+    "deleting": "جارٍ الحذف...",
+    "deleteAll": "حذف جميع البيانات المحلية",
+    "deviceManagement": "إدارة الجهاز",
+    "emergencyContacts": "جهات اتصال الطوارئ",
+    "signOut": "تسجيل الخروج",
+    "exportFailedTitle": "فشل التصدير",
+    "exportFailedMessage": "غير قادر على تصدير بياناتك الآن.",
+    "deleteConfirmTitle": "هل تريد حذف جميع البيانات المحلية؟",
+    "deleteConfirmMessage": "يؤدي هذا إلى إزالة ملفك الشخصي وإعداداتك جهات اتصال الطوارئ وسجل المحادثات وتذكيرات الأذونات وجلسة المصادقة المحلية من هذا الجهاز.",
+    "deleteEverything": "احذف كل شيء",
+    "deleteFailedTitle": "فشل الحذف",
+    "deleteFailedMessage": "غير قادر على حذف البيانات المحلية الآن.",
+    "linkFailed": "غير قادر على فتح الرابط",
+    "sections": {
+      "language": "اللغة",
+      "languageSubtitle": "لغة إذن الواجهة والنظام",
+      "companion": "الرفيق",
+      "companionSubtitle": "تفضيلات الصوت وعدم الاتصال بالإنترنت",
+      "deviceSafety": "الأجهزة والأمان",
+      "deviceSafetySubtitle": "NorthStar والأوصياء وجهات اتصال الطوارئ",
+      "privacy": "الخصوصية البيانات",
+      "privacySubtitle": "السجل والتصدير والحذف والسياسة",
+      "account": "الحساب",
+      "accountSubtitle": "جلسة VeryLoving الحالية"
+    },
+    "updateFailedTitle": "لم يتم حفظ الإعداد",
+    "updateFailedMessage": "لم نتمكن من حفظ هذا التفضيل. الرجاء المحاولة مرة أخرى.",
+    "signOutFailedTitle": "تعذر تسجيل الخروج",
+    "signOutFailedMessage": "جلستك لا تزال نشطة. يرجى المحاولة مرة أخرى."
+  },
+  "contacts": {
+    "title": "جهات اتصال الطوارئ",
+    "subtitle": "الأشخاص الموثوق بهم المتوفرون أثناء تدفقات السلامة.",
+    "addTitle": "إضافة جهة اتصال للطوارئ",
+    "name": "الاسم",
+    "namePlaceholder": "اسم جهة الاتصال",
+    "phone": "رقم هاتف جهة الاتصال",
+    "add": "إضافة جهة اتصال",
+    "empty": "لم تتم إضافة أي جهات اتصال للطوارئ حتى الآن.",
+    "emptyTitle": "لا توجد جهات اتصال للطوارئ بعد",
+    "emptyMessage": "أضف شخصًا تثق به حتى يكون جاهزًا عندما يحتاج إليه تدفق الأمان.",
+    "removeTitle": "هل تريد إزالة %{name}؟",
+    "removeMessage": "لن يظهر هذا الشخص بعد الآن في تدفق الطوارئ.",
+    "nameRequired": "أدخل اسم جهة الاتصال.",
+    "saveFailedTitle": "لم يتم حفظ جهة الاتصال",
+    "saveFailedMessage": "لم نتمكن من حفظ جهة الاتصال هذه. تحقق من التفاصيل وحاول مرة أخرى.",
+    "removeFailedTitle": "لم تتم إزالة جهة الاتصال",
+    "removeFailedMessage": "لم نتمكن من إزالة جهة الاتصال هذه. يرجى المحاولة مرة أخرى.",
+    "callAccessibility": "اتصل بـ %{name}",
+    "removeAccessibility": "إزالة %{name}"
+  },
+  "device": {
+    "title": "إدارة الجهاز",
+    "subtitle": "إدارة جهاز NorthStar الخاص بك.",
+    "connected": "متصل · %{battery}% بطارية",
+    "none": "لا توجد أجهزة متصلة",
+    "disconnect": "افصل الجهاز",
+    "connect": "توصيل الجهاز"
+  },
+  "friends": {
+    "title": "الأصدقاء",
+    "subtitle": "الأوصياء والطلبات والرسم البياني للطوارئ.",
+    "addDemo": "إضافة صديق تجريبي",
+    "emptyTitle": "دائرة الأمان الخاصة بك فارغة",
+    "emptyMessage": "سيظهر الأصدقاء والأوصياء الموثوق بهم هنا بمجرد إضافتهم.",
+    "newGuardian": "الوصي الجديد",
+    "statuses": {
+      "guardian": "الوصي",
+      "pending": "في انتظار"
+    }
+  },
+  "emergency": {
+    "title": "الطوارئ SOS",
+    "subtitle": "التصعيد فقط عندما تحتاج إلى دعم فوري.",
+    "body": "سيؤدي هذا إلى إعلام تدفق الأمان الخاص بك وإعداد جهات اتصال الطوارئ.",
+    "activate": "تنشيط SOS",
+    "callCompanion": "اتصل بـ AI بمرافق",
+    "notificationTitle": "تم تفعيل SOS",
+    "notificationBody": "خط سير الطوارئ الخاص بك جاهز.",
+    "readyTitle": "SOS جاهز",
+    "callContact": "اتصل بـ %{name}؟",
+    "addContact": "أضف جهة اتصال للطوارئ في الإعدادات.",
+    "quickShareTitle": "المشاركة السريعة",
+    "quickShareMessage": "قاعدة مشاركة الموقع جاهزة. قم بتوصيل نقطة نهاية المشاركة الخلفية لإرسال روابط مباشرة."
+  },
+  "quickShare": {
+    "title": "مشاركة سريعة",
+    "subtitle": "تدفق مشاركة الموقع جاهز."
+  },
+  "capybearTap": {
+    "title": "Capybear اضغط",
+    "subtitle": "انقر نقرًا مزدوجًا على NorthStar لإسقاط برتقالي الأمان.",
+    "body": "مسار الإيماءة جاهز لتوصيل أحداث BLE."
+  },
+  "debug": {
+    "title": "VeryLoving صفحة التصحيح",
+    "subtitle": "مسار التطوير فقط."
+  },
+  "errors": {
+    "voiceOffline": "يبدو أنك غير متصل بالإنترنت. سيتم إرسال رسالتك عند إعادة الاتصال.",
+    "voiceQueued": "تم حفظ الرسالة. سيتم إرسالها عند إعادة اتصال الرفيق الصوتي.",
+    "voiceRetrying": "محاولة إرسال رسالتك مرة أخرى...",
+    "voiceConnecting": "يتم الآن الاتصال بأمان برفيقك الصوتي...",
+    "microphone": "يلزم الوصول إلى الميكروفون لإجراء المكالمات الصوتية. يمكنك تمكينه في الإعدادات، أو كتابة رسالة بدلاً من ذلك.",
+    "billing": "الرفيق الصوتي عبر الإنترنت غير متاح مؤقتًا. يمكنك الاستمرار مع الرفيق غير المتصل بالإنترنت.",
+    "authentication": "لم يتمكن الرفيق الصوتي من التحقق من هذه الجلسة. قم بتسجيل الدخول مرة أخرى أو استخدم الرفيق غير المتصل بالإنترنت في الوقت الحالي.",
+    "timeout": "استغرق الرفيق الصوتي وقتًا طويلاً للرد. تحقق من اتصالك وحاول مرة أخرى.",
+    "network": "لم نتمكن من الوصول إلى الرفيق الصوتي. تحقق من اتصالك، ثم حاول مرة أخرى أو تابع دون الاتصال بالإنترنت.",
+    "genericVoice": "هناك شيء ما أدى إلى مقاطعة المكالمة الصوتية. حاول مرة أخرى، أو تابع مع الرفيق غير المتصل بالإنترنت."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving تصدير البيانات"
+  },
+  "notifications": {
+    "channelName": "تنبيهات السلامة"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving يحتاج إلى الوصول إلى الميكروفون للأمان وAI المرافق المكالمات.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving يستخدم موقعك لخريطة الأمان وميزات الأمان القريبة.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving يستخدم موقعك لدعم الوصول الآمن وتدفقات الطوارئ.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving يستخدم موقع الخلفية للوصول الآمن وميزات منطقة الخطر القريبة.",
+      "NSCameraUsageDescription": "VeryLoving يستخدم الكاميرا فقط عندما تختار التقاط صورة ملف شخصي أو صورة أمان.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving يستخدم مكتبة الصور الخاصة بك فقط عندما تختار ملفًا شخصيًا أو صورة أمان.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving يستخدم Bluetooth للاتصال بـ NorthStar أمانك المجوهرات.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving يستخدم Bluetooth للاتصال بمجوهرات الأمان NorthStar الخاصة بك."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

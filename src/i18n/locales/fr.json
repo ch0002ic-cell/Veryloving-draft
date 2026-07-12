@@ -37,6 +37,8 @@
     "title": "Langue",
     "subtitle": "Choisissez la langue utilisée dans toute l'application.",
     "system": "Langue du système",
+    "search": "Rechercher des langues",
+    "noResults": "Aucune langue ne correspond à votre recherche.",
     "english": "Anglais",
     "spanish": "Espagnol",
     "french": "Français",

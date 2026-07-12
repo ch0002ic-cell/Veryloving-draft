@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Lägg till",
+    "apple": "Apple",
+    "back": "Tillbaka",
+    "call": "Ring",
+    "cancel": "Avbryt",
+    "clear": "Klart",
+    "close": "Stäng",
+    "connect": "Koppla upp",
+    "connecting": "Kopplar...",
+    "continue": "Fortsätt",
+    "delete": "Radera",
+    "finish": "Slut",
+    "friends": "Vänner",
+    "google": "Google",
+    "home": "Hem",
+    "loading": "Laddar...",
+    "map": "Karta",
+    "notNow": "Inte nu",
+    "remove": "Ta bort",
+    "retry": "Omprövning",
+    "retrying": "Försök igen",
+    "save": "Spara",
+    "selected": "Utvalda",
+    "send": "Skicka",
+    "settings": "Miljöer",
+    "skip": "Hoppa över",
+    "skipForNow": "Hoppa över för nu",
+    "skipTutorial": "Hoppa över handledningen",
+    "sos": "SOS",
+    "unknown": "Okänt",
+    "user": "VeryLoving användare",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Språk",
+    "subtitle": "Välj språket som används i hela appen.",
+    "system": "Systemstandard",
+    "search": "Sökspråk",
+    "noResults": "Inga språk matchar din sökning.",
+    "english": "Engelska",
+    "spanish": "Spanska",
+    "french": "Franska",
+    "chineseSimplified": "Kinesiska (förenklat)"
+  },
+  "phone": {
+    "label": "Telefonnummer",
+    "placeholder": "Telefonnummer",
+    "selectCountry": "Välj land eller region",
+    "searchCountry": "Sök på land, kod eller uppringningsprefix",
+    "noCountries": "Inga länder matchar din sökning.",
+    "countryButton": "Byt land, %{country} för närvarande plus %{callingCode}",
+    "inputAccessibility": "Telefonnummer till %{country}",
+    "required": "Ange ett telefonnummer.",
+    "tooShort": "Det här telefonnummert är för kort.",
+    "tooLong": "Det här telefonnumret är för långt.",
+    "invalid": "Ange ett giltigt telefonnummer för det valda landet.",
+    "valid": "Giltigt internationellt telefonnummer"
+  },
+  "auth": {
+    "onboardingTagline": "En personlig säkerhetspartner för ögonblicken mellan \"Jag mår bra\" och \"Jag behöver hjälp.\"",
+    "createAccount": "Skapa konto",
+    "continueOnboarding": "Fortsätt med onboarding",
+    "createSubtitle": "Välj en inloggningsmetod för att skydda din säkerhetsgraf.",
+    "phoneVerification": "Telefonverifiering",
+    "sendCode": "Skicka kod",
+    "sendingCode": "Skickar kod...",
+    "verifyCode": "Verifiera koden",
+    "sentTo": "Skickad till %{phone}",
+    "yourPhone": "Din telefon",
+    "verificationCode": "Verifieringskod",
+    "verify": "Verifiera",
+    "verifying": "Verifierar...",
+    "invalidCode": "Ange verifieringskoden.",
+    "signInFailedTitle": "Inloggning avbruten",
+    "signInFailedMessage": "Vi kunde inte slutföra inloggningen. Kontrollera din anslutning och försök igen.",
+    "googleUnavailableTitle": "Google Inloggning är ej tillgänglig",
+    "googleUnavailableMessage": "Använder en lokal utvecklingssession. Native Google Sign-In fungerar i en utvecklingsversion.",
+    "northStarTitle": "NorthStar smycken",
+    "northStarSubtitle": "Para ihop nu eller fortsätt och lägg till senare.",
+    "northStarBody": "Den VL01 bärbara kan utlösa säkerhetsflöden med knackningar och långa tryckrörelser.",
+    "setupJewelry": "Sätt upp smycken",
+    "meetCapybear": "Möt Capybear",
+    "meetCapybearSubtitle": "Din milda säkerhetsföljeslagare på kartan och i larm.",
+    "capybearBody": "Capybear kan hjälpa till med hemläge, vårdnadshavarläge, nödläge, ursäktsamtal och röststöd.",
+    "chooseVoice": "Välj en röst",
+    "capybearReminder": "Capybear påminnelse",
+    "remindersReady": "Milda påminnelser är redo."
+  },
+  "permissions": {
+    "locationTitle": "Platssäkerhet",
+    "locationSubtitle": "Används för kartan, farozoner, säker ankomst och SOS kontext.",
+    "locationBody": "VeryLoving ber om plats så att vårdnadshavarna kan förstå var hjälp kan behövas. Du kan ändra detta senare i inställningarna.",
+    "allowLocation": "Tillåt placering",
+    "notificationsTitle": "Säkerhetsvarningar",
+    "notificationsSubtitle": "Notiser stödjer incheckningar och nödsituationer.",
+    "notificationsBody": "Vi använder endast notiser för säkerhetsvarningar, nöduppdateringar och påminnelser som du aktiverar.",
+    "enableNotifications": "Aktivera notiser",
+    "locationRationaleTitle": "Platsen håller säkerhetskontexten korrekt",
+    "locationRationaleMessage": "VeryLoving använder din plats för säkerhetskartan, farozoner, snabbdelning och SOS kontext. Du kan ändra detta senare i inställningarna.",
+    "notificationsRationaleTitle": "Säkerhetsvarningar kräver notifikationer",
+    "notificationsRationaleMessage": "VeryLoving skickar påminnelser om incheckning, nöduppdateringar och säkerhetspåminnelser som du aktiverar. Vi använder inte notiser för annonser.",
+    "microphoneRationaleTitle": "Mikrofonen ger säkerhetslarm",
+    "microphoneRationaleMessage": "VeryLoving använder bara din mikrofon när du startar ett AI companion- eller säkerhetssamtal.",
+    "bluetoothRationaleTitle": "Bluetooth kopplar ihop din bärbara enhet",
+    "bluetoothRationaleMessage": "VeryLoving använder Bluetooth för att para ihop med NorthStar smycken, läsa anslutningsstatus och trigga säkerhetsflöden från bärbaren.",
+    "cameraRationaleTitle": "Kamera är valfritt",
+    "cameraRationaleMessage": "VeryLoving använder kameran endast när du väljer att ta en profilbild eller dela en säkerhetsbild."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving håller detta flöde tillgängligt från Inställningar och instrumentpanelen.",
+    "chooseVoiceTitle": "Välj din röst",
+    "chooseVoiceSubtitle": "Välj den följeslagarröst som känns tryggast att höra.",
+    "homeTitle": "Hemläge",
+    "homeSubtitle": "Tyst övervakning för daglig säkerhet.",
+    "guardianTitle": "Väktarläge",
+    "guardianSubtitle": "Dela kontext med betrodda personer.",
+    "emergencyTitle": "Nödläge",
+    "emergencySubtitle": "Fem tryck kan eskalera till SOS och väktarvarningar.",
+    "excuseTitle": "Ursäktssamtal",
+    "excuseSubtitle": "Skapa en värdig anledning att lämna en obekväm situation.",
+    "safetyCallTitle": "Säkerhetsbeslut",
+    "safetyCallSubtitle": "Starta ett samtal med följeslagare i realtid när du behöver stöd.",
+    "practiceTitle": "Övningsscen",
+    "practiceSubtitle": "Prova säkerhetsflödena i en lågtrycksdemonstration."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Ha smyckena nära medan du scannar.",
+    "scan": "Sök efter enheter",
+    "scanning": "Skannar i närheten...",
+    "noDevices": "Inga närliggande NorthStar enheter hittades än.",
+    "scanStartFailed": "Bluetooth skanning kunde inte starta. Försök igen, tack.",
+    "scanFailed": "Vi kunde inte hitta smycken i närheten. Kontrollera Bluetooth, håll NorthStar nära och försök igen.",
+    "scanAccessFailed": "Bluetooth skanning kunde inte starta. Kontrollera Bluetooth åtkomst och försök igen.",
+    "permissionDenied": "Åtkomst till närliggande enheter är avstängd. Tillåt Bluetooth åtkomst i Inställningar, försök sedan igen.",
+    "connectTimeout": "NorthStar tog för lång tid att få kontakt. Flytta den närmare och försök igen.",
+    "connectFailed": "Vi kunde inte koppla upp oss till NorthStar. Kontrollera att den är laddad och i närheten, och försök sedan igen.",
+    "emptyTitle": "Inga närliggande enheter än",
+    "emptyMessage": "Håll NorthStar laddad och nära den här telefonen, och skanna sedan igen.",
+    "searchingMessage": "Letar efter NorthStar enheter i närheten..."
+  },
+  "home": {
+    "subtitle": "Säkerhetskompanjonsinstrumentpanel",
+    "modeStatus": "%{mode} LÄGE",
+    "companionReady": "%{name} är redo",
+    "readyBody": "Röst, karta, smycken och väktare är bara ett tryck bort.",
+    "safetyCall": "Säkerhetsbeslut",
+    "northStarDevice": "NorthStar enhet",
+    "deviceConnected": "%{name} ansluten · %{battery}%",
+    "noDevice": "Ingen enhet ansluten",
+    "manageDevice": "Hantera enheten",
+    "mode": "Läge",
+    "modes": {
+      "home": "Hem",
+      "guardian": "Väktare",
+      "emergency": "Nöd"
+    }
+  },
+  "map": {
+    "finding": "Att hitta din plats...",
+    "retry": "Återförsöksplats",
+    "title": "Säkerhetskarta",
+    "previewSubtitle": "Expo Go förhandsvisning; Mapbox renderas i en utvecklingsversion.",
+    "preview": "Kartförhandsvisning",
+    "risk": "Risk: %{risk} · Radie%{radius}m",
+    "refresh": "Uppdatera platsen",
+    "refreshing": "Hitta plats...",
+    "updateFailed": "Vi kunde inte uppdatera din plats. Försök igen, tack.",
+    "notRequested": "Platsåtkomst begärdes inte. Du kan aktivera det senare från Inställningar.",
+    "permissionOff": "Platsåtkomst är avstängd. Aktivera det i Inställningar för att centrera säkerhetskartan på dig.",
+    "timeout": "Din plats tar längre tid än väntat. Flytta någonstans med tydligare signal och försök igen.",
+    "savedTitle": "Sparade platser",
+    "savedEmptyTitle": "Inga sparade platser än",
+    "savedEmptyMessage": "Betrodda platser du sparar visas här för snabb åtkomst.",
+    "zones": {
+      "crowding": "Sen nattträngsel",
+      "lowLighting": "Svagt ljusområde"
+    },
+    "risks": {
+      "low": "lågt",
+      "medium": "Medium",
+      "high": "Högt"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Kopplar...",
+    "offlineCompanion": "Offline-följeslagare",
+    "offline": "Offline",
+    "connected": "Ansluten",
+    "interrupted": "Anslutningen avbruten",
+    "ready": "Redo att koppla upp mig",
+    "connectingSecurely": "Att koppla dig säkert till din röstkompis...",
+    "messagesWaiting": {
+      "one": "%{count} meddelande som väntar på att skickas",
+      "other": "%{count} meddelanden som väntar på att skickas"
+    },
+    "useOffline": "Använd offline-följeslagare",
+    "reconnect": "Återanslut till röst AI",
+    "typePlaceholder": "Skriv om det är svårt att tala",
+    "endCall": "Avsluta samtalet",
+    "startCall": "Startanrop",
+    "emptyTitle": "Ert samtal börjar här",
+    "emptyMessage": "Starta samtalet eller skriv ett meddelande när du är redo."
+  },
+  "chat": {
+    "waiting": "Väntar på anslutning",
+    "notSent": "Meddelande inte skickat.",
+    "retryAccessibility": "Försök skicka meddelandet igen"
+  },
+  "history": {
+    "clearTitle": "Tydlig konversationshistorik?",
+    "clearMessage": "Detta tar bort sparade AI följeslagarmeddelanden från denna enhet.",
+    "deleteTitle": "Radera den här konversationen?",
+    "cannotUndo": "Detta kan inte göras ogjort.",
+    "title": "Samtalshistorik",
+    "subtitle": "AI följeslagarmeddelanden sparade på denna enhet.",
+    "empty": "Inga samtal sparade än.",
+    "emptyTitle": "Inga samtal än",
+    "emptyMessage": "Dina AI följeslagarkonversationer kommer att visas här efter ditt första samtal.",
+    "loadFailed": "Vi kunde inte ladda konversationshistorik. Försök igen, tack.",
+    "clearFailed": "Vi kunde inte rensa samtalshistoriken. Försök igen, tack.",
+    "deleteFailed": "Vi kunde inte radera den konversationen. Försök igen, tack.",
+    "aiCompanion": "AI följeslagare",
+    "resume": "CV",
+    "clearAll": "Rensa all historik",
+    "roles": {
+      "assistant": "Följeslagare",
+      "user": "Du"
+    }
+  },
+  "voices": {
+    "title": "Mina säkerhetsrop röster",
+    "subtitle": "Välj den följeslagarröst som känns rätt att höra.",
+    "test": "Teströst",
+    "stop": "Stoppprov",
+    "selectionFailedTitle": "Urval ej sparat",
+    "selectionFailedMessage": "Försök gärna välja rösten igen.",
+    "sampleFailedTitle": "Prov ej tillgängligt",
+    "sampleFailedMessage": "Detta röstprov kunde inte spelas upp. Försök igen, tack.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mjukt, lugnt, jordande"
+      },
+      "bestie": {
+        "name": "Bästis",
+        "description": "ljus, lugnande, samtalsinriktad"
+      },
+      "boyfriend": {
+        "name": "Pojkvän",
+        "description": "stadig, kärleksfull, närvarande"
+      },
+      "muscleMan": {
+        "name": "Muscleman",
+        "description": "självsäker, beskyddande, motiverande"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Röst",
+    "changeVoice": "Byt röst",
+    "showCompanion": "Showkompis",
+    "offlineMode": "Offline-läge",
+    "offlineModeSubtitle": "Använd paketerade följeslagarsvar när nätverket eller Hume inloggningsuppgifter inte är tillgängliga.",
+    "privacyData": "Integritet och data",
+    "privacyBody": "Exportera eller ta bort den lokala datan som lagras på denna enhet.",
+    "preparingExport": "Förbereder export...",
+    "exportData": "Exportera mina data",
+    "privacyPolicy": "Integritetspolicy",
+    "deleting": "Raderar...",
+    "deleteAll": "Radera all lokal data",
+    "deviceManagement": "Enhetshantering",
+    "emergencyContacts": "Nödkontakter",
+    "signOut": "Logga ut",
+    "exportFailedTitle": "Exporten misslyckades",
+    "exportFailedMessage": "Kan inte exportera din data just nu.",
+    "deleteConfirmTitle": "Radera all lokal data?",
+    "deleteConfirmMessage": "Detta tar bort din profil, inställningar, nödkontakter, konversationshistorik, behörighetspåminnelser och lokal autentiseringssession från denna enhet.",
+    "deleteEverything": "Radera allt",
+    "deleteFailedTitle": "Raderingen misslyckades",
+    "deleteFailedMessage": "Kan inte ta bort lokal data just nu.",
+    "linkFailed": "Kan inte öppna länken",
+    "sections": {
+      "language": "Språk",
+      "languageSubtitle": "Gränssnitt och systembehörighetsspråk",
+      "companion": "Följeslagare",
+      "companionSubtitle": "Röst- och offline-inställningar",
+      "deviceSafety": "Anordningar och säkerhet",
+      "deviceSafetySubtitle": "NorthStar, vårdnadshavare och nödkontakter",
+      "privacy": "Integritet och data",
+      "privacySubtitle": "Historik, export, radering och policy",
+      "account": "Kontot",
+      "accountSubtitle": "Din nuvarande VeryLoving session"
+    },
+    "updateFailedTitle": "Inställning sparad inte",
+    "updateFailedMessage": "Vi kunde inte rädda den preferensen. Försök igen, tack.",
+    "signOutFailedTitle": "Kunde inte logga ut",
+    "signOutFailedMessage": "Din session är fortfarande aktiv. Försök igen, tack."
+  },
+  "contacts": {
+    "title": "Nödkontakter",
+    "subtitle": "Betrodda personer tillgängliga under säkerhetsflöden.",
+    "addTitle": "Lägg till nödkontakt",
+    "name": "Namn",
+    "namePlaceholder": "Kontaktnamn",
+    "phone": "Kontakttelefonnummer",
+    "add": "Lägg till kontakt",
+    "empty": "Inga nödkontakter har lagts till än.",
+    "emptyTitle": "Inga nödkontakter än",
+    "emptyMessage": "Lägg till någon du litar på så att de är redo när ett säkerhetsflöde behöver dem.",
+    "removeTitle": "Ta bort %{name}?",
+    "removeMessage": "Denna person kommer inte längre att finnas med i ditt nödfall.",
+    "nameRequired": "Ange kontaktens namn.",
+    "saveFailedTitle": "Kontakt inte sparad",
+    "saveFailedMessage": "Vi kunde inte rädda denna kontakt. Kolla detaljerna och försök igen.",
+    "removeFailedTitle": "Kontakt ej borttagen",
+    "removeFailedMessage": "Vi kunde inte ta bort denna kontakt. Försök igen, tack.",
+    "callAccessibility": "Ring %{name}",
+    "removeAccessibility": "Ta bort %{name}"
+  },
+  "device": {
+    "title": "Enhetshantering",
+    "subtitle": "Hantera din NorthStar enhet.",
+    "connected": "Connected · %{battery}% batteri",
+    "none": "Inga enheter anslutna",
+    "disconnect": "Koppla bort enheten",
+    "connect": "Koppla upp enheten"
+  },
+  "friends": {
+    "title": "Vänner",
+    "subtitle": "Väktare, förfrågningar och nödlägesgraf.",
+    "addDemo": "Lägg till demovän",
+    "emptyTitle": "Din säkerhetscirkel är tom",
+    "emptyMessage": "Betrodda vänner och vårdnadshavare kommer att dyka upp här när de läggs till.",
+    "newGuardian": "Ny Väktare",
+    "statuses": {
+      "guardian": "Väktare",
+      "pending": "Väntar"
+    }
+  },
+  "emergency": {
+    "title": "Nödsituation SOS",
+    "subtitle": "Eskalera endast när du behöver omedelbart stöd.",
+    "body": "Detta kommer att meddela din säkerhetsflöde och förbereda nödkontakter.",
+    "activate": "Aktivera SOS",
+    "callCompanion": "Kalla AI följeslagare",
+    "notificationTitle": "SOS aktiverad",
+    "notificationBody": "Ditt nödflöde är redo.",
+    "readyTitle": "SOS redo",
+    "callContact": "Ringer %{name}?",
+    "addContact": "Lägg till en nödkontakt i inställningarna.",
+    "quickShareTitle": "Snabb delning",
+    "quickShareMessage": "Platsdelningsstubben är klar. Koppla backend-delningsändpunkten för att skicka live-länkar."
+  },
+  "quickShare": {
+    "title": "Snabb delning",
+    "subtitle": "Platsdelningsflödet är klart."
+  },
+  "capybearTap": {
+    "title": "Capybear kran",
+    "subtitle": "Dubbeltryck på din NorthStar för att släppa en säkerhetsapelsin.",
+    "body": "Gestrutten är redo för BLE-händelsekabeln."
+  },
+  "debug": {
+    "title": "VeryLoving felsökningssida",
+    "subtitle": "Endast utvecklingsrutt."
+  },
+  "errors": {
+    "voiceOffline": "Du verkar offline. Ditt meddelande skickas när du återansluter.",
+    "voiceQueued": "Meddelandet sparat. Den skickas när röstkompanjonen återkopplas.",
+    "voiceRetrying": "Försöker skicka ditt meddelande igen...",
+    "voiceConnecting": "Att koppla dig säkert till din röstkompis...",
+    "microphone": "Mikrofonåtkomst behövs för röstsamtal. Du kan aktivera det i Inställningar, eller skriva ett meddelande istället.",
+    "billing": "Den digitala röstkompanjonen är tillfälligt otillgänglig. Du kan fortsätta med offline-följeslagaren.",
+    "authentication": "Röstföljeslagaren kunde inte verifiera denna session. Logga in igen eller använd offline-följeslagaren för tillfället.",
+    "timeout": "Röstföljeslagaren tog för lång tid på sig att svara. Kontrollera din anslutning och försök igen.",
+    "network": "Vi kunde inte nå röstkompanjonen. Kontrollera din anslutning, försök sedan igen eller fortsätt offline.",
+    "genericVoice": "Något avbröt röstsamtalet. Försök igen, eller fortsätt med offline-följeslagaren."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving dataexport"
+  },
+  "notifications": {
+    "channelName": "Säkerhetsvarningar"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving behöver mikrofonåtkomst för säkerhet och AI följeslagarsamtal.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving använder din plats för säkerhetskartan och närliggande säkerhetsfunktioner.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving använder din plats för att stödja säkra ankomst- och nödflöden.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving använder bakgrundsläge för säker ankomst och närliggande farozoner.",
+      "NSCameraUsageDescription": "VeryLoving använder kameran endast när du väljer att ta en profil- eller säkerhetsbild.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving använder ditt fotobibliotek endast när du väljer en profil eller säkerhetsbild.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving använder Bluetooth för att koppla till dina NorthStar säkerhetssmycken.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving använder Bluetooth för att koppla till dina NorthStar säkerhetssmycken."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}

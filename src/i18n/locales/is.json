@@ -1,0 +1,404 @@
+{
+  "common": {
+    "add": "Bæta við",
+    "apple": "Apple",
+    "back": "Til baka",
+    "call": "Kallaðu",
+    "cancel": "Hætta við",
+    "clear": "Hreint",
+    "close": "Loka",
+    "connect": "Tengdu þig",
+    "connecting": "Tenging...",
+    "continue": "Haltu áfram",
+    "delete": "Eyða",
+    "finish": "Endir",
+    "friends": "Vinir",
+    "google": "Google",
+    "home": "Heimili",
+    "loading": "Hleður...",
+    "map": "Kort",
+    "notNow": "Ekki núna",
+    "remove": "Fjarlægðu",
+    "retry": "Endurtilraun",
+    "retrying": "Reyna aftur",
+    "save": "Vista",
+    "selected": "Valin",
+    "send": "Sendið",
+    "settings": "Umhverfi",
+    "skip": "Sleppa",
+    "skipForNow": "Slepptu núna",
+    "skipTutorial": "Slepptu kennslu",
+    "sos": "SOS",
+    "unknown": "Óþekkt",
+    "user": "VeryLoving notandi",
+    "veryLoving": "VeryLoving"
+  },
+  "languages": {
+    "title": "Tungumál",
+    "subtitle": "Veldu tungumálið sem notað er í forritinu.",
+    "system": "Sjálfgefið kerfi",
+    "search": "Leitarmál",
+    "noResults": "Engin tungumál passa við leitina þína.",
+    "english": "Enska",
+    "spanish": "Spænska",
+    "french": "Franska",
+    "chineseSimplified": "Kínverska (einfaldað)"
+  },
+  "phone": {
+    "label": "Símanúmer",
+    "placeholder": "Símanúmer",
+    "selectCountry": "Veldu land eða svæði",
+    "searchCountry": "Leitaðu að landi, kóða eða hringiforskeyti",
+    "noCountries": "Engin lönd passa við leitina þína.",
+    "countryButton": "Skipti um land, er núna %{country} plús %{callingCode}",
+    "inputAccessibility": "Símanúmer %{country}",
+    "required": "Sláðu inn símanúmer.",
+    "tooShort": "Þetta símanúmer er of stutt.",
+    "tooLong": "Þetta símanúmer er of langt.",
+    "invalid": "Sláðu inn gilt símanúmer fyrir valið land.",
+    "valid": "Gilt alþjóðlegt símanúmer"
+  },
+  "auth": {
+    "onboardingTagline": "Persónulegur öryggisfélagi fyrir augnablikin á milli \"Ég er í lagi\" og \"Ég þarf hjálp.\"",
+    "createAccount": "Stofnaðu aðgang",
+    "continueOnboarding": "Haltu áfram með innleiðingu",
+    "createSubtitle": "Veldu innskráningaraðferð til að vernda öryggislínuritið þitt.",
+    "phoneVerification": "Símastaðfesting",
+    "sendCode": "Sendu kóða",
+    "sendingCode": "Sendi kóða...",
+    "verifyCode": "Staðfestu kóðann",
+    "sentTo": "Sent til %{phone}",
+    "yourPhone": "Síminn þinn",
+    "verificationCode": "Staðfestingarkóði",
+    "verify": "Staðfestu",
+    "verifying": "Staðfesti...",
+    "invalidCode": "Sláðu inn staðfestingarkóðann.",
+    "signInFailedTitle": "Innskráning trufluð",
+    "signInFailedMessage": "Við gátum ekki lokið innskráningu. Athugaðu tenginguna þína og reyndu aftur.",
+    "googleUnavailableTitle": "Google Innskráning ekki tiltæk",
+    "googleUnavailableMessage": "Nota staðbundna þróunarfund. Innfædd Google innskráning virkar í þróunarútgáfu.",
+    "northStarTitle": "NorthStar skartgripir",
+    "northStarSubtitle": "Paraðu núna eða haltu áfram og bættu því við síðar.",
+    "northStarBody": "VL01 snjalltækið getur virkjað öryggisflæði með bankum og löngum þrýstingi.",
+    "setupJewelry": "Settu upp skartgripi",
+    "meetCapybear": "Kynntu þér Capybear",
+    "meetCapybearSubtitle": "Þinn blíði öryggisfélagi á kortinu og í símtölum.",
+    "capybearBody": "Capybear getur hjálpað með heimilisham, verndarham, neyðarham, afsakanir og raddstuðning.",
+    "chooseVoice": "Veldu rödd",
+    "capybearReminder": "Capybear áminning",
+    "remindersReady": "Mjúkar áminningar eru tilbúnar."
+  },
+  "permissions": {
+    "locationTitle": "Staðsetningaröryggi",
+    "locationSubtitle": "Notað fyrir kortið, hættusvæði, örugga komu og SOS samhengi.",
+    "locationBody": "VeryLoving biður um staðsetningu svo forráðamenn geti skilið hvar hjálp gæti verið þörf. Þú getur breytt þessu síðar í Stillingum.",
+    "allowLocation": "Leyfa staðsetningu",
+    "notificationsTitle": "Öryggisviðvaranir",
+    "notificationsSubtitle": "Tilkynningar styðja við innritun og neyðarviðburði.",
+    "notificationsBody": "Við notum aðeins tilkynningar fyrir öryggisleiðbeiningar, neyðaruppfærslur og áminningar sem þú virkjar.",
+    "enableNotifications": "Virkjaðu tilkynningar",
+    "locationRationaleTitle": "Staðsetning heldur öryggissamhengi réttu",
+    "locationRationaleMessage": "VeryLoving notar staðsetningu þína fyrir öryggiskort, hættusvæði, flýtideilingu og SOS samhengi. Þú getur breytt þessu síðar í Stillingum.",
+    "notificationsRationaleTitle": "Öryggisviðvaranir þurfa tilkynningar",
+    "notificationsRationaleMessage": "VeryLoving sendir áminningar um innritun, neyðaruppfærslur og öryggisleiðbeiningar sem þú virkjar. Við notum ekki tilkynningar fyrir auglýsingar.",
+    "microphoneRationaleTitle": "Hljóðnemi knýr öryggissímtöl",
+    "microphoneRationaleMessage": "VeryLoving notar hljóðnemann aðeins þegar þú byrjar AI félaga- eða öryggissímtal.",
+    "bluetoothRationaleTitle": "Bluetooth tengir snjalltækið þitt",
+    "bluetoothRationaleMessage": "VeryLoving notar Bluetooth til að para við NorthStar skartgripi, lesa tengistöðu og virkja öryggisflæði frá snjallbúnaðinum.",
+    "cameraRationaleTitle": "Myndavél er valfrjáls",
+    "cameraRationaleMessage": "VeryLoving notar myndavélina aðeins þegar þú velur að taka prófílmynd eða deila öryggismynd."
+  },
+  "tutorial": {
+    "sharedBody": "VeryLoving heldur þessu flæði aðgengilegu frá Stillingum og mælaborðinu.",
+    "chooseVoiceTitle": "Veldu röddina þína",
+    "chooseVoiceSubtitle": "Veldu þá rödd félaga sem þér finnst öruggust að heyra.",
+    "homeTitle": "Heimahamur",
+    "homeSubtitle": "Hljóðlát vöktun fyrir daglegt öryggi.",
+    "guardianTitle": "Verndarhamur",
+    "guardianSubtitle": "Deildu samhengi með traustum aðilum.",
+    "emergencyTitle": "Neyðarhamur",
+    "emergencySubtitle": "Fimm bankar geta aukist í SOS og verndarviðvörun.",
+    "excuseTitle": "Fyrirgefðu símtal",
+    "excuseSubtitle": "Búðu til kurteislega ástæðu til að yfirgefa óþægilega aðstöðu.",
+    "safetyCallTitle": "Öryggiskall",
+    "safetyCallSubtitle": "Byrjaðu rauntíma félagasímtal þegar þú þarft stuðning.",
+    "practiceTitle": "Æfingasena",
+    "practiceSubtitle": "Prófaðu öryggisflæði í lágþrýstingssýni."
+  },
+  "jewelry": {
+    "pairTitle": "Par NorthStar",
+    "pairSubtitle": "Haltu skartgripunum nálægt á meðan þú skannar þetta.",
+    "scan": "Leitaðu að tækjum",
+    "scanning": "Skanna nálægt...",
+    "noDevices": "Engin NorthStar tæki fundin í nágrenninu enn.",
+    "scanStartFailed": "Bluetooth skönnun gat ekki hafist. Vinsamlegast reyndu aftur.",
+    "scanFailed": "Við fundum ekki skartgripi í nágrenninu. Athugaðu Bluetooth, haltu NorthStar nálægt og reyndu aftur.",
+    "scanAccessFailed": "Bluetooth skönnun gat ekki hafist. Athugaðu Bluetooth aðgang og reyndu aftur.",
+    "permissionDenied": "Aðgangur að nálægum tækjum er slökktur. Leyfðu Bluetooth aðgang í Stillingum og reyndu svo aftur.",
+    "connectTimeout": "NorthStar tók of langan tíma að tengjast. Færðu það nær og reyndu aftur.",
+    "connectFailed": "Við gátum ekki tengst NorthStar. Athugaðu hvort hann sé hlaðinn og nálægt, reyndu svo aftur.",
+    "emptyTitle": "Engin tæki í nágrenninu ennþá",
+    "emptyMessage": "Haltu NorthStar hlaðinn og nálægt símanum, skannaðu svo aftur.",
+    "searchingMessage": "Leita að NorthStar tækjum í nágrenninu..."
+  },
+  "home": {
+    "subtitle": "Öryggisfélagi mælaborð",
+    "modeStatus": "%{mode} HAM",
+    "companionReady": "%{name} er tilbúinn",
+    "readyBody": "Rödd, kort, skartgripir og verndarar eru aðeins eitt högg í burtu.",
+    "safetyCall": "Öryggiskall",
+    "northStarDevice": "NorthStar tæki",
+    "deviceConnected": "%{name} tengd · %{battery}%",
+    "noDevice": "Engin tæki tengd",
+    "manageDevice": "Stjórna tæki",
+    "mode": "Hamur",
+    "modes": {
+      "home": "Heimili",
+      "guardian": "Verndari",
+      "emergency": "Neyðarástand"
+    }
+  },
+  "map": {
+    "finding": "Að finna staðsetningu þína...",
+    "retry": "Staðsetning endurprófunar",
+    "title": "Öryggiskort",
+    "previewSubtitle": "Expo Go forskoðun; Mapbox renderar í þróunarútgáfu.",
+    "preview": "Forskoðun á korti",
+    "risk": "Áhætta: %{risk} · Radíus %{radius}m",
+    "refresh": "Endurnýjun staðsetningar",
+    "refreshing": "Að finna staðsetningu...",
+    "updateFailed": "Við gátum ekki uppfært staðsetningu þína. Vinsamlegast reyndu aftur.",
+    "notRequested": "Ekki var óskað eftir staðsetningaraðgangi. Þú getur virkjað það síðar í Stillingum.",
+    "permissionOff": "Aðgangur að staðsetningu er slökktur. Kveiktu á því í Stillingum til að miðja öryggiskortið á þér.",
+    "timeout": "Staðsetning þín tekur lengri tíma en búist var við. Færðu þig einhvers staðar með skýrara merki og reyndu aftur.",
+    "savedTitle": "Vistaðir staðir",
+    "savedEmptyTitle": "Engir vistaðir staðir ennþá",
+    "savedEmptyMessage": "Áreiðanlegir staðir sem þú vistar birtast hér fyrir skjótan aðgang.",
+    "zones": {
+      "crowding": "Seint á kvöldin þröngur",
+      "lowLighting": "Svæði með daufri lýsingu"
+    },
+    "risks": {
+      "low": "lágt",
+      "medium": "Miðill",
+      "high": "Hár"
+    }
+  },
+  "safetyCall": {
+    "connecting": "Tenging...",
+    "offlineCompanion": "Ónettengdur fylgihlutur",
+    "offline": "Utan nettengingar",
+    "connected": "Tengd",
+    "interrupted": "Tenging rofin",
+    "ready": "Tilbúin að tengjast",
+    "connectingSecurely": "Tengist örugglega raddfélaga þínum...",
+    "messagesWaiting": {
+      "one": "%{count} skilaboð sem bíða eftir að verða send",
+      "other": "%{count} skilaboð sem bíða eftir að verða send"
+    },
+    "useOffline": "Notaðu offline companion",
+    "reconnect": "Tengdu aftur við raddAI",
+    "typePlaceholder": "Týpa ef það er erfitt að tala",
+    "endCall": "Loka kalli",
+    "startCall": "Start-kall",
+    "emptyTitle": "Samtalið ykkar byrjar hér",
+    "emptyMessage": "Byrjaðu símtalið eða sláðu inn skilaboð þegar þú ert tilbúinn."
+  },
+  "chat": {
+    "waiting": "Bíð eftir tengingu",
+    "notSent": "Skilaboð ekki send.",
+    "retryAccessibility": "Reyndu að senda skilaboðin aftur"
+  },
+  "history": {
+    "clearTitle": "Skýr samtalssaga?",
+    "clearMessage": "Þetta fjarlægir vistuð AI fylgdarskilaboð úr þessu tæki.",
+    "deleteTitle": "Eyða þessu samtali?",
+    "cannotUndo": "Þetta er ekki hægt að taka til baka.",
+    "title": "Samtalssaga",
+    "subtitle": "AI fylgdarskilaboð vistuð á þessu tæki.",
+    "empty": "Engin samtöl vistað enn.",
+    "emptyTitle": "Engar samræður enn",
+    "emptyMessage": "Samtöl þín AI félaga birtast hér eftir fyrsta símtalið.",
+    "loadFailed": "Við gátum ekki hlaðið samtalssögu. Vinsamlegast reyndu aftur.",
+    "clearFailed": "Við gátum ekki hreinsað samtalssöguna. Vinsamlegast reyndu aftur.",
+    "deleteFailed": "Við gátum ekki eytt þeirri umræðu. Vinsamlegast reyndu aftur.",
+    "aiCompanion": "AI félagi",
+    "resume": "Ferilskrá",
+    "clearAll": "Hreinsið alla sögu",
+    "roles": {
+      "assistant": "Félagi",
+      "user": "Þú"
+    }
+  },
+  "voices": {
+    "title": "Öryggisköllin mín raddir",
+    "subtitle": "Veldu rödd félaga sem þér finnst rétt að heyra.",
+    "test": "Prufurödd",
+    "stop": "Stoppsýni",
+    "selectionFailedTitle": "Val ekki vistað",
+    "selectionFailedMessage": "Vinsamlegast reyndu að velja röddina aftur.",
+    "sampleFailedTitle": "Sýnishorn ekki tiltækt",
+    "sampleFailedMessage": "Þetta raddsýni var ekki hægt að spila. Vinsamlegast reyndu aftur.",
+    "profiles": {
+      "capybara": {
+        "name": "Capybear",
+        "description": "mjúk, róleg, jarðtengd"
+      },
+      "bestie": {
+        "name": "Besti vinur",
+        "description": "Bjart, hughreystandi, samtalsleg"
+      },
+      "boyfriend": {
+        "name": "Kærasti",
+        "description": "stöðugur, ástúðlegur, til staðar"
+      },
+      "muscleMan": {
+        "name": "Vöðvamaður",
+        "description": "sjálfsöruggur, verndandi, hvetjandi"
+      }
+    }
+  },
+  "settings": {
+    "voice": "Rödd",
+    "changeVoice": "Breyttu rödd",
+    "showCompanion": "Sýningarfélagi",
+    "offlineMode": "Ótengdur hamur",
+    "offlineModeSubtitle": "Notaðu svör frá fylgdarliðum þegar net- eða Hume aðgangsupplýsingar eru ekki tiltækar.",
+    "privacyData": "Persónuvernd og gögn",
+    "privacyBody": "Flytja út eða eyða staðbundnum gögnum sem eru geymd á þessu tæki.",
+    "preparingExport": "Undirbúningur útflutnings...",
+    "exportData": "Flytja út gögnin mín",
+    "privacyPolicy": "Persónuverndarstefna",
+    "deleting": "Eyða...",
+    "deleteAll": "Eyða öllum staðbundnum gögnum",
+    "deviceManagement": "Tækjastjórnun",
+    "emergencyContacts": "Neyðartengiliðir",
+    "signOut": "Skráðu þig út",
+    "exportFailedTitle": "Útflutningur mistókst",
+    "exportFailedMessage": "Get ekki flutt út gögnin þín núna.",
+    "deleteConfirmTitle": "Eyða öllum staðbundnum gögnum?",
+    "deleteConfirmMessage": "Þetta fjarlægir prófílinn þinn, stillingar, neyðartengiliði, samtalssögu, áminningar um leyfi og staðbundna auðkenningu af þessu tæki.",
+    "deleteEverything": "Eyða öllu",
+    "deleteFailedTitle": "Eyðing mistókst",
+    "deleteFailedMessage": "Get ekki eytt staðbundnum gögnum núna.",
+    "linkFailed": "Get ekki opnað tengil",
+    "sections": {
+      "language": "Tungumál",
+      "languageSubtitle": "Viðmót og kerfisleyfismál",
+      "companion": "Félagi",
+      "companionSubtitle": "Radd- og ónetstillingar",
+      "deviceSafety": "Tæki og öryggi",
+      "deviceSafetySubtitle": "NorthStar, forráðamenn og neyðartengiliður",
+      "privacy": "Persónuvernd og gögn",
+      "privacySubtitle": "Saga, útflutningur, eyðing og stefna",
+      "account": "Reikningur",
+      "accountSubtitle": "Núverandi VeryLoving fundur þinn"
+    },
+    "updateFailedTitle": "Stilling ekki vistað",
+    "updateFailedMessage": "Við gátum ekki haldið þeirri ósköpun. Vinsamlegast reyndu aftur.",
+    "signOutFailedTitle": "Gat ekki skráð mig út",
+    "signOutFailedMessage": "Lotan þín er enn virk. Vinsamlegast reyndu aftur."
+  },
+  "contacts": {
+    "title": "Neyðartengiliðir",
+    "subtitle": "Traust fólk til staðar í öryggisflæði.",
+    "addTitle": "Bættu við neyðartengiliði",
+    "name": "Nafn",
+    "namePlaceholder": "Nafn tengiliðs",
+    "phone": "Símanúmer",
+    "add": "Bættu við tengiliði",
+    "empty": "Engir neyðartengiliður bættir við ennþá.",
+    "emptyTitle": "Engir neyðartengiliður ennþá",
+    "emptyMessage": "Bættu við einhverjum sem þú treystir svo hann sé tilbúinn þegar öryggisflæði þarf á honum að halda.",
+    "removeTitle": "Fjarlægja %{name}?",
+    "removeMessage": "Þessi manneskja mun ekki lengur birtast í neyðarflæðinu þínu.",
+    "nameRequired": "Sláðu inn nafn tengiliðsins.",
+    "saveFailedTitle": "Tengiliður ekki vistaður",
+    "saveFailedMessage": "Við gátum ekki bjargað þessu sambandi. Skoðaðu upplýsingarnar og reyndu aftur.",
+    "removeFailedTitle": "Tengiliður ekki fjarlægður",
+    "removeFailedMessage": "Við gátum ekki fjarlægt þennan tengil. Vinsamlegast reyndu aftur.",
+    "callAccessibility": "Hringdu í %{name}",
+    "removeAccessibility": "Fjarlægðu %{name}"
+  },
+  "device": {
+    "title": "Tækjastjórnun",
+    "subtitle": "Stjórnaðu NorthStar tækinu þínu.",
+    "connected": "Tengd · %{battery}% rafhlaða",
+    "none": "Engin tæki tengd",
+    "disconnect": "Aftengja tæki",
+    "connect": "Tengdu tækið"
+  },
+  "friends": {
+    "title": "Vinir",
+    "subtitle": "Verndarar, beiðnir og neyðarlínurit.",
+    "addDemo": "Bættu við kynningarvini",
+    "emptyTitle": "Öryggishringurinn þinn er tómur",
+    "emptyMessage": "Traustir vinir og verndarar munu birtast hér þegar þeir hafa verið settir inn.",
+    "newGuardian": "Nýr verndari",
+    "statuses": {
+      "guardian": "Verndari",
+      "pending": "Í bið"
+    }
+  },
+  "emergency": {
+    "title": "BráðabirgðaSOS",
+    "subtitle": "Stigmagnaðu aðeins þegar þú þarft tafarlausan stuðning.",
+    "body": "Þetta mun tilkynna öryggisflæði þitt og undirbúa neyðartengiliði.",
+    "activate": "Virkjaðu SOS",
+    "callCompanion": "Kallaðu AI félaga",
+    "notificationTitle": "SOS virkjaður",
+    "notificationBody": "Neyðarflæðið þitt er tilbúið.",
+    "readyTitle": "SOS tilbúinn",
+    "callContact": "Hringja %{name}?",
+    "addContact": "Bættu neyðartengiliði við í stillingar.",
+    "quickShareTitle": "Fljótleg deiling",
+    "quickShareMessage": "Staðsetningardeilingarstubburinn er tilbúinn. Tengdu bakenda deilingarendapunktinn til að senda lifandi tengla."
+  },
+  "quickShare": {
+    "title": "Fljótleg deiling",
+    "subtitle": "Staðsetningardeilingarflæði er tilbúið."
+  },
+  "capybearTap": {
+    "title": "Capybear bank",
+    "subtitle": "Tvíbankaðu á NorthStar til að fella öryggisappelsínu.",
+    "body": "Bendingaleiðin er tilbúin fyrir BLE atburðarvíra."
+  },
+  "debug": {
+    "title": "VeryLoving villuforritssíða",
+    "subtitle": "Aðeins þróunarleið."
+  },
+  "errors": {
+    "voiceOffline": "Þú virðist vera óvirkur. Skilaboðin þín verða send þegar þú tengist aftur.",
+    "voiceQueued": "Skilaboð vistað. Það verður sent þegar raddfélaginn tengist aftur.",
+    "voiceRetrying": "Reynir að senda skilaboðin þín aftur...",
+    "voiceConnecting": "Tengist örugglega raddfélaga þínum...",
+    "microphone": "Aðgangur að hljóðnemum er nauðsynlegur fyrir raddsímtöl. Þú getur virkjað það í Stillingum, eða skrifað skilaboð í staðinn.",
+    "billing": "Rafræni raddfélaginn er tímabundið óaðgengilegur. Þú getur haldið áfram með offline companion.",
+    "authentication": "Raddfélaginn gat ekki staðfest þessa lotu. Skráðu þig inn aftur eða notaðu offline companion í bili.",
+    "timeout": "Raddfélaginn tók of langan tíma að svara. Athugaðu tenginguna þína og reyndu aftur.",
+    "network": "Við náðum ekki sambandi við raddfélagann. Athugaðu tenginguna þína, reyndu svo aftur eða haltu áfram án nettengingar.",
+    "genericVoice": "Eitthvað truflaði raddkallið. Reyndu aftur, eða haltu áfram með offline companion."
+  },
+  "privacy": {
+    "exportTitle": "VeryLoving gagnaútflutningur"
+  },
+  "notifications": {
+    "channelName": "Öryggisviðvaranir"
+  },
+  "native": {
+    "ios": {
+      "CFBundleDisplayName": "VeryLoving",
+      "NSMicrophoneUsageDescription": "VeryLoving þarf aðgang að hljóðnema til öryggis og AI fylgdarsímtölum.",
+      "NSLocationWhenInUseUsageDescription": "VeryLoving notar staðsetningu þína fyrir öryggiskortið og nærliggjandi öryggiseiginleika.",
+      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving notar staðsetningu þína til að styðja örugga komu og neyðarflæði.",
+      "NSLocationAlwaysUsageDescription": "VeryLoving notar bakgrunnsstaðsetningu fyrir örugga komu og nálæga hættusvæðiseiginleika.",
+      "NSCameraUsageDescription": "VeryLoving notar myndavélina aðeins þegar þú velur að taka prófíl- eða öryggismynd.",
+      "NSPhotoLibraryUsageDescription": "VeryLoving notar myndasafnið þitt aðeins þegar þú velur prófíl eða öryggismynd.",
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving notar Bluetooth til að tengjast NorthStar öryggisskartgripum þínum.",
+      "NSBluetoothPeripheralUsageDescription": "VeryLoving notar Bluetooth til að tengjast NorthStar öryggisskartgripum þínum."
+    },
+    "android": {
+      "app_name": "VeryLoving"
+    }
+  }
+}
