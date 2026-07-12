@@ -1,0 +1,24 @@
+diff --git a/src/services/websocket/hume-evi.js b/src/services/websocket/hume-evi.js
+--- a/src/services/websocket/hume-evi.js
++++ b/src/services/websocket/hume-evi.js
+@@
+-    this.maxReconnectAttempts = 3;
+-    this.reconnectDelay = 2000;
++    this.maxReconnectAttempts = 5;
++    this.reconnectDelay = 1000;
++    this.chatMetadataReceived = false;
++    this.chatMetadataTimeout = null;
+@@
+-    this.setState('connected');
++    this.sendSessionSettings();
++    this.chatMetadataTimeout = setTimeout(() => {
++      if (!this.chatMetadataReceived) this.socket?.close(4000, 'chat_metadata timeout');
++    }, 10000);
+@@
++    if (message.type === 'chat_metadata') {
++      this.chatMetadataReceived = true;
++      this.setState('connected');
++    }
+@@
+-    const delay = this.reconnectDelay * this.reconnectAttempts;
++    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);

@@ -1,0 +1,82 @@
+module.exports = [
+  {
+    ignores: [
+      '.expo/**',
+      'android/**',
+      'ios/**',
+      'node_modules/**'
+    ]
+  },
+  {
+    files: ['app/**/*.js', 'src/**/*.js', '*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: { jsx: true }
+      },
+      globals: {
+        __DEV__: 'readonly',
+        clearInterval: 'readonly',
+        clearTimeout: 'readonly',
+        console: 'readonly',
+        AbortController: 'readonly',
+        fetch: 'readonly',
+        module: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+        setInterval: 'readonly',
+        setTimeout: 'readonly',
+        WebSocket: 'readonly'
+      }
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-undef': 'error'
+    }
+  },
+  {
+    files: ['server/**/*.cjs', 'tests/**/*.cjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'commonjs',
+      globals: {
+        AbortController: 'readonly',
+        Buffer: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        module: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        structuredClone: 'readonly',
+        TextDecoder: 'readonly',
+        URL: 'readonly',
+        Uint8Array: 'readonly'
+      }
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-undef': 'error'
+    }
+  },
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        Buffer: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        process: 'readonly',
+        URL: 'readonly'
+      }
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-undef': 'error'
+    }
+  }
+];

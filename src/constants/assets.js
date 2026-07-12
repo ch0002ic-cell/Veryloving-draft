@@ -1,0 +1,23 @@
+export const images = {
+  logo: require('../../assets/images/misc/Logo.png'),
+  capybaraMenu: require('../../assets/images/misc/CapybaraMenu.png'),
+  instructionCapybara: require('../../assets/images/misc/InstructionCapybara.png'),
+  magicWand: require('../../assets/images/misc/MagicWand.png'),
+  star: require('../../assets/images/misc/StarIcon.png'),
+  mapOnboarding: require('../../assets/images/misc/MapOnBoarding.png'),
+  galaxy: require('../../assets/images/backgrounds/Galaxy_PhoneSize.png'),
+  onboarding1: require('../../assets/images/backgrounds/OnboardingBackground1.png'),
+  onboarding2: require('../../assets/images/backgrounds/OnboardingBackground2.png'),
+  onboarding3: require('../../assets/images/backgrounds/OnboardingBackground3.png'),
+  onboarding4: require('../../assets/images/backgrounds/OnboardingBackground4.png'),
+  capybara: require('../../assets/images/avatars/character_capybara.png'),
+  bestie: require('../../assets/images/avatars/character_bestie.png'),
+  boyfriend: require('../../assets/images/avatars/character_boyfriend.png'),
+  muscleMan: require('../../assets/images/avatars/character_muscleman.png'),
+  jewelryConnected: require('../../assets/images/devices/JewelryConnected.png'),
+  jewelryDisconnected: require('../../assets/images/devices/JewelryDisconnected.png'),
+  homeTab: require('../../assets/images/icons/HomeTabIcon.png'),
+  mapTab: require('../../assets/images/icons/LocationTabIcon.png'),
+  google: require('../../assets/images/icons/icon_google.png'),
+  apple: require('../../assets/images/icons/icon_apple.png')
+};

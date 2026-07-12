@@ -1,0 +1,12 @@
+node_modules/
+.expo/
+dist/
+build/
+ios/Pods/
+android/.gradle/
+.env
+*.jks
+*.p8
+*.mobileprovision
+.DS_Store
+artifacts/hume-voice/
