@@ -149,6 +149,8 @@ EXPO_PUBLIC_HUME_CLM_ENABLED=true
 EXPO_PUBLIC_HUME_BRANDED_VOICE_ID=<voice-id>
 ```
 
+Leave `EXPO_PUBLIC_HUME_CONFIG_ID` empty when testing Hume's default EVI configuration. The client then omits `config_id` from both direct and proxied WebSocket URLs. A valid custom configuration ID is still required to activate VeryLoving's CLM, custom tools, and branded voice settings.
+
 Keep `EXPO_PUBLIC_HUME_CLM_ENABLED=false` until the control-plane and CLM endpoints are deployed. Otherwise the app intentionally blocks microphone startup when secure CLM setup fails.
 
 Production builds must use `EXPO_PUBLIC_HUME_WS_PROXY_URL` (or provide a temporary `humeAccessToken` from a trusted backend). `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.

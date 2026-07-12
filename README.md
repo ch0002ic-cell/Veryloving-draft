@@ -133,6 +133,8 @@ eas build --platform android --profile production
 
 Production voice builds must use the authenticated Hume WebSocket proxy or temporary Hume access tokens. Direct Hume API keys are rejected in release builds.
 
+`EXPO_PUBLIC_HUME_CONFIG_ID` is optional. Leave it empty to use Hume's default EVI configuration; set it to a valid configuration from the same Hume account to enable the custom CLM, tools, and branded voice.
+
 ## Privacy And Offline Behavior
 
 - Permission requests show contextual explanations before location, notification, microphone, Bluetooth, or camera prompts.

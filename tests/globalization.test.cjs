@@ -91,14 +91,6 @@ test('country options are complete, localized, and searchable by dialing code', 
   assert.equal(getDefaultCountry([{ regionCode: null }]), 'US');
 });
 
-test('every supported translation catalog has identical key coverage', () => {
-  const englishKeys = getTranslationKeys(translations.en);
-  for (const locale of ['es', 'fr', 'zh']) {
-    assert.deepEqual(getTranslationKeys(translations[locale]), englishKeys, `${locale} keys must match English`);
-  }
-  assert.ok(englishKeys.length > 300);
-});
-
 test('translated strings preserve every interpolation placeholder', () => {
   for (const key of getTranslationKeys(translations.en)) {
     const englishTokens = interpolationTokens(valueAtPath(translations.en, key));

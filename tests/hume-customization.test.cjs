@@ -12,6 +12,7 @@ const {
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
+  normalizeHumeConfigId,
   reconnectDelay
 } = require('../src/services/websocket/hume-protocol');
 
@@ -43,12 +44,34 @@ test('Hume protocol uses official session and resume field names', () => {
   });
   assert.match(url, /^wss:\/\/api\.hume\.ai\/v0\/evi\/chat\?/);
   assert.match(url, /api_key=development-key/);
+  assert.match(url, /config_id=config-id/);
   assert.match(url, /resumed_chat_group_id=chat-group-id/);
   const settings = createSessionSettingsPayload({ customSessionId: 'opaque-session', systemPrompt: 'Be helpful.' });
   assert.equal(settings.type, 'session_settings');
   assert.equal(settings.custom_session_id, 'opaque-session');
   assert.equal(settings.audio.sample_rate, 48000);
   assert.equal(settings.language_model_api_key, undefined);
+});
+
+test('Hume protocol omits blank config IDs and preserves configured IDs', () => {
+  for (const connection of [
+    { apiKey: 'development-key' },
+    { proxyURL: 'wss://voice.veryloving.test/hume', appAccessToken: 'app-token' }
+  ]) {
+    const defaultURL = new URL(buildHumeWebSocketURL({ ...connection, configId: '   ' }));
+    assert.equal(defaultURL.searchParams.has('config_id'), false);
+
+    const configuredURL = new URL(buildHumeWebSocketURL({
+      ...connection,
+      configId: '  configured-id  '
+    }));
+    assert.equal(
+      configuredURL.searchParams.get('config_id'),
+      'configured-id'
+    );
+  }
+  assert.equal(normalizeHumeConfigId(''), undefined);
+  assert.equal(normalizeHumeConfigId(null), undefined);
 });
 
 test('Hume tool payloads preserve tool-call correlation and safe fallback content', () => {

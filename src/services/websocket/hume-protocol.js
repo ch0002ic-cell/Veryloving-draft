@@ -1,5 +1,10 @@
 export const HUME_DIRECT_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
 
+export function normalizeHumeConfigId(value) {
+  if (typeof value !== 'string') return undefined;
+  return value.trim() || undefined;
+}
+
 export function appendHumeParams(baseUrl, params) {
   const query = Object.entries(params)
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
@@ -10,10 +15,11 @@ export function appendHumeParams(baseUrl, params) {
 }
 
 export function buildHumeWebSocketURL({ proxyURL, appAccessToken, humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
+  const normalizedConfigId = normalizeHumeConfigId(configId);
   if (proxyURL) {
     return appendHumeParams(proxyURL, {
       token: appAccessToken,
-      config_id: configId,
+      config_id: normalizedConfigId,
       voice_id: voiceId,
       resumed_chat_group_id: resumedChatGroupId
     });
@@ -21,7 +27,7 @@ export function buildHumeWebSocketURL({ proxyURL, appAccessToken, humeAccessToke
   return appendHumeParams(HUME_DIRECT_WS_URL, {
     access_token: humeAccessToken,
     api_key: humeAccessToken ? undefined : apiKey,
-    config_id: configId,
+    config_id: normalizedConfigId,
     voice_id: voiceId,
     resumed_chat_group_id: resumedChatGroupId
   });

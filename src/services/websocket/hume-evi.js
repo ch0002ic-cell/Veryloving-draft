@@ -6,6 +6,7 @@ import {
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
+  normalizeHumeConfigId,
   reconnectDelay
 } from './hume-protocol';
 
@@ -127,11 +128,17 @@ export class HumeEVIService {
       throw error;
     }
 
+    const configId = normalizeHumeConfigId(sessionConfig.configId)
+      || normalizeHumeConfigId(config.humeConfigId);
+    if (!configId) {
+      logger.warn('[HumeEVIService] No config_id provided – using Hume default config (if available)');
+    }
+
     const url = this.buildWebSocketURL({
       appAccessToken,
       humeAccessToken,
       apiKey,
-      configId: sessionConfig.configId || config.humeConfigId,
+      configId,
       voiceId: sessionConfig.voiceId,
       resumedChatGroupId: sessionConfig.resumedChatGroupId
     });
@@ -141,7 +148,7 @@ export class HumeEVIService {
       reconnectAttempt: this.reconnectAttempts,
       maxReconnectAttempts: this.maxReconnectAttempts,
       url: sanitizeUrl(url),
-      configId: sessionConfig.configId || config.humeConfigId,
+      configId: configId ? '[present]' : 'none',
       voiceId: sessionConfig.voiceId ? '[present]' : 'none',
       resumedChat: sessionConfig.resumedChatGroupId ? '[present]' : 'none'
     });

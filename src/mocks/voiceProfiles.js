@@ -1,7 +1,5 @@
 import { images } from '../constants/assets';
 
-export const HUME_EVI_CONFIG_ID = 'e3d9acd6-22ea-4090-acfa-c354de25c05e';
-
 export const voiceProfiles = [
   {
     id: 'capybara',
