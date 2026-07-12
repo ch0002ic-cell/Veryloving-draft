@@ -8,7 +8,7 @@ module.exports = [
     ]
   },
   {
-    files: ['app/**/*.js', 'src/**/*.js', '*.js'],
+    files: ['app/**/*.js', 'src/**/*.js', 'plugins/**/*.js', '*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

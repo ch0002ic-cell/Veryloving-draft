@@ -2,8 +2,8 @@ node_modules/
 .expo/
 dist/
 build/
-ios/Pods/
-android/.gradle/
+/ios/
+/android/
 .env
 *.jks
 *.p8

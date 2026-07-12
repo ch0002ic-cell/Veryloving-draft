@@ -1,16 +1,22 @@
 const { withGradleProperties } = require('@expo/config-plugins');
 
-module.exports = function withVeryLovingGradleProperties(config) {
-  return withGradleProperties(config, (config) => {
-    const ensure = (type, key, value) => {
-      const existing = config.modResults.find((item) => item.type === type && item.key === key);
-      if (existing) existing.value = value;
-      else config.modResults.push({ type, key, value });
-    };
+function upsertGradleProperty(properties, key, value) {
+  const existing = properties.find((item) => item.type === 'property' && item.key === key);
+  if (existing) {
+    existing.value = value;
+  } else {
+    properties.push({ type: 'property', key, value });
+  }
+  return properties;
+}
 
-    ensure('property', 'android.useAndroidX', 'true');
-    ensure('property', 'android.enableJetifier', 'true');
-    ensure('property', 'newArchEnabled', 'true');
-    return config;
+module.exports = function withVeryLovingGradleProperties(config) {
+  return withGradleProperties(config, (propertiesConfig) => {
+    upsertGradleProperty(propertiesConfig.modResults, 'android.useAndroidX', 'true');
+    upsertGradleProperty(propertiesConfig.modResults, 'android.enableJetifier', 'true');
+    upsertGradleProperty(propertiesConfig.modResults, 'newArchEnabled', 'true');
+    return propertiesConfig;
   });
 };
+
+module.exports.upsertGradleProperty = upsertGradleProperty;

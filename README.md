@@ -32,13 +32,20 @@ npx expo start
 Expo Go provides graceful fallbacks for native-only features. For the native feature set, create and run a development build:
 
 ```bash
-npx expo prebuild
+npx expo prebuild --clean
 npx expo run:ios
 ```
 
 The generated app enables background audio for active safety calls and Bluetooth central mode for NorthStar. Confirm background microphone behavior on a physical device; the iOS simulator cannot validate microphone routing, BLE, echo cancellation, or lock-screen behavior reliably.
 
-This repository intentionally tracks `ios/` and `android/`. After changing `app.json` plugins or native settings, run `npx expo prebuild`, review the native diff, and commit both sides together. Expo Doctor's non-CNG synchronization warning is therefore expected; native configuration is verified explicitly in CI/release checks.
+This repository uses Expo Continuous Native Generation. The `ios/` and `android/` directories are generated, ignored, and must not be edited or committed. Native settings live in `app.config.js` and the config plugins under `plugins/`; `withPodfile.js` preserves modular headers and the EXAV compatibility hook, `withEntitlements.js` merges push and Apple Sign-In entitlements, and `withGradleProperties.js` preserves AndroidX, Jetifier, and the new architecture. Run `npx expo prebuild --clean` whenever you need fresh native projects.
+
+Expo Doctor determines the workflow from directories currently present on disk. Run it from the config-only source state for the expected `20/20` result. After local native testing, remove the disposable projects before checking again:
+
+```bash
+rm -rf ios android
+npx expo-doctor
+```
 
 ### Local CLM Server
 
