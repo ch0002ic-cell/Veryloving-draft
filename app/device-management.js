@@ -10,10 +10,9 @@ import { images } from '../src/constants/assets';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
-import { bleService } from '../src/services/ble';
 
 export default function DeviceManagement() {
-  const { device, setDevice } = useAppState();
+  const { device, removePairedDevice } = useAppState();
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
@@ -24,22 +23,16 @@ export default function DeviceManagement() {
       : t('safetyCall.connected'))
     : (reconnecting ? t('common.connecting') : t('device.none'));
 
-  const disconnect = async () => {
+  const remove = async () => {
     setBusy(true);
     setError(null);
     try {
-      await bleService.disconnect(device.id);
-      await setDevice({
-        ...device,
-        connected: false,
-        connectionState: 'disconnected',
-        autoReconnect: false,
-        lastErrorCode: null
-      });
-    } catch (disconnectError) {
-      setError(disconnectError?.code?.startsWith('BLE_')
-        ? disconnectError.message
-        : t('jewelry.connectFailed'));
+      const result = await removePairedDevice();
+      if (!result.nativeDisconnected) {
+        setError('NorthStar was removed, but Bluetooth could not disconnect it. Turn Bluetooth off and on if it still appears connected.');
+      }
+    } catch {
+      setError(t('settings.updateFailedMessage'));
     } finally {
       setBusy(false);
     }
@@ -59,9 +52,11 @@ export default function DeviceManagement() {
         <Text>{status}</Text>
       </Card>
       <Button
-        title={device.connected ? t('device.disconnect') : (reconnecting ? t('common.connecting') : t('device.connect'))}
-        loading={busy || reconnecting}
-        onPress={() => device.connected ? disconnect() : router.push('/(auth)/jewelry-setup?mode=standalone')}
+        title={device.id ? t('common.remove') : t('device.connect')}
+        accessibilityLabel={device.id ? `${t('common.remove')} ${device.name}` : t('device.connect')}
+        variant={device.id ? 'danger' : 'primary'}
+        loading={busy}
+        onPress={() => device.id ? remove() : router.push('/(auth)/jewelry-setup?mode=standalone')}
       />
     </Screen>
   );

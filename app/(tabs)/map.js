@@ -19,6 +19,7 @@ import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { LoadingState } from '../../src/components/LoadingState';
 import { images } from '../../src/constants/assets';
 import { logger } from '../../src/utils/logger';
+import { shareQuickLocation } from '../../src/services/emergency';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -46,9 +47,12 @@ export default function MapScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mapLoadFailed, setMapLoadFailed] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareError, setShareError] = useState(null);
   const mountedRef = useRef(true);
   const mapStyleReadyRef = useRef(false);
   const requestIdRef = useRef(0);
+  const shareInProgressRef = useRef(false);
   const Mapbox = useMemo(() => getMapboxModule(), []);
   const insets = useSafeAreaInsets();
   const { t } = useI18n();
@@ -103,6 +107,29 @@ export default function MapScreen() {
     refreshLocation();
   }, [mapLoadFailed, refreshLocation]);
 
+  const handleQuickShare = useCallback(async () => {
+    if (shareInProgressRef.current) return;
+    shareInProgressRef.current = true;
+    setSharing(true);
+    setShareError(null);
+    try {
+      const shareLocation = location || await requestCurrentLocation();
+      if (mountedRef.current && !location) setLocation(shareLocation);
+      await shareQuickLocation(shareLocation);
+    } catch (shareLocationError) {
+      logger.warn('[Mapbox] Could not open the location share sheet', {
+        errorCode: shareLocationError?.code || shareLocationError?.name || 'LOCATION_SHARE_FAILED',
+        usedCachedLocation: Boolean(location?.isCached)
+      });
+      if (mountedRef.current) {
+        setShareError(shareLocationError?.message || 'We could not share your location. Check location access and try again.');
+      }
+    } finally {
+      shareInProgressRef.current = false;
+      if (mountedRef.current) setSharing(false);
+    }
+  }, [location]);
+
   useEffect(() => {
     mountedRef.current = true;
     refreshLocation();
@@ -126,9 +153,13 @@ export default function MapScreen() {
             <LoadingState compact message={t('map.finding')} />
           </View>
         ) : null}
-        {error ? (
+        {shareError || error ? (
           <View style={[styles.mapStatus, { top: insets.top + 12 }]}>
-            <FeedbackBanner message={error} actionLabel={t('map.retry')} onAction={refreshLocation} />
+            <FeedbackBanner
+              message={shareError || error}
+              actionLabel={t('common.retry')}
+              onAction={shareError ? handleQuickShare : refreshLocation}
+            />
           </View>
         ) : null}
         <View style={[styles.savedOverlay, { bottom: insets.bottom + 16 }]}>
@@ -137,6 +168,12 @@ export default function MapScreen() {
             image={images.mapOnboarding}
             title={t('map.savedEmptyTitle')}
             message={t('map.savedEmptyMessage')}
+          />
+          <Button
+            title={t('quickShare.title')}
+            icon="share-social-outline"
+            onPress={handleQuickShare}
+            loading={sharing}
           />
         </View>
       </View>
@@ -164,6 +201,13 @@ export default function MapScreen() {
         title={t('map.savedEmptyTitle')}
         message={t('map.savedEmptyMessage')}
       />
+      {shareError ? <FeedbackBanner message={shareError} actionLabel={t('common.retry')} onAction={handleQuickShare} /> : null}
+      <Button
+        title={t('quickShare.title')}
+        icon="share-social-outline"
+        onPress={handleQuickShare}
+        loading={sharing}
+      />
       <Button title={loading ? t('map.refreshing') : t('map.refresh')} onPress={retryMapAndLocation} loading={loading} />
     </Screen>
   );
@@ -174,7 +218,7 @@ const styles = StyleSheet.create({
   nativeMap: { flex: 1 },
   mapStatus: { position: 'absolute', left: 16, right: 16, backgroundColor: colors.paper, borderRadius: 8, overflow: 'hidden' },
   dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.paper, backgroundColor: colors.red },
-  savedOverlay: { position: 'absolute', left: 16, right: 16, paddingHorizontal: 8, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, borderRadius: 8, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
+  savedOverlay: { position: 'absolute', left: 16, right: 16, paddingHorizontal: 8, paddingBottom: 8, gap: 8, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, borderRadius: 8, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
   mapFallback: { height: 320, borderRadius: 8, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: 8 },
   mapText: { fontFamily: fonts.bold, color: colors.ink, fontSize: 28 },
   coords: { fontFamily: fonts.regular, color: colors.inkSoft },

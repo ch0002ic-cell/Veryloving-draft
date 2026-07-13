@@ -352,11 +352,11 @@
     "callContact": "Call %{name}?",
     "addContact": "Add an emergency contact in Settings.",
     "quickShareTitle": "Quick share",
-    "quickShareMessage": "Location sharing stub is ready. Connect the backend share endpoint to send live links."
+    "quickShareMessage": "Share a one-time location snapshot through your device share sheet. It does not update after sending."
   },
   "quickShare": {
     "title": "Quick share",
-    "subtitle": "Location share flow is ready."
+    "subtitle": "Share a one-time location snapshot. It does not update after sending."
   },
   "capybearTap": {
     "title": "Capybear tap",

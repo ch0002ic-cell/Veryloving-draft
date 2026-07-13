@@ -115,6 +115,55 @@ test('all onboarding exits pass through the completion gate', () => {
   assert.match(completion, /router\.replace\('\/\(tabs\)'\)/);
 });
 
+test('choose-voice onboarding provides a real selector before completion', () => {
+  const { readFileSync } = require('node:fs');
+  const screen = readFileSync(
+    path.resolve(process.cwd(), 'app/(auth)/tutorial/choose-voice.js'),
+    'utf8'
+  );
+  assert.match(screen, /voiceProfiles\.map/);
+  assert.match(screen, /await updateSettings\(\{ selectedVoiceId: voiceId \}\)/);
+  assert.match(screen, /catch \(error\)/);
+  assert.match(screen, /logger\.warn\('\[Onboarding\] Could not persist voice selection'/);
+  assert.match(screen, /router\.push\('\/\(auth\)\/completion'\)/);
+  assert.doesNotMatch(screen, /router\.(?:push|replace)\('\/voices'\)/);
+});
+
+test('dashboard safety-mode persistence failures are handled without claiming delivery', () => {
+  const { readFileSync } = require('node:fs');
+  const dashboard = readFileSync(
+    path.resolve(process.cwd(), 'app/(tabs)/index.js'),
+    'utf8'
+  );
+  assert.match(dashboard, /await updateSettings\(\{ mode \}\)/);
+  assert.match(dashboard, /catch \(error\)/);
+  assert.match(dashboard, /Alert\.alert\(t\('settings\.updateFailedTitle'\)/);
+  assert.doesNotMatch(dashboard, /contacts? (?:were )?notified|guardians? (?:were )?notified/i);
+});
+
+test('country picker modal establishes a safe-area boundary', () => {
+  const { readFileSync } = require('node:fs');
+  const picker = readFileSync(
+    path.resolve(process.cwd(), 'src/components/CountryPicker.js'),
+    'utf8'
+  );
+  assert.match(picker, /SafeAreaProvider, SafeAreaView/);
+  assert.match(picker, /<Modal[\s\S]*<SafeAreaProvider>[\s\S]*<SafeAreaView/);
+});
+
+test('Google Sign-In fails before invoking native code when its client ID is missing', () => {
+  const { readFileSync } = require('node:fs');
+  const auth = readFileSync(
+    path.resolve(process.cwd(), 'src/context/AuthContext.js'),
+    'utf8'
+  );
+  const guard = auth.indexOf('if (!config.googleWebClientId)');
+  const nativeImport = auth.indexOf("require('@react-native-google-signin/google-signin')");
+  assert.notEqual(guard, -1);
+  assert.ok(guard < nativeImport, 'Google configuration must be checked before loading its native module');
+  assert.match(auth, /GoogleSignin\.configure\(\{ webClientId: config\.googleWebClientId \}\)/);
+});
+
 test('cold-start resume sends incomplete accounts to the first permission step', () => {
   const { readFileSync } = require('node:fs');
   const index = readFileSync(path.resolve(process.cwd(), 'app/index.js'), 'utf8');

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useI18n } from '../context/I18nContext';
 import { filterCountryOptions, getCountryOptions } from '../utils/phone';
 import { colors, fonts } from '../constants/theme';
@@ -21,61 +21,63 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
 
   return (
     <Modal animationType="slide" visible={visible} onRequestClose={onClose}>
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{t('phone.selectCountry')}</Text>
-          <Pressable
-            accessibilityLabel={t('common.close')}
-            accessibilityRole="button"
-            hitSlop={10}
-            onPress={onClose}
-            style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
-          >
-            <Ionicons name="close" size={26} color={colors.ink} />
-          </Pressable>
-        </View>
-        <View style={styles.searchRow}>
-          <Ionicons name="search" size={20} color={colors.inkSoft} />
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            clearButtonMode="while-editing"
-            onChangeText={setQuery}
-            placeholder={t('phone.searchCountry')}
-            returnKeyType="search"
-            style={styles.searchInput}
-            value={query}
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.safe}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{t('phone.selectCountry')}</Text>
+            <Pressable
+              accessibilityLabel={t('common.close')}
+              accessibilityRole="button"
+              hitSlop={10}
+              onPress={onClose}
+              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+            >
+              <Ionicons name="close" size={26} color={colors.ink} />
+            </Pressable>
+          </View>
+          <View style={styles.searchRow}>
+            <Ionicons name="search" size={20} color={colors.inkSoft} />
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              clearButtonMode="while-editing"
+              onChangeText={setQuery}
+              placeholder={t('phone.searchCountry')}
+              returnKeyType="search"
+              style={styles.searchInput}
+              value={query}
+            />
+          </View>
+          <FlatList
+            data={filteredCountries}
+            getItemLayout={(_data, index) => ({ length: 58, offset: 58 * index, index })}
+            keyboardShouldPersistTaps="handled"
+            keyExtractor={(country) => country.code}
+            ListEmptyComponent={<Text style={styles.empty}>{t('phone.noCountries')}</Text>}
+            renderItem={({ item }) => {
+              const selected = item.code === selectedCountry;
+              return (
+                <Pressable
+                  accessibilityLabel={`${item.name}, +${item.callingCode}`}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: selected }}
+                  onPress={() => onSelect(item.code)}
+                  style={({ pressed }) => [
+                    styles.countryRow,
+                    selected && styles.selectedRow,
+                    pressed && styles.pressed
+                  ]}
+                >
+                  <Text style={styles.flag}>{item.flag}</Text>
+                  <Text numberOfLines={1} style={styles.countryName}>{item.name}</Text>
+                  <Text style={styles.callingCode}>+{item.callingCode}</Text>
+                  {selected ? <Ionicons name="checkmark" size={20} color={colors.green} /> : null}
+                </Pressable>
+              );
+            }}
           />
-        </View>
-        <FlatList
-          data={filteredCountries}
-          getItemLayout={(_data, index) => ({ length: 58, offset: 58 * index, index })}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={(country) => country.code}
-          ListEmptyComponent={<Text style={styles.empty}>{t('phone.noCountries')}</Text>}
-          renderItem={({ item }) => {
-            const selected = item.code === selectedCountry;
-            return (
-              <Pressable
-                accessibilityLabel={`${item.name}, +${item.callingCode}`}
-                accessibilityRole="radio"
-                accessibilityState={{ checked: selected }}
-                onPress={() => onSelect(item.code)}
-                style={({ pressed }) => [
-                  styles.countryRow,
-                  selected && styles.selectedRow,
-                  pressed && styles.pressed
-                ]}
-              >
-                <Text style={styles.flag}>{item.flag}</Text>
-                <Text numberOfLines={1} style={styles.countryName}>{item.name}</Text>
-                <Text style={styles.callingCode}>+{item.callingCode}</Text>
-                {selected ? <Ionicons name="checkmark" size={20} color={colors.green} /> : null}
-              </Pressable>
-            );
-          }}
-        />
-      </SafeAreaView>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </Modal>
   );
 }

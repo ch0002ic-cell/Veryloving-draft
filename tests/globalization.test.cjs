@@ -20,6 +20,7 @@ const {
   getDefaultCountry,
   phoneValueFromE164
 } = require('../src/utils/phone');
+const { ENGLISH_COUNTRY_NAMES } = require('../src/data/country-names-en');
 const { DEFAULT_SETTINGS, mergeSettings } = require('../src/services/settings-store');
 
 function valueAtPath(value, path) {
@@ -91,6 +92,51 @@ test('country options are complete, localized, and searchable by dialing code', 
   assert.ok(matches.some((country) => country.code === 'ES'));
   assert.equal(getDefaultCountry([{ regionCode: 'SG' }]), 'SG');
   assert.equal(getDefaultCountry([{ regionCode: null }]), 'US');
+});
+
+test('English country-name fallback covers every supported phone region', () => {
+  assert.deepEqual(
+    Object.keys(ENGLISH_COUNTRY_NAMES).sort(),
+    [...countryCodes].sort()
+  );
+  for (const countryCode of countryCodes) {
+    assert.ok(
+      ENGLISH_COUNTRY_NAMES[countryCode]?.trim(),
+      `${countryCode} must have a human-readable English fallback name`
+    );
+  }
+});
+
+test('country options remain human-readable and searchable without Intl.DisplayNames', () => {
+  const originalDisplayNames = Intl.DisplayNames;
+  try {
+    Intl.DisplayNames = undefined;
+    const options = getCountryOptions('en-SG');
+    const singapore = options.find((country) => country.code === 'SG');
+
+    assert.equal(singapore?.name, 'Singapore');
+    assert.ok(filterCountryOptions(options, 'singapore').some((country) => country.code === 'SG'));
+  } finally {
+    Intl.DisplayNames = originalDisplayNames;
+  }
+});
+
+test('country options use fallback names when Intl.DisplayNames returns a code', () => {
+  const originalDisplayNames = Intl.DisplayNames;
+  try {
+    Intl.DisplayNames = class CodeOnlyDisplayNames {
+      of(countryCode) {
+        return countryCode;
+      }
+    };
+    const options = getCountryOptions('en-ES');
+    const spain = options.find((country) => country.code === 'ES');
+
+    assert.equal(spain?.name, 'Spain');
+    assert.ok(filterCountryOptions(options, 'spain').some((country) => country.code === 'ES'));
+  } finally {
+    Intl.DisplayNames = originalDisplayNames;
+  }
 });
 
 test('translated strings preserve every interpolation placeholder', () => {

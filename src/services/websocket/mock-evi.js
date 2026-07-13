@@ -1,4 +1,5 @@
 import { chooseOfflineResponse } from '../../mocks/offlineResponses';
+import { logger } from '../../utils/logger';
 
 export class MockEVIService {
   constructor() {
@@ -13,11 +14,11 @@ export class MockEVIService {
   isConnected() { return this.state === 'connected'; }
   async connect() {
     if (!__DEV__) throw new Error('Mock EVI service is available only in development builds.');
-    console.log('[MockEVIService] MOCK MODE ACTIVE - Hume API calls are simulated');
+    logger.info('[MockEVIService] Mock mode active; Hume API calls are simulated');
     this.setState('connecting');
     setTimeout(() => this.setState('connected'), 600);
   }
-  async startMicrophone() { console.log('[MockEVIService] Microphone disabled in offline mode'); }
+  async startMicrophone() { logger.info('[MockEVIService] Microphone disabled in offline mode'); }
   async stopMicrophone() {}
   sendText(text) {
     const response = chooseOfflineResponse(text);

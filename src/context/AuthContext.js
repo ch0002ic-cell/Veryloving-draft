@@ -106,8 +106,11 @@ export function AuthProvider({ children }) {
   };
 
   const signInWithGoogle = async () => {
+    if (!config.googleWebClientId) {
+      throw new Error('Google Sign-In is not configured for this build.');
+    }
     const GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
-    GoogleSignin.configure(config.googleWebClientId ? { webClientId: config.googleWebClientId } : {});
+    GoogleSignin.configure({ webClientId: config.googleWebClientId });
     await GoogleSignin.hasPlayServices?.({ showPlayServicesUpdateDialog: true });
     const identity = googleIdentityFromResponse(await GoogleSignin.signIn());
     if (!identity) throw googleSignInCancellationError();

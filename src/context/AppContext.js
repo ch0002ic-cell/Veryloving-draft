@@ -10,6 +10,7 @@ import {
   normalizePairedDevice,
   persistPairedDevice
 } from '../services/paired-device-store';
+import { forgetPairedDevice } from '../services/paired-device-removal';
 import { lockAndDrainLocalUserDataMutations } from '../services/local-mutation-coordinator';
 
 const AppContext = createContext(null);
@@ -28,6 +29,7 @@ export function AppProvider({ children }) {
   const [device, setDeviceState] = useState(DEFAULT_DEVICE);
   const deviceRef = useRef(DEFAULT_DEVICE);
   const deviceMutationQueueRef = useRef(Promise.resolve());
+  const deviceGenerationRef = useRef(0);
   const reconnectAttemptedRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -89,12 +91,21 @@ export function AppProvider({ children }) {
     ) return undefined;
 
     reconnectAttemptedRef.current = device.id;
+    const reconnectGeneration = deviceGenerationRef.current;
     let active = true;
     bleService.reconnect(device).then((connectedDevice) => {
-      if (!active) return;
+      if (!active || reconnectGeneration !== deviceGenerationRef.current) {
+        return bleService.disconnect(connectedDevice?.id).catch((error) => {
+          logger.warn('[AppState] Stale device reconnect cleanup failed', {
+            errorCode: error?.code || 'BLE_DISCONNECT_FAILED',
+            nativeErrorCode: error?.nativeErrorCode,
+            hasDeviceId: Boolean(connectedDevice?.id)
+          });
+        });
+      }
       return setDevice(connectedDevice);
     }).catch((error) => {
-      if (!active) return;
+      if (!active || reconnectGeneration !== deviceGenerationRef.current) return;
       logger.warn('[AppState] Remembered device could not reconnect', {
         errorCode: error?.code || 'BLE_RECONNECT_FAILED',
         nativeErrorCode: error?.nativeErrorCode,
@@ -115,6 +126,38 @@ export function AppProvider({ children }) {
       if (reconnectAttemptedRef.current === device.id) reconnectAttemptedRef.current = null;
     };
   }, [device, isHydrated, setDevice]);
+
+  const removePairedDevice = useCallback(async () => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
+    const rememberedDevice = deviceRef.current;
+
+    // Invalidate any reconnect already in flight before clearing state. Its
+    // completion handler will disconnect the stale native connection instead
+    // of writing the removed device back into storage.
+    deviceGenerationRef.current += 1;
+    reconnectAttemptedRef.current = rememberedDevice.id;
+
+    let result;
+    try {
+      result = await forgetPairedDevice(rememberedDevice, {
+        clearRememberedDevice: () => setDevice(DEFAULT_DEVICE),
+        disconnectNativeDevice: (deviceId) => bleService.disconnect(deviceId)
+      });
+    } catch (error) {
+      reconnectAttemptedRef.current = null;
+      throw error;
+    }
+
+    reconnectAttemptedRef.current = null;
+    if (!result.nativeDisconnected) {
+      logger.warn('[AppState] Removed device but native disconnect failed', {
+        errorCode: result.disconnectError?.code || 'BLE_DISCONNECT_FAILED',
+        nativeErrorCode: result.disconnectError?.nativeErrorCode,
+        hasDeviceId: Boolean(rememberedDevice.id)
+      });
+    }
+    return result;
+  }, [setDevice]);
 
   const updateSettings = useCallback(async (patch) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
@@ -179,6 +222,7 @@ export function AppProvider({ children }) {
 
   const resetLocalState = useCallback(() => {
     const pairedDeviceId = deviceRef.current.id;
+    deviceGenerationRef.current += 1;
     settingsRef.current = DEFAULT_SETTINGS;
     contactsRef.current = DEFAULT_CONTACTS;
     deviceRef.current = DEFAULT_DEVICE;
@@ -223,7 +267,7 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, setDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

@@ -1,7 +1,8 @@
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Share } from 'react-native';
 import { openPhoneCall } from './phone-call';
 import { runSOSFlow } from './sos-flow';
 import { runAndPersistSOS } from './sos-state';
+import { shareLocationSnapshot } from './location-share';
 import { translate } from '../i18n/core';
 
 function confirmEmergencyCall(contact) {
@@ -36,6 +37,6 @@ export function callNumber(phone) {
   return openPhoneCall(phone, Linking);
 }
 
-export function shareQuickLocation() {
-  Alert.alert(translate('emergency.quickShareTitle'), translate('emergency.quickShareMessage'));
+export function shareQuickLocation(location) {
+  return shareLocationSnapshot(location, Share);
 }

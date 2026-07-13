@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
@@ -9,10 +10,13 @@ import { images } from '../../src/constants/assets';
 import { colors, fonts } from '../../src/constants/theme';
 import { useAppState } from '../../src/context/AppContext';
 import { useI18n } from '../../src/context/I18nContext';
+import { logger } from '../../src/utils/logger';
 
 export default function Home() {
   const { settings, updateSettings, device, selectedVoice } = useAppState();
   const { t } = useI18n();
+  const [changingMode, setChangingMode] = useState(null);
+  const modeChangeRef = useRef(null);
   const voiceName = t(`voices.profiles.${selectedVoice.id}.name`);
   const modeName = t(`home.modes.${settings.mode}`);
   const hasBatteryReading = Number.isFinite(device.battery);
@@ -21,6 +25,27 @@ export default function Home() {
       ? t('home.deviceConnected', { name: device.name, battery: device.battery })
       : `${device.name} · ${t('safetyCall.connected')}`)
     : (device.connectionState === 'reconnecting' ? t('common.connecting') : t('home.noDevice'));
+
+  const changeSafetyMode = async (mode) => {
+    if (modeChangeRef.current || settings.mode === mode) return;
+    modeChangeRef.current = mode;
+    setChangingMode(mode);
+    try {
+      // This persists only the local mode preference. Contact/backend delivery
+      // must never be inferred until a connected safety service confirms it.
+      await updateSettings({ mode });
+    } catch (error) {
+      logger.warn('[SafetyMode] Could not save the requested local mode', {
+        requestedMode: mode,
+        errorCode: error?.code || error?.name || 'MODE_SAVE_FAILED'
+      });
+      Alert.alert(t('settings.updateFailedTitle'), t('settings.updateFailedMessage'));
+    } finally {
+      modeChangeRef.current = null;
+      setChangingMode(null);
+    }
+  };
+
   return (
     <Screen>
       <Header title={t('common.veryLoving')} subtitle={t('home.subtitle')} />
@@ -45,7 +70,18 @@ export default function Home() {
       </Card>
       <Card>
         <Text style={styles.section}>{t('home.mode')}</Text>
-        <View style={styles.modeRow}>{['home', 'guardian', 'emergency'].map((mode) => <Button key={mode} title={t(`home.modes.${mode}`)} variant={settings.mode === mode ? 'orange' : 'ghost'} onPress={() => updateSettings({ mode })} />)}</View>
+        <View style={styles.modeRow}>
+          {['home', 'guardian', 'emergency'].map((mode) => (
+            <Button
+              key={mode}
+              title={t(`home.modes.${mode}`)}
+              variant={settings.mode === mode ? 'orange' : 'ghost'}
+              onPress={() => changeSafetyMode(mode)}
+              loading={changingMode === mode}
+              disabled={Boolean(changingMode) && changingMode !== mode}
+            />
+          ))}
+        </View>
       </Card>
     </Screen>
   );

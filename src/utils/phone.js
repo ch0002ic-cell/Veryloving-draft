@@ -5,6 +5,7 @@ import {
   parsePhoneNumberFromString,
   validatePhoneNumberLength
 } from 'libphonenumber-js';
+import { ENGLISH_COUNTRY_NAMES } from '../data/country-names-en';
 
 export const DEFAULT_COUNTRY = 'US';
 export const countryCodes = getCountries();
@@ -106,12 +107,27 @@ export function getCountryOptions(locale = 'en') {
     displayNames = null;
   }
   const collator = new Intl.Collator(normalizedLocale, { sensitivity: 'base' });
-  const options = countryCodes.map((countryCode) => ({
-    callingCode: getCountryCallingCode(countryCode),
-    code: countryCode,
-    flag: countryCodeToFlag(countryCode),
-    name: displayNames?.of(countryCode) || countryCode
-  })).sort((left, right) => collator.compare(left.name, right.name));
+  const options = countryCodes.map((countryCode) => {
+    let localizedName = '';
+    try {
+      localizedName = String(displayNames?.of(countryCode) || '').trim();
+    } catch {
+      localizedName = '';
+    }
+
+    // Some runtimes return the input code instead of a display name. Treat
+    // that as unsupported so users can still browse and search by country.
+    const name = localizedName && localizedName.toUpperCase() !== countryCode
+      ? localizedName
+      : ENGLISH_COUNTRY_NAMES[countryCode] || countryCode;
+
+    return {
+      callingCode: getCountryCallingCode(countryCode),
+      code: countryCode,
+      flag: countryCodeToFlag(countryCode),
+      name
+    };
+  }).sort((left, right) => collator.compare(left.name, right.name));
   countryOptionCache.set(normalizedLocale, options);
   return options;
 }

@@ -12,8 +12,10 @@ const {
 const {
   loadPairedDevice,
   PAIRED_DEVICE_KEY,
-  persistPairedDevice
+  persistPairedDevice,
+  DEFAULT_DEVICE
 } = require('../src/services/paired-device-store');
+const { forgetPairedDevice } = require('../src/services/paired-device-removal');
 const { storage } = require('../src/services/storage');
 
 let permissionGranted = true;
@@ -83,6 +85,72 @@ test('an explicit disconnect remains disconnected after hydration', async () => 
   const restored = await loadPairedDevice();
   assert.equal(restored.connectionState, 'disconnected');
   assert.equal(restored.autoReconnect, false);
+});
+
+test('removing a paired device clears its identifier and disables hydration reconnect', async () => {
+  memory.clear();
+  await persistPairedDevice({
+    id: 'VL01-remove-me',
+    name: 'NorthStar VL01',
+    connected: true,
+    connectionState: 'connected',
+    autoReconnect: true
+  });
+
+  await persistPairedDevice(DEFAULT_DEVICE);
+
+  assert.equal(memory.has(PAIRED_DEVICE_KEY), false);
+  assert.deepEqual(await loadPairedDevice(), { ...DEFAULT_DEVICE });
+});
+
+test('device removal clears remembered state before best-effort native disconnect', async () => {
+  const operations = [];
+  const result = await forgetPairedDevice(
+    { id: ' VL01-remove-order ' },
+    {
+      clearRememberedDevice: async () => operations.push('clear'),
+      disconnectNativeDevice: async (deviceId) => operations.push(`disconnect:${deviceId}`)
+    }
+  );
+
+  assert.deepEqual(operations, ['clear', 'disconnect:VL01-remove-order']);
+  assert.equal(result.removed, true);
+  assert.equal(result.nativeDisconnected, true);
+});
+
+test('native disconnect failure does not restore removed device metadata', async () => {
+  const nativeFailure = new Error('native disconnect failed');
+  let cleared = false;
+  const result = await forgetPairedDevice(
+    { id: 'VL01-best-effort' },
+    {
+      clearRememberedDevice: async () => { cleared = true; },
+      disconnectNativeDevice: async () => { throw nativeFailure; }
+    }
+  );
+
+  assert.equal(cleared, true);
+  assert.equal(result.removed, true);
+  assert.equal(result.nativeDisconnected, false);
+  assert.equal(result.disconnectError, nativeFailure);
+});
+
+test('device removal reports storage failure without pretending the device was forgotten', async () => {
+  const storageFailure = new Error('storage unavailable');
+  let disconnectCalled = false;
+
+  await assert.rejects(
+    forgetPairedDevice(
+      { id: 'VL01-still-remembered' },
+      {
+        clearRememberedDevice: async () => { throw storageFailure; },
+        disconnectNativeDevice: async () => { disconnectCalled = true; }
+      }
+    ),
+    storageFailure
+  );
+
+  assert.equal(disconnectCalled, false);
 });
 
 test('scan reports Bluetooth off with a typed error', async () => {
