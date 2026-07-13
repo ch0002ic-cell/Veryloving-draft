@@ -2,7 +2,7 @@
 
 VeryLoving is an Expo Router safety companion with onboarding, location and Mapbox safety views, NorthStar BLE jewelry, emergency contacts and SOS flows, social features, and Hume EVI voice conversations with local history and offline fallback.
 
-The interface offers 155 complete ISO 639-1 catalogs through a searchable own-script language picker, with automatic RTL layout for eleven right-to-left catalogs. All 183 assigned codes are represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for translation review status, unavailable provider languages, the phone data contract, and the steps to maintain a catalog.
+The interface offers 155 structurally complete ISO 639-1 catalogs through a searchable own-script language picker, with automatic RTL layout for eleven right-to-left catalogs. English, Spanish, French, and Simplified Chinese are maintained; the other 151 catalogs are machine-generated starting points that require native-speaker safety-copy review. All 183 assigned codes are represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for translation review status, unavailable provider languages, the phone data contract, and the steps to maintain a catalog.
 
 ## Development Setup
 
@@ -52,7 +52,7 @@ npx expo prebuild --clean --platform android
 npx expo run:android
 ```
 
-Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Set `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` to the public OAuth web client ID used to issue Google identity tokens. The current local phone adapter exercises E.164 validation and verification navigation; production SMS delivery and Google Sign-In still require their backend/OAuth credentials.
+Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Set `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` to the public OAuth web client ID used to issue Google identity tokens. The local phone adapter exercises E.164 validation and verification navigation only when `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=true` in development/test; it is fail-closed in production. Production SMS delivery and provider-token exchange still require backend/OAuth infrastructure.
 
 This repository uses Expo Continuous Native Generation. The `ios/` and `android/` directories are generated, ignored, and must not be edited or committed. Native settings live in `app.config.js` and the config plugins under `plugins/`; `withPodfile.js` preserves modular headers and the EXAV compatibility hook, `withEntitlements.js` merges push and Apple Sign-In entitlements, `withGradleProperties.js` preserves AndroidX, Jetifier, the new architecture, and a 4 GB Gradle heap, and `withAndroidManifest.js` normalizes BLE declarations while keeping debug overlay permission out of release builds. Run `npx expo prebuild --clean` whenever you need fresh native projects.
 
@@ -118,6 +118,21 @@ Before an Android release, verify on an API 36 emulator and a physical phone:
 4. Open a safety call with Hume unavailable, confirm the actionable error, activate the offline companion, then use hardware Back and confirm the session disconnects.
 5. Verify notification, microphone, and camera rationales before their native prompts.
 6. Test BLE discovery, production SMS, Google OAuth, background audio, and lock-screen behavior on physical hardware with release credentials.
+
+## Known Issues / Release Blockers
+
+The July 2026 stability audit fixed critical authentication/route bypasses, false SOS success, cleanup races, privacy export, onboarding permission failures, Mapbox fallback behavior, safe phone launching, and Hume connection/audio lifecycle defects. See [STABILITY_REPORT.md](./STABILITY_REPORT.md) for reproduction details, root causes, fixes, verification evidence, and the full feature matrix.
+
+The app is not yet production-ready. Current launch gates are:
+
+- backend-issued access/refresh tokens with provider JWT validation and removal of bearer credentials from WebSocket URLs;
+- encrypted, per-account contacts, settings, queues, and conversation history;
+- a production SMS backend and signed Apple/Google OAuth verification;
+- an authenticated Hume WebSocket proxy plus native 48 kHz mono PCM streaming on real devices;
+- real VL01 GATT UUID reads/notifications/reconnection instead of the placeholder battery value;
+- backend-backed SOS/guardian state, remote push delivery, live location sharing, routes, and avoidance zones;
+- full Android emulator/device QA and signed iOS/Android physical-device testing;
+- native-speaker safety-copy review for the 151 machine-generated catalogs.
 
 ## EAS Builds
 
