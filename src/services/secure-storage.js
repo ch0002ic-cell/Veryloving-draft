@@ -16,33 +16,22 @@ function createMemoryBackend(memory) {
 export function createSecureStorage({
   isExpoGo = isExpoGoRuntime,
   loadSecureStore = () => require('expo-secure-store'),
-  onVolatileFallback = () => {}
+  onMemoryMode = () => {}
 } = {}) {
   const memory = new Map();
   const memoryBackend = createMemoryBackend(memory);
   let nativeBackend = null;
-  let volatile = false;
-  let fallbackLogged = false;
+  const volatile = Boolean(isExpoGo());
 
-  const switchToMemory = (error) => {
-    if (!isExpoGo()) throw error;
-    volatile = true;
-    if (!fallbackLogged) {
-      fallbackLogged = true;
-      onVolatileFallback(error);
-    }
-    return memoryBackend;
-  };
+  // Expo Go's host binary does not carry VeryLoving's Keychain access group.
+  // Select memory before the first operation so expo-secure-store is never
+  // evaluated and cannot emit an entitlement warning during module loading.
+  if (volatile) onMemoryMode();
 
   const invoke = async (method, args) => {
     if (volatile) return memoryBackend[method](...args);
-    try {
-      if (!nativeBackend) nativeBackend = loadSecureStore();
-      return await nativeBackend[method](...args);
-    } catch (error) {
-      const fallback = switchToMemory(error);
-      return fallback[method](...args);
-    }
+    if (!nativeBackend) nativeBackend = loadSecureStore();
+    return nativeBackend[method](...args);
   };
 
   return {
@@ -62,9 +51,7 @@ export function createSecureStorage({
 }
 
 export const secureStorage = createSecureStorage({
-  onVolatileFallback: (error) => {
-    logger.info('[SecureStorage] Native storage is unavailable in Expo Go; using process memory', {
-      errorCode: error?.code || error?.name || 'SECURE_STORAGE_UNAVAILABLE'
-    });
+  onMemoryMode: () => {
+    logger.info('[SecureStorage] Expo Go detected; secure storage is using process memory and resets on reload');
   }
 });

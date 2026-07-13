@@ -26,8 +26,8 @@ export async function loadEmergencyContactCache(accountId) {
   // The snapshot is bound to the currently authenticated account before the
   // plaintext legacy key is removed.
   const legacy = normalizedContacts(await storage.getJSON(LEGACY_EMERGENCY_CONTACTS_KEY, []));
-  // If SecureStore fails in Expo Go, the adapter substitutes volatile process
-  // memory. Never delete the durable legacy copy after a migration that cannot
+  // Expo Go deliberately uses volatile process memory instead of the host
+  // Keychain. Never delete the durable legacy copy after a migration that cannot
   // survive a JavaScript reload; a signed build will complete the migration.
   if (secureStorage.isVolatile) return legacy;
   await persistEmergencyContactCache(accountId, legacy);

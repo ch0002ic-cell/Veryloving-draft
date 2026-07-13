@@ -181,10 +181,16 @@ export function AuthProvider({ children }) {
         ]).catch(() => {});
         setSessionStatus('reauthentication-required');
       } else {
+        // A fresh Expo Go process always reaches this branch because its
+        // deliberately volatile secure-storage backend resets on reload.
         setSessionStatus('signed-out');
       }
     }).catch((error) => {
-      logger.warn('[Auth] Could not restore the secure session', error);
+      // Volatile Expo Go storage has no previous session by design. It should
+      // never turn that expected signed-out state into a tester-facing warning.
+      if (!secureStorage.isVolatile) {
+        logger.warn('[Auth] Could not restore the secure session', error);
+      }
       setSessionStatus('signed-out');
     }).finally(() => {
       if (active) setLoading(false);

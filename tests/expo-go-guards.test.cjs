@@ -10,8 +10,14 @@ const { isExpoGoRuntime } = require('../src/utils/runtime-environment');
 
 test('Expo Go detection does not misclassify an SDK 57 development client', () => {
   assert.equal(isExpoGoRuntime({ appOwnership: 'expo', executionEnvironment: 'storeClient' }), true);
+  assert.equal(isExpoGoRuntime({
+    appOwnership: null,
+    executionEnvironment: 'storeClient',
+    expoVersion: '57.0.4'
+  }), true);
   assert.equal(isExpoGoRuntime({ appOwnership: null, executionEnvironment: 'storeClient' }), false);
   assert.equal(isExpoGoRuntime({ appOwnership: null, executionEnvironment: 'standalone' }), false);
+  assert.equal(isExpoGoRuntime(null), false);
 });
 
 test('notification runtime never evaluates expo-notifications in Expo Go', async () => {
@@ -57,45 +63,46 @@ test('supported notification runtime loads once, configures once, and can retry 
   assert.equal(handlers, 1);
 });
 
-test('Expo Go falls back to process memory only after native SecureStore fails', async () => {
+test('Expo Go uses process memory without evaluating native SecureStore', async () => {
   let nativeLoads = 0;
+  let memoryModeLogs = 0;
   const storage = createSecureStorage({
     isExpoGo: () => true,
     loadSecureStore: () => {
       nativeLoads += 1;
-      throw new Error('Keychain entitlement is unavailable.');
-    }
+      throw new Error('The native SecureStore loader must not run in Expo Go.');
+    },
+    onMemoryMode: () => { memoryModeLogs += 1; }
   });
 
-  await storage.setItemAsync('token', 'value');
   assert.equal(storage.isVolatile, true);
+  await Promise.all([
+    storage.setItemAsync('token', 'value'),
+    storage.setItemAsync('profile', 'tester')
+  ]);
   assert.equal(await storage.getItemAsync('token'), 'value');
   await storage.deleteItemAsync('token');
   assert.equal(await storage.getItemAsync('token'), null);
-  assert.equal(nativeLoads, 1);
-  await storage.setItemAsync('session', 'volatile');
-
-  const restartedStorage = createSecureStorage({
-    isExpoGo: () => true,
-    loadSecureStore: () => { throw new Error('Keychain entitlement is unavailable.'); }
-  });
-  assert.equal(await restartedStorage.getItemAsync('session'), null);
+  assert.equal(nativeLoads, 0);
+  assert.equal(memoryModeLogs, 1);
 });
 
-test('Expo Go keeps supported native SecureStore persistence instead of forcing volatility', async () => {
-  const values = new Map();
-  const loadSecureStore = () => ({
-    getItemAsync: async (key) => values.get(key) ?? null,
-    setItemAsync: async (key, value) => values.set(key, value),
-    deleteItemAsync: async (key) => values.delete(key)
-  });
-  const first = createSecureStorage({ isExpoGo: () => true, loadSecureStore });
-  await first.setItemAsync('session', 'native');
-  assert.equal(first.isVolatile, false);
+test('Expo Go memory storage does not persist across JavaScript runtimes', async () => {
+  let nativeLoads = 0;
+  const options = {
+    isExpoGo: () => true,
+    loadSecureStore: () => {
+      nativeLoads += 1;
+      throw new Error('The native SecureStore loader must not run in Expo Go.');
+    }
+  };
+  const first = createSecureStorage(options);
+  await first.setItemAsync('session', 'volatile');
 
-  const restarted = createSecureStorage({ isExpoGo: () => true, loadSecureStore });
-  assert.equal(await restarted.getItemAsync('session'), 'native');
-  assert.equal(restarted.isVolatile, false);
+  const restarted = createSecureStorage(options);
+  assert.equal(await restarted.getItemAsync('session'), null);
+  assert.equal(restarted.isVolatile, true);
+  assert.equal(nativeLoads, 0);
 });
 
 test('development and production storage delegate to native SecureStore without fallback', async () => {
@@ -122,6 +129,14 @@ test('development and production storage delegate to native SecureStore without 
     loadSecureStore: () => { throw new Error('ExpoSecureStore is missing'); }
   });
   await assert.rejects(failingStorage.getItemAsync('token'), /ExpoSecureStore is missing/);
+
+  const rejectingStorage = createSecureStorage({
+    isExpoGo: () => false,
+    loadSecureStore: () => ({
+      getItemAsync: async () => { throw new Error('Keychain read failed'); }
+    })
+  });
+  await assert.rejects(rejectingStorage.getItemAsync('token'), /Keychain read failed/);
 });
 
 test('entitlement-sensitive native paths remain guarded without disabling supported Apple auth', () => {
@@ -132,12 +147,20 @@ test('entitlement-sensitive native paths remain guarded without disabling suppor
   const i18n = readFileSync(path.resolve(process.cwd(), 'src/context/I18nContext.js'), 'utf8');
   const audio = readFileSync(path.resolve(process.cwd(), 'src/services/audio.js'), 'utf8');
   const ble = readFileSync(path.resolve(process.cwd(), 'src/services/ble.js'), 'utf8');
+  const secureStorage = readFileSync(path.resolve(process.cwd(), 'src/services/secure-storage.js'), 'utf8');
 
   assert.doesNotMatch(notifications, /import .* from ['"]expo-notifications['"]/);
   assert.match(notifications, /isExpoGo: isExpoGoRuntime[\s\S]*loadNotifications: \(\) => import\('expo-notifications'\)/);
   assert.doesNotMatch(mapbox, /import Mapbox from ['"]@rnmapbox\/maps['"]/);
   assert.match(mapbox, /getModule\(\) \{[\s\S]*if \(isExpoGo\(\)\) return null;/);
   assert.doesNotMatch(auth, /import .*expo-secure-store/);
+  assert.match(auth, /if \(!secureStorage\.isVolatile\) \{[\s\S]*Could not restore the secure session/);
+  assert.doesNotMatch(secureStorage, /import .*expo-secure-store/);
+  assert.ok(
+    secureStorage.indexOf('if (volatile) return memoryBackend')
+      < secureStorage.indexOf('nativeBackend = loadSecureStore()'),
+    'Expo Go memory selection must precede the native SecureStore loader'
+  );
   assert.doesNotMatch(auth, /import .*expo-apple-authentication/);
   assert.match(auth, /const signInWithApple[\s\S]*require\('expo-apple-authentication'\)/);
   assert.match(auth, /const signInWithGoogle[\s\S]*if \(isExpoGoRuntime\(\)\)[\s\S]*require\('@react-native-google-signin\/google-signin'\)/);

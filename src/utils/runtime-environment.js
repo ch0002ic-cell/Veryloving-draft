@@ -8,10 +8,12 @@ function loadExpoConstants() {
 }
 
 /**
- * SDK 57 reports both Expo Go and development clients as `storeClient`.
- * `appOwnership === "expo"` is therefore the narrow check that does not
- * accidentally disable native capabilities in a development build.
+ * SDK 57 reports both Expo Go and development clients as `storeClient`, while
+ * `expoVersion` is populated only by the Expo Go host. Keep app ownership as
+ * the primary signal and use the newer execution-environment value only when
+ * that Expo Go-only discriminator is also present.
  */
 export function isExpoGoRuntime(constants = loadExpoConstants()) {
-  return constants?.appOwnership === 'expo';
+  return constants?.appOwnership === 'expo'
+    || (constants?.executionEnvironment === 'storeClient' && Boolean(constants?.expoVersion));
 }
