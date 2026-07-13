@@ -8,6 +8,7 @@ import { explainPermission } from './permissions';
 import { logger } from '../utils/logger';
 import { VOICE_AUDIO_CACHE_PREFIX } from './voice-audio-cache';
 import { pcmBytesToBase64 } from '../utils/pcm';
+import { isExpoGoRuntime } from '../utils/runtime-environment';
 
 const PLAYBACK_SEGMENT_TIMEOUT_MS = 60000;
 const HUME_SAMPLE_RATE = 48000;
@@ -65,11 +66,12 @@ class AudioService {
   }
 
   async startVoiceCallMode() {
+    const backgroundAudioEnabled = !isExpoGoRuntime();
     await setAudioModeAsync({
       allowsRecording: true,
       playsInSilentMode: true,
-      shouldPlayInBackground: true,
-      allowsBackgroundRecording: true,
+      shouldPlayInBackground: backgroundAudioEnabled,
+      allowsBackgroundRecording: backgroundAudioEnabled,
       interruptionMode: 'doNotMix',
       // Keep assistant playback away from the loudspeaker while raw PCM is
       // being captured. This reduces feedback on devices whose native capture

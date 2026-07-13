@@ -6,7 +6,10 @@ import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
-import { requestNotificationPermission } from '../../src/services/notifications';
+import {
+  notificationsAvailableInRuntime,
+  requestNotificationPermission
+} from '../../src/services/notifications';
 import { fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 
@@ -16,6 +19,7 @@ export default function NotificationPermission() {
   const [error, setError] = useState(null);
   const requestingRef = useRef(false);
   const navigatingRef = useRef(false);
+  const notificationsAvailable = notificationsAvailableInRuntime();
 
   const continueOnboarding = useCallback(() => {
     if (navigatingRef.current) return;
@@ -29,6 +33,10 @@ export default function NotificationPermission() {
     setBusy(true);
     setError(null);
     try {
+      if (!notificationsAvailable) {
+        continueOnboarding();
+        return;
+      }
       const granted = await requestNotificationPermission({ showRationale: false });
       if (granted) continueOnboarding();
       else setError(t('settings.updateFailedMessage'));
@@ -38,7 +46,7 @@ export default function NotificationPermission() {
       requestingRef.current = false;
       setBusy(false);
     }
-  }, [continueOnboarding, t]);
+  }, [continueOnboarding, notificationsAvailable, t]);
 
   return (
     <Screen>
@@ -46,7 +54,7 @@ export default function NotificationPermission() {
       <Card><Text style={{ fontFamily: fonts.regular }}>{t('permissions.notificationsBody')}</Text></Card>
       <FeedbackBanner message={error} />
       <Button
-        title={t('permissions.enableNotifications')}
+        title={notificationsAvailable ? t('permissions.enableNotifications') : t('common.continue')}
         loading={busy}
         disabled={busy}
         onPress={requestPermission}

@@ -219,6 +219,24 @@ test('declined Bluetooth permission reports a typed denial', async () => {
   assert.equal(completion, 'permission-declined');
 });
 
+test('Expo Go BLE fails closed before requesting permissions or loading native code', async () => {
+  permissionGranted = false;
+  const service = new BLEService({ protocol: TEST_PROTOCOL, expoGo: true });
+  let receivedError;
+  let completion;
+  await service.scanForDevices(() => {}, {
+    onError: (error) => { receivedError = error; },
+    onComplete: (reason) => { completion = reason; }
+  });
+
+  assert.equal(receivedError.code, BLE_ERROR_CODES.unavailable);
+  assert.equal(completion, 'unavailable');
+  await assert.rejects(
+    service.connect({ id: 'VL01-expo-go' }),
+    (error) => error.code === BLE_ERROR_CODES.unavailable
+  );
+});
+
 test('scan timeout reports no matching devices instead of silent success', async () => {
   permissionGranted = true;
   const service = new BLEService({ protocol: TEST_PROTOCOL });

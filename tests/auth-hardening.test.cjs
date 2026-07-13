@@ -177,12 +177,42 @@ test('Google Sign-In fails before invoking native code when its client ID is mis
   assert.doesNotMatch(auth, /await persist\(identity\.user, identity\.identityToken\)/);
 });
 
+test('Google Sign-In rejects Expo Go before loading its native module', () => {
+  const { readFileSync } = require('node:fs');
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const google = auth.slice(auth.indexOf('const signInWithGoogle'), auth.indexOf('const signInWithPhone'));
+  const expoGoGuard = google.indexOf('if (isExpoGoRuntime())');
+  const nativeImport = google.indexOf("require('@react-native-google-signin/google-signin')");
+  assert.notEqual(expoGoGuard, -1);
+  assert.ok(expoGoGuard < nativeImport, 'Expo Go must be rejected before Google native code loads');
+});
+
 test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  assert.doesNotMatch(auth, /import .*expo-apple-authentication/);
+  assert.match(auth, /const signInWithApple[\s\S]*require\('expo-apple-authentication'\)/);
   assert.match(auth, /const nonce = createAuthenticationNonce\(\)/);
   assert.match(auth, /AppleAuthentication\.signInAsync\(\{[\s\S]*nonce/);
   assert.match(auth, /provider: 'apple'[\s\S]*idToken: credential\.identityToken[\s\S]*nonce/);
+});
+
+test('auth persistence rolls back every secure key after any partial write failure', () => {
+  const { readFileSync } = require('node:fs');
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const persist = auth.slice(auth.indexOf('const persist = async'), auth.indexOf('const completeOnboarding'));
+  assert.match(persist, /try \{[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY[\s\S]*setItemAsync\(TOKEN_KEY[\s\S]*setItemAsync\(USER_KEY/);
+  assert.match(persist, /catch \(error\) \{[\s\S]*Promise\.allSettled\(\[[\s\S]*deleteItemAsync\(TOKEN_KEY\)[\s\S]*deleteItemAsync\(REFRESH_TOKEN_KEY\)[\s\S]*deleteItemAsync\(USER_KEY\)[\s\S]*deleteItemAsync\(ONBOARDING_KEY\)/);
+  assert.match(persist, /setUser\(null\)[\s\S]*setAccessToken\(null\)[\s\S]*setSessionStatus\('signed-out'\)/);
+});
+
+test('auth refresh restores the previous secure token pair after a partial write', () => {
+  const { readFileSync } = require('node:fs');
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const start = auth.indexOf('const refreshSession');
+  const refresh = auth.slice(start, auth.indexOf('refreshSessionRef.current = refreshSession', start));
+  assert.match(refresh, /persistedRefreshToken, persistedAccessToken[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY, session\.refreshToken\)[\s\S]*setItemAsync\(TOKEN_KEY, session\.accessToken\)/);
+  assert.match(refresh, /catch \(storageError\)[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY, persistedRefreshToken\)[\s\S]*setItemAsync\(TOKEN_KEY, persistedAccessToken\)[\s\S]*throw storageError/);
 });
 
 test('production UI cannot create an in-memory demo guardian', () => {

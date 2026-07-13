@@ -1,5 +1,3 @@
-import * as AppleAuthentication from 'expo-apple-authentication';
-import * as SecureStore from 'expo-secure-store';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 import { logger } from '../utils/logger';
@@ -19,6 +17,8 @@ import {
   isOnboardingMarkerValid
 } from '../utils/onboarding-state';
 import { exchangeProviderIdentity, refreshApplicationSession } from '../services/auth-session';
+import { secureStorage } from '../services/secure-storage';
+import { isExpoGoRuntime } from '../utils/runtime-environment';
 import {
   createAuthenticationNonce,
   isSessionTokenUsable,
@@ -63,7 +63,11 @@ export function AuthProvider({ children }) {
     let operation;
     operation = (async () => {
       try {
-        const refreshToken = providedRefreshToken || await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+        const [persistedRefreshToken, persistedAccessToken] = await Promise.all([
+          secureStorage.getItemAsync(REFRESH_TOKEN_KEY),
+          secureStorage.getItemAsync(TOKEN_KEY)
+        ]);
+        const refreshToken = providedRefreshToken || persistedRefreshToken;
         if (!refreshToken || !isSessionTokenUsable(refreshToken, { skewSeconds: 60 })) {
           const error = new Error('The refresh session is unavailable or expired.');
           error.code = 'AUTH_REFRESH_UNAVAILABLE';
@@ -78,8 +82,22 @@ export function AuthProvider({ children }) {
         }
         // Store the rotated refresh token before publishing the new access
         // token so a process death cannot strand the account on an old pair.
-        await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
-        await SecureStore.setItemAsync(TOKEN_KEY, session.accessToken);
+        try {
+          await secureStorage.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
+          await secureStorage.setItemAsync(TOKEN_KEY, session.accessToken);
+        } catch (storageError) {
+          // SecureStore has no multi-key transaction. Restore the previous pair
+          // if either write fails so startup never observes mismatched tokens.
+          await Promise.allSettled([
+            persistedRefreshToken
+              ? secureStorage.setItemAsync(REFRESH_TOKEN_KEY, persistedRefreshToken)
+              : secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
+            persistedAccessToken
+              ? secureStorage.setItemAsync(TOKEN_KEY, persistedAccessToken)
+              : secureStorage.deleteItemAsync(TOKEN_KEY)
+          ]);
+          throw storageError;
+        }
         setAccessToken(session.accessToken);
         setSessionStatus('active');
         if (refreshRetryTimerRef.current) {
@@ -98,10 +116,10 @@ export function AuthProvider({ children }) {
         setAccessToken(null);
         if (rejected) {
           await Promise.allSettled([
-            SecureStore.deleteItemAsync(TOKEN_KEY),
-            SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
-            SecureStore.deleteItemAsync(USER_KEY),
-            SecureStore.deleteItemAsync(ONBOARDING_KEY)
+            secureStorage.deleteItemAsync(TOKEN_KEY),
+            secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
+            secureStorage.deleteItemAsync(USER_KEY),
+            secureStorage.deleteItemAsync(ONBOARDING_KEY)
           ]);
           setUser(null);
           setOnboardingComplete(false);
@@ -125,10 +143,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let active = true;
     Promise.all([
-      SecureStore.getItemAsync(TOKEN_KEY),
-      SecureStore.getItemAsync(REFRESH_TOKEN_KEY),
-      SecureStore.getItemAsync(USER_KEY),
-      SecureStore.getItemAsync(ONBOARDING_KEY)
+      secureStorage.getItemAsync(TOKEN_KEY),
+      secureStorage.getItemAsync(REFRESH_TOKEN_KEY),
+      secureStorage.getItemAsync(USER_KEY),
+      secureStorage.getItemAsync(ONBOARDING_KEY)
     ]).then(async ([token, refreshToken, rawUser, rawOnboarding]) => {
       if (!active) return;
       let savedUser = null;
@@ -156,10 +174,10 @@ export function AuthProvider({ children }) {
         }
       } else if (token || refreshToken || rawUser || rawOnboarding) {
         Promise.allSettled([
-          SecureStore.deleteItemAsync(TOKEN_KEY),
-          SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
-          SecureStore.deleteItemAsync(USER_KEY),
-          SecureStore.deleteItemAsync(ONBOARDING_KEY)
+          secureStorage.deleteItemAsync(TOKEN_KEY),
+          secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
+          secureStorage.deleteItemAsync(USER_KEY),
+          secureStorage.deleteItemAsync(ONBOARDING_KEY)
         ]).catch(() => {});
         setSessionStatus('reauthentication-required');
       } else {
@@ -206,15 +224,26 @@ export function AuthProvider({ children }) {
     // A new authentication ceremony always starts fail-closed. The user-bound
     // completion marker is written only after the onboarding flow finishes.
     authGenerationRef.current += 1;
-    await SecureStore.deleteItemAsync(ONBOARDING_KEY);
-    if (session.refreshToken) await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
-    else await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
-    await SecureStore.setItemAsync(TOKEN_KEY, session.accessToken);
     try {
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(nextUser));
+      await secureStorage.deleteItemAsync(ONBOARDING_KEY);
+      if (session.refreshToken) {
+        await secureStorage.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
+      } else {
+        await secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY);
+      }
+      await secureStorage.setItemAsync(TOKEN_KEY, session.accessToken);
+      await secureStorage.setItemAsync(USER_KEY, JSON.stringify(nextUser));
     } catch (error) {
-      await SecureStore.deleteItemAsync(TOKEN_KEY).catch(() => {});
-      await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY).catch(() => {});
+      await Promise.allSettled([
+        secureStorage.deleteItemAsync(TOKEN_KEY),
+        secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
+        secureStorage.deleteItemAsync(USER_KEY),
+        secureStorage.deleteItemAsync(ONBOARDING_KEY)
+      ]);
+      setUser(null);
+      setAccessToken(null);
+      setOnboardingComplete(false);
+      setSessionStatus('signed-out');
       throw error;
     }
     setUser(nextUser);
@@ -226,11 +255,15 @@ export function AuthProvider({ children }) {
   const completeOnboarding = useCallback(async () => {
     if (!user?.id) throw new Error('A signed-in user is required to complete onboarding.');
     const marker = createOnboardingMarker(user.id);
-    await SecureStore.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
+    await secureStorage.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
     setOnboardingComplete(true);
   }, [user?.id]);
 
   const signInWithApple = async () => {
+    // Apple Authentication is part of Expo Go. Keep the import lazy so a
+    // missing native implementation becomes a handled sign-in error rather
+    // than a startup crash; Expo Go identities are not release evidence.
+    const AppleAuthentication = require('expo-apple-authentication');
     if (Platform.OS !== 'ios' || !await AppleAuthentication.isAvailableAsync()) {
       throw new Error('Apple Sign-In is not available on this device.');
     }
@@ -251,6 +284,11 @@ export function AuthProvider({ children }) {
   };
 
   const signInWithGoogle = async () => {
+    if (isExpoGoRuntime()) {
+      const error = new Error('Google Sign-In requires a VeryLoving development build.');
+      error.code = 'GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD';
+      throw error;
+    }
     if (!config.googleWebClientId) {
       throw new Error('Google Sign-In is not configured for this build.');
     }
@@ -314,10 +352,10 @@ export function AuthProvider({ children }) {
       refreshRetryTimerRef.current = null;
     }
     const results = await Promise.allSettled([
-      SecureStore.deleteItemAsync(TOKEN_KEY),
-      SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY),
-      SecureStore.deleteItemAsync(USER_KEY),
-      SecureStore.deleteItemAsync(ONBOARDING_KEY)
+      secureStorage.deleteItemAsync(TOKEN_KEY),
+      secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
+      secureStorage.deleteItemAsync(USER_KEY),
+      secureStorage.deleteItemAsync(ONBOARDING_KEY)
     ]);
     phoneVerificationsRef.current.clear();
     setUser(null);

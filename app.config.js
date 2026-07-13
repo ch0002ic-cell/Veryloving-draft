@@ -203,10 +203,8 @@ const config = {
     "infoPlist": {
       "NSMicrophoneUsageDescription": "VeryLoving needs access to your microphone for safety calls",
       "NSLocationWhenInUseUsageDescription": "VeryLoving needs your location to show the map and provide safety features",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving uses your location to alert loved ones when you arrive safely",
       "NSCameraUsageDescription": "VeryLoving needs your camera to take a profile photo.",
       "NSPhotoLibraryUsageDescription": "VeryLoving needs access to your photo library to choose a profile picture.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving uses your location in the background to alert loved ones when you arrive safely and to detect nearby danger zones.",
       "NSBluetoothAlwaysUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
       "NSBluetoothPeripheralUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
       "UIBackgroundModes": [
@@ -380,7 +378,19 @@ const config = {
   "plugins": [
     "expo-router",
     "expo-asset",
-    "expo-location",
+    [
+      "expo-location",
+      {
+        "locationWhenInUsePermission": "VeryLoving needs your location to show the map and provide safety features",
+        "locationAlwaysAndWhenInUsePermission": false,
+        "locationAlwaysPermission": false,
+        "motionUsagePermission": false,
+        "isIosBackgroundLocationEnabled": false,
+        "isAndroidBackgroundLocationEnabled": false,
+        "isAndroidForegroundServiceEnabled": false,
+        "isAndroidMotionActivityEnabled": false
+      }
+    ],
     "expo-apple-authentication",
     [
       "expo-status-bar",

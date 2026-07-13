@@ -4,6 +4,8 @@ This is the release decision record for signed iOS and Android builds. It comple
 
 VeryLoving is **not production-ready while any P1 stop-ship item below remains open**. A successful JavaScript export, EAS build, or `/health` response does not waive a safety, security, backend, hardware, or physical-device gate.
 
+Expo Go is limited to UI and foreground-flow previews. VeryLoving skips its notification integration there—including local scheduling—to avoid SDK 57's entitlement-dependent push-registration Keychain read. Notifications, Google Sign-In, production Apple identity exchange, Mapbox, BLE, and background audio require development or signed builds. Apple Authentication can open in Expo Go, but its Expo Go-scoped identity is not production validation. SecureStore remains primary in every runtime; only an actual Expo Go failure activates volatile process-memory fallback. Development and signed builds fail closed instead of downgrading secure storage. Expo Go evidence cannot close any native launch gate.
+
 ## Release Candidate
 
 - [ ] Release owner:
@@ -58,6 +60,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 - [ ] `npx expo export --platform ios` succeeds.
 - [ ] `npx expo export --platform android` succeeds.
 - [ ] Dependency and secret scans have no unaccepted critical findings.
+- [ ] Native evidence identifies the development, preview, TestFlight, or Play internal build used; Expo Go screenshots or logs are preview evidence only.
 - [ ] The release commit and dependency lockfile are archived with the evidence.
 
 ## Build Configuration And EAS

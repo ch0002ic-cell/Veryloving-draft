@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { reloadAppAsync } from 'expo';
-import Constants from 'expo-constants';
 import { useLocales } from 'expo-localization';
 import { I18nManager, Platform } from 'react-native';
 import { useAppState } from './AppContext';
@@ -14,6 +13,7 @@ import {
   translateForLocale
 } from '../i18n/core';
 import { logger } from '../utils/logger';
+import { isExpoGoRuntime } from '../utils/runtime-environment';
 
 const I18nContext = createContext(null);
 
@@ -27,7 +27,7 @@ export function I18nProvider({ children }) {
   useEffect(() => {
     setI18nLocale(locale);
     if (!isHydrated || Platform.OS === 'web' || I18nManager.isRTL === isRTL) return;
-    if (Constants.executionEnvironment === 'storeClient') {
+    if (isExpoGoRuntime()) {
       logger.warn('[I18n] RTL direction changes require a development build or standalone app');
       return;
     }

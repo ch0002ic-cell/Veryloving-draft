@@ -1,5 +1,4 @@
 import { File, Paths } from 'expo-file-system';
-import * as SecureStore from 'expo-secure-store';
 import * as Sharing from 'expo-sharing';
 import { AUTH_STORAGE_KEYS } from '../context/AuthContext';
 import { CONVERSATION_HISTORY_KEY, loadConversationHistory } from './conversation-history';
@@ -21,12 +20,13 @@ import {
 } from './emergency-contact-store';
 import { config } from '../utils/config';
 import { deleteRemoteUserData, fetchRemoteUserData } from './safety-api';
+import { secureStorage } from './secure-storage';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
 export { hasLocalUserDataDeletionWarnings };
 
 async function readJSONSecureStore(key) {
-  const raw = await SecureStore.getItemAsync(key);
+  const raw = await secureStorage.getItemAsync(key);
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -142,10 +142,10 @@ export async function deleteAllUserData({ accessToken, ...options } = {}) {
   if (config.safetyBackendEnabled) await deleteRemoteUserData(accessToken);
   const result = await deleteLocalUserData(options);
   await Promise.all([
-    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.token),
-    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.refreshToken),
-    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.user),
-    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.token),
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.refreshToken),
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.user),
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
   ]);
   return result;
 }

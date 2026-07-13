@@ -14,7 +14,7 @@ The interface offers 155 structurally complete ISO 639-1 catalogs through a sear
 - Xcode and an iOS simulator for iOS development
 - CocoaPods for native development builds
 - JDK 17, Android Studio, Android SDK Platform 36, and an API 36 emulator for Android development
-- An Expo development build for native Mapbox, BLE, Google Sign-In, and audio-module access
+- An Expo development build for native Mapbox, BLE, provider authentication, notifications, and audio-module access
 
 Clone and install:
 
@@ -35,12 +35,13 @@ Start Metro for a development build. LAN mode works with both Android devices an
 npx expo start --dev-client --lan
 ```
 
-Expo Go provides graceful fallbacks for native-only features. For the native feature set, create and run a development build:
+Expo Go is a UI and foreground-flow preview only. VeryLoving skips its notification integration there—including local scheduling—because evaluating the SDK 57 package root starts an entitlement-dependent push-registration Keychain read. Notifications, Google Sign-In, production Apple identity exchange, Mapbox, BLE, and background audio require a development or signed build. Apple Authentication can open in Expo Go, but its Expo Go-scoped identity is not production validation. SecureStore remains the primary store in every runtime; if it actually fails in Expo Go, VeryLoving falls back to volatile process memory, so that fallback session will not survive a reload or restart. Development and signed builds fail closed instead of downgrading secure storage. Expo Go results cannot close native launch gates.
+
+For the iOS native feature set on SDK 57, generate the project and select the simulator explicitly:
 
 ```bash
-npx expo prebuild --clean
-npx expo run:ios
-npx expo run:android
+npx expo prebuild --platform ios
+npx expo run:ios --device "<simulator>" --no-build-cache
 ```
 
 The generated app declares background-audio and Bluetooth-central capabilities for active safety calls and NorthStar. The `expo-audio` PCM stream, audio-session restoration, background capture, microphone routing, BLE lifecycle, echo cancellation, and lock-screen behavior still require signed physical-device validation; a simulator or successful build cannot prove them.
@@ -51,13 +52,13 @@ For command-line Android builds, make sure Gradle can find JDK 17 and your SDK:
 export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
-npx expo prebuild --clean --platform android
+npx expo prebuild --platform android
 npx expo run:android
 ```
 
-Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Google Sign-In requires both the web client ID used as the identity-token audience and the native iOS client ID used for the URL scheme. Apple and Google identity tokens are exchanged at the in-repository `POST /v1/auth/exchange` endpoint; the app stores returned access/rotating refresh JWTs in SecureStore, renews before expiry, retries network outages, and fails closed on rejected refresh. Server-side revocation/reuse detection, deletion tombstones, provider credential-state checks, production phone challenges, and SMS delivery remain launch gates. The local phone adapter runs only when `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=true` in development/test and is fail-closed in production.
+Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Google Sign-In requires both the web client ID used as the identity-token audience and the native iOS client ID used for the URL scheme. Apple and Google identity tokens are exchanged at the in-repository `POST /v1/auth/exchange` endpoint; in supported native builds the app stores returned access/rotating refresh JWTs in SecureStore, renews before expiry, retries network outages, and fails closed on rejected refresh. Server-side revocation/reuse detection, deletion tombstones, provider credential-state checks, production phone challenges, and SMS delivery remain launch gates. The local phone adapter runs only when `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=true` in development/test and is fail-closed in production.
 
-This repository uses Expo Continuous Native Generation. The `ios/` and `android/` directories are generated, ignored, and must not be edited or committed. Native settings live in `app.config.js` and the config plugins under `plugins/`; `withPodfile.js` preserves modular headers and the EXAV compatibility hook, `withEntitlements.js` merges push and Apple Sign-In entitlements, `withGradleProperties.js` preserves AndroidX, Jetifier, the new architecture, and a 4 GB Gradle heap, and `withAndroidManifest.js` normalizes BLE declarations while keeping debug overlay permission out of release builds. Run `npx expo prebuild --clean` whenever you need fresh native projects.
+This repository uses Expo Continuous Native Generation. The `ios/` and `android/` directories are generated, ignored, and must not be edited or committed. Native settings live in `app.config.js` and the config plugins under `plugins/`; `withPodfile.js` preserves modular headers and the EXAV compatibility hook, `withEntitlements.js` merges push and Apple Sign-In entitlements, `withGradleProperties.js` preserves AndroidX, Jetifier, the new architecture, and a 4 GB Gradle heap, and `withAndroidManifest.js` normalizes BLE declarations while keeping debug overlay permission out of release builds. Generate the iOS project with `npx expo prebuild --platform ios` when native dependencies or configuration change.
 
 Expo Doctor determines the workflow from directories currently present on disk. Run it from the config-only source state for the expected `20/20` result. After local native testing, remove the disposable projects before checking again:
 

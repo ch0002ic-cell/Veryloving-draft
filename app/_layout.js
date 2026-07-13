@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, I18nManager, Platform, View } from 'react-native';
@@ -11,6 +12,8 @@ import { colors } from '../src/constants/theme';
 import { PROTECTED_ROOT_ROUTES } from '../src/utils/auth-routing';
 import { AppErrorBoundary } from '../src/components/AppErrorBoundary';
 import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
+import { initializeNotifications } from '../src/services/notifications';
+import { logger } from '../src/utils/logger';
 
 if (Platform.OS !== 'web') {
   I18nManager.allowRTL(true);
@@ -70,6 +73,13 @@ function LocalizedErrorBoundary({ children }) {
 
 export default function RootLayout() {
   const fontsReady = useAppFonts();
+  useEffect(() => {
+    initializeNotifications().catch((error) => {
+      logger.warn('[Notifications] Initialization failed', {
+        errorCode: error?.code || error?.name || 'NOTIFICATIONS_INITIALIZATION_FAILED'
+      });
+    });
+  }, []);
   if (!fontsReady) return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}><ActivityIndicator color={colors.ink} /></View>;
   return (
     <SafeAreaProvider>

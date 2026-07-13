@@ -150,6 +150,22 @@ test('Expo config owns Android permissions, keyboard behavior, and launch appear
   assert.equal(permissions.has('android.permission.BLUETOOTH_ADVERTISE'), false);
   assert.equal(plugins.get('react-native-ble-plx').neverForLocation, true);
   assert.equal(plugins.get('react-native-ble-plx').isBackgroundEnabled, false);
+  assert.equal(
+    plugins.get('expo-location').locationWhenInUsePermission,
+    'VeryLoving needs your location to show the map and provide safety features'
+  );
+  assert.equal(plugins.get('expo-location').locationAlwaysAndWhenInUsePermission, false);
+  assert.equal(plugins.get('expo-location').locationAlwaysPermission, false);
+  assert.equal(plugins.get('expo-location').motionUsagePermission, false);
+  assert.equal(plugins.get('expo-location').isIosBackgroundLocationEnabled, false);
+  assert.equal(plugins.get('expo-location').isAndroidBackgroundLocationEnabled, false);
+  assert.equal(plugins.get('expo-location').isAndroidForegroundServiceEnabled, false);
+  assert.equal(plugins.get('expo-location').isAndroidMotionActivityEnabled, false);
+  assert.equal(
+    Object.hasOwn(config.ios.infoPlist, 'NSLocationAlwaysAndWhenInUseUsageDescription'),
+    false
+  );
+  assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSLocationAlwaysUsageDescription'), false);
   assert.equal(plugins.get('expo-status-bar').style, 'dark');
   assert.equal(plugins.get('expo-splash-screen').backgroundColor, '#FFF8EF');
   assert.equal(plugins.get('expo-image-picker').cameraPermission.includes('VeryLoving'), true);

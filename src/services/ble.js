@@ -20,6 +20,7 @@ import {
   validateVL01GATT
 } from './vl01-protocol';
 import { base64ToBytes } from '../utils/base64';
+import { isExpoGoRuntime } from '../utils/runtime-environment';
 
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
@@ -133,10 +134,12 @@ export class BLEService {
 
   constructor({
     protocol = CONFIGURED_VL01_PROTOCOL,
-    gattOperationTimeoutMs = GATT_OPERATION_TIMEOUT_MS
+    gattOperationTimeoutMs = GATT_OPERATION_TIMEOUT_MS,
+    expoGo = isExpoGoRuntime()
   } = {}) {
     this.protocol = protocol;
     this.gattOperationTimeoutMs = gattOperationTimeoutMs;
+    this.expoGo = expoGo;
   }
 
   setEventHandler(handler) {
@@ -163,6 +166,11 @@ export class BLEService {
 
   getManager() {
     if (this.manager !== null) return this.manager;
+    if (this.expoGo) {
+      logger.info('[BLE] Expo Go cannot load the VL01 native module; use a development build');
+      this.manager = false;
+      return this.manager;
+    }
     try {
       const { BleManager } = require('react-native-ble-plx');
       this.manager = new BleManager({
@@ -184,6 +192,12 @@ export class BLEService {
   }
 
   async scanForDevices(onDevice, { onError, onComplete, timeoutMs = DEFAULT_SCAN_TIMEOUT_MS } = {}) {
+    if (this.expoGo) {
+      logger.info('[BLE] Expo Go cannot scan for VL01 devices; use a development build');
+      onError?.(createBLEError(BLE_ERROR_CODES.unavailable, null, 'scan'));
+      onComplete?.('unavailable');
+      return () => {};
+    }
     if (!await explainPermission('bluetooth')) {
       onError?.(createBLEError(BLE_ERROR_CODES.permissionDenied, null, 'permission'));
       onComplete?.('permission-declined');
@@ -251,7 +265,7 @@ export class BLEService {
     }, timeoutMs);
 
     if (!manager || Platform.OS === 'web') {
-      if (!DEVELOPMENT_RUNTIME) {
+      if (!DEVELOPMENT_RUNTIME || this.expoGo) {
         operation.finish('unavailable', createBLEError(BLE_ERROR_CODES.unavailable, null, 'scan'));
         return () => {};
       }
@@ -327,7 +341,7 @@ export class BLEService {
     if (!device?.id) throw createBLEError(BLE_ERROR_CODES.invalidDevice, null, 'connect');
     const manager = this.getManager();
     if (!manager || Platform.OS === 'web') {
-      if (!allowSimulation || !DEVELOPMENT_RUNTIME) {
+      if (!allowSimulation || !DEVELOPMENT_RUNTIME || this.expoGo) {
         throw createBLEError(BLE_ERROR_CODES.unavailable, null, 'connect');
       }
       return {

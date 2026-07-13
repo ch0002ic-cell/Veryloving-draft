@@ -9,12 +9,15 @@ import { images } from '../../src/constants/assets';
 import { colors, fonts } from '../../src/constants/theme';
 import { GlobalPhoneInput } from '../../src/components/GlobalPhoneInput';
 import { useI18n } from '../../src/context/I18nContext';
+import { isExpoGoRuntime } from '../../src/utils/runtime-environment';
 
 export default function CreateAccount() {
   const { signInWithApple, signInWithGoogle, signInWithPhone } = useAuth();
   const { t } = useI18n();
   const [phone, setPhone] = useState(null);
   const [busyAction, setBusyAction] = useState(null);
+  const appleSignInAvailable = Platform.OS === 'ios';
+  const googleSignInAvailable = !isExpoGoRuntime();
 
   const startSocial = async (provider, signIn) => {
     if (busyAction) return;
@@ -53,10 +56,12 @@ export default function CreateAccount() {
     <Screen>
       <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} />
       <View style={styles.socialRow}>
-        {Platform.OS === 'ios' ? (
+        {appleSignInAvailable ? (
           <Button title={t('common.apple')} icon="logo-apple" loading={busyAction === 'apple'} disabled={Boolean(busyAction)} onPress={() => startSocial('apple', signInWithApple)} />
         ) : null}
-        <Button title={t('common.google')} variant="ghost" loading={busyAction === 'google'} disabled={Boolean(busyAction)} onPress={() => startSocial('google', signInWithGoogle)} />
+        {googleSignInAvailable ? (
+          <Button title={t('common.google')} variant="ghost" loading={busyAction === 'google'} disabled={Boolean(busyAction)} onPress={() => startSocial('google', signInWithGoogle)} />
+        ) : null}
       </View>
       <View style={styles.inputCard}>
         <Text style={styles.label}>{t('auth.phoneVerification')}</Text>

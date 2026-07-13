@@ -1,5 +1,5 @@
-import * as SecureStore from 'expo-secure-store';
 import { storage } from './storage';
+import { secureStorage } from './secure-storage';
 
 export const EMERGENCY_CONTACT_CACHE_KEY = 'veryloving.emergencyContacts.secure';
 export const LEGACY_EMERGENCY_CONTACTS_KEY = 'veryloving.emergencyContacts';
@@ -10,7 +10,7 @@ function normalizedContacts(value) {
 
 export async function loadEmergencyContactCache(accountId) {
   if (!accountId) return [];
-  const raw = await SecureStore.getItemAsync(EMERGENCY_CONTACT_CACHE_KEY);
+  const raw = await secureStorage.getItemAsync(EMERGENCY_CONTACT_CACHE_KEY);
   if (raw) {
     try {
       const snapshot = JSON.parse(raw);
@@ -26,6 +26,10 @@ export async function loadEmergencyContactCache(accountId) {
   // The snapshot is bound to the currently authenticated account before the
   // plaintext legacy key is removed.
   const legacy = normalizedContacts(await storage.getJSON(LEGACY_EMERGENCY_CONTACTS_KEY, []));
+  // If SecureStore fails in Expo Go, the adapter substitutes volatile process
+  // memory. Never delete the durable legacy copy after a migration that cannot
+  // survive a JavaScript reload; a signed build will complete the migration.
+  if (secureStorage.isVolatile) return legacy;
   await persistEmergencyContactCache(accountId, legacy);
   await storage.remove(LEGACY_EMERGENCY_CONTACTS_KEY);
   return legacy;
@@ -33,7 +37,7 @@ export async function loadEmergencyContactCache(accountId) {
 
 export async function persistEmergencyContactCache(accountId, contacts) {
   if (!accountId) throw new Error('An authenticated account is required to cache emergency contacts.');
-  await SecureStore.setItemAsync(EMERGENCY_CONTACT_CACHE_KEY, JSON.stringify({
+  await secureStorage.setItemAsync(EMERGENCY_CONTACT_CACHE_KEY, JSON.stringify({
     version: 1,
     accountId,
     contacts: normalizedContacts(contacts)
@@ -41,5 +45,5 @@ export async function persistEmergencyContactCache(accountId, contacts) {
 }
 
 export function clearEmergencyContactCache() {
-  return SecureStore.deleteItemAsync(EMERGENCY_CONTACT_CACHE_KEY);
+  return secureStorage.deleteItemAsync(EMERGENCY_CONTACT_CACHE_KEY);
 }
