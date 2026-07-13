@@ -4,7 +4,7 @@ VeryLoving is an Expo Router safety companion with onboarding, location and Mapb
 
 The interface offers 155 structurally complete ISO 639-1 catalogs through a searchable own-script language picker, with automatic RTL layout for eleven right-to-left catalogs. English, Spanish, French, and Simplified Chinese are maintained; the other 151 catalogs are machine-generated starting points that require native-speaker safety-copy review. All 183 assigned codes are represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for translation review status, unavailable provider languages, the phone data contract, and the steps to maintain a catalog.
 
-## Development Setup
+## Getting Started
 
 ### Prerequisites
 
@@ -64,6 +64,71 @@ rm -rf ios android
 npx expo-doctor
 ```
 
+### Environment Variable Reference
+
+Copy the committed templates and fill them locally or in the matching EAS/deployment environment. Do not commit values. The root `.env` is for public mobile configuration and local build inputs; `server/.env` is for the CLM service. Variables beginning with `EXPO_PUBLIC_` are embedded in the app bundle and are never secret.
+
+Mobile/public variables:
+
+| Variable | Purpose | Production guidance |
+| --- | --- | --- |
+| `EXPO_PUBLIC_API_BASE_URL` | Base URL for the external production auth/API gateway. | Required; use `https`. |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google OAuth web client ID used to request identity tokens. | Required for Google Sign-In; this ID is public. |
+| `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated WebSocket proxy used by the app for Hume EVI. | Required; use `wss`. Do not put a bearer token in the URL. |
+| `EXPO_PUBLIC_HUME_CONFIG_ID` | Hume EVI configuration ID for the CLM, tool, and branded voice. | Required when CLM customization is enabled; otherwise optional. |
+| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | Public HTTPS base URL for the deployed CLM/control-plane service. | Required when CLM customization is enabled. |
+| `EXPO_PUBLIC_HUME_CLM_ENABLED` | Enables the custom Hume CLM integration when set to `true`. | Set deliberately after the CLM and Hume configuration are verified. |
+| `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Public identifier of the approved Hume voice. | Optional until a branded voice has been provisioned. |
+| `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public Mapbox runtime token used to render maps. | Required; use a restricted public token, never a secret `sk.*` token. |
+| `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for development and fault testing. | Keep `false` for production. Runtime outages can still offer the offline fallback. |
+| `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH` | Enables the development-only fixed-code phone adapter. | Keep `false` for production. |
+| `EXPO_PUBLIC_HUME_API_KEY` | Direct Hume key supported only by development builds. | Development only; it must be absent from production because public variables are bundled. |
+
+Build-only variables:
+
+| Variable | Purpose | Where it belongs |
+| --- | --- | --- |
+| `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Resolves Mapbox native artifacts during prebuild/native builds. | Secret EAS build variable or uncommitted local shell; never an `EXPO_PUBLIC_` variable. |
+
+CLM server variables (use `server/.env.example` as the template):
+
+| Variable | Purpose |
+| --- | --- |
+| `NODE_ENV` | Selects development, test, or production server behavior. |
+| `PORT` | HTTP port for the CLM service. |
+| `HUME_API_KEY` | Server-side Hume credential used by the session-configure endpoint and operator scripts. |
+| `HUME_CLM_BEARER_TOKEN` | Shared bearer token required on Hume-to-CLM requests. |
+| `APP_AUTH_VERIFY_URL` | External HTTPS endpoint that validates app access tokens. |
+| `DEV_APP_TOKEN` | Explicit development-only app bearer token; forbidden in production. |
+| `CLM_UPSTREAM_URL` | Optional OpenAI-compatible upstream chat-completions URL. |
+| `CLM_UPSTREAM_API_KEY` | Optional server-side credential for the upstream model. |
+| `CLM_UPSTREAM_MODEL` | Optional upstream model identifier. |
+| `CLM_UPSTREAM_TIMEOUT_MS` | Positive upstream timeout in milliseconds. |
+
+Hume provisioning/operator variables (set in an uncommitted operator shell):
+
+| Variable | Purpose |
+| --- | --- |
+| `HUME_API_KEY` | Authorizes Hume configuration, tool, and voice operations. |
+| `HUME_CLM_URL` | Public HTTPS URL ending in `/chat/completions` that Hume calls. |
+| `HUME_TOOL_ID` | Optional existing safety-tool ID to update instead of creating a tool. |
+| `HUME_CONFIG_ID` | Optional existing EVI configuration ID to update instead of creating one. |
+| `HUME_CUSTOM_VOICE_ID` | Optional saved custom voice ID used during provisioning. |
+| `HUME_VOICE_NAME` | Optional Hume catalog voice name when no custom voice ID is supplied. |
+
+Build/config diagnostic variables are orchestration inputs, not product secrets:
+
+| Variable | Purpose |
+| --- | --- |
+| `VERYLOVING_BUILD_PROFILE` | Explicit local profile name (`development`, `preview`, or `production`) used by config validation. |
+| `VERYLOVING_CONFIG_DIAGNOSTICS` | Emits a redacted presence/scheme report when set to `1` or `true`; it never prints values. |
+| `EAS_BUILD_PROFILE` | EAS-provided profile fallback when `VERYLOVING_BUILD_PROFILE` is unset. |
+| `EAS_BUILD` | EAS-provided remote-build marker; enables checks that only make sense on the builder. |
+| `CI` | Non-interactive mode; `npm run validate` defaults it to `1` for child commands when unset. |
+| `EXPO_NO_TELEMETRY` | Disables Expo telemetry; `npm run validate` sets it for its child commands. |
+
+The exact production ownership and source for every credential is tracked in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). Never paste a secret into logs, screenshots, committed files, or public Expo configuration.
+
 ## Implemented Architecture And Deployment Boundaries
 
 The repository currently contains:
@@ -108,7 +173,15 @@ Hume needs an HTTPS endpoint for CLM traffic. See [HUME_CUSTOMIZATION.md](./HUME
 
 ## Testing
 
-Run the complete deterministic test suite and lint checks:
+Run the complete release-oriented validation from a config-only source state (with generated `ios/` and `android/` directories removed):
+
+```bash
+npm run validate
+```
+
+The command runs ESLint, the deterministic test suite, Expo Doctor, then iOS and Android production exports in sequence. Both exports go to a unique temporary directory rather than the repository, and that directory is removed whether validation passes or fails. The command stops at the first failed gate and exits non-zero.
+
+For a faster development loop, run tests and lint separately:
 
 ```bash
 npm test
@@ -123,6 +196,8 @@ Validate both production JavaScript bundles:
 npx expo export --platform ios
 npx expo export --platform android
 ```
+
+See [FINAL_VALIDATION_REPORT.md](./FINAL_VALIDATION_REPORT.md) for the final simulator/build evidence, per-feature status, external blockers, and console findings used for handoff.
 
 Before release, manually verify on an iOS development build:
 

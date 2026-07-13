@@ -241,3 +241,30 @@ Decision:
 
 - [ ] **GO** — all stop-ship gates closed and sign-offs attached.
 - [ ] **NO-GO** — release paused; owner and next review date recorded.
+
+## Handoff to Grace
+
+Grace is the release coordinator, not the default implementer for unresolved engineering work. Before scheduling a store release, she must replace every role below with a named individual, due date, and evidence link. Every item remains open unless its evidence is attached to the release ticket; verbal confirmation is not closure.
+
+| External item | Accountable owner | Evidence Grace must collect |
+| --- | --- | --- |
+| Production Apple/Google session exchange and SMS verification | Identity/backend owner + SMS vendor owner | Provider-token validation, access/refresh rotation and revocation, real SMS delivery, abuse controls, expiry/replay tests, logout, and account-switch results. |
+| Encrypted, account-bound local PII | Mobile security owner + iOS/Android owners | Key-management design, migration and rollback results, account-mismatch isolation tests, deletion tests, and Security approval. |
+| Hume production account, EVI configuration, quotas, and retention | Voice platform owner + Security/Privacy | Approved config/tool/voice IDs, quota and outage tests, credential-rotation evidence, and signed retention/deletion review. |
+| Authenticated Hume WebSocket proxy | Voice backend owner + Security | Deployed `wss` URL, short-lived/single-use ticket tests, expiry/replay/revocation results, rate limits, and redacted ingress logs. |
+| Native PCM capture and production audio behavior | iOS/Android audio owners + Device QA | Physical-device recordings and logs for 48 kHz mono Linear16, interruptions, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
+| VL01 protocol and physical wearable validation | BLE/firmware owner + Mobile BLE owner + Device QA | Approved GATT specification, battery read/notification tests, ownership isolation, reconnect behavior, wearable reset, and signed hardware matrix. |
+| Safety/map backend, remote SOS acknowledgement, Guardian state, and revocable sharing | Maps/backend owner + Safety product owner | Online/offline, timeout, stale-location, duplicate-SOS, acknowledgement-audit, route/zone, share-expiry, and rollback evidence. |
+| APNs/FCM credentials and push delivery service | Mobile platform owner + Notifications backend owner | Registration and token-rotation tests plus foreground, background, terminated, opt-out, invalid-token, duplicate, and tap-routing results on signed builds. |
+| Signed iOS physical-device matrix | iOS owner + Mobile QA | TestFlight evidence for auth, telephony, permissions, location, audio routing, backgrounding, lock screen, BLE, privacy export/deletion, and upgrade/relaunch. |
+| Android API 36 and signed physical-device matrix | Android owner + Mobile QA | Emulator and Play internal-track evidence for permissions, Back navigation, process death, deep links, auth, telephony, voice, BLE, location, push, privacy, and upgrade. |
+| Store privacy, safety, legal, localization, and submission review | Grace + Legal/Privacy + Safety product + Localization owner | Reconciled privacy/data-safety answers, vendor terms, reviewer notes, accurate emergency claims, native-speaker review of safety copy, screenshots, export compliance, and approvals. |
+| Production observability, on-call, incident response, staged rollout, and rollback | SRE/on-call owner + Grace | Redacted dashboards and alerts, named on-call, outage/credential/privacy/safety runbooks, rollout pause thresholds, and rehearsed mobile/backend rollback. |
+
+Grace's final handoff record:
+
+- [ ] A named person and due date are recorded for every row; team labels alone are not accepted.
+- [ ] Production environment values are provisioned through EAS and server secret managers, never pasted into the ticket or repository.
+- [ ] The release commit, EAS build URLs, backend versions, test evidence, privacy approvals, and rollback identifiers are linked above.
+- [ ] Every P1 stop-ship gate has objective closure evidence; otherwise the decision remains **NO-GO**.
+- [ ] Grace records the final decision, staged-rollout window, accountable on-call person, and next review date.
