@@ -10,5 +10,5 @@ import { useI18n } from '../../src/context/I18nContext';
 
 export default function CapybearSetup() {
   const { t } = useI18n();
-  return <Screen><Header title={t('auth.meetCapybear')} subtitle={t('auth.meetCapybearSubtitle')} /><Image source={images.capybaraMenu} style={{ width: '100%', height: 240 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.regular }}>{t('auth.capybearBody')}</Text></Card><Button title={t('auth.chooseVoice')} onPress={() => router.push('/(auth)/tutorial/choose-voice')} /><Button title={t('common.finish')} variant="ghost" onPress={() => router.replace('/(tabs)')} /></Screen>;
+  return <Screen><Header title={t('auth.meetCapybear')} subtitle={t('auth.meetCapybearSubtitle')} /><Image source={images.capybaraMenu} style={{ width: '100%', height: 240 }} resizeMode="contain" /><Card><Text style={{ fontFamily: fonts.regular }}>{t('auth.capybearBody')}</Text></Card><Button title={t('auth.chooseVoice')} onPress={() => router.push('/(auth)/tutorial/choose-voice')} /><Button title={t('common.finish')} variant="ghost" onPress={() => router.replace('/(auth)/completion')} /></Screen>;
 }

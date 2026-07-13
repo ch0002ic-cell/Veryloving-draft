@@ -16,7 +16,6 @@ export default function Onboarding() {
         <Text style={styles.subtitle}>{t('auth.onboardingTagline')}</Text>
       </View>
       <Button title={t('auth.createAccount')} onPress={() => router.push('/(auth)/create-account')} />
-      <Button title={t('auth.continueOnboarding')} variant="ghost" onPress={() => router.push('/(auth)/location-permission')} />
     </Screen>
   );
 }

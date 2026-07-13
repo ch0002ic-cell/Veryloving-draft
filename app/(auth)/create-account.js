@@ -21,7 +21,6 @@ export default function CreateAccount() {
     setBusyAction(provider);
     try {
       await signIn();
-      router.replace('/(auth)/device-check');
     } catch (error) {
       if (!/cancel/i.test(String(error?.code || error?.message || ''))) {
         Alert.alert(t('auth.signInFailedTitle'), t('auth.signInFailedMessage'));

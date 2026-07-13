@@ -270,6 +270,7 @@ const config = {
         "color": "#304557"
       }
     ],
+    "expo-sharing",
     [
       "expo-localization",
       {
@@ -319,6 +320,7 @@ module.exports = () => {
   const humeBrandedVoiceId = process.env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || '';
   const humeCLMEnabled = process.env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const enableOfflineMode = process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
+  const enableMockPhoneAuth = process.env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
 
   return {
     ...config,
@@ -332,7 +334,8 @@ module.exports = () => {
       humeBrandedVoiceId,
       humeCLMEnabled,
       mapboxAccessToken,
-      enableOfflineMode
+      enableOfflineMode,
+      enableMockPhoneAuth
     }
   };
 };

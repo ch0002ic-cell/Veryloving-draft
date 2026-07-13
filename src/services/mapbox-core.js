@@ -8,13 +8,19 @@ export const dangerZones = [
   { id: 'casa-loma', nameKey: 'map.zones.lowLighting', coordinate: [-79.409, 43.678], radius: 180, risk: 'low' }
 ];
 
-export async function requestCurrentLocation({ showRationale = true } = {}) {
+export async function requestLocationPermission({ showRationale = true } = {}) {
   const existing = await Location.getForegroundPermissionsAsync();
+  if (existing.granted) return existing;
   if (!existing.granted && showRationale && !await explainPermission('location')) {
     throw new Error(translate('map.notRequested'));
   }
-  const permission = existing.granted ? existing : await Location.requestForegroundPermissionsAsync();
+  const permission = await Location.requestForegroundPermissionsAsync();
   if (!permission.granted) throw new Error(translate('map.permissionOff'));
+  return permission;
+}
+
+export async function requestCurrentLocation({ showRationale = true } = {}) {
+  await requestLocationPermission({ showRationale });
   return withTimeout(
     Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
     10000,

@@ -8,13 +8,18 @@ import { Button } from '../src/components/Button';
 import { SettingsSection } from '../src/components/SettingsSection';
 import { useAppState } from '../src/context/AppContext';
 import { useAuth } from '../src/context/AuthContext';
-import { deleteAllUserData, exportUserData, PRIVACY_POLICY_URL } from '../src/services/privacy';
+import {
+  deleteAllUserData,
+  deleteLocalUserData,
+  exportUserData,
+  PRIVACY_POLICY_URL
+} from '../src/services/privacy';
 import { colors, fonts, spacing } from '../src/constants/theme';
 import { LanguageSelector } from '../src/components/LanguageSelector';
 import { useI18n } from '../src/context/I18nContext';
 
 export default function Settings() {
-  const { settings, updateSettings, selectedVoice, resetLocalState } = useAppState();
+  const { settings, updateSettings, selectedVoice, resetLocalState, lockAndFlushLocalMutations } = useAppState();
   const { signOut, user } = useAuth();
   const { t } = useI18n();
   const [busyAction, setBusyAction] = useState(null);
@@ -40,8 +45,10 @@ export default function Settings() {
           text: t('settings.deleteEverything'),
           style: 'destructive',
           onPress: async () => {
+            let releaseLocalMutations;
             try {
               setBusyAction('delete');
+              releaseLocalMutations = await lockAndFlushLocalMutations();
               await deleteAllUserData();
               resetLocalState();
               await signOut();
@@ -49,6 +56,7 @@ export default function Settings() {
             } catch {
               Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
             } finally {
+              releaseLocalMutations?.();
               setBusyAction(null);
             }
           }
@@ -70,13 +78,18 @@ export default function Settings() {
   };
 
   const handleSignOut = async () => {
+    let releaseLocalMutations;
     try {
       setBusyAction('signOut');
+      releaseLocalMutations = await lockAndFlushLocalMutations();
+      await deleteLocalUserData();
+      resetLocalState();
       await signOut();
       router.replace('/(auth)/onboarding');
     } catch {
       Alert.alert(t('settings.signOutFailedTitle'), t('settings.signOutFailedMessage'));
     } finally {
+      releaseLocalMutations?.();
       setBusyAction(null);
     }
   };

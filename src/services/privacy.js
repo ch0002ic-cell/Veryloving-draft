@@ -1,14 +1,15 @@
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import * as SecureStore from 'expo-secure-store';
-import { Platform, Share } from 'react-native';
+import * as Sharing from 'expo-sharing';
 import { AUTH_STORAGE_KEYS } from '../context/AuthContext';
 import { CONVERSATION_HISTORY_KEY, loadConversationHistory } from './conversation-history';
+import { deleteLocalUserStores, LOCAL_USER_DATA_PREFIX } from './local-user-data';
 import { RATIONALE_PREFIX } from './permissions';
 import { storage } from './storage';
 import { translate } from '../i18n/core';
+import { purgeVoiceAudioCache } from './voice-audio-cache';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
-const LOCAL_KEY_PREFIX = 'veryloving.';
 
 async function readJSONSecureStore(key) {
   const raw = await SecureStore.getItemAsync(key);
@@ -30,7 +31,9 @@ function parseStoredValue(raw) {
 }
 
 async function collectLocalStorageSnapshot() {
-  const keys = (await storage.keys()).filter((key) => key.startsWith(LOCAL_KEY_PREFIX));
+  const keys = (await storage.keys()).filter(
+    (key) => key.startsWith(LOCAL_USER_DATA_PREFIX) && key !== CONVERSATION_HISTORY_KEY
+  );
   const entries = await Promise.all(keys.map(async (key) => [key, parseStoredValue(await storage.getRaw(key))]));
   return Object.fromEntries(entries);
 }
@@ -60,20 +63,32 @@ export async function buildUserDataExport() {
 export async function exportUserData() {
   const data = await buildUserDataExport();
   const filename = `veryloving-data-${Date.now()}.json`;
-  const uri = `${FileSystem.documentDirectory}${filename}`;
-  const json = JSON.stringify(data, null, 2);
-  await FileSystem.writeAsStringAsync(uri, json);
-  await Share.share({
-    title: translate('privacy.exportTitle'),
-    url: uri,
-    message: Platform.OS === 'ios' ? translate('privacy.exportTitle') : json
-  });
-  return uri;
+  const file = new File(Paths.cache, filename);
+  file.write(JSON.stringify(data, null, 2));
+  try {
+    if (!await Sharing.isAvailableAsync()) {
+      throw new Error('File sharing is unavailable on this device.');
+    }
+    await Sharing.shareAsync(file.uri, {
+      dialogTitle: translate('privacy.exportTitle'),
+      mimeType: 'application/json',
+      UTI: 'public.json'
+    });
+    return file.uri;
+  } finally {
+    if (file.exists) file.delete();
+  }
+}
+
+export async function deleteLocalUserData() {
+  await deleteLocalUserStores({ purgeArtifacts: purgeVoiceAudioCache });
 }
 
 export async function deleteAllUserData() {
-  const localKeys = (await storage.keys()).filter((key) => key.startsWith(LOCAL_KEY_PREFIX));
-  await storage.removeMany(localKeys);
-  await SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.token);
-  await SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.user);
+  await deleteLocalUserData();
+  await Promise.all([
+    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.token),
+    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.user),
+    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
+  ]);
 }

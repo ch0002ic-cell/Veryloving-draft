@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Button } from '../../src/components/Button';
 import { Header } from '../../src/components/Header';
@@ -17,7 +17,7 @@ export default function VerifyCode() {
   const params = useLocalSearchParams();
   const phone = routeValue(params.phone);
   const countryCode = routeValue(params.countryCode);
-  const verificationId = routeValue(params.verificationId) || `dev-${phone}`;
+  const verificationId = routeValue(params.verificationId);
   const { verifyCode } = useAuth();
   const { t } = useI18n();
   const [code, setCode] = useState('');
@@ -28,8 +28,7 @@ export default function VerifyCode() {
     try {
       setSubmitting(true);
       setError(null);
-      await verifyCode(verificationId, code, { phone, countryCode });
-      router.replace('/(auth)/device-check');
+      await verifyCode(verificationId, code);
     } catch (verificationError) {
       setError(verificationError.message);
     } finally {
@@ -46,7 +45,8 @@ export default function VerifyCode() {
       <TextInput
         autoComplete="one-time-code"
         keyboardType="number-pad"
-        onChangeText={setCode}
+        maxLength={6}
+        onChangeText={(value) => setCode(value.replace(/\D/g, '').slice(0, 6))}
         placeholder="123456"
         style={styles.input}
         textContentType="oneTimeCode"
@@ -57,7 +57,7 @@ export default function VerifyCode() {
         title={submitting ? t('auth.verifying') : t('auth.verify')}
         loading={submitting}
         onPress={submit}
-        disabled={submitting || code.length < 4}
+        disabled={submitting || !verificationId || !/^\d{6}$/.test(code)}
       />
     </Screen>
   );

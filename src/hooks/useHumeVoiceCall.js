@@ -46,6 +46,8 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   const suppressedUserEchoesRef = useRef(new Map());
   const mountedRef = useRef(true);
   const startInFlightRef = useRef(false);
+  const flushPendingMessagesRef = useRef(null);
+  const queueRetryTimerRef = useRef(null);
   const [status, setStatus] = useState(serviceRef.current.getState());
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
@@ -99,9 +101,12 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
 
   const flushPendingMessages = useCallback(async () => {
     if (!isOnline || humeEVIService.getState() !== 'connected') return;
-    await flushOfflineMessageQueue({
+    if (queueRetryTimerRef.current) {
+      clearTimeout(queueRetryTimerRef.current);
+      queueRetryTimerRef.current = null;
+    }
+    const remaining = await flushOfflineMessageQueue({
       sessionId: sessionIdRef.current,
-      force: true,
       sendMessage: async (queued) => {
         const pending = suppressedUserEchoesRef.current.get(queued.text) || [];
         suppressedUserEchoesRef.current.set(queued.text, [...pending, Date.now() + 30000]);
@@ -131,7 +136,22 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       }
     });
     await refreshPendingCount();
+    const nextAttemptAt = remaining
+      .filter((item) => item.sessionId === sessionIdRef.current && item.nextAttemptAt > Date.now())
+      .reduce((earliest, item) => Math.min(earliest, item.nextAttemptAt), Infinity);
+    if (Number.isFinite(nextAttemptAt) && humeEVIService.getState() === 'connected') {
+      queueRetryTimerRef.current = setTimeout(() => {
+        queueRetryTimerRef.current = null;
+        flushPendingMessagesRef.current?.().catch((queueError) => {
+          logger.warn('[VoiceCall] Scheduled queue retry failed', queueError);
+        });
+      }, Math.max(0, nextAttemptAt - Date.now()));
+    }
   }, [consumeSuppressedEcho, isOnline, refreshPendingCount]);
+
+  useEffect(() => {
+    flushPendingMessagesRef.current = flushPendingMessages;
+  }, [flushPendingMessages]);
 
   const bindServiceHandlers = useCallback((service) => {
     service.setStateHandler({
@@ -179,13 +199,24 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   }, [bindServiceHandlers]);
 
   useEffect(() => {
-    if (!isOnline) setNotice(voiceCallCopy.offline);
-  }, [isOnline]);
+    if (!isOnline) {
+      setNotice(voiceCallCopy.offline);
+      return;
+    }
+    if (humeEVIService.getState() === 'connected') {
+      flushPendingMessages().catch((queueError) => logger.warn('[VoiceCall] Network-restored queue flush failed', queueError));
+    }
+  }, [flushPendingMessages, isOnline]);
 
   useEffect(() => {
     loadConversationSession(sessionIdRef.current)
       .then((session) => {
-        if (mountedRef.current && session?.messages) setMessages(session.messages);
+        if (mountedRef.current && session?.messages) {
+          setMessages((current) => {
+            const currentIds = new Set(current.map((message) => message.id));
+            return [...session.messages.filter((message) => !currentIds.has(message.id)), ...current];
+          });
+        }
       })
       .catch((historyError) => logger.warn('[VoiceCall] Failed to load conversation', historyError));
     refreshPendingCount().catch(() => {});
@@ -195,6 +226,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
+      if (queueRetryTimerRef.current) clearTimeout(queueRetryTimerRef.current);
       serviceRef.current.disconnect?.().catch?.(() => {});
     };
   }, []);
@@ -290,6 +322,13 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     const service = serviceRef.current;
     if (service === humeEVIService && isOnline && service.getState() === 'connected' && service.sendText(text)) return true;
 
+    if (service === offlineEVIService && forcedOffline && service.getState() === 'connected') {
+      appendMessage('user', text, { source: 'offline', deliveryStatus: 'local' });
+      service.sendText(text, { emitUser: false });
+      setNotice(null);
+      return true;
+    }
+
     const queued = await queueOfflineMessage({ sessionId: sessionIdRef.current, text });
     appendMessage('user', text, { id: queued.id, source: 'offline', deliveryStatus: 'queued' });
     await refreshPendingCount();
@@ -297,7 +336,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     else setFallbackAvailable(true);
     setNotice(isOnline ? voiceCallCopy.queued : voiceCallCopy.offline);
     return false;
-  }, [appendMessage, isOnline, refreshPendingCount]);
+  }, [appendMessage, forcedOffline, isOnline, refreshPendingCount]);
 
   const retryMessage = useCallback(async (messageId) => {
     if (!messageId) return false;

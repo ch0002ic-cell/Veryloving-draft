@@ -9,6 +9,7 @@ const {
 const { createOpaqueSessionId } = require('../src/utils/session-id');
 const {
   buildHumeWebSocketURL,
+  classifyHumeClose,
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
@@ -49,7 +50,8 @@ test('Hume protocol uses official session and resume field names', () => {
   const settings = createSessionSettingsPayload({ customSessionId: 'opaque-session', systemPrompt: 'Be helpful.' });
   assert.equal(settings.type, 'session_settings');
   assert.equal(settings.custom_session_id, 'opaque-session');
-  assert.equal(settings.audio.sample_rate, 48000);
+  assert.deepEqual(settings.audio, { format: 'linear16', sample_rate: 48000, channels: 1 });
+  assert.equal(settings.audio.encoding, undefined);
   assert.equal(settings.language_model_api_key, undefined);
 });
 
@@ -85,8 +87,47 @@ test('Hume tool payloads preserve tool-call correlation and safe fallback conten
   assert.equal(response.custom_session_id, 'session-1');
   assert.deepEqual(JSON.parse(response.content), { tips: ['Stay visible.'] });
 
-  const failure = createToolErrorPayload({ toolCallId: 'call-1', error: 'timeout', content: 'Tips are unavailable.' });
-  assert.equal(failure.type, 'tool_error');
-  assert.equal(failure.level, 'warn');
+  const failure = createToolErrorPayload({
+    toolCallId: 'call-1',
+    error: 'timeout',
+    fallbackContent: 'Tips are unavailable.'
+  });
+  assert.deepEqual(failure, {
+    type: 'tool_error',
+    tool_call_id: 'call-1',
+    error: 'timeout',
+    fallback_content: 'Tips are unavailable.',
+    level: 'warn'
+  });
   assert.equal(reconnectDelay(1000, 5), 16000);
+});
+
+test('Hume close classification never reconnects terminal sessions', () => {
+  for (const closeCode of [1000, 1008]) {
+    assert.equal(classifyHumeClose({ closeCode }).shouldReconnect, false);
+  }
+
+  for (const serverErrorCode of ['E0714', 'E0715', 'E0721', 'E0602', 'E0703']) {
+    assert.equal(
+      classifyHumeClose({ closeCode: 1006, serverErrorCode }).shouldReconnect,
+      false,
+      `${serverErrorCode} must be terminal`
+    );
+  }
+
+  assert.deepEqual(
+    classifyHumeClose({ closeCode: 1006 }),
+    { shouldReconnect: true, category: 'transient-transport' }
+  );
+  assert.equal(classifyHumeClose({ closeCode: 1011 }).shouldReconnect, true);
+  assert.equal(classifyHumeClose({ closeCode: 1006, closeReason: '403 Unauthorized' }).shouldReconnect, false);
+});
+
+test('Hume resume fallback retries only the intentional fresh-chat close', () => {
+  assert.deepEqual(
+    classifyHumeClose({ closeCode: 4002, serverErrorCode: 'E0708' }),
+    { shouldReconnect: true, category: 'resume-without-chat-group' }
+  );
+  assert.equal(classifyHumeClose({ closeCode: 1000, serverErrorCode: 'E0708' }).shouldReconnect, false);
+  assert.equal(classifyHumeClose({ closeCode: 4002 }).shouldReconnect, false);
 });

@@ -16,6 +16,7 @@ export function AppProvider({ children }) {
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS);
   const contactsRef = useRef(DEFAULT_CONTACTS);
   const contactsMutationQueueRef = useRef(Promise.resolve());
+  const localMutationsLockedRef = useRef(false);
   const [device, setDevice] = useState({ connected: false, name: 'NorthStar VL01', battery: 82 });
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -43,6 +44,7 @@ export function AppProvider({ children }) {
   }, []);
 
   const updateSettings = useCallback(async (patch) => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     const operation = settingsMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = settingsRef.current;
       const next = mergeSettings(previous, patch);
@@ -62,6 +64,7 @@ export function AppProvider({ children }) {
   }, []);
 
   const addContact = useCallback(async (contact) => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     const nextContact = { id: Date.now().toString(), ...contact };
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = contactsRef.current;
@@ -82,6 +85,7 @@ export function AppProvider({ children }) {
   }, []);
 
   const removeContact = useCallback(async (contactId) => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = contactsRef.current;
       const next = previous.filter((contact) => contact.id !== contactId);
@@ -109,9 +113,24 @@ export function AppProvider({ children }) {
     setFriends(DEFAULT_FRIENDS);
   }, []);
 
+  const lockAndFlushLocalMutations = useCallback(async () => {
+    if (localMutationsLockedRef.current) throw new Error('Local data cleanup is already running.');
+    localMutationsLockedRef.current = true;
+    await Promise.all([
+      settingsMutationQueueRef.current.catch(() => {}),
+      contactsMutationQueueRef.current.catch(() => {})
+    ]);
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      localMutationsLockedRef.current = false;
+    };
+  }, []);
+
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, friends, selectedVoice, resetLocalState, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, setDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

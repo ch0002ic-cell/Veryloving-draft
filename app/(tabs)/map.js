@@ -15,12 +15,19 @@ import { images } from '../../src/constants/assets';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
-const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates }) {
+const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onLoadError, onStyleLoaded }) {
   return (
-    <Mapbox.MapView style={styles.nativeMap}>
+    <Mapbox.MapView
+      onDidFinishLoadingStyle={onStyleLoaded}
+      onMapLoadingError={onLoadError}
+      style={styles.nativeMap}
+    >
       <Mapbox.Camera zoomLevel={13} centerCoordinate={coordinates} animationMode="easeTo" />
+      {Mapbox.LocationPuck ? <Mapbox.LocationPuck puckBearingEnabled /> : null}
       {dangerZones.map((zone) => (
-        <Mapbox.PointAnnotation key={zone.id} id={zone.id} coordinate={zone.coordinate} />
+        <Mapbox.PointAnnotation key={zone.id} id={zone.id} coordinate={zone.coordinate}>
+          <View style={styles.dangerMarker} />
+        </Mapbox.PointAnnotation>
       ))}
     </Mapbox.MapView>
   );
@@ -30,7 +37,9 @@ export default function MapScreen() {
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [mapLoadFailed, setMapLoadFailed] = useState(false);
   const mountedRef = useRef(true);
+  const mapStyleReadyRef = useRef(false);
   const requestIdRef = useRef(0);
   const Mapbox = useMemo(() => getMapboxModule(), []);
   const insets = useSafeAreaInsets();
@@ -38,6 +47,14 @@ export default function MapScreen() {
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
+
+  const handleMapLoadError = useCallback(() => {
+    if (mountedRef.current && !mapStyleReadyRef.current) setMapLoadFailed(true);
+  }, []);
+
+  const handleMapStyleLoaded = useCallback(() => {
+    mapStyleReadyRef.current = true;
+  }, []);
 
   const refreshLocation = useCallback(async () => {
     const requestId = ++requestIdRef.current;
@@ -55,6 +72,14 @@ export default function MapScreen() {
     }
   }, [t]);
 
+  const retryMapAndLocation = useCallback(() => {
+    if (mapLoadFailed) {
+      mapStyleReadyRef.current = false;
+      setMapLoadFailed(false);
+    }
+    refreshLocation();
+  }, [mapLoadFailed, refreshLocation]);
+
   useEffect(() => {
     mountedRef.current = true;
     refreshLocation();
@@ -64,10 +89,15 @@ export default function MapScreen() {
     };
   }, [refreshLocation]);
 
-  if (Mapbox) {
+  if (Mapbox && !mapLoadFailed) {
     return (
       <View style={styles.fullScreen}>
-        <NativeSafetyMap Mapbox={Mapbox} coordinates={coordinates} />
+        <NativeSafetyMap
+          Mapbox={Mapbox}
+          coordinates={coordinates}
+          onLoadError={handleMapLoadError}
+          onStyleLoaded={handleMapStyleLoaded}
+        />
         {loading ? (
           <View style={[styles.mapStatus, { top: insets.top + 12 }]}>
             <LoadingState compact message={t('map.finding')} />
@@ -111,7 +141,7 @@ export default function MapScreen() {
         title={t('map.savedEmptyTitle')}
         message={t('map.savedEmptyMessage')}
       />
-      <Button title={loading ? t('map.refreshing') : t('map.refresh')} onPress={refreshLocation} loading={loading} />
+      <Button title={loading ? t('map.refreshing') : t('map.refresh')} onPress={retryMapAndLocation} loading={loading} />
     </Screen>
   );
 }
@@ -120,6 +150,7 @@ const styles = StyleSheet.create({
   fullScreen: { flex: 1 },
   nativeMap: { flex: 1 },
   mapStatus: { position: 'absolute', left: 16, right: 16, backgroundColor: colors.paper, borderRadius: 8, overflow: 'hidden' },
+  dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.paper, backgroundColor: colors.red },
   savedOverlay: { position: 'absolute', left: 16, right: 16, paddingHorizontal: 8, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, borderRadius: 8, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
   mapFallback: { height: 320, borderRadius: 8, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: 8 },
   mapText: { fontFamily: fonts.bold, color: colors.ink, fontSize: 28 },

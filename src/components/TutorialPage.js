@@ -14,7 +14,7 @@ export function TutorialPage({ titleKey, subtitleKey, nextPath }) {
       <Header title={t(titleKey)} subtitle={t(subtitleKey)} />
       <Card><Text style={{ fontFamily: fonts.regular, lineHeight: 22 }}>{t('tutorial.sharedBody')}</Text></Card>
       <Button title={t('common.continue')} onPress={() => router.push(nextPath)} />
-      <Button title={t('common.skipTutorial')} variant="ghost" onPress={() => router.replace('/(tabs)')} />
+      <Button title={t('common.skipTutorial')} variant="ghost" onPress={() => router.replace('/(auth)/completion')} />
     </Screen>
   );
 }

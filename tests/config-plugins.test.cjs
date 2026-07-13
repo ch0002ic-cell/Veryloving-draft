@@ -108,6 +108,11 @@ test('Android manifest normalization keeps BLE optional and location-neutral', (
     'android.hardware.bluetooth_le'
   );
   assert.equal(manifest.manifest['uses-feature'][0].$['android:required'], 'false');
+  const phoneIntent = manifest.manifest.queries[0].intent.find((intent) => (
+    intent.action?.some((action) => action.$['android:name'] === 'android.intent.action.VIEW')
+    && intent.data?.some((data) => data.$['android:scheme'] === 'tel')
+  ));
+  assert.ok(phoneIntent, 'Android package visibility must allow tel: capability checks');
 });
 
 test('Expo config owns the privacy manifest and local CNG plugins', () => {

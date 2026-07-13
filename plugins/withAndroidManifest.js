@@ -8,6 +8,31 @@ const LEGACY_BLUETOOTH_PERMISSIONS = new Set([
 ]);
 const BLUETOOTH_LE_FEATURE = 'android.hardware.bluetooth_le';
 const DEBUG_OVERLAY_PERMISSION = 'android.permission.SYSTEM_ALERT_WINDOW';
+const VIEW_ACTION = 'android.intent.action.VIEW';
+const PHONE_SCHEME = 'tel';
+
+function ensurePhoneIntentQuery(androidManifest) {
+  const queries = androidManifest.manifest.queries || [];
+  const hasPhoneQuery = queries.some((query) => (query.intent || []).some((intent) => {
+    const hasViewAction = (intent.action || []).some(
+      (action) => action.$?.['android:name'] === VIEW_ACTION
+    );
+    const hasPhoneScheme = (intent.data || []).some(
+      (data) => data.$?.['android:scheme'] === PHONE_SCHEME
+    );
+    return hasViewAction && hasPhoneScheme;
+  }));
+  if (!hasPhoneQuery) {
+    const query = queries[0] || {};
+    if (!queries.length) queries.push(query);
+    query.intent = query.intent || [];
+    query.intent.push({
+      action: [{ $: { 'android:name': VIEW_ACTION } }],
+      data: [{ $: { 'android:scheme': PHONE_SCHEME } }]
+    });
+  }
+  androidManifest.manifest.queries = queries;
+}
 
 function normalizeVeryLovingAndroidManifest(androidManifest) {
   const permissions = (androidManifest.manifest['uses-permission'] || []).filter(
@@ -36,6 +61,7 @@ function normalizeVeryLovingAndroidManifest(androidManifest) {
   }
   bluetoothFeature.$['android:required'] = 'false';
   androidManifest.manifest['uses-feature'] = features;
+  ensurePhoneIntentQuery(androidManifest);
 
   return androidManifest;
 }

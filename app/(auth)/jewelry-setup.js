@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, FlatList, StyleSheet, Text } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
@@ -15,6 +15,9 @@ import { LoadingState } from '../../src/components/LoadingState';
 import { images } from '../../src/constants/assets';
 
 export default function JewelrySetup() {
+  const params = useLocalSearchParams();
+  const mode = Array.isArray(params.mode) ? params.mode[0] : params.mode;
+  const standalone = mode === 'standalone';
   const [devices, setDevices] = useState([]);
   const [scanning, setScanning] = useState(false);
   const [connectingId, setConnectingId] = useState(null);
@@ -24,6 +27,15 @@ export default function JewelrySetup() {
   const stopScanRef = useRef(null);
   const { setDevice } = useAppState();
   const { t } = useI18n();
+
+  const finishSetup = useCallback(() => {
+    if (!standalone) {
+      router.push('/(auth)/capybear-setup');
+      return;
+    }
+    if (router.canGoBack()) router.back();
+    else router.replace('/device-management');
+  }, [standalone]);
 
   const stopScan = useCallback(() => {
     stopScanRef.current?.();
@@ -80,13 +92,13 @@ export default function JewelrySetup() {
       const connected = await bleService.connect(candidate);
       if (!mountedRef.current) return;
       setDevice(connected);
-      router.push('/(auth)/capybear-setup');
+      finishSetup();
     } catch (connectionError) {
       if (mountedRef.current) setError(connectionError.message);
     } finally {
       if (mountedRef.current) setConnectingId(null);
     }
-  }, [setDevice, stopScan]);
+  }, [finishSetup, setDevice, stopScan]);
 
   return (
     <Screen scroll={false}>
@@ -123,7 +135,7 @@ export default function JewelrySetup() {
           )}
         contentContainerStyle={styles.list}
       />
-      <Button title={t('common.skip')} variant="ghost" onPress={() => router.push('/(auth)/capybear-setup')} />
+      <Button title={t('common.skip')} variant="ghost" onPress={finishSetup} />
     </Screen>
   );
 }

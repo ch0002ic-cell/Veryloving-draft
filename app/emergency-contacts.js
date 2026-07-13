@@ -21,6 +21,7 @@ export default function EmergencyContacts() {
   const [phone, setPhone] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [callingId, setCallingId] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const nameValid = Boolean(name.trim());
 
@@ -51,6 +52,19 @@ export default function EmergencyContacts() {
       await removeContact(contact.id);
     } catch {
       setFeedback({ message: t('contacts.removeFailedMessage'), retry: () => remove(contact) });
+    }
+  };
+
+  const call = async (contact) => {
+    if (callingId) return;
+    setCallingId(contact.id);
+    setFeedback(null);
+    try {
+      await callNumber(contact.phone);
+    } catch {
+      setFeedback({ message: t('settings.linkFailed'), retry: () => call(contact) });
+    } finally {
+      setCallingId(null);
     }
   };
 
@@ -117,7 +131,14 @@ export default function EmergencyContacts() {
               <Text style={styles.phone}>{formatE164ForDisplay(item.phone)}</Text>
             </View>
             <View style={styles.actions}>
-              <Button title={t('common.call')} icon="call" variant="ghost" onPress={() => callNumber(item.phone)} />
+              <Button
+                title={t('common.call')}
+                icon="call"
+                variant="ghost"
+                loading={callingId === item.id}
+                disabled={Boolean(callingId && callingId !== item.id)}
+                onPress={() => call(item)}
+              />
               <Button title={t('common.remove')} icon="trash-outline" variant="ghost" onPress={() => confirmRemove(item)} />
             </View>
           </Card>

@@ -3,6 +3,7 @@ import { config } from '../../utils/config';
 import { logger, sanitizeUrl } from '../../utils/logger';
 import {
   buildHumeWebSocketURL,
+  classifyHumeClose,
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
@@ -13,7 +14,6 @@ import {
 const SOCKET_OPEN = 1;
 const CHAT_METADATA_TIMEOUT_MS = 10000;
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
-const NON_RETRYABLE_SERVER_CODES = new Set(['E0300', 'E0301', 'E0709', 'E0716']);
 
 export class HumeEVIService {
   constructor() {
@@ -25,6 +25,10 @@ export class HumeEVIService {
     this.maxReconnectAttempts = 5;
     this.reconnectDelay = 1000;
     this.isRecording = false;
+    this.microphoneState = 'idle';
+    this.microphoneGeneration = 0;
+    this.microphoneStartPromise = null;
+    this.microphoneStopPromise = null;
     this.sessionConfig = null;
     this.intentionallyConnected = false;
     this.chatMetadataReceived = false;
@@ -91,13 +95,14 @@ export class HumeEVIService {
     });
   }
 
-  async connect(sessionConfig = {}) {
+  async connect(sessionConfig = {}, { isReconnect = false } = {}) {
     if (this.state === 'connected' || this.state === 'connecting') {
       logger.warn('[HumeEVIService] Already connected or connecting', { state: this.state });
       return;
     }
 
     this.connectionAttemptId += 1;
+    if (!isReconnect) this.reconnectAttempts = 0;
     this.clearReconnectTimer();
     this.resetChatReadiness();
     this.intentionallyConnected = true;
@@ -159,7 +164,7 @@ export class HumeEVIService {
     const connectTimer = setTimeout(() => {
       if (socket.readyState === 0) {
         logger.error('[HumeEVIService] Connection timeout after 10s');
-        socket.close();
+        socket.close(4000, 'connection timeout');
       }
     }, 10000);
 
@@ -246,7 +251,6 @@ export class HumeEVIService {
         this.sessionConfig = { ...this.sessionConfig, resumedChatGroupId: metadata.chatGroupId };
         this.chatMetadataReceived = true;
         this.pendingMicrophoneStart = false;
-        this.reconnectAttempts = 0;
         logger.voice('[HumeEVIService] chat_metadata received; microphone may start now', {
           chatId: metadata.chatId,
           chatGroupId: metadata.chatGroupId,
@@ -257,6 +261,9 @@ export class HumeEVIService {
         break;
       }
       case 'user_message':
+        // Hume emits this when the user starts a new turn. Treat it as a
+        // barge-in even if a separate user_interruption frame is delayed.
+        audioService.cancelAndClearQueue().catch(() => {});
         this.messageHandler.onUserMessage?.(message.message?.content || '', message.models?.prosody?.scores || {});
         break;
       case 'assistant_message':
@@ -330,13 +337,12 @@ export class HumeEVIService {
     return true;
   }
 
-  sendToolError(toolCallId, error, content, targetSocket = this.socket) {
+  sendToolError(toolCallId, error, fallbackContent, targetSocket = this.socket) {
     if (!toolCallId || targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
     targetSocket.send(JSON.stringify(createToolErrorPayload({
       toolCallId,
       error,
-      content,
-      customSessionId: this.sessionConfig?.customSessionId
+      fallbackContent
     })));
     return true;
   }
@@ -364,7 +370,6 @@ export class HumeEVIService {
       if (this.socket?.readyState === SOCKET_OPEN) this.socket.close(4002, 'resume unavailable');
       return;
     }
-    if (message.code === 'E0714') this.scheduleReconnect('inactivity timeout');
   }
 
   handleClose(event, closedSocket = this.socket) {
@@ -378,16 +383,22 @@ export class HumeEVIService {
     this.clearChatMetadataTimeout();
     this.cancelActiveToolCall();
     this.chatMetadataReceived = false;
-    if (this.isRecording) this.stopMicrophone().catch(() => {});
+    this.stopMicrophone().catch((error) => logger.warn('[HumeEVIService] Microphone cleanup after close failed:', error));
 
-    const retryable = !NON_RETRYABLE_SERVER_CODES.has(this.lastServerErrorCode);
-    if (retryable && this.intentionallyConnected && this.sessionConfig && this.reconnectAttempts < this.maxReconnectAttempts) {
-      this.scheduleReconnect('close');
+    const classification = classifyHumeClose({
+      closeCode: event?.code,
+      closeReason: event?.reason,
+      serverErrorCode: this.lastServerErrorCode
+    });
+    if (classification.shouldReconnect && this.intentionallyConnected && this.sessionConfig && this.reconnectAttempts < this.maxReconnectAttempts) {
+      this.scheduleReconnect(classification.category);
       return;
     }
 
+    const connectionWasRequested = this.intentionallyConnected;
+    this.intentionallyConnected = false;
     this.setState('disconnected');
-    if (this.intentionallyConnected && !wasReady) {
+    if (connectionWasRequested && !wasReady) {
       this.messageHandler.onError?.(new Error('Voice connection could not be established. Please try again in a moment.'));
     }
   }
@@ -400,14 +411,21 @@ export class HumeEVIService {
     logger.voice('[HumeEVIService] Reconnecting', { reason, attempt: this.reconnectAttempts, delay });
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
-      if (this.intentionallyConnected && this.sessionConfig) this.connect(this.sessionConfig).catch((error) => logger.error('[HumeEVIService] Reconnect failed:', error));
+      if (this.intentionallyConnected && this.sessionConfig) {
+        this.connect(this.sessionConfig, { isReconnect: true }).catch((error) => logger.error('[HumeEVIService] Reconnect failed:', error));
+      }
     }, delay);
   }
 
   async startMicrophone() {
-    if (this.isRecording) return;
+    if (this.microphoneState === 'recording') return;
+    if (this.microphoneState === 'starting') return this.microphoneStartPromise;
+    if (this.microphoneState === 'stopping') {
+      await this.microphoneStopPromise?.catch(() => {});
+      return this.startMicrophone();
+    }
     if (!this.chatMetadataReceived || !this.socket || this.socket.readyState !== SOCKET_OPEN) {
-      this.pendingMicrophoneStart = true;
+      this.pendingMicrophoneStart = this.intentionallyConnected;
       logger.warn('[HumeEVIService] Deferring microphone start until chat_metadata confirms the chat session', {
         chatMetadataReceived: this.chatMetadataReceived,
         readyState: this.socket?.readyState,
@@ -415,17 +433,74 @@ export class HumeEVIService {
       });
       return;
     }
-    audioService.setAudioChunkCallback((chunk) => this.sendAudio(chunk));
-    await audioService.startRecording();
-    this.isRecording = true;
-    logger.voice('[HumeEVIService] Microphone started');
+    this.pendingMicrophoneStart = false;
+    const generation = ++this.microphoneGeneration;
+    this.microphoneState = 'starting';
+    this.isRecording = false;
+    audioService.setAudioChunkCallback((chunk) => {
+      if (generation === this.microphoneGeneration && this.microphoneState !== 'stopping') this.sendAudio(chunk);
+    });
+
+    let startPromise;
+    startPromise = (async () => {
+      try {
+        await audioService.startRecording();
+        if (
+          generation !== this.microphoneGeneration
+          || !this.intentionallyConnected
+          || !this.chatMetadataReceived
+          || this.socket?.readyState !== SOCKET_OPEN
+        ) {
+          logger.voice('[HumeEVIService] Microphone start became stale before it completed');
+          return false;
+        }
+        this.microphoneState = 'recording';
+        this.isRecording = true;
+        logger.voice('[HumeEVIService] Microphone started');
+        return true;
+      } catch (error) {
+        if (generation === this.microphoneGeneration) {
+          audioService.setAudioChunkCallback(null);
+          this.microphoneState = 'idle';
+          this.isRecording = false;
+        }
+        throw error;
+      } finally {
+        if (this.microphoneStartPromise === startPromise) this.microphoneStartPromise = null;
+      }
+    })();
+    this.microphoneStartPromise = startPromise;
+    return startPromise;
   }
 
   async stopMicrophone() {
-    if (!this.isRecording) return;
+    this.pendingMicrophoneStart = false;
     audioService.setAudioChunkCallback(null);
-    await audioService.stopRecording();
+    if (this.microphoneStopPromise) return this.microphoneStopPromise;
+    if (this.microphoneState === 'idle' && !this.microphoneStartPromise) {
+      this.isRecording = false;
+      return;
+    }
+
+    const pendingStart = this.microphoneStartPromise;
+    ++this.microphoneGeneration;
+    this.microphoneState = 'stopping';
     this.isRecording = false;
+
+    let stopPromise;
+    stopPromise = (async () => {
+      try {
+        await pendingStart?.catch((error) => logger.warn('[HumeEVIService] Microphone start failed during cleanup:', error));
+        return await audioService.stopRecording();
+      } finally {
+        audioService.setAudioChunkCallback(null);
+        this.microphoneState = 'idle';
+        this.isRecording = false;
+        if (this.microphoneStopPromise === stopPromise) this.microphoneStopPromise = null;
+      }
+    })();
+    this.microphoneStopPromise = stopPromise;
+    return stopPromise;
   }
 
   sendAudio(data) {
