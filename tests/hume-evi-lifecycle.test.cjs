@@ -142,6 +142,25 @@ test('a native microphone stop error cannot poison subsequent starts', async () 
   await service.stopMicrophone();
 });
 
+test('microphone PCM frames become bounded Hume audio_input messages only while ready', async () => {
+  const sent = [];
+  fakeAudioService.callback = null;
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = async () => {};
+  const service = readyService();
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+
+  assert.equal(await service.startMicrophone(), true);
+  fakeAudioService.callback('AAD/fwCA');
+  assert.deepEqual(sent, [{ type: 'audio_input', data: 'AAD/fwCA' }]);
+
+  service.socket.bufferedAmount = 300 * 1024;
+  fakeAudioService.callback('another-frame');
+  assert.equal(sent.length, 1);
+  await service.stopMicrophone();
+  assert.equal(fakeAudioService.callback, null);
+});
+
 test('chat metadata does not replenish the bounded reconnect budget', async () => {
   fakeAudioService.startRecording = async () => {};
   fakeAudioService.stopRecording = async () => {};

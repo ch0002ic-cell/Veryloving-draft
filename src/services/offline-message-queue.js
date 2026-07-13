@@ -84,6 +84,9 @@ export function flushOfflineMessageQueue({ sessionId, sendMessage, onDelivered, 
       }
       if (!force && item.nextAttemptAt > now()) {
         remaining.push(item);
+        // Preserve strict per-session ordering while the head item is in
+        // backoff. Sending later messages here would reorder the conversation.
+        blocked = true;
         continue;
       }
       try {

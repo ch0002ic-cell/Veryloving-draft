@@ -15,6 +15,7 @@ const {
 } = require('../src/services/offline-map-cache');
 const { queueOfflineMessage } = require('../src/services/offline-message-queue');
 const { storage } = require('../src/services/storage');
+const { purgePrivacyArtifacts } = require('../src/services/privacy-artifact-cleanup');
 
 test('logout purges all VeryLoving stores after draining voice mutation queues', async () => {
   const memory = new Map([
@@ -54,6 +55,22 @@ test('an ancillary artifact failure cannot block the user-data key sweep', async
   assert.deepEqual([...memory.entries()], [['unrelated.host.preference', true]]);
   assert.equal(result.artifactCleanup.failures, 1);
   assert.equal(hasLocalUserDataDeletionWarnings(result), true);
+});
+
+test('a synchronous artifact purge failure cannot prevent the other privacy purge', async () => {
+  const attempted = [];
+  const result = await purgePrivacyArtifacts([
+    () => {
+      attempted.push('voice');
+      throw new Error('voice cache bridge failed');
+    },
+    async () => {
+      attempted.push('map');
+    }
+  ]);
+
+  assert.deepEqual(attempted, ['voice', 'map']);
+  assert.deepEqual(result, { failures: 1 });
 });
 
 test('native map deletion failure survives the broad user-data sweep for retry', async () => {

@@ -32,16 +32,9 @@ export function appendHumeParams(baseUrl, params) {
   return `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${query}`;
 }
 
-export function buildHumeWebSocketURL({ proxyURL, appAccessToken, humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
+export function buildHumeWebSocketURL({ proxyURL, humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
   const normalizedConfigId = normalizeHumeConfigId(configId);
-  if (proxyURL) {
-    return appendHumeParams(proxyURL, {
-      token: appAccessToken,
-      config_id: normalizedConfigId,
-      voice_id: voiceId,
-      resumed_chat_group_id: resumedChatGroupId
-    });
-  }
+  if (proxyURL) return proxyURL;
   return appendHumeParams(HUME_DIRECT_WS_URL, {
     access_token: humeAccessToken,
     api_key: humeAccessToken ? undefined : apiKey,
@@ -49,6 +42,18 @@ export function buildHumeWebSocketURL({ proxyURL, appAccessToken, humeAccessToke
     voice_id: voiceId,
     resumed_chat_group_id: resumedChatGroupId
   });
+}
+
+export function createProxyAuthenticationPayload({ accessToken, configId, voiceId, resumedChatGroupId }) {
+  return {
+    type: 'authenticate',
+    access_token: accessToken,
+    connection: {
+      config_id: normalizeHumeConfigId(configId),
+      voice_id: voiceId || undefined,
+      resumed_chat_group_id: resumedChatGroupId || undefined
+    }
+  };
 }
 
 export function createSessionSettingsPayload(sessionConfig = {}) {

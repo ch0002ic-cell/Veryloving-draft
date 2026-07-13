@@ -9,6 +9,7 @@ export function hasLocalUserDataDeletionWarnings(result) {
   return Boolean(
     Number(result?.drainFailures)
     || Number(result?.artifactCleanup?.failures)
+    || Number(result?.secureStoreFailures)
   );
 }
 

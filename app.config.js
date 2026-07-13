@@ -1,3 +1,4 @@
+const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
 const supportedLocales = languageCatalog
   .filter((language) => language.messages)
@@ -16,6 +17,26 @@ function hasConfiguredValue(value) {
     && !/^(?:replace|your)[-_]/i.test(normalized);
 }
 
+function reversedGoogleClientId(clientId) {
+  if (!hasConfiguredValue(clientId)) return '';
+  return clientId.trim().split('.').reverse().join('.');
+}
+
+const BLE_UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+
+function endpointIssue(value, expectedProtocol) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== expectedProtocol) return 'transport';
+    if (url.username || url.password) return 'embedded_credentials';
+    const sensitiveQuery = [...url.searchParams.keys()].some((key) => /token|secret|password|api[_-]?key/i.test(key));
+    if (sensitiveQuery) return 'credential_query';
+    return null;
+  } catch {
+    return 'invalid_url';
+  }
+}
+
 function createEnvironmentDiagnostics(env = {}) {
   const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
   const buildProfile = hasConfiguredValue(requestedProfile)
@@ -26,27 +47,37 @@ function createEnvironmentDiagnostics(env = {}) {
   const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const mockPhoneAuthRequested = env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
+  const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
+  const safetyBackendEnabled = env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
   const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
   const humeCustomizationURL = env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
   const humeWSProxyURL = env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
   const mapboxAccessToken = env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const googleWebClientId = env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
+  const googleIOSClientId = env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
 
   const configured = {
     apiBaseUrl: hasConfiguredValue(apiBaseUrl),
     googleWebClientId: hasConfiguredValue(googleWebClientId),
+    googleIOSClientId: hasConfiguredValue(googleIOSClientId),
     humeWebSocketProxy: hasConfiguredValue(humeWSProxyURL),
     humeCustomizationUrl: hasConfiguredValue(humeCustomizationURL),
     humeConfigId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_CONFIG_ID || ''),
     humeBrandedVoiceId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || ''),
     mapboxRuntimeToken: hasConfiguredValue(mapboxAccessToken),
-    mapboxDownloadToken: hasConfiguredValue(env.RNMAPBOX_MAPS_DOWNLOAD_TOKEN || '')
+    mapboxDownloadToken: hasConfiguredValue(env.RNMAPBOX_MAPS_DOWNLOAD_TOKEN || ''),
+    vl01ServiceUUID: hasConfiguredValue(env.EXPO_PUBLIC_VL01_SERVICE_UUID || ''),
+    vl01BatteryCharacteristicUUID: hasConfiguredValue(env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID || ''),
+    vl01StatusCharacteristicUUID: hasConfiguredValue(env.EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID || ''),
+    vl01EventCharacteristicUUID: hasConfiguredValue(env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID || ''),
+    vl01CommandCharacteristicUUID: hasConfiguredValue(env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID || '')
   };
 
   const required = new Set();
   if (production) {
     required.add('apiBaseUrl');
     required.add('googleWebClientId');
+    required.add('googleIOSClientId');
     required.add('humeWebSocketProxy');
     required.add('mapboxRuntimeToken');
     // Secret EAS variables are not visible during the local config-resolution
@@ -59,19 +90,48 @@ function createEnvironmentDiagnostics(env = {}) {
     required.add('humeCustomizationUrl');
     required.add('humeConfigId');
   }
-
+  if (vl01Enabled) {
+    required.add('vl01ServiceUUID');
+    required.add('vl01BatteryCharacteristicUUID');
+    if (production) {
+      // Shipping builds must be tied to the complete, firmware-approved
+      // registry. Omitting event or command channels would silently reduce a
+      // safety wearable to a battery beacon.
+      required.add('vl01StatusCharacteristicUUID');
+      required.add('vl01EventCharacteristicUUID');
+      required.add('vl01CommandCharacteristicUUID');
+    }
+  }
   const invalid = [];
-  if (production && configured.apiBaseUrl && !apiBaseUrl.trim().toLowerCase().startsWith('https://')) {
-    invalid.push('api_base_url_must_use_https');
+  if (production && !safetyBackendEnabled) invalid.push('safety_backend_must_be_enabled');
+  if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
+  if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
+  for (const [name, value] of [
+    ['vl01_service_uuid', env.EXPO_PUBLIC_VL01_SERVICE_UUID],
+    ['vl01_battery_characteristic_uuid', env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID],
+    ['vl01_status_characteristic_uuid', env.EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID],
+    ['vl01_event_characteristic_uuid', env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID],
+    ['vl01_command_characteristic_uuid', env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID]
+  ]) {
+    if (hasConfiguredValue(value || '') && !BLE_UUID_PATTERN.test(value.trim())) invalid.push(`${name}_invalid`);
   }
-  if (production && configured.humeWebSocketProxy && !humeWSProxyURL.trim().toLowerCase().startsWith('wss://')) {
-    invalid.push('hume_websocket_proxy_must_use_wss');
+  if (production && configured.apiBaseUrl) {
+    const issue = endpointIssue(apiBaseUrl, 'https:');
+    if (issue) invalid.push(issue === 'transport' ? 'api_base_url_must_use_https' : `api_base_url_${issue}`);
   }
-  if (production && configured.humeCustomizationUrl && !humeCustomizationURL.trim().toLowerCase().startsWith('https://')) {
-    invalid.push('hume_customization_url_must_use_https');
+  if (production && configured.humeWebSocketProxy) {
+    const issue = endpointIssue(humeWSProxyURL, 'wss:');
+    if (issue) invalid.push(issue === 'transport' ? 'hume_websocket_proxy_must_use_wss' : `hume_websocket_proxy_${issue}`);
+  }
+  if (production && configured.humeCustomizationUrl) {
+    const issue = endpointIssue(humeCustomizationURL, 'https:');
+    if (issue) invalid.push(issue === 'transport' ? 'hume_customization_url_must_use_https' : `hume_customization_url_${issue}`);
   }
   if (production && configured.googleWebClientId && !googleWebClientId.trim().endsWith('.apps.googleusercontent.com')) {
     invalid.push('google_web_client_id_has_unexpected_format');
+  }
+  if (production && configured.googleIOSClientId && !googleIOSClientId.trim().endsWith('.apps.googleusercontent.com')) {
+    invalid.push('google_ios_client_id_has_unexpected_format');
   }
   if (production && configured.mapboxRuntimeToken && mapboxAccessToken.trim().startsWith('sk.')) {
     invalid.push('mapbox_runtime_token_looks_secret');
@@ -98,9 +158,19 @@ function createEnvironmentDiagnostics(env = {}) {
     flags: {
       humeCLMEnabled,
       offlineModeEnabled,
-      mockPhoneAuthRequested
+      mockPhoneAuthRequested,
+      vl01Enabled,
+      safetyBackendEnabled
     }
   };
+}
+
+function assertEnvironmentReady(diagnostics) {
+  if (!diagnostics.production || diagnostics.context !== 'eas-build') return;
+  const blockers = [...diagnostics.missingRequired.map((key) => `missing_${key}`), ...diagnostics.invalid];
+  if (blockers.length) {
+    throw new Error(`[VeryLoving config] Production configuration is invalid: ${blockers.join(', ')}`);
+  }
 }
 
 function reportEnvironmentDiagnostics(diagnostics, env = {}) {
@@ -344,7 +414,7 @@ const config = {
     [
       "@react-native-google-signin/google-signin",
       {
-        "iosUrlScheme": "com.googleusercontent.apps.1043648527972-bt18er3aemtofhhod81c2m2aabc40v3d"
+        "iosUrlScheme": "com.googleusercontent.apps.unconfigured"
       }
     ],
     "./plugins/withGradleProperties.js",
@@ -419,6 +489,7 @@ function createAppConfig() {
   const mapboxAccessToken = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
   const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
+  const googleIOSClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
   const humeWSProxyURL = process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
   const humeConfigId = process.env.EXPO_PUBLIC_HUME_CONFIG_ID || '';
   const humeCustomizationURL = process.env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
@@ -426,15 +497,33 @@ function createAppConfig() {
   const humeCLMEnabled = process.env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const enableOfflineMode = process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const enableMockPhoneAuth = process.env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
+  const safetyBackendEnabled = process.env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
+  const vl01Enabled = process.env.EXPO_PUBLIC_VL01_ENABLED === 'true';
+  const vl01ServiceUUID = process.env.EXPO_PUBLIC_VL01_SERVICE_UUID || '';
+  const vl01BatteryCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID || '';
+  const vl01StatusCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID || '';
+  const vl01EventCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID || '';
+  const vl01CommandCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID || '';
   const environmentDiagnostics = createEnvironmentDiagnostics(process.env);
   reportEnvironmentDiagnostics(environmentDiagnostics, process.env);
+  assertEnvironmentReady(environmentDiagnostics);
+
+  const plugins = config.plugins.map((plugin) => {
+    if (!Array.isArray(plugin) || plugin[0] !== '@react-native-google-signin/google-signin') return plugin;
+    return [plugin[0], {
+      ...plugin[1],
+      iosUrlScheme: reversedGoogleClientId(googleIOSClientId) || 'com.googleusercontent.apps.unconfigured'
+    }];
+  });
 
   return {
     ...config,
+    plugins,
     extra: {
       ...config.extra,
       apiBaseUrl,
       googleWebClientId,
+      googleIOSClientId,
       humeWSProxyURL,
       humeConfigId,
       humeCustomizationURL,
@@ -443,6 +532,13 @@ function createAppConfig() {
       mapboxAccessToken,
       enableOfflineMode,
       enableMockPhoneAuth,
+      safetyBackendEnabled,
+      vl01Enabled,
+      vl01ServiceUUID,
+      vl01BatteryCharacteristicUUID,
+      vl01StatusCharacteristicUUID,
+      vl01EventCharacteristicUUID,
+      vl01CommandCharacteristicUUID,
       environmentDiagnostics
     }
   };
@@ -450,3 +546,5 @@ function createAppConfig() {
 
 module.exports = createAppConfig;
 module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;
+module.exports.assertEnvironmentReady = assertEnvironmentReady;
+module.exports.reversedGoogleClientId = reversedGoogleClientId;

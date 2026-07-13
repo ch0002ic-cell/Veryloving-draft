@@ -88,12 +88,19 @@ export default function JewelrySetup() {
     stopScan();
     setError(null);
     setConnectingId(candidate.id);
+    let connected = null;
+    let remembered = false;
     try {
-      const connected = await bleService.connect(candidate);
-      if (!mountedRef.current) return;
+      connected = await bleService.connect(candidate);
+      if (!mountedRef.current) {
+        await bleService.disconnect(connected.id).catch(() => {});
+        return;
+      }
       await setDevice(connected);
-      finishSetup();
+      remembered = true;
+      if (mountedRef.current) finishSetup();
     } catch (connectionError) {
+      if (connected && !remembered) await bleService.disconnect(connected.id).catch(() => {});
       if (mountedRef.current) {
         setError(connectionError?.code?.startsWith('BLE_')
           ? connectionError.message
@@ -139,7 +146,7 @@ export default function JewelrySetup() {
           )}
         contentContainerStyle={styles.list}
       />
-      <Button title={t('common.skip')} variant="ghost" onPress={finishSetup} />
+      <Button title={t('common.skip')} variant="ghost" disabled={Boolean(connectingId)} onPress={finishSetup} />
     </Screen>
   );
 }

@@ -9,6 +9,8 @@ import { I18nProvider, useI18n } from '../src/context/I18nContext';
 import { useAppFonts } from '../src/hooks/useAppFonts';
 import { colors } from '../src/constants/theme';
 import { PROTECTED_ROOT_ROUTES } from '../src/utils/auth-routing';
+import { AppErrorBoundary } from '../src/components/AppErrorBoundary';
+import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
 
 if (Platform.OS !== 'web') {
   I18nManager.allowRTL(true);
@@ -53,15 +55,31 @@ function LocalizedNavigation() {
   return navigation;
 }
 
+function LocalizedErrorBoundary({ children }) {
+  const { t } = useI18n();
+  return (
+    <AppErrorBoundary
+      title={t('settings.updateFailedTitle')}
+      message={t('settings.updateFailedMessage')}
+      retryLabel={t('common.retry')}
+    >
+      {children}
+    </AppErrorBoundary>
+  );
+}
+
 export default function RootLayout() {
   const fontsReady = useAppFonts();
   if (!fontsReady) return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}><ActivityIndicator color={colors.ink} /></View>;
   return (
     <SafeAreaProvider>
+      <AudioStreamBridge />
       <AuthProvider>
         <AppProvider>
           <I18nProvider>
-            <LocalizedNavigation />
+            <LocalizedErrorBoundary>
+              <LocalizedNavigation />
+            </LocalizedErrorBoundary>
           </I18nProvider>
         </AppProvider>
       </AuthProvider>

@@ -110,3 +110,29 @@ test('offline queue applies exponential backoff and manual retry resets the sche
   await flushOfflineMessageQueue({ sessionId: 'backoff-session', sendMessage: () => true, now: () => now });
   assert.deepEqual(await loadOfflineMessageQueue(), []);
 });
+
+test('offline queue does not overtake a head message that is still in backoff', async () => {
+  memory.clear();
+  await clearOfflineMessageQueue();
+  await queueOfflineMessage({ id: 'ordered-1', sessionId: 'ordered-session', text: 'First' });
+  await queueOfflineMessage({ id: 'ordered-2', sessionId: 'ordered-session', text: 'Second' });
+
+  await flushOfflineMessageQueue({
+    sessionId: 'ordered-session',
+    sendMessage: (item) => item.id !== 'ordered-1',
+    now: () => 1_000
+  });
+
+  const attempted = [];
+  await flushOfflineMessageQueue({
+    sessionId: 'ordered-session',
+    sendMessage: (item) => {
+      attempted.push(item.id);
+      return true;
+    },
+    now: () => 1_500
+  });
+
+  assert.deepEqual(attempted, []);
+  assert.deepEqual((await loadOfflineMessageQueue()).map((item) => item.id), ['ordered-1', 'ordered-2']);
+});

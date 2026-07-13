@@ -28,6 +28,7 @@
     "expo-asset": "~57.0.3",
     "expo-audio": "~57.0.0",
     "expo-constants": "~57.0.3",
+    "expo-crypto": "~57.0.0",
     "expo-dev-client": "~57.0.5",
     "expo-file-system": "~57.0.0",
     "expo-font": "~57.0.0",
@@ -62,5 +63,10 @@
     "@babel/register": "^7.29.0",
     "eslint": "^9.0.0",
     "react-native-codegen": "^0.70.7"
+  },
+  "overrides": {
+    "xcode": {
+      "uuid": "11.1.1"
+    }
   }
 }

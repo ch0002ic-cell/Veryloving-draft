@@ -8,6 +8,7 @@ import {
 import {
   buildHumeWebSocketURL,
   classifyHumeClose,
+  createProxyAuthenticationPayload,
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
@@ -17,6 +18,7 @@ import {
 
 const SOCKET_OPEN = 1;
 const CHAT_METADATA_TIMEOUT_MS = 10000;
+const MAX_AUDIO_BUFFERED_BYTES = 256 * 1024;
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
 
 export class HumeEVIService {
@@ -45,6 +47,9 @@ export class HumeEVIService {
     this.toolCallGeneration = 0;
     this.activeToolAbortController = null;
     this.lastServerErrorCode = null;
+    this.usesProxy = false;
+    this.proxyAuthenticated = false;
+    this.proxyAuthenticationFailed = false;
   }
 
   setMessageHandler(handler) { this.messageHandler = handler || {}; }
@@ -102,10 +107,9 @@ export class HumeEVIService {
     this.activeToolAbortController = null;
   }
 
-  buildWebSocketURL({ appAccessToken, humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
+  buildWebSocketURL({ humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
     return buildHumeWebSocketURL({
       proxyURL: config.humeWSProxyURL,
-      appAccessToken,
       humeAccessToken,
       apiKey,
       configId,
@@ -130,6 +134,9 @@ export class HumeEVIService {
     this.setState('connecting');
 
     const usesProxy = Boolean(config.humeWSProxyURL);
+    this.usesProxy = usesProxy;
+    this.proxyAuthenticated = false;
+    this.proxyAuthenticationFailed = false;
     const appAccessToken = sessionConfig.accessToken;
     const humeAccessToken = sessionConfig.humeAccessToken;
     const apiKey = config.humeApiKey;
@@ -159,7 +166,6 @@ export class HumeEVIService {
     }
 
     const url = this.buildWebSocketURL({
-      appAccessToken,
       humeAccessToken,
       apiKey,
       configId,
@@ -217,13 +223,27 @@ export class HumeEVIService {
       logger.warn('[HumeEVIService] Ignoring stale WebSocket open');
       return;
     }
-    logger.voice('[HumeEVIService] WebSocket OPEN; waiting for chat_metadata before enabling microphone');
+    logger.voice('[HumeEVIService] WebSocket OPEN; starting secure voice handshake');
     this.chatMetadataReceived = false;
-    this.sendSessionSettings();
+    if (this.usesProxy) {
+      openedSocket.send(JSON.stringify(createProxyAuthenticationPayload({
+        accessToken: this.sessionConfig?.accessToken,
+        configId: this.sessionConfig?.configId || config.humeConfigId,
+        voiceId: this.sessionConfig?.voiceId,
+        resumedChatGroupId: this.sessionConfig?.resumedChatGroupId
+      })));
+      this.startReadinessTimeout('gateway authentication');
+      return;
+    }
+    this.beginHumeSession();
+  }
+
+  startReadinessTimeout(stage = 'chat metadata') {
     this.clearChatMetadataTimeout();
     this.chatMetadataTimeout = setTimeout(() => {
       if (this.chatMetadataReceived) return;
-      logger.error('[HumeEVIService] chat_metadata timeout after 10s', {
+      logger.error('[HumeEVIService] Voice handshake timeout after 10s', {
+        stage,
         socketReadyState: this.socket?.readyState,
         socketURL: sanitizeUrl(this.socket?.url)
       });
@@ -231,6 +251,11 @@ export class HumeEVIService {
       if (this.socket?.readyState === SOCKET_OPEN) this.socket.close(4000, 'chat_metadata timeout');
       this.setState('error');
     }, CHAT_METADATA_TIMEOUT_MS);
+  }
+
+  beginHumeSession() {
+    this.sendSessionSettings();
+    this.startReadinessTimeout('chat metadata');
   }
 
   sendSessionSettings() {
@@ -255,6 +280,18 @@ export class HumeEVIService {
     }
 
     switch (message.type) {
+      case 'auth_ok':
+        if (!this.usesProxy || this.proxyAuthenticated) return;
+        this.proxyAuthenticated = true;
+        this.beginHumeSession();
+        break;
+      case 'auth_error':
+        this.clearChatMetadataTimeout();
+        this.proxyAuthenticationFailed = true;
+        this.messageHandler.onError?.(new Error('The voice gateway could not verify this session. Sign in again.'));
+        if (sourceSocket.readyState === SOCKET_OPEN) sourceSocket.close(4001, 'voice authentication failed');
+        this.setState('error');
+        break;
       case 'chat_metadata': {
         const shouldStartMicrophone = this.pendingMicrophoneStart;
         this.clearChatMetadataTimeout();
@@ -451,7 +488,7 @@ export class HumeEVIService {
     const connectionWasRequested = this.intentionallyConnected;
     this.intentionallyConnected = false;
     this.setState('disconnected');
-    if (connectionWasRequested && !wasReady) {
+    if (connectionWasRequested && !wasReady && !this.proxyAuthenticationFailed) {
       let connectionError;
       if (this.lastServerErrorCode) {
         connectionError = createHumeServerError(
@@ -568,12 +605,22 @@ export class HumeEVIService {
   }
 
   sendAudio(data) {
-    if (!data) return;
+    if (!data) return false;
     if (!this.chatMetadataReceived || !this.socket || this.socket.readyState !== SOCKET_OPEN || this.state !== 'connected') {
       logger.warn('[HumeEVIService] Cannot send audio - chat session is not ready');
-      return;
+      return false;
     }
-    this.socket.send(JSON.stringify({ type: 'audio_input', data }));
+    if (Number(this.socket.bufferedAmount) > MAX_AUDIO_BUFFERED_BYTES) {
+      logger.warn('[HumeEVIService] Dropping microphone audio while the socket is backpressured');
+      return false;
+    }
+    try {
+      this.socket.send(JSON.stringify({ type: 'audio_input', data }));
+      return true;
+    } catch (error) {
+      logger.warn('[HumeEVIService] Microphone audio send failed', { name: error?.name || 'WebSocketSendError' });
+      return false;
+    }
   }
 
   sendText(text) {

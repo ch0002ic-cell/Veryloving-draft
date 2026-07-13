@@ -34,7 +34,40 @@ test('SOS reports only that the selected contact dialer opened', async () => {
     openDialer: async (phone) => actions.push(`dialer:${phone}`)
   });
   assert.equal(result.status, 'dialer_opened');
+  assert.equal(result.backendStatus, 'disabled');
   assert.deepEqual(actions, ['dialer:+6591234567']);
+});
+
+test('SOS opens the local dialer without waiting for backend acceptance', async () => {
+  const actions = [];
+  let resolveBackend;
+  const result = await runSOSFlow({
+    contacts: [{ id: 'contact-1', phone: '+6591234567' }],
+    confirmCall: async () => true,
+    dispatchSOS: async () => new Promise((resolve) => {
+      actions.push('backend');
+      resolveBackend = () => resolve({ id: 'sos-1', status: 'accepted' });
+      setTimeout(resolveBackend, 0);
+    }),
+    openDialer: async () => actions.push('dialer')
+  });
+  assert.ok(resolveBackend);
+  assert.ok(actions.includes('dialer'));
+  assert.equal(result.backendStatus, 'accepted');
+  assert.equal(result.backendReceipt.status, 'accepted');
+});
+
+test('SOS backend failure remains explicit while preserving the dialer fallback', async () => {
+  const actions = [];
+  const result = await runSOSFlow({
+    contacts: [{ id: 'contact-1', phone: '+6591234567' }],
+    confirmCall: async () => true,
+    dispatchSOS: async () => { throw new Error('backend unavailable'); },
+    openDialer: async () => actions.push('dialer')
+  });
+  assert.deepEqual(actions, ['dialer']);
+  assert.equal(result.backendStatus, 'failed');
+  assert.match(result.backendError.message, /unavailable/);
 });
 
 test('SOS surfaces dialer failures instead of claiming activation', async () => {

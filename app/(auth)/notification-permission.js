@@ -29,8 +29,9 @@ export default function NotificationPermission() {
     setBusy(true);
     setError(null);
     try {
-      await requestNotificationPermission({ showRationale: false });
-      continueOnboarding();
+      const granted = await requestNotificationPermission({ showRationale: false });
+      if (granted) continueOnboarding();
+      else setError(t('settings.updateFailedMessage'));
     } catch (permissionError) {
       setError(permissionError?.message || t('settings.updateFailedMessage'));
     } finally {

@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import { storage } from './storage';
 import { translate } from '../i18n/core';
+import { logger } from '../utils/logger';
 
 const RATIONALE_PREFIX = 'veryloving.permissionRationale.';
 
@@ -38,7 +39,16 @@ export async function markPermissionRationaleSeen(permissionId) {
 export async function explainPermission(permissionId, { force = false } = {}) {
   const rationale = permissionRationales[permissionId];
   if (!rationale) return true;
-  if (!force && await hasSeenPermissionRationale(permissionId)) return true;
+  if (!force) {
+    try {
+      if (await hasSeenPermissionRationale(permissionId)) return true;
+    } catch (error) {
+      logger.warn('[Permissions] Could not read rationale state', {
+        permissionId,
+        name: error?.name || 'StorageError'
+      });
+    }
+  }
 
   const accepted = await new Promise((resolve) => {
     Alert.alert(translate(rationale.titleKey), translate(rationale.messageKey), [
@@ -47,7 +57,16 @@ export async function explainPermission(permissionId, { force = false } = {}) {
     ]);
   });
 
-  if (accepted) await markPermissionRationaleSeen(permissionId);
+  if (accepted) {
+    await markPermissionRationaleSeen(permissionId).catch((error) => {
+      // Rationale persistence is helpful bookkeeping, not a reason to block
+      // the operating-system permission request after the user continued.
+      logger.warn('[Permissions] Could not persist rationale state', {
+        permissionId,
+        name: error?.name || 'StorageError'
+      });
+    });
+  }
   return accepted;
 }
 

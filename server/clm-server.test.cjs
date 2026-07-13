@@ -3,8 +3,9 @@
 const assert = require('node:assert/strict');
 const { Readable } = require('node:stream');
 const { test } = require('node:test');
-const { createHandler } = require('./clm-server.cjs');
+const { createHandler, validateServerConfig } = require('./clm-server.cjs');
 const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety-companion.cjs');
+const { signSessionJWT } = require('./auth-session.cjs');
 
 const silentLogger = { info() {}, warn() {}, error() {} };
 
@@ -49,6 +50,58 @@ test('health endpoint reports the CLM service', async () => {
   assert.deepEqual(response.json, { status: 'ok', service: 'veryloving-hume-clm' });
 });
 
+test('production server rejects insecure credential-bearing outbound URLs and dev tokens', () => {
+  assert.throws(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: 'http://auth.example.test/verify',
+    upstreamURL: '',
+    devAppToken: ''
+  }), /APP_AUTH_VERIFY_URL must use HTTPS/);
+  assert.throws(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: 'https://auth.example.test/verify?token=leak',
+    upstreamURL: '',
+    devAppToken: ''
+  }), /credential query parameters/);
+  assert.throws(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: 'https://auth.example.test/verify',
+    upstreamURL: 'https://user:password@model.example.test/v1',
+    devAppToken: ''
+  }), /embedded credentials/);
+  assert.throws(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: 'https://auth.example.test/verify',
+    upstreamURL: 'https://model.example.test/v1',
+    devAppToken: 'known-development-token'
+  }), /DEV_APP_TOKEN/);
+
+  assert.throws(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: '',
+    upstreamURL: '',
+    devAppToken: ''
+  }), /AUTH_EXCHANGE_ENABLED/);
+
+  assert.doesNotThrow(() => validateServerConfig({
+    nodeEnv: 'production',
+    appAuthVerifyURL: '',
+    upstreamURL: '',
+    devAppToken: '',
+    authExchangeEnabled: true,
+    safetyApiEnabled: true,
+    safetyRepository: {},
+    sessionJWTSecret: 'production-session-secret-at-least-32-characters',
+    appleClientIds: 'com.veryloving.app',
+    googleClientIds: 'google.apps.googleusercontent.com',
+    humeApiKey: 'server-only-hume-key',
+    humeConfigId: 'approved-config',
+    humeAllowedVoiceIds: 'approved-voice',
+    humeAllowClientResume: false,
+    clmBearerToken: 'server-only-clm-key'
+  }));
+});
+
 test('CLM rejects requests without the configured bearer token', async () => {
   const response = await invoke({ clmBearerToken: 'server-only-secret' }, {
     method: 'POST',
@@ -68,6 +121,91 @@ test('CLM fails closed when server credentials are missing', async () => {
   });
   assert.equal(response.status, 503);
   assert.deepEqual(response.json, { error: 'CLM authentication is not configured' });
+});
+
+test('auth exchange returns a first-party JWT derived from verified provider claims', async () => {
+  const response = await invoke({
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    googleClientIds: 'google-client.apps.googleusercontent.com',
+    verifyProviderToken: async ({ provider, idToken }) => {
+      assert.equal(provider, 'google');
+      assert.equal(idToken, 'provider-token-that-must-not-be-persisted');
+      return {
+        sub: 'verified-subject',
+        email: 'verified@example.test',
+        email_verified: true,
+        name: 'Verified User'
+      };
+    }
+  }, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    headers: { 'Content-Type': 'application/json' },
+    body: { provider: 'google', idToken: 'provider-token-that-must-not-be-persisted' }
+  });
+  assert.equal(response.status, 200);
+  assert.equal(response.json.user.id, 'google:verified-subject');
+  assert.equal(response.json.user.email, 'verified@example.test');
+  assert.equal(response.json.accessToken.split('.').length, 3);
+  assert.equal(response.json.refreshToken.split('.').length, 3);
+  assert.equal(JSON.stringify(response.json).includes('provider-token-that-must-not-be-persisted'), false);
+  assert.equal(Number.isFinite(response.json.expiresAt), true);
+  assert.equal(Number.isFinite(response.json.refreshExpiresAt), true);
+
+  const refreshed = await invoke({
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    googleClientIds: 'google-client.apps.googleusercontent.com'
+  }, {
+    method: 'POST',
+    url: '/v1/auth/refresh',
+    headers: { 'Content-Type': 'application/json' },
+    body: { refreshToken: response.json.refreshToken }
+  });
+  assert.equal(refreshed.status, 200);
+  assert.equal(refreshed.json.accessToken.split('.').length, 3);
+  assert.equal(refreshed.json.refreshToken.split('.').length, 3);
+  assert.notEqual(refreshed.json.accessToken, response.json.accessToken);
+});
+
+test('auth exchange fails closed when disabled or provider verification fails', async () => {
+  const disabled = await invoke({}, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    body: { provider: 'google', idToken: 'token' }
+  });
+  assert.equal(disabled.status, 503);
+
+  const rejected = await invoke({
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    googleClientIds: 'google-client.apps.googleusercontent.com',
+    verifyProviderToken: async () => { throw new Error('bad signature'); }
+  }, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    body: { provider: 'google', idToken: 'invalid-provider-token' }
+  });
+  assert.equal(rejected.status, 401);
+  assert.deepEqual(rejected.json, { error: 'Identity token verification failed' });
+
+  const missingAppleNonce = await invoke({
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    appleClientIds: 'com.veryloving.test',
+    verifyProviderToken: async () => { throw new Error('must not run'); }
+  }, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    body: { provider: 'apple', idToken: 'apple-provider-token' }
+  });
+  assert.equal(missingAppleNonce.status, 400);
+  assert.match(missingAppleNonce.json.error, /nonce/);
 });
 
 test('CLM handles immediate danger locally and preserves the custom session ID', async () => {
@@ -172,6 +310,151 @@ test('safety tips endpoint validates app auth and returns curated guidance', asy
   assert.equal(response.status, 200);
   assert.equal(response.json.scenario, 'being_followed');
   assert.equal(response.json.tips.length, 3);
+});
+
+test('authenticated safety API persists contacts, mode sessions, and idempotent SOS receipts', async () => {
+  const records = { contacts: [], sessions: [], sos: [] };
+  const repository = {
+    async listContacts() { return records.contacts; },
+    async createContact(_userId, contact) { records.contacts.push(contact); return contact; },
+    async deleteContact(_userId, contactId) {
+      records.contacts = records.contacts.filter((contact) => contact.id !== contactId);
+    },
+    async startSafetySession(_userId, session) { records.sessions.push(session); return session; },
+    async getSafetySession() { return records.sessions.at(-1) || null; },
+    async exportUserData() {
+      return {
+        contacts: records.contacts,
+        safetyState: records.sessions.at(-1) || null,
+        sosEvents: records.sos
+      };
+    },
+    async deleteUserData() {
+      records.contacts = [];
+      records.sessions = [];
+      records.sos = [];
+    },
+    async acceptSOS(_userId, event) {
+      const existing = records.sos.find((item) => item.idempotencyKey === event.idempotencyKey);
+      if (existing) return existing;
+      records.sos.push(event);
+      return event;
+    }
+  };
+  const config = {
+    safetyApiEnabled: true,
+    safetyRepository: repository,
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'safety-api-session-secret-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    googleClientIds: 'google-client.apps.googleusercontent.com'
+  };
+  const token = signSessionJWT({ provider: 'google', subject: 'safety-user' }, config).token;
+  const authorization = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+  const created = await invoke(config, {
+    method: 'POST',
+    url: '/v1/emergency-contacts',
+    headers: authorization,
+    body: { name: 'Grace', phone: '+6591234567', countryCode: 'SG' }
+  });
+  assert.equal(created.status, 201);
+  assert.match(created.json.id, /^contact_[A-Za-z0-9_-]{24}$/);
+
+  const listed = await invoke(config, {
+    method: 'GET',
+    url: '/v1/emergency-contacts',
+    headers: authorization
+  });
+  assert.equal(listed.status, 200);
+  assert.equal(listed.json.contacts.length, 1);
+
+  const mode = await invoke(config, {
+    method: 'POST',
+    url: '/v1/safety-sessions',
+    headers: authorization,
+    body: { idempotencyKey: 'mode_1234567890abcdef', mode: 'guardian' }
+  });
+  assert.equal(mode.status, 201);
+  assert.equal(mode.json.status, 'active');
+
+  const currentMode = await invoke(config, {
+    method: 'GET',
+    url: '/v1/safety-sessions/current',
+    headers: authorization
+  });
+  assert.equal(currentMode.status, 200);
+  assert.equal(currentMode.json.session.mode, 'guardian');
+
+  const sosBody = {
+    idempotencyKey: 'sos_1234567890abcdefg',
+    occurredAt: Date.now(),
+    source: 'app',
+    contactIds: [created.json.id]
+  };
+  const firstSOS = await invoke(config, {
+    method: 'POST',
+    url: '/v1/sos-events',
+    headers: authorization,
+    body: sosBody
+  });
+  const duplicateSOS = await invoke(config, {
+    method: 'POST',
+    url: '/v1/sos-events',
+    headers: authorization,
+    body: sosBody
+  });
+  assert.equal(firstSOS.status, 202);
+  assert.deepEqual(duplicateSOS.json, firstSOS.json);
+  assert.equal(records.sos.length, 1);
+
+  const exported = await invoke(config, {
+    method: 'GET',
+    url: '/v1/privacy/export',
+    headers: authorization
+  });
+  assert.equal(exported.status, 200);
+  assert.equal(exported.json.data.contacts.length, 1);
+  assert.equal(exported.json.data.sosEvents.length, 1);
+
+  const deleted = await invoke(config, {
+    method: 'DELETE',
+    url: '/v1/privacy/data',
+    headers: authorization
+  });
+  assert.equal(deleted.status, 204);
+  assert.equal(records.contacts.length, 0);
+  assert.equal(records.sos.length, 0);
+});
+
+test('safety API rejects missing sessions and invalid contact data', async () => {
+  const repository = {
+    async listContacts() { return []; },
+    async createContact() { throw new Error('must not run'); }
+  };
+  const baseConfig = {
+    safetyApiEnabled: true,
+    safetyRepository: repository,
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'safety-api-session-secret-at-least-32-characters',
+    appleClientIds: 'com.example.test'
+  };
+  const unauthorized = await invoke(baseConfig, {
+    method: 'GET',
+    url: '/v1/emergency-contacts'
+  });
+  assert.equal(unauthorized.status, 401);
+
+  const config = { ...baseConfig };
+  const token = signSessionJWT({ provider: 'apple', subject: 'user' }, config).token;
+  const invalid = await invoke(config, {
+    method: 'POST',
+    url: '/v1/emergency-contacts',
+    headers: { Authorization: `Bearer ${token}` },
+    body: { name: 'Bad', phone: '123', countryCode: 'SG' }
+  });
+  assert.equal(invalid.status, 400);
 });
 
 test('control-plane endpoint injects the CLM key without returning it to the app', async () => {

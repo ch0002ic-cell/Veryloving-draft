@@ -16,9 +16,12 @@ import {
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
+import { useAuth } from '../src/context/AuthContext';
+import { loadLastKnownLocation } from '../src/services/location-cache';
 
 export default function EmergencySOS() {
   const { contacts } = useAppState();
+  const { accessToken, user } = useAuth();
   const { t } = useI18n();
   const [activating, setActivating] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -45,10 +48,13 @@ export default function EmergencySOS() {
     setActivating(true);
     setFeedback(null);
     try {
-      const result = await triggerSOS(contacts);
+      const location = await loadLastKnownLocation().catch(() => null);
+      const result = await triggerSOS(contacts, { accessToken, accountId: user?.id, location });
       await refreshLastStatus();
       if (result.status === 'contact_required') {
         setFeedback(t('emergency.addContact'));
+      } else if (result.backendStatus === 'failed') {
+        setFeedback(t('settings.updateFailedMessage'));
       }
     } catch {
       await refreshLastStatus();

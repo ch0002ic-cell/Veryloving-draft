@@ -151,6 +151,16 @@ test('country picker modal establishes a safe-area boundary', () => {
   assert.match(picker, /<Modal[\s\S]*<SafeAreaProvider>[\s\S]*<SafeAreaView/);
 });
 
+test('language picker modal establishes its own safe-area boundary', () => {
+  const { readFileSync } = require('node:fs');
+  const picker = readFileSync(
+    path.resolve(process.cwd(), 'src/components/LanguageSelector.js'),
+    'utf8'
+  );
+  assert.match(picker, /SafeAreaProvider, SafeAreaView/);
+  assert.match(picker, /<Modal[\s\S]*<SafeAreaProvider>[\s\S]*<SafeAreaView/);
+});
+
 test('Google Sign-In fails before invoking native code when its client ID is missing', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(
@@ -161,7 +171,34 @@ test('Google Sign-In fails before invoking native code when its client ID is mis
   const nativeImport = auth.indexOf("require('@react-native-google-signin/google-signin')");
   assert.notEqual(guard, -1);
   assert.ok(guard < nativeImport, 'Google configuration must be checked before loading its native module');
-  assert.match(auth, /GoogleSignin\.configure\(\{ webClientId: config\.googleWebClientId \}\)/);
+  assert.match(auth, /GoogleSignin\.configure\(\{[\s\S]*webClientId: config\.googleWebClientId/);
+  assert.match(auth, /iosClientId: config\.googleIOSClientId/);
+  assert.match(auth, /exchangeProviderIdentity/);
+  assert.doesNotMatch(auth, /await persist\(identity\.user, identity\.identityToken\)/);
+});
+
+test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
+  const { readFileSync } = require('node:fs');
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  assert.match(auth, /const nonce = createAuthenticationNonce\(\)/);
+  assert.match(auth, /AppleAuthentication\.signInAsync\(\{[\s\S]*nonce/);
+  assert.match(auth, /provider: 'apple'[\s\S]*idToken: credential\.identityToken[\s\S]*nonce/);
+});
+
+test('production UI cannot create an in-memory demo guardian', () => {
+  const { readFileSync } = require('node:fs');
+  const friends = readFileSync(path.resolve(process.cwd(), 'app/friends.js'), 'utf8');
+  assert.match(friends, /__DEV__ && config\.enableMockPhoneAuth/);
+  assert.match(friends, /friends\.addDemo/);
+});
+
+test('root navigation has a render error boundary', () => {
+  const { readFileSync } = require('node:fs');
+  const layout = readFileSync(path.resolve(process.cwd(), 'app/_layout.js'), 'utf8');
+  assert.match(layout, /<LocalizedErrorBoundary>[\s\S]*<LocalizedNavigation \/>/);
+  const boundary = readFileSync(path.resolve(process.cwd(), 'src/components/AppErrorBoundary.js'), 'utf8');
+  assert.match(boundary, /getDerivedStateFromError/);
+  assert.match(boundary, /componentDidCatch/);
 });
 
 test('cold-start resume sends incomplete accounts to the first permission step', () => {

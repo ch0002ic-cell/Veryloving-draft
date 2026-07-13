@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
@@ -11,12 +11,17 @@ import { colors, fonts } from '../../src/constants/theme';
 import { useAppState } from '../../src/context/AppContext';
 import { useI18n } from '../../src/context/I18nContext';
 import { logger } from '../../src/utils/logger';
+import { useAuth } from '../../src/context/AuthContext';
+import { activateSafetyMode, fetchCurrentSafetyMode } from '../../src/services/safety-api';
+import { config } from '../../src/utils/config';
 
 export default function Home() {
   const { settings, updateSettings, device, selectedVoice } = useAppState();
+  const { accessToken } = useAuth();
   const { t } = useI18n();
   const [changingMode, setChangingMode] = useState(null);
   const modeChangeRef = useRef(null);
+  const modeReconciledRef = useRef(false);
   const voiceName = t(`voices.profiles.${selectedVoice.id}.name`);
   const modeName = t(`home.modes.${settings.mode}`);
   const hasBatteryReading = Number.isFinite(device.battery);
@@ -26,13 +31,29 @@ export default function Home() {
       : `${device.name} · ${t('safetyCall.connected')}`)
     : (device.connectionState === 'reconnecting' ? t('common.connecting') : t('home.noDevice'));
 
+  useEffect(() => {
+    if (!config.safetyBackendEnabled || !accessToken || modeReconciledRef.current) return;
+    modeReconciledRef.current = true;
+    modeChangeRef.current = 'reconcile';
+    fetchCurrentSafetyMode(accessToken).then(async (remoteSession) => {
+      if (['home', 'guardian', 'emergency'].includes(remoteSession?.mode)) {
+        if (remoteSession.mode !== settings.mode) await updateSettings({ mode: remoteSession.mode });
+        return;
+      }
+      await activateSafetyMode(settings.mode, accessToken);
+    }).catch((error) => logger.warn('[SafetyMode] Could not reconcile the current backend mode', {
+      errorCode: error?.code || error?.name || 'MODE_RECONCILIATION_FAILED'
+    })).finally(() => {
+      if (modeChangeRef.current === 'reconcile') modeChangeRef.current = null;
+    });
+  }, [accessToken, settings.mode, updateSettings]);
+
   const changeSafetyMode = async (mode) => {
     if (modeChangeRef.current || settings.mode === mode) return;
     modeChangeRef.current = mode;
     setChangingMode(mode);
     try {
-      // This persists only the local mode preference. Contact/backend delivery
-      // must never be inferred until a connected safety service confirms it.
+      if (config.safetyBackendEnabled) await activateSafetyMode(mode, accessToken);
       await updateSettings({ mode });
     } catch (error) {
       logger.warn('[SafetyMode] Could not save the requested local mode', {

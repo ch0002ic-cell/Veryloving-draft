@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useI18n } from '../context/I18nContext';
 import { colors, fonts, spacing } from '../constants/theme';
 
@@ -64,59 +64,61 @@ export function LanguageSelector({ onError }) {
           : <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.inkSoft} />}
       </Pressable>
       <Modal animationType="slide" presentationStyle="pageSheet" visible={visible} onRequestClose={() => setVisible(false)}>
-        <SafeAreaView style={styles.safe}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{t('languages.title')}</Text>
-            <Pressable
-              accessibilityLabel={t('common.close')}
-              accessibilityRole="button"
-              hitSlop={10}
-              onPress={() => setVisible(false)}
-              style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
-            >
-              <Ionicons name="close" size={26} color={colors.ink} />
-            </Pressable>
-          </View>
-          <View style={styles.searchRow}>
-            <Ionicons name="search" size={20} color={colors.inkSoft} />
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              clearButtonMode="while-editing"
-              onChangeText={setQuery}
-              placeholder={t('languages.search')}
-              returnKeyType="search"
-              style={styles.searchInput}
-              value={query}
+        <SafeAreaProvider>
+          <SafeAreaView style={styles.safe}>
+            <View style={styles.header}>
+              <Text style={styles.title}>{t('languages.title')}</Text>
+              <Pressable
+                accessibilityLabel={t('common.close')}
+                accessibilityRole="button"
+                hitSlop={10}
+                onPress={() => setVisible(false)}
+                style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
+              >
+                <Ionicons name="close" size={26} color={colors.ink} />
+              </Pressable>
+            </View>
+            <View style={styles.searchRow}>
+              <Ionicons name="search" size={20} color={colors.inkSoft} />
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                onChangeText={setQuery}
+                placeholder={t('languages.search')}
+                returnKeyType="search"
+                style={styles.searchInput}
+                value={query}
+              />
+            </View>
+            <FlatList
+              data={filteredLanguages}
+              getItemLayout={(_data, index) => ({ length: 56, offset: 56 * index, index })}
+              initialNumToRender={24}
+              keyboardShouldPersistTaps="handled"
+              keyExtractor={(language) => language.code}
+              ListEmptyComponent={<Text style={styles.empty}>{t('languages.noResults')}</Text>}
+              renderItem={({ item }) => {
+                const selected = item.code === languagePreference;
+                return (
+                  <Pressable
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: selected, disabled: Boolean(savingLanguage) }}
+                    disabled={Boolean(savingLanguage)}
+                    onPress={() => chooseLanguage(item.code)}
+                    style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
+                  >
+                    <View style={styles.languageCopy}>
+                      <Text numberOfLines={1} style={[styles.label, selected && styles.selectedLabel]}>{languageLabel(item)}</Text>
+                      {item.englishName && item.englishName !== item.nativeName ? <Text numberOfLines={1} style={styles.englishName}>{item.englishName}</Text> : null}
+                    </View>
+                    {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.green} /> : null}
+                  </Pressable>
+                );
+              }}
             />
-          </View>
-          <FlatList
-            data={filteredLanguages}
-            getItemLayout={(_data, index) => ({ length: 56, offset: 56 * index, index })}
-            initialNumToRender={24}
-            keyboardShouldPersistTaps="handled"
-            keyExtractor={(language) => language.code}
-            ListEmptyComponent={<Text style={styles.empty}>{t('languages.noResults')}</Text>}
-            renderItem={({ item }) => {
-              const selected = item.code === languagePreference;
-              return (
-                <Pressable
-                  accessibilityRole="radio"
-                  accessibilityState={{ checked: selected, disabled: Boolean(savingLanguage) }}
-                  disabled={Boolean(savingLanguage)}
-                  onPress={() => chooseLanguage(item.code)}
-                  style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
-                >
-                  <View style={styles.languageCopy}>
-                    <Text numberOfLines={1} style={[styles.label, selected && styles.selectedLabel]}>{languageLabel(item)}</Text>
-                    {item.englishName && item.englishName !== item.nativeName ? <Text numberOfLines={1} style={styles.englishName}>{item.englishName}</Text> : null}
-                  </View>
-                  {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.green} /> : null}
-                </Pressable>
-              );
-            }}
-          />
-        </SafeAreaView>
+          </SafeAreaView>
+        </SafeAreaProvider>
       </Modal>
     </>
   );

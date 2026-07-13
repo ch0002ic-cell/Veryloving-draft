@@ -14,6 +14,13 @@ import { translate } from '../i18n/core';
 import { purgeVoiceAudioCache } from './voice-audio-cache';
 import { purgeOfflineMapCache } from './mapbox';
 import { logger } from '../utils/logger';
+import { purgePrivacyArtifacts } from './privacy-artifact-cleanup';
+import {
+  clearEmergencyContactCache,
+  loadEmergencyContactCache
+} from './emergency-contact-store';
+import { config } from '../utils/config';
+import { deleteRemoteUserData, fetchRemoteUserData } from './safety-api';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
 export { hasLocalUserDataDeletionWarnings };
@@ -45,9 +52,16 @@ async function collectLocalStorageSnapshot() {
   return Object.fromEntries(entries);
 }
 
-export async function buildUserDataExport() {
+export async function buildUserDataExport({ accessToken } = {}) {
   const localStorage = await collectLocalStorageSnapshot();
   const conversations = await loadConversationHistory();
+  const account = await readJSONSecureStore(AUTH_STORAGE_KEYS.user);
+  const emergencyContacts = account?.id
+    ? await loadEmergencyContactCache(account.id).catch(() => [])
+    : [];
+  const remoteData = config.safetyBackendEnabled
+    ? await fetchRemoteUserData(accessToken)
+    : null;
   return {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
@@ -55,10 +69,11 @@ export async function buildUserDataExport() {
       name: 'VeryLoving',
       privacyPolicy: PRIVACY_POLICY_URL
     },
-    account: await readJSONSecureStore(AUTH_STORAGE_KEYS.user),
+    account,
     settings: localStorage['veryloving.settings'] || null,
-    emergencyContacts: localStorage['veryloving.emergencyContacts'] || [],
+    emergencyContacts,
     conversations,
+    remoteData,
     localStorage,
     permissionRationales: Object.fromEntries(
       Object.entries(localStorage).filter(([key]) => key.startsWith(RATIONALE_PREFIX))
@@ -67,12 +82,14 @@ export async function buildUserDataExport() {
   };
 }
 
-export async function exportUserData() {
-  const data = await buildUserDataExport();
+export async function exportUserData(options) {
+  const data = await buildUserDataExport(options);
   const filename = `veryloving-data-${Date.now()}.json`;
   const file = new File(Paths.cache, filename);
-  file.write(JSON.stringify(data, null, 2));
   try {
+    // Keep creation, sharing, and cleanup in one guarded scope. Native writes
+    // can fail after creating a partial file, which must not be left in cache.
+    file.write(JSON.stringify(data, null, 2));
     if (!await Sharing.isAvailableAsync()) {
       throw new Error('File sharing is unavailable on this device.');
     }
@@ -81,25 +98,36 @@ export async function exportUserData() {
       mimeType: 'application/json',
       UTI: 'public.json'
     });
-    return file.uri;
+    return true;
   } finally {
-    if (file.exists) file.delete();
+    try {
+      if (file.exists) file.delete();
+    } catch (cleanupError) {
+      // A cleanup failure must not turn a completed native share into a false
+      // failure. Record only non-sensitive context for a subsequent audit.
+      logger.warn('[Privacy] Could not remove the temporary export file', {
+        name: cleanupError?.name || 'FileCleanupError'
+      });
+    }
   }
 }
 
 export async function deleteLocalUserData({ localMutationLockHeld = false } = {}) {
-  const result = await deleteLocalUserStores({
-    mutationLockHeld: localMutationLockHeld,
-    purgeArtifacts: async () => {
-      const results = await Promise.allSettled([
-        purgeVoiceAudioCache(),
-        purgeOfflineMapCache()
-      ]);
-      return {
-        failures: results.filter((item) => item.status === 'rejected').length
-      };
-    }
-  });
+  const [localResult, secureContactResult] = await Promise.allSettled([
+    deleteLocalUserStores({
+      mutationLockHeld: localMutationLockHeld,
+      purgeArtifacts: () => purgePrivacyArtifacts([
+        purgeVoiceAudioCache,
+        purgeOfflineMapCache
+      ])
+    }),
+    clearEmergencyContactCache()
+  ]);
+  if (localResult.status === 'rejected') throw localResult.reason;
+  const result = {
+    ...localResult.value,
+    secureStoreFailures: secureContactResult.status === 'rejected' ? 1 : 0
+  };
   const artifactFailures = Number(result?.artifactCleanup?.failures) || 0;
   if (hasLocalUserDataDeletionWarnings(result)) {
     logger.warn('[Privacy] Local deletion completed with residual artifact warnings', {
@@ -110,10 +138,12 @@ export async function deleteLocalUserData({ localMutationLockHeld = false } = {}
   return result;
 }
 
-export async function deleteAllUserData(options) {
+export async function deleteAllUserData({ accessToken, ...options } = {}) {
+  if (config.safetyBackendEnabled) await deleteRemoteUserData(accessToken);
   const result = await deleteLocalUserData(options);
   await Promise.all([
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.token),
+    SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.refreshToken),
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.user),
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
   ]);

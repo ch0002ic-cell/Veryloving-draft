@@ -18,7 +18,10 @@ const {
 } = require('../src/services/offline-map-cache');
 const {
   LAST_SOS_STATUS_KEY,
+  PENDING_SOS_ATTEMPT_KEY,
+  clearPendingSOSAttempt,
   loadSOSStatus,
+  loadOrCreatePendingSOSAttempt,
   runAndPersistSOS,
   sosStatusMessage
 } = require('../src/services/sos-state');
@@ -366,8 +369,10 @@ test('SOS outcome and failure status survive local reload without duplicating co
   }), { storageImpl: storage, now: () => 5_000, loggerImpl: { warn() {} } });
   assert.equal(result.status, 'dialer_opened');
   assert.deepEqual(await loadSOSStatus({ storageImpl: storage }), {
-    version: 1,
+    version: 2,
     status: 'dialer_opened',
+    backendStatus: 'disabled',
+    backendReceiptId: null,
     recordedAt: 5_000
   });
   const storedSOS = JSON.stringify(storage.value(LAST_SOS_STATUS_KEY));
@@ -383,6 +388,30 @@ test('SOS outcome and failure status survive local reload without duplicating co
   assert.match(sosStatusMessage('dialer_opened'), /call not confirmed/i);
   assert.match(sosStatusMessage('cancelled'), /no call was placed/i);
   assert.match(sosStatusMessage('dialer_failed'), /no call was placed/i);
+});
+
+test('SOS retry idempotency survives reload until a definitive backend receipt', async () => {
+  const storage = memoryStorage();
+  let generated = 0;
+  const options = {
+    accountId: 'google:account-a',
+    contactIds: ['contact_b', 'contact_a', 'contact_a'],
+    storageImpl: storage,
+    now: () => 10_000,
+    createId: () => `durable-key-${++generated}`
+  };
+  const first = await loadOrCreatePendingSOSAttempt(options);
+  const retry = await loadOrCreatePendingSOSAttempt({
+    ...options,
+    contactIds: ['contact_a', 'contact_b']
+  });
+  assert.equal(retry.idempotencyKey, first.idempotencyKey);
+  assert.equal(generated, 1);
+  assert.equal(storage.has(PENDING_SOS_ATTEMPT_KEY), true);
+
+  assert.equal(await clearPendingSOSAttempt('another-key', { storageImpl: storage }), false);
+  assert.equal(await clearPendingSOSAttempt(first.idempotencyKey, { storageImpl: storage }), true);
+  assert.equal(storage.has(PENDING_SOS_ATTEMPT_KEY), false);
 });
 
 test('local cleanup drains an in-flight write and blocks stale writers until release', async () => {

@@ -21,14 +21,14 @@ import { useI18n } from '../src/context/I18nContext';
 
 export default function Settings() {
   const { settings, updateSettings, selectedVoice, resetLocalState, lockAndFlushLocalMutations } = useAppState();
-  const { signOut, user } = useAuth();
+  const { accessToken, signOut, user } = useAuth();
   const { t } = useI18n();
   const [busyAction, setBusyAction] = useState(null);
 
   const handleExport = async () => {
     try {
       setBusyAction('export');
-      await exportUserData();
+      await exportUserData({ accessToken });
     } catch {
       Alert.alert(t('settings.exportFailedTitle'), t('settings.exportFailedMessage'));
     } finally {
@@ -50,7 +50,7 @@ export default function Settings() {
             try {
               setBusyAction('delete');
               releaseLocalMutations = await lockAndFlushLocalMutations();
-              const deletion = await deleteAllUserData({ localMutationLockHeld: true });
+              const deletion = await deleteAllUserData({ accessToken, localMutationLockHeld: true });
               resetLocalState();
               await signOut();
               router.replace('/(auth)/onboarding');

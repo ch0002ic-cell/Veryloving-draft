@@ -161,10 +161,18 @@ test('Expo environment diagnostics are production-aware and never contain config
     EAS_BUILD: 'true',
     EXPO_PUBLIC_API_BASE_URL: 'https://api.redaction-check.invalid',
     EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-redaction-check.apps.googleusercontent.com',
+    EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios-redaction-check.apps.googleusercontent.com',
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.redaction-check.invalid/socket',
     EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.redaction-check.invalid',
     EXPO_PUBLIC_HUME_CONFIG_ID: 'redaction-check-config-id',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_SERVICE_UUID: 'fff0',
+    EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID: 'fff1',
+    EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID: 'fff2',
+    EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID: 'fff3',
+    EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID: 'fff4',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.redaction-check-runtime',
     RNMAPBOX_MAPS_DOWNLOAD_TOKEN: 'sk.redaction-check-download'
   });
@@ -195,6 +203,47 @@ test('Expo environment diagnostics identify unsafe production configuration with
   assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
   assert.ok(diagnostics.warnings.includes('mock_phone_auth_requested_for_production'));
   assert.ok(diagnostics.warnings.includes('public_hume_api_key_must_not_be_set_for_production'));
+});
+
+test('remote production builds fail closed on missing or unsafe configuration', () => {
+  const missing = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EAS_BUILD: 'true'
+  });
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(missing),
+    /Production configuration is invalid/
+  );
+
+  const safe = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EAS_BUILD: 'true',
+    EXPO_PUBLIC_API_BASE_URL: 'https://api.example.invalid',
+    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-web.apps.googleusercontent.com',
+    EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios.apps.googleusercontent.com',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.example.invalid/socket',
+    EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.example.invalid',
+    EXPO_PUBLIC_HUME_CONFIG_ID: 'approved-config-id',
+    EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_SERVICE_UUID: 'fff0',
+    EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID: 'fff1',
+    EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID: 'fff2',
+    EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID: 'fff3',
+    EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID: 'fff4',
+    EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.runtime',
+    RNMAPBOX_MAPS_DOWNLOAD_TOKEN: 'sk.download'
+  });
+  assert.doesNotThrow(() => createAppConfig.assertEnvironmentReady(safe));
+});
+
+test('Google iOS client IDs produce the native reversed URL scheme', () => {
+  assert.equal(
+    createAppConfig.reversedGoogleClientId('123-example.apps.googleusercontent.com'),
+    'com.googleusercontent.apps.123-example'
+  );
+  assert.equal(createAppConfig.reversedGoogleClientId(''), '');
 });
 
 test('EAS profiles separate simulator, internal QA, and store artifacts with explicit environments', () => {

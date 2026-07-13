@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   flag: { fontSize: 22 },
   prefix: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
   separator: { width: 1, height: 28, backgroundColor: colors.line },
-  input: { flex: 1, minWidth: 0, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
+  input: { flex: 1, minWidth: 0, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink, fontSize: 16, writingDirection: 'ltr', textAlign: 'left' },
   validation: { minHeight: 18, fontFamily: fonts.regular, fontSize: 12 },
   valid: { color: colors.green },
   invalid: { color: colors.red },

@@ -51,13 +51,21 @@ export default function SafetyCall() {
     const outgoing = text.trim();
     if (!outgoing) return;
     setText('');
-    await sendText(outgoing);
+    try {
+      await sendText(outgoing);
+    } catch {
+      // Keep the user's text available when the durable offline queue could
+      // not accept it. The hook supplies the actionable error banner.
+      setText((current) => current || outgoing);
+    }
   }, [sendText, text]);
 
   const retryFailedMessage = useCallback(async (messageId) => {
     setRetryingMessageId(messageId);
     try {
       await retryMessage(messageId);
+    } catch {
+      // The hook preserves the failed delivery state and presents the error.
     } finally {
       setRetryingMessageId(null);
     }

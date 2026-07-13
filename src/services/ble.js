@@ -13,11 +13,28 @@ import {
   classifyNativeBLEError,
   errorCodeForBluetoothState
 } from './ble-errors';
+import {
+  createVL01Protocol,
+  decodeVL01Battery,
+  equalVL01UUID,
+  validateVL01GATT
+} from './vl01-protocol';
+import { base64ToBytes } from '../utils/base64';
 
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
+const GATT_OPERATION_TIMEOUT_MS = 5000;
 const BLUETOOTH_STATE_TIMEOUT_MS = 3000;
+const BLE_RESTORE_IDENTIFIER = 'com.veryloving.vl01.central';
 const DEVELOPMENT_RUNTIME = typeof __DEV__ !== 'undefined' && __DEV__;
+const CONFIGURED_VL01_PROTOCOL = createVL01Protocol({
+  enabled: process.env.EXPO_PUBLIC_VL01_ENABLED === 'true',
+  serviceUUID: process.env.EXPO_PUBLIC_VL01_SERVICE_UUID,
+  batteryCharacteristicUUID: process.env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID,
+  statusCharacteristicUUID: process.env.EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID,
+  eventCharacteristicUUID: process.env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID,
+  commandCharacteristicUUID: process.env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID
+});
 
 const BLE_ERROR_MESSAGE_KEYS = {
   [BLE_ERROR_CODES.unavailable]: 'jewelry.scanAccessFailed',
@@ -31,6 +48,8 @@ const BLE_ERROR_MESSAGE_KEYS = {
   [BLE_ERROR_CODES.invalidDevice]: 'jewelry.connectFailed',
   [BLE_ERROR_CODES.connectTimeout]: 'jewelry.connectTimeout',
   [BLE_ERROR_CODES.connectFailed]: 'jewelry.connectFailed',
+  [BLE_ERROR_CODES.protocolNotConfigured]: 'jewelry.connectFailed',
+  [BLE_ERROR_CODES.incompatibleDevice]: 'jewelry.connectFailed',
   [BLE_ERROR_CODES.disconnectFailed]: 'jewelry.connectFailed'
 };
 
@@ -89,11 +108,6 @@ async function assertBluetoothReady(manager, phase) {
   if (errorCode) throw createBLEError(errorCode, null, phase);
 }
 
-function isNorthStarDevice(device) {
-  const advertisedName = `${device?.name || ''} ${device?.localName || ''}`.toLowerCase();
-  return advertisedName.includes('northstar') || advertisedName.includes('vl01');
-}
-
 async function requestAndroidBluetoothAccess() {
   if (Platform.OS !== 'android') return true;
   const permissions = getAndroidBluetoothPermissions(Platform.Version);
@@ -113,12 +127,53 @@ export class BLEService {
   manager = null;
   scanning = false;
   activeScan = null;
+  sessions = new Map();
+  eventHandler = {};
+  restoredDevices = [];
+
+  constructor({
+    protocol = CONFIGURED_VL01_PROTOCOL,
+    gattOperationTimeoutMs = GATT_OPERATION_TIMEOUT_MS
+  } = {}) {
+    this.protocol = protocol;
+    this.gattOperationTimeoutMs = gattOperationTimeoutMs;
+  }
+
+  setEventHandler(handler) {
+    this.eventHandler = handler || {};
+    if (this.restoredDevices.length) this.eventHandler.onRestored?.([...this.restoredDevices]);
+    return () => {
+      if (this.eventHandler === handler) this.eventHandler = {};
+    };
+  }
+
+  requireProtocol() {
+    if (this.protocol) return this.protocol;
+    throw createBLEError(BLE_ERROR_CODES.protocolNotConfigured, null, 'protocol');
+  }
+
+  cleanupSession(deviceId) {
+    const session = this.sessions.get(deviceId);
+    if (!session) return;
+    this.sessions.delete(deviceId);
+    for (const subscription of session.subscriptions) {
+      try { subscription?.remove?.(); } catch {}
+    }
+  }
 
   getManager() {
     if (this.manager !== null) return this.manager;
     try {
       const { BleManager } = require('react-native-ble-plx');
-      this.manager = new BleManager();
+      this.manager = new BleManager({
+        restoreStateIdentifier: BLE_RESTORE_IDENTIFIER,
+        restoreStateFunction: (state) => {
+          this.restoredDevices = Array.isArray(state?.connectedPeripherals)
+            ? state.connectedPeripherals.filter((device) => device?.id)
+            : [];
+          if (this.restoredDevices.length) this.eventHandler.onRestored?.([...this.restoredDevices]);
+        }
+      });
     } catch {
       logger.warn('[BLE] Native BLE unavailable', {
         developmentSimulationEnabled: DEVELOPMENT_RUNTIME
@@ -209,10 +264,18 @@ export class BLEService {
       return () => operation.finish('cancelled');
     }
 
+    let protocol;
+    try {
+      protocol = this.requireProtocol();
+    } catch (error) {
+      operation.finish('protocol-unavailable', error);
+      return () => {};
+    }
+
     const startScan = () => {
       if (operation.stopped || this.activeScan !== operation) return;
       try {
-        manager.startDeviceScan(null, null, (scanError, device) => {
+        manager.startDeviceScan([protocol.serviceUUID], null, (scanError, device) => {
           if (operation.stopped || this.activeScan !== operation) return;
           if (scanError) {
             const errorCode = classifyNativeBLEError(scanError, 'scan');
@@ -232,7 +295,7 @@ export class BLEService {
             }
             return;
           }
-          if (isNorthStarDevice(device)) {
+          if (device?.id) {
             operation.matchedDeviceCount += 1;
             onDevice?.(device);
           }
@@ -277,31 +340,143 @@ export class BLEService {
         simulated: true
       };
     }
+    const protocol = this.requireProtocol();
     try {
       await assertBluetoothReady(manager, 'connect');
-      const connected = await withTimeout((async () => {
+      const connection = await withTimeout((async () => {
         const candidate = typeof device.connect === 'function'
           ? await device.connect()
           : await manager.connectToDevice(device.id);
         await candidate.discoverAllServicesAndCharacteristics();
-        return candidate;
+        const services = await candidate.services();
+        const characteristics = await candidate.characteristicsForService(protocol.serviceUUID);
+        validateVL01GATT(services, characteristics, protocol);
+        return { device: candidate, characteristics };
       })(), CONNECT_TIMEOUT_MS, translate('jewelry.connectTimeout'));
+      const connected = connection.device;
+      const batteryCharacteristic = await withTimeout(
+        connected.readCharacteristicForService(
+          protocol.serviceUUID,
+          protocol.batteryCharacteristicUUID
+        ),
+        this.gattOperationTimeoutMs,
+        translate('jewelry.connectTimeout')
+      );
+      const battery = decodeVL01Battery(batteryCharacteristic?.value);
+      this.cleanupSession(connected.id);
+      const subscriptions = [];
+      const session = {
+        device: connected,
+        subscriptions,
+        failed: false,
+        failure: null
+      };
+      // Register the provisional session before installing native callbacks.
+      // Some BLE implementations can report an error synchronously while a
+      // monitor is being attached; cleanup must be able to find that session.
+      this.sessions.set(connected.id, session);
+      const addSubscription = (subscription) => {
+        if (!subscription) return;
+        if (session.failed || this.sessions.get(connected.id) !== session) {
+          try { subscription.remove?.(); } catch {}
+          return;
+        }
+        subscriptions.push(subscription);
+      };
+      const degrade = (monitorError, eventName) => {
+        if (session.failed) return;
+        session.failed = true;
+        session.failure = monitorError || new Error(`VL01 ${eventName} channel disconnected.`);
+        logBLEFailure(`[BLE] ${eventName} monitor failed`, session.failure, { hasDeviceId: true });
+        this.cleanupSession(connected.id);
+        this.eventHandler.onConnectionDegraded?.(connected.id, session.failure, eventName);
+        Promise.resolve(manager.cancelDeviceConnection?.(connected.id)).catch(() => {});
+      };
+      const monitor = (characteristicUUID, eventName) => {
+        if (!characteristicUUID || typeof connected.monitorCharacteristicForService !== 'function') return;
+        addSubscription(connected.monitorCharacteristicForService(
+          protocol.serviceUUID,
+          characteristicUUID,
+          (monitorError, characteristic) => {
+            if (monitorError) {
+              degrade(monitorError, eventName);
+              return;
+            }
+            this.eventHandler[eventName]?.(connected.id, characteristic?.value || null);
+          }
+        ));
+      };
+      const batteryDefinition = connection.characteristics.find(
+        (characteristic) => equalVL01UUID(characteristic.uuid, protocol.batteryCharacteristicUUID)
+      );
+      const batterySupportsNotifications = batteryDefinition?.isNotifiable === true
+        || batteryDefinition?.isIndicatable === true;
+      if (batterySupportsNotifications && typeof connected.monitorCharacteristicForService === 'function') {
+        addSubscription(connected.monitorCharacteristicForService(
+          protocol.serviceUUID,
+          protocol.batteryCharacteristicUUID,
+          (monitorError, characteristic) => {
+            if (monitorError) {
+              degrade(monitorError, 'battery');
+              return;
+            }
+            try {
+              this.eventHandler.onBattery?.(connected.id, decodeVL01Battery(characteristic?.value));
+            } catch (error) {
+              logBLEFailure('[BLE] Ignored invalid battery notification', error, { hasDeviceId: true });
+            }
+          }
+        ));
+      }
+      monitor(protocol.statusCharacteristicUUID, 'onStatus');
+      monitor(protocol.eventCharacteristicUUID, 'onEvent');
+
+      const statusDefinition = connection.characteristics.find(
+        (characteristic) => equalVL01UUID(characteristic.uuid, protocol.statusCharacteristicUUID)
+      );
+      if (protocol.statusCharacteristicUUID && statusDefinition?.isReadable === true) {
+        try {
+          const status = await withTimeout(
+            connected.readCharacteristicForService(protocol.serviceUUID, protocol.statusCharacteristicUUID),
+            this.gattOperationTimeoutMs,
+            translate('jewelry.connectTimeout')
+          );
+          this.eventHandler.onStatus?.(connected.id, status?.value || null);
+        } catch (statusError) {
+          logBLEFailure('[BLE] Initial status read failed', statusError, { hasDeviceId: true });
+        }
+      }
+      if (typeof manager.onDeviceDisconnected === 'function') {
+        addSubscription(manager.onDeviceDisconnected(connected.id, (disconnectError) => {
+          session.failed = true;
+          session.failure = disconnectError || new Error('VL01 disconnected.');
+          this.cleanupSession(connected.id);
+          this.eventHandler.onDisconnected?.(connected.id, disconnectError || null);
+        }));
+      }
+      if (session.failed || this.sessions.get(connected.id) !== session) {
+        throw session.failure || new Error('VL01 disconnected during setup.');
+      }
       return {
         id: connected.id,
         name: connected.name || device.name || 'NorthStar VL01',
-        battery: null,
+        battery,
         connected: true,
         connectionState: 'connected',
         autoReconnect: true,
         simulated: false
       };
     } catch (error) {
+      this.cleanupSession(device.id);
       try {
         if (typeof device.cancelConnection === 'function') await device.cancelConnection();
         else await manager.cancelDeviceConnection?.(device.id);
       } catch {}
+      const protocolFailure = /VL01|characteristic|service|battery/i.test(error?.message || '');
       const errorCode = error instanceof OperationTimeoutError
         ? BLE_ERROR_CODES.connectTimeout
+        : protocolFailure
+          ? BLE_ERROR_CODES.incompatibleDevice
         : classifyNativeBLEError(error, 'connect');
       const typedError = createBLEError(errorCode, error, 'connect');
       logBLEFailure('[BLE] Connection failed', typedError, { hasDeviceId: true });
@@ -310,11 +485,78 @@ export class BLEService {
   }
 
   async reconnect(device) {
-    return this.connect(device, { allowSimulation: false });
+    return this.reconnectWithBackoff(device);
+  }
+
+  async writeCommand(deviceId, base64Value, { withResponse = true } = {}) {
+    const protocol = this.requireProtocol();
+    if (!protocol.commandCharacteristicUUID) {
+      throw createBLEError(BLE_ERROR_CODES.protocolNotConfigured, null, 'write');
+    }
+    if (typeof base64Value !== 'string' || !base64Value || base64Value.length > 1024) {
+      throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, null, 'write');
+    }
+    try {
+      const decoded = base64ToBytes(base64Value);
+      if (!decoded.length || decoded.length > 512) throw new Error('VL01 command payload is invalid.');
+    } catch (error) {
+      throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, error, 'write');
+    }
+    const session = this.sessions.get(deviceId);
+    const connected = session?.device;
+    if (!connected) throw createBLEError(BLE_ERROR_CODES.connectFailed, null, 'write');
+    const method = withResponse
+      ? connected.writeCharacteristicWithResponseForService
+      : connected.writeCharacteristicWithoutResponseForService;
+    if (typeof method !== 'function') {
+      throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, null, 'write');
+    }
+    try {
+      await withTimeout(
+        method.call(
+          connected,
+          protocol.serviceUUID,
+          protocol.commandCharacteristicUUID,
+          base64Value
+        ),
+        this.gattOperationTimeoutMs,
+        translate('jewelry.connectTimeout')
+      );
+      return true;
+    } catch (error) {
+      const code = error instanceof OperationTimeoutError
+        ? BLE_ERROR_CODES.connectTimeout
+        : classifyNativeBLEError(error, 'write');
+      const typedError = createBLEError(code, error, 'write');
+      logBLEFailure('[BLE] GATT command write failed', typedError, { hasDeviceId: true });
+      throw typedError;
+    }
+  }
+
+  async reconnectWithBackoff(device, { attempts = 4, baseDelayMs = 1000, sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) } = {}) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      try {
+        return await this.connect(device, { allowSimulation: false });
+      } catch (error) {
+        lastError = error;
+        const terminal = [
+          BLE_ERROR_CODES.permissionDenied,
+          BLE_ERROR_CODES.poweredOff,
+          BLE_ERROR_CODES.unavailable,
+          BLE_ERROR_CODES.protocolNotConfigured,
+          BLE_ERROR_CODES.incompatibleDevice
+        ].includes(error?.code);
+        if (terminal || attempt === attempts - 1) break;
+        await sleep(baseDelayMs * Math.pow(2, attempt));
+      }
+    }
+    throw lastError || createBLEError(BLE_ERROR_CODES.connectFailed, null, 'reconnect');
   }
 
   async disconnect(deviceId) {
     if (!deviceId) return;
+    this.cleanupSession(deviceId);
     const manager = this.getManager();
     if (!manager || Platform.OS === 'web') return;
     try {

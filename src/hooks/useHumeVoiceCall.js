@@ -329,14 +329,22 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       return true;
     }
 
-    const queued = await queueOfflineMessage({ sessionId: sessionIdRef.current, text });
-    appendMessage('user', text, { id: queued.id, source: 'offline', deliveryStatus: 'queued' });
-    await refreshPendingCount();
-    if (service === offlineEVIService && service.getState() === 'connected') service.sendText(text, { emitUser: false });
-    else setFallbackAvailable(true);
-    setNotice(isOnline ? voiceCallCopy.queued : voiceCallCopy.offline);
-    return false;
-  }, [appendMessage, forcedOffline, isOnline, refreshPendingCount]);
+    try {
+      const queued = await queueOfflineMessage({ sessionId: sessionIdRef.current, text });
+      appendMessage('user', text, { id: queued.id, source: 'offline', deliveryStatus: 'queued' });
+      await refreshPendingCount();
+      if (service === offlineEVIService && service.getState() === 'connected') service.sendText(text, { emitUser: false });
+      else setFallbackAvailable(true);
+      setNotice(isOnline ? voiceCallCopy.queued : voiceCallCopy.offline);
+      return false;
+    } catch (queueError) {
+      logger.warn('[VoiceCall] Could not persist the offline message', {
+        name: queueError?.name || 'OfflineQueueError'
+      });
+      presentError(queueError);
+      throw queueError;
+    }
+  }, [appendMessage, forcedOffline, isOnline, presentError, refreshPendingCount]);
 
   const retryMessage = useCallback(async (messageId) => {
     if (!messageId) return false;

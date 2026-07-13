@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
   image: { width: 132, height: 116 },
   compactImage: { width: 64, height: 64 },
   copy: { maxWidth: 420, alignItems: 'center', gap: spacing.xs },
-  compactCopy: { flex: 1, alignItems: 'flex-start' },
-  compactText: { textAlign: 'left' },
+  compactCopy: { flex: 1, alignItems: 'stretch' },
+  compactText: { textAlign: 'auto' },
   title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18, textAlign: 'center' },
   message: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 14, lineHeight: 20, textAlign: 'center' }
 });

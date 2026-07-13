@@ -8,7 +8,12 @@ function customizationURL(pathname) {
 
 export async function configureHumeCustomSession({ chatId, customSessionId, accessToken }) {
   if (!config.humeCLMEnabled) return;
+  // The production WebSocket gateway injects the supplemental CLM key into
+  // the first session_settings frame. Avoid a second chat-ID based control
+  // plane request that cannot be ownership-bound across server instances.
+  if (config.humeWSProxyURL) return;
   if (!chatId) throw new Error('Hume did not provide a chat ID.');
+  if (!config.humeCustomizationURL) throw new Error('Voice customization is not configured for this build.');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), SESSION_CONFIGURATION_TIMEOUT_MS);
   try {

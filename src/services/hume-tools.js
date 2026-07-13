@@ -22,6 +22,7 @@ export async function executeHumeTool(toolCall, { accessToken, signal } = {}) {
   const unlink = linkAbortSignal(controller, signal);
   const timeout = setTimeout(() => controller.abort(), TOOL_TIMEOUT_MS);
   try {
+    if (!config.humeCustomizationURL) return JSON.stringify(localSafetyToolResult(scenario));
     const baseURL = config.humeCustomizationURL.replace(/\/$/, '');
     const response = await fetch(`${baseURL}/v1/safety/tips`, {
       method: 'POST',

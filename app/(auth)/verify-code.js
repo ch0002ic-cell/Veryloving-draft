@@ -47,7 +47,7 @@ export default function VerifyCode() {
         keyboardType="number-pad"
         maxLength={6}
         onChangeText={(value) => setCode(value.replace(/\D/g, '').slice(0, 6))}
-        placeholder="123456"
+        placeholder={t('auth.verificationCode')}
         style={styles.input}
         textContentType="oneTimeCode"
         value={code}

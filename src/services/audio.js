@@ -1,7 +1,5 @@
 import {
-  AudioModule,
   createAudioPlayer,
-  RecordingPresets,
   requestRecordingPermissionsAsync,
   setAudioModeAsync
 } from 'expo-audio';
@@ -9,8 +7,11 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { explainPermission } from './permissions';
 import { logger } from '../utils/logger';
 import { VOICE_AUDIO_CACHE_PREFIX } from './voice-audio-cache';
+import { pcmBytesToBase64 } from '../utils/pcm';
 
 const PLAYBACK_SEGMENT_TIMEOUT_MS = 60000;
+const HUME_SAMPLE_RATE = 48000;
+const HUME_CHANNELS = 1;
 
 async function deleteAudioFile(uri) {
   if (!uri) return;
@@ -26,9 +27,41 @@ class AudioService {
   playbackEnqueueQueue = Promise.resolve();
   playbackDrainPromise = null;
   currentPlaybackFinish = null;
+  pcmStream = null;
+  pcmFormatWarningShown = false;
 
   setAudioChunkCallback(callback) {
     this.audioChunkCallback = callback;
+  }
+
+  attachPCMStream(stream) {
+    this.pcmStream = stream;
+    return () => {
+      if (this.pcmStream === stream) this.pcmStream = null;
+    };
+  }
+
+  handlePCMBuffer(buffer) {
+    if (!this.recording || this.recording !== this.pcmStream || !this.audioChunkCallback) return false;
+    if (buffer?.sampleRate !== HUME_SAMPLE_RATE || buffer?.channels !== HUME_CHANNELS) {
+      if (!this.pcmFormatWarningShown) {
+        this.pcmFormatWarningShown = true;
+        logger.error('[AudioService] Native PCM format does not match the Hume session', {
+          sampleRate: buffer?.sampleRate,
+          channels: buffer?.channels
+        });
+      }
+      return false;
+    }
+    try {
+      const encoded = pcmBytesToBase64(buffer.data);
+      if (!encoded) return false;
+      this.audioChunkCallback(encoded);
+      return true;
+    } catch (error) {
+      logger.warn('[AudioService] Dropped an invalid PCM buffer', { name: error?.name || 'PCMEncodingError' });
+      return false;
+    }
   }
 
   async startVoiceCallMode() {
@@ -38,7 +71,10 @@ class AudioService {
       shouldPlayInBackground: true,
       allowsBackgroundRecording: true,
       interruptionMode: 'doNotMix',
-      shouldRouteThroughEarpiece: false
+      // Keep assistant playback away from the loudspeaker while raw PCM is
+      // being captured. This reduces feedback on devices whose native capture
+      // path does not expose voice-processing/AEC controls through Expo yet.
+      shouldRouteThroughEarpiece: true
     });
   }
 
@@ -52,17 +88,35 @@ class AudioService {
 
   async startRecording() {
     if (this.recording) return;
+    const stream = this.pcmStream;
+    if (!stream) {
+      const error = new Error('Real-time microphone streaming is not available on this platform.');
+      error.code = 'PCM_STREAM_UNAVAILABLE';
+      throw error;
+    }
     await this.startVoiceCallMode();
     try {
       if (!await explainPermission('microphone')) throw new Error('Microphone permission was not requested.');
       const permission = await requestRecordingPermissionsAsync();
       if (!permission.granted) throw new Error('Microphone permission is required.');
-      const recording = new AudioModule.AudioRecorder({});
-      await recording.prepareToRecordAsync(RecordingPresets.HIGH_QUALITY);
-      recording.record();
-      this.recording = recording;
-      logger.voice('[AudioService] Recording started. Streaming chunks require a dev-client native audio backend.');
+      this.recording = stream;
+      this.pcmFormatWarningShown = false;
+      await stream.start();
+      if (stream.sampleRate !== HUME_SAMPLE_RATE || stream.channels !== HUME_CHANNELS) {
+        const error = new Error('This device could not provide the required 48 kHz mono microphone format.');
+        error.code = 'PCM_FORMAT_UNSUPPORTED';
+        throw error;
+      }
+      // AudioStream currently selects a record-only category on iOS. Restore
+      // the full-duplex Expo audio mode after native capture is active.
+      await this.startVoiceCallMode();
+      logger.voice('[AudioService] Real-time PCM microphone stream started', {
+        sampleRate: stream.sampleRate,
+        channels: stream.channels
+      });
     } catch (error) {
+      if (this.recording === stream) this.recording = null;
+      try { stream.stop(); } catch {}
       await this.stopVoiceCallMode().catch(() => {});
       throw error;
     }
@@ -73,10 +127,9 @@ class AudioService {
     const recording = this.recording;
     this.recording = null;
     try {
-      await recording.stop();
+      recording.stop();
       return null;
     } finally {
-      await deleteAudioFile(recording.uri);
       await this.stopVoiceCallMode().catch(() => {});
     }
   }

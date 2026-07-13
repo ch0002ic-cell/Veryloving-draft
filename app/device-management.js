@@ -29,7 +29,7 @@ export default function DeviceManagement() {
     try {
       const result = await removePairedDevice();
       if (!result.nativeDisconnected) {
-        setError('NorthStar was removed, but Bluetooth could not disconnect it. Turn Bluetooth off and on if it still appears connected.');
+        setError(t('settings.updateFailedMessage'));
       }
     } catch {
       setError(t('settings.updateFailedMessage'));

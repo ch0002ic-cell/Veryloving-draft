@@ -3,6 +3,16 @@
 const crypto = require('node:crypto');
 const http = require('node:http');
 const {
+  profileFromClaims,
+  signRefreshJWT,
+  signSessionJWT,
+  verifyProviderIdentityToken,
+  verifyRefreshJWT,
+  verifySessionJWT
+} = require('./auth-session.cjs');
+const { attachVoiceGateway } = require('./voice-gateway.cjs');
+const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
+const {
   SAFETY_SYSTEM_PROMPT,
   createLocalCompanionResponse,
   getSafetyTips,
@@ -29,8 +39,23 @@ function envConfig(overrides = {}) {
     nodeEnv: process.env.NODE_ENV || 'development',
     clmBearerToken: process.env.HUME_CLM_BEARER_TOKEN || '',
     humeApiKey: process.env.HUME_API_KEY || '',
+    humeConfigId: process.env.HUME_CONFIG_ID || '',
+    humeAllowedVoiceIds: process.env.HUME_ALLOWED_VOICE_IDS || '',
+    humeAllowClientResume: process.env.HUME_ALLOW_CLIENT_RESUME === 'true',
     appAuthVerifyURL: process.env.APP_AUTH_VERIFY_URL || '',
     devAppToken: process.env.DEV_APP_TOKEN || '',
+    authExchangeEnabled: process.env.AUTH_EXCHANGE_ENABLED === 'true',
+    sessionJWTSecret: process.env.SESSION_JWT_SECRET || '',
+    sessionJWTIssuer: process.env.SESSION_JWT_ISSUER || 'https://api.veryloving.ai',
+    sessionJWTAudience: process.env.SESSION_JWT_AUDIENCE || 'veryloving-mobile',
+    sessionJWTTTLSeconds: positiveNumber(process.env.SESSION_JWT_TTL_SECONDS, 3600),
+    sessionJWTRefreshTTLSeconds: positiveNumber(process.env.SESSION_REFRESH_TTL_SECONDS, 30 * 86400),
+    appleClientIds: process.env.APPLE_CLIENT_IDS || '',
+    googleClientIds: process.env.GOOGLE_CLIENT_IDS || '',
+    safetyApiEnabled: process.env.SAFETY_API_ENABLED === 'true',
+    safetyTableName: process.env.SAFETY_TABLE_NAME || '',
+    safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
+    awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
     upstreamURL: process.env.CLM_UPSTREAM_URL || '',
     upstreamApiKey: process.env.CLM_UPSTREAM_API_KEY || '',
     upstreamModel: process.env.CLM_UPSTREAM_MODEL || '',
@@ -39,6 +64,63 @@ function envConfig(overrides = {}) {
     logger: console,
     ...overrides
   };
+}
+
+function validateServerURL(value, name, { production = false } = {}) {
+  if (!value) return;
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new Error(`${name} must be a valid URL`);
+  }
+  if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error(`${name} must use HTTP or HTTPS`);
+  if (production && parsed.protocol !== 'https:') throw new Error(`${name} must use HTTPS in production`);
+  if (parsed.username || parsed.password) throw new Error(`${name} must not contain embedded credentials`);
+  if ([...parsed.searchParams.keys()].some((key) => /token|secret|password|api[_-]?key/i.test(key))) {
+    throw new Error(`${name} must not contain credential query parameters`);
+  }
+}
+
+function validateServerConfig(config) {
+  const production = config.nodeEnv === 'production';
+  validateServerURL(config.appAuthVerifyURL, 'APP_AUTH_VERIFY_URL', { production });
+  validateServerURL(config.upstreamURL, 'CLM_UPSTREAM_URL', { production });
+  if (production && config.devAppToken) throw new Error('DEV_APP_TOKEN must not be set in production');
+  if (production) {
+    if (!config.authExchangeEnabled) throw new Error('AUTH_EXCHANGE_ENABLED must be true in production');
+    if (!config.safetyApiEnabled) throw new Error('SAFETY_API_ENABLED must be true in production');
+    if (!config.appleClientIds || !config.googleClientIds) {
+      throw new Error('APPLE_CLIENT_IDS and GOOGLE_CLIENT_IDS are required in production');
+    }
+    if (!config.humeApiKey || !config.humeConfigId || !config.clmBearerToken) {
+      throw new Error('HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production');
+    }
+    if (!config.humeAllowedVoiceIds) throw new Error('HUME_ALLOWED_VOICE_IDS is required in production');
+    if (config.humeAllowClientResume) {
+      throw new Error('HUME_ALLOW_CLIENT_RESUME must remain false until chat ownership is enforced');
+    }
+  }
+  if (config.authExchangeEnabled) {
+    if (typeof config.sessionJWTSecret !== 'string' || config.sessionJWTSecret.length < 32) {
+      throw new Error('SESSION_JWT_SECRET must contain at least 32 characters when auth exchange is enabled');
+    }
+    if (!config.appleClientIds && !config.googleClientIds) {
+      throw new Error('At least one provider client ID must be configured when auth exchange is enabled');
+    }
+  }
+  if (config.safetyApiEnabled && !config.safetyRepository && !config.safetyTableName) {
+    throw new Error('SAFETY_TABLE_NAME is required when the safety API is enabled');
+  }
+  if (config.safetyApiEnabled) {
+    if (!config.authExchangeEnabled) {
+      throw new Error('AUTH_EXCHANGE_ENABLED must be true when the safety API is enabled');
+    }
+    if (typeof config.sessionJWTSecret !== 'string' || config.sessionJWTSecret.length < 32) {
+      throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
+    }
+  }
+  return config;
 }
 
 function json(res, statusCode, payload) {
@@ -254,6 +336,8 @@ async function callUpstream(body, config, res, sessionId) {
 async function authenticateApp(req, config) {
   const token = bearerToken(req);
   if (!token) return false;
+  const session = verifySessionJWT(token, config);
+  if (session) return session;
   if (typeof config.verifyAppToken === 'function') return Boolean(await config.verifyAppToken(token));
   if (config.appAuthVerifyURL) {
     const controller = new AbortController();
@@ -272,7 +356,83 @@ async function authenticateApp(req, config) {
 }
 
 function appAuthConfigured(config) {
-  return typeof config.verifyAppToken === 'function' || Boolean(config.appAuthVerifyURL) || (config.nodeEnv !== 'production' && Boolean(config.devAppToken));
+  return (typeof config.sessionJWTSecret === 'string' && config.sessionJWTSecret.length >= 32)
+    || typeof config.verifyAppToken === 'function'
+    || Boolean(config.appAuthVerifyURL)
+    || (config.nodeEnv !== 'production' && Boolean(config.devAppToken));
+}
+
+async function exchangeIdentity(body, config) {
+  const provider = body?.provider;
+  const idToken = body?.idToken;
+  const nonce = body?.nonce;
+  if (!['apple', 'google'].includes(provider) || typeof idToken !== 'string' || !idToken) {
+    const error = new Error('provider and idToken are required');
+    error.statusCode = 400;
+    throw error;
+  }
+  if (nonce !== undefined && (typeof nonce !== 'string' || nonce.length > 256)) {
+    const error = new Error('nonce is invalid');
+    error.statusCode = 400;
+    throw error;
+  }
+  if (provider === 'apple' && (typeof nonce !== 'string' || nonce.length < 32)) {
+    const error = new Error('nonce is required for Apple authentication');
+    error.statusCode = 400;
+    throw error;
+  }
+  let claims;
+  try {
+    claims = typeof config.verifyProviderToken === 'function'
+      ? await config.verifyProviderToken({ provider, idToken, nonce })
+      : await verifyProviderIdentityToken({ provider, idToken, nonce }, {
+        appleClientIds: config.appleClientIds,
+        googleClientIds: config.googleClientIds,
+        fetchImpl: config.fetchImpl
+      });
+  } catch {
+    const error = new Error('Identity token verification failed');
+    error.statusCode = 401;
+    throw error;
+  }
+  if (!claims?.sub) {
+    const error = new Error('Identity token verification failed');
+    error.statusCode = 401;
+    throw error;
+  }
+  const user = profileFromClaims(provider, claims, body?.displayName);
+  const session = signSessionJWT({ provider, subject: claims.sub }, config);
+  const refresh = signRefreshJWT({
+    subject: session.payload.sub,
+    sessionId: session.payload.sid
+  }, config);
+  return {
+    accessToken: session.token,
+    expiresAt: session.payload.exp * 1000,
+    refreshToken: refresh.token,
+    refreshExpiresAt: refresh.payload.exp * 1000,
+    user
+  };
+}
+
+function refreshIdentity(body, config) {
+  const claims = verifyRefreshJWT(body?.refreshToken, config);
+  if (!claims) {
+    const error = new Error('Refresh session is invalid or expired');
+    error.statusCode = 401;
+    throw error;
+  }
+  const session = signSessionJWT({
+    subjectClaim: claims.sub,
+    sessionId: claims.sid
+  }, config);
+  const refresh = signRefreshJWT({ subject: claims.sub, sessionId: claims.sid }, config);
+  return {
+    accessToken: session.token,
+    expiresAt: session.payload.exp * 1000,
+    refreshToken: refresh.token,
+    refreshExpiresAt: refresh.payload.exp * 1000
+  };
 }
 
 async function configureHumeSession(chatId, config) {
@@ -296,7 +456,13 @@ async function configureHumeSession(chatId, config) {
 }
 
 function createHandler(overrides = {}) {
-  const config = envConfig(overrides);
+  const config = validateServerConfig(envConfig(overrides));
+  if (config.safetyApiEnabled && !config.safetyRepository) {
+    config.safetyRepository = createDynamoSafetyRepository({
+      tableName: config.safetyTableName,
+      region: config.awsRegion
+    });
+  }
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
     try {
@@ -354,6 +520,51 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      if (req.method === 'POST' && url.pathname === '/v1/auth/exchange') {
+        if (!config.authExchangeEnabled) {
+          json(res, 503, { error: 'Production authentication is not configured' });
+          return;
+        }
+        const body = await readJson(req);
+        json(res, 200, await exchangeIdentity(body, config));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/auth/refresh') {
+        if (!config.authExchangeEnabled) {
+          json(res, 503, { error: 'Production authentication is not configured' });
+          return;
+        }
+        const body = await readJson(req);
+        json(res, 200, refreshIdentity(body, config));
+        return;
+      }
+
+      if (
+        url.pathname === '/v1/emergency-contacts'
+        || url.pathname.startsWith('/v1/emergency-contacts/')
+        || url.pathname === '/v1/sos-events'
+        || url.pathname.startsWith('/v1/safety-sessions')
+        || url.pathname.startsWith('/v1/privacy/')
+      ) {
+        if (!config.safetyApiEnabled) {
+          json(res, 503, { error: 'The production safety API is not configured' });
+          return;
+        }
+        const principal = await authenticateApp(req, config);
+        const body = ['POST', 'PATCH'].includes(req.method) ? await readJson(req) : {};
+        if (await handleSafetyAPI({
+          req,
+          res,
+          url,
+          body,
+          principal,
+          repository: config.safetyRepository,
+          retentionDays: config.safetyRetentionDays,
+          json
+        })) return;
+      }
+
       if (req.method === 'POST' && url.pathname === '/v1/safety/tips') {
         if (!appAuthConfigured(config)) {
           json(res, 503, { error: 'Application authentication is not configured' });
@@ -369,6 +580,10 @@ function createHandler(overrides = {}) {
       }
 
       if (req.method === 'POST' && url.pathname === '/v1/hume/session/configure') {
+        if (config.nodeEnv === 'production') {
+          json(res, 410, { error: 'Voice sessions are configured by the authenticated gateway' });
+          return;
+        }
         if (!appAuthConfigured(config)) {
           json(res, 503, { error: 'Application authentication is not configured' });
           return;
@@ -398,7 +613,9 @@ function createHandler(overrides = {}) {
 }
 
 function createVeryLovingCLMServer(options = {}) {
-  const server = http.createServer(createHandler(options));
+  const config = validateServerConfig(envConfig(options));
+  const server = http.createServer(createHandler(config));
+  attachVoiceGateway(server, config);
   server.requestTimeout = 35000;
   server.headersTimeout = 10000;
   server.keepAliveTimeout = 5000;
@@ -414,8 +631,12 @@ module.exports = {
   createHandler,
   createVeryLovingCLMServer,
   envConfig,
+  exchangeIdentity,
+  refreshIdentity,
   normalizeMessages,
   safeEqual,
+  validateServerConfig,
+  validateServerURL,
   streamTextCompletion,
   streamToolCall
 };

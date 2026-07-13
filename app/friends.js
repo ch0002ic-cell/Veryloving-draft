@@ -9,6 +9,7 @@ import { useI18n } from '../src/context/I18nContext';
 import { EmptyState } from '../src/components/EmptyState';
 import { images } from '../src/constants/assets';
 import { colors } from '../src/constants/theme';
+import { config } from '../src/utils/config';
 
 export default function Friends() {
   const { friends, setFriends } = useAppState();
@@ -16,7 +17,9 @@ export default function Friends() {
   return (
     <Screen scroll={false}>
       <Header title={t('friends.title')} subtitle={t('friends.subtitle')} />
-      <Button title={t('friends.addDemo')} icon="person-add-outline" onPress={() => setFriends([...friends, { id: Date.now().toString(), name: t('friends.newGuardian'), status: 'Pending' }])} />
+      {__DEV__ && config.enableMockPhoneAuth ? (
+        <Button title={t('friends.addDemo')} icon="person-add-outline" onPress={() => setFriends([...friends, { id: Date.now().toString(), name: t('friends.newGuardian'), status: 'Pending' }])} />
+      ) : null}
       <FlatList
         contentContainerStyle={styles.list}
         data={friends}

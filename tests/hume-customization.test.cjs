@@ -10,6 +10,7 @@ const { createOpaqueSessionId } = require('../src/utils/session-id');
 const {
   buildHumeWebSocketURL,
   classifyHumeClose,
+  createProxyAuthenticationPayload,
   createSessionSettingsPayload,
   createToolErrorPayload,
   createToolResponsePayload,
@@ -58,7 +59,7 @@ test('Hume protocol uses official session and resume field names', () => {
 test('Hume protocol omits blank config IDs and preserves configured IDs', () => {
   for (const connection of [
     { apiKey: 'development-key' },
-    { proxyURL: 'wss://voice.veryloving.test/hume', appAccessToken: 'app-token' }
+    { apiKey: 'development-key' }
   ]) {
     const defaultURL = new URL(buildHumeWebSocketURL({ ...connection, configId: '   ' }));
     assert.equal(defaultURL.searchParams.has('config_id'), false);
@@ -74,6 +75,28 @@ test('Hume protocol omits blank config IDs and preserves configured IDs', () => 
   }
   assert.equal(normalizeHumeConfigId(''), undefined);
   assert.equal(normalizeHumeConfigId(null), undefined);
+});
+
+test('proxy WebSocket URL never contains the app session token', () => {
+  const proxyURL = buildHumeWebSocketURL({
+    proxyURL: 'wss://voice.veryloving.test/api/voice/hume-ws',
+    appAccessToken: 'must-not-appear-in-url',
+    configId: 'config-id'
+  });
+  assert.equal(proxyURL, 'wss://voice.veryloving.test/api/voice/hume-ws');
+  assert.doesNotMatch(proxyURL, /token|must-not-appear/);
+  assert.deepEqual(createProxyAuthenticationPayload({
+    accessToken: 'first-party-session',
+    configId: 'config-id'
+  }), {
+    type: 'authenticate',
+    access_token: 'first-party-session',
+    connection: {
+      config_id: 'config-id',
+      voice_id: undefined,
+      resumed_chat_group_id: undefined
+    }
+  });
 });
 
 test('Hume tool payloads preserve tool-call correlation and safe fallback content', () => {

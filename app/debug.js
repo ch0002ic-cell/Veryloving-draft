@@ -6,8 +6,23 @@ import { Card } from '../src/components/Card';
 import { config } from '../src/utils/config';
 import { useI18n } from '../src/context/I18nContext';
 
+function safeConfigSummary() {
+  return {
+    apiBaseUrlConfigured: Boolean(config.apiBaseUrl),
+    googleWebClientIdConfigured: Boolean(config.googleWebClientId),
+    humeWebSocketProxyConfigured: Boolean(config.humeWSProxyURL),
+    humeConfigIdConfigured: Boolean(config.humeConfigId),
+    humeDirectDevelopmentKeyConfigured: Boolean(config.humeApiKey),
+    humeCustomizationConfigured: Boolean(config.humeCustomizationURL),
+    humeCLMEnabled: config.humeCLMEnabled,
+    mapboxConfigured: Boolean(config.mapboxAccessToken),
+    offlineModeForced: config.enableOfflineMode,
+    mockPhoneAuthEnabled: config.enableMockPhoneAuth
+  };
+}
+
 export default function Debug() {
   const { t } = useI18n();
   if (!__DEV__) return <Redirect href="/" />;
-  return <Screen><Header title={t('debug.title')} subtitle={t('debug.subtitle')} /><Card><Text>{JSON.stringify(config, null, 2)}</Text></Card></Screen>;
+  return <Screen><Header title={t('debug.title')} subtitle={t('debug.subtitle')} /><Card><Text>{JSON.stringify(safeConfigSummary(), null, 2)}</Text></Card></Screen>;
 }

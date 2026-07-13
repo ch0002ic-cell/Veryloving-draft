@@ -10,6 +10,8 @@ export const BLE_ERROR_CODES = Object.freeze({
   invalidDevice: 'BLE_INVALID_DEVICE',
   connectTimeout: 'BLE_CONNECT_TIMEOUT',
   connectFailed: 'BLE_CONNECT_FAILED',
+  protocolNotConfigured: 'BLE_PROTOCOL_NOT_CONFIGURED',
+  incompatibleDevice: 'BLE_INCOMPATIBLE_DEVICE',
   disconnectFailed: 'BLE_DISCONNECT_FAILED'
 });
 
