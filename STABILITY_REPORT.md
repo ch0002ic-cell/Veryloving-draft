@@ -3,13 +3,15 @@
 Audit date: 13 July 2026
 Fix commit: `69cb99c` (`fix: harden critical runtime safety flows`)
 
+> Historical evidence notice: test counts, simulator observations, file references, and “remaining” findings below describe the `69cb99c` audit snapshot. They are preserved rather than rewritten as if later work had been exercised in that runtime session. See **Post-Validation Architecture Update — 13 July 2026** for the current code state and [COMPREHENSIVE_FINAL_AUDIT.md](./COMPREHENSIVE_FINAL_AUDIT.md) for the final handoff assessment.
+
 ## Executive Summary
 
 The audit reproduced the app in an iOS development build, reviewed every core flow, and fixed the highest-risk failures found in authentication, onboarding, SOS, privacy export/deletion, Mapbox fallback behavior, phone calls, and Hume connection/audio lifecycle management.
 
 The final deterministic suite passes 74/74, ESLint is clean, Expo Doctor passes 20/20, CocoaPods installs successfully, an unsigned iOS simulator build compiles, and final iOS and Android production exports succeed. A clean iOS simulator launch rendered the logged-out onboarding UI without a JavaScript crash.
 
-The app is materially safer and more stable, but it is **not yet production-ready**. Real Hume PCM streaming, the production voice proxy and auth-token exchange, account-scoped encrypted PII storage, production SMS, complete VL01 GATT behavior, and several map/safety backend flows remain launch gates.
+At that audit snapshot, the app was materially safer and more stable but **not production-ready**. Real Hume PCM streaming, the production voice proxy and auth-token exchange, account-scoped encrypted PII storage, production SMS, complete VL01 GATT behavior, and several map/safety backend flows were still absent.
 
 ## Test Environment and Limitations
 
@@ -163,7 +165,7 @@ No JavaScript red screen or app exception appeared after the final clean bundle.
 | Settings/privacy | Export/delete/logout race review and tests | Modern export and cleanup implemented; encrypted per-account storage still required |
 | UI/globalization | Clean onboarding render, static route/layout review, catalog/RTL tests | 155 catalogs have structural parity; 151 require native-speaker safety-copy review |
 
-## Remaining Known Issues and Launch Gates
+## Remaining Known Issues And Launch Gates At The `69cb99c` Snapshot
 
 ### P1 — must resolve before production
 
@@ -184,18 +186,32 @@ No JavaScript red screen or app exception appeared after the final clean bundle.
 - Perform native-speaker review of the 151 machine-generated catalogs, prioritizing emergency, consent, permission, and privacy text.
 - Complete responsive and accessibility checks across every device size, RTL layout, dynamic type category, and screen-reader flow.
 
+## Post-Validation Architecture Update — 13 July 2026
+
+The following code was added after the historical runtime session above. It has deterministic test coverage but was not exercised with production credentials, DynamoDB, Hume, a signed physical device, or a VL01 wearable during that session:
+
+- **Authentication:** Apple and Google identity assertions now go to `POST /v1/auth/exchange`. The server verifies provider JWT claims and issues distinct access/refresh JWTs. `POST /v1/auth/refresh` rotates the client-held pair; the app renews before expiry/on cold start/foreground, preserves offline state for network failures, and clears rejected sessions. Persistent refresh-family state, reuse detection/revocation, deletion tombstones, provider credential-state checks, production phone/SMS, and uniform request-level 401 retry remain open.
+- **WebSocket authentication:** the client proxy URL no longer carries an app bearer or Hume connection choices. The first TLS-protected frame carries the VeryLoving JWT and bounded connection settings. The in-repository `/api/voice/hume-ws` gateway verifies the JWT and `voice:connect` scope before opening Hume with the server-only key. The JWT is not a single-use voice ticket; production rate limits, revocation/replay resistance, ownership-bound resume/session configuration, and load/ingress testing remain open.
+- **PCM path:** a root-mounted `expo-audio` stream requests 48 kHz mono Int16 buffers, the audio service validates and base64-encodes headerless PCM, and the Hume service sends chunks with a backpressure limit. Physical evidence is still required for continuous frame timing, full-duplex audio, interruption, echo, Bluetooth routing, background/foreground, lock screen, and repeated cleanup.
+- **BLE:** real-device scanning is filtered by a configured VL01 service UUID. Connection normalizes short/vendor UUIDs, bounds discovery/read/write operations, reads and conditionally monitors one-byte battery, surfaces configured raw status/events, performs bounded raw command writes, observes degradation/disconnection, and serializes reconnect backoff. The code fails closed without approved service/battery UUIDs. Firmware-approved semantics/decoding/commands, ownership/secure pairing, and physical/background testing remain open.
+- **Safety backend:** account-authenticated DynamoDB endpoints now migrate/synchronize account-bound contacts, maintain idempotent current safety state, durably accept retry-safe SOS records, and export/delete the authenticated account's Dynamo records. `accepted` means stored, not delivered. Notification delivery/receipts, deletion tombstones/session revocation, vendor privacy orchestration, production retention, and live-table evidence remain open.
+
+The original `74/74` result above remains the evidence for commit `69cb99c`; later suite totals belong in the final audit report and must not be backdated into this historical run.
+
+For the post-change working tree, the final release validator subsequently passed ESLint, 163/163 tests with no skips/failures, Expo Doctor 20/20, and both production exports. Root and server production dependency audits also reported 0 vulnerabilities after the scoped UUID override and compatibility check. See [COMPREHENSIVE_FINAL_AUDIT.md](./COMPREHENSIVE_FINAL_AUDIT.md) for exact module/bundle results and the remaining P1 decision.
+
 ## Job-Description Alignment
 
-- **Native iOS:** Installed and linked CocoaPods, produced a native simulator build, handled entitlements honestly, and hardened asynchronous audio/microphone lifecycle and temporary-file cleanup. Swift/SwiftUI and real native PCM work are not present in this React Native repository and should not be claimed until implemented.
-- **Full stack:** Validated the Node CLM service, authenticated endpoints, safety prompt/tool behavior, timeouts, and mobile integration. This repository is not a Next.js/AWS implementation; production proxy/auth infrastructure remains explicit work.
-- **Security and architecture:** Added fail-closed auth, protected routes, account-bound onboarding, deterministic cleanup, mutation locks, safe secret configuration, and a concrete plan for backend JWT exchange and encrypted per-account storage.
-- **BLE:** Preserved BLE permissions/discovery and improved navigation/error boundaries while identifying the exact GATT/hardware gap rather than simulating production readiness.
-- **Voice AI:** Corrected Hume payloads, terminal-close handling, bounded reconnects, microphone races, playback serialization, offline retry scheduling, and artifact cleanup, with native PCM and proxy verification tracked as launch gates.
+- **Native iOS:** Installed and linked CocoaPods, produced a native simulator build, handled entitlements honestly, hardened asynchronous audio lifecycle, and subsequently implemented an Expo native PCM stream. Swift/SwiftUI is not part of this React Native repository, and physical audio behavior remains unverified.
+- **Full stack:** Validated the Node CLM service and subsequently added provider exchange, first-party JWTs, an authenticated WebSocket gateway, and DynamoDB safety endpoints. This remains a Node rather than Next.js application; AWS infrastructure and production delivery systems are not provisioned.
+- **Security and architecture:** Added fail-closed routes, account-bound onboarding, provider verification, scoped session JWTs, first-frame WS authentication, deterministic cleanup, and safe secret configuration. Refresh/revocation and encrypted per-account storage remain stop-ship gates.
+- **BLE:** Added protocol-gated, timed GATT discovery/read/write, battery handling, raw status/events, disconnect degradation, and serialized reconnect while keeping firmware decoding/commands, ownership, secure pairing, and hardware behavior explicit.
+- **Voice AI:** Added the PCM and gateway paths alongside corrected Hume payloads, terminal-close handling, bounded reconnects, playback serialization, offline retry scheduling, and artifact cleanup; production/device verification remains a launch gate.
 
 ## Recommended Next Verification Order
 
-1. Implement backend session exchange/refresh and encrypted per-account storage.
-2. Implement the authenticated Hume proxy and native 48 kHz mono PCM stream.
-3. Implement VL01 GATT from the hardware protocol and test on a physical wearable.
-4. Connect production SMS, remote SOS/guardian dispatch, push registration, live map/share/route endpoints, and durable safety-mode state.
+1. Add persistent refresh-family reuse detection/revocation, deletion tombstones, uniform request-level 401 recovery, and encrypt/account-bind every remaining local PII store.
+2. Deploy and security/load-test the implemented auth, Hume gateway, CLM, and DynamoDB safety endpoints; add actual guardian/contact delivery and remote privacy operations.
+3. Complete approved VL01 decoding/commands, secure ownership/pairing, and the physical-wearable matrix.
+4. Connect production SMS, push registration/delivery, live map/share/route endpoints, and idempotent safety-mode transitions.
 5. Run the complete manual matrix on signed iOS and Android builds with production-like credentials, then repeat tests, Doctor, native builds, and both exports.

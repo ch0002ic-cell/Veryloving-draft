@@ -22,7 +22,9 @@ Clone and install:
 git clone https://github.com/ch0002ic-cell/Veryloving-draft.git
 cd Veryloving-draft
 npm install
+npm ci --prefix server
 cp .env.example .env
+cp server/.env.example server/.env
 ```
 
 Keep all server secrets out of `.env`. Expo variables beginning with `EXPO_PUBLIC_` are bundled into the app and must only contain public configuration.
@@ -41,7 +43,7 @@ npx expo run:ios
 npx expo run:android
 ```
 
-The generated app enables background audio for active safety calls and Bluetooth central mode for NorthStar. Confirm background microphone behavior on physical devices; simulators cannot validate microphone routing, BLE hardware, echo cancellation, or lock-screen behavior reliably.
+The generated app declares background-audio and Bluetooth-central capabilities for active safety calls and NorthStar. The `expo-audio` PCM stream, audio-session restoration, background capture, microphone routing, BLE lifecycle, echo cancellation, and lock-screen behavior still require signed physical-device validation; a simulator or successful build cannot prove them.
 
 For command-line Android builds, make sure Gradle can find JDK 17 and your SDK:
 
@@ -53,7 +55,7 @@ npx expo prebuild --clean --platform android
 npx expo run:android
 ```
 
-Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Set `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` to the public OAuth web client ID used to issue Google identity tokens. The local phone adapter exercises E.164 validation and verification navigation only when `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=true` in development/test; it is fail-closed in production. Production SMS delivery and provider-token exchange still require backend/OAuth infrastructure.
+Mapbox requires `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` at runtime and `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` while resolving native artifacts. Google Sign-In requires both the web client ID used as the identity-token audience and the native iOS client ID used for the URL scheme. Apple and Google identity tokens are exchanged at the in-repository `POST /v1/auth/exchange` endpoint; the app stores returned access/rotating refresh JWTs in SecureStore, renews before expiry, retries network outages, and fails closed on rejected refresh. Server-side revocation/reuse detection, deletion tombstones, provider credential-state checks, production phone challenges, and SMS delivery remain launch gates. The local phone adapter runs only when `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=true` in development/test and is fail-closed in production.
 
 This repository uses Expo Continuous Native Generation. The `ios/` and `android/` directories are generated, ignored, and must not be edited or committed. Native settings live in `app.config.js` and the config plugins under `plugins/`; `withPodfile.js` preserves modular headers and the EXAV compatibility hook, `withEntitlements.js` merges push and Apple Sign-In entitlements, `withGradleProperties.js` preserves AndroidX, Jetifier, the new architecture, and a 4 GB Gradle heap, and `withAndroidManifest.js` normalizes BLE declarations while keeping debug overlay permission out of release builds. Run `npx expo prebuild --clean` whenever you need fresh native projects.
 
@@ -72,17 +74,25 @@ Mobile/public variables:
 
 | Variable | Purpose | Production guidance |
 | --- | --- | --- |
-| `EXPO_PUBLIC_API_BASE_URL` | Base URL for the external production auth/API gateway. | Required; use `https`. |
-| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google OAuth web client ID used to request identity tokens. | Required for Google Sign-In; this ID is public. |
-| `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated WebSocket proxy used by the app for Hume EVI. | Required; use `wss`. Do not put a bearer token in the URL. |
+| `EXPO_PUBLIC_API_BASE_URL` | HTTPS root of the VeryLoving auth and safety API. | Required; point it at the deployed in-repository server or an API gateway routing to it. |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google OAuth web client ID used as the identity-token audience. | Required for Google Sign-In; this ID is public and must also be present in server `GOOGLE_CLIENT_IDS`. |
+| `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Native Google iOS OAuth client ID used to derive the callback URL scheme. | Required for production iOS Google Sign-In; this ID is public. |
+| `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated WebSocket endpoint, normally `wss://<api-domain>/api/voice/hume-ws`. | Required; the app sends its session JWT in the first TLS-protected frame, never in this URL. |
 | `EXPO_PUBLIC_HUME_CONFIG_ID` | Hume EVI configuration ID for the CLM, tool, and branded voice. | Required when CLM customization is enabled; otherwise optional. |
 | `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | Public HTTPS base URL for the deployed CLM/control-plane service. | Required when CLM customization is enabled. |
 | `EXPO_PUBLIC_HUME_CLM_ENABLED` | Enables the custom Hume CLM integration when set to `true`. | Set deliberately after the CLM and Hume configuration are verified. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Public identifier of the approved Hume voice. | Optional until a branded voice has been provisioned. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public Mapbox runtime token used to render maps. | Required; use a restricted public token, never a secret `sk.*` token. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for development and fault testing. | Keep `false` for production. Runtime outages can still offer the offline fallback. |
+| `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Enables backend contacts, safety-session persistence, and durable SOS acceptance. | Must be `true` for production; acceptance is not notification delivery. |
 | `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH` | Enables the development-only fixed-code phone adapter. | Keep `false` for production. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct Hume key supported only by development builds. | Development only; it must be absent from production because public variables are bundled. |
+| `EXPO_PUBLIC_VL01_ENABLED` | Enables real VL01 discovery and GATT validation. | Enable only after the firmware owner approves the UUIDs and physical-device matrix. |
+| `EXPO_PUBLIC_VL01_SERVICE_UUID` | Approved VL01 primary service UUID used for filtered scanning and discovery. | Required whenever VL01 is enabled. |
+| `EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID` | Approved one-byte battery percentage characteristic. | Required whenever VL01 is enabled. |
+| `EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID` | Readable/notifiable status characteristic. | Raw values can be surfaced; required by production diagnostics and therefore needs firmware/schema approval before a production build. |
+| `EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID` | Notifiable event characteristic. | Raw values can be surfaced; required by production diagnostics and therefore needs event-schema approval before a production build. |
+| `EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID` | Writable command characteristic. | A bounded raw write exists; required by production diagnostics and therefore needs command authorization/secure-pairing approval before a production build. |
 
 Build-only variables:
 
@@ -90,16 +100,31 @@ Build-only variables:
 | --- | --- | --- |
 | `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Resolves Mapbox native artifacts during prebuild/native builds. | Secret EAS build variable or uncommitted local shell; never an `EXPO_PUBLIC_` variable. |
 
-CLM server variables (use `server/.env.example` as the template):
+Backend server variables (use `server/.env.example` as the template):
 
 | Variable | Purpose |
 | --- | --- |
 | `NODE_ENV` | Selects development, test, or production server behavior. |
-| `PORT` | HTTP port for the CLM service. |
-| `HUME_API_KEY` | Server-side Hume credential used by the session-configure endpoint and operator scripts. |
+| `PORT` | HTTP and WebSocket listener port. |
+| `HUME_API_KEY` | Server-side Hume credential used by the voice gateway and session-configure endpoint. |
+| `HUME_CONFIG_ID` | Server-enforced Hume EVI config ID; required in production and conflicting client choices are rejected. |
+| `HUME_ALLOWED_VOICE_IDS` | Comma-separated allowlist of client-selectable Hume voice IDs; required in production. |
+| `HUME_ALLOW_CLIENT_RESUME` | Allows client-supplied Hume chat-group resume IDs; keep `false` until ownership binding is implemented. |
 | `HUME_CLM_BEARER_TOKEN` | Shared bearer token required on Hume-to-CLM requests. |
-| `APP_AUTH_VERIFY_URL` | External HTTPS endpoint that validates app access tokens. |
+| `APP_AUTH_VERIFY_URL` | Optional external verifier fallback for app-facing endpoints; the built-in session JWT is checked first. |
 | `DEV_APP_TOKEN` | Explicit development-only app bearer token; forbidden in production. |
+| `AUTH_EXCHANGE_ENABLED` | Enables `POST /v1/auth/exchange`; required for production Apple/Google sign-in. |
+| `SESSION_JWT_SECRET` | At least 32 characters used to sign and verify VeryLoving HS256 session JWTs. |
+| `SESSION_JWT_ISSUER` | Exact issuer embedded in and required from session JWTs. |
+| `SESSION_JWT_AUDIENCE` | Exact mobile audience embedded in and required from session JWTs. |
+| `SESSION_JWT_TTL_SECONDS` | Access lifetime in seconds; defaults to 3600 and is bounded to 300–86400. |
+| `SESSION_REFRESH_TTL_SECONDS` | Refresh lifetime in seconds; defaults to 30 days and is bounded to 1–90 days. |
+| `APPLE_CLIENT_IDS` | Comma-separated accepted Apple identity-token audiences; required in production. |
+| `GOOGLE_CLIENT_IDS` | Comma-separated accepted Google identity-token audiences/authorized parties; required in production. |
+| `SAFETY_API_ENABLED` | Enables backend emergency contacts, SOS acceptance, and safety sessions. |
+| `SAFETY_TABLE_NAME` | DynamoDB table with string partition/sort keys named `PK` and `SK`. |
+| `SAFETY_RETENTION_DAYS` | Positive DynamoDB retention horizon used to calculate expiry metadata; defaults to 30 days. |
+| `AWS_REGION` | AWS region used by the DynamoDB client. |
 | `CLM_UPSTREAM_URL` | Optional OpenAI-compatible upstream chat-completions URL. |
 | `CLM_UPSTREAM_API_KEY` | Optional server-side credential for the upstream model. |
 | `CLM_UPSTREAM_MODEL` | Optional upstream model identifier. |
@@ -129,33 +154,44 @@ Build/config diagnostic variables are orchestration inputs, not product secrets:
 
 The exact production ownership and source for every credential is tracked in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). Never paste a secret into logs, screenshots, committed files, or public Expo configuration.
 
+Keep `HUME_ALLOW_CLIENT_RESUME=false` until resumed chat-group IDs and session-configuration requests are ownership-bound to the authenticated account. Access JWTs have rotating refresh JWTs, but the server does not yet persist refresh-family state for reuse detection/revocation, and an access JWT is not a single-use WebSocket ticket.
+
 ## Implemented Architecture And Deployment Boundaries
 
 The repository currently contains:
 
 - an Expo/React Native mobile client using Expo Router and Continuous Native Generation;
-- a dependency-free Node 22 HTTP CLM/control-plane service in `server/`, with a dedicated Dockerfile; and
+- a Node 22 HTTP/WebSocket service in `server/`, with `ws`, AWS SDK DynamoDB clients, and a dedicated Dockerfile; and
 - deterministic local storage, offline voice responses, and test doubles used by the mobile client.
 
-The deployable Node service exposes `GET /health`, `POST /chat/completions`, `POST /v1/safety/tips`, and `POST /v1/hume/session/configure`. `/health` is implemented and tested, but it is a liveness endpoint only; it does not prove that Hume credentials, the app-token verifier, or an optional upstream model are ready.
+The deployable Node service implements:
+
+- `GET /health` liveness;
+- `POST /v1/auth/exchange` for Apple/Google identity-token verification and access/refresh issuance, plus `POST /v1/auth/refresh` for client-held refresh rotation;
+- `GET`/`POST`/`DELETE /v1/emergency-contacts`, current-state `GET`/`POST /v1/safety-sessions`, `POST /v1/sos-events`, `GET /v1/privacy/export`, and `DELETE /v1/privacy/data` backed by DynamoDB when enabled;
+- `GET`-upgrade `/api/voice/hume-ws`, which authenticates the first client frame before opening Hume with the server-only key;
+- `POST /chat/completions`, `POST /v1/safety/tips`, and `POST /v1/hume/session/configure` for the Hume CLM/control plane.
+
+`/health` is deliberately liveness-only. It does not prove that provider keys, JWT settings, DynamoDB, Hume credentials, the upstream model, or WebSocket upgrades are ready.
 
 ```text
-Expo app -- HTTPS --> external production auth/API gateway -- HTTP --> Node CLM service in this repo
+Expo app -- HTTPS auth/safety/tool requests --> Node service in this repo --> DynamoDB
     |
-    `------ WSS ----> external authenticated Hume proxy -----------> Hume EVI
+    `-- WSS /api/voice/hume-ws -------------> Node voice gateway ----> Hume EVI
 
-Hume CLM -------------------------------- POST /chat/completions --> Node CLM service
+Hume CLM ---------------- POST /chat/completions --> Node service --> optional upstream model
 ```
 
-The auth/session exchange, refresh-token service, production SMS, Hume WebSocket proxy, push delivery, database, live guardian/SOS state, and map/location-sharing backend are not implemented here. This is not a Next.js, Vercel, AWS, DynamoDB, or SES codebase, and deploying `server/Dockerfile` must not be represented as deploying those missing services.
+The repository now contains provider-token exchange, first-party access/refresh JWT renewal, first-frame authenticated Hume gateway, and DynamoDB persistence/export/deletion for contacts, current safety state, and SOS acceptance. It does **not** contain refresh-family persistence/reuse detection/session revocation, deletion tombstones that prevent later token-driven repopulation, production phone/SMS verification, push delivery, guardian/contact notification delivery or receipts, live/revocable location sharing, routes, remote danger/avoidance intelligence, vendor-wide export/deletion orchestration, or infrastructure-as-code. A `202 accepted` SOS response means only that DynamoDB accepted an idempotent record; it does not mean a guardian or emergency service received an alert. This remains a Node service rather than a Next.js/Vercel application, and AWS deployment resources are not provisioned by the repository.
 
 See [HUME_CUSTOMIZATION.md](./HUME_CUSTOMIZATION.md) for the exact endpoint/authentication contract and deployment topology, and [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) for release evidence and stop-ship gates.
 
-### Local CLM Server
+### Local Backend Server
 
 In a second terminal:
 
 ```bash
+npm ci --prefix server
 cp server/.env.example server/.env
 set -a
 source server/.env
@@ -181,6 +217,8 @@ npm run validate
 
 The command runs ESLint, the deterministic test suite, Expo Doctor, then iOS and Android production exports in sequence. Both exports go to a unique temporary directory rather than the repository, and that directory is removed whether validation passes or fails. The command stops at the first failed gate and exits non-zero.
 
+The final 13 July 2026 audit run completed with ESLint clean, 163/163 tests, Expo Doctor 20/20, successful iOS/Android production exports, and 0 vulnerabilities from both root and server production dependency audits. The root result includes a narrow `xcode.uuid=11.1.1` override whose resolved tree and CommonJS `v4` compatibility were checked after the lockfile change. See [COMPREHENSIVE_FINAL_AUDIT.md](./COMPREHENSIVE_FINAL_AUDIT.md) for exact bundle evidence and the launch decision; green deterministic gates do not waive production-service or physical-device gates.
+
 For a faster development loop, run tests and lint separately:
 
 ```bash
@@ -188,7 +226,7 @@ npm test
 npm run lint
 ```
 
-The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 selectable catalogs, RTL metadata, locale resolution, Google Sign-In response handling, Android BLE permission splits, CNG manifest normalization, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization.
+The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 selectable catalogs, RTL metadata, locale resolution, Google Sign-In response handling, provider-JWT verification, access/refresh issuance and renewal, local session-expiry/offline behavior, first-frame WebSocket authentication, PCM encoding and lifecycle, Android BLE permission splits, VL01 GATT validation/battery decoding/reconnect backoff, Dynamo safety/privacy validation and idempotency, CNG manifest normalization, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
 
 Validate both production JavaScript bundles:
 
@@ -221,14 +259,16 @@ Before an Android release, verify on an API 36 emulator and a physical phone:
 
 The July 2026 stability audit fixed critical authentication/route bypasses, false SOS success, cleanup races, privacy export, onboarding permission failures, Mapbox fallback behavior, safe phone launching, and Hume connection/audio lifecycle defects. See [STABILITY_REPORT.md](./STABILITY_REPORT.md) for reproduction details, root causes, fixes, verification evidence, and the full feature matrix.
 
+On 13 July 2026, a post-validation architecture pass added provider-token exchange, a short-lived first-party JWT, first-frame WebSocket authentication, an in-repository Hume gateway, `expo-audio` 48 kHz mono Int16 PCM capture, protocol-gated VL01 GATT battery handling and reconnect backoff, and DynamoDB-backed contacts/safety-session/SOS-acceptance APIs. Those changes have automated coverage but were made after the recorded simulator session and must not be treated as physical-device or production-service evidence.
+
 The app is not yet production-ready. Current launch gates are:
 
-- backend-issued access/refresh tokens with provider JWT validation and removal of bearer credentials from WebSocket URLs;
-- encrypted, per-account contacts, settings, queues, and conversation history;
-- a production SMS backend and signed Apple/Google OAuth verification;
-- an authenticated Hume WebSocket proxy plus native 48 kHz mono PCM streaming on real devices;
-- approved VL01 GATT battery reads/notifications and hardware ownership validation; pairing metadata and one reconnect attempt are persisted, but battery remains explicitly unknown until the real characteristic is implemented;
-- backend-backed SOS/guardian state, remote push delivery, live location sharing, routes, and avoidance zones;
+- production hardening of implemented refresh renewal: refresh-family persistence, old-token reuse detection, revocation, deletion tombstones, consistent authenticated-request 401 recovery, provider credential-state checks, and production phone/SMS authentication;
+- encrypted, per-account settings, locations, queues, and conversation history, plus completion of account isolation/migration for every remaining sensitive store;
+- production deployment and security testing of the first-frame authenticated Hume gateway, including ingress rate limits, session revocation, replay resistance, ownership-bound resume/session configuration, quotas, and redacted observability;
+- signed-device verification of continuous PCM capture/playback, full duplex, interruptions, echo, Bluetooth routing, background/foreground behavior, lock screen, and repeated cleanup;
+- an approved VL01 protocol and hardware evidence for battery semantics, decoded status/events, authorized command schemas, ownership challenge/secure pairing, and background behavior;
+- guardian/contact notification delivery and receipts after durable SOS acceptance, push delivery, live/revocable sharing, routes, avoidance zones, deletion tombstones/session revocation, vendor-wide privacy orchestration, and approved retention controls;
 - full Android emulator/device QA and signed iOS/Android physical-device testing;
 - native-speaker safety-copy review for the 151 machine-generated catalogs.
 
@@ -253,7 +293,7 @@ Configure variables in the EAS project environment, never in committed files. Va
 eas env:list --environment production --scope project
 ```
 
-Required production public configuration includes the API base URL, Google web client ID, authenticated Hume `wss` proxy URL, and public Mapbox runtime token. When CLM is enabled, also set the Hume customization URL and valid config ID. `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH` and `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` should be false, and `EXPO_PUBLIC_HUME_API_KEY` must be absent.
+Required production public configuration includes the API base URL, Google web and iOS client IDs, authenticated Hume `wss` endpoint, public Mapbox runtime token, and `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED=true`. Production diagnostics also require custom CLM enabled with customization URL/config ID and VL01 enabled with firmware-approved service, battery, status, event, and command UUIDs. `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH` and `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` should be false, and `EXPO_PUBLIC_HUME_API_KEY` must be absent.
 
 Run the safe presence/scheme check against a locally pulled production environment. It emits booleans and issue codes, never values:
 
@@ -272,9 +312,9 @@ eas build --platform ios --profile production
 eas build --platform android --profile production
 ```
 
-The current production mobile path requires the external authenticated Hume WebSocket proxy. A backend-issued temporary Hume token would require an additional mobile token-exchange integration that is not present today. The CLM container in this repository is not the proxy, and direct Hume API keys are rejected in release builds.
+The server in this repository implements `/api/voice/hume-ws`. Point the mobile proxy URL at the TLS ingress that forwards WebSocket upgrades to that process. The app sends its VeryLoving session JWT in the first frame, the gateway validates the `voice:connect` scope, and only then does it open Hume with the server-only key. The application JWT is not yet a single-use voice ticket; independent revocation/replay controls and load testing remain required. Direct Hume API keys are rejected in release builds.
 
-`EXPO_PUBLIC_HUME_CONFIG_ID` is optional. Leave it empty to use Hume's default EVI configuration; set it to a valid configuration from the same Hume account to enable the custom CLM, tools, and branded voice.
+`EXPO_PUBLIC_HUME_CONFIG_ID` may be empty only in development when deliberately testing Hume's default EVI configuration. Production diagnostics require custom CLM enabled and a valid configuration from the same Hume account.
 
 EAS Update is not configured (`expo-updates` is not installed and no build channel is defined). Treat these profiles as native build profiles until an OTA update policy, runtime-version strategy, and rollback process are deliberately added and tested.
 
@@ -283,14 +323,14 @@ EAS Update is not configured (`expo-updates` is not installed and no build chann
 - Permission requests show contextual explanations before location, notification, microphone, Bluetooth, or camera prompts.
 - The last valid live location is cached for at most 24 hours. If a later location request fails, the map may use it as a fallback and labels the exact saved time; it is never presented as current location.
 - On native Mapbox builds, a successful live fix starts or resumes a bounded Streets map pack around that location (zoom 10–15, 3,000-tile cap). During replacement, the last complete pack remains active until the pending pack reaches 100%; failed native deletions are tracked for the next cleanup. This caches base map tiles only; it does not provide offline routes, live sharing, remote danger-zone updates, or SOS delivery.
-- Emergency contacts persist locally. The SOS screen persists only the latest local outcome and timestamp, without duplicating contact PII. “Phone dialer opened” does not confirm that a call connected or that an emergency service, contact, or backend received an alert.
-- Paired-device metadata persists without native BLE objects or battery values. Relaunch performs at most one reconnect attempt for a remembered real device, explicit disconnect remains disconnected, and simulated devices are development-only. Battery stays unknown until the approved VL01 characteristic is implemented and verified on hardware.
-- Settings > Privacy & data supports JSON export, conversation history, the privacy policy, and deletion of local app data. Export includes the current `veryloving.*` snapshot, including contacts and the local resilience records.
+- Emergency contacts remain cached locally and, when the safety backend is enabled, are migrated/fetched/created/deleted through the account-authenticated DynamoDB API. Current safety state is idempotently persisted, and SOS can durably reuse an idempotency record with contact IDs and a recent location before opening the dialer. “Accepted” means stored, and “phone dialer opened” means only that the dialer opened; neither confirms notification delivery, call connection, or emergency dispatch.
+- Paired-device metadata persists without native BLE objects or stored battery values. When an approved protocol is enabled, connection discovers and validates GATT, bounds connection/read/write operations, reads and conditionally monitors the one-byte battery characteristic, surfaces configured raw status/event values, watches disconnects, provides bounded raw command writes, and retries with serialized exponential backoff. Firmware-specific decoding, command authorization, ownership/secure pairing, and signed physical-device behavior remain unimplemented or unverified.
+- Settings > Privacy & data supports JSON export, conversation history, the privacy policy, and deletion. When the safety backend is enabled, export combines the local snapshot with account-scoped DynamoDB contacts/safety/SOS data, and Delete My Data removes DynamoDB user items before clearing local data and credentials.
 - Settings sign-out and Delete My Data first drain local settings/contact/device/history/queue/location/SOS/map-cache writes, then attempt to purge cached voice audio and every app-owned native Mapbox pack before sweeping all `veryloving.*` records. Delete My Data additionally removes the SecureStore token, user, and onboarding marker. Ancillary native-cache cleanup cannot block removal of app data or credentials, but an incomplete purge is surfaced to the user and leaves only opaque, non-location retry evidence outside the user-data namespace for a later verified cleanup attempt.
 - Typed AI companion messages are saved locally and replayed in order when online voice service returns.
 - When Hume is unavailable, the safety call offers bundled offline responses and clearly labels unsent messages.
 - Development routes and mock services remain gated from production builds.
 
-Contacts, settings, transcripts, resilience records, and queues are still account-unscoped plaintext AsyncStorage. OS-protected, per-account encryption plus migration/account-switch tests remains a P1 release gate; the purge behavior above reduces cross-session residue but does not replace encryption.
+Emergency-contact cache PII is now account-bound in SecureStore and migrated away from its legacy AsyncStorage key. Settings, transcripts, locations, resilience records, account-bound wearable metadata, and queues still use plaintext AsyncStorage. Complete OS-protected per-account encryption plus account-switch/process-death coverage remain P1 release gates; account binding and purge reduce cross-session residue but do not replace encryption. Backend-enabled deletion removes DynamoDB items but does not revoke the current session first or create a deletion tombstone, and it does not delete Hume, identity-provider, Mapbox, or share-destination copies.
 
 See [PRIVACY.md](./PRIVACY.md) for the data collection and privacy manifest summary.

@@ -1,7 +1,9 @@
 # Final Feature Validation Report
 
 Date: 2026-07-13
-Release decision: **NO-GO until the P1 external gates in `LAUNCH_CHECKLIST.md` are closed**
+Release decision: **NO-GO until the P1 gates in `LAUNCH_CHECKLIST.md` are closed**
+
+> Historical runtime evidence notice: the simulator observations and `118/118` validation result below describe the code exercised during that validation session. Later architecture changes are recorded separately in **Post-Validation Architecture Update — 13 July 2026** and are not retroactively marked as runtime passes.
 
 ## Status Legend
 
@@ -118,13 +120,29 @@ No P0 crash or data-loss defect was reproduced in this pass.
 - Xcode emitted dependency deprecation, deployment-target, and Swift concurrency warnings from React Native/Expo/Mapbox/Google/BLE pods. The application target still built successfully.
 - CoreSimulator service and macOS accessibility automation became progressively slow after many deep-link/screenshot operations. This limited later manual checks; it is recorded as harness instability, not converted into app passes or failures.
 
+## Post-Validation Architecture Update — 13 July 2026
+
+After the runtime session above, the repository added the following production-oriented code paths:
+
+| Area | Implemented after validation | Evidence boundary / remaining gate |
+| --- | --- | --- |
+| Apple/Google authentication | Provider identity tokens are exchanged at `POST /v1/auth/exchange`; the server verifies provider JWTs and issues access/refresh JWTs. `/v1/auth/refresh` rotates the client-held pair, and the app renews across expiry/cold-start/foreground while preserving offline state on network failure. | Automated only. Signed provider completion, persistent refresh-family reuse detection/revocation, deletion tombstones, provider credential-state checks, uniform request-level 401 retry, and phone/SMS remain open. |
+| Voice gateway authentication | Proxy URLs contain no app bearer. `/api/voice/hume-ws` requires the session JWT in the first TLS frame, verifies `voice:connect`, then opens Hume with the server-only key. | Automated only. The JWT is not a single-use voice ticket; production ingress, rate limits, revocation/replay, ownership-bound resume/configuration, quotas, and load tests remain open. |
+| Real-time audio | A root `expo-audio` stream requests 48 kHz mono Int16 buffers; the audio service validates/base64-encodes PCM and Hume sends chunks with backpressure protection. | Automated only. Continuous frame timing, two-way audio, interruption, echo, Bluetooth routing, background/foreground, lock screen, and cleanup require signed physical devices. |
+| VL01 GATT | Approved configuration can filter scanning, normalize short/vendor UUIDs, time-bound discovery/read/write, read/conditionally monitor battery, surface raw status/events, observe degradation/disconnects, and serialize reconnect backoff. Missing protocol fails closed. | Automated only. Firmware-approved battery/status/event/command semantics, ownership/secure pairing, background behavior, and physical hardware remain open. |
+| Safety backend | Session-authenticated DynamoDB endpoints migrate/synchronize account-bound contacts, maintain idempotent current safety state, durably accept retry-safe SOS records, and export/delete account Dynamo records. | Automated only. Acceptance is storage, not guardian delivery. Delivery/receipts, deletion tombstones/session revocation, vendor privacy orchestration, retention approval, and production DynamoDB remain open. |
+
+Nothing in this section changes the earlier runtime statuses. It narrows several code gaps into deployment, security, data-migration, and physical-validation gates.
+
+The final post-change release validator passed on 13 July 2026: ESLint clean; 163/163 tests with no skips/failures; Expo Doctor 20/20; iOS export at 2,550 modules/8.6 MB Hermes; Android export at 2,633 modules/8.8 MB Hermes; exit 0 with temporary exports removed. Root and server production dependency audits both reported 0 vulnerabilities after the narrow `xcode.uuid=11.1.1` override; the resolved tree and CommonJS `v4` compatibility were checked. This is deterministic build evidence, not a new simulator/device validation session.
+
 ## Remaining Stop-Ship Items
 
-1. Production auth/SMS backend with provider JWT validation, refresh/revocation, and account isolation.
+1. Production deployment of provider exchange/refresh plus persistent refresh-family reuse detection/revocation, deletion tombstones, uniform request-level 401 retry, phone/SMS, and account isolation.
 2. Encrypted, account-bound storage for contacts, settings, location, queues, and transcripts.
-3. Authenticated Hume WebSocket proxy, production EVI/CLM configuration, and native PCM streaming.
-4. Production Mapbox token plus backend routes, avoidance zones, live/revocable sharing, Guardian state, and SOS acknowledgement.
-5. Physical VL01 protocol, ownership, battery, reconnect, and lifecycle validation.
+3. Production security/load testing of the implemented authenticated Hume gateway, production EVI/CLM configuration, and signed-device PCM validation.
+4. Real SOS/guardian delivery and receipts, production Mapbox routes/avoidance/live sharing, push, remote privacy deletion/tombstones, and session revocation.
+5. Approved physical VL01 battery/status/event/command semantics, secure ownership/pairing, reconnect, and lifecycle validation.
 6. APNs/FCM delivery, signed iOS physical-device matrix, and Android emulator/physical-device matrix.
 7. Store privacy/legal reconciliation and native-speaker safety-copy review.
 
@@ -132,8 +150,8 @@ Owners, required evidence, environment variables, test procedures, and the final
 
 ## Job-Requirement Alignment
 
-- **Native iOS:** native CNG build/CocoaPods diagnosis, entitlements/privacy-manifest checks, safe-area correction, SecureStore session persistence, notification/location permission behavior, and audio lifecycle tests.
-- **Full stack:** tested Node CLM health/auth/SSE/tool/control-plane endpoints, documented Railway/AWS deployment boundaries, and kept the mobile-to-proxy/CLM contract explicit.
-- **Security and architecture:** fail-closed provider configuration, protected routes, user-bound onboarding state, redacted logs, cleanup mutation locks, honest local-vs-remote semantics, and documented plaintext-storage stop-ship risk.
-- **BLE:** permission split, typed error mapping, serialized persistence, reconnect invalidation, and correct unpair semantics; hardware claims remain blocked pending VL01 evidence.
-- **Voice AI:** Hume error classification, bounded reconnect/microphone lifecycle tests, user-safe missing-credential handling, offline fallback, persisted history, queued delivery, and CLM tool behavior.
+- **Native iOS:** native CNG build/CocoaPods diagnosis, entitlements/privacy-manifest checks, SecureStore sessions, permission behavior, audio lifecycle tests, and a later Expo native PCM path; physical audio behavior remains unverified.
+- **Full stack:** tested CLM endpoints and subsequently added provider exchange, session JWTs, an authenticated WebSocket gateway, and DynamoDB safety endpoints with explicit deployment boundaries.
+- **Security and architecture:** fail-closed routes/provider validation, access/refresh renewal, user-bound onboarding, SecureStore contact migration, first-frame WS authentication, redacted logs, cleanup locks, and honest local-vs-remote semantics; stateless refresh revocation/reuse and plaintext remaining stores remain stop-ship risks.
+- **BLE:** permission split, typed errors, account-bound persistence/unpair semantics, and later timed GATT battery/raw-channel/write/disconnect/reconnect logic; firmware semantics, hardware, ownership, and secure pairing remain blocked.
+- **Voice AI:** Hume error classification, bounded reconnects, offline/history/queue/tool behavior, and later PCM plus gateway paths; production Hume and signed-device evidence remain blocked.

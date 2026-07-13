@@ -13,7 +13,7 @@ VeryLoving uses Hume's supported customization surfaces rather than modifying a 
 This repository contains two runtime components:
 
 1. The Expo/React Native mobile client.
-2. A dependency-free Node 22 HTTP service in `server/clm-server.cjs`, packaged by `server/Dockerfile`.
+2. A Node 22 HTTP/WebSocket service in `server/clm-server.cjs`, packaged by `server/Dockerfile` and using `ws` plus AWS SDK DynamoDB clients.
 
 The Node service implements:
 
@@ -21,41 +21,70 @@ The Node service implements:
 | --- | --- | --- | --- |
 | `GET /health` | Hosting platform/operator | None | Liveness only; returns the CLM service identity. |
 | `POST /chat/completions` | Hume CLM | `HUME_CLM_BEARER_TOKEN` | OpenAI-compatible SSE completion, deterministic safety handling, tools, and optional upstream model. |
-| `POST /v1/safety/tips` | Mobile-triggered Hume tool | VeryLoving app bearer verified through `APP_AUTH_VERIFY_URL` | Returns curated safety guidance. |
-| `POST /v1/hume/session/configure` | Mobile app after `chat_metadata` | VeryLoving app bearer verified through `APP_AUTH_VERIFY_URL` | Injects the CLM bearer into the Hume chat through Hume's control plane. |
+| `POST /v1/auth/exchange` | Mobile app after Apple/Google sign-in | Provider RS256 JWT, issuer, audience, expiry, authorized-party, and Apple nonce validation | Issues a short-lived VeryLoving HS256 session JWT and verified profile. |
+| `POST /v1/auth/refresh` | Mobile app before/after access expiry | Refresh JWT with distinct type, audience, and scope | Issues a new access/refresh pair; persistent reuse detection/revocation is not yet implemented. |
+| `GET`/`POST`/`DELETE /v1/emergency-contacts` | Mobile app | VeryLoving session JWT | Reads and mutates account-partitioned DynamoDB contact records. |
+| `POST /v1/sos-events` | Mobile app | VeryLoving session JWT | Idempotently persists an accepted SOS record; it does not deliver notifications. |
+| `POST /v1/safety-sessions` | Mobile app | VeryLoving session JWT | Persists a requested safety-mode session. |
+| `GET /v1/safety-sessions/current` | Mobile app | VeryLoving session JWT | Reads the account's current idempotent safety state. |
+| `GET /v1/privacy/export` / `DELETE /v1/privacy/data` | Mobile app | VeryLoving session JWT | Exports or deletes the account's DynamoDB safety records; it does not orchestrate vendor deletion or session revocation. |
+| `GET` upgrade `/api/voice/hume-ws` | Mobile app | First WebSocket message carries the VeryLoving session JWT; gateway requires `voice:connect` | Opens Hume with the server-only key after authentication and relays bounded frames. |
+| `POST /v1/safety/tips` | Mobile-triggered Hume tool | Built-in session JWT first, optional `APP_AUTH_VERIFY_URL` fallback | Returns curated safety guidance. |
+| `POST /v1/hume/session/configure` | Mobile app after `chat_metadata` | Built-in session JWT first, optional `APP_AUTH_VERIFY_URL` fallback | Injects the CLM bearer into the Hume chat through Hume's control plane. |
 
-The health endpoint and its response are covered by `server/clm-server.test.cjs`. It intentionally reports process liveness, not readiness of Hume credentials, app authentication, or an optional upstream model. The protected endpoints fail closed when their required authentication is absent.
+The health endpoint and its response are covered by `server/clm-server.test.cjs`. It intentionally reports process liveness, not readiness of provider JWKS, session signing, DynamoDB, Hume credentials, WebSocket upgrades, or an optional upstream model. Protected endpoints fail closed when their required feature or authentication is absent.
 
 The production topology is split deliberately:
 
 ```text
 Expo mobile app
-  |-- HTTPS app session/tool/config requests --> production auth/API gateway (external; incomplete)
-  |                                                `--> Node CLM/control-plane service (this repo)
-  `-- WSS EVI audio/messages -----------------> authenticated Hume proxy (external; missing)
-                                                   `--> Hume EVI
+  |-- HTTPS auth/safety/tool/config ----------> Node service (this repo) --> DynamoDB
+  `-- WSS /api/voice/hume-ws -----------------> Node voice gateway ------> Hume EVI
 
 Hume CLM -------------------------------------> POST /chat/completions (this repo)
                                                     `--> optional upstream model
 ```
 
-Deploying `server/Dockerfile` alone does **not** provide `/api/voice/hume-ws`, provider-token exchange, refresh tokens, SMS, push delivery, durable SOS/guardian state, location sharing, or a database. The repository contains no Next.js, Vercel, AWS, DynamoDB, or SES implementation, and those technologies must not be claimed as deployed architecture.
+Deploying `server/Dockerfile` provides the HTTP endpoints and WebSocket gateway above. With configured AWS credentials and a compatible table, it also provides DynamoDB persistence, account export, and account-record deletion for contacts, SOS acceptance, and current safety state. It implements access/refresh JWT renewal but does **not** provision AWS infrastructure, persist refresh families for reuse detection/revocation, create deletion tombstones or vendor orchestration, provide SMS, push/contact delivery, SOS delivery receipts, a complete guardian delivery state machine, live sharing, route intelligence, or a single-use WebSocket-ticket service. The repository is not a Next.js/Vercel or SES implementation.
 
-The mobile client currently forwards its app credential into the configured WebSocket URL. That is a documented launch blocker, not an approved production authentication design. The production gateway should exchange verified provider credentials for a VeryLoving session and issue a short-lived, audience-bound, preferably single-use WebSocket ticket. Query strings and logs must not contain a long-lived bearer token.
+The mobile client opens the configured proxy URL without credentials or Hume parameters in its query. Its first TLS-protected frame carries the short-lived VeryLoving session JWT plus bounded connection choices. The gateway verifies the JWT and `voice:connect` scope before opening Hume with the server-only API key. This removes bearer credentials from client URLs, but the session JWT is not a single-use voice ticket: replay protection, independent revocation, rate limiting, and ownership-bound resume/session configuration remain production gates. Query strings and logs must still be redacted because the server-to-Hume connection uses Hume's required credential query.
 
 ## Run The CLM Locally
 
-`server/clm-server.cjs` has no runtime package dependencies and requires Node.js 22 or newer. Configure these server-only variables:
+`server/clm-server.cjs` requires Node.js 22 or newer. Install its pinned runtime dependencies separately from the mobile workspace:
 
 ```bash
-NODE_ENV=production
-PORT=8787
-HUME_API_KEY=<server-only Hume API key>
-HUME_CLM_BEARER_TOKEN=<at least 32 random bytes>
-APP_AUTH_VERIFY_URL=https://api.veryloving.ai/v1/auth/verify
+npm ci --prefix server
 ```
 
-Generate the CLM token with `openssl rand -hex 32`. Do not use an `EXPO_PUBLIC_` variable for either server secret.
+Configure these server-only variables for the complete local backend:
+
+```bash
+NODE_ENV=development
+PORT=8787
+HUME_API_KEY=<server-only Hume API key>
+HUME_CONFIG_ID=<server-enforced EVI config ID>
+HUME_ALLOWED_VOICE_IDS=<comma-separated approved voice IDs>
+HUME_ALLOW_CLIENT_RESUME=false
+HUME_CLM_BEARER_TOKEN=<at least 32 random bytes>
+AUTH_EXCHANGE_ENABLED=true
+SESSION_JWT_SECRET=<at least 32 random bytes>
+SESSION_JWT_ISSUER=https://api.veryloving.ai
+SESSION_JWT_AUDIENCE=veryloving-mobile
+SESSION_JWT_TTL_SECONDS=3600
+SESSION_REFRESH_TTL_SECONDS=2592000
+APPLE_CLIENT_IDS=<comma-separated accepted Apple audiences>
+GOOGLE_CLIENT_IDS=<comma-separated accepted Google audiences>
+SAFETY_API_ENABLED=true
+SAFETY_TABLE_NAME=<DynamoDB table with PK and SK string keys>
+SAFETY_RETENTION_DAYS=30
+AWS_REGION=<deployment region>
+APP_AUTH_VERIFY_URL=
+```
+
+Generate independent CLM and session secrets with `openssl rand -hex 32`. Do not use an `EXPO_PUBLIC_` variable for either server secret. `APP_AUTH_VERIFY_URL` is an optional external-verifier fallback; it is not needed when all protected callers use the in-repository session JWT. The safety API requires a verified principal with `sub`, so its supported production path is the built-in session JWT.
+
+Keep `HUME_ALLOW_CLIENT_RESUME=false` until a server-side ownership record binds every resumed chat group to the authenticated subject. If `HUME_CONFIG_ID` is set, it overrides the client choice; `HUME_ALLOWED_VOICE_IDS` restricts client-selected voices.
 
 The CLM has a deterministic safety response layer for urgent requests and service outages. To use an existing hosted model for richer non-urgent conversation, configure any OpenAI-compatible streaming endpoint:
 
@@ -66,7 +95,7 @@ CLM_UPSTREAM_MODEL=<provider model identifier>
 CLM_UPSTREAM_TIMEOUT_MS=25000
 ```
 
-The upstream is optional. Tool calls and immediate-danger handling remain available without it. The service deliberately does not send locations or contact emergency services; those actions require a separate confirmation and delivery workflow.
+The upstream is optional. Tool calls and immediate-danger handling remain available without it. The CLM response path never contacts emergency services. A separately authenticated, user-confirmed SOS request can persist a recent location and contact IDs, but notification delivery and receipts still require a distinct reviewed workflow.
 
 1. Create a local server environment file:
 
@@ -75,7 +104,7 @@ cp server/.env.example server/.env
 openssl rand -hex 32
 ```
 
-2. Put the generated value in `HUME_CLM_BEARER_TOKEN`. Set `DEV_APP_TOKEN` to the same development bearer token used by the Expo app's local authentication flow. Leave the optional upstream variables empty to exercise deterministic local responses.
+2. Put independent generated values in `HUME_CLM_BEARER_TOKEN` and `SESSION_JWT_SECRET`. For a development-only mock-phone session, set an explicit local `DEV_APP_TOKEN`; never reuse it as a production credential and never commit its value. Leave the optional upstream variables empty to exercise deterministic local responses.
 
 3. Load the variables and start the server:
 
@@ -116,8 +145,22 @@ Expose the CLM through HTTPS before adding it to Hume. The public URL must end w
 ```bash
 NODE_ENV=production
 HUME_API_KEY=<server-only Hume API key>
+HUME_CONFIG_ID=<approved Hume config ID>
+HUME_ALLOWED_VOICE_IDS=<approved comma-separated voice IDs>
+HUME_ALLOW_CLIENT_RESUME=false
 HUME_CLM_BEARER_TOKEN=<64-character random hex token>
-APP_AUTH_VERIFY_URL=https://api.veryloving.ai/v1/auth/verify
+AUTH_EXCHANGE_ENABLED=true
+SESSION_JWT_SECRET=<independent 64-character random hex token>
+SESSION_JWT_ISSUER=https://api.veryloving.ai
+SESSION_JWT_AUDIENCE=veryloving-mobile
+SESSION_JWT_TTL_SECONDS=3600
+SESSION_REFRESH_TTL_SECONDS=2592000
+APPLE_CLIENT_IDS=<accepted Apple audiences>
+GOOGLE_CLIENT_IDS=<accepted Google audiences>
+SAFETY_API_ENABLED=true
+SAFETY_TABLE_NAME=<DynamoDB table name>
+SAFETY_RETENTION_DAYS=30
+AWS_REGION=<DynamoDB region>
 CLM_UPSTREAM_URL=https://provider.example/v1/chat/completions
 CLM_UPSTREAM_API_KEY=<server-only provider key>
 CLM_UPSTREAM_MODEL=<provider model identifier>
@@ -133,17 +176,17 @@ The three upstream variables are optional as a group. Never configure `DEV_APP_T
 curl https://<railway-domain>/health
 ```
 
-6. Use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`. Configure the app with the domain root as `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` only after both authenticated application endpoints are reachable through the production app-token verifier.
+6. Use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`. Configure the app with the domain root as `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and `wss://<railway-domain>/api/voice/hume-ws` as `EXPO_PUBLIC_HUME_WS_PROXY_URL`, only after HTTPS requests and WebSocket upgrades reach the same reviewed deployment.
 
 Railway injects its own `PORT`; the server reads that value automatically. Secrets belong in Railway Variables, not Expo public variables or repository files.
 
-This container serves HTTP requests only; it does not handle WebSocket upgrades. Do not point `EXPO_PUBLIC_HUME_WS_PROXY_URL` at this Railway service unless a separate gateway or proxy has been deployed on that domain and routes `/api/voice/hume-ws` to a real authenticated WebSocket implementation. A `200` from `/health` proves only that the CLM process is alive.
+This container handles both HTTP and WebSocket upgrades. Railway or any fronting proxy must preserve `Upgrade`/`Connection` semantics, use a reviewed idle timeout, bound concurrent connections and request rates, and avoid logging headers, frames, URL queries, audio, messages, or precise location. A `200` from `/health` proves only that the process is alive; separately test the auth exchange, safety API, authenticated WebSocket handshake, Hume connection, and DynamoDB permissions.
 
 Railway is the documented example because `server/Dockerfile` is directly deployable there. The same image can run on another standards-compliant container platform, but no alternative cloud infrastructure is defined in this repository.
 
 ## Deploy On AWS (ECS Fargate Or Existing-Customer App Runner)
 
-This is an operator runbook, not evidence that AWS infrastructure has been provisioned. The repository has no CDK, Terraform, CloudFormation, ECR repository, IAM role, custom domain, or deployment pipeline. AWS deploys only the same HTTP CLM/control-plane container described above; it does not create the external auth/SMS, push, map/SOS, or Hume WebSocket-proxy services.
+This is an operator runbook, not evidence that AWS infrastructure has been provisioned. The repository has no CDK, Terraform, CloudFormation, ECR repository, IAM role, DynamoDB table, custom domain, or deployment pipeline. AWS deploys the same HTTP/WebSocket container described above; it does not create SMS, push/contact delivery, complete map/SOS workflows, or remote privacy orchestration.
 
 AWS states that App Runner is no longer open to new customers. Existing App Runner customers can use the App Runner path below; new AWS customers should deploy the same image on [Amazon ECS with Fargate](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html).
 
@@ -159,12 +202,26 @@ docker tag veryloving-clm:<git-sha> \
 docker push <account>.dkr.ecr.<region>.amazonaws.com/veryloving-clm:<git-sha>
 ```
 
-2. Enable ECR tag immutability. For ECS/Fargate, create a task definition for the reviewed commit-addressed image with `awsvpc` networking, container port `8787`, an `awslogs` log configuration, a least-privilege task execution role, and a task role only if runtime AWS API access is needed. Create a Fargate service behind an Application Load Balancer whose target group uses `GET /health`; terminate HTTPS with an approved ACM certificate and allow the task security group to receive port `8787` only from the load balancer. Existing App Runner customers may instead [create an App Runner service from the private ECR image](https://docs.aws.amazon.com/apprunner/latest/dg/manage-create.html), provide an ECR access role, and configure container port `8787` plus HTTP health-check path `/health`.
-3. Add non-secret runtime configuration:
+2. Enable ECR tag immutability. For ECS/Fargate, create a task definition for the reviewed commit-addressed image with `awsvpc` networking, container port `8787`, an `awslogs` log configuration, a least-privilege task execution role, and a task role limited to the safety table. Create a Fargate service behind an Application Load Balancer whose target group uses `GET /health`; terminate HTTPS with an approved ACM certificate, verify WebSocket upgrade forwarding and idle timeout, and allow the task security group to receive port `8787` only from the load balancer. Existing App Runner customers may instead [create an App Runner service from the private ECR image](https://docs.aws.amazon.com/apprunner/latest/dg/manage-create.html), provide an ECR access role, and configure container port `8787` plus HTTP health-check path `/health`.
+3. Create or approve a DynamoDB table with string partition and sort keys named `PK` and `SK`. Enable DynamoDB TTL on the numeric `expiresAt` attribute, encryption, point-in-time recovery, backups, alarms, and an approved retention/deletion process. Grant the task role only `dynamodb:Query`, `dynamodb:GetItem`, `dynamodb:PutItem`, and `dynamodb:DeleteItem` on that table. The application stores contact PII and may store recent SOS location, so do not treat default table creation or eventual TTL deletion as privacy approval.
+4. Add non-secret runtime configuration:
 
 ```bash
 NODE_ENV=production
-APP_AUTH_VERIFY_URL=https://api.veryloving.ai/v1/auth/verify
+AUTH_EXCHANGE_ENABLED=true
+SESSION_JWT_ISSUER=https://api.veryloving.ai
+SESSION_JWT_AUDIENCE=veryloving-mobile
+SESSION_JWT_TTL_SECONDS=3600
+SESSION_REFRESH_TTL_SECONDS=2592000
+APPLE_CLIENT_IDS=<accepted Apple audiences>
+GOOGLE_CLIENT_IDS=<accepted Google audiences>
+SAFETY_API_ENABLED=true
+SAFETY_TABLE_NAME=<DynamoDB table name>
+SAFETY_RETENTION_DAYS=30
+AWS_REGION=<region>
+HUME_CONFIG_ID=<approved Hume config ID>
+HUME_ALLOWED_VOICE_IDS=<approved voice IDs>
+HUME_ALLOW_CLIENT_RESUME=false
 CLM_UPSTREAM_URL=https://provider.example/v1/chat/completions
 CLM_UPSTREAM_MODEL=<provider model identifier>
 CLM_UPSTREAM_TIMEOUT_MS=25000
@@ -172,9 +229,9 @@ CLM_UPSTREAM_TIMEOUT_MS=25000
 
 The upstream variables are optional as a group. On ECS, set `PORT=8787` in the task definition. Existing App Runner customers must not define `PORT`: App Runner supplies its reserved `PORT` variable, and the service must be configured to the same `8787` container port. See AWS's [App Runner runtime guidance](https://docs.aws.amazon.com/apprunner/latest/dg/develop.html).
 
-4. Reference `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, and optional `CLM_UPSTREAM_API_KEY` from AWS Secrets Manager rather than entering secret values as plain environment variables. For ECS, map secret ARNs through the task definition and grant only the task execution role the required retrieval permissions. Existing App Runner customers should use its supported [Secrets Manager and Parameter Store environment references](https://docs.aws.amazon.com/apprunner/latest/dg/env-variable.html). Grant only the required `secretsmanager:GetSecretValue` and, when applicable, KMS decrypt permissions. Never configure `DEV_APP_TOKEN` in production.
-5. Attach the approved custom domain, verify its TLS certificate and DNS, and configure request limits, rate limits, log redaction, alarms, and retention at the surrounding AWS boundary. Rotate a secret by publishing a new secret version and deliberately redeploying the service so the running revision receives it.
-6. Verify the staged service before routing production traffic:
+5. Reference `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, `SESSION_JWT_SECRET`, and optional `CLM_UPSTREAM_API_KEY` from AWS Secrets Manager rather than entering secret values as plain environment variables. For ECS, map secret ARNs through the task definition and grant only the task execution role the required retrieval permissions. Existing App Runner customers should use its supported [Secrets Manager and Parameter Store environment references](https://docs.aws.amazon.com/apprunner/latest/dg/env-variable.html). Grant only the required `secretsmanager:GetSecretValue` and, when applicable, KMS decrypt permissions. Never configure `DEV_APP_TOKEN` in production.
+6. Attach the approved custom domain, verify its TLS certificate and DNS, and configure HTTP and WebSocket limits, frame/body limits, timeouts, rate limits, log redaction, alarms, and retention at the surrounding AWS boundary. Rotate a secret by publishing a new secret version and deliberately redeploying the service so the running revision receives it.
+7. Verify the staged service before routing production traffic:
 
 ```bash
 curl --fail --silent --show-error https://<aws-domain>/health
@@ -183,19 +240,22 @@ curl -i https://<aws-domain>/chat/completions \
   --data '{"messages":[]}'
 ```
 
-The health request must succeed and the unauthenticated CLM request must fail. Then run an authenticated SSE request, the app-token-protected endpoint contract tests, a forced ECS task replacement (or App Runner redeploy), and a rollback to the preceding image. Use the domain root as `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` only after the external app-token verifier is live. Do not use this HTTP container as `EXPO_PUBLIC_HUME_WS_PROXY_URL`; it has no WebSocket upgrade handler.
+The health request must succeed and the unauthenticated CLM request must fail. Then test provider exchange, invalid/expired session JWTs, Dynamo contact/SOS/session operations, the first-frame WebSocket handshake, an authenticated SSE request, a forced ECS task replacement (or App Runner redeploy), and rollback. Use the domain root as both mobile API/customization roots and `/api/voice/hume-ws` as the WSS path only after those tests pass.
 
 ## Production Authentication Contract
 
+The in-repository exchange verifies Apple/Google RS256 signatures against official JWKS endpoints and validates issuer, allowed audience, expiry, future issue time, Google authorized party, and Apple nonce when supplied. It then issues a scoped HS256 access JWT and a refresh JWT with a refresh-only audience/scope. The app stores both in SecureStore, renews before access expiry, rotates the client-held refresh token on each successful refresh, retries transient outages, and clears rejected refresh sessions. It never persists the provider assertion as its app session.
+
 Before enabling CLM or live voice in a release build:
 
-1. Exchange Apple and Google identity assertions, and phone challenges, at a trusted backend. Validate signature, issuer, audience, nonce where applicable, expiry, and replay/revocation state.
-2. Return short-lived VeryLoving access tokens plus rotated refresh tokens. Do not persist a provider identity token as the application's long-lived session.
-3. Make `APP_AUTH_VERIFY_URL` validate the VeryLoving access token and its intended audience. A network error, missing verifier, expired token, or invalid token must fail closed.
-4. Give the WebSocket proxy a short-lived connection credential. Redact URL queries and authorization data at the load balancer, proxy, application, and tracing layers.
-5. Rate-limit token exchange, session configuration, safety tools, and WebSocket creation independently. Record security events without message text, audio, precise location, raw session IDs, or credentials.
+1. Configure exact Apple and Google client-ID allowlists and prove success, cancellation, wrong audience/issuer, expired assertion, invalid signature, Apple nonce mismatch, key rotation, and provider outage behavior.
+2. Production-harden the implemented refresh flow with server-side refresh-family state, old-token reuse detection, revocation/account disablement, deletion tombstones, replay/abuse controls, provider credential-state checks, and consistent authenticated-request 401 retry. Rotation currently replaces the client-held token but does not invalidate the old stateless refresh JWT before expiry.
+3. Use an independently generated `SESSION_JWT_SECRET`, document rotation/overlap, and keep issuer/audience consistent across exchange, HTTP endpoints, and the gateway.
+4. Treat the first-frame session token as a bearer credential. Add connection rate limits, revocation, replay resistance or a narrower single-use ticket, and redact it from ingress, application, tracing, and crash telemetry.
+5. Keep client resume disabled until chat ownership is enforced, and bind `/v1/hume/session/configure` to a chat created by the same authenticated subject.
+6. Rate-limit token exchange, session configuration, safety tools, safety mutations, and WebSocket creation independently. Record security events without message text, audio, precise location, raw session IDs, or credentials.
 
-The auth/session service and WebSocket proxy described here remain external launch work. The in-repo tests use an injected verifier or development-only `DEV_APP_TOKEN`; `DEV_APP_TOKEN` is rejected as a production authentication mechanism.
+Production phone/SMS authentication is still external work. `APP_AUTH_VERIFY_URL` remains an optional verifier fallback for app-facing HTTP endpoints, and `DEV_APP_TOKEN` is rejected as a production mechanism.
 
 ## Design The Branded Voice
 
@@ -244,23 +304,25 @@ EXPO_PUBLIC_HUME_CLM_ENABLED=true
 EXPO_PUBLIC_HUME_BRANDED_VOICE_ID=<voice-id>
 ```
 
-Leave `EXPO_PUBLIC_HUME_CONFIG_ID` empty when testing Hume's default EVI configuration. The client then omits `config_id` from both direct and proxied WebSocket URLs. A valid custom configuration ID is still required to activate VeryLoving's CLM, custom tools, and branded voice settings.
+Leave `EXPO_PUBLIC_HUME_CONFIG_ID` empty when testing Hume's default EVI configuration. In proxy mode, the client never places it in the URL; it sends the choice in the first authenticated frame. A valid custom configuration ID is still required to activate VeryLoving's CLM, custom tools, and branded voice settings. Set server `HUME_CONFIG_ID` to the same approved value to prevent arbitrary client selection.
 
 Keep `EXPO_PUBLIC_HUME_CLM_ENABLED=false` until the control-plane and CLM endpoints are deployed. Otherwise the app intentionally blocks microphone startup when secure CLM setup fails.
 
-The current production mobile path must use `EXPO_PUBLIC_HUME_WS_PROXY_URL`. The lower-level service can accept a temporary `humeAccessToken`, but the mobile hook does not fetch one from a backend today; using that alternative requires a separate token-exchange implementation and tests. `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.
+The current production mobile path must use `EXPO_PUBLIC_HUME_WS_PROXY_URL`, normally ending in `/api/voice/hume-ws` on this server. A direct temporary Hume token remains a lower-level development option but is not fetched by the mobile hook. `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.
 
 ## Runtime Flow
 
-1. The app obtains a valid VeryLoving session and a short-lived voice connection credential from the external production backend.
-2. The app opens the EVI WebSocket through the external proxy with the config ID and optional prior `resumed_chat_group_id`.
-3. It sends `custom_session_id` in `session_settings`.
-4. Hume returns `chat_metadata`; the app stores `chat_id` and `chat_group_id` locally.
-5. The app asks the authenticated backend to configure that chat. The Node service sends the CLM key through Hume's control plane.
-6. Only after step 5 succeeds does the app enter `connected` and start the microphone.
-7. EVI tool calls are validated, executed against the authenticated safety-tips endpoint, and returned as `tool_response` messages. Stale calls are aborted.
+1. Apple/Google Sign-In returns a provider identity token; the app posts it to `/v1/auth/exchange`, then stores only the returned VeryLoving session JWT.
+2. The app opens the configured WSS proxy URL with no token or Hume connection parameters in the query.
+3. Its first frame is `{ type: "authenticate", access_token, connection: { config_id, voice_id, resumed_chat_group_id } }`.
+4. The gateway validates the session JWT and `voice:connect` scope, enforces configured Hume config/voice policy, then opens Hume with the server-only API key. On upstream open it sends `auth_ok` to the app; failures return `auth_error` and close.
+5. The app sends `custom_session_id` and the declared 48 kHz, mono, Linear16 format in `session_settings`.
+6. Hume returns `chat_metadata`; the app stores `chat_id` and `chat_group_id` locally and asks the authenticated backend to configure the chat. The Node service sends the CLM key through Hume's control plane.
+7. Only after secure CLM setup succeeds does the app enter `connected` and start the microphone.
+8. A root-mounted `expo-audio` stream requests 48 kHz mono Int16 buffers. The audio service validates the native format, base64-encodes each headerless PCM frame, and the WebSocket service sends chunked `audio_input` frames with a backpressure limit. Received assistant audio is queued and played serially.
+9. EVI tool calls are validated, executed against the authenticated safety-tips endpoint, and returned as correlated `tool_response` messages. Stale calls are aborted.
 
-The JavaScript microphone service does not yet emit live 48 kHz mono Linear16 chunks even though that format is declared to Hume. A successful proxy/CLM deployment therefore does not by itself complete live voice; a native dev-client PCM streaming implementation and physical-device audio validation remain mandatory.
+The PCM and gateway paths are implemented and covered by deterministic tests, but they were added after the recorded simulator validation. Continuous capture, full-duplex playback, interruptions, echo, Bluetooth routes, background/foreground transitions, lock screen, frame timing, reconnect under packet loss, and repeated resource cleanup still require signed physical-device evidence. Expo/native audio-session behavior must be verified rather than inferred from the configured background modes.
 
 ## Verification
 
@@ -282,8 +344,8 @@ curl -i -X POST https://<clm-domain>/v1/safety/tips \
   --data '{"scenario":"general"}'
 ```
 
-The unauthenticated POST requests must fail; they are not health probes. Then run authenticated contract tests with short-lived test credentials and confirm logs remain redacted.
+The unauthenticated POST requests must fail; they are not health probes. Then verify valid and invalid provider exchanges, expired/wrong-audience app sessions, account-isolated contact/SOS/session requests against the production DynamoDB table, and a real WSS client whose first frame authenticates before any Hume payload. Confirm query strings, ingress logs, application logs, tracing, and crash reports remain redacted.
 
-On real devices, verify a new call, a resumed history item, a safety-tips request, airplane-mode fallback, queued typed messages, reconnection, microphone interruption, Bluetooth routing, backgrounding, and lock-screen cleanup. Audio quality, continuous PCM, echo cancellation, and production proxy authentication cannot be validated reliably in the simulator.
+On real devices, verify a new call, a resumed history item only after ownership binding is implemented, a safety-tips request, airplane-mode fallback, queued typed messages, reconnection, microphone interruption, Bluetooth routing, backgrounding, and lock-screen cleanup. Audio quality, continuous PCM timing, echo cancellation, and production gateway behavior cannot be validated reliably in the simulator.
 
 See [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) for the complete stop-ship and release evidence matrix.

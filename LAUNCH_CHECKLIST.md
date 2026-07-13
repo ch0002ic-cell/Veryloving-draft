@@ -23,26 +23,26 @@ Grace is the release coordinator: every external gate needs a named individual a
 | External item | What is needed | Responsible | How to test |
 | --- | --- | --- | --- |
 | Hume credentials and EVI configuration | Production Hume account, server-only API key, CLM bearer, published tool/config IDs, branded voice ID, quotas, and retention approval. | Voice platform owner + Security | Provision a new and updated config; verify authenticated CLM SSE, tool correlation, control-plane `204`, quota/error handling, and redacted logs. |
-| Hume WebSocket proxy | Authenticated `wss` proxy with short-lived/single-use connection tickets, token validation, rate limits, revocation, and query/log redaction. | Backend/API owner + Security | Connect with valid, expired, replayed, wrong-audience, and revoked tickets; inspect proxy/ingress/tracing logs; run reconnect and load tests. |
-| Native Hume PCM | Dev-client native capture that emits continuous 48 kHz mono Linear16 and releases audio resources correctly. | iOS/Android audio owner | Physical iOS/Android tests for two-way audio, interruption, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
-| Production auth and SMS | Provider JWT verification, VeryLoving access/refresh sessions, rotation/revocation, phone challenge/verify service, abuse controls, and delivery receipts. | Identity/backend owner + SMS vendor owner | Apple, Google, and phone tests for success, cancel, expiry, replay, resend, throttling, refresh, revocation, 401 recovery, logout, and account switching. |
-| Physical iOS and VL01 | Signed iOS build, approved VL01 GATT UUID/protocol, real battery characteristic, ownership, notifications, and reconnect policy. | iOS owner + BLE/firmware owner + Device QA | Run the signed-device matrix with Bluetooth off/on, pair/relaunch/reconnect/disconnect, battery changes, foreground/background, wearable reset, and two-account ownership. |
+| Hume WebSocket production deployment | The in-repository first-frame authenticated `wss` gateway deployed behind TLS with token revocation/replay controls, rate limits, upgrade/idle-timeout policy, ownership-bound resume, quotas, and log redaction. | Backend/API owner + Security | Connect with valid, expired, replayed, wrong-audience, and revoked sessions; inspect proxy/ingress/tracing logs; run reconnect, backpressure, and load tests. |
+| Native Hume PCM validation | The implemented `expo-audio` 48 kHz mono Int16 stream proven to emit continuous frames and release audio resources correctly. | iOS/Android audio owner | Physical iOS/Android tests for two-way audio, frame timing, interruption, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
+| Production auth and SMS | Deploy the implemented Apple/Google verification and access/rotating-refresh renewal; add refresh-family persistence/reuse detection/revocation, uniform 401 recovery, phone challenge/verify, abuse controls, and delivery receipts. | Identity/backend owner + SMS vendor owner | Apple, Google, and phone tests for success, cancel, expiry, old-refresh reuse, resend, throttling, revocation, 401 recovery, logout, deletion, and account switching. |
+| Physical iOS and VL01 | Signed iOS build, approved VL01 UUID/schema, battery semantics, decoded status/events, authorized command schemas, ownership/secure pairing, and background policy. | iOS owner + BLE/firmware owner + Device QA | Exercise the implemented timed GATT discovery/read/write, conditional battery monitor, raw status/event channels, serialized reconnect, plus Bluetooth off/on, battery changes, foreground/background, wearable reset, and two-account ownership. |
 | Android runtime | API 36 emulator plus signed physical-device coverage, release credentials, permission and background behavior. | Android owner + Mobile QA | Exercise auth, notification, microphone, location, telephony, BLE, voice, deep links, Back navigation, backgrounding, process death, and Play internal build upgrade. |
 | APNs and FCM | Production push credentials, token registration/rotation/revocation, authenticated delivery service, payload contract, observability, and user consent handling. | Mobile platform owner + Backend/notifications owner | Signed iOS/Android tests for first registration, token refresh, opt-out, foreground/background/terminated delivery, tap routing, invalid token cleanup, outage, and duplicate suppression. |
-| Mapbox and safety backend | Production public/runtime tokens, routes/avoidance data, revocable live-share links, durable Guardian/Emergency state, remote SOS acknowledgement, and failure semantics. | Maps/backend owner + Safety product owner | Online/offline map and route tests; expired share link; permission denial; stale location; backend timeout; duplicate SOS; acknowledgement audit; no false activation copy. |
+| Mapbox, safety delivery, and data lifecycle | Deploy the implemented account-bound contact migration/synchronization, idempotent Dynamo safety state, and Dynamo export/deletion; add notification delivery/receipts, routes/avoidance, revocable live sharing, deletion tombstones/session revocation/vendor orchestration, retention, and failure semantics. | Maps/backend owner + Safety product owner | Online/offline and account-switch tests; expired share link; permission denial; stale location; backend timeout; durable duplicate SOS/session retry; delivery receipt and deletion audit; no false activation copy. |
 | App Store and Play submission | Store accounts/roles, signing, privacy/data-safety answers, screenshots/copy, export compliance, reviewer notes, staged rollout, monitoring, and rollback approval. | Grace (release coordinator) + Legal/Privacy + Product | Upload production archives to TestFlight/Play internal, pass automated checks, complete reviewer flows on clean accounts, reconcile disclosures, and rehearse staged rollout pause/rollback. |
 
 ## P1 Stop-Ship Gates
 
 | Gate | Current state | Evidence required to close |
 | --- | --- | --- |
-| Backend-issued application sessions | Open | Server-side Apple/Google JWT validation; short-lived VeryLoving access tokens; refresh rotation/revocation; expiry and 401 recovery tests. |
-| Per-account encrypted PII storage | Open | Contacts, settings, transcripts, and offline queues encrypted with an OS-protected, account-bound key; migration and account-mismatch tests. |
+| Backend-issued application sessions | Partial — provider exchange plus access/refresh JWT renewal implemented, not production-validated | Deploy exact allowlists/signing keys; add refresh-family persistence, reuse detection/revocation, deletion tombstones, provider credential-state checks, uniform 401 recovery, and signed-provider evidence. |
+| Per-account encrypted PII storage | Partial — contact cache moved to account-bound SecureStore; wearable metadata account-bound | Encrypt/account-bind settings, transcripts, locations, queues, and remaining resilience records; versioned migration and account-mismatch/process-death tests. |
 | Production SMS | Open | Signed challenge/verify API, abuse controls, provider delivery receipts, expiry/retry tests, and real-device verification. |
-| Hume voice proxy | Open | Authenticated `wss` proxy or one-time connection-ticket flow, redacted logs, rate limits, revocation, and end-to-end tests. The proxy is not in this repository. |
-| Native PCM capture | Open | Real 48 kHz mono Linear16 streaming, interruption/echo/Bluetooth/background tests on physical iOS and Android devices. |
-| VL01 GATT | Open | Approved UUID/protocol implementation, battery read/notification, reconnect/ownership behavior, and physical-wearable tests. |
-| Safety/map backend | Open | Remote SOS/guardian state, live location sharing, push delivery, routes, avoidance zones, and failure/timeout semantics. |
+| Hume voice proxy | Partial — first-frame authenticated gateway implemented, not deployed | Production TLS/upgrade evidence, rate limits, revocation/replay resistance or a single-use ticket, ownership-bound resume/configuration, redacted logs, load and end-to-end tests. |
+| Native PCM capture | Partial — 48 kHz mono Int16 code path and deterministic tests implemented | Physical iOS/Android evidence for continuous streaming, playback, interruption/echo/Bluetooth/background/lock-screen behavior and cleanup. |
+| VL01 GATT | Partial — normalized UUIDs, timed discovery/read/write, battery read/conditional monitor, raw status/events, disconnect handling, and serialized backoff implemented | Approved UUID/schema and battery encoding; decoded status/events, authorized commands, secure pairing/ownership, and physical-wearable tests. |
+| Safety/map backend | Partial — account-bound contacts, current-state/idempotent sessions, durable retry-safe SOS acceptance, Dynamo export/deletion, and local migration serialization implemented | Real guardian/contact delivery and receipts, push, live sharing, routes, avoidance zones, deletion tombstones/session revocation/vendor orchestration, and production failure semantics. |
 | Android runtime matrix | Open | Full API 36 emulator plus physical-device results with a signed, production-like build. |
 | Signed physical-device matrix | Open | iOS and Android results for auth, telephony, notifications, audio routing, backgrounding, lock screen, location, BLE, and privacy flows. |
 
@@ -68,15 +68,23 @@ Grace is the release coordinator: every external gate needs a named individual a
 | --- | --- | --- | --- |
 | `EXPO_PUBLIC_API_BASE_URL` | HTTPS root of the production VeryLoving API gateway. | Public; bundled | Deployed API domain — Backend/API owner; set by Release Engineering. |
 | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | OAuth web client ID used to mint Google identity tokens for backend exchange. | Public; bundled | Google Cloud OAuth configuration — Identity owner. |
-| `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated production `wss` endpoint; must not point at the CLM-only container. | Public endpoint; bundled | Voice gateway deployment — Voice backend owner. |
+| `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Native iOS OAuth client ID used for the callback URL scheme. | Public; bundled | Google Cloud iOS OAuth configuration — Identity owner. |
+| `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Production `wss` endpoint for the in-repository `/api/voice/hume-ws` gateway; no credentials in the URL. | Public endpoint; bundled | Voice gateway deployment — Voice backend owner. |
 | `EXPO_PUBLIC_HUME_CONFIG_ID` | Published Hume EVI config ID; required when custom CLM is enabled. | Public identifier; bundled | Hume provisioning output — Voice platform owner. |
 | `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root serving authenticated safety-tips and session-configure endpoints. | Public endpoint; bundled | CLM/API gateway deployment — Backend/API owner. |
 | `EXPO_PUBLIC_HUME_CLM_ENABLED` | `true` only after the CLM/control-plane contract passes production tests; otherwise `false`. | Public flag; bundled | Release decision — Voice platform owner + Release manager. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Approved Hume custom voice ID, or empty to use configured/default voice behavior. | Public identifier; bundled | Hume voice provisioning — Voice/brand owner. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Least-privilege public `pk.` runtime token restricted as Mapbox supports. Never use `sk.`. | Public; bundled | Mapbox account — Maps owner. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Normally `false`; `true` forces bundled offline companion behavior. | Public flag; bundled | Release configuration — Mobile owner. |
+| `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Must be `true` for production contacts, safety-session persistence, and durable SOS acceptance. | Public flag; bundled | Backend readiness decision — Safety/backend owner. |
 | `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH` | Must be `false` in production. | Public flag; bundled | Release configuration — Identity owner. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Must be absent in production; direct API keys are development-only and rejected by release code. | Prohibited | Hume account — Security/Voice owner verifies absence. |
+| `EXPO_PUBLIC_VL01_ENABLED` | Enables the approved real-device VL01 protocol. | Public flag; bundled | BLE/firmware release approval. |
+| `EXPO_PUBLIC_VL01_SERVICE_UUID` | Approved primary service UUID used for filtered scanning/GATT discovery. | Public protocol metadata; bundled | Firmware specification — BLE owner. |
+| `EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID` | Approved one-byte battery characteristic. | Public protocol metadata; bundled | Firmware specification — BLE owner. |
+| `EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID` | Status channel; properties are validated and raw values surfaced, but firmware decoding is not implemented. Required by production diagnostics. | Public protocol metadata; bundled | Firmware specification — BLE owner. |
+| `EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID` | Event channel; properties are validated and raw notifications surfaced, but event semantics/actions are not implemented. Required by production diagnostics. | Public protocol metadata; bundled | Firmware specification — BLE owner. |
+| `EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID` | Command channel; a bounded raw write exists, but schemas/authorization require approval. Required by production diagnostics. | Public protocol metadata; bundled | Firmware specification — BLE/Security owner. |
 | `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Native dependency download credential where required by the iOS/native build. Never copied into `extra`. | EAS secret/build-only | Mapbox secret token — Maps owner; stored by Release Engineering. |
 | `VERYLOVING_BUILD_PROFILE` | `development`, `preview`, or `production`; committed by profile in `eas.json`. | Non-secret build metadata | Mobile/Release Engineering. |
 | `VERYLOVING_CONFIG_DIAGNOSTICS` | `1` in EAS profiles to emit redacted booleans and issue codes. | Non-secret build metadata | Mobile/Release Engineering. |
@@ -89,11 +97,26 @@ Grace is the release coordinator: every external gate needs a named individual a
 | Variable | Description / production value | Visibility | Source / owner |
 | --- | --- | --- | --- |
 | `NODE_ENV` | Must be `production`; disables development-token authentication. | Plain server config | Hosting platform — Backend/DevOps owner. |
-| `PORT` | Listener port injected by Railway/App Runner or set to `8787` for the container. Do not override App Runner's reserved `PORT`. | Plain platform config | Hosting platform — DevOps owner. |
-| `HUME_API_KEY` | Hume server credential used only for control-plane requests and provisioning. | Server secret | Hume account — Voice platform owner. |
+| `PORT` | HTTP and WebSocket listener port injected by Railway/App Runner or set to `8787` for the container. Do not override App Runner's reserved `PORT`. | Plain platform config | Hosting platform — DevOps owner. |
+| `HUME_API_KEY` | Hume server credential used by the voice gateway and control-plane requests. | Server secret | Hume account — Voice platform owner. |
+| `HUME_CONFIG_ID` | Server-enforced EVI configuration ID; rejects conflicting client choices. | Plain identifier | Approved Hume config — Voice platform owner. |
+| `HUME_ALLOWED_VOICE_IDS` | Comma-separated allowlist of approved client-selectable voices; required by production startup validation. | Plain identifiers | Voice approval — Voice platform/brand owner. |
+| `HUME_ALLOW_CLIENT_RESUME` | Keep `false` until chat-group ownership is enforced. | Plain security flag | Security + Voice backend owner. |
 | `HUME_CLM_BEARER_TOKEN` | At least 32 random bytes shared only with the Hume CLM configuration. | Server secret | Generated in secret manager — Security/Voice backend owner. |
-| `APP_AUTH_VERIFY_URL` | HTTPS verifier for short-lived VeryLoving access tokens. Required for app-facing endpoints. | Plain endpoint config | Production identity service — Identity/backend owner. |
+| `APP_AUTH_VERIFY_URL` | Optional external verifier fallback for HTTP endpoints; built-in session JWT verification runs first. | Plain endpoint config | Identity/backend owner. |
 | `DEV_APP_TOKEN` | Must be absent in production. | Prohibited | Backend/DevOps verifies absence. |
+| `AUTH_EXCHANGE_ENABLED` | Must be `true` to enable Apple/Google exchange. | Plain feature flag | Identity/backend owner. |
+| `SESSION_JWT_SECRET` | Independent secret of at least 32 characters used for HS256 session signing/verification. | Server secret | Generated/rotated in secret manager — Security owner. |
+| `SESSION_JWT_ISSUER` | Exact issuer; defaults to `https://api.veryloving.ai`. | Plain security config | Identity/backend owner. |
+| `SESSION_JWT_AUDIENCE` | Exact mobile audience; defaults to `veryloving-mobile`. | Plain security config | Identity/backend owner. |
+| `SESSION_JWT_TTL_SECONDS` | Access-token lifetime; defaults to 3600 seconds and is bounded to 300–86400. | Plain security config | Security/Identity owner. |
+| `SESSION_REFRESH_TTL_SECONDS` | Refresh-token lifetime; defaults to 30 days and is bounded to 1–90 days. | Plain security config | Security/Identity owner. |
+| `APPLE_CLIENT_IDS` | Comma-separated accepted Apple identity-token audiences. | Plain public identifiers | Apple developer configuration — Identity owner. |
+| `GOOGLE_CLIENT_IDS` | Comma-separated accepted Google audiences/authorized parties. | Plain public identifiers | Google Cloud OAuth configuration — Identity owner. |
+| `SAFETY_API_ENABLED` | Must be `true` to enable contacts, SOS acceptance, and safety sessions. | Plain feature flag | Safety/backend owner. |
+| `SAFETY_TABLE_NAME` | DynamoDB table with string `PK` and `SK` keys. | Plain resource name | AWS deployment — Backend/DevOps owner. |
+| `SAFETY_RETENTION_DAYS` | Positive retention horizon used for DynamoDB expiry metadata; production value requires Privacy approval. | Plain policy config | Privacy/Safety/backend owners. |
+| `AWS_REGION` | Region for the safety-table DynamoDB client. | Plain platform config | AWS deployment — Backend/DevOps owner. |
 | `CLM_UPSTREAM_URL` | Optional OpenAI-compatible HTTPS completion endpoint; set with key and model as a group. | Plain endpoint config | Approved model provider — AI/backend owner. |
 | `CLM_UPSTREAM_API_KEY` | Optional upstream provider credential. | Server secret | Model provider secret — AI/backend owner. |
 | `CLM_UPSTREAM_MODEL` | Optional approved upstream model identifier. | Plain server config | Model deployment — AI/safety owner. |
@@ -117,12 +140,15 @@ These values are used by the provisioning/voice-design commands, not bundled int
 - [ ] Every `EXPO_PUBLIC_` value is safe to expose in the binary; no Hume, Mapbox download, provider, signing, or backend secret uses that prefix.
 - [ ] `EXPO_PUBLIC_API_BASE_URL` points to the production HTTPS API gateway.
 - [ ] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` is the production OAuth web client ID.
+- [ ] `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` is the production iOS OAuth client ID and generated callback scheme is verified.
 - [ ] `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` is a public runtime token, not an `sk.` token.
 - [ ] `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` is available to the remote native builder and is not bundled into app `extra` values.
-- [ ] `EXPO_PUBLIC_HUME_WS_PROXY_URL` points to the deployed authenticated `wss` proxy, not the CLM-only container.
+- [ ] `EXPO_PUBLIC_HUME_WS_PROXY_URL` points to the deployed `/api/voice/hume-ws` gateway and contains no token or credential query.
 - [ ] `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, config ID, and branded voice ID match the deployed Hume account.
 - [ ] `EXPO_PUBLIC_HUME_CLM_ENABLED=true` only after the control-plane and authenticated tool endpoints pass production checks.
 - [ ] `EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH=false` and `EXPO_PUBLIC_ENABLE_OFFLINE_MODE=false` unless an approved release decision says otherwise.
+- [ ] `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED=true`; server exchange/safety flags and protected endpoint probes pass.
+- [ ] Production has CLM and VL01 enabled; all service/battery/status/event/command UUIDs are firmware-approved and their schemas, authorization, and user-facing behavior are reviewed.
 - [ ] `EXPO_PUBLIC_HUME_API_KEY` is absent from production.
 
 Run the redacted config diagnostic against a locally pulled production environment:
@@ -155,13 +181,15 @@ eas build --platform android --profile production
 
 ## Backend Deployment
 
-The only deployable backend in this repository is the dependency-free Node CLM/control-plane service in `server/`. It is not a Next.js, AWS, DynamoDB, SES, Vercel, SMS, auth-session, push, map, SOS, or Hume WebSocket-proxy implementation.
+The deployable backend is the Node HTTP/WebSocket service in `server/`. It implements Apple/Google exchange, access/refresh JWT renewal, the authenticated Hume gateway, CLM/control-plane endpoints, and DynamoDB safety/privacy endpoints. It is not a Next.js/Vercel or SES application, does not provision AWS infrastructure, and does not implement refresh-family revocation/reuse detection, SMS, push or guardian delivery, delivery receipts, complete map routes/sharing, deletion tombstones, or vendor privacy orchestration.
 
-- [ ] Deploy `server/Dockerfile` with `NODE_ENV=production` and platform-managed `PORT`.
-- [ ] Configure `HUME_API_KEY` and a random `HUME_CLM_BEARER_TOKEN` as server-only secrets.
-- [ ] Configure `APP_AUTH_VERIFY_URL` to a production token verifier. `DEV_APP_TOKEN` is absent.
+- [ ] `npm ci --prefix server` succeeds and `server/package-lock.json` is archived with the release.
+- [ ] Deploy `server/Dockerfile` with `NODE_ENV=production`, platform-managed `PORT`, and HTTP plus WebSocket upgrade routing.
+- [ ] Configure independent `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, and `SESSION_JWT_SECRET` server secrets; `DEV_APP_TOKEN` is absent.
+- [ ] Set `AUTH_EXCHANGE_ENABLED=true`, exact provider allowlists, issuer/audience/access+refresh TTLs, `SAFETY_API_ENABLED=true`, safety table/region/retention, and approved Hume config/voice policy. Keep client resume disabled until ownership enforcement exists.
+- [ ] Provision the DynamoDB table with string `PK`/`SK`, TTL on numeric `expiresAt`, encryption, point-in-time recovery/backups, alarms, approved retention/deletion, and least-privilege Query/Get/Put/Delete task permissions.
 - [ ] Configure all three upstream model values together, or leave all three unset to use deterministic local responses.
-- [ ] TLS certificates, request/body limits, timeouts, rate limits, and log redaction are verified at the ingress/service boundary.
+- [ ] TLS certificates, HTTP body and WebSocket frame/connection limits, upgrade forwarding, idle timeouts, endpoint-specific rate limits, and log redaction are verified at the ingress/service boundary.
 - [ ] Backend logs contain no message text, raw session IDs, provider tokens, Hume tokens, query credentials, or precise location.
 
 Liveness check:
@@ -172,10 +200,15 @@ curl --fail --silent --show-error https://<clm-domain>/health
 
 - [ ] Response is exactly a successful CLM liveness result. This endpoint does not prove Hume credentials, app authentication, or upstream readiness.
 - [ ] `POST /chat/completions` rejects a missing/incorrect CLM bearer and streams a valid authenticated response.
+- [ ] `POST /v1/auth/exchange` accepts valid Apple/Google assertions and rejects invalid signature, issuer, audience/authorized party, expiry, nonce, and provider-key outage cases.
+- [ ] `POST /v1/auth/refresh` rotates the client-held token and rejects malformed/expired/wrong-audience tokens; production refresh-family reuse detection/revocation is independently proven.
+- [ ] `GET`/`POST`/`DELETE /v1/emergency-contacts`, `POST /v1/sos-events`, and `POST /v1/safety-sessions` reject invalid sessions and pass account-isolation/idempotency/failure tests against the production table.
+- [ ] `GET /v1/privacy/export` returns only the authenticated account's Dynamo records and `DELETE /v1/privacy/data` deletes them; session revocation/tombstone and backup/vendor deletion evidence is tracked separately.
+- [ ] `/api/voice/hume-ws` rejects absent/invalid/expired/wrong-scope first frames, never accepts a bearer query, enforces config/voice policy and backpressure, and passes production Hume tests.
 - [ ] `POST /v1/safety/tips` rejects missing/expired app authentication and returns the expected schema for a valid app session.
 - [ ] `POST /v1/hume/session/configure` rejects invalid auth/chat IDs and returns `204` only after the Hume control-plane request succeeds.
-- [ ] The separately deployed auth, SMS, push, map/SOS, and WebSocket-proxy services pass their own health, security, load, and rollback checks.
-- [ ] A gateway or distinct domains route HTTP CLM/control-plane traffic and WebSocket voice traffic to the correct services.
+- [ ] Production refresh-family state/SMS, push/guardian delivery, and map/share services pass their own health, security, load, and rollback checks.
+- [ ] The ingress routes HTTP API/CLM traffic and WebSocket voice upgrades to the correct server paths.
 
 ## Core Runtime Matrix
 
@@ -191,7 +224,7 @@ Test first install, upgrade, relaunch, foreground/background, airplane mode, den
 - [ ] Session refresh succeeds; failed refresh clears secure/local state and returns to auth without a loop.
 - [ ] Switching accounts cannot expose the prior account's contacts, settings, queue, or transcript history.
 - [ ] JSON export opens the native share sheet and removes its temporary file.
-- [ ] Local and server-side deletion complete, are auditable, and cannot be repopulated by an in-flight writer.
+- [ ] Local and DynamoDB deletion complete, are auditable, revoke the session/create a deletion tombstone, and cannot be repopulated by an in-flight or still-authenticated writer; applicable vendor copies are handled.
 
 ### Safety, Map, And Emergency
 
@@ -248,13 +281,13 @@ Grace is the release coordinator, not the default implementer for unresolved eng
 
 | External item | Accountable owner | Evidence Grace must collect |
 | --- | --- | --- |
-| Production Apple/Google session exchange and SMS verification | Identity/backend owner + SMS vendor owner | Provider-token validation, access/refresh rotation and revocation, real SMS delivery, abuse controls, expiry/replay tests, logout, and account-switch results. |
+| Production deployment of Apple/Google exchange plus session/SMS completion | Identity/backend owner + SMS vendor owner | Exact allowlists/signing-key deployment, provider validation, access/refresh renewal, refresh-family reuse detection/revocation, real SMS, abuse controls, expiry/replay tests, deletion, logout, and account-switch results. |
 | Encrypted, account-bound local PII | Mobile security owner + iOS/Android owners | Key-management design, migration and rollback results, account-mismatch isolation tests, deletion tests, and Security approval. |
 | Hume production account, EVI configuration, quotas, and retention | Voice platform owner + Security/Privacy | Approved config/tool/voice IDs, quota and outage tests, credential-rotation evidence, and signed retention/deletion review. |
-| Authenticated Hume WebSocket proxy | Voice backend owner + Security | Deployed `wss` URL, short-lived/single-use ticket tests, expiry/replay/revocation results, rate limits, and redacted ingress logs. |
-| Native PCM capture and production audio behavior | iOS/Android audio owners + Device QA | Physical-device recordings and logs for 48 kHz mono Linear16, interruptions, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
-| VL01 protocol and physical wearable validation | BLE/firmware owner + Mobile BLE owner + Device QA | Approved GATT specification, battery read/notification tests, ownership isolation, reconnect behavior, wearable reset, and signed hardware matrix. |
-| Safety/map backend, remote SOS acknowledgement, Guardian state, and revocable sharing | Maps/backend owner + Safety product owner | Online/offline, timeout, stale-location, duplicate-SOS, acknowledgement-audit, route/zone, share-expiry, and rollback evidence. |
+| Production deployment of the authenticated Hume gateway | Voice backend owner + Security | Deployed in-repository `wss` path, invalid/expired/wrong-scope/replay/revocation results, rate limits, ownership-bound resume/configuration, load/backpressure tests, and redacted ingress logs. |
+| Physical validation of the implemented PCM path | iOS/Android audio owners + Device QA | Physical-device recordings and logs for 48 kHz mono Int16 frame timing, two-way playback, interruptions, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
+| VL01 protocol completion and physical wearable validation | BLE/firmware owner + Mobile BLE owner + Device QA | Approved GATT specification/battery encoding, decoded status/events, authorized commands, secure pairing/ownership isolation, wearable reset, and signed hardware matrix. |
+| Safety/map delivery, lifecycle, and privacy completion | Maps/backend owner + Safety product owner | Online/offline/timeout/stale-location/durable duplicate-SOS tests, real delivery receipts, route/zone/share-expiry, deletion tombstones/session revocation/vendor orchestration, retention, and rollback evidence. |
 | APNs/FCM credentials and push delivery service | Mobile platform owner + Notifications backend owner | Registration and token-rotation tests plus foreground, background, terminated, opt-out, invalid-token, duplicate, and tap-routing results on signed builds. |
 | Signed iOS physical-device matrix | iOS owner + Mobile QA | TestFlight evidence for auth, telephony, permissions, location, audio routing, backgrounding, lock screen, BLE, privacy export/deletion, and upgrade/relaunch. |
 | Android API 36 and signed physical-device matrix | Android owner + Mobile QA | Emulator and Play internal-track evidence for permissions, Back navigation, process death, deep links, auth, telephony, voice, BLE, location, push, privacy, and upgrade. |
