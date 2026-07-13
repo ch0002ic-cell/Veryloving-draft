@@ -93,17 +93,21 @@ export function classifyHumeClose({ closeCode, closeReason, serverErrorCode } = 
   // Hume uses 1000 for intentional hang-up, inactivity, and maximum-duration
   // termination. A normal close is always authoritative, even if an earlier
   // message contained a recoverable error.
+  if (normalizedCloseCode === 1000) {
+    return { shouldReconnect: false, category: `terminal-close-${normalizedCloseCode}` };
+  }
+
+  const normalizedReason = typeof closeReason === 'string' ? closeReason.trim() : '';
+  if (/\b(?:401|403|unauthori[sz]ed|forbidden|authentication(?: failed)?|invalid (?:api[ _-]?key|access[ _-]?token|token))\b/i.test(normalizedReason)) {
+    return { shouldReconnect: false, category: 'terminal-auth' };
+  }
+
   if (TERMINAL_CLOSE_CODES.has(normalizedCloseCode)) {
     return { shouldReconnect: false, category: `terminal-close-${normalizedCloseCode}` };
   }
 
   if (TERMINAL_SERVER_CODES.has(serverErrorCode)) {
     return { shouldReconnect: false, category: `terminal-server-${serverErrorCode}` };
-  }
-
-  const normalizedReason = typeof closeReason === 'string' ? closeReason.trim() : '';
-  if (/\b(?:401|403|unauthori[sz]ed|forbidden|authentication(?: failed)?|invalid (?:api[ _-]?key|access[ _-]?token|token))\b/i.test(normalizedReason)) {
-    return { shouldReconnect: false, category: 'terminal-auth' };
   }
 
   // Resume failures are recoverable only because the caller removes the stale

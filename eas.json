@@ -1,15 +1,42 @@
 {
-  "cli": { "version": ">= 12.0.0" },
+  "cli": {
+    "version": ">= 20.0.0",
+    "appVersionSource": "remote"
+  },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "ios": { "simulator": true }
+      "environment": "development",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "development",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+      }
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "environment": "preview",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "preview",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
+      "distribution": "store",
+      "environment": "production",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "production",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+      },
       "autoIncrement": true
     }
   },

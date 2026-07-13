@@ -2,6 +2,10 @@ import { audioService } from '../audio';
 import { config } from '../../utils/config';
 import { logger, sanitizeUrl } from '../../utils/logger';
 import {
+  createHumeServerError,
+  HumeConfigurationError
+} from './hume-errors';
+import {
   buildHumeWebSocketURL,
   classifyHumeClose,
   createSessionSettingsPayload,
@@ -49,6 +53,21 @@ export class HumeEVIService {
   isConnected() { return this.state === 'connected'; }
   isConnecting() { return this.state === 'connecting'; }
   isMicrophoneActive() { return this.isRecording; }
+
+  failConnection(error, context = {}) {
+    logger.error('[HumeEVIService] Connection setup failed', {
+      errorCode: error?.code || error?.name || 'VOICE_CONNECTION_SETUP_FAILED',
+      humeCode: error?.humeCode,
+      attemptId: this.connectionAttemptId,
+      reconnectAttempt: this.reconnectAttempts,
+      state: this.state,
+      ...context
+    });
+    this.intentionallyConnected = false;
+    this.setState('error');
+    this.messageHandler.onError?.(error);
+    return error;
+  }
 
   setState(state) {
     if (this.state === state) return;
@@ -115,22 +134,22 @@ export class HumeEVIService {
     const humeAccessToken = sessionConfig.humeAccessToken;
     const apiKey = config.humeApiKey;
     if (usesProxy && !appAccessToken) {
-      const error = new Error('User not authenticated — cannot connect to voice proxy');
-      this.setState('error');
-      this.messageHandler.onError?.(error);
-      throw error;
+      const error = new Error('Sign in again to use the online voice companion, or continue with the offline companion.');
+      error.code = 'VOICE_AUTHENTICATION_MISSING';
+      throw this.failConnection(error, { transport: 'proxy', hasAppAccessToken: false });
     }
     if (!usesProxy && !humeAccessToken && !apiKey) {
-      const error = new Error('A Hume access token is required. Configure the production voice proxy or a development API key.');
-      this.setState('error');
-      this.messageHandler.onError?.(error);
-      throw error;
+      throw this.failConnection(new HumeConfigurationError('missing'), {
+        transport: 'direct',
+        hasHumeAccessToken: false,
+        hasDevelopmentApiKey: false
+      });
     }
     if (!usesProxy && !humeAccessToken && apiKey && !__DEV__) {
-      const error = new Error('Direct Hume API keys are disabled in production. Configure the authenticated voice proxy.');
-      this.setState('error');
-      this.messageHandler.onError?.(error);
-      throw error;
+      throw this.failConnection(new HumeConfigurationError('invalid'), {
+        transport: 'direct',
+        productionApiKeyRejected: true
+      });
     }
 
     const configId = normalizeHumeConfigId(sessionConfig.configId)
@@ -158,7 +177,15 @@ export class HumeEVIService {
       resumedChat: sessionConfig.resumedChatGroupId ? '[present]' : 'none'
     });
 
-    this.socket = new WebSocket(String(url));
+    try {
+      this.socket = new WebSocket(String(url));
+    } catch {
+      throw this.failConnection(new HumeConfigurationError('invalid'), {
+        transport: usesProxy ? 'proxy' : 'direct',
+        invalidWebSocketEndpoint: true,
+        sanitizedURL: sanitizeUrl(String(url))
+      });
+    }
     const socket = this.socket;
 
     const connectTimer = setTimeout(() => {
@@ -239,7 +266,12 @@ export class HumeEVIService {
         try {
           await this.messageHandler.onChatMetadata?.(metadata);
         } catch (error) {
-          logger.error('[HumeEVIService] Chat setup after metadata failed:', error);
+          logger.error('[HumeEVIService] Chat setup after metadata failed', {
+            errorCode: error?.code || error?.name || 'CHAT_SETUP_FAILED',
+            attemptId: this.connectionAttemptId,
+            hasChatId: Boolean(metadata.chatId),
+            hasChatGroupId: Boolean(metadata.chatGroupId)
+          });
           this.messageHandler.onError?.(new Error('The voice companion could not finish secure session setup. Please try again.'));
           if (sourceSocket === this.socket && sourceSocket.readyState === SOCKET_OPEN) sourceSocket.close(4001, 'secure session setup failed');
           this.setState('error');
@@ -252,9 +284,9 @@ export class HumeEVIService {
         this.chatMetadataReceived = true;
         this.pendingMicrophoneStart = false;
         logger.voice('[HumeEVIService] chat_metadata received; microphone may start now', {
-          chatId: metadata.chatId,
-          chatGroupId: metadata.chatGroupId,
-          customSessionId: metadata.customSessionId ? '[present]' : 'none'
+          hasChatId: Boolean(metadata.chatId),
+          hasChatGroupId: Boolean(metadata.chatGroupId),
+          hasCustomSessionId: Boolean(metadata.customSessionId)
         });
         this.setState('connected');
         if (shouldStartMicrophone) this.startMicrophone().catch((error) => logger.error('[HumeEVIService] Pending microphone start failed:', error));
@@ -286,7 +318,7 @@ export class HumeEVIService {
         this.messageHandler.onToolResponse?.(message);
         break;
       case 'tool_error':
-        logger.warn('[HumeEVIService] Tool error received:', { code: message.code, level: message.level, toolCallId: message.tool_call_id });
+        logger.warn('[HumeEVIService] Tool error received:', { code: message.code, level: message.level, hasToolCallId: Boolean(message.tool_call_id) });
         this.messageHandler.onToolError?.(message);
         break;
       case 'error':
@@ -352,7 +384,14 @@ export class HumeEVIService {
       logger.warn('[HumeEVIService] Ignoring stale WebSocket error from an old socket');
       return;
     }
-    logger.error('[HumeEVIService] WebSocket error:', event?.message || event?.type || event);
+    logger.error('[HumeEVIService] WebSocket error', {
+      eventType: event?.type || 'error',
+      attemptId: this.connectionAttemptId,
+      reconnectAttempt: this.reconnectAttempts,
+      state: this.state,
+      chatReady: this.chatMetadataReceived,
+      sanitizedURL: sanitizeUrl(sourceSocket?.url)
+    });
     this.setState('error');
     if (!this.chatMetadataReceived) {
       this.messageHandler.onError?.(new Error('Voice connection failed before the chat session was ready. Please check your connection and try again.'));
@@ -362,8 +401,17 @@ export class HumeEVIService {
   handleServerError(message) {
     const readable = message.message || 'Hume voice service returned an error.';
     this.lastServerErrorCode = message.code;
-    logger.error('[HumeEVIService] Server error:', { code: message.code, slug: message.slug, message: readable });
-    this.messageHandler.onError?.(new Error(readable));
+    const error = createHumeServerError(readable, message.code);
+    logger.error('[HumeEVIService] Server error', {
+      errorCode: error.code || error.name,
+      humeCode: message.code,
+      slug: message.slug,
+      attemptId: this.connectionAttemptId,
+      reconnectAttempt: this.reconnectAttempts,
+      state: this.state,
+      chatReady: this.chatMetadataReceived
+    });
+    this.messageHandler.onError?.(error);
     if (RESUME_UNAVAILABLE_CODES.has(message.code) && this.sessionConfig?.resumedChatGroupId) {
       logger.warn('[HumeEVIService] Stored chat group cannot be resumed; retrying as a new Hume chat');
       this.sessionConfig = { ...this.sessionConfig, resumedChatGroupId: undefined };
@@ -377,7 +425,12 @@ export class HumeEVIService {
       logger.warn('[HumeEVIService] Ignoring stale WebSocket close from an old socket');
       return;
     }
-    logger.voice('[HumeEVIService] WebSocket close:', { code: event?.code, reason: event?.reason, attempts: this.reconnectAttempts });
+    logger.voice('[HumeEVIService] WebSocket close:', {
+      code: event?.code,
+      hasReason: Boolean(event?.reason),
+      attempts: this.reconnectAttempts,
+      humeCode: this.lastServerErrorCode
+    });
     const wasReady = this.chatMetadataReceived;
     this.socket = null;
     this.clearChatMetadataTimeout();
@@ -399,7 +452,18 @@ export class HumeEVIService {
     this.intentionallyConnected = false;
     this.setState('disconnected');
     if (connectionWasRequested && !wasReady) {
-      this.messageHandler.onError?.(new Error('Voice connection could not be established. Please try again in a moment.'));
+      let connectionError;
+      if (this.lastServerErrorCode) {
+        connectionError = createHumeServerError(
+          'The voice service rejected this connection. Please try again in a moment.',
+          this.lastServerErrorCode
+        );
+      } else if (classification.category === 'terminal-auth' && !config.humeWSProxyURL) {
+        connectionError = new HumeConfigurationError('invalid');
+      } else {
+        connectionError = new Error('Voice connection could not be established. Please try again in a moment.');
+      }
+      this.messageHandler.onError?.(connectionError);
     }
   }
 

@@ -5,13 +5,20 @@ import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
-import { dangerZones, getMapboxModule, requestCurrentLocation } from '../../src/services/mapbox';
+import {
+  cacheMapRegion,
+  dangerZones,
+  getMapboxModule,
+  MAP_LOAD_FALLBACK_MESSAGE,
+  requestCurrentLocation
+} from '../../src/services/mapbox';
 import { colors, fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { LoadingState } from '../../src/components/LoadingState';
 import { images } from '../../src/constants/assets';
+import { logger } from '../../src/utils/logger';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -20,6 +27,7 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onL
     <Mapbox.MapView
       onDidFinishLoadingStyle={onStyleLoaded}
       onMapLoadingError={onLoadError}
+      styleURL={Mapbox.StyleURL?.Street}
       style={styles.nativeMap}
     >
       <Mapbox.Camera zoomLevel={13} centerCoordinate={coordinates} animationMode="easeTo" />
@@ -48,8 +56,14 @@ export default function MapScreen() {
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
 
-  const handleMapLoadError = useCallback(() => {
-    if (mountedRef.current && !mapStyleReadyRef.current) setMapLoadFailed(true);
+  const handleMapLoadError = useCallback((mapError) => {
+    logger.warn('[Mapbox] Native map style failed to load', {
+      name: mapError?.name || 'MapLoadingError'
+    });
+    if (mountedRef.current && !mapStyleReadyRef.current) {
+      setMapLoadFailed(true);
+      setError(MAP_LOAD_FALLBACK_MESSAGE);
+    }
   }, []);
 
   const handleMapStyleLoaded = useCallback(() => {
@@ -59,18 +73,27 @@ export default function MapScreen() {
   const refreshLocation = useCallback(async () => {
     const requestId = ++requestIdRef.current;
     setLoading(true);
-    setError(null);
+    setError(Mapbox ? null : MAP_LOAD_FALLBACK_MESSAGE);
     try {
       const nextLocation = await requestCurrentLocation();
-      if (mountedRef.current && requestId === requestIdRef.current) setLocation(nextLocation);
+      if (mountedRef.current && requestId === requestIdRef.current) {
+        setLocation(nextLocation);
+        if (nextLocation.isCached) {
+          const cachedMessage = `Live location is unavailable. Showing your last saved location from ${new Date(nextLocation.cachedAt).toLocaleString()}.`;
+          setError(Mapbox ? cachedMessage : `${MAP_LOAD_FALLBACK_MESSAGE} ${cachedMessage}`);
+        } else if (Mapbox) {
+          cacheMapRegion(nextLocation).catch(() => {});
+        }
+      }
     } catch (locationError) {
       if (mountedRef.current && requestId === requestIdRef.current) {
-        setError(locationError.message || t('map.updateFailed'));
+        const locationMessage = locationError.message || t('map.updateFailed');
+        setError(Mapbox ? locationMessage : `${MAP_LOAD_FALLBACK_MESSAGE} ${locationMessage}`);
       }
     } finally {
       if (mountedRef.current && requestId === requestIdRef.current) setLoading(false);
     }
-  }, [t]);
+  }, [Mapbox, t]);
 
   const retryMapAndLocation = useCallback(() => {
     if (mapLoadFailed) {
@@ -127,7 +150,7 @@ export default function MapScreen() {
         {loading ? <LoadingState compact message={t('map.finding')} /> : <Text style={styles.mapText}>{t('map.preview')}</Text>}
         <Text style={styles.coords}>{coordinates.join(', ')}</Text>
       </View>
-      <FeedbackBanner message={error} actionLabel={t('map.retry')} onAction={refreshLocation} />
+      <FeedbackBanner message={error} actionLabel={t('map.retry')} onAction={retryMapAndLocation} />
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
           <Text style={styles.zone}>{t(zone.nameKey)}</Text>

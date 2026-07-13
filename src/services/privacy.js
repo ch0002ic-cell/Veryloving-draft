@@ -3,13 +3,20 @@ import * as SecureStore from 'expo-secure-store';
 import * as Sharing from 'expo-sharing';
 import { AUTH_STORAGE_KEYS } from '../context/AuthContext';
 import { CONVERSATION_HISTORY_KEY, loadConversationHistory } from './conversation-history';
-import { deleteLocalUserStores, LOCAL_USER_DATA_PREFIX } from './local-user-data';
+import {
+  deleteLocalUserStores,
+  hasLocalUserDataDeletionWarnings,
+  LOCAL_USER_DATA_PREFIX
+} from './local-user-data';
 import { RATIONALE_PREFIX } from './permissions';
 import { storage } from './storage';
 import { translate } from '../i18n/core';
 import { purgeVoiceAudioCache } from './voice-audio-cache';
+import { purgeOfflineMapCache } from './mapbox';
+import { logger } from '../utils/logger';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
+export { hasLocalUserDataDeletionWarnings };
 
 async function readJSONSecureStore(key) {
   const raw = await SecureStore.getItemAsync(key);
@@ -80,15 +87,35 @@ export async function exportUserData() {
   }
 }
 
-export async function deleteLocalUserData() {
-  await deleteLocalUserStores({ purgeArtifacts: purgeVoiceAudioCache });
+export async function deleteLocalUserData({ localMutationLockHeld = false } = {}) {
+  const result = await deleteLocalUserStores({
+    mutationLockHeld: localMutationLockHeld,
+    purgeArtifacts: async () => {
+      const results = await Promise.allSettled([
+        purgeVoiceAudioCache(),
+        purgeOfflineMapCache()
+      ]);
+      return {
+        failures: results.filter((item) => item.status === 'rejected').length
+      };
+    }
+  });
+  const artifactFailures = Number(result?.artifactCleanup?.failures) || 0;
+  if (hasLocalUserDataDeletionWarnings(result)) {
+    logger.warn('[Privacy] Local deletion completed with residual artifact warnings', {
+      drainFailures: result?.drainFailures || 0,
+      artifactFailures
+    });
+  }
+  return result;
 }
 
-export async function deleteAllUserData() {
-  await deleteLocalUserData();
+export async function deleteAllUserData(options) {
+  const result = await deleteLocalUserData(options);
   await Promise.all([
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.token),
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.user),
     SecureStore.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
   ]);
+  return result;
 }

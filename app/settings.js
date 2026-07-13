@@ -12,6 +12,7 @@ import {
   deleteAllUserData,
   deleteLocalUserData,
   exportUserData,
+  hasLocalUserDataDeletionWarnings,
   PRIVACY_POLICY_URL
 } from '../src/services/privacy';
 import { colors, fonts, spacing } from '../src/constants/theme';
@@ -49,10 +50,13 @@ export default function Settings() {
             try {
               setBusyAction('delete');
               releaseLocalMutations = await lockAndFlushLocalMutations();
-              await deleteAllUserData();
+              const deletion = await deleteAllUserData({ localMutationLockHeld: true });
               resetLocalState();
               await signOut();
               router.replace('/(auth)/onboarding');
+              if (hasLocalUserDataDeletionWarnings(deletion)) {
+                Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
+              }
             } catch {
               Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
             } finally {
@@ -82,10 +86,13 @@ export default function Settings() {
     try {
       setBusyAction('signOut');
       releaseLocalMutations = await lockAndFlushLocalMutations();
-      await deleteLocalUserData();
+      const deletion = await deleteLocalUserData({ localMutationLockHeld: true });
       resetLocalState();
       await signOut();
       router.replace('/(auth)/onboarding');
+      if (hasLocalUserDataDeletionWarnings(deletion)) {
+        Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
+      }
     } catch {
       Alert.alert(t('settings.signOutFailedTitle'), t('settings.signOutFailedMessage'));
     } finally {

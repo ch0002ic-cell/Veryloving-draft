@@ -1,6 +1,7 @@
 import { Alert, Linking } from 'react-native';
 import { openPhoneCall } from './phone-call';
 import { runSOSFlow } from './sos-flow';
+import { runAndPersistSOS } from './sos-state';
 import { translate } from '../i18n/core';
 
 function confirmEmergencyCall(contact) {
@@ -24,11 +25,11 @@ function confirmEmergencyCall(contact) {
 }
 
 export async function triggerSOS(contacts = []) {
-  return runSOSFlow({
+  return runAndPersistSOS(() => runSOSFlow({
     contacts,
     confirmCall: confirmEmergencyCall,
     openDialer: callNumber
-  });
+  }));
 }
 
 export function callNumber(phone) {

@@ -8,6 +8,111 @@ const nativeLocales = Object.fromEntries(
     .map((language) => [language.code, language.messages.native])
 );
 
+function hasConfiguredValue(value) {
+  if (typeof value !== 'string') return false;
+  const normalized = value.trim();
+  return Boolean(normalized)
+    && !/^<[^>]+>$/.test(normalized)
+    && !/^(?:replace|your)[-_]/i.test(normalized);
+}
+
+function createEnvironmentDiagnostics(env = {}) {
+  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
+  const buildProfile = hasConfiguredValue(requestedProfile)
+    ? requestedProfile.trim()
+    : 'local';
+  const easBuild = env.EAS_BUILD === 'true' || env.EAS_BUILD === '1';
+  const production = buildProfile === 'production';
+  const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
+  const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
+  const mockPhoneAuthRequested = env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
+  const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
+  const humeCustomizationURL = env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
+  const humeWSProxyURL = env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
+  const mapboxAccessToken = env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
+  const googleWebClientId = env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
+
+  const configured = {
+    apiBaseUrl: hasConfiguredValue(apiBaseUrl),
+    googleWebClientId: hasConfiguredValue(googleWebClientId),
+    humeWebSocketProxy: hasConfiguredValue(humeWSProxyURL),
+    humeCustomizationUrl: hasConfiguredValue(humeCustomizationURL),
+    humeConfigId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_CONFIG_ID || ''),
+    humeBrandedVoiceId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || ''),
+    mapboxRuntimeToken: hasConfiguredValue(mapboxAccessToken),
+    mapboxDownloadToken: hasConfiguredValue(env.RNMAPBOX_MAPS_DOWNLOAD_TOKEN || '')
+  };
+
+  const required = new Set();
+  if (production) {
+    required.add('apiBaseUrl');
+    required.add('googleWebClientId');
+    required.add('humeWebSocketProxy');
+    required.add('mapboxRuntimeToken');
+    // Secret EAS variables are not visible during the local config-resolution
+    // phase. Require the native download token only on the remote builder where
+    // its presence can be checked without printing it.
+    if (easBuild) required.add('mapboxDownloadToken');
+  }
+  if (humeCLMEnabled) {
+    required.add('humeWebSocketProxy');
+    required.add('humeCustomizationUrl');
+    required.add('humeConfigId');
+  }
+
+  const invalid = [];
+  if (production && configured.apiBaseUrl && !apiBaseUrl.trim().toLowerCase().startsWith('https://')) {
+    invalid.push('api_base_url_must_use_https');
+  }
+  if (production && configured.humeWebSocketProxy && !humeWSProxyURL.trim().toLowerCase().startsWith('wss://')) {
+    invalid.push('hume_websocket_proxy_must_use_wss');
+  }
+  if (production && configured.humeCustomizationUrl && !humeCustomizationURL.trim().toLowerCase().startsWith('https://')) {
+    invalid.push('hume_customization_url_must_use_https');
+  }
+  if (production && configured.googleWebClientId && !googleWebClientId.trim().endsWith('.apps.googleusercontent.com')) {
+    invalid.push('google_web_client_id_has_unexpected_format');
+  }
+  if (production && configured.mapboxRuntimeToken && mapboxAccessToken.trim().startsWith('sk.')) {
+    invalid.push('mapbox_runtime_token_looks_secret');
+  }
+
+  const warnings = [];
+  if (production && mockPhoneAuthRequested) warnings.push('mock_phone_auth_requested_for_production');
+  if (production && offlineModeEnabled) warnings.push('offline_mode_forced_for_production');
+  if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
+    warnings.push('public_hume_api_key_must_not_be_set_for_production');
+  }
+  if (production && !easBuild && !configured.mapboxDownloadToken) {
+    warnings.push('mapbox_download_token_not_verifiable_during_local_config_resolution');
+  }
+
+  return {
+    buildProfile,
+    context: easBuild ? 'eas-build' : 'local',
+    production,
+    configured,
+    missingRequired: [...required].filter((key) => !configured[key]),
+    invalid,
+    warnings,
+    flags: {
+      humeCLMEnabled,
+      offlineModeEnabled,
+      mockPhoneAuthRequested
+    }
+  };
+}
+
+function reportEnvironmentDiagnostics(diagnostics, env = {}) {
+  if (env.VERYLOVING_CONFIG_DIAGNOSTICS !== '1' && env.VERYLOVING_CONFIG_DIAGNOSTICS !== 'true') return;
+  const hasProblems = diagnostics.missingRequired.length
+    || diagnostics.invalid.length
+    || diagnostics.warnings.length;
+  const report = JSON.stringify(diagnostics);
+  if (hasProblems) console.warn(`[VeryLoving config] ${report}`);
+  else console.info(`[VeryLoving config] ${report}`);
+}
+
 const config = {
   "name": "VeryLoving",
   "slug": "veryloving-react-native",
@@ -310,7 +415,7 @@ const config = {
   ]
 };
 
-module.exports = () => {
+function createAppConfig() {
   const mapboxAccessToken = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
   const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
@@ -321,6 +426,8 @@ module.exports = () => {
   const humeCLMEnabled = process.env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const enableOfflineMode = process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const enableMockPhoneAuth = process.env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
+  const environmentDiagnostics = createEnvironmentDiagnostics(process.env);
+  reportEnvironmentDiagnostics(environmentDiagnostics, process.env);
 
   return {
     ...config,
@@ -335,7 +442,11 @@ module.exports = () => {
       humeCLMEnabled,
       mapboxAccessToken,
       enableOfflineMode,
-      enableMockPhoneAuth
+      enableMockPhoneAuth,
+      environmentDiagnostics
     }
   };
-};
+}
+
+module.exports = createAppConfig;
+module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;

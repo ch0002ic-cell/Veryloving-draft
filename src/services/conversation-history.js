@@ -1,5 +1,6 @@
 import { storage } from './storage';
 import { createOpaqueSessionId } from '../utils/session-id';
+import { runLocalUserDataMutation } from './local-mutation-coordinator';
 
 export const CONVERSATION_HISTORY_KEY = 'veryloving.conversationHistory';
 const MAX_SESSIONS = 50;
@@ -15,20 +16,24 @@ export function createConversationSessionId() {
 }
 
 function runMutation(mutator) {
-  const operation = mutationQueue
-    .catch(() => {})
-    .then(async () => {
-      const sessions = await storage.getJSON(CONVERSATION_HISTORY_KEY, []);
-      const next = await mutator(Array.isArray(sessions) ? sessions : []);
-      await storage.setJSON(CONVERSATION_HISTORY_KEY, next);
-      return next;
-    });
+  const previousMutation = mutationQueue;
+  const operation = runLocalUserDataMutation(async () => {
+    await previousMutation.catch(() => {});
+    const sessions = await storage.getJSON(CONVERSATION_HISTORY_KEY, []);
+    const next = await mutator(Array.isArray(sessions) ? sessions : []);
+    await storage.setJSON(CONVERSATION_HISTORY_KEY, next);
+    return next;
+  });
   mutationQueue = operation.then(() => undefined, () => undefined);
   return operation;
 }
 
-export async function loadConversationHistory() {
+export async function drainConversationHistoryMutations() {
   await mutationQueue.catch(() => {});
+}
+
+export async function loadConversationHistory() {
+  await drainConversationHistoryMutations();
   const sessions = await storage.getJSON(CONVERSATION_HISTORY_KEY, []);
   return Array.isArray(sessions) ? sessions : [];
 }

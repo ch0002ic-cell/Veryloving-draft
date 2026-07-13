@@ -21,6 +21,7 @@ Module._load = function loadVoiceTestDependency(request, parent, isMain) {
   return originalModuleLoad.call(this, request, parent, isMain);
 };
 const { HumeEVIService } = require('../src/services/websocket/hume-evi');
+const { HUME_CONFIGURATION_USER_MESSAGE } = require('../src/services/websocket/hume-errors');
 Module._load = originalModuleLoad;
 
 const readyService = () => {
@@ -36,6 +37,61 @@ const readyService = () => {
   service.sessionConfig = { customSessionId: 'test-session' };
   return service;
 };
+
+test('missing and invalid Hume configuration use a stable user-safe error', async () => {
+  const service = new HumeEVIService();
+  const received = [];
+  service.setMessageHandler({ onError: (error) => received.push(error) });
+
+  await assert.rejects(
+    service.connect(),
+    (error) => (
+      error.code === 'VOICE_CONFIGURATION_MISSING'
+      && error.message === HUME_CONFIGURATION_USER_MESSAGE
+    )
+  );
+  assert.equal(received.at(-1).code, 'VOICE_CONFIGURATION_MISSING');
+
+  service.handleServerError({ code: 'E0703', message: 'Configuration resource private-id is invalid.' });
+  assert.equal(received.at(-1).code, 'VOICE_CONFIGURATION_INVALID');
+  assert.equal(received.at(-1).message, HUME_CONFIGURATION_USER_MESSAGE);
+  assert.doesNotMatch(received.at(-1).message, /private-id/);
+});
+
+test('an invalid direct Hume credential remains user-safe after the socket closes', () => {
+  const service = new HumeEVIService();
+  const socket = { readyState: 3 };
+  const received = [];
+  service.socket = socket;
+  service.intentionallyConnected = true;
+  service.sessionConfig = {};
+  service.state = 'connecting';
+  service.setMessageHandler({ onError: (error) => received.push(error) });
+
+  service.handleClose({ code: 1008, reason: '403 invalid api key' }, socket);
+
+  assert.equal(received.at(-1).code, 'VOICE_CONFIGURATION_INVALID');
+  assert.equal(received.at(-1).message, HUME_CONFIGURATION_USER_MESSAGE);
+  assert.doesNotMatch(received.at(-1).message, /api key|403/i);
+});
+
+test('a Hume configuration error is not overwritten by a generic close error', () => {
+  const service = new HumeEVIService();
+  const socket = { readyState: 3 };
+  const received = [];
+  service.socket = socket;
+  service.intentionallyConnected = true;
+  service.sessionConfig = {};
+  service.state = 'connecting';
+  service.setMessageHandler({ onError: (error) => received.push(error) });
+
+  service.handleServerError({ code: 'E0709', message: 'Configuration secret-id does not exist.' });
+  service.handleClose({ code: 1008, reason: 'policy violation' }, socket);
+
+  assert.equal(received.at(-1).code, 'VOICE_CONFIGURATION_INVALID');
+  assert.equal(received.at(-1).message, HUME_CONFIGURATION_USER_MESSAGE);
+  assert.doesNotMatch(received.at(-1).message, /secret-id/);
+});
 
 test('disconnect invalidates an in-flight microphone start and then stops native recording', async () => {
   let resolveStart;

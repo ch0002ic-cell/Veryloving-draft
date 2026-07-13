@@ -91,14 +91,18 @@ export default function JewelrySetup() {
     try {
       const connected = await bleService.connect(candidate);
       if (!mountedRef.current) return;
-      setDevice(connected);
+      await setDevice(connected);
       finishSetup();
     } catch (connectionError) {
-      if (mountedRef.current) setError(connectionError.message);
+      if (mountedRef.current) {
+        setError(connectionError?.code?.startsWith('BLE_')
+          ? connectionError.message
+          : t('jewelry.connectFailed'));
+      }
     } finally {
       if (mountedRef.current) setConnectingId(null);
     }
-  }, [finishSetup, setDevice, stopScan]);
+  }, [finishSetup, setDevice, stopScan, t]);
 
   return (
     <Screen scroll={false}>

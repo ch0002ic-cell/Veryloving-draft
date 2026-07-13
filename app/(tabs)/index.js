@@ -15,6 +15,12 @@ export default function Home() {
   const { t } = useI18n();
   const voiceName = t(`voices.profiles.${selectedVoice.id}.name`);
   const modeName = t(`home.modes.${settings.mode}`);
+  const hasBatteryReading = Number.isFinite(device.battery);
+  const deviceStatus = device.connected
+    ? (hasBatteryReading
+      ? t('home.deviceConnected', { name: device.name, battery: device.battery })
+      : `${device.name} · ${t('safetyCall.connected')}`)
+    : (device.connectionState === 'reconnecting' ? t('common.connecting') : t('home.noDevice'));
   return (
     <Screen>
       <Header title={t('common.veryLoving')} subtitle={t('home.subtitle')} />
@@ -34,7 +40,7 @@ export default function Home() {
       </View>
       <Card>
         <Text style={styles.section}>{t('home.northStarDevice')}</Text>
-        <Text style={styles.muted}>{device.connected ? t('home.deviceConnected', { name: device.name, battery: device.battery }) : t('home.noDevice')}</Text>
+        <Text style={styles.muted}>{deviceStatus}</Text>
         <Button title={t('home.manageDevice')} variant="ghost" onPress={() => router.push('/device-management')} />
       </Card>
       <Card>

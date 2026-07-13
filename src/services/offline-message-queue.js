@@ -1,4 +1,5 @@
 import { storage } from './storage';
+import { runLocalUserDataMutation } from './local-mutation-coordinator';
 
 export const OFFLINE_MESSAGE_QUEUE_KEY = 'veryloving.offlineMessageQueue';
 const MAX_QUEUED_MESSAGES = 100;
@@ -11,20 +12,24 @@ export function offlineRetryDelay(attempts) {
 }
 
 function mutate(mutator) {
-  const operation = mutationQueue
-    .catch(() => {})
-    .then(async () => {
-      const current = await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []);
-      const next = await mutator(Array.isArray(current) ? current : []);
-      await storage.setJSON(OFFLINE_MESSAGE_QUEUE_KEY, next);
-      return next;
-    });
+  const previousMutation = mutationQueue;
+  const operation = runLocalUserDataMutation(async () => {
+    await previousMutation.catch(() => {});
+    const current = await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []);
+    const next = await mutator(Array.isArray(current) ? current : []);
+    await storage.setJSON(OFFLINE_MESSAGE_QUEUE_KEY, next);
+    return next;
+  });
   mutationQueue = operation.then(() => undefined, () => undefined);
   return operation;
 }
 
-export async function loadOfflineMessageQueue() {
+export async function drainOfflineMessageQueueMutations() {
   await mutationQueue.catch(() => {});
+}
+
+export async function loadOfflineMessageQueue() {
+  await drainOfflineMessageQueueMutations();
   const queue = await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []);
   return Array.isArray(queue) ? queue : [];
 }

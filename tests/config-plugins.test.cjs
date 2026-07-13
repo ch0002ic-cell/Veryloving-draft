@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const { test } = require('node:test');
+const createAppConfig = require('../app.config');
 const { mergeVeryLovingEntitlements } = require('../plugins/withEntitlements');
 const { normalizeVeryLovingAndroidManifest } = require('../plugins/withAndroidManifest');
 const {
@@ -151,4 +153,64 @@ test('Expo config owns Android permissions, keyboard behavior, and launch appear
   assert.equal(plugins.get('expo-status-bar').style, 'dark');
   assert.equal(plugins.get('expo-splash-screen').backgroundColor, '#FFF8EF');
   assert.equal(plugins.get('expo-image-picker').cameraPermission.includes('VeryLoving'), true);
+});
+
+test('Expo environment diagnostics are production-aware and never contain configuration values', () => {
+  const diagnostics = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EAS_BUILD: 'true',
+    EXPO_PUBLIC_API_BASE_URL: 'https://api.redaction-check.invalid',
+    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-redaction-check.apps.googleusercontent.com',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.redaction-check.invalid/socket',
+    EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.redaction-check.invalid',
+    EXPO_PUBLIC_HUME_CONFIG_ID: 'redaction-check-config-id',
+    EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.redaction-check-runtime',
+    RNMAPBOX_MAPS_DOWNLOAD_TOKEN: 'sk.redaction-check-download'
+  });
+
+  assert.equal(diagnostics.buildProfile, 'production');
+  assert.equal(diagnostics.context, 'eas-build');
+  assert.deepEqual(diagnostics.missingRequired, []);
+  assert.deepEqual(diagnostics.invalid, []);
+  assert.equal(diagnostics.configured.mapboxDownloadToken, true);
+  assert.equal(JSON.stringify(diagnostics).includes('redaction-check'), false);
+});
+
+test('Expo environment diagnostics identify unsafe production configuration without throwing', () => {
+  const diagnostics = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EXPO_PUBLIC_API_BASE_URL: 'http://api.example.test',
+    EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'not-a-google-client',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://voice.example.test',
+    EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'sk.should-not-be-public',
+    EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH: 'true',
+    EXPO_PUBLIC_HUME_API_KEY: 'must-not-ship'
+  });
+
+  assert.ok(diagnostics.missingRequired.includes('humeConfigId'));
+  assert.ok(diagnostics.invalid.includes('api_base_url_must_use_https'));
+  assert.ok(diagnostics.invalid.includes('hume_websocket_proxy_must_use_wss'));
+  assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
+  assert.ok(diagnostics.warnings.includes('mock_phone_auth_requested_for_production'));
+  assert.ok(diagnostics.warnings.includes('public_hume_api_key_must_not_be_set_for_production'));
+});
+
+test('EAS profiles separate simulator, internal QA, and store artifacts with explicit environments', () => {
+  const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
+
+  assert.equal(eas.cli.version, '>= 20.0.0');
+  assert.equal(eas.cli.appVersionSource, 'remote');
+  assert.equal(eas.build.development.developmentClient, true);
+  assert.equal(eas.build.development.distribution, 'internal');
+  assert.equal(eas.build.development.environment, 'development');
+  assert.equal(eas.build.development.ios, undefined);
+  assert.equal(eas.build['development-simulator'].extends, 'development');
+  assert.equal(eas.build['development-simulator'].ios.simulator, true);
+  assert.equal(eas.build.preview.environment, 'preview');
+  assert.equal(eas.build.preview.android.buildType, 'apk');
+  assert.equal(eas.build.production.environment, 'production');
+  assert.equal(eas.build.production.distribution, 'store');
+  assert.equal(eas.build.production.autoIncrement, true);
 });
