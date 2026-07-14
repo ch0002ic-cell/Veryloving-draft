@@ -3,20 +3,35 @@ import { explainPermission } from './permissions';
 import { translate } from '../i18n/core';
 import { logger } from '../utils/logger';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
-import { createNotificationsRuntime } from './notifications-runtime';
+import {
+  createNotificationsRuntime,
+  detectNotificationsUnavailableReason,
+  NOTIFICATIONS_UNAVAILABLE
+} from './notifications-runtime';
 
 const notificationsRuntime = createNotificationsRuntime({
-  isExpoGo: isExpoGoRuntime,
-  // The package root starts a Keychain-backed registration read as an import
-  // side effect. Never evaluate it until the Expo Go guard has passed.
+  getUnavailableReason: () => detectNotificationsUnavailableReason({
+    isExpoGo: isExpoGoRuntime,
+    platformOS: Platform.OS,
+    // expo-application reads the provisioning profile without touching the
+    // notification registration Keychain state.
+    loadApplication: () => import('expo-application')
+  }),
+  // The package root starts a Keychain-backed registration read during module
+  // initialization. Never evaluate it until the runtime and APNs preflight has
+  // passed.
   loadNotifications: () => import('expo-notifications'),
-  onExpoGoSkip: () => logger.info(
-    '[Notifications] Expo Go detected; notification initialization is skipped'
+  onUnavailable: (reason) => logger.info(
+    reason === NOTIFICATIONS_UNAVAILABLE.EXPO_GO
+      ? '[Notifications] Expo Go detected; notification initialization is skipped'
+      : reason === NOTIFICATIONS_UNAVAILABLE.IOS_SIMULATOR
+        ? '[Notifications] iOS Simulator detected; notification initialization is skipped'
+        : '[Notifications] APNs entitlement unavailable; notification initialization is skipped'
   )
 });
 
-export function notificationsAvailableInRuntime() {
-  return !isExpoGoRuntime();
+export async function notificationsAvailableInRuntime() {
+  return notificationsRuntime.isAvailable();
 }
 
 export async function initializeNotifications() {

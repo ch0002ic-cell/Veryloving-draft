@@ -10,6 +10,14 @@ const {
   verifyRefreshJWT,
   verifySessionJWT
 } = require('./auth-session.cjs');
+const {
+  PHONE_AUTH_CODES,
+  PhoneAuthError,
+  phoneSubject,
+  startPhoneVerification,
+  validatePhoneAuthConfig,
+  verifyPhoneVerification
+} = require('./phone-auth.cjs');
 const { attachVoiceGateway } = require('./voice-gateway.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
 const {
@@ -37,21 +45,32 @@ function positiveNumber(value, fallback) {
 function envConfig(overrides = {}) {
   return {
     nodeEnv: process.env.NODE_ENV || 'development',
+    // This switch is code-owned rather than environment-owned. Only the
+    // Vercel entrypoint disables raw WebSocket gateway validation; container
+    // deployments keep the complete voice configuration fail-closed.
+    httpOnlyDeployment: false,
     clmBearerToken: process.env.HUME_CLM_BEARER_TOKEN || '',
     humeApiKey: process.env.HUME_API_KEY || '',
     humeConfigId: process.env.HUME_CONFIG_ID || '',
     humeAllowedVoiceIds: process.env.HUME_ALLOWED_VOICE_IDS || '',
     humeAllowClientResume: process.env.HUME_ALLOW_CLIENT_RESUME === 'true',
     appAuthVerifyURL: process.env.APP_AUTH_VERIFY_URL || '',
-    devAppToken: process.env.DEV_APP_TOKEN || '',
     authExchangeEnabled: process.env.AUTH_EXCHANGE_ENABLED === 'true',
+    phoneAuthEnabled: process.env.PHONE_AUTH_ENABLED === 'true',
     sessionJWTSecret: process.env.SESSION_JWT_SECRET || '',
     sessionJWTIssuer: process.env.SESSION_JWT_ISSUER || 'https://api.veryloving.ai',
     sessionJWTAudience: process.env.SESSION_JWT_AUDIENCE || 'veryloving-mobile',
     sessionJWTTTLSeconds: positiveNumber(process.env.SESSION_JWT_TTL_SECONDS, 3600),
     sessionJWTRefreshTTLSeconds: positiveNumber(process.env.SESSION_REFRESH_TTL_SECONDS, 30 * 86400),
     appleClientIds: process.env.APPLE_CLIENT_IDS || '',
-    googleClientIds: process.env.GOOGLE_CLIENT_IDS || '',
+    googleTokenAudiences: process.env.GOOGLE_TOKEN_AUDIENCES || '',
+    googleAuthorizedParties: process.env.GOOGLE_AUTHORIZED_PARTIES || '',
+    phoneAuthChallengeSecret: process.env.PHONE_AUTH_CHALLENGE_SECRET || '',
+    phoneAuthSubjectSecret: process.env.PHONE_AUTH_SUBJECT_SECRET || '',
+    phoneAuthChallengeTTLSeconds: positiveNumber(process.env.PHONE_AUTH_CHALLENGE_TTL_SECONDS, 300),
+    twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || '',
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || '',
+    twilioVerifyServiceSid: process.env.TWILIO_VERIFY_SERVICE_SID || '',
     safetyApiEnabled: process.env.SAFETY_API_ENABLED === 'true',
     safetyTableName: process.env.SAFETY_TABLE_NAME || '',
     safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
@@ -84,37 +103,46 @@ function validateServerURL(value, name, { production = false } = {}) {
 
 function validateServerConfig(config) {
   const production = config.nodeEnv === 'production';
+  const voiceGatewayRequired = config.httpOnlyDeployment !== true;
   validateServerURL(config.appAuthVerifyURL, 'APP_AUTH_VERIFY_URL', { production });
   validateServerURL(config.upstreamURL, 'CLM_UPSTREAM_URL', { production });
-  if (production && config.devAppToken) throw new Error('DEV_APP_TOKEN must not be set in production');
   if (production) {
     if (!config.authExchangeEnabled) throw new Error('AUTH_EXCHANGE_ENABLED must be true in production');
+    if (!config.phoneAuthEnabled) throw new Error('PHONE_AUTH_ENABLED must be true in production');
     if (!config.safetyApiEnabled) throw new Error('SAFETY_API_ENABLED must be true in production');
-    if (!config.appleClientIds || !config.googleClientIds) {
-      throw new Error('APPLE_CLIENT_IDS and GOOGLE_CLIENT_IDS are required in production');
+    if (!config.appleClientIds || !config.googleTokenAudiences || !config.googleAuthorizedParties) {
+      throw new Error(
+        'APPLE_CLIENT_IDS, GOOGLE_TOKEN_AUDIENCES, and GOOGLE_AUTHORIZED_PARTIES are required in production'
+      );
     }
-    if (!config.humeApiKey || !config.humeConfigId || !config.clmBearerToken) {
-      throw new Error('HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production');
-    }
-    if (!config.humeAllowedVoiceIds) throw new Error('HUME_ALLOWED_VOICE_IDS is required in production');
-    if (config.humeAllowClientResume) {
-      throw new Error('HUME_ALLOW_CLIENT_RESUME must remain false until chat ownership is enforced');
+    if (voiceGatewayRequired) {
+      if (!config.humeApiKey || !config.humeConfigId || !config.clmBearerToken) {
+        throw new Error('HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production');
+      }
+      if (!config.humeAllowedVoiceIds) throw new Error('HUME_ALLOWED_VOICE_IDS is required in production');
+      if (config.humeAllowClientResume) {
+        throw new Error('HUME_ALLOW_CLIENT_RESUME must remain false until chat ownership is enforced');
+      }
     }
   }
   if (config.authExchangeEnabled) {
     if (typeof config.sessionJWTSecret !== 'string' || config.sessionJWTSecret.length < 32) {
       throw new Error('SESSION_JWT_SECRET must contain at least 32 characters when auth exchange is enabled');
     }
-    if (!config.appleClientIds && !config.googleClientIds) {
-      throw new Error('At least one provider client ID must be configured when auth exchange is enabled');
+    if (!config.appleClientIds && !config.googleTokenAudiences) {
+      throw new Error('At least one provider token audience must be configured when auth exchange is enabled');
+    }
+    if (config.googleTokenAudiences && !config.googleAuthorizedParties) {
+      throw new Error('GOOGLE_AUTHORIZED_PARTIES is required when Google auth exchange is enabled');
     }
   }
+  validatePhoneAuthConfig(config);
   if (config.safetyApiEnabled && !config.safetyRepository && !config.safetyTableName) {
     throw new Error('SAFETY_TABLE_NAME is required when the safety API is enabled');
   }
   if (config.safetyApiEnabled) {
-    if (!config.authExchangeEnabled) {
-      throw new Error('AUTH_EXCHANGE_ENABLED must be true when the safety API is enabled');
+    if (!config.authExchangeEnabled && !config.phoneAuthEnabled) {
+      throw new Error('Authentication must be enabled when the safety API is enabled');
     }
     if (typeof config.sessionJWTSecret !== 'string' || config.sessionJWTSecret.length < 32) {
       throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
@@ -352,14 +380,13 @@ async function authenticateApp(req, config) {
       clearTimeout(timeout);
     }
   }
-  return config.nodeEnv !== 'production' && config.devAppToken && safeEqual(token, config.devAppToken);
+  return false;
 }
 
 function appAuthConfigured(config) {
   return (typeof config.sessionJWTSecret === 'string' && config.sessionJWTSecret.length >= 32)
     || typeof config.verifyAppToken === 'function'
-    || Boolean(config.appAuthVerifyURL)
-    || (config.nodeEnv !== 'production' && Boolean(config.devAppToken));
+    || Boolean(config.appAuthVerifyURL);
 }
 
 async function exchangeIdentity(body, config) {
@@ -387,7 +414,8 @@ async function exchangeIdentity(body, config) {
       ? await config.verifyProviderToken({ provider, idToken, nonce })
       : await verifyProviderIdentityToken({ provider, idToken, nonce }, {
         appleClientIds: config.appleClientIds,
-        googleClientIds: config.googleClientIds,
+        googleTokenAudiences: config.googleTokenAudiences,
+        googleAuthorizedParties: config.googleAuthorizedParties,
         fetchImpl: config.fetchImpl
       });
   } catch {
@@ -412,6 +440,29 @@ async function exchangeIdentity(body, config) {
     refreshToken: refresh.token,
     refreshExpiresAt: refresh.payload.exp * 1000,
     user
+  };
+}
+
+async function verifyPhoneIdentity(body, config) {
+  const claims = await verifyPhoneVerification(body, config);
+  const subject = `phone:${phoneSubject(claims.phone, config.phoneAuthSubjectSecret)}`;
+  const session = signSessionJWT({ subjectClaim: subject }, config);
+  const refresh = signRefreshJWT({
+    subject: session.payload.sub,
+    sessionId: session.payload.sid
+  }, config);
+  return {
+    accessToken: session.token,
+    expiresAt: session.payload.exp * 1000,
+    refreshToken: refresh.token,
+    refreshExpiresAt: refresh.payload.exp * 1000,
+    user: {
+      id: subject,
+      name: null,
+      phone: claims.phone,
+      countryCode: claims.countryCode,
+      provider: 'phone'
+    }
   };
 }
 
@@ -530,8 +581,34 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      if (req.method === 'POST' && url.pathname === '/v1/auth/phone/start') {
+        if (!config.phoneAuthEnabled) {
+          json(res, 503, {
+            error: 'Phone authentication is not configured',
+            code: PHONE_AUTH_CODES.NOT_CONFIGURED
+          });
+          return;
+        }
+        const body = await readJson(req);
+        json(res, 202, await startPhoneVerification(body, config));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/auth/phone/verify') {
+        if (!config.phoneAuthEnabled) {
+          json(res, 503, {
+            error: 'Phone authentication is not configured',
+            code: PHONE_AUTH_CODES.NOT_CONFIGURED
+          });
+          return;
+        }
+        const body = await readJson(req);
+        json(res, 200, await verifyPhoneIdentity(body, config));
+        return;
+      }
+
       if (req.method === 'POST' && url.pathname === '/v1/auth/refresh') {
-        if (!config.authExchangeEnabled) {
+        if (!config.authExchangeEnabled && !config.phoneAuthEnabled) {
           json(res, 503, { error: 'Production authentication is not configured' });
           return;
         }
@@ -605,8 +682,22 @@ function createHandler(overrides = {}) {
 
       json(res, 404, { error: 'Not found' });
     } catch (error) {
-      config.logger.error('[VeryLovingCLM] request failed', { path: url.pathname, name: error.name });
-      if (!res.headersSent) json(res, error.statusCode || 500, { error: error.statusCode ? error.message : 'Internal server error' });
+      config.logger.error('[VeryLovingCLM] request failed', {
+        path: url.pathname,
+        name: error.name,
+        ...(error instanceof PhoneAuthError ? { code: error.code } : {})
+      });
+      if (!res.headersSent) {
+        const phoneRequest = url.pathname.startsWith('/v1/auth/phone/');
+        const statusCode = error.statusCode || 500;
+        const payload = { error: error.statusCode ? error.message : 'Internal server error' };
+        if (phoneRequest) {
+          payload.code = error instanceof PhoneAuthError
+            ? error.code
+            : (error.statusCode ? PHONE_AUTH_CODES.INVALID : PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE);
+        }
+        json(res, statusCode, payload);
+      }
       else res.end();
     }
   };
@@ -632,6 +723,7 @@ module.exports = {
   createVeryLovingCLMServer,
   envConfig,
   exchangeIdentity,
+  verifyPhoneIdentity,
   refreshIdentity,
   normalizeMessages,
   safeEqual,

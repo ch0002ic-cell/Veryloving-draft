@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 import { Screen } from '../../src/components/Screen';
@@ -17,9 +17,25 @@ export default function NotificationPermission() {
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const [notificationsAvailable, setNotificationsAvailable] = useState(null);
   const requestingRef = useRef(false);
   const navigatingRef = useRef(false);
-  const notificationsAvailable = notificationsAvailableInRuntime();
+
+  useEffect(() => {
+    let active = true;
+    notificationsAvailableInRuntime()
+      .then((available) => {
+        if (active) setNotificationsAvailable(available);
+      })
+      .catch(() => {
+        if (!active) return;
+        setNotificationsAvailable(false);
+        setError(t('settings.updateFailedMessage'));
+      });
+    return () => {
+      active = false;
+    };
+  }, [t]);
 
   const continueOnboarding = useCallback(() => {
     if (navigatingRef.current) return;
@@ -33,7 +49,7 @@ export default function NotificationPermission() {
     setBusy(true);
     setError(null);
     try {
-      if (!notificationsAvailable) {
+      if (notificationsAvailable !== true) {
         continueOnboarding();
         return;
       }
@@ -55,8 +71,8 @@ export default function NotificationPermission() {
       <FeedbackBanner message={error} />
       <Button
         title={notificationsAvailable ? t('permissions.enableNotifications') : t('common.continue')}
-        loading={busy}
-        disabled={busy}
+        loading={busy || notificationsAvailable === null}
+        disabled={busy || notificationsAvailable === null}
         onPress={requestPermission}
       />
       <Button

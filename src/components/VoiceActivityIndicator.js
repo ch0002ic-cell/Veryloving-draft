@@ -1,22 +1,39 @@
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  ReduceMotion,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming
+} from 'react-native-reanimated';
 import { colors } from '../constants/theme';
 
 export function VoiceActivityIndicator({ active }) {
-  const scale = useRef(new Animated.Value(1)).current;
+  const scale = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }]
+  }));
+
   useEffect(() => {
-    if (!active) {
-      scale.setValue(1);
-      return;
-    }
-    const loop = Animated.loop(Animated.sequence([
-      Animated.timing(scale, { toValue: 1.18, duration: 500, useNativeDriver: true }),
-      Animated.timing(scale, { toValue: 1, duration: 500, useNativeDriver: true })
-    ]));
-    loop.start();
-    return () => loop.stop();
+    cancelAnimation(scale);
+    scale.value = active
+      ? withRepeat(withTiming(1.18, {
+        duration: 500,
+        easing: Easing.inOut(Easing.ease),
+        reduceMotion: ReduceMotion.System
+      }), -1, true)
+      : withTiming(1, {
+        duration: 150,
+        reduceMotion: ReduceMotion.System
+      });
+
+    return () => cancelAnimation(scale);
   }, [active, scale]);
-  return <Animated.View style={[styles.outer, { transform: [{ scale }] }]}><View style={styles.inner} /></Animated.View>;
+
+  return <Animated.View style={[styles.outer, animatedStyle]}><View style={styles.inner} /></Animated.View>;
 }
 
 const styles = StyleSheet.create({

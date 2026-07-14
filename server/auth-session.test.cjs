@@ -30,7 +30,7 @@ test('provider verification checks signature, issuer, audience, expiry, and nonc
     payload: {
       iss: 'https://accounts.google.com',
       aud: 'google-client.apps.googleusercontent.com',
-      azp: 'google-client.apps.googleusercontent.com',
+      azp: 'ios-client.apps.googleusercontent.com',
       sub: 'verified-google-subject',
       email: 'person@example.test',
       name: 'Verified Person',
@@ -51,7 +51,8 @@ test('provider verification checks signature, issuer, audience, expiry, and nonc
     idToken: token,
     nonce: 'nonce-1'
   }, {
-    googleClientIds: 'google-client.apps.googleusercontent.com',
+    googleTokenAudiences: 'google-client.apps.googleusercontent.com',
+    googleAuthorizedParties: 'ios-client.apps.googleusercontent.com',
     fetchImpl,
     now: () => now
   });
@@ -62,10 +63,22 @@ test('provider verification checks signature, issuer, audience, expiry, and nonc
     idToken: token,
     nonce: 'wrong-nonce'
   }, {
-    googleClientIds: 'google-client.apps.googleusercontent.com',
+    googleTokenAudiences: 'google-client.apps.googleusercontent.com',
+    googleAuthorizedParties: 'ios-client.apps.googleusercontent.com',
     fetchImpl,
     now: () => now
   }), /nonce/);
+
+  await assert.rejects(verifyProviderIdentityToken({
+    provider: 'google',
+    idToken: token,
+    nonce: 'nonce-1'
+  }, {
+    googleTokenAudiences: 'google-client.apps.googleusercontent.com',
+    googleAuthorizedParties: 'different-native-client.apps.googleusercontent.com',
+    fetchImpl,
+    now: () => now
+  }), /authorized party/);
 });
 
 test('Apple exchange verification requires a nonce and refreshes JWKS after key rotation', async () => {

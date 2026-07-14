@@ -122,6 +122,8 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
   const plugins = config.plugins.map((plugin) => Array.isArray(plugin) ? plugin[0] : plugin);
 
   assert.equal(config.ios.privacyManifests.NSPrivacyTracking, false);
+  assert.equal(config.ios.usesAppleSignIn, true);
+  assert.equal(config.extra.appleClientId, config.ios.bundleIdentifier);
   assert.equal(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.length, 13);
   assert.ok(plugins.includes('./plugins/withPodfile.js'));
   assert.ok(plugins.includes('./plugins/withEntitlements.js'));
@@ -183,6 +185,7 @@ test('Expo environment diagnostics are production-aware and never contain config
     EXPO_PUBLIC_HUME_CONFIG_ID: 'redaction-check-config-id',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
     EXPO_PUBLIC_VL01_ENABLED: 'true',
     EXPO_PUBLIC_VL01_SERVICE_UUID: 'fff0',
     EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID: 'fff1',
@@ -209,7 +212,6 @@ test('Expo environment diagnostics identify unsafe production configuration with
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://voice.example.test',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'sk.should-not-be-public',
-    EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH: 'true',
     EXPO_PUBLIC_HUME_API_KEY: 'must-not-ship'
   });
 
@@ -217,7 +219,6 @@ test('Expo environment diagnostics identify unsafe production configuration with
   assert.ok(diagnostics.invalid.includes('api_base_url_must_use_https'));
   assert.ok(diagnostics.invalid.includes('hume_websocket_proxy_must_use_wss'));
   assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
-  assert.ok(diagnostics.warnings.includes('mock_phone_auth_requested_for_production'));
   assert.ok(diagnostics.warnings.includes('public_hume_api_key_must_not_be_set_for_production'));
 });
 
@@ -242,6 +243,7 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     EXPO_PUBLIC_HUME_CONFIG_ID: 'approved-config-id',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
     EXPO_PUBLIC_VL01_ENABLED: 'true',
     EXPO_PUBLIC_VL01_SERVICE_UUID: 'fff0',
     EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID: 'fff1',
@@ -260,6 +262,20 @@ test('Google iOS client IDs produce the native reversed URL scheme', () => {
     'com.googleusercontent.apps.123-example'
   );
   assert.equal(createAppConfig.reversedGoogleClientId(''), '');
+});
+
+test('Google native plugin is omitted until a real iOS callback ID is configured', () => {
+  const previous = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+  delete process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+  try {
+    const resolved = createAppConfig();
+    const plugins = resolved.plugins.map((plugin) => Array.isArray(plugin) ? plugin[0] : plugin);
+    assert.equal(plugins.includes('@react-native-google-signin/google-signin'), false);
+    assert.equal(JSON.stringify(resolved).includes('unconfigured'), false);
+  } finally {
+    if (previous === undefined) delete process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+    else process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID = previous;
+  }
 });
 
 test('EAS profiles separate simulator, internal QA, and store artifacts with explicit environments', () => {

@@ -57,14 +57,29 @@ function hasAudience(claimAudience, allowedAudiences) {
   return audiences.some((audience) => allowedAudiences.includes(audience));
 }
 
-function validateProviderClaims(provider, payload, { appleClientIds, googleClientIds, nonce, nowSeconds }) {
-  const allowedAudiences = provider === 'apple' ? stringList(appleClientIds) : stringList(googleClientIds);
+function validateProviderClaims(provider, payload, {
+  appleClientIds,
+  googleTokenAudiences,
+  googleAuthorizedParties,
+  nonce,
+  nowSeconds
+}) {
+  const allowedAudiences = provider === 'apple'
+    ? stringList(appleClientIds)
+    : stringList(googleTokenAudiences);
   if (!allowedAudiences.length) throw new Error(`${provider} authentication is not configured`);
   if (provider === 'apple' && payload.iss !== 'https://appleid.apple.com') throw new Error('Identity token issuer is invalid');
   if (provider === 'google' && !GOOGLE_ISSUERS.has(payload.iss)) throw new Error('Identity token issuer is invalid');
   if (!hasAudience(payload.aud, allowedAudiences)) throw new Error('Identity token audience is invalid');
-  if (provider === 'google' && payload.azp && !allowedAudiences.includes(payload.azp)) {
-    throw new Error('Identity token authorized party is invalid');
+  if (provider === 'google') {
+    const allowedAuthorizedParties = stringList(googleAuthorizedParties);
+    const tokenAudiences = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+    if (payload.azp && !allowedAuthorizedParties.includes(payload.azp)) {
+      throw new Error('Identity token authorized party is invalid');
+    }
+    if (tokenAudiences.length > 1 && !payload.azp) {
+      throw new Error('Identity token authorized party is required');
+    }
   }
   if (!payload.sub || typeof payload.sub !== 'string') throw new Error('Identity token subject is invalid');
   if (!Number.isFinite(payload.exp) || payload.exp <= nowSeconds) throw new Error('Identity token has expired');

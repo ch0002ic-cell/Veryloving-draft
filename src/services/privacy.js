@@ -21,6 +21,7 @@ import {
 import { config } from '../utils/config';
 import { deleteRemoteUserData, fetchRemoteUserData } from './safety-api';
 import { secureStorage } from './secure-storage';
+import { parseSessionEnvelope } from '../utils/session-envelope';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
 export { hasLocalUserDataDeletionWarnings };
@@ -55,7 +56,13 @@ async function collectLocalStorageSnapshot() {
 export async function buildUserDataExport({ accessToken } = {}) {
   const localStorage = await collectLocalStorageSnapshot();
   const conversations = await loadConversationHistory();
-  const account = await readJSONSecureStore(AUTH_STORAGE_KEYS.user);
+  const session = parseSessionEnvelope(
+    await secureStorage.getItemAsync(AUTH_STORAGE_KEYS.session),
+    { allowExpiredAccess: true, skewSeconds: 0 }
+  );
+  // Legacy profile support exists only for exports made before AuthContext has
+  // completed its one-time atomic-envelope migration.
+  const account = session?.user || await readJSONSecureStore(AUTH_STORAGE_KEYS.user);
   const emergencyContacts = account?.id
     ? await loadEmergencyContactCache(account.id).catch(() => [])
     : [];
@@ -141,11 +148,29 @@ export async function deleteLocalUserData({ localMutationLockHeld = false } = {}
 export async function deleteAllUserData({ accessToken, ...options } = {}) {
   if (config.safetyBackendEnabled) await deleteRemoteUserData(accessToken);
   const result = await deleteLocalUserData(options);
-  await Promise.all([
+  await storage.setJSON(AUTH_STORAGE_KEYS.signedOut, {
+    version: 1,
+    signedOutAt: Date.now()
+  });
+  const secureResults = await Promise.allSettled([
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.session),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.token),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.refreshToken),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.user),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
   ]);
-  return result;
+  const secureStoreFailures = secureResults.filter(({ status }) => status === 'rejected').length;
+  if (secureStoreFailures) {
+    // The non-sensitive AsyncStorage tombstone above prevents any residual
+    // Keychain value from restoring the account. Report cleanup failures as a
+    // warning so Settings can still finish AuthContext sign-out and clear the
+    // in-memory access token instead of leaving a deleted account active.
+    logger.warn('[Privacy] Account deletion left protected secure-storage artifacts', {
+      secureStoreFailures
+    });
+  }
+  return {
+    ...result,
+    secureStoreFailures: (Number(result.secureStoreFailures) || 0) + secureStoreFailures
+  };
 }

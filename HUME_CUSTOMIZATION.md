@@ -13,7 +13,7 @@ VeryLoving uses Hume's supported customization surfaces rather than modifying a 
 This repository contains two runtime components:
 
 1. The Expo/React Native mobile client.
-2. A Node 22 HTTP/WebSocket service in `server/clm-server.cjs`, packaged by `server/Dockerfile` and using `ws` plus AWS SDK DynamoDB clients.
+2. A Node 22 service in `server/clm-server.cjs`, packaged by `server/Dockerfile` for HTTP plus raw WebSocket upgrades, with an HTTP-only Vercel entrypoint in `server/server.cjs`.
 
 The Node service implements:
 
@@ -38,14 +38,14 @@ The production topology is split deliberately:
 
 ```text
 Expo mobile app
-  |-- HTTPS auth/safety/tool/config ----------> Node service (this repo) --> DynamoDB
-  `-- WSS /api/voice/hume-ws -----------------> Node voice gateway ------> Hume EVI
+  |-- HTTPS auth/safety/tool/config ----------> Vercel HTTP adapter or container --> DynamoDB
+  `-- WSS /api/voice/hume-ws -----------------> separately hosted voice gateway ---> Hume EVI
 
 Hume CLM -------------------------------------> POST /chat/completions (this repo)
                                                     `--> optional upstream model
 ```
 
-Deploying `server/Dockerfile` provides the HTTP endpoints and WebSocket gateway above. With configured AWS credentials and a compatible table, it also provides DynamoDB persistence, account export, and account-record deletion for contacts, SOS acceptance, and current safety state. It implements access/refresh JWT renewal but does **not** provision AWS infrastructure, persist refresh families for reuse detection/revocation, create deletion tombstones or vendor orchestration, provide SMS, push/contact delivery, SOS delivery receipts, a complete guardian delivery state machine, live sharing, route intelligence, or a single-use WebSocket-ticket service. The repository is not a Next.js/Vercel or SES implementation.
+Deploying `server/Dockerfile` provides both the HTTP endpoints and the WebSocket gateway above. Deploying `server/server.cjs` on Vercel provides the HTTP endpoints only. With configured AWS credentials and a compatible table, either HTTP path can provide DynamoDB persistence, account export, and account-record deletion for contacts, SOS acceptance, and current safety state. The service implements access/refresh JWT renewal but does **not** provision AWS infrastructure, persist refresh families for reuse detection/revocation, create deletion tombstones or vendor orchestration, provide SMS, push/contact delivery, SOS delivery receipts, a complete guardian delivery state machine, live sharing, route intelligence, or a single-use WebSocket-ticket service. This is a Node server entrypoint captured by Vercel, not a Next.js or SES implementation.
 
 The mobile client opens the configured proxy URL without credentials or Hume parameters in its query. Its first TLS-protected frame carries the short-lived VeryLoving session JWT plus bounded connection choices. The gateway verifies the JWT and `voice:connect` scope before opening Hume with the server-only API key. This removes bearer credentials from client URLs, but the session JWT is not a single-use voice ticket: replay protection, independent revocation, rate limiting, and ownership-bound resume/session configuration remain production gates. Query strings and logs must still be redacted because the server-to-Hume connection uses Hume's required credential query.
 
@@ -73,8 +73,16 @@ SESSION_JWT_ISSUER=https://api.veryloving.ai
 SESSION_JWT_AUDIENCE=veryloving-mobile
 SESSION_JWT_TTL_SECONDS=3600
 SESSION_REFRESH_TTL_SECONDS=2592000
-APPLE_CLIENT_IDS=<comma-separated accepted Apple audiences>
-GOOGLE_CLIENT_IDS=<comma-separated accepted Google audiences>
+APPLE_CLIENT_IDS=com.veryloving.app
+GOOGLE_TOKEN_AUDIENCES=<Web OAuth client ID>
+GOOGLE_AUTHORIZED_PARTIES=<trusted iOS/Android OAuth presenters>
+PHONE_AUTH_ENABLED=true
+PHONE_AUTH_CHALLENGE_SECRET=<independent 64-character random hex token>
+PHONE_AUTH_SUBJECT_SECRET=<stable independent 64-character random hex token>
+PHONE_AUTH_CHALLENGE_TTL_SECONDS=300
+TWILIO_ACCOUNT_SID=<Twilio account SID>
+TWILIO_AUTH_TOKEN=<server-only Twilio auth token>
+TWILIO_VERIFY_SERVICE_SID=<Twilio Verify service SID>
 SAFETY_API_ENABLED=true
 SAFETY_TABLE_NAME=<DynamoDB table with PK and SK string keys>
 SAFETY_RETENTION_DAYS=30
@@ -104,7 +112,7 @@ cp server/.env.example server/.env
 openssl rand -hex 32
 ```
 
-2. Put independent generated values in `HUME_CLM_BEARER_TOKEN` and `SESSION_JWT_SECRET`. For a development-only mock-phone session, set an explicit local `DEV_APP_TOKEN`; never reuse it as a production credential and never commit its value. Leave the optional upstream variables empty to exercise deterministic local responses.
+2. Put independent generated values in `HUME_CLM_BEARER_TOKEN`, `SESSION_JWT_SECRET`, `PHONE_AUTH_CHALLENGE_SECRET`, and `PHONE_AUTH_SUBJECT_SECRET`. Keep the subject secret stable across JWT-key rotations, store the Twilio token server-side, and use real provider assertions/codes for auth testing; the app has no fixed-code or development-token fallback. Leave the optional upstream variables empty to exercise deterministic local responses.
 
 3. Load the variables and start the server:
 
@@ -136,6 +144,25 @@ docker run --env-file server/.env -p 8787:8787 veryloving-clm
 
 Expose the CLM through HTTPS before adding it to Hume. The public URL must end with `/chat/completions`.
 
+## Deploy HTTP Endpoints On Vercel
+
+Vercel can capture a Node server entrypoint that calls `listen()` during module startup. `server/server.cjs` uses that contract to mount the existing `createHandler()` routes as standard Node HTTP requests. It deliberately does not call `createVeryLovingCLMServer()` or attach the raw `upgrade` listener.
+
+1. Import this repository into Vercel and set the project's **Root Directory** to `server`. This is required: Vercel must see `server.cjs`, `vercel.json`, and the server-specific `package.json` at the project root so it installs the AWS SDK and `ws` dependencies. Leave the framework preset and build/output commands at their zero-configuration defaults.
+2. Add the required production auth, phone, safety, JWT, Twilio, and DynamoDB values from `server/.env.example` to the Vercel project environment. Do not set `PORT`; Vercel captures the listening server. The HTTP-only entrypoint is marked in code, so it does not require the voice gateway's `HUME_API_KEY`, `HUME_CONFIG_ID`, or `HUME_ALLOWED_VOICE_IDS`. Set `HUME_CLM_BEARER_TOKEN` if this deployment will serve Hume's `/chat/completions` calls; without it that route fails closed with HTTP `503` while health, auth, and safety startup validation remains strict. Keep every secret server-side and never use an `EXPO_PUBLIC_` name for it. The full container entrypoint continues to require the complete Hume voice configuration in production.
+3. Deploy, then verify the captured HTTP entrypoint:
+
+```bash
+curl --fail https://<vercel-project>.vercel.app/health
+curl -i https://<vercel-project>.vercel.app/chat/completions
+```
+
+The health request must return the documented liveness JSON, and the unauthenticated CLM request must fail closed. Then test provider exchange, Twilio Verify, DynamoDB account isolation, safety mutations, privacy export/deletion, authenticated CLM SSE, timeouts, and rollback against that exact deployment. `server/vercel.json` bounds a function invocation to 60 seconds; keep the configured upstream timeout below that ceiling and verify Hume's end-to-end CLM latency.
+
+4. Set `EXPO_PUBLIC_API_BASE_URL=https://<vercel-project>.vercel.app`. The same root may be used for `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and Hume may use `https://<vercel-project>.vercel.app/chat/completions` as `HUME_CLM_URL`, only after their respective production tests pass.
+
+The existing Hume gateway is a long-lived raw WebSocket adapter attached to an `http.Server` upgrade event. It is not mounted by `server/server.cjs`, has not been adapted to or load-tested on Vercel's WebSocket facilities, and must not be inferred from a successful Vercel HTTP deployment. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` pointed at a separately reviewed `wss://` host (for example, the Docker service on Railway or ECS/Fargate) until a Vercel-specific transport is implemented and validated. Do not point it at `wss://<vercel-project>.vercel.app/api/voice/hume-ws`.
+
 ## Deploy On Railway
 
 1. Create a Railway project and add this GitHub repository as a service.
@@ -155,8 +182,16 @@ SESSION_JWT_ISSUER=https://api.veryloving.ai
 SESSION_JWT_AUDIENCE=veryloving-mobile
 SESSION_JWT_TTL_SECONDS=3600
 SESSION_REFRESH_TTL_SECONDS=2592000
-APPLE_CLIENT_IDS=<accepted Apple audiences>
-GOOGLE_CLIENT_IDS=<accepted Google audiences>
+APPLE_CLIENT_IDS=com.veryloving.app
+GOOGLE_TOKEN_AUDIENCES=<Web OAuth client ID>
+GOOGLE_AUTHORIZED_PARTIES=<trusted iOS/Android OAuth presenters>
+PHONE_AUTH_ENABLED=true
+PHONE_AUTH_CHALLENGE_SECRET=<independent 64-character random hex token>
+PHONE_AUTH_SUBJECT_SECRET=<stable independent 64-character random hex token>
+PHONE_AUTH_CHALLENGE_TTL_SECONDS=300
+TWILIO_ACCOUNT_SID=<Twilio account SID>
+TWILIO_AUTH_TOKEN=<server-only Twilio auth token>
+TWILIO_VERIFY_SERVICE_SID=<Twilio Verify service SID>
 SAFETY_API_ENABLED=true
 SAFETY_TABLE_NAME=<DynamoDB table name>
 SAFETY_RETENTION_DAYS=30
@@ -167,7 +202,7 @@ CLM_UPSTREAM_MODEL=<provider model identifier>
 CLM_UPSTREAM_TIMEOUT_MS=25000
 ```
 
-The three upstream variables are optional as a group. Never configure `DEV_APP_TOKEN` in production.
+The three upstream model variables are optional as a group. Phone authentication is enabled only when its complete Twilio and independent-secret configuration passes startup validation.
 
 4. Deploy the staged Railway changes. Under Settings > Networking, generate a public domain or attach the production voice domain.
 5. Set the service health-check path to `/health` and verify:
@@ -182,7 +217,7 @@ Railway injects its own `PORT`; the server reads that value automatically. Secre
 
 This container handles both HTTP and WebSocket upgrades. Railway or any fronting proxy must preserve `Upgrade`/`Connection` semantics, use a reviewed idle timeout, bound concurrent connections and request rates, and avoid logging headers, frames, URL queries, audio, messages, or precise location. A `200` from `/health` proves only that the process is alive; separately test the auth exchange, safety API, authenticated WebSocket handshake, Hume connection, and DynamoDB permissions.
 
-Railway is the documented example because `server/Dockerfile` is directly deployable there. The same image can run on another standards-compliant container platform, but no alternative cloud infrastructure is defined in this repository.
+Railway is the documented container example because `server/Dockerfile` is directly deployable there. The Vercel path above is an HTTP-only alternative, not a replacement host for the WebSocket gateway. The same image can run on another standards-compliant container platform, but no additional cloud infrastructure is defined in this repository.
 
 ## Deploy On AWS (ECS Fargate Or Existing-Customer App Runner)
 
@@ -213,8 +248,13 @@ SESSION_JWT_ISSUER=https://api.veryloving.ai
 SESSION_JWT_AUDIENCE=veryloving-mobile
 SESSION_JWT_TTL_SECONDS=3600
 SESSION_REFRESH_TTL_SECONDS=2592000
-APPLE_CLIENT_IDS=<accepted Apple audiences>
-GOOGLE_CLIENT_IDS=<accepted Google audiences>
+APPLE_CLIENT_IDS=com.veryloving.app
+GOOGLE_TOKEN_AUDIENCES=<Web OAuth client ID>
+GOOGLE_AUTHORIZED_PARTIES=<trusted iOS/Android OAuth presenters>
+PHONE_AUTH_ENABLED=true
+PHONE_AUTH_CHALLENGE_TTL_SECONDS=300
+TWILIO_ACCOUNT_SID=<Twilio account SID>
+TWILIO_VERIFY_SERVICE_SID=<Twilio Verify service SID>
 SAFETY_API_ENABLED=true
 SAFETY_TABLE_NAME=<DynamoDB table name>
 SAFETY_RETENTION_DAYS=30
@@ -229,7 +269,7 @@ CLM_UPSTREAM_TIMEOUT_MS=25000
 
 The upstream variables are optional as a group. On ECS, set `PORT=8787` in the task definition. Existing App Runner customers must not define `PORT`: App Runner supplies its reserved `PORT` variable, and the service must be configured to the same `8787` container port. See AWS's [App Runner runtime guidance](https://docs.aws.amazon.com/apprunner/latest/dg/develop.html).
 
-5. Reference `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, `SESSION_JWT_SECRET`, and optional `CLM_UPSTREAM_API_KEY` from AWS Secrets Manager rather than entering secret values as plain environment variables. For ECS, map secret ARNs through the task definition and grant only the task execution role the required retrieval permissions. Existing App Runner customers should use its supported [Secrets Manager and Parameter Store environment references](https://docs.aws.amazon.com/apprunner/latest/dg/env-variable.html). Grant only the required `secretsmanager:GetSecretValue` and, when applicable, KMS decrypt permissions. Never configure `DEV_APP_TOKEN` in production.
+5. Reference `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, `SESSION_JWT_SECRET`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `TWILIO_AUTH_TOKEN`, and optional `CLM_UPSTREAM_API_KEY` from AWS Secrets Manager rather than entering secret values as plain environment variables. For ECS, map secret ARNs through the task definition and grant only the task execution role the required retrieval permissions. Existing App Runner customers should use its supported [Secrets Manager and Parameter Store environment references](https://docs.aws.amazon.com/apprunner/latest/dg/env-variable.html). Grant only the required `secretsmanager:GetSecretValue` and, when applicable, KMS decrypt permissions.
 6. Attach the approved custom domain, verify its TLS certificate and DNS, and configure HTTP and WebSocket limits, frame/body limits, timeouts, rate limits, log redaction, alarms, and retention at the surrounding AWS boundary. Rotate a secret by publishing a new secret version and deliberately redeploying the service so the running revision receives it.
 7. Verify the staged service before routing production traffic:
 
@@ -255,7 +295,7 @@ Before enabling CLM or live voice in a release build:
 5. Keep client resume disabled until chat ownership is enforced, and bind `/v1/hume/session/configure` to a chat created by the same authenticated subject.
 6. Rate-limit token exchange, session configuration, safety tools, safety mutations, and WebSocket creation independently. Record security events without message text, audio, precise location, raw session IDs, or credentials.
 
-Production phone/SMS authentication is still external work. `APP_AUTH_VERIFY_URL` remains an optional verifier fallback for app-facing HTTP endpoints, and `DEV_APP_TOKEN` is rejected as a production mechanism.
+Phone/SMS authentication is implemented through signed, short-lived challenges and Twilio Verify. Deployment credentials, Twilio geo/fraud/rate-limit policy, distributed API abuse controls, provider delivery evidence, and physical-device verification remain external launch work. `APP_AUTH_VERIFY_URL` remains an optional verifier fallback for app-facing HTTP endpoints; no developer bearer-token mechanism exists.
 
 ## Design The Branded Voice
 
@@ -308,7 +348,7 @@ Leave `EXPO_PUBLIC_HUME_CONFIG_ID` empty when testing Hume's default EVI configu
 
 Keep `EXPO_PUBLIC_HUME_CLM_ENABLED=false` until the control-plane and CLM endpoints are deployed. Otherwise the app intentionally blocks microphone startup when secure CLM setup fails.
 
-The current production mobile path must use `EXPO_PUBLIC_HUME_WS_PROXY_URL`, normally ending in `/api/voice/hume-ws` on this server. A direct temporary Hume token remains a lower-level development option but is not fetched by the mobile hook. `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.
+The current production mobile path must use `EXPO_PUBLIC_HUME_WS_PROXY_URL`, normally ending in `/api/voice/hume-ws` on the separately deployed container voice host. The Vercel HTTP adapter is not a valid value for this variable. A direct temporary Hume token remains a lower-level development option but is not fetched by the mobile hook. `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.
 
 ## Runtime Flow
 

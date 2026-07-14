@@ -1,11 +1,11 @@
 # VeryLoving Comprehensive Final Audit
 
-Audit date: 13 July 2026
+Audit date: 14 July 2026
 Decision: **NO-GO for store release until the P1 gates in `LAUNCH_CHECKLIST.md` have objective closure evidence**
 
 ## Executive Summary
 
-The final audit found and addressed material architectural gaps rather than treating successful static checks as proof of production behavior. The repository now contains a real 48 kHz mono Int16 microphone-frame path, server-verified Apple/Google exchange, short-lived VeryLoving session JWTs, first-frame authenticated WebSocket gateway, protocol-gated VL01 GATT battery lifecycle, and DynamoDB-backed contacts/safety-session/SOS-acceptance APIs. The earlier runtime reports are preserved as historical evidence; none of these post-validation additions is retroactively claimed as signed-device or production-service validation.
+The final audit found and addressed material architectural gaps rather than treating successful static checks as proof of production behavior. The repository now contains a real 48 kHz mono Int16 microphone-frame path, server-verified Apple/Google exchange, Twilio Verify phone authentication, short-lived VeryLoving access/refresh JWTs stored as one account-bound atomic envelope, first-frame authenticated WebSocket gateway, protocol-gated VL01 GATT battery lifecycle, DynamoDB-backed contacts/safety-session/SOS-acceptance APIs, and a Vercel-captured HTTP entrypoint. The earlier runtime reports are preserved as historical evidence; none of these post-validation additions is retroactively claimed as signed-device or production-service validation.
 
 The codebase is substantially stronger and suitable for production-candidate integration testing, but it does not yet have a clean bill of health for launch. Remaining stop-ship work includes production credentials and deployment, persistent refresh-family revocation/reuse detection and privacy tombstones, encrypted account-bound local PII, actual SOS/guardian delivery and receipts, completed VL01 ownership/command protocol, signed-device audio/BLE tests, production SMS/APNs/FCM, Android runtime QA, and store/privacy/localization approval.
 
@@ -27,12 +27,14 @@ The earlier simulator run did not have production Apple, Google, Hume, Mapbox, S
 | Gate | Result |
 | --- | --- |
 | `npm run lint` | **PASS** — ESLint clean |
-| `npm test` | **PASS** — 163/163 passed; 0 failed, cancelled, or skipped |
+| `npm test` | **PASS** — 215/215 passed; 0 failed, cancelled, or skipped |
 | `git diff --check` | **PASS** |
 | `npx expo-doctor` | **PASS** — 20/20 |
-| iOS production export | **PASS** — 2,550 modules; 8.6 MB Hermes bundle |
-| Android production export | **PASS** — 2,633 modules; 8.8 MB Hermes bundle |
+| iOS production export | **PASS** — 2,557 modules; 8.7 MB Hermes bundle |
+| Android production export | **PASS** — 2,640 modules; 8.9 MB Hermes bundle |
 | `npm run validate` | **PASS** — exit 0; temporary export directories removed |
+| iOS animation regression | **PASS** — clean Debug build installed on the iOS 26.5 simulator; cold launch, onboarding/account transitions, and an active `VoiceActivityIndicator` probe produced no `onAnimatedValueUpdate` warning |
+| iOS entitlement-warning regression | **PASS** — buffer-clean cold launch emitted one intentional notification-skip line and one memory-storage line; timestamped native logs contained none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore signatures |
 | Static secret/debug scan | **PASS** — no embedded credential pattern; no `debugger`, `TODO`, `FIXME`, or `HACK`; direct console use limited to CLI/server/config diagnostics and logger transport |
 | Transport/config scan | **PASS** — production HTTPS/WSS and no credential-query constraints confirmed |
 | Server dependency audit | **PASS** — `npm audit --prefix server --omit=dev` reported 0 vulnerabilities |
@@ -55,7 +57,7 @@ This is an implemented code path, not physical evidence. Native AEC/noise suppre
 
 - Apple/Google identity assertions are exchanged at `POST /v1/auth/exchange`; the mobile app no longer uses a provider assertion as its application session.
 - Server verification covers RS256 signature through official JWKS, issuer, accepted audience, expiry, future issue time, Google authorized party, and Apple nonce when supplied.
-- The server issues scoped access and distinct refresh JWTs with bounded lifetimes. The app stores both in SecureStore, renews before expiry/on cold start/foreground, rotates the client-held refresh token, preserves offline account state on network errors, and clears rejected sessions.
+- The server issues scoped access and distinct refresh JWTs with bounded lifetimes. The app validates account/session/profile binding, stores the token pair and profile as one versioned SecureStore envelope, renews before expiry/on cold start/foreground, rotates the client-held refresh token, preserves offline account state only for transient network errors, and uses a non-sensitive signed-out tombstone so residual Keychain cleanup cannot restore a logged-out account.
 - Proxy URLs contain no bearer token. `/api/voice/hume-ws` requires an authenticate-first message, checks `voice:connect`, applies server Hume config/voice policy, and only then opens Hume with the server-only API key.
 
 Production still requires approved signing-key rotation, persistent refresh-family state, old-token reuse detection, revocation/deletion tombstones, replay and abuse controls, provider credential-state checks, consistent authenticated-request 401 retry, and endpoint/connection rate limits. Current refresh JWTs are stateless and replayable until expiry, and an access JWT must not be described as a single-use WebSocket ticket. Client chat resume and session configuration need authenticated ownership binding before resume is enabled.
@@ -89,7 +91,7 @@ An SOS `202 accepted` response means the record was persisted. It does not prove
 | P1 | VL01 exposes protocol-gated raw status/events and bounded writes, but their semantics/authorization, ownership challenge, and secure pairing are not implemented from an approved firmware contract. | Signed protocol, decoding/command policy, security review, two-account isolation, and complete physical-device matrix. |
 | P1 | Durable SOS acceptance is not emergency delivery. Push/contact delivery, receipts, escalation, idempotent outbox processing, and operational response are absent. | Delivery service, provider receipts, retry/dead-letter semantics, dashboards/alerts, safety copy approval, and outage exercises. |
 | P1 | Backend-enabled export/deletion covers account DynamoDB records, but deletion does not first revoke the session or create a tombstone and does not orchestrate Hume, identity-provider, Mapbox, backup/log, or share-destination data. | Session revocation, tombstone/repopulation protection, retention/backup proof, vendor orchestration, and privacy audit. |
-| P1 | Production phone/SMS, APNs/FCM, real provider credentials, Mapbox routes/live sharing, and remote danger/avoidance intelligence remain external. | Deployed services, abuse controls, signed-device tests, monitoring, rollback, and named owners. |
+| P1 | Deployment credentials/policy for the implemented Twilio Verify phone flow, APNs/FCM, real provider credentials, Mapbox routes/live sharing, and remote danger/avoidance intelligence remain external. | Deployed services, distributed abuse controls, signed-device tests, monitoring, rollback, and named owners. |
 | P1 | Android runtime, signed physical-device, accessibility/responsive, and native-speaker safety-copy matrices are incomplete. | Objective evidence for every matrix in `LAUNCH_CHECKLIST.md`. |
 | P2 | Camera/photo permissions are declared although the current client has no active picker/capture flow. | Remove unused declarations or implement and privacy-review a user-invoked flow before store submission. |
 | P2 | EAS Update is not configured and the backend repository has no infrastructure-as-code or deployment pipeline. | Deliberate OTA/runtime-version/rollback policy and reproducible backend infrastructure if required by release operations. |
@@ -99,7 +101,8 @@ An SOS `202 accepted` response means the record was persisted. It does not prove
 - `eas.json` contains explicit development, iOS simulator, preview, and production profiles. Production uses store distribution and remote auto-incremented versions.
 - The root package override lifts only `xcode`'s vulnerable legacy UUID dependency to `uuid@11.1.1`; the resolved tree, CommonJS `v4` call used by `xcode`, and both root/server production audits were verified after the lockfile change.
 - `app.config.js` redacts diagnostics and enforces HTTPS/WSS schemes, no credential queries, public-not-secret Mapbox runtime token, both Google client IDs, API/voice endpoints, production safety enablement, custom CLM enablement/configuration, and a complete VL01 service/battery/status/event/command registry. Production config resolution fails closed when these are absent or malformed; external approval and runtime evidence are still required.
-- Server production startup fails closed unless auth exchange and safety are enabled, both provider allowlists and JWT secret are present, Hume API/config/CLM credentials and a voice allowlist are set, the safety table exists in configuration, and client resume remains disabled.
+- Server production startup fails closed unless provider and phone auth plus safety are enabled, provider allowlists, Twilio Verify settings, independent phone/session secrets, Hume API/config/CLM credentials and a voice allowlist are present, the safety table exists in configuration, and client resume remains disabled.
+- `server/server.cjs` is a Vercel-captured Node HTTP entrypoint for health, auth/phone, safety/privacy, and CLM HTTP routes. The existing raw WebSocket upgrade gateway is deliberately excluded and remains a separately deployed and validated `wss://` service.
 - Mobile public variables, server secrets/configuration, operator-only Hume variables, and build-only Mapbox credentials are separated in the templates and documented in `README.md` and `LAUNCH_CHECKLIST.md`.
 - The Node container now has runtime dependencies and handles HTTP plus WebSocket upgrades. A clean setup must run `npm ci --prefix server` or build `server/Dockerfile`.
 - DynamoDB needs a table with string `PK`/`SK`, encryption, backups, alarms, retention/deletion controls, and a task role limited to Query/Get/Put/Delete on that table.
@@ -107,7 +110,7 @@ An SOS `202 accepted` response means the record was persisted. It does not prove
 
 ## Documentation Consistency
 
-The 13 July simulator reports remain historical. `README.md`, `HUME_CUSTOMIZATION.md`, `LAUNCH_CHECKLIST.md`, and `PRIVACY.md` describe the current architecture and explicitly distinguish implementation from deployment/device evidence. `STABILITY_REPORT.md` and `FINAL_VALIDATION_REPORT.md` contain dated post-validation sections rather than rewriting earlier observations.
+The 13 July simulator reports remain historical. `README.md`, `HUME_CUSTOMIZATION.md`, `LAUNCH_CHECKLIST.md`, and `PRIVACY.md` describe the current architecture and explicitly distinguish implementation from deployment/device evidence. `STABILITY_REPORT.md` and `FINAL_VALIDATION_REPORT.md` contain dated post-validation sections rather than rewriting earlier observations. The 14 July release validator is deterministic source/export evidence; the separate iOS 26.5 animation regression run is narrow simulator evidence and does not replace an authenticated Safety Call or physical-device session.
 
 ## Job-Requirement Alignment
 

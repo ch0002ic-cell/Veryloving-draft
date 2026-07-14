@@ -9,15 +9,16 @@ import { useI18n } from '../src/context/I18nContext';
 function safeConfigSummary() {
   return {
     apiBaseUrlConfigured: Boolean(config.apiBaseUrl),
+    appleClientIdConfigured: Boolean(config.appleClientId),
     googleWebClientIdConfigured: Boolean(config.googleWebClientId),
+    googleIOSClientIdConfigured: Boolean(config.googleIOSClientId),
     humeWebSocketProxyConfigured: Boolean(config.humeWSProxyURL),
     humeConfigIdConfigured: Boolean(config.humeConfigId),
     humeDirectDevelopmentKeyConfigured: Boolean(config.humeApiKey),
     humeCustomizationConfigured: Boolean(config.humeCustomizationURL),
     humeCLMEnabled: config.humeCLMEnabled,
     mapboxConfigured: Boolean(config.mapboxAccessToken),
-    offlineModeForced: config.enableOfflineMode,
-    mockPhoneAuthEnabled: config.enableMockPhoneAuth
+    offlineModeForced: config.enableOfflineMode
   };
 }
 

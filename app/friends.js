@@ -2,24 +2,19 @@ import { FlatList, StyleSheet, Text } from 'react-native';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Card } from '../src/components/Card';
-import { Button } from '../src/components/Button';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { EmptyState } from '../src/components/EmptyState';
 import { images } from '../src/constants/assets';
 import { colors } from '../src/constants/theme';
-import { config } from '../src/utils/config';
 
 export default function Friends() {
-  const { friends, setFriends } = useAppState();
+  const { friends } = useAppState();
   const { t } = useI18n();
   return (
     <Screen scroll={false}>
       <Header title={t('friends.title')} subtitle={t('friends.subtitle')} />
-      {__DEV__ && config.enableMockPhoneAuth ? (
-        <Button title={t('friends.addDemo')} icon="person-add-outline" onPress={() => setFriends([...friends, { id: Date.now().toString(), name: t('friends.newGuardian'), status: 'Pending' }])} />
-      ) : null}
       <FlatList
         contentContainerStyle={styles.list}
         data={friends}

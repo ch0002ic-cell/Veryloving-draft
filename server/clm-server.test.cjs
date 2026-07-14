@@ -5,9 +5,36 @@ const { Readable } = require('node:stream');
 const { test } = require('node:test');
 const { createHandler, validateServerConfig } = require('./clm-server.cjs');
 const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety-companion.cjs');
-const { signSessionJWT } = require('./auth-session.cjs');
+const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
 
 const silentLogger = { info() {}, warn() {}, error() {} };
+
+function productionHTTPConfig(overrides = {}) {
+  return {
+    nodeEnv: 'production',
+    httpOnlyDeployment: true,
+    authExchangeEnabled: true,
+    phoneAuthEnabled: true,
+    safetyApiEnabled: true,
+    safetyRepository: {},
+    sessionJWTSecret: 'production-session-secret-at-least-32-characters',
+    appleClientIds: 'com.veryloving.app',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-ios.apps.googleusercontent.com',
+    phoneAuthChallengeSecret: 'production-phone-challenge-secret-at-least-32-characters',
+    phoneAuthSubjectSecret: 'production-phone-subject-secret-at-least-32-characters',
+    twilioAccountSid: `AC${'a'.repeat(32)}`,
+    twilioAuthToken: 'production-twilio-auth-token-value',
+    twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
+    fetchImpl: async () => { throw new Error('must not run'); },
+    humeApiKey: '',
+    humeConfigId: '',
+    humeAllowedVoiceIds: '',
+    humeAllowClientResume: false,
+    clmBearerToken: '',
+    ...overrides
+  };
+}
 
 async function invoke(options, { method = 'GET', url = '/', headers = {}, body } = {}) {
   const req = Readable.from(body === undefined ? [] : [Buffer.from(JSON.stringify(body))]);
@@ -50,56 +77,113 @@ test('health endpoint reports the CLM service', async () => {
   assert.deepEqual(response.json, { status: 'ok', service: 'veryloving-hume-clm' });
 });
 
-test('production server rejects insecure credential-bearing outbound URLs and dev tokens', () => {
+test('production server rejects insecure credential-bearing outbound URLs', () => {
   assert.throws(() => validateServerConfig({
     nodeEnv: 'production',
     appAuthVerifyURL: 'http://auth.example.test/verify',
-    upstreamURL: '',
-    devAppToken: ''
+    upstreamURL: ''
   }), /APP_AUTH_VERIFY_URL must use HTTPS/);
   assert.throws(() => validateServerConfig({
     nodeEnv: 'production',
     appAuthVerifyURL: 'https://auth.example.test/verify?token=leak',
-    upstreamURL: '',
-    devAppToken: ''
+    upstreamURL: ''
   }), /credential query parameters/);
   assert.throws(() => validateServerConfig({
     nodeEnv: 'production',
     appAuthVerifyURL: 'https://auth.example.test/verify',
-    upstreamURL: 'https://user:password@model.example.test/v1',
-    devAppToken: ''
+    upstreamURL: 'https://user:password@model.example.test/v1'
   }), /embedded credentials/);
-  assert.throws(() => validateServerConfig({
-    nodeEnv: 'production',
-    appAuthVerifyURL: 'https://auth.example.test/verify',
-    upstreamURL: 'https://model.example.test/v1',
-    devAppToken: 'known-development-token'
-  }), /DEV_APP_TOKEN/);
 
   assert.throws(() => validateServerConfig({
     nodeEnv: 'production',
     appAuthVerifyURL: '',
-    upstreamURL: '',
-    devAppToken: ''
+    upstreamURL: ''
   }), /AUTH_EXCHANGE_ENABLED/);
 
   assert.doesNotThrow(() => validateServerConfig({
     nodeEnv: 'production',
     appAuthVerifyURL: '',
     upstreamURL: '',
-    devAppToken: '',
     authExchangeEnabled: true,
+    phoneAuthEnabled: true,
     safetyApiEnabled: true,
     safetyRepository: {},
     sessionJWTSecret: 'production-session-secret-at-least-32-characters',
     appleClientIds: 'com.veryloving.app',
-    googleClientIds: 'google.apps.googleusercontent.com',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-ios.apps.googleusercontent.com',
+    phoneAuthChallengeSecret: 'production-phone-challenge-secret-at-least-32-characters',
+    phoneAuthSubjectSecret: 'production-phone-subject-secret-at-least-32-characters',
+    twilioAccountSid: `AC${'a'.repeat(32)}`,
+    twilioAuthToken: 'production-twilio-auth-token-value',
+    twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
+    fetchImpl: async () => { throw new Error('must not run'); },
     humeApiKey: 'server-only-hume-key',
     humeConfigId: 'approved-config',
     humeAllowedVoiceIds: 'approved-voice',
     humeAllowClientResume: false,
     clmBearerToken: 'server-only-clm-key'
   }));
+});
+
+test('HTTP-only production validation omits voice-gateway secrets but keeps the container fail-closed', async () => {
+  const httpOnly = productionHTTPConfig();
+  assert.doesNotThrow(() => validateServerConfig(httpOnly));
+
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, authExchangeEnabled: false }),
+    /AUTH_EXCHANGE_ENABLED must be true in production/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, phoneAuthEnabled: false }),
+    /PHONE_AUTH_ENABLED must be true in production/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, safetyApiEnabled: false }),
+    /SAFETY_API_ENABLED must be true in production/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, sessionJWTSecret: '' }),
+    /SESSION_JWT_SECRET/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, twilioAuthToken: '' }),
+    /TWILIO_AUTH_TOKEN/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, safetyRepository: null, safetyTableName: '' }),
+    /SAFETY_TABLE_NAME/
+  );
+
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, httpOnlyDeployment: false }),
+    /HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, httpOnlyDeployment: 'true' }),
+    /HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production/
+  );
+
+  const response = await invoke(httpOnly, {
+    method: 'POST',
+    url: '/chat/completions',
+    headers: { Authorization: 'Bearer anything', 'Content-Type': 'application/json' },
+    body: { messages: [] }
+  });
+  assert.equal(response.status, 503);
+  assert.deepEqual(response.json, { error: 'CLM authentication is not configured' });
+});
+
+test('arbitrary bearer tokens cannot bypass first-party authentication', async () => {
+  const response = await invoke({
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters'
+  }, {
+    method: 'POST',
+    url: '/v1/safety/tips',
+    headers: { Authorization: 'Bearer arbitrary-unsigned-token' },
+    body: { scenario: 'general' }
+  });
+  assert.equal(response.status, 401);
 });
 
 test('CLM rejects requests without the configured bearer token', async () => {
@@ -129,7 +213,8 @@ test('auth exchange returns a first-party JWT derived from verified provider cla
     sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
     sessionJWTIssuer: 'https://api.example.test',
     sessionJWTAudience: 'veryloving-test',
-    googleClientIds: 'google-client.apps.googleusercontent.com',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com',
     verifyProviderToken: async ({ provider, idToken }) => {
       assert.equal(provider, 'google');
       assert.equal(idToken, 'provider-token-that-must-not-be-persisted');
@@ -160,7 +245,8 @@ test('auth exchange returns a first-party JWT derived from verified provider cla
     sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
     sessionJWTIssuer: 'https://api.example.test',
     sessionJWTAudience: 'veryloving-test',
-    googleClientIds: 'google-client.apps.googleusercontent.com'
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com'
   }, {
     method: 'POST',
     url: '/v1/auth/refresh',
@@ -184,7 +270,8 @@ test('auth exchange fails closed when disabled or provider verification fails', 
   const rejected = await invoke({
     authExchangeEnabled: true,
     sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
-    googleClientIds: 'google-client.apps.googleusercontent.com',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com',
     verifyProviderToken: async () => { throw new Error('bad signature'); }
   }, {
     method: 'POST',
@@ -206,6 +293,104 @@ test('auth exchange fails closed when disabled or provider verification fails', 
   });
   assert.equal(missingAppleNonce.status, 400);
   assert.match(missingAppleNonce.json.error, /nonce/);
+});
+
+test('phone auth uses Twilio Verify and issues an opaque first-party session', async () => {
+  const calls = [];
+  const config = {
+    phoneAuthEnabled: true,
+    phoneAuthChallengeSecret: 'test-phone-challenge-secret-at-least-32-characters',
+    phoneAuthSubjectSecret: 'test-phone-subject-secret-at-least-32-characters',
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    twilioAccountSid: `AC${'a'.repeat(32)}`,
+    twilioAuthToken: 'test-twilio-auth-token-value',
+    twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      return {
+        ok: true,
+        status: url.endsWith('/Verifications') ? 201 : 200,
+        json: async () => ({ status: url.endsWith('/Verifications') ? 'pending' : 'approved' })
+      };
+    }
+  };
+  const started = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/phone/start',
+    body: { phone: '+6591234567', countryCode: 'SG' }
+  });
+  assert.equal(started.status, 202);
+  assert.equal(started.json.phone, '+6591234567');
+  assert.equal(started.json.countryCode, 'SG');
+  assert.equal(typeof started.json.verificationId, 'string');
+
+  const verified = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/phone/verify',
+    body: { verificationId: started.json.verificationId, code: '123456' }
+  });
+  assert.equal(verified.status, 200);
+  assert.equal(verified.json.user.provider, 'phone');
+  assert.equal(verified.json.user.phone, '+6591234567');
+  assert.match(verified.json.user.id, /^phone:[A-Za-z0-9_-]{43}$/);
+  const claims = verifySessionJWT(verified.json.accessToken, config);
+  assert.equal(claims.sub, verified.json.user.id);
+  assert.equal(claims.sub.includes('+6591234567'), false);
+  assert.equal(calls.length, 2);
+
+  const refreshed = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/refresh',
+    body: { refreshToken: verified.json.refreshToken }
+  });
+  assert.equal(refreshed.status, 200);
+  assert.equal(verifySessionJWT(refreshed.json.accessToken, config).sub, verified.json.user.id);
+});
+
+test('phone endpoints return stable safe failure codes', async () => {
+  const disabled = await invoke({}, {
+    method: 'POST',
+    url: '/v1/auth/phone/start',
+    body: { phone: '+6591234567', countryCode: 'SG' }
+  });
+  assert.equal(disabled.status, 503);
+  assert.deepEqual(disabled.json, {
+    error: 'Phone authentication is not configured',
+    code: 'PHONE_AUTH_NOT_CONFIGURED'
+  });
+
+  const config = {
+    phoneAuthEnabled: true,
+    phoneAuthChallengeSecret: 'test-phone-challenge-secret-at-least-32-characters',
+    phoneAuthSubjectSecret: 'test-phone-subject-secret-at-least-32-characters',
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    twilioAccountSid: `AC${'a'.repeat(32)}`,
+    twilioAuthToken: 'test-twilio-auth-token-value',
+    twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
+    fetchImpl: async () => ({
+      ok: false,
+      status: 429,
+      json: async () => ({ message: 'provider account detail' })
+    })
+  };
+  const invalid = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/phone/start',
+    body: { phone: 'not-a-phone', countryCode: 'SG' }
+  });
+  assert.equal(invalid.status, 400);
+  assert.equal(invalid.json.code, 'PHONE_AUTH_INVALID');
+
+  const limited = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/phone/start',
+    body: { phone: '+6591234567', countryCode: 'SG' }
+  });
+  assert.equal(limited.status, 429);
+  assert.equal(limited.json.code, 'PHONE_AUTH_RATE_LIMITED');
+  assert.equal(JSON.stringify(limited.json).includes('provider account detail'), false);
 });
 
 test('CLM handles immediate danger locally and preserves the custom session ID', async () => {
@@ -348,7 +533,8 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
     sessionJWTSecret: 'safety-api-session-secret-at-least-32-characters',
     sessionJWTIssuer: 'https://api.example.test',
     sessionJWTAudience: 'veryloving-test',
-    googleClientIds: 'google-client.apps.googleusercontent.com'
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com'
   };
   const token = signSessionJWT({ provider: 'google', subject: 'safety-user' }, config).token;
   const authorization = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };

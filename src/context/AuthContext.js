@@ -9,33 +9,79 @@ import {
   googleSignInCancellationError
 } from '../utils/google-auth';
 import {
-  createMockPhoneVerification,
-  isValidMockPhoneVerification
-} from '../utils/mock-phone-auth';
-import {
   createOnboardingMarker,
   isOnboardingMarkerValid
 } from '../utils/onboarding-state';
-import { exchangeProviderIdentity, refreshApplicationSession } from '../services/auth-session';
+import {
+  confirmPhoneVerification,
+  exchangeProviderIdentity,
+  refreshApplicationSession,
+  requestPhoneVerification
+} from '../services/auth-session';
 import { secureStorage } from '../services/secure-storage';
+import { storage } from '../services/storage';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
+import {
+  authenticationCapabilities,
+  createAuthError,
+  isAuthenticationCancellation,
+  isTransientAuthenticationError,
+  userFacingAuthenticationError
+} from '../utils/auth-configuration';
 import {
   createAuthenticationNonce,
   isSessionTokenUsable,
   sessionTokenClaims
 } from '../utils/session-token';
+import {
+  createSessionEnvelope,
+  migrateLegacySession,
+  parseSessionEnvelope
+} from '../utils/session-envelope';
 const AuthContext = createContext(null);
-const TOKEN_KEY = 'veryloving.auth.token';
-const REFRESH_TOKEN_KEY = 'veryloving.auth.refreshToken';
-const USER_KEY = 'veryloving.auth.user';
+const SESSION_KEY = 'veryloving.auth.session.v1';
+const SIGNED_OUT_KEY = 'veryloving.auth.signedOut';
+const LEGACY_TOKEN_KEY = 'veryloving.auth.token';
+const LEGACY_REFRESH_TOKEN_KEY = 'veryloving.auth.refreshToken';
+const LEGACY_USER_KEY = 'veryloving.auth.user';
 const ONBOARDING_KEY = 'veryloving.auth.onboarding';
+const LEGACY_SESSION_KEYS = [LEGACY_TOKEN_KEY, LEGACY_REFRESH_TOKEN_KEY, LEGACY_USER_KEY];
 
 export const AUTH_STORAGE_KEYS = {
-  token: TOKEN_KEY,
-  refreshToken: REFRESH_TOKEN_KEY,
-  user: USER_KEY,
+  session: SESSION_KEY,
+  signedOut: SIGNED_OUT_KEY,
+  token: LEGACY_TOKEN_KEY,
+  refreshToken: LEGACY_REFRESH_TOKEN_KEY,
+  user: LEGACY_USER_KEY,
   onboarding: ONBOARDING_KEY
 };
+
+async function removeLegacySessionKeys() {
+  return Promise.allSettled(LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key)));
+}
+
+async function invalidatePersistedSession() {
+  let tombstoneStored = false;
+  let tombstoneError;
+  try {
+    await storage.setJSON(SIGNED_OUT_KEY, { version: 1, signedOutAt: Date.now() });
+    tombstoneStored = true;
+  } catch (error) {
+    tombstoneError = error;
+  }
+  const results = await Promise.allSettled([
+    secureStorage.deleteItemAsync(SESSION_KEY),
+    secureStorage.deleteItemAsync(ONBOARDING_KEY),
+    ...LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key))
+  ]);
+  if (!tombstoneStored && results[0].status === 'rejected') {
+    throw tombstoneError || results[0].reason;
+  }
+  return {
+    protectedFromRestore: tombstoneStored || results[0].status === 'fulfilled',
+    residualFailures: results.filter((result) => result.status === 'rejected').length
+  };
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -43,11 +89,17 @@ export function AuthProvider({ children }) {
   const [sessionStatus, setSessionStatus] = useState('loading');
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const phoneVerificationsRef = useRef(new Map());
+  const [authError, setAuthError] = useState(null);
+  const [pendingPhoneVerification, setPendingPhoneVerification] = useState(null);
   const refreshInFlightRef = useRef(null);
   const refreshRetryTimerRef = useRef(null);
   const refreshSessionRef = useRef(null);
   const authGenerationRef = useRef(0);
+  const sessionMutationRef = useRef(Promise.resolve());
+  const authCapabilities = useMemo(() => authenticationCapabilities(config, {
+    platform: Platform.OS,
+    expoGo: isExpoGoRuntime()
+  }), []);
 
   const scheduleRefreshRetry = useCallback(() => {
     if (refreshRetryTimerRef.current) return;
@@ -57,18 +109,32 @@ export function AuthProvider({ children }) {
     }, 60000);
   }, []);
 
+  const runSessionMutation = useCallback((mutation) => {
+    const operation = sessionMutationRef.current
+      .catch(() => {})
+      .then(mutation);
+    // Keep the queue usable after a failed mutation without changing the
+    // promise returned to its caller.
+    sessionMutationRef.current = operation.catch(() => {});
+    return operation;
+  }, []);
+
   const refreshSession = useCallback((providedRefreshToken) => {
     if (refreshInFlightRef.current) return refreshInFlightRef.current;
     const authGeneration = authGenerationRef.current;
     let operation;
     operation = (async () => {
       try {
-        const [persistedRefreshToken, persistedAccessToken] = await Promise.all([
-          secureStorage.getItemAsync(REFRESH_TOKEN_KEY),
-          secureStorage.getItemAsync(TOKEN_KEY)
-        ]);
-        const refreshToken = providedRefreshToken || persistedRefreshToken;
-        if (!refreshToken || !isSessionTokenUsable(refreshToken, { skewSeconds: 60 })) {
+        const persistedEnvelope = parseSessionEnvelope(
+          await secureStorage.getItemAsync(SESSION_KEY),
+          { allowExpiredAccess: true, skewSeconds: 60 }
+        );
+        const refreshToken = providedRefreshToken || persistedEnvelope?.refreshToken;
+        if (
+          !refreshToken
+          || !persistedEnvelope?.user
+          || !isSessionTokenUsable(refreshToken, { skewSeconds: 60 })
+        ) {
           const error = new Error('The refresh session is unavailable or expired.');
           error.code = 'AUTH_REFRESH_UNAVAILABLE';
           throw error;
@@ -80,55 +146,59 @@ export function AuthProvider({ children }) {
           error.code = 'AUTH_REFRESH_STALE';
           throw error;
         }
-        // Store the rotated refresh token before publishing the new access
-        // token so a process death cannot strand the account on an old pair.
-        try {
-          await secureStorage.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
-          await secureStorage.setItemAsync(TOKEN_KEY, session.accessToken);
-        } catch (storageError) {
-          // SecureStore has no multi-key transaction. Restore the previous pair
-          // if either write fails so startup never observes mismatched tokens.
-          await Promise.allSettled([
-            persistedRefreshToken
-              ? secureStorage.setItemAsync(REFRESH_TOKEN_KEY, persistedRefreshToken)
-              : secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
-            persistedAccessToken
-              ? secureStorage.setItemAsync(TOKEN_KEY, persistedAccessToken)
-              : secureStorage.deleteItemAsync(TOKEN_KEY)
-          ]);
-          throw storageError;
+        const nextEnvelope = createSessionEnvelope({
+          accessToken: session.accessToken,
+          refreshToken: session.refreshToken,
+          user: persistedEnvelope.user
+        });
+        if (!nextEnvelope) {
+          const error = new Error('The authentication server returned a mismatched session.');
+          error.code = 'AUTH_RESPONSE_INVALID';
+          throw error;
         }
-        setAccessToken(session.accessToken);
-        setSessionStatus('active');
-        if (refreshRetryTimerRef.current) {
-          clearTimeout(refreshRetryTimerRef.current);
-          refreshRetryTimerRef.current = null;
-        }
+        await runSessionMutation(async () => {
+          if (authGeneration !== authGenerationRef.current) {
+            throw createAuthError('AUTH_REFRESH_STALE', 'A stale refresh response was ignored.');
+          }
+          // One Keychain item makes a rotated access/refresh/profile snapshot
+          // atomic from the next process's point of view.
+          await secureStorage.setItemAsync(SESSION_KEY, JSON.stringify(nextEnvelope));
+          await removeLegacySessionKeys();
+          if (authGeneration !== authGenerationRef.current) {
+            throw createAuthError('AUTH_REFRESH_STALE', 'A stale refresh response was ignored.');
+          }
+          setAccessToken(session.accessToken);
+          setSessionStatus('active');
+          if (refreshRetryTimerRef.current) {
+            clearTimeout(refreshRetryTimerRef.current);
+            refreshRetryTimerRef.current = null;
+          }
+        });
         return session;
       } catch (error) {
         if (error?.code === 'AUTH_REFRESH_STALE') throw error;
-        const rejected = [
-          'AUTH_HTTP_400',
-          'AUTH_HTTP_401',
-          'AUTH_HTTP_403',
-          'AUTH_REFRESH_UNAVAILABLE'
-        ].includes(error?.code);
-        setAccessToken(null);
+        const rejected = !isTransientAuthenticationError(error);
+        if (authGeneration !== authGenerationRef.current) {
+          throw createAuthError('AUTH_REFRESH_STALE', 'A stale refresh response was ignored.');
+        }
         if (rejected) {
-          await Promise.allSettled([
-            secureStorage.deleteItemAsync(TOKEN_KEY),
-            secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
-            secureStorage.deleteItemAsync(USER_KEY),
-            secureStorage.deleteItemAsync(ONBOARDING_KEY)
-          ]);
-          setUser(null);
-          setOnboardingComplete(false);
-          setSessionStatus('reauthentication-required');
+          await runSessionMutation(async () => {
+            if (authGeneration !== authGenerationRef.current) return;
+            await invalidatePersistedSession();
+            if (authGeneration !== authGenerationRef.current) return;
+            setAccessToken(null);
+            setUser(null);
+            setOnboardingComplete(false);
+            setSessionStatus('reauthentication-required');
+          });
         } else {
           // Keep the account-bound offline safety state available while the
           // network is down, and retry without treating an outage as logout.
-          setSessionStatus('offline');
-          scheduleRefreshRetry();
+          if (authGeneration === authGenerationRef.current) {
+            setAccessToken(null);
+            setSessionStatus('offline');
+            scheduleRefreshRetry();
+          }
         }
         throw error;
       }
@@ -137,49 +207,70 @@ export function AuthProvider({ children }) {
     });
     refreshInFlightRef.current = operation;
     return operation;
-  }, [scheduleRefreshRetry]);
+  }, [runSessionMutation, scheduleRefreshRetry]);
   refreshSessionRef.current = refreshSession;
 
   useEffect(() => {
     let active = true;
+    const authGeneration = authGenerationRef.current;
     Promise.all([
-      secureStorage.getItemAsync(TOKEN_KEY),
-      secureStorage.getItemAsync(REFRESH_TOKEN_KEY),
-      secureStorage.getItemAsync(USER_KEY),
-      secureStorage.getItemAsync(ONBOARDING_KEY)
-    ]).then(async ([token, refreshToken, rawUser, rawOnboarding]) => {
-      if (!active) return;
-      let savedUser = null;
-      try {
-        savedUser = rawUser ? JSON.parse(rawUser) : null;
-      } catch (error) {
-        logger.warn('[Auth] Ignoring an invalid stored profile', error);
+      storage.getRaw(SIGNED_OUT_KEY),
+      secureStorage.getItemAsync(SESSION_KEY),
+      secureStorage.getItemAsync(ONBOARDING_KEY),
+      secureStorage.getItemAsync(LEGACY_TOKEN_KEY),
+      secureStorage.getItemAsync(LEGACY_REFRESH_TOKEN_KEY),
+      secureStorage.getItemAsync(LEGACY_USER_KEY)
+    ]).then(async ([signedOutMarker, rawEnvelope, rawOnboarding, legacyToken, legacyRefresh, legacyUser]) => {
+      if (!active || authGeneration !== authGenerationRef.current) return;
+      if (signedOutMarker) {
+        await runSessionMutation(() => Promise.allSettled([
+          secureStorage.deleteItemAsync(SESSION_KEY),
+          secureStorage.deleteItemAsync(ONBOARDING_KEY),
+          ...LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key))
+        ]));
+        if (active && authGeneration === authGenerationRef.current) {
+          setSessionStatus('signed-out');
+        }
+        return;
       }
-      if (token && savedUser && (
-        (config.enableMockPhoneAuth && savedUser.provider === 'phone')
-        || isSessionTokenUsable(token)
-      )) {
-        setAccessToken(token);
-        setUser(savedUser);
+
+      let envelope = parseSessionEnvelope(rawEnvelope, {
+        allowExpiredAccess: true,
+        skewSeconds: 60
+      });
+      if (!envelope && (legacyToken || legacyRefresh || legacyUser)) {
+        envelope = migrateLegacySession({
+          accessToken: legacyToken,
+          refreshToken: legacyRefresh,
+          user: legacyUser
+        }, { allowExpiredAccess: true, skewSeconds: 60 });
+        if (envelope) {
+          await runSessionMutation(async () => {
+            await secureStorage.setItemAsync(SESSION_KEY, JSON.stringify(envelope));
+            await removeLegacySessionKeys();
+          });
+        }
+      }
+
+      if (envelope && isSessionTokenUsable(envelope.accessToken)) {
+        setAccessToken(envelope.accessToken);
+        setUser(envelope.user);
         setSessionStatus('active');
-        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, savedUser.id));
-      } else if (refreshToken && savedUser && isSessionTokenUsable(refreshToken, { skewSeconds: 60 })) {
-        setUser(savedUser);
-        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, savedUser.id));
+        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, envelope.user.id));
+      } else if (envelope) {
+        setUser(envelope.user);
+        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, envelope.user.id));
         try {
-          await refreshSession(refreshToken);
+          await refreshSession(envelope.refreshToken);
         } catch {
           // refreshSession distinguishes a rejected session from a temporary
           // outage and preserves offline state only for the latter.
         }
-      } else if (token || refreshToken || rawUser || rawOnboarding) {
-        Promise.allSettled([
-          secureStorage.deleteItemAsync(TOKEN_KEY),
-          secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
-          secureStorage.deleteItemAsync(USER_KEY),
-          secureStorage.deleteItemAsync(ONBOARDING_KEY)
-        ]).catch(() => {});
-        setSessionStatus('reauthentication-required');
+      } else if (rawEnvelope || legacyToken || legacyRefresh || legacyUser || rawOnboarding) {
+        await runSessionMutation(() => invalidatePersistedSession());
+        if (active && authGeneration === authGenerationRef.current) {
+          setSessionStatus('reauthentication-required');
+        }
       } else {
         // A fresh Expo Go process always reaches this branch because its
         // deliberately volatile secure-storage backend resets on reload.
@@ -198,10 +289,10 @@ export function AuthProvider({ children }) {
     return () => {
       active = false;
     };
-  }, [refreshSession]);
+  }, [refreshSession, runSessionMutation]);
 
   useEffect(() => {
-    if (!accessToken || (config.enableMockPhoneAuth && user?.provider === 'phone')) return undefined;
+    if (!accessToken) return undefined;
     const claims = sessionTokenClaims(accessToken);
     const expiresInMs = Number(claims?.exp) * 1000 - Date.now() - 30000;
     const renewSession = () => refreshSession().catch((error) => logger.warn('[Auth] Session refresh is pending', {
@@ -213,7 +304,7 @@ export function AuthProvider({ children }) {
     }
     const timer = setTimeout(renewSession, Math.min(expiresInMs, 2147483647));
     return () => clearTimeout(timer);
-  }, [accessToken, refreshSession, user?.provider]);
+  }, [accessToken, refreshSession]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState) => {
@@ -226,151 +317,247 @@ export function AuthProvider({ children }) {
     if (refreshRetryTimerRef.current) clearTimeout(refreshRetryTimerRef.current);
   }, []);
 
-  const persist = async (nextUser, session) => {
+  useEffect(() => {
+    if (!pendingPhoneVerification?.expiresAt) return undefined;
+    const remaining = pendingPhoneVerification.expiresAt - Date.now();
+    if (remaining <= 0) {
+      setPendingPhoneVerification(null);
+      return undefined;
+    }
+    const timer = setTimeout(() => setPendingPhoneVerification(null), remaining);
+    return () => clearTimeout(timer);
+  }, [pendingPhoneVerification]);
+
+  const persist = useCallback(async (nextUser, session) => {
     // A new authentication ceremony always starts fail-closed. The user-bound
     // completion marker is written only after the onboarding flow finishes.
     authGenerationRef.current += 1;
-    try {
-      await secureStorage.deleteItemAsync(ONBOARDING_KEY);
-      if (session.refreshToken) {
-        await secureStorage.setItemAsync(REFRESH_TOKEN_KEY, session.refreshToken);
-      } else {
-        await secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY);
-      }
-      await secureStorage.setItemAsync(TOKEN_KEY, session.accessToken);
-      await secureStorage.setItemAsync(USER_KEY, JSON.stringify(nextUser));
-    } catch (error) {
-      await Promise.allSettled([
-        secureStorage.deleteItemAsync(TOKEN_KEY),
-        secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
-        secureStorage.deleteItemAsync(USER_KEY),
-        secureStorage.deleteItemAsync(ONBOARDING_KEY)
-      ]);
-      setUser(null);
-      setAccessToken(null);
-      setOnboardingComplete(false);
-      setSessionStatus('signed-out');
-      throw error;
+    const authGeneration = authGenerationRef.current;
+    const nextEnvelope = createSessionEnvelope({
+      accessToken: session.accessToken,
+      refreshToken: session.refreshToken,
+      user: nextUser
+    });
+    if (!nextEnvelope) {
+      throw createAuthError('AUTH_RESPONSE_INVALID', 'The authentication server returned an invalid session.');
     }
-    setUser(nextUser);
-    setAccessToken(session.accessToken);
-    setSessionStatus('active');
-    setOnboardingComplete(false);
-  };
+    const serializedEnvelope = JSON.stringify(nextEnvelope);
+    await runSessionMutation(async () => {
+      if (authGeneration !== authGenerationRef.current) {
+        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+      }
+      try {
+        await secureStorage.deleteItemAsync(ONBOARDING_KEY);
+        await secureStorage.setItemAsync(SESSION_KEY, serializedEnvelope);
+        await storage.remove(SIGNED_OUT_KEY);
+        await removeLegacySessionKeys();
+      } catch (error) {
+        await invalidatePersistedSession().catch(() => {});
+        if (authGeneration === authGenerationRef.current) {
+          setUser(null);
+          setAccessToken(null);
+          setOnboardingComplete(false);
+          setSessionStatus('signed-out');
+        }
+        throw error;
+      }
+      if (authGeneration !== authGenerationRef.current) {
+        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+      }
+      setUser(nextEnvelope.user);
+      setAccessToken(nextEnvelope.accessToken);
+      setSessionStatus('active');
+      setOnboardingComplete(false);
+      setAuthError(null);
+    });
+  }, [runSessionMutation]);
 
   const completeOnboarding = useCallback(async () => {
     if (!user?.id) throw new Error('A signed-in user is required to complete onboarding.');
+    const authGeneration = authGenerationRef.current;
     const marker = createOnboardingMarker(user.id);
-    await secureStorage.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
-    setOnboardingComplete(true);
-  }, [user?.id]);
+    await runSessionMutation(async () => {
+      if (authGeneration !== authGenerationRef.current) {
+        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+      }
+      await secureStorage.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
+      if (authGeneration === authGenerationRef.current) setOnboardingComplete(true);
+    });
+  }, [runSessionMutation, user?.id]);
 
-  const signInWithApple = async () => {
-    // Apple Authentication is part of Expo Go. Keep the import lazy so a
-    // missing native implementation becomes a handled sign-in error rather
-    // than a startup crash; Expo Go identities are not release evidence.
-    const AppleAuthentication = require('expo-apple-authentication');
-    if (Platform.OS !== 'ios' || !await AppleAuthentication.isAvailableAsync()) {
-      throw new Error('Apple Sign-In is not available on this device.');
-    }
-    const nonce = createAuthenticationNonce();
-    const credential = await AppleAuthentication.signInAsync({
-      requestedScopes: [AppleAuthentication.AppleAuthenticationScope.FULL_NAME, AppleAuthentication.AppleAuthenticationScope.EMAIL],
-      nonce
-    });
-    if (!credential.identityToken) throw new Error('Apple Sign-In did not return an identity token.');
-    const displayName = [credential.fullName?.givenName, credential.fullName?.familyName].filter(Boolean).join(' ') || null;
-    const session = await exchangeProviderIdentity({
-      provider: 'apple',
-      idToken: credential.identityToken,
-      nonce,
-      displayName
-    });
-    await persist(session.user, session);
-  };
+  const clearAuthError = useCallback(() => setAuthError(null), []);
 
-  const signInWithGoogle = async () => {
-    if (isExpoGoRuntime()) {
-      const error = new Error('Google Sign-In requires a VeryLoving development build.');
-      error.code = 'GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD';
-      throw error;
+  const reportAuthenticationFailure = useCallback((provider, error) => {
+    if (isAuthenticationCancellation(error)) {
+      setAuthError(null);
+      logger.info(`[Auth] ${provider} sign-in cancelled`);
+      return error;
     }
-    if (!config.googleWebClientId) {
-      throw new Error('Google Sign-In is not configured for this build.');
-    }
-    const GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
-    GoogleSignin.configure({
-      webClientId: config.googleWebClientId,
-      ...(config.googleIOSClientId ? { iosClientId: config.googleIOSClientId } : {})
+    const safeError = userFacingAuthenticationError(provider, error);
+    setAuthError(safeError.userMessage);
+    logger.error(`[Auth] ${provider} sign-in failed`, {
+      errorCode: error?.code || error?.name || 'AUTH_FAILED',
+      error
     });
-    await GoogleSignin.hasPlayServices?.({ showPlayServicesUpdateDialog: true });
-    const identity = googleIdentityFromResponse(await GoogleSignin.signIn());
-    if (!identity) throw googleSignInCancellationError();
-    if (!identity.identityToken) throw new Error('Google Sign-In did not return an identity token.');
-    const session = await exchangeProviderIdentity({
-      provider: 'google',
-      idToken: identity.identityToken,
-      displayName: identity.user.name
-    });
-    await persist(session.user, session);
-  };
+    return safeError;
+  }, []);
 
-  const signInWithPhone = async ({ e164, countryCode }) => {
-    if (!config.enableMockPhoneAuth) throw new Error(translate('auth.signInFailedMessage'));
-    const phone = createPhoneValue(e164, countryCode);
-    if (!phone.isValid) throw new Error(translate(`phone.${phone.validationError || 'invalid'}`));
-    const now = Date.now();
-    for (const [verificationId, challenge] of phoneVerificationsRef.current) {
-      if (challenge.expiresAt <= now) phoneVerificationsRef.current.delete(verificationId);
+  const requireCapability = useCallback((provider) => {
+    const capability = authCapabilities[provider];
+    if (!capability?.enabled) {
+      throw createAuthError(capability?.code || 'AUTH_UNAVAILABLE', capability?.message || 'Sign-in is unavailable.');
     }
-    const challenge = createMockPhoneVerification({
-      phone: phone.e164,
-      countryCode: phone.countryCode
-    });
-    phoneVerificationsRef.current.set(challenge.verificationId, challenge);
-    return {
-      verificationId: challenge.verificationId,
-      phone: challenge.phone,
-      countryCode: challenge.countryCode
-    };
-  };
-  const verifyCode = async (verificationId, code) => {
-    if (!config.enableMockPhoneAuth) throw new Error(translate('auth.signInFailedMessage'));
-    const challenge = phoneVerificationsRef.current.get(verificationId);
-    const normalizedCode = String(code || '').trim();
-    if (!isValidMockPhoneVerification(challenge, { verificationId, code: normalizedCode })) {
-      throw new Error(translate('auth.invalidCode'));
-    }
-    phoneVerificationsRef.current.delete(verificationId);
-    await persist({
-      id: `phone:${challenge.phone}`,
-      name: null,
-      phone: challenge.phone,
-      countryCode: challenge.countryCode,
-      provider: 'phone'
-    }, { accessToken: 'dev-access-token' });
-  };
+  }, [authCapabilities]);
 
-  const signOut = async () => {
+  const signInWithApple = useCallback(async () => {
+    setAuthError(null);
+    try {
+      requireCapability('apple');
+      // The package is evaluated only in a configured native development or
+      // signed build. Expo Go never enters this branch.
+      const appleModule = await import('expo-apple-authentication');
+      const AppleAuthentication = typeof appleModule.signInAsync === 'function'
+        ? appleModule
+        : appleModule.default;
+      if (!AppleAuthentication || !await AppleAuthentication.isAvailableAsync()) {
+        throw createAuthError('APPLE_AUTH_UNAVAILABLE', 'Apple Sign-In is not available on this device.');
+      }
+      const nonce = createAuthenticationNonce();
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL
+        ],
+        nonce
+      });
+      if (!credential.identityToken) throw new Error('Apple Sign-In did not return an identity token.');
+      const displayName = [credential.fullName?.givenName, credential.fullName?.familyName]
+        .filter(Boolean)
+        .join(' ') || null;
+      const session = await exchangeProviderIdentity({
+        provider: 'apple',
+        idToken: credential.identityToken,
+        nonce,
+        displayName
+      });
+      await persist(session.user, session);
+    } catch (error) {
+      throw reportAuthenticationFailure('apple', error);
+    }
+  }, [persist, reportAuthenticationFailure, requireCapability]);
+
+  const signInWithGoogle = useCallback(async () => {
+    setAuthError(null);
+    try {
+      requireCapability('google');
+      const googleModule = await import('@react-native-google-signin/google-signin');
+      const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
+      if (!GoogleSignin) throw new Error('The native Google Sign-In module is unavailable.');
+      GoogleSignin.configure({
+        webClientId: config.googleWebClientId,
+        ...(Platform.OS === 'ios' ? { iosClientId: config.googleIOSClientId } : {})
+      });
+      if (Platform.OS === 'android') {
+        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      }
+      const identity = googleIdentityFromResponse(await GoogleSignin.signIn());
+      if (!identity) throw googleSignInCancellationError();
+      if (!identity.identityToken) throw new Error('Google Sign-In did not return an identity token.');
+      const session = await exchangeProviderIdentity({
+        provider: 'google',
+        idToken: identity.identityToken,
+        displayName: identity.user.name
+      });
+      await persist(session.user, session);
+    } catch (error) {
+      throw reportAuthenticationFailure('google', error);
+    }
+  }, [persist, reportAuthenticationFailure, requireCapability]);
+
+  const signInWithPhone = useCallback(async ({ e164, countryCode }) => {
+    setAuthError(null);
+    setPendingPhoneVerification(null);
+    try {
+      requireCapability('phone');
+      const phone = createPhoneValue(e164, countryCode);
+      if (!phone.isValid) {
+        throw createAuthError(
+          'PHONE_NUMBER_INVALID',
+          translate(`phone.${phone.validationError || 'invalid'}`)
+        );
+      }
+      const challenge = await requestPhoneVerification({
+        phone: phone.e164,
+        countryCode: phone.countryCode
+      });
+      setPendingPhoneVerification(challenge);
+      return { phone: challenge.phone, countryCode: challenge.countryCode };
+    } catch (error) {
+      throw reportAuthenticationFailure('phone', error);
+    }
+  }, [reportAuthenticationFailure, requireCapability]);
+
+  const verifyCode = useCallback(async (code) => {
+    setAuthError(null);
+    try {
+      requireCapability('phone');
+      const normalizedCode = String(code || '').trim();
+      if (
+        !pendingPhoneVerification?.verificationId
+        || pendingPhoneVerification.expiresAt <= Date.now()
+        || !/^\d{6}$/.test(normalizedCode)
+      ) {
+        throw createAuthError('PHONE_AUTH_CODE_INVALID', translate('auth.invalidCode'));
+      }
+      const session = await confirmPhoneVerification({
+        verificationId: pendingPhoneVerification.verificationId,
+        code: normalizedCode
+      });
+      await persist(session.user, session);
+      setPendingPhoneVerification(null);
+    } catch (error) {
+      throw reportAuthenticationFailure('phone', error);
+    }
+  }, [pendingPhoneVerification, persist, reportAuthenticationFailure, requireCapability]);
+
+  const signOut = useCallback(async () => {
+    const signedInProvider = user?.provider;
     authGenerationRef.current += 1;
+    const authGeneration = authGenerationRef.current;
     if (refreshRetryTimerRef.current) {
       clearTimeout(refreshRetryTimerRef.current);
       refreshRetryTimerRef.current = null;
     }
-    const results = await Promise.allSettled([
-      secureStorage.deleteItemAsync(TOKEN_KEY),
-      secureStorage.deleteItemAsync(REFRESH_TOKEN_KEY),
-      secureStorage.deleteItemAsync(USER_KEY),
-      secureStorage.deleteItemAsync(ONBOARDING_KEY)
-    ]);
-    phoneVerificationsRef.current.clear();
-    setUser(null);
-    setAccessToken(null);
-    setOnboardingComplete(false);
-    setSessionStatus('signed-out');
-    const failures = results.filter((result) => result.status === 'rejected').length;
-    if (failures) throw new Error('The local secure session could not be fully removed.');
-  };
+    // Publish the non-sensitive signed-out marker before waiting behind any
+    // in-flight Keychain mutation. A process restart must never resurrect the
+    // session the user just left.
+    await storage.setJSON(SIGNED_OUT_KEY, {
+      version: 1,
+      signedOutAt: Date.now()
+    }).catch(() => {});
+    const cleanup = await runSessionMutation(() => invalidatePersistedSession());
+    if (authGeneration === authGenerationRef.current) {
+      setUser(null);
+      setAccessToken(null);
+      setOnboardingComplete(false);
+      setSessionStatus('signed-out');
+      setAuthError(null);
+      setPendingPhoneVerification(null);
+    }
+    if (signedInProvider === 'google' && !isExpoGoRuntime()) {
+      import('@react-native-google-signin/google-signin').then((googleModule) => {
+        const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
+        return GoogleSignin?.signOut?.();
+      }).catch((error) => logger.info('[Auth] Google provider sign-out is pending', {
+        errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
+      }));
+    }
+    if (cleanup.residualFailures) {
+      logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {
+        residualFailures: cleanup.residualFailures
+      });
+    }
+  }, [runSessionMutation, user?.provider]);
 
   const value = useMemo(() => ({
     user,
@@ -378,13 +565,34 @@ export function AuthProvider({ children }) {
     sessionStatus,
     onboardingComplete,
     loading,
+    authError,
+    authCapabilities,
+    pendingPhoneNumber: pendingPhoneVerification?.phone || null,
+    hasPendingPhoneVerification: Boolean(pendingPhoneVerification?.verificationId),
+    clearAuthError,
     signInWithApple,
     signInWithGoogle,
     signInWithPhone,
     verifyCode,
     completeOnboarding,
     signOut
-  }), [user, accessToken, sessionStatus, onboardingComplete, loading, completeOnboarding]);
+  }), [
+    user,
+    accessToken,
+    sessionStatus,
+    onboardingComplete,
+    loading,
+    authError,
+    authCapabilities,
+    pendingPhoneVerification,
+    clearAuthError,
+    signInWithApple,
+    signInWithGoogle,
+    signInWithPhone,
+    verifyCode,
+    completeOnboarding,
+    signOut
+  ]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

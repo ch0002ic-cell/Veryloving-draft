@@ -46,9 +46,9 @@ function createEnvironmentDiagnostics(env = {}) {
   const production = buildProfile === 'production';
   const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
-  const mockPhoneAuthRequested = env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
   const safetyBackendEnabled = env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
+  const phoneAuthEnabled = env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
   const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
   const humeCustomizationURL = env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
   const humeWSProxyURL = env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
@@ -104,6 +104,7 @@ function createEnvironmentDiagnostics(env = {}) {
   }
   const invalid = [];
   if (production && !safetyBackendEnabled) invalid.push('safety_backend_must_be_enabled');
+  if (production && !phoneAuthEnabled) invalid.push('phone_auth_must_be_enabled');
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
   for (const [name, value] of [
@@ -138,7 +139,6 @@ function createEnvironmentDiagnostics(env = {}) {
   }
 
   const warnings = [];
-  if (production && mockPhoneAuthRequested) warnings.push('mock_phone_auth_requested_for_production');
   if (production && offlineModeEnabled) warnings.push('offline_mode_forced_for_production');
   if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
     warnings.push('public_hume_api_key_must_not_be_set_for_production');
@@ -158,9 +158,9 @@ function createEnvironmentDiagnostics(env = {}) {
     flags: {
       humeCLMEnabled,
       offlineModeEnabled,
-      mockPhoneAuthRequested,
       vl01Enabled,
-      safetyBackendEnabled
+      safetyBackendEnabled,
+      phoneAuthEnabled
     }
   };
 }
@@ -198,6 +198,7 @@ const config = {
   ],
   "ios": {
     "supportsTablet": true,
+    "usesAppleSignIn": true,
     "bundleIdentifier": "com.veryloving.app",
     "buildNumber": "1",
     "infoPlist": {
@@ -421,12 +422,7 @@ const config = {
         }
       }
     ],
-    [
-      "@react-native-google-signin/google-signin",
-      {
-        "iosUrlScheme": "com.googleusercontent.apps.unconfigured"
-      }
-    ],
+    "@react-native-google-signin/google-signin",
     "./plugins/withGradleProperties.js",
     "@rnmapbox/maps",
     [
@@ -506,8 +502,8 @@ function createAppConfig() {
   const humeBrandedVoiceId = process.env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || '';
   const humeCLMEnabled = process.env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const enableOfflineMode = process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
-  const enableMockPhoneAuth = process.env.EXPO_PUBLIC_ENABLE_MOCK_PHONE_AUTH === 'true';
   const safetyBackendEnabled = process.env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
+  const phoneAuthEnabled = process.env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
   const vl01Enabled = process.env.EXPO_PUBLIC_VL01_ENABLED === 'true';
   const vl01ServiceUUID = process.env.EXPO_PUBLIC_VL01_SERVICE_UUID || '';
   const vl01BatteryCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID || '';
@@ -518,12 +514,15 @@ function createAppConfig() {
   reportEnvironmentDiagnostics(environmentDiagnostics, process.env);
   assertEnvironmentReady(environmentDiagnostics);
 
-  const plugins = config.plugins.map((plugin) => {
-    if (!Array.isArray(plugin) || plugin[0] !== '@react-native-google-signin/google-signin') return plugin;
-    return [plugin[0], {
-      ...plugin[1],
-      iosUrlScheme: reversedGoogleClientId(googleIOSClientId) || 'com.googleusercontent.apps.unconfigured'
-    }];
+  const googleIOSUrlScheme = reversedGoogleClientId(googleIOSClientId);
+  const plugins = config.plugins.flatMap((plugin) => {
+    const pluginName = Array.isArray(plugin) ? plugin[0] : plugin;
+    if (pluginName !== '@react-native-google-signin/google-signin') return [plugin];
+    if (!googleIOSUrlScheme) return [];
+    return [[pluginName, {
+      ...(Array.isArray(plugin) ? plugin[1] : {}),
+      iosUrlScheme: googleIOSUrlScheme
+    }]];
   });
 
   return {
@@ -532,6 +531,9 @@ function createAppConfig() {
     extra: {
       ...config.extra,
       apiBaseUrl,
+      // Native Apple identity tokens use the bundle identifier as their
+      // audience. This is public application metadata, not a secret.
+      appleClientId: config.ios.bundleIdentifier,
       googleWebClientId,
       googleIOSClientId,
       humeWSProxyURL,
@@ -541,8 +543,8 @@ function createAppConfig() {
       humeCLMEnabled,
       mapboxAccessToken,
       enableOfflineMode,
-      enableMockPhoneAuth,
       safetyBackendEnabled,
+      phoneAuthEnabled,
       vl01Enabled,
       vl01ServiceUUID,
       vl01BatteryCharacteristicUUID,

@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { readdirSync } = require('node:fs');
+const { readFileSync, readdirSync } = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const {
@@ -9,13 +9,6 @@ const {
   PROTECTED_ROOT_ROUTES,
   PUBLIC_AUTH_ROUTES
 } = require('../src/utils/auth-routing');
-const {
-  MOCK_PHONE_VERIFICATION_CODE,
-  MOCK_PHONE_VERIFICATION_TTL_MS,
-  createMockPhoneVerification,
-  isDevelopmentMockEnabled,
-  isValidMockPhoneVerification
-} = require('../src/utils/mock-phone-auth');
 const {
   ONBOARDING_STATE_VERSION,
   createOnboardingMarker,
@@ -44,40 +37,20 @@ test('every authentication route is assigned to exactly one access state', () =>
   assert.equal(AUTHENTICATED_ONBOARDING_ROUTES[0], 'location-permission');
 });
 
-test('phone mock must be explicitly requested in development or test only', () => {
-  assert.equal(isDevelopmentMockEnabled({ requested: true, isDev: true }), true);
-  assert.equal(isDevelopmentMockEnabled({ requested: true, nodeEnv: 'test' }), true);
-  assert.equal(isDevelopmentMockEnabled({ requested: false, isDev: true }), false);
-  assert.equal(isDevelopmentMockEnabled({ requested: true, isDev: false, nodeEnv: 'production' }), false);
-});
+test('phone authentication uses the backend and keeps PII out of route parameters', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const client = readFileSync(path.resolve(process.cwd(), 'src/services/auth-session.js'), 'utf8');
+  const createAccount = readFileSync(path.resolve(process.cwd(), 'app/(auth)/create-account.js'), 'utf8');
+  const verifyCode = readFileSync(path.resolve(process.cwd(), 'app/(auth)/verify-code.js'), 'utf8');
 
-test('phone mock binds an unexpired verification ID to the exact six-digit code', () => {
-  const issuedAt = 1000;
-  const challenge = createMockPhoneVerification(
-    { phone: '+14155552671', countryCode: 'US' },
-    { now: () => issuedAt, random: () => 0.25 }
-  );
-
-  assert.equal(isValidMockPhoneVerification(challenge, {
-    verificationId: challenge.verificationId,
-    code: MOCK_PHONE_VERIFICATION_CODE
-  }, () => issuedAt + 1), true);
-  assert.equal(isValidMockPhoneVerification(challenge, {
-    verificationId: 'fabricated-id',
-    code: MOCK_PHONE_VERIFICATION_CODE
-  }, () => issuedAt + 1), false);
-  assert.equal(isValidMockPhoneVerification(challenge, {
-    verificationId: challenge.verificationId,
-    code: '000000'
-  }, () => issuedAt + 1), false);
-  assert.equal(isValidMockPhoneVerification(challenge, {
-    verificationId: challenge.verificationId,
-    code: '1234'
-  }, () => issuedAt + 1), false);
-  assert.equal(isValidMockPhoneVerification(challenge, {
-    verificationId: challenge.verificationId,
-    code: MOCK_PHONE_VERIFICATION_CODE
-  }, () => issuedAt + MOCK_PHONE_VERIFICATION_TTL_MS), false);
+  assert.match(client, /'\/v1\/auth\/phone\/start'/);
+  assert.match(client, /'\/v1\/auth\/phone\/verify'/);
+  assert.match(auth, /requestPhoneVerification/);
+  assert.match(auth, /confirmPhoneVerification/);
+  assert.doesNotMatch(auth, /dev-access-token|123456|mock-phone-auth/i);
+  assert.match(createAccount, /router\.push\('\/\(auth\)\/verify-code'\)/);
+  assert.doesNotMatch(createAccount, /params:\s*\{[^}]*phone/);
+  assert.doesNotMatch(verifyCode, /useLocalSearchParams|verificationId\s*=\s*routeValue/);
 });
 
 test('onboarding completion is versioned and bound to the authenticated account', () => {
@@ -103,7 +76,6 @@ test('all onboarding exits pass through the completion gate', () => {
     'app/(auth)/tutorial/safety-call.js',
     'src/components/TutorialPage.js'
   ];
-  const { readFileSync } = require('node:fs');
   for (const relativePath of onboardingFiles) {
     const contents = readFileSync(path.resolve(projectRoot, relativePath), 'utf8');
     assert.equal(contents.includes('/(tabs)'), false, `${relativePath} bypasses completion`);
@@ -116,7 +88,6 @@ test('all onboarding exits pass through the completion gate', () => {
 });
 
 test('choose-voice onboarding provides a real selector before completion', () => {
-  const { readFileSync } = require('node:fs');
   const screen = readFileSync(
     path.resolve(process.cwd(), 'app/(auth)/tutorial/choose-voice.js'),
     'utf8'
@@ -130,7 +101,6 @@ test('choose-voice onboarding provides a real selector before completion', () =>
 });
 
 test('dashboard safety-mode persistence failures are handled without claiming delivery', () => {
-  const { readFileSync } = require('node:fs');
   const dashboard = readFileSync(
     path.resolve(process.cwd(), 'app/(tabs)/index.js'),
     'utf8'
@@ -161,65 +131,69 @@ test('language picker modal establishes its own safe-area boundary', () => {
   assert.match(picker, /<Modal[\s\S]*<SafeAreaProvider>[\s\S]*<SafeAreaView/);
 });
 
-test('Google Sign-In fails before invoking native code when its client ID is missing', () => {
-  const { readFileSync } = require('node:fs');
+test('Google Sign-In checks runtime capabilities before loading native code', () => {
   const auth = readFileSync(
     path.resolve(process.cwd(), 'src/context/AuthContext.js'),
     'utf8'
   );
-  const guard = auth.indexOf('if (!config.googleWebClientId)');
-  const nativeImport = auth.indexOf("require('@react-native-google-signin/google-signin')");
+  const google = auth.slice(auth.indexOf('const signInWithGoogle'), auth.indexOf('const signInWithPhone'));
+  const guard = google.indexOf("requireCapability('google')");
+  const nativeImport = google.indexOf("import('@react-native-google-signin/google-signin')");
   assert.notEqual(guard, -1);
   assert.ok(guard < nativeImport, 'Google configuration must be checked before loading its native module');
-  assert.match(auth, /GoogleSignin\.configure\(\{[\s\S]*webClientId: config\.googleWebClientId/);
-  assert.match(auth, /iosClientId: config\.googleIOSClientId/);
-  assert.match(auth, /exchangeProviderIdentity/);
-  assert.doesNotMatch(auth, /await persist\(identity\.user, identity\.identityToken\)/);
-});
-
-test('Google Sign-In rejects Expo Go before loading its native module', () => {
-  const { readFileSync } = require('node:fs');
-  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
-  const google = auth.slice(auth.indexOf('const signInWithGoogle'), auth.indexOf('const signInWithPhone'));
-  const expoGoGuard = google.indexOf('if (isExpoGoRuntime())');
-  const nativeImport = google.indexOf("require('@react-native-google-signin/google-signin')");
-  assert.notEqual(expoGoGuard, -1);
-  assert.ok(expoGoGuard < nativeImport, 'Expo Go must be rejected before Google native code loads');
+  assert.match(google, /GoogleSignin\.configure\(\{[\s\S]*webClientId: config\.googleWebClientId/);
+  assert.match(google, /iosClientId: config\.googleIOSClientId/);
+  assert.match(google, /exchangeProviderIdentity/);
+  assert.doesNotMatch(google, /await persist\(identity\.user, identity\.identityToken\)/);
 });
 
 test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
   assert.doesNotMatch(auth, /import .*expo-apple-authentication/);
-  assert.match(auth, /const signInWithApple[\s\S]*require\('expo-apple-authentication'\)/);
+  assert.match(auth, /const signInWithApple[\s\S]*import\('expo-apple-authentication'\)/);
   assert.match(auth, /const nonce = createAuthenticationNonce\(\)/);
   assert.match(auth, /AppleAuthentication\.signInAsync\(\{[\s\S]*nonce/);
   assert.match(auth, /provider: 'apple'[\s\S]*idToken: credential\.identityToken[\s\S]*nonce/);
 });
 
-test('auth persistence rolls back every secure key after any partial write failure', () => {
+test('auth persistence writes one account-bound secure envelope', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
-  const persist = auth.slice(auth.indexOf('const persist = async'), auth.indexOf('const completeOnboarding'));
-  assert.match(persist, /try \{[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY[\s\S]*setItemAsync\(TOKEN_KEY[\s\S]*setItemAsync\(USER_KEY/);
-  assert.match(persist, /catch \(error\) \{[\s\S]*Promise\.allSettled\(\[[\s\S]*deleteItemAsync\(TOKEN_KEY\)[\s\S]*deleteItemAsync\(REFRESH_TOKEN_KEY\)[\s\S]*deleteItemAsync\(USER_KEY\)[\s\S]*deleteItemAsync\(ONBOARDING_KEY\)/);
+  const persist = auth.slice(auth.indexOf('const persist = useCallback'), auth.indexOf('const completeOnboarding'));
+  assert.match(persist, /createSessionEnvelope\(\{[\s\S]*accessToken:[\s\S]*refreshToken:[\s\S]*user: nextUser/);
+  assert.match(persist, /setItemAsync\(SESSION_KEY, serializedEnvelope\)/);
+  assert.match(persist, /storage\.remove\(SIGNED_OUT_KEY\)/);
+  assert.doesNotMatch(persist, /setItemAsync\((?:LEGACY_)?(?:TOKEN|REFRESH_TOKEN|USER)_KEY/);
   assert.match(persist, /setUser\(null\)[\s\S]*setAccessToken\(null\)[\s\S]*setSessionStatus\('signed-out'\)/);
 });
 
-test('auth refresh restores the previous secure token pair after a partial write', () => {
+test('auth restore migrates only validated legacy sessions and refresh stays atomic', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
   const start = auth.indexOf('const refreshSession');
   const refresh = auth.slice(start, auth.indexOf('refreshSessionRef.current = refreshSession', start));
-  assert.match(refresh, /persistedRefreshToken, persistedAccessToken[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY, session\.refreshToken\)[\s\S]*setItemAsync\(TOKEN_KEY, session\.accessToken\)/);
-  assert.match(refresh, /catch \(storageError\)[\s\S]*setItemAsync\(REFRESH_TOKEN_KEY, persistedRefreshToken\)[\s\S]*setItemAsync\(TOKEN_KEY, persistedAccessToken\)[\s\S]*throw storageError/);
+  assert.match(auth, /migrateLegacySession\(\{[\s\S]*accessToken: legacyToken[\s\S]*refreshToken: legacyRefresh[\s\S]*user: legacyUser/);
+  assert.match(refresh, /createSessionEnvelope\(\{[\s\S]*user: persistedEnvelope\.user/);
+  assert.match(refresh, /setItemAsync\(SESSION_KEY, JSON\.stringify\(nextEnvelope\)\)/);
+  assert.doesNotMatch(refresh, /setItemAsync\((?:LEGACY_)?(?:TOKEN|REFRESH_TOKEN|USER)_KEY/);
+  assert.match(auth, /storage\.setJSON\(SIGNED_OUT_KEY[\s\S]*invalidatePersistedSession/);
 });
 
-test('production UI cannot create an in-memory demo guardian', () => {
-  const { readFileSync } = require('node:fs');
+test('privacy deletion keeps sign-out progressing after protected Keychain cleanup failures', () => {
+  const privacy = readFileSync(path.resolve(process.cwd(), 'src/services/privacy.js'), 'utf8');
+  const deletion = privacy.slice(privacy.indexOf('export async function deleteAllUserData'));
+  const tombstone = deletion.indexOf('storage.setJSON(AUTH_STORAGE_KEYS.signedOut');
+  const cleanup = deletion.indexOf('Promise.allSettled');
+  assert.notEqual(tombstone, -1);
+  assert.ok(tombstone < cleanup, 'The signed-out tombstone must precede best-effort Keychain cleanup');
+  assert.match(deletion, /secureStoreFailures: \(Number\(result\.secureStoreFailures\) \|\| 0\) \+ secureStoreFailures/);
+  assert.doesNotMatch(deletion, /await Promise\.all\(\[/);
+});
+
+test('production UI contains no in-memory demo guardian action', () => {
   const friends = readFileSync(path.resolve(process.cwd(), 'app/friends.js'), 'utf8');
-  assert.match(friends, /__DEV__ && config\.enableMockPhoneAuth/);
-  assert.match(friends, /friends\.addDemo/);
+  assert.doesNotMatch(friends, /addDemo|enableMockPhoneAuth|__DEV__/);
 });
 
 test('root navigation has a render error boundary', () => {
@@ -247,5 +221,5 @@ test('notification permission screen catches native errors and prevents duplicat
   assert.match(screen, /requestingRef\.current \|\| navigatingRef\.current/);
   assert.match(screen, /catch \(permissionError\)/);
   assert.match(screen, /<FeedbackBanner message=\{error\}/);
-  assert.match(screen, /disabled=\{busy\}/);
+  assert.match(screen, /disabled=\{busy \|\| notificationsAvailable === null\}/);
 });
