@@ -8,6 +8,7 @@ const { test } = require('node:test');
 const { URLSearchParams } = require('node:url');
 
 const serverRoot = path.resolve(process.cwd(), 'server');
+const railwaySource = fs.readFileSync(path.resolve(process.cwd(), 'railway.toml'), 'utf8');
 const entrypointSource = fs.readFileSync(path.join(serverRoot, 'server.cjs'), 'utf8');
 const clmServerSource = fs.readFileSync(path.join(serverRoot, 'clm-server.cjs'), 'utf8');
 const functionSource = fs.readFileSync(path.join(serverRoot, 'api', 'index.js'), 'utf8');
@@ -107,6 +108,13 @@ test('Vercel uses one HTTP-only function behind a namespaced catch-all rewrite',
   assert.equal(packageConfig.engines.node, '22.x');
   assert.equal(typeof packageConfig.dependencies['@aws-sdk/client-dynamodb'], 'string');
   assert.equal(typeof packageConfig.dependencies.ws, 'string');
+});
+
+test('Railway deploys the long-lived server Dockerfile with a health gate', () => {
+  assert.match(railwaySource, /builder = "DOCKERFILE"/);
+  assert.match(railwaySource, /dockerfilePath = "server\/Dockerfile"/);
+  assert.match(railwaySource, /healthcheckPath = "\/health"/);
+  assert.match(railwaySource, /restartPolicyType = "ON_FAILURE"/);
 });
 
 test('Vercel rewrite adapter restores a route and preserves legitimate repeated query parameters', async () => {

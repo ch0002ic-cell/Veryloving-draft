@@ -41,7 +41,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 | Backend-issued application sessions | Partial — provider exchange plus access/refresh JWT renewal implemented, not production-validated | Deploy exact allowlists/signing keys; add refresh-family persistence, reuse detection/revocation, deletion tombstones, provider credential-state checks, uniform 401 recovery, and signed-provider evidence. |
 | Per-account encrypted PII storage | Partial — contact cache moved to account-bound SecureStore; wearable metadata account-bound | Encrypt/account-bind settings, transcripts, locations, queues, and remaining resilience records; versioned migration and account-mismatch/process-death tests. |
 | Production SMS | Partial — Twilio Verify start/check, signed five-minute challenges, safe errors, and opaque phone identities implemented | Deploy server credentials; configure Twilio geo/rate-limit/fraud policy; add distributed API abuse controls; prove provider delivery, expiry/resend, throttling, and real-device verification. |
-| Hume voice proxy | Partial — first-frame authenticated gateway implemented, not deployed | Production TLS/upgrade evidence, rate limits, revocation/replay resistance or a single-use ticket, ownership-bound resume/configuration, redacted logs, load and end-to-end tests. |
+| Hume voice proxy | Partial — first-frame gateway and Railway staging liveness deployment exist; authenticated Hume/audio is not validated | Production TLS/upgrade evidence, real Hume authentication, rate limits, revocation/replay resistance or a single-use ticket, ownership-bound resume/configuration, redacted logs, load and end-to-end signed-device tests. |
 | Native PCM capture | Partial — 48 kHz mono Int16 code path and deterministic tests implemented | Physical iOS/Android evidence for continuous streaming, playback, interruption/echo/Bluetooth/background/lock-screen behavior and cleanup. |
 | VL01 GATT | Partial — normalized UUIDs, timed discovery/read/write, battery read/conditional monitor, raw status/events, disconnect handling, and serialized backoff implemented | Approved UUID/schema and battery encoding; decoded status/events, authorized commands, secure pairing/ownership, and physical-wearable tests. |
 | Safety/map backend | Partial — account-bound contacts, current-state/idempotent sessions, durable retry-safe SOS acceptance, Dynamo export/deletion, and local migration serialization implemented | Real guardian/contact delivery and receipts, push, live sharing, routes, avoidance zones, deletion tombstones/session revocation/vendor orchestration, and production failure semantics. |
@@ -50,7 +50,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 
 ## Source And Deterministic Quality Gates
 
-Latest local evidence (14 July 2026): the redacted development environment validator, ESLint, 234/234 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports passed. The production environment validator remains deliberately blocked by the external values and readiness flags listed below. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. This does not close any unchecked production-service or physical-device item below.
+Latest local evidence (14 July 2026): the redacted development environment validator, ESLint, 235/235 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports passed. The production environment validator remains deliberately blocked by the external values and readiness flags listed below. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. EAS user `ch0002ic` currently lacks read access to the configured `verylovingai` project, so no EAS environment/build evidence was changed. This does not close any unchecked production-service or physical-device item below.
 
 - [ ] Working tree contains only reviewed release changes.
 - [ ] `npm ci` succeeds from a clean checkout using the release Node version.
@@ -63,7 +63,7 @@ Latest local evidence (14 July 2026): the redacted development environment valid
 - [ ] `npx expo export --platform android` succeeds.
 - [ ] Dependency and secret scans have no unaccepted critical findings.
 - [ ] Native evidence identifies the development, preview, TestFlight, or Play internal build used; Expo Go screenshots or logs are preview evidence only.
-- [ ] The release commit and dependency lockfile are archived with the evidence.
+- [ ] The release commit, dependency lockfile, and root `railway.toml` are archived with the evidence.
 
 ## Build Configuration And EAS
 
@@ -200,7 +200,9 @@ eas build --platform android --profile production
 
 ## Backend Deployment
 
-The deployable backend is the Node service in `server/`. `server/api/index.js` is the HTTP-only Vercel Function adapter for Apple/Google exchange, Twilio Verify, access/refresh renewal, CLM routes, and DynamoDB safety/privacy routes. `server/clm-server.cjs` plus `server/Dockerfile` also mounts the authenticated raw WebSocket gateway. This is not a Next.js or SES application, does not provision cloud infrastructure, and does not implement refresh-family revocation/reuse detection, distributed auth/SMS abuse state, push or guardian delivery, complete map routes/sharing, deletion tombstones, or vendor privacy orchestration.
+The deployable backend is the Node service in `server/`. `server/api/index.js` is the HTTP-only Vercel Function adapter for Apple/Google exchange, Twilio Verify, access/refresh renewal, CLM routes, and DynamoDB safety/privacy routes. `server/clm-server.cjs` plus `server/Dockerfile` also mounts the authenticated raw WebSocket gateway. Root `railway.toml` defines minimal Railway Dockerfile/watch/health/restart behavior; it does not provision projects, environments, domains, secrets, ingress policy, provider resources, or observability. This is not a Next.js or SES application and does not implement refresh-family revocation/reuse detection, distributed auth/SMS abuse state, push or guardian delivery, complete map routes/sharing, deletion tombstones, or vendor privacy orchestration.
+
+- [x] Isolated Railway staging liveness evidence: service `veryloving-clm-staging`, deployment `f2ff7bcd-62e7-4e47-9280-678eb6c18117`, Singapore replica, generated TLS domain, exact public `/health`, invalid Google assertion rejected with `401`, disabled phone/CLM rejected with `503`, and invalid first WebSocket auth frame closed with `4001`. This closes no production Hume/PCM/security gate.
 
 - [ ] `npm ci --prefix server` succeeds and `server/package-lock.json` is archived with the release.
 - [ ] For Vercel HTTP, set the project Root Directory to `server`, keep framework/build/output settings at their defaults, deploy `api/index.js` with the committed catch-all rewrite, and prove health, auth/phone, safety/privacy, CLM SSE, timeouts, and rollback. Set `EXPO_PUBLIC_API_BASE_URL` to its HTTPS root only after that evidence passes.

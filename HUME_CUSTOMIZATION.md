@@ -167,9 +167,10 @@ The existing Hume gateway is a long-lived raw WebSocket adapter attached to an `
 
 ## Deploy On Railway
 
-1. Create a Railway project and add this GitHub repository as a service.
-2. Set `RAILWAY_DOCKERFILE_PATH=/server/Dockerfile` so Railway builds the dedicated CLM image.
-3. In the service Variables tab, add:
+An isolated staging container is currently live in Railway project `calm-delight`, environment `staging`, service `veryloving-clm-staging`, at `https://veryloving-clm-staging-staging.up.railway.app`. Deployment `f2ff7bcd-62e7-4e47-9280-678eb6c18117` built the Docker image and runs in Singapore. Public `/health` returned the exact liveness response; invalid Google exchange failed with `401`; disabled phone and CLM routes failed with `503`; and an invalid first WebSocket authentication frame was rejected with close code `4001`. This is staging liveness/fail-closed evidence only: Hume credentials/configuration, authenticated live audio, replay/revocation/rate limits, ingress restriction, load/backpressure, signed clients, production secrets, and rollback remain open.
+
+1. Create or select an isolated Railway project/environment and connect this repository at its root. The committed root `railway.toml` selects `server/Dockerfile`, watches `server/**` and `railway.toml`, sets health path `/health` with a 60-second timeout, and configures restart-on-failure with three retries. Do not set `RAILWAY_DOCKERFILE_PATH` unless deliberately overriding the reviewed file.
+2. In the service Variables tab, add:
 
 ```bash
 NODE_ENV=production
@@ -206,20 +207,20 @@ CLM_UPSTREAM_TIMEOUT_MS=25000
 
 The three upstream model variables are optional as a group. Phone authentication is enabled only when its complete Twilio and independent-secret configuration passes startup validation.
 
-4. Deploy the staged Railway changes. Under Settings > Networking, generate a public domain or attach the production voice domain.
-5. Set the service health-check path to `/health` and verify:
+3. Deploy the exact commit containing `railway.toml` and the reviewed server changes. Read back the effective configuration and record the source SHA and deployment ID. Under Settings > Networking, generate an environment-specific public domain or attach the approved production voice domain.
+4. The committed health check should gate deployment on `/health`; verify externally:
 
 ```bash
 curl https://<railway-domain>/health
 ```
 
-6. Choose one topology before assigning URLs. In a reviewed single-container deployment, use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`, the domain root as `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and `wss://<railway-domain>/api/voice/hume-ws` for voice. In the recommended Vercel-authoritative split, keep API/customization/CLM on Vercel, point only `EXPO_PUBLIC_HUME_WS_PROXY_URL` at Railway, and have the Railway ingress deny every public path except `/health` and the WebSocket upgrade route.
+5. Choose one topology before assigning URLs. In a reviewed single-container deployment, use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`, the domain root as `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and `wss://<railway-domain>/api/voice/hume-ws` for voice. In the recommended Vercel-authoritative split, keep API/customization/CLM on Vercel, point only `EXPO_PUBLIC_HUME_WS_PROXY_URL` at Railway, and have the Railway ingress deny every public path except `/health` and the WebSocket upgrade route.
 
 Railway injects its own `PORT`; the server reads that value automatically. Secrets belong in Railway Variables, not Expo public variables or repository files.
 
 This container handles both HTTP and WebSocket upgrades. Railway or any fronting proxy must preserve `Upgrade`/`Connection` semantics, use a reviewed idle timeout, bound concurrent connections and request rates, and avoid logging headers, frames, URL queries, audio, messages, or precise location. A `200` from `/health` proves only that the process is alive; separately test the auth exchange, safety API, authenticated WebSocket handshake, Hume connection, and DynamoDB permissions.
 
-Railway is the documented container example because `server/Dockerfile` is directly deployable there. The Vercel path above is an HTTP-only alternative, not a replacement host for the WebSocket gateway. The same image can run on another standards-compliant container platform, but no additional cloud infrastructure is defined in this repository.
+Railway is the documented container example because `server/Dockerfile` is directly deployable there. The Vercel path above is an HTTP-only alternative, not a replacement host for the WebSocket gateway. The root `railway.toml` defines only minimal service build, watch, liveness, and process-restart behavior; it does not provision Railway projects/environments, variables/secrets, domains, ingress restrictions, rate/connection limits, observability, provider resources, or rollback. The same image can run on another standards-compliant container platform.
 
 ## Deploy On AWS (ECS Fargate Or Existing-Customer App Runner)
 

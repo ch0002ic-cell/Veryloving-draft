@@ -198,7 +198,7 @@ Keep `HUME_ALLOW_CLIENT_RESUME=false` until resumed chat-group IDs and session-c
 The repository currently contains:
 
 - an Expo/React Native mobile client using Expo Router and Continuous Native Generation;
-- a Node `22.x` service in `server/`, with a Docker HTTP/WebSocket entrypoint and an HTTP-only Vercel Node Function adapter, plus `ws` and AWS SDK DynamoDB clients; and
+- a Node `22.x` service in `server/`, with a Docker HTTP/WebSocket entrypoint, root `railway.toml` build/health/restart configuration, and an HTTP-only Vercel Node Function adapter, plus `ws` and AWS SDK DynamoDB clients; and
 - deterministic local storage, offline voice responses, and test doubles used by the mobile client.
 
 The deployable Node service implements:
@@ -209,7 +209,7 @@ The deployable Node service implements:
 - `GET`-upgrade `/api/voice/hume-ws`, which authenticates the first client frame before opening Hume with the server-only key;
 - `POST /chat/completions` and `POST /v1/safety/tips` for Hume CLM/tool HTTP calls, plus a direct-development-only `POST /v1/hume/session/configure` fallback that returns `410` in production proxy mode.
 
-The Docker entrypoint mounts every route above, including the WebSocket upgrade. The Vercel entrypoint mounts only the ordinary HTTP routes; `/api/voice/hume-ws` remains a separate hosting and launch gate.
+The Docker entrypoint mounts every route above, including the WebSocket upgrade. The Vercel entrypoint mounts only the ordinary HTTP routes. A Railway staging container now hosts `/api/voice/hume-ws`, but production Hume configuration, security/load controls, and signed-device PCM evidence remain separate launch gates.
 
 `/health` is deliberately liveness-only. It does not prove that provider keys, JWT settings, DynamoDB, Hume credentials, the upstream model, or WebSocket upgrades are ready.
 
@@ -221,7 +221,7 @@ Expo app -- HTTPS auth/safety/tool requests --> Vercel HTTP adapter or container
 Hume CLM ---------------- POST /chat/completions --> Node service --> optional upstream model
 ```
 
-The repository now contains provider-token exchange, Twilio Verify phone authentication, first-party access/refresh JWT renewal, first-frame authenticated Hume gateway, and DynamoDB persistence/export/deletion for contacts, current safety state, and SOS acceptance. It does **not** contain refresh-family persistence/reuse detection/session revocation, deletion tombstones that prevent later token-driven repopulation, distributed SMS/auth abuse controls, push delivery, guardian/contact notification delivery or receipts, live/revocable location sharing, routes, remote danger/avoidance intelligence, vendor-wide export/deletion orchestration, or infrastructure-as-code. A `202 accepted` SOS response means only that DynamoDB accepted an idempotent record; it does not mean a guardian or emergency service received an alert. `server/api/index.js` is the HTTP-only Vercel Function adapter around the existing handler rather than a Next.js app; it intentionally omits the raw WebSocket upgrade gateway. AWS deployment resources are not provisioned by the repository.
+The repository now contains provider-token exchange, Twilio Verify phone authentication, first-party access/refresh JWT renewal, first-frame authenticated Hume gateway, DynamoDB persistence/export/deletion for contacts/current safety state/SOS acceptance, and minimal Railway service build/health/restart configuration. It does **not** contain refresh-family persistence/reuse detection/session revocation, deletion tombstones that prevent later token-driven repopulation, distributed SMS/auth abuse controls, push delivery, guardian/contact notification delivery or receipts, live/revocable location sharing, routes, remote danger/avoidance intelligence, vendor-wide export/deletion orchestration, or cloud/provider resource provisioning. A `202 accepted` SOS response means only that DynamoDB accepted an idempotent record; it does not mean a guardian or emergency service received an alert. `server/api/index.js` is the HTTP-only Vercel Function adapter around the existing handler rather than a Next.js app; it intentionally omits the raw WebSocket upgrade gateway. AWS deployment resources are not provisioned by the repository.
 
 See [HUME_CUSTOMIZATION.md](./HUME_CUSTOMIZATION.md) for the exact endpoint/authentication contract and deployment topology, and [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) for release evidence and stop-ship gates.
 
@@ -248,6 +248,8 @@ For a Vercel HTTP deployment, import the repository with **Root Directory** set 
 
 This Vercel adapter does not expose `/api/voice/hume-ws`. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` on a separately deployed, TLS-terminated container host until the raw `http.Server` upgrade gateway is adapted to its eventual platform and passes security, reconnect, backpressure, and load testing.
 
+The root `railway.toml` deploys `server/Dockerfile`, watches server/config changes, gates on `/health`, and applies a bounded restart-on-failure policy. The isolated Railway staging service is live at `https://veryloving-clm-staging-staging.up.railway.app`: Docker startup, public TLS/liveness, fail-closed invalid provider authentication, and WebSocket upgrade/rejection were verified. The ignored local `.env` uses this HTTPS root for `EXPO_PUBLIC_API_BASE_URL`; its Hume config and Mapbox tokens are present, while the direct public Hume key has been moved into Railway's server-only staging variables and cleared locally. Phone, safety persistence, CLM/live Hume, and the mobile WSS setting remain disabled until their complete backend and security/device gates pass; the staging domain is not an approved production endpoint.
+
 Hume needs an HTTPS endpoint for CLM traffic. See [HUME_CUSTOMIZATION.md](./HUME_CUSTOMIZATION.md) for the Vercel HTTP adapter, local tunneling, Railway, AWS ECS/Fargate (or App Runner for existing customers), server variables, Hume provisioning, and Octave voice setup.
 
 ## Testing
@@ -264,7 +266,7 @@ The final 13 July 2026 audit run completed with ESLint clean, 163/163 tests, Exp
 
 The 14 July 2026 auth/Vercel/animation/entitlement follow-up then passed the same validator with ESLint clean, 215/215 tests, Expo Doctor 20/20, a 2,557-module/8.7 MB iOS Hermes export, and a 2,640-module/8.9 MB Android Hermes export. A clean Debug build installed on the iOS 26.5 simulator completed cold launch, onboarding/account transitions, and an isolated active voice-indicator probe without the historical `onAnimatedValueUpdate` warning. A subsequent buffer-clean cold launch produced one intentional notification-skip line and one memory-storage line, with no Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore entitlement signature in the timestamped native-log query. This follow-up did not repeat the dependency audits or constitute a signed-device/provider deployment test.
 
-The environment-setup follow-up on 14 July 2026 passed the new redacted development validator, ESLint, 228/228 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports. The deployment-adapter follow-up later that day passed the complete pipeline again with 234/234 tests and the same export module counts. The intentionally incomplete local environment has no development validation errors; the production profile remains correctly blocked until the documented API, Hume, Mapbox, safety, and VL01 launch values are supplied.
+The environment-setup follow-up on 14 July 2026 passed the new redacted development validator, ESLint, 228/228 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports. The deployment-adapter follow-up later that day passed the complete pipeline again with 234/234 tests and the same export module counts; adding the Railway config regression brought the deterministic suite to 235/235. The current local environment has no development validation errors; production remains correctly blocked on phone, Hume WSS/CLM, safety/VL01 readiness, EAS project access, and their objective launch evidence rather than on placeholder substitution alone.
 
 For a faster development loop, run tests and lint separately:
 

@@ -15,17 +15,22 @@ The deployment work has started; it is not being left as a paper handoff.
 | Vercel production variables | Not configured | Vercel reported no production variables. Install reviewed values before a production deployment; do not use dummy credentials. |
 | Vercel production alias | Not approved | `https://veryloving-draft.vercel.app/health` returned `404` before the corrected server deployment. Do not put it in the app until a production deployment passes every HTTP probe below. |
 | Vercel Git automation | Deliberately disconnected | The linked production branch was `main`; auto-deploy was disconnected before this repository push so missing production variables cannot turn that push into an unsafe promotion. Reconnect only after environment isolation, branch policy and the production promotion gate are approved. |
-| Railway/AWS voice gateway | Not deployed | No Railway login/token or production Hume configuration is available on this machine. Deploy after release control, independent server secrets, and an approved Hume configuration are ready. |
+| Railway staging container | Live liveness deployment; not a production voice gateway | Railway project `calm-delight`, isolated environment `staging`, service `veryloving-clm-staging`, successful deployment `f2ff7bcd-62e7-4e47-9280-678eb6c18117`, and generated TLS domain `https://veryloving-clm-staging-staging.up.railway.app`. The replica is in Singapore. Public `/health` returned the exact liveness JSON; an invalid Google assertion failed closed with `401`; phone and CLM remained disabled with `503`; a real WebSocket upgrade succeeded and an invalid first authentication frame closed with code `4001`. |
+| Railway production service | Safely stopped and disconnected | The pre-existing `Veryloving-draft` production service was incorrectly running Expo Metro from the repository root. Its production replicas were scaled to zero and its GitHub source was disconnected. It has no public domain. Do not reactivate it; promote a reviewed container artifact into a separately configured production service/environment. |
+| AWS container alternative | Not deployed | No ECS/Fargate, ALB, ECR, IAM, Secrets Manager, or DynamoDB production resources have been provisioned. Railway is the active staging path; AWS remains an approved alternative only if the organization chooses and provisions it. |
 | Local server secrets | Not present | `server/.env` does not exist. Obtain/install secrets directly in provider secret managers; do not add them to Git. |
-| Mobile provider configuration | Partial | Google public client IDs are present locally as candidates. API, Hume, Mapbox, VL01, and production readiness values remain unset. Run the redacted validator after every change. |
+| Mobile provider configuration | Partial | The ignored local `.env` has the Railway staging API root, candidate Google IDs, a Hume config ID, and correctly formatted Mapbox public/build tokens. The direct public Hume key was moved into Railway's server-only staging variables and cleared locally. Phone, Hume CLM/WSS, safety persistence, and VL01 remain disabled; their empty values are intentional gates. EAS promotion is also blocked by project access. Run the redacted validator after every change. |
+| EAS project access | Blocked by organization membership | Browser login succeeded as Expo user `ch0002ic`, but EAS denied read access to project `e723f2d7-d6bb-4a31-83c4-07e832cf7242`, whose configured owner is `verylovingai`. No EAS variables, credentials, project IDs, or builds were changed. An owner must add this user to the organization/project or the authorized owner must log in; do not create a replacement project or change `extra.eas.projectId` as a workaround. |
 
 Do not promote the protected preview merely to obtain a stable-looking URL. A production deployment must start with `NODE_ENV=production`, which deliberately requires real auth, phone, safety, and provider configuration.
 
 The preview proves only that the Vercel Function adapter builds, rewrites `/health`, and fails closed when CLM configuration is absent. It did **not** exercise production strict startup, public mobile reachability, Apple/Google exchange, Twilio, DynamoDB, Hume streaming, WebSocket upgrades, signed clients, or rollback. Preview protection was accessed with Vercel's authenticated CLI; no bypass token belongs in this document.
 
+The Railway staging deployment proves the Docker image builds and starts, public TLS/liveness works from Singapore, protected HTTP routes fail closed, and the edge preserves a WebSocket upgrade. Staging provider-token exchange is enabled with the documented Apple/Google public allowlists and an independently generated server-side session secret; no secret was written to this repository or `.env`. A valid signed provider assertion, Hume connection/audio, Twilio, DynamoDB, replay/revocation controls, ingress path restriction, rate/load/backpressure limits, observability, rollback, and signed mobile builds are still unverified. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` empty until the Hume and voice-security gates pass.
+
 ## Launch Rule And Remaining Stop-Ship Work
 
-The deterministic baseline is currently 234/234 tests after the Vercel adapter/security regressions, ESLint clean, Expo Doctor 20/20, and successful 2,557-module iOS and 2,640-module Android exports. The source-of-truth checklist still marks production **NO-GO** until its P1 gates have objective evidence. In particular, credentials alone do not complete:
+The deterministic baseline is currently 235/235 tests after the Railway config regression was added; the latest full pipeline also remains ESLint clean, Expo Doctor 20/20, with successful 2,557-module iOS and 2,640-module Android exports. The source-of-truth checklist still marks production **NO-GO** until its P1 gates have objective evidence. In particular, credentials alone do not complete:
 
 - durable refresh-family reuse detection, revocation, deletion tombstones, provider credential-state checks, and distributed auth/SMS abuse controls;
 - encryption/account binding for every remaining local PII store;
@@ -90,7 +95,7 @@ Estimates assume the relevant account owner is available and work streams run in
 | 2 | Request Hume organization access, credentials, quotas, retention approval, and voice/config authority | Grace + Voice/Security | 10 min to request; typically 1–5 business days | Access granted through the Hume organization and secret manager; no key sent in chat/email. |
 | 3 | Acquire Mapbox, verify Google/Apple, establish EAS/Play signing fingerprints, prepare Twilio/Dynamo/push, and request VL01 details in parallel | Provider owners | 0.5–3 days if accounts exist | Redacted inventory of public IDs/installed variable names and approved firmware document. |
 | 4 | Complete the integration-prerequisite P1 engineering packages above | Engineering/Security/Privacy | Roughly 2–4 calendar weeks in parallel | Merged SHAs, threat-model approval, migrations, rollback tests, and staging-ready acceptance criteria. |
-| 5 | Deploy isolated staging HTTP/WSS resources and stable staging domains; provision a staging Hume configuration | Backend/Voice/SRE | 1–3 days after inputs exist | Staging deployment IDs, TLS/DNS, synthetic resources, health/auth/CLM/WSS probes, dashboards and rollback ID. |
+| 5 | Finish the isolated staging environment: the Railway container/TLS/liveness and fail-closed auth/WSS probes are complete; add isolated provider resources, a staging Hume configuration, security controls, dashboards, and rollback evidence | Backend/Voice/SRE | 1–3 days after remaining inputs exist | Committed artifact/deployment IDs, stable staging DNS, synthetic resources, valid auth/CLM/Hume WSS probes, dashboards and rollback ID. |
 | 6 | Populate staging EAS configuration and build signed development artifacts | Mobile/Release Engineering | 2–4 hours plus queues | Development build URLs, signing fingerprints, release SHA, and native smoke evidence. |
 | 7 | Build preview candidates and run provider, physical-device, BLE, push, safety, privacy, security and end-to-end QA | Mobile/Device QA/Product/Security | 5–10 business days including one retest cycle | Device/OS/build-labelled matrix; evidence-dependent P1s closed, not merely scheduled. |
 | 8 | Install production resources/secrets, create stable production domains, and promote the reviewed immutable backend artifact | Backend/SRE/Security | 1–2 days | Production deployment/rollback IDs, DNS/TLS evidence, smoke tests and no test data. |
@@ -308,16 +313,17 @@ Estimated time: 1–2 hours after access, CLM URL, and approvals exist.
 
 ## 10. Deploy The WebSocket Gateway On Railway
 
-Railway is the shortest documented path because `server/Dockerfile` is directly deployable. Vercel remains HTTP-only for this repository.
+Railway is the active staging container path because `server/Dockerfile` is directly deployable. Vercel remains HTTP-only for this repository. The root `railway.toml` is the reviewed config-as-code source: it selects `server/Dockerfile`, watches only `server/**` and `railway.toml`, sets `/health` with a 60-second timeout, and restarts on failure up to three times. `RAILWAY_DOCKERFILE_PATH` is unnecessary unless an operator intentionally overrides that committed configuration.
 
-1. Create a Railway project and add the GitHub repository as a service.
-2. Set `RAILWAY_DOCKERFILE_PATH=/server/Dockerfile` as documented in the [Railway Dockerfile guide](https://docs.railway.com/builds/dockerfiles).
-3. Add the complete production server variables from `server/.env.example`, including all Vercel groups plus `HUME_API_KEY`, final `HUME_CONFIG_ID`, approved `HUME_ALLOWED_VOICE_IDS`, `HUME_CLM_BEARER_TOKEN`, and `HUME_ALLOW_CLIENT_RESUME=false`.
-4. Let Railway inject `PORT`; do not override it.
-5. Set health-check path `/health`, deploy, then attach an organization-owned voice domain under Networking. Verify DNS, managed TLS renewal, connection idle timeout, and rollback to the prior deployment/domain target.
-6. When Vercel remains the authoritative HTTP API, configure Railway's edge proxy/WAF to allow public access only to `/health` and WebSocket upgrades on `/api/voice/hume-ws`; deny the container's duplicate auth/safety/CLM HTTP routes. If the platform cannot enforce that boundary, use a dedicated ingress or choose the single-container topology before production.
-7. Verify WebSocket upgrade routing, frame/body limits, connection and per-account/IP rate limits, backpressure, termination, revocation/replay behavior, redacted logs, dashboards and alerts.
-8. Set `EXPO_PUBLIC_HUME_WS_PROXY_URL=wss://<voice-domain>/api/voice/hume-ws` only after the gateway passes authentication and Hume tests.
+The existing staging service is live at `https://veryloving-clm-staging-staging.up.railway.app`; use it only with synthetic/test provider accounts. It is not an approved production voice URL and must not be copied into `EXPO_PUBLIC_HUME_WS_PROXY_URL` yet.
+
+1. Connect the repository root—not `server/`—to an isolated Railway environment/service, or deploy the reviewed commit with Railway CLI `5.26.1`. Read back the effective build/deploy configuration and record the source SHA and deployment ID.
+2. Add the complete environment-specific server variables from `server/.env.example`. Production additionally needs `HUME_API_KEY`, final `HUME_CONFIG_ID`, approved `HUME_ALLOWED_VOICE_IDS`, `HUME_CLM_BEARER_TOKEN`, and `HUME_ALLOW_CLIENT_RESUME=false`; never reuse the staging session secret.
+3. Let Railway inject `PORT`; do not override it. The committed config does not provision projects/environments, domains, variables/secrets, ingress rules, idle/frame/rate limits, observability, or rollback policy beyond process restart.
+4. Deploy the exact reviewed commit, then attach an organization-owned voice domain under Networking. Verify DNS, managed TLS renewal, connection idle timeout, and rollback to the prior deployment/domain target.
+5. When Vercel remains the authoritative HTTP API, configure Railway's edge proxy/WAF to allow public access only to `/health` and WebSocket upgrades on `/api/voice/hume-ws`; deny the container's duplicate auth/safety/CLM HTTP routes. If the platform cannot enforce that boundary, use a dedicated ingress or choose the single-container topology before production.
+6. Verify WebSocket upgrade routing, frame/body limits, connection and per-account/IP rate limits, backpressure, termination, revocation/replay behavior, redacted logs, dashboards and alerts.
+7. Set `EXPO_PUBLIC_HUME_WS_PROXY_URL=wss://<voice-domain>/api/voice/hume-ws` only after the gateway passes authentication and real Hume tests.
 
 The app sends its VeryLoving session JWT in the first TLS-protected frame, never in the URL. The existing stateless bearer is not production-grade replay protection: complete the narrower ticket or shared durable revocation work package first. Test valid, missing, malformed, expired, wrong-audience, wrong-scope, replayed/revoked, rate-limited, reconnect, and upstream-outage cases before sending PCM.
 
@@ -457,6 +463,7 @@ Complete this table in the private release record, not by adding secrets to Git:
 | Evidence | Value/link |
 | --- | --- |
 | Release commit |  |
+| Railway staging deployment/source SHA/health evidence |  |
 | Vercel production deployment + rollback ID |  |
 | HTTP API root |  |
 | Railway/ECS deployment + rollback ID |  |
