@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   loading: {
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderColor: colors.line,
+    borderColor: colors.controlBorder,
     borderRadius: 8,
     borderWidth: 1,
     height: 50,

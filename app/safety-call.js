@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, FlatList, Image, Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Button } from '../src/components/Button';
@@ -44,8 +44,18 @@ export default function SafetyCall() {
   } = useHumeVoiceCall({ initialSessionId: sessionId });
   const [text, setText] = useState('');
   const [retryingMessageId, setRetryingMessageId] = useState(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const messageListRef = useRef(null);
   const active = status === 'connected';
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const submitText = useCallback(async () => {
     const outgoing = text.trim();
@@ -76,16 +86,16 @@ export default function SafetyCall() {
       <View style={styles.header}>
         <Button title={t('common.close')} variant="ghost" compact onPress={() => router.back()} />
         <View style={styles.connectionStatus}>
-          {isConnecting ? <ActivityIndicator size="small" color={colors.orange} /> : null}
+          {isConnecting ? <ActivityIndicator size="small" color={colors.orangeAccessible} /> : null}
           <Text style={styles.status}>
             {connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t })}
           </Text>
         </View>
       </View>
 
-      <View style={styles.center}>
-        <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
-        <VoiceActivityIndicator active={active} />
+      <View style={[styles.center, keyboardVisible && styles.centerCompact]}>
+        {!keyboardVisible ? <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" /> : null}
+        {!keyboardVisible ? <VoiceActivityIndicator active={active} /> : null}
         <Text style={styles.name}>{t(`voices.profiles.${selectedVoice.id}.name`)}</Text>
         {isConnecting ? <Text style={styles.connecting}>{t('safetyCall.connectingSecurely')}</Text> : null}
         {pendingMessageCount ? (
@@ -133,6 +143,7 @@ export default function SafetyCall() {
           value={text}
           onChangeText={setText}
           placeholder={t('safetyCall.typePlaceholder')}
+          placeholderTextColor={colors.inkSoft}
           returnKeyType="send"
           onSubmitEditing={submitText}
           submitBehavior="submit"
@@ -154,6 +165,7 @@ const styles = StyleSheet.create({
   connectionStatus: { minHeight: 24, flexDirection: 'row', alignItems: 'center', gap: 7 },
   status: { fontFamily: fonts.semibold, color: colors.inkSoft },
   center: { alignItems: 'center', gap: 8 },
+  centerCompact: { gap: 4 },
   avatar: { width: 86, height: 86 },
   name: { fontFamily: fonts.bold, color: colors.ink, fontSize: 24 },
   connecting: { color: colors.ink, fontFamily: fonts.semibold, textAlign: 'center' },
@@ -161,6 +173,6 @@ const styles = StyleSheet.create({
   messages: { flex: 1 },
   messageContent: { flexGrow: 1, paddingVertical: 8 },
   inputRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
-  input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line, borderRadius: 8, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink },
+  input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink },
   actions: { gap: 8 }
 });

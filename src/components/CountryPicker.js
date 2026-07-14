@@ -43,6 +43,7 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
               clearButtonMode="while-editing"
               onChangeText={setQuery}
               placeholder={t('phone.searchCountry')}
+              placeholderTextColor={colors.inkSoft}
               returnKeyType="search"
               style={styles.searchInput}
               value={query}
@@ -50,7 +51,6 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
           </View>
           <FlatList
             data={filteredCountries}
-            getItemLayout={(_data, index) => ({ length: 58, offset: 58 * index, index })}
             keyboardShouldPersistTaps="handled"
             keyExtractor={(country) => country.code}
             ListEmptyComponent={<Text style={styles.empty}>{t('phone.noCountries')}</Text>}
@@ -69,9 +69,9 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
                   ]}
                 >
                   <Text style={styles.flag}>{item.flag}</Text>
-                  <Text numberOfLines={1} style={styles.countryName}>{item.name}</Text>
+                  <Text style={styles.countryName}>{item.name}</Text>
                   <Text style={styles.callingCode}>+{item.callingCode}</Text>
-                  {selected ? <Ionicons name="checkmark" size={20} color={colors.green} /> : null}
+                  {selected ? <Ionicons name="checkmark" size={20} color={colors.greenAccessible} /> : null}
                 </Pressable>
               );
             }}
@@ -87,9 +87,9 @@ const styles = StyleSheet.create({
   header: { minHeight: 60, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { flex: 1, fontFamily: fonts.bold, color: colors.ink, fontSize: 22 },
   closeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  searchRow: { minHeight: 50, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.line, borderRadius: 8, backgroundColor: '#fff' },
+  searchRow: { minHeight: 50, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
   searchInput: { flex: 1, minWidth: 0, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
-  countryRow: { height: 58, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
+  countryRow: { minHeight: 58, paddingHorizontal: 20, paddingVertical: 9, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   selectedRow: { backgroundColor: '#FFF4EC' },
   pressed: { opacity: 0.62 },
   flag: { width: 34, fontSize: 25 },

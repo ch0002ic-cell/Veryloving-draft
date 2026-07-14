@@ -23,6 +23,7 @@ import { configureHumeCustomSession } from '../services/hume-session';
 import { executeHumeTool } from '../services/hume-tools';
 import { logger } from '../utils/logger';
 import { userFacingVoiceError, voiceCallCopy } from '../utils/user-facing-error';
+import { humeVoiceOverride } from '../utils/hume-voice';
 
 function normalizeSessionId(value) {
   if (Array.isArray(value)) return value[0];
@@ -30,9 +31,10 @@ function normalizeSessionId(value) {
 }
 
 function voiceOverride(selectedVoice) {
-  if (config.humeBrandedVoiceId) return config.humeBrandedVoiceId;
-  if (config.humeWSProxyURL) return selectedVoice.humeVoiceID;
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(selectedVoice.humeVoiceID || '') ? selectedVoice.humeVoiceID : undefined;
+  return humeVoiceOverride({
+    brandedVoiceId: config.humeBrandedVoiceId,
+    selectedVoiceId: selectedVoice.humeVoiceID
+  });
 }
 
 export function useHumeVoiceCall({ initialSessionId } = {}) {

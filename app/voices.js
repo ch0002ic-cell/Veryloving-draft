@@ -89,7 +89,7 @@ export default function Voices() {
 
   return (
     <Screen scroll={false}>
-      <Header title={t('voices.title')} subtitle={t('voices.subtitle')} />
+      <Header title={t('voices.title')} subtitle={t('voices.subtitle')} showBack backLabel={t('common.back')} />
       <FlatList
         data={voiceProfiles}
         extraData={{ selectedVoiceId: settings.selectedVoiceId, previewingId }}
@@ -113,12 +113,12 @@ export default function Voices() {
 const styles = StyleSheet.create({
   list: { paddingBottom: 24 },
   card: { marginBottom: 12, gap: 12 },
-  selected: { borderColor: colors.orange, borderWidth: 2, backgroundColor: '#FFF9F5' },
+  selected: { borderColor: colors.orangeAccessible, borderWidth: 2, backgroundColor: '#FFF9F5' },
   selectionArea: { minHeight: 124, flexDirection: 'row', alignItems: 'center', gap: 16 },
   pressed: { opacity: 0.72 },
   avatarFrame: { width: 120, minHeight: 120, alignItems: 'center', justifyContent: 'center' },
   avatar: { width: 110, height: 110 },
-  badge: { position: 'absolute', bottom: 0, flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.green, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  badge: { position: 'absolute', bottom: 0, flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.greenAccessible, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   badgeText: { color: '#fff', fontFamily: fonts.semibold, fontSize: 12 },
   copy: { flex: 1, gap: 5 },
   name: { fontFamily: fonts.bold, fontSize: 20, color: colors.ink },

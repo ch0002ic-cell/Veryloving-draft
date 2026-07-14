@@ -14,7 +14,7 @@ export default function Friends() {
   const { t } = useI18n();
   return (
     <Screen scroll={false}>
-      <Header title={t('friends.title')} subtitle={t('friends.subtitle')} />
+      <Header title={t('friends.title')} subtitle={t('friends.subtitle')} showBack backLabel={t('common.back')} />
       <FlatList
         contentContainerStyle={styles.list}
         data={friends}

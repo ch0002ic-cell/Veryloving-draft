@@ -1,15 +1,12 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
-import Animated, { FadeInDown, ReduceMotion } from 'react-native-reanimated';
+import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { colors, spacing } from '../constants/theme';
 
-const SCREEN_ENTERING = FadeInDown.duration(240).reduceMotion(ReduceMotion.System);
-
 export function Screen({ children, scroll = true, background, style }) {
-  const animatedContent = (
-    <Animated.View entering={SCREEN_ENTERING} style={[styles.content, !scroll && styles.flex, style]}>
+  const screenContent = (
+    <View style={[styles.content, !scroll && styles.flex, style]}>
       {children}
-    </Animated.View>
+    </View>
   );
   const content = scroll ? (
     <ScrollView
@@ -19,9 +16,9 @@ export function Screen({ children, scroll = true, background, style }) {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      {animatedContent}
+      {screenContent}
     </ScrollView>
-  ) : animatedContent;
+  ) : screenContent;
 
   const keyboardSafeContent = (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.flex}>
@@ -45,6 +42,6 @@ const styles = StyleSheet.create({
   transparent: { backgroundColor: 'transparent' },
   bg: { flex: 1 },
   scrollContent: { flexGrow: 1 },
-  content: { padding: 20, gap: spacing.md },
+  content: { width: '100%', maxWidth: 720, alignSelf: 'center', padding: 20, gap: spacing.md },
   flex: { flex: 1 }
 });

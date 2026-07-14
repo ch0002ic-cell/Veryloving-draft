@@ -155,5 +155,5 @@ const styles = StyleSheet.create({
   list: { flexGrow: 1, paddingVertical: 10 },
   deviceCard: { marginBottom: 10, gap: 10 },
   deviceName: { fontFamily: fonts.semibold, color: colors.ink },
-  error: { fontFamily: fonts.regular, color: colors.red, lineHeight: 20, textAlign: 'center' }
+  error: { fontFamily: fonts.regular, color: colors.redAccessible, lineHeight: 20, textAlign: 'center' }
 });

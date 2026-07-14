@@ -38,5 +38,5 @@ export function VoiceActivityIndicator({ active }) {
 
 const styles = StyleSheet.create({
   outer: { width: 90, height: 90, borderRadius: 45, backgroundColor: '#FCE5D8', alignItems: 'center', justifyContent: 'center' },
-  inner: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.orange }
+  inner: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.orangeAccessible }
 });

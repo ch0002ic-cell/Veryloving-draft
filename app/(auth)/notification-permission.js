@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
+import { Linking, Text } from 'react-native';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
@@ -18,6 +18,8 @@ export default function NotificationPermission() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [notificationsAvailable, setNotificationsAvailable] = useState(null);
+  const [availabilityCheckFailed, setAvailabilityCheckFailed] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
   const requestingRef = useRef(false);
   const navigatingRef = useRef(false);
 
@@ -30,11 +32,25 @@ export default function NotificationPermission() {
       .catch(() => {
         if (!active) return;
         setNotificationsAvailable(false);
+        setAvailabilityCheckFailed(true);
         setError(t('settings.updateFailedMessage'));
       });
     return () => {
       active = false;
     };
+  }, [t]);
+
+  const retryAvailabilityCheck = useCallback(async () => {
+    setNotificationsAvailable(null);
+    setAvailabilityCheckFailed(false);
+    setError(null);
+    try {
+      setNotificationsAvailable(await notificationsAvailableInRuntime());
+    } catch {
+      setNotificationsAvailable(false);
+      setAvailabilityCheckFailed(true);
+      setError(t('settings.updateFailedMessage'));
+    }
   }, [t]);
 
   const continueOnboarding = useCallback(() => {
@@ -55,25 +71,51 @@ export default function NotificationPermission() {
       }
       const granted = await requestNotificationPermission({ showRationale: false });
       if (granted) continueOnboarding();
-      else setError(t('settings.updateFailedMessage'));
-    } catch (permissionError) {
-      setError(permissionError?.message || t('settings.updateFailedMessage'));
+      else {
+        setPermissionDenied(true);
+        setError(t('permissions.notificationsRationaleMessage'));
+      }
+    } catch {
+      setPermissionDenied(true);
+      setError(t('permissions.notificationsRationaleMessage'));
     } finally {
       requestingRef.current = false;
       setBusy(false);
     }
   }, [continueOnboarding, notificationsAvailable, t]);
 
+  const openNotificationSettings = useCallback(async () => {
+    if (requestingRef.current || navigatingRef.current) return;
+    requestingRef.current = true;
+    setBusy(true);
+    try {
+      await Linking.openSettings();
+      continueOnboarding();
+    } catch {
+      setError(t('permissions.notificationsRationaleMessage'));
+    } finally {
+      requestingRef.current = false;
+      setBusy(false);
+    }
+  }, [continueOnboarding, t]);
+
   return (
     <Screen>
       <Header title={t('permissions.notificationsTitle')} subtitle={t('permissions.notificationsSubtitle')} />
       <Card><Text style={{ fontFamily: fonts.regular }}>{t('permissions.notificationsBody')}</Text></Card>
-      <FeedbackBanner message={error} />
+      <FeedbackBanner
+        message={error}
+        tone="info"
+        actionLabel={availabilityCheckFailed ? t('common.retry') : undefined}
+        onAction={availabilityCheckFailed ? retryAvailabilityCheck : undefined}
+      />
       <Button
-        title={notificationsAvailable ? t('permissions.enableNotifications') : t('common.continue')}
+        title={permissionDenied
+          ? t('common.settings')
+          : notificationsAvailable ? t('permissions.enableNotifications') : t('common.continue')}
         loading={busy || notificationsAvailable === null}
         disabled={busy || notificationsAvailable === null}
-        onPress={requestPermission}
+        onPress={permissionDenied ? openNotificationSettings : requestPermission}
       />
       <Button
         title={t('common.skip')}

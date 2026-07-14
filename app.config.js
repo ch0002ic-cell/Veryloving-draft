@@ -22,6 +22,7 @@ function reversedGoogleClientId(clientId) {
   return clientId.trim().split('.').reverse().join('.');
 }
 
+const CANONICAL_HUME_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BLE_UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 
 function endpointIssue(value, expectedProtocol) {
@@ -107,6 +108,14 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && !phoneAuthEnabled) invalid.push('phone_auth_must_be_enabled');
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
+  for (const [name, value] of [
+    ['hume_config_id', env.EXPO_PUBLIC_HUME_CONFIG_ID],
+    ['hume_branded_voice_id', env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID]
+  ]) {
+    if (hasConfiguredValue(value || '') && !CANONICAL_HUME_UUID_PATTERN.test(value.trim())) {
+      invalid.push(`${name}_invalid`);
+    }
+  }
   for (const [name, value] of [
     ['vl01_service_uuid', env.EXPO_PUBLIC_VL01_SERVICE_UUID],
     ['vl01_battery_characteristic_uuid', env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID],

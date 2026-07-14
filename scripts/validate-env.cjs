@@ -50,6 +50,7 @@ const SERVER_SECRET_NAMES = new Set([
   'AWS_SECRET_ACCESS_KEY',
   'AWS_SESSION_TOKEN'
 ]);
+const CANONICAL_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 const SENSITIVE_QUERY_PATTERN = /token|secret|password|api[_-]?key/i;
 
@@ -269,6 +270,12 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
     if ((name === 'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID' || name === 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID')
       && !value.endsWith('.apps.googleusercontent.com')) {
       results.push(makeResult(name, 'error', 'must be a Google OAuth client ID'));
+      continue;
+    }
+
+    if ((name === 'EXPO_PUBLIC_HUME_CONFIG_ID' || name === 'EXPO_PUBLIC_HUME_BRANDED_VOICE_ID')
+      && !CANONICAL_UUID_PATTERN.test(value)) {
+      results.push(makeResult(name, 'error', 'must be a canonical Hume UUID'));
       continue;
     }
 

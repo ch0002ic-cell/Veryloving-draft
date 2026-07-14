@@ -74,7 +74,7 @@ export default function ChooseVoiceTutorial() {
 
 const styles = StyleSheet.create({
   voiceCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
-  selectedCard: { borderColor: colors.orange, borderWidth: 2, backgroundColor: colors.orangeSoft },
+  selectedCard: { borderColor: colors.orangeAccessible, borderWidth: 2, backgroundColor: colors.orangeSoft },
   avatar: { width: 100, height: 100 },
   voiceCopy: { flex: 1, alignItems: 'stretch', gap: 7 },
   voiceName: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },

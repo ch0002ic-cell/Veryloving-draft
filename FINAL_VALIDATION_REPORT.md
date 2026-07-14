@@ -1,6 +1,6 @@
 # Final Feature Validation Report
 
-Date: 2026-07-13
+Date: 2026-07-14
 Release decision: **NO-GO until the P1 gates in `LAUNCH_CHECKLIST.md` are closed**
 
 > Historical runtime evidence notice: the simulator observations and `118/118` validation result below describe the code exercised during that validation session. Later architecture changes are recorded separately in **Post-Validation Architecture Update — 13 July 2026** and are not retroactively marked as runtime passes.
@@ -139,10 +139,63 @@ The final post-change release validator passed on 13 July 2026: ESLint clean; 16
 
 The 14 July 2026 follow-up validator also exited 0: ESLint clean; 215/215 tests; Expo Doctor 20/20; iOS export at 2,557 modules/8.7 MB Hermes; Android export at 2,640 modules/8.9 MB Hermes; temporary exports removed. It covered the final auth-session envelope, production phone flow, Vercel HTTP adapter, privacy cleanup continuation, Reanimated Safety Call pulse, and notification/SecureStore entitlement preflights. It did not repeat the dependency audits. The narrow animation run and buffer-clean entitlement run add simulator evidence only; they are not provider, Hume, physical-device, or authenticated Safety Call evidence.
 
+## Final UI And Staging Follow-Up — 14 July 2026
+
+This follow-up validates the current Railway staging contract and the final UI changes without upgrading externally blocked flows to passes.
+
+### UI and accessibility fixes
+
+| Finding | Fix | Evidence |
+| --- | --- | --- |
+| Semantic orange, red, green, blue, and gold states did not consistently reach WCAG 2.1 AA contrast on light surfaces. | Added dedicated accessible foreground/action tokens while retaining the original palette for decorative use. Error, warning, success, status, loading, voice, and selected-state components now use the semantic tokens. | Automated contrast checks require 4.5:1 for normal semantic text and 3:1 for controls/large action treatment. |
+| Input outlines and placeholder treatment were too faint. | Added a shared 3:1 control-border token and explicit readable placeholder colours to every current `TextInput`. | Repository-wide input regression plus simulator inspection. |
+| Hidden native headers left protected detail screens without an obvious way back. | Added a localized, RTL-aware, 48-point back control to settings, voices, friends, contacts, device management, history, sharing, debug, and character detail screens. | Automated route/header checks; native navigation remains gesture-enabled. |
+| Fixed rows, fixed content widths, and keyboard-sensitive forms could truncate or obscure content. | Removed picker-row truncation, allowed variable row heights, capped general content at 720 points on tablets, and added keyboard-safe/scrollable contact, verification, onboarding, and safety-call layouts. | iPhone 17, compact iPhone 17e, and 11-inch iPad simulator inspection. |
+| The onboarding image reduced legibility and the shared route-entry transition could leave the iPad content transparent after the route loaded. | Added a high-opacity cream copy panel and removed the nonessential global entrance-opacity gate. Local feedback animations remain. | The initial iPad run reproduced background-only content; the rebuilt/relaunched route then rendered Bestie, title, copy, and CTA. A regression prevents reintroducing a shared `entering` gate. |
+| Switches and contact actions lacked complete assistive labels/busy states. | Added localized switch labels/hints and contact-specific call/remove labels with serialized busy/disabled state. | Source regression and manual rendering inspection. |
+
+The app deliberately declares a light-only interface (`userInterfaceStyle: light`); this pass therefore does not claim system dark-mode support. All 155 selectable locale files still have complete structural key/placeholder parity, but native-speaker review—especially safety-critical copy and the 11 RTL catalogs—remains a launch gate.
+
+### Current simulator and console evidence
+
+| Check | Result | Boundary |
+| --- | --- | --- |
+| Native iOS build | **PASS** | Xcode 26.6 built the Debug app for the iOS 26.5 simulator with `CODE_SIGNING_ALLOWED=NO`. The installed Expo CLI does not accept the requested `expo run:ios --simulator` option, so the equivalent workspace/scheme build and `simctl` launch were used. |
+| Responsive onboarding | **PASS** | iPhone 17, compact iPhone 17e, and 11-inch iPad portrait layouts rendered without overlap; copy and CTA remained readable and Bestie remained visible. This is not a complete all-screen tablet/Dynamic Type/screen-reader matrix. |
+| Historical warning regression | **PASS** | Timestamped iPhone and iPad queries contained no `onAnimatedValueUpdate`, notification-registration Keychain, Auth SecureStore, Dev Launcher file-scheme, fatal, or unhandled-error signature during the captured smoke-test windows. |
+| Android runtime | **BLOCKED** | No Android SDK, `adb`, emulator, or physical Android device is installed in this environment. Android evidence remains automated checks plus the production export. |
+
+### Railway staging and provider contract evidence
+
+| Integration | Result | Evidence / limitation |
+| --- | --- | --- |
+| Backend health | **PASS** | `GET /health` returned HTTP 200 with `status: ok` and service `veryloving-hume-clm`. |
+| Auth exchange surface | **PASS, fail-closed contract** | An empty exchange returned HTTP 400 (`provider and idToken are required`); a synthetic invalid Google JWT returned HTTP 401 in the staging probe. No real Apple/Google account or provider credential was available, so provider completion, secure persistence after a real exchange, restart, and logout are not marked as runtime passes. |
+| Phone verification | **BLOCKED by staging configuration** | `POST /v1/auth/phone/start` returned HTTP 503 with `PHONE_AUTH_NOT_CONFIGURED`. Twilio Verify is intentionally disabled on this service. |
+| Safety contacts and SOS | **BLOCKED by staging configuration** | `GET /v1/emergency-contacts` returned HTTP 503 because the production safety API/Dynamo configuration is intentionally disabled. CRUD, synchronization, and SOS acceptance cannot be represented as staging passes. |
+| Hume control plane | **PASS, fail-closed contract** | Unauthenticated `POST /v1/hume/session/configure` returned HTTP 401. |
+| Hume WebSocket authentication | **PASS, fail-closed contract** | An invalid first-frame token received `auth_error` and close code 4001. Existing staging evidence also proves a synthetic first-party `voice:connect` session reached Hume `auth_ok`; it does not prove a signed mobile provider session, `chat_metadata`, PCM capture/playback, or tool execution. The four bundled profile labels are not Hume UUIDs and are deliberately not forwarded; online calls use the approved configured/default voice until Product either provisions canonical IDs for every marketed acoustic choice or relabels the choices as personas. |
+| Mapbox credential | **PASS, service check** | The ignored local public token returned HTTP 200 from the Mapbox styles API without being printed. Native tiles, location puck, permissions, and backend zones still require development-build/device interaction. |
+| VL01 BLE | **BLOCKED by protocol/hardware** | VL01 is disabled and its firmware-approved UUID registry is absent; there is no physical wearable. The implemented GATT/reconnect behavior remains automated-only evidence. |
+
+The public environment validator, automatic EAS production gate, and production container startup now apply the same canonical-UUID rule to Hume configuration and voice identifiers. This prevents display slugs or malformed IDs from passing local validation and then failing only after a release reaches Hume; the server also validates every entry in its comma-separated voice allowlist.
+
+### Final deterministic gates
+
+- Development environment validation: **16 configured/valid, 6 intentional optional warnings, 0 errors**.
+- ESLint: **clean**.
+- Tests: **241/241 passed**, no failures, cancellations, skips, or todos.
+- Expo Doctor: **20/20 passed**.
+- iOS Hermes export: **2,558 modules, 8.7 MB**.
+- Android Hermes export: **2,641 modules, 8.9 MB**.
+- Native iOS Debug simulator build: **succeeded**.
+
+The codebase is stable for continued staging/device QA, but the release decision remains **NO-GO** until the open production-service, signed-provider, physical-device, Android, APNs, localization, security/load, and store gates below have objective closure evidence.
+
 ## Remaining Stop-Ship Items
 
 1. Production deployment of provider/phone exchange and refresh plus Twilio Verify policy, distributed abuse controls, persistent refresh-family reuse detection/revocation, deletion tombstones, uniform request-level 401 retry, and account isolation.
-2. Encrypted, account-bound storage for contacts, settings, location, queues, and transcripts.
+2. Signed-device verification/migration of the existing account-bound SecureStore contact cache, plus encrypted account-bound storage for settings, location, queues, transcripts/history, and remaining resilience records.
 3. Production security/load testing of the implemented authenticated Hume gateway, production EVI/CLM configuration, and signed-device PCM validation.
 4. Real SOS/guardian delivery and receipts, production Mapbox routes/avoidance/live sharing, push, remote privacy deletion/tombstones, and session revocation.
 5. Approved physical VL01 battery/status/event/command semantics, secure ownership/pairing, reconnect, and lifecycle validation.

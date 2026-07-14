@@ -62,6 +62,7 @@ export default function VerifyCode() {
           clearAuthError();
         }}
         placeholder={t('auth.verificationCode')}
+        placeholderTextColor={colors.inkSoft}
         style={styles.input}
         textContentType="oneTimeCode"
         value={code}
@@ -77,5 +78,5 @@ export default function VerifyCode() {
 }
 const styles = StyleSheet.create({
   label: { fontFamily: fonts.semibold, color: colors.ink },
-  input: { minHeight: 54, borderRadius: 8, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 14, backgroundColor: '#fff', fontSize: 20, textAlign: 'center' },
+  input: { minHeight: 54, borderRadius: 8, borderWidth: 1, borderColor: colors.controlBorder, paddingHorizontal: 14, backgroundColor: '#fff', color: colors.ink, fontSize: 20, textAlign: 'center' },
 });

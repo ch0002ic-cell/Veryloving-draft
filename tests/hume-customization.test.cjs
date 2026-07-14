@@ -17,6 +17,7 @@ const {
   normalizeHumeConfigId,
   reconnectDelay
 } = require('../src/services/websocket/hume-protocol');
+const { humeVoiceOverride, validHumeVoiceId } = require('../src/utils/hume-voice');
 
 test('tool parameters accept only supported scenarios', () => {
   assert.deepEqual(parseSafetyToolParameters('{"scenario":"rideshare"}'), { scenario: 'rideshare' });
@@ -97,6 +98,17 @@ test('proxy WebSocket URL never contains the app session token', () => {
       resumed_chat_group_id: undefined
     }
   });
+});
+
+test('voice overrides accept only Hume UUIDs and otherwise use the configured voice', () => {
+  const selectedId = '12c45d67-89ab-4cde-8f01-23456789abcd';
+  const brandedId = '98765432-10ab-4cde-8f01-23456789abcd';
+
+  assert.equal(validHumeVoiceId('capybear'), false);
+  assert.equal(humeVoiceOverride({ selectedVoiceId: 'capybear' }), undefined);
+  assert.equal(humeVoiceOverride({ selectedVoiceId: selectedId }), selectedId);
+  assert.equal(humeVoiceOverride({ brandedVoiceId: brandedId, selectedVoiceId: selectedId }), brandedId);
+  assert.equal(humeVoiceOverride({ brandedVoiceId: 'not-a-hume-id', selectedVoiceId: selectedId }), selectedId);
 });
 
 test('Hume tool payloads preserve tool-call correlation and safe fallback content', () => {

@@ -62,6 +62,16 @@ npx expo prebuild --platform ios
 npx expo run:ios --device "<simulator>" --no-build-cache
 ```
 
+If Expo CLI/Xcode misclassifies that simulator and requests device signing, use the tested unsigned workspace fallback and then install the result on the booted simulator:
+
+```bash
+xcodebuild -workspace ios/VeryLoving.xcworkspace -scheme VeryLoving \
+  -configuration Debug -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=<simulator>' \
+  -derivedDataPath /tmp/veryloving-derived CODE_SIGNING_ALLOWED=NO build
+xcrun simctl install booted /tmp/veryloving-derived/Build/Products/Debug-iphonesimulator/VeryLoving.app
+```
+
 The generated app declares background-audio and Bluetooth-central capabilities for active safety calls and NorthStar. The `expo-audio` PCM stream, audio-session restoration, background capture, microphone routing, BLE lifecycle, echo cancellation, and lock-screen behavior still require signed physical-device validation; a simulator or successful build cannot prove them.
 
 For command-line Android builds, make sure Gradle can find JDK 17 and your SDK:
@@ -102,8 +112,8 @@ Mobile/public variables:
 | `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Google OAuth client of type **iOS**, registered for `com.veryloving.app`; its reversed value becomes the callback URL scheme. | Required for iOS Google Sign-In and accepted by server `GOOGLE_AUTHORIZED_PARTIES` when it appears in `azp`. |
 | `EXPO_PUBLIC_PHONE_AUTH_ENABLED` | Public readiness gate for the deployed SMS endpoints. | Set `true` only when server `PHONE_AUTH_ENABLED=true`, Twilio Verify is configured, and the deployment health/auth probes pass. |
 | `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated WebSocket endpoint, normally `wss://<voice-domain>/api/voice/hume-ws`. | Required; the app sends its session JWT in the first TLS-protected frame, never in this URL. The HTTP-only Vercel adapter is not this host. |
-| `EXPO_PUBLIC_HUME_CONFIG_ID` | Hume EVI configuration ID for the CLM, tool, and branded voice. | Required when CLM customization is enabled; otherwise optional. |
-| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | Public HTTPS base URL for authenticated CLM/tool HTTP routes. | Required when CLM customization is enabled. |
+| `EXPO_PUBLIC_HUME_CONFIG_ID` | Canonical Hume EVI configuration UUID used by live voice and, when enabled, the CLM/tool configuration. | Required by the production voice profile; development may omit it only when live Hume is intentionally unavailable. |
+| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | Public HTTPS base URL for authenticated CLM/tool HTTP routes. | May be omitted when those routes are served by `EXPO_PUBLIC_API_BASE_URL`; otherwise required when CLM customization is enabled. |
 | `EXPO_PUBLIC_HUME_CLM_ENABLED` | Enables the custom Hume CLM integration when set to `true`. | Set deliberately after the CLM and Hume configuration are verified. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Public identifier of the approved Hume voice. | Optional until a branded voice has been provisioned. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public Mapbox runtime token used to render maps. | Required; use a restricted public token, never a secret `sk.*` token. |
@@ -130,8 +140,8 @@ Backend server variables (use `server/.env.example` as the template):
 | `NODE_ENV` | Selects development, test, or production server behavior. |
 | `PORT` | Local/container HTTP and WebSocket listener port; do not set it for the Vercel Node Function deployment. |
 | `HUME_API_KEY` | Server-side Hume credential used by the full-container voice gateway and development session-configure endpoint. Shared configuration may read it, but the Vercel HTTP-only Function does not require or validate it as a gateway startup value. |
-| `HUME_CONFIG_ID` | Server-enforced Hume EVI config ID; required by the production voice-gateway container, not by the Vercel HTTP-only entrypoint. |
-| `HUME_ALLOWED_VOICE_IDS` | Comma-separated allowlist of client-selectable Hume voice IDs; required by the production voice-gateway container. |
+| `HUME_CONFIG_ID` | Server-enforced canonical Hume EVI configuration UUID; required by the production voice-gateway container, not by the Vercel HTTP-only entrypoint. |
+| `HUME_ALLOWED_VOICE_IDS` | Comma-separated allowlist of canonical client-selectable Hume voice UUIDs; required by the production voice-gateway container. |
 | `HUME_ALLOW_CLIENT_RESUME` | Allows client-supplied Hume chat-group resume IDs; keep `false` until ownership binding is implemented. |
 | `HUME_CLM_BEARER_TOKEN` | Shared bearer token required on Hume-to-CLM requests. The Vercel HTTP service may start without it, but `/chat/completions` then fails closed with HTTP `503`; the full production container still requires it at startup. |
 | `APP_AUTH_VERIFY_URL` | Optional external verifier fallback for app-facing endpoints; the built-in session JWT is checked first. |
@@ -248,7 +258,7 @@ For a Vercel HTTP deployment, import the repository with **Root Directory** set 
 
 This Vercel adapter does not expose `/api/voice/hume-ws`. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` on a separately deployed, TLS-terminated container host until the raw `http.Server` upgrade gateway is adapted to its eventual platform and passes security, reconnect, backpressure, and load testing.
 
-The root `railway.toml` deploys `server/Dockerfile`, watches server/config changes, gates on `/health`, and applies a bounded restart-on-failure policy. The isolated Railway staging service is live at `https://veryloving-clm-staging-staging.up.railway.app`: Docker startup, public TLS/liveness, fail-closed invalid provider authentication, and WebSocket upgrade/rejection were verified. The ignored local `.env` uses this HTTPS root for `EXPO_PUBLIC_API_BASE_URL`; its Hume config and Mapbox tokens are present, while the direct public Hume key has been moved into Railway's server-only staging variables and cleared locally. Phone, safety persistence, CLM/live Hume, and the mobile WSS setting remain disabled until their complete backend and security/device gates pass; the staging domain is not an approved production endpoint.
+The root `railway.toml` deploys `server/Dockerfile`, watches server/config changes, gates on `/health`, and applies a bounded restart-on-failure policy. The isolated Railway staging service is live at `https://veryloving-clm-staging-staging.up.railway.app`: Docker startup, public TLS/liveness, fail-closed protected routes, Hume key/config validity, and a synthetic first-party WebSocket-to-Hume `auth_ok` were verified. The ignored local `.env` uses this host for its API and authenticated staging WSS roots; its Hume config and Mapbox tokens are present, while the direct public Hume key has been moved into Railway's server-only staging variables and cleared locally. Phone, safety persistence, and custom CLM/tools remain disabled. Signed-provider/mobile PCM, security/load, and remaining device gates still apply; the staging domain is not an approved production endpoint.
 
 Hume needs an HTTPS endpoint for CLM traffic. See [HUME_CUSTOMIZATION.md](./HUME_CUSTOMIZATION.md) for the Vercel HTTP adapter, local tunneling, Railway, AWS ECS/Fargate (or App Runner for existing customers), server variables, Hume provisioning, and Octave voice setup.
 
@@ -266,7 +276,9 @@ The final 13 July 2026 audit run completed with ESLint clean, 163/163 tests, Exp
 
 The 14 July 2026 auth/Vercel/animation/entitlement follow-up then passed the same validator with ESLint clean, 215/215 tests, Expo Doctor 20/20, a 2,557-module/8.7 MB iOS Hermes export, and a 2,640-module/8.9 MB Android Hermes export. A clean Debug build installed on the iOS 26.5 simulator completed cold launch, onboarding/account transitions, and an isolated active voice-indicator probe without the historical `onAnimatedValueUpdate` warning. A subsequent buffer-clean cold launch produced one intentional notification-skip line and one memory-storage line, with no Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore entitlement signature in the timestamped native-log query. This follow-up did not repeat the dependency audits or constitute a signed-device/provider deployment test.
 
-The environment-setup follow-up on 14 July 2026 passed the new redacted development validator, ESLint, 228/228 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports. The deployment-adapter follow-up later that day passed the complete pipeline again with 234/234 tests and the same export module counts; adding the Railway config regression brought the deterministic suite to 235/235. The current local environment has no development validation errors; production remains correctly blocked on phone, Hume WSS/CLM, safety/VL01 readiness, EAS project access, and their objective launch evidence rather than on placeholder substitution alone.
+The environment-setup follow-up on 14 July 2026 passed the new redacted development validator, ESLint, 228/228 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports. The deployment-adapter follow-up later that day passed the complete pipeline again with 234/234 tests and the same export module counts; Railway config and Hume voice-ID regressions brought the deterministic suite to 237/237 and the final exports to 2,558 iOS / 2,641 Android modules. The current local environment has no development validation errors; production remains correctly blocked on phone, custom Hume CLM/tools and signed-device audio, safety/VL01 readiness, EAS project access, and their objective launch evidence rather than on placeholder substitution alone.
+
+The final UI/staging follow-up on 14 July 2026 passes ESLint, 241/241 tests, Expo Doctor 20/20, a native iOS Debug simulator build, and the 2,558-module/8.7 MB iOS plus 2,641-module/8.9 MB Android Hermes exports. The accessibility pass adds WCAG-AA semantic foregrounds, visible input treatment, 44-point minimums for compact buttons and new back/modal controls, localized RTL-aware back navigation, keyboard-safe forms, readable onboarding copy, and a 720-point tablet content cap. iPhone 17, compact iPhone 17e, and 11-inch iPad portrait onboarding layouts rendered without overlap; removing a shared entry-opacity gate fixed an iPad background-only render. Targeted simulator logs contain none of the historical animation or entitlement-warning signatures during the captured smoke-test windows. See [FINAL_VALIDATION_REPORT.md](./FINAL_VALIDATION_REPORT.md) for the exact staging pass/block matrix; these results do not substitute for real provider, SMS, signed-device PCM, Android, safety-backend, or VL01 evidence.
 
 For a faster development loop, run tests and lint separately:
 
@@ -275,7 +287,7 @@ npm test
 npm run lint
 ```
 
-The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 selectable catalogs, RTL metadata, locale resolution, Google Sign-In response handling, provider-JWT verification, access/refresh issuance and renewal, local session-expiry/offline behavior, first-frame WebSocket authentication, PCM encoding and lifecycle, Android BLE permission splits, VL01 GATT validation/battery decoding/reconnect backoff, Dynamo safety/privacy validation and idempotency, CNG manifest normalization, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
+The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 selectable catalogs, RTL metadata, WCAG semantic contrast, placeholder visibility, protected-screen navigation, the shared-screen entrance-visibility regression, locale resolution, Google Sign-In response handling, provider-JWT verification, access/refresh issuance and renewal, local session-expiry/offline behavior, first-frame WebSocket authentication, PCM encoding and lifecycle, Android BLE permission splits, VL01 GATT validation/battery decoding/reconnect backoff, Dynamo safety/privacy validation and idempotency, CNG manifest normalization, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
 
 Validate both production JavaScript bundles:
 
@@ -315,6 +327,7 @@ The app is not yet production-ready. Current launch gates are:
 - production hardening of implemented authentication: refresh-family persistence, old-token reuse detection, revocation, deletion tombstones, consistent authenticated-request 401 recovery, provider credential-state checks, and distributed exchange/SMS abuse controls;
 - encrypted, per-account settings, locations, queues, and conversation history, plus completion of account isolation/migration for every remaining sensitive store;
 - production deployment and security testing of the first-frame authenticated Hume gateway, including ingress rate limits, session revocation, replay resistance, ownership-bound resume/session configuration, quotas, and redacted observability;
+- Product/Voice approval for the selector contract: the four bundled profile slugs are personas/previews, not Hume UUIDs, and are rejected as overrides; online calls use the configured/default approved voice until canonical IDs exist for every marketed acoustic choice or the UI is explicitly relabelled;
 - signed-device verification of continuous PCM capture/playback, full duplex, interruptions, echo, Bluetooth routing, background/foreground behavior, lock screen, and repeated cleanup;
 - an approved VL01 protocol and hardware evidence for battery semantics, decoded status/events, authorized command schemas, ownership challenge/secure pairing, and background behavior;
 - guardian/contact notification delivery and receipts after durable SOS acceptance, push delivery, live/revocable sharing, routes, avoidance zones, deletion tombstones/session revocation, vendor-wide privacy orchestration, and approved retention controls;

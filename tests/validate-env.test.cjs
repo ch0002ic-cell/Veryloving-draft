@@ -113,6 +113,17 @@ test('production reports missing requirements and rejects public secrets', () =>
   assert.doesNotMatch(JSON.stringify(results), /must-not-be-printed|sk\.wrong-kind/);
 });
 
+test('Hume configuration and voice overrides must be canonical IDs', () => {
+  const environment = productionEnvironment({
+    EXPO_PUBLIC_HUME_CONFIG_ID: '180f',
+    EXPO_PUBLIC_HUME_BRANDED_VOICE_ID: 'capybear'
+  });
+  const results = validateEnvironment(environment, { profile: 'production' });
+  const errors = new Set(results.filter((result) => result.level === 'error').map((result) => result.name));
+  assert.equal(errors.has('EXPO_PUBLIC_HUME_CONFIG_ID'), true);
+  assert.equal(errors.has('EXPO_PUBLIC_HUME_BRANDED_VOICE_ID'), true);
+});
+
 test('production requires the Mapbox download secret only on the remote EAS builder', () => {
   const localEnvironment = productionEnvironment({ RNMAPBOX_MAPS_DOWNLOAD_TOKEN: '' });
   const localResults = validateEnvironment(localEnvironment, { profile: 'production' });

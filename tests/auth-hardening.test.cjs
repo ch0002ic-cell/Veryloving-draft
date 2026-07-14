@@ -219,7 +219,19 @@ test('notification permission screen catches native errors and prevents duplicat
     'utf8'
   );
   assert.match(screen, /requestingRef\.current \|\| navigatingRef\.current/);
-  assert.match(screen, /catch \(permissionError\)/);
-  assert.match(screen, /<FeedbackBanner message=\{error\}/);
+  const requestPermissionStart = screen.indexOf('const requestPermission = useCallback');
+  const requestPermissionEnd = screen.indexOf('\n\n  const openNotificationSettings', requestPermissionStart);
+  assert.notEqual(requestPermissionStart, -1);
+  assert.notEqual(requestPermissionEnd, -1);
+  const requestPermission = screen.slice(requestPermissionStart, requestPermissionEnd);
+  assert.match(requestPermission, /requestNotificationPermission/);
+  assert.match(requestPermission, /catch(?: \([^)]*\))? \{/);
+  assert.match(requestPermission, /setPermissionDenied\(true\)/);
+  assert.match(screen, /setAvailabilityCheckFailed\(true\)/);
+  assert.match(screen, /availabilityCheckFailed \? retryAvailabilityCheck : undefined/);
+  assert.match(screen, /setPermissionDenied\(true\)/);
+  assert.match(screen, /Linking\.openSettings\(\)/);
+  assert.match(screen, /permissionDenied \? openNotificationSettings : requestPermission/);
+  assert.match(screen, /<FeedbackBanner[\s\S]*?message=\{error\}/);
   assert.match(screen, /disabled=\{busy \|\| notificationsAvailable === null\}/);
 });

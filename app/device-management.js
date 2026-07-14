@@ -40,7 +40,7 @@ export default function DeviceManagement() {
 
   return (
     <Screen>
-      <Header title={t('device.title')} subtitle={t('device.subtitle')} />
+      <Header title={t('device.title')} subtitle={t('device.subtitle')} showBack backLabel={t('common.back')} />
       <Image
         source={device.connected ? images.jewelryConnected : images.jewelryDisconnected}
         style={{ width: '100%', height: 220 }}

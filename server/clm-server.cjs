@@ -119,6 +119,16 @@ function validateServerConfig(config) {
         throw new Error('HUME_API_KEY, HUME_CONFIG_ID, and HUME_CLM_BEARER_TOKEN are required in production');
       }
       if (!config.humeAllowedVoiceIds) throw new Error('HUME_ALLOWED_VOICE_IDS is required in production');
+      if (!UUID_PATTERN.test(config.humeConfigId)) {
+        throw new Error('HUME_CONFIG_ID must be a canonical UUID in production');
+      }
+      const allowedVoiceIds = String(config.humeAllowedVoiceIds)
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean);
+      if (allowedVoiceIds.length === 0 || allowedVoiceIds.some((value) => !UUID_PATTERN.test(value))) {
+        throw new Error('HUME_ALLOWED_VOICE_IDS must contain only canonical UUIDs in production');
+      }
       if (config.humeAllowClientResume) {
         throw new Error('HUME_ALLOW_CLIENT_RESUME must remain false until chat ownership is enforced');
       }

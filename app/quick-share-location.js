@@ -47,7 +47,7 @@ export default function QuickShareLocation() {
 
   return (
     <Screen>
-      <Header title={t('quickShare.title')} subtitle={t('quickShare.subtitle')} />
+      <Header title={t('quickShare.title')} subtitle={t('quickShare.subtitle')} showBack backLabel={t('common.back')} />
       {busy ? <LoadingState message={t('map.finding')} /> : null}
       {error ? <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={shareLocation} /> : null}
       {!busy ? (

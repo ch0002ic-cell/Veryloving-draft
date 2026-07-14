@@ -60,7 +60,7 @@ export function LanguageSelector({ onError }) {
           {selectedLanguage.code !== 'system' ? <Text style={styles.code}>{selectedLanguage.code.toUpperCase()}</Text> : null}
         </View>
         {savingLanguage
-          ? <ActivityIndicator size="small" color={colors.orange} />
+          ? <ActivityIndicator size="small" color={colors.orangeAccessible} />
           : <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.inkSoft} />}
       </Pressable>
       <Modal animationType="slide" presentationStyle="pageSheet" visible={visible} onRequestClose={() => setVisible(false)}>
@@ -86,6 +86,7 @@ export function LanguageSelector({ onError }) {
                 clearButtonMode="while-editing"
                 onChangeText={setQuery}
                 placeholder={t('languages.search')}
+                placeholderTextColor={colors.inkSoft}
                 returnKeyType="search"
                 style={styles.searchInput}
                 value={query}
@@ -93,7 +94,6 @@ export function LanguageSelector({ onError }) {
             </View>
             <FlatList
               data={filteredLanguages}
-              getItemLayout={(_data, index) => ({ length: 56, offset: 56 * index, index })}
               initialNumToRender={24}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(language) => language.code}
@@ -109,10 +109,10 @@ export function LanguageSelector({ onError }) {
                     style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
                   >
                     <View style={styles.languageCopy}>
-                      <Text numberOfLines={1} style={[styles.label, selected && styles.selectedLabel]}>{languageLabel(item)}</Text>
-                      {item.englishName && item.englishName !== item.nativeName ? <Text numberOfLines={1} style={styles.englishName}>{item.englishName}</Text> : null}
+                      <Text style={[styles.label, selected && styles.selectedLabel]}>{languageLabel(item)}</Text>
+                      {item.englishName && item.englishName !== item.nativeName ? <Text style={styles.englishName}>{item.englishName}</Text> : null}
                     </View>
-                    {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.green} /> : null}
+                    {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.greenAccessible} /> : null}
                   </Pressable>
                 );
               }}
@@ -125,16 +125,16 @@ export function LanguageSelector({ onError }) {
 }
 
 const styles = StyleSheet.create({
-  trigger: { minHeight: 52, paddingHorizontal: spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: colors.line, borderRadius: 8, backgroundColor: '#fff' },
+  trigger: { minHeight: 52, paddingHorizontal: spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
   triggerCopy: { flex: 1, gap: 2 },
   code: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12 },
   safe: { flex: 1, backgroundColor: colors.cream },
   header: { minHeight: 60, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { flex: 1, fontFamily: fonts.bold, color: colors.ink, fontSize: 22 },
   closeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  searchRow: { minHeight: 50, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.line, borderRadius: 8, backgroundColor: '#fff' },
+  searchRow: { minHeight: 50, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
   searchInput: { flex: 1, minWidth: 0, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
-  row: { height: 56, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
+  row: { minHeight: 56, paddingHorizontal: 20, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   languageCopy: { flex: 1, minWidth: 0 },
   selected: { backgroundColor: '#F2F8F5' },
   label: { flex: 1, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },

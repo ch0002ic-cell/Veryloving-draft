@@ -2,11 +2,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../constants/theme';
 
 const palette = {
-  ok: colors.green,
-  warn: colors.gold,
-  danger: colors.red,
+  ok: colors.greenAccessible,
+  warn: colors.goldAccessible,
+  danger: colors.redAccessible,
   idle: colors.inkSoft,
-  active: colors.blue
+  active: colors.blueAccessible
 };
 
 export function StatusPill({ label, tone = 'idle' }) {

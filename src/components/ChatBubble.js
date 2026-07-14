@@ -26,8 +26,8 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
             style={({ pressed }) => [styles.retry, pressed && styles.retryPressed]}
           >
             {retrying
-              ? <ActivityIndicator size="small" color={colors.red} />
-              : <Ionicons name="refresh" size={16} color={colors.red} />}
+              ? <ActivityIndicator size="small" color={colors.redAccessible} />
+              : <Ionicons name="refresh" size={16} color={colors.redAccessible} />}
             <Text style={styles.retryText}>{retrying ? t('common.retrying') : t('common.retry')}</Text>
           </Pressable>
         </View>
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
   bubble: { maxWidth: '100%', padding: 12, borderRadius: 18 },
   user: { backgroundColor: colors.ink },
   assistant: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line },
-  failedBubble: { borderWidth: 2, borderColor: colors.red },
+  failedBubble: { borderWidth: 2, borderColor: colors.redAccessible },
   text: { fontFamily: fonts.regular, color: colors.ink, lineHeight: 20 },
   userText: { color: '#fff' },
   delivery: { marginTop: 4, fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft },
   failureRow: { maxWidth: 300, marginTop: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 },
-  failureText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.red, textAlign: 'right' },
+  failureText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.redAccessible, textAlign: 'auto' },
   retry: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8 },
   retryPressed: { opacity: 0.6 },
-  retryText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.red }
+  retryText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.redAccessible }
 });

@@ -8,6 +8,8 @@ const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety
 const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
 
 const silentLogger = { info() {}, warn() {}, error() {} };
+const VALID_HUME_CONFIG_ID = '11111111-1111-4111-8111-111111111111';
+const VALID_HUME_VOICE_ID = '22222222-2222-4222-8222-222222222222';
 
 function productionHTTPConfig(overrides = {}) {
   return {
@@ -106,30 +108,22 @@ test('production server rejects insecure credential-bearing outbound URLs', () =
     upstreamURL: ''
   }), /AUTH_EXCHANGE_ENABLED/);
 
-  assert.doesNotThrow(() => validateServerConfig({
-    nodeEnv: 'production',
-    appAuthVerifyURL: '',
-    upstreamURL: '',
-    authExchangeEnabled: true,
-    phoneAuthEnabled: true,
-    safetyApiEnabled: true,
-    safetyRepository: {},
-    sessionJWTSecret: 'production-session-secret-at-least-32-characters',
-    appleClientIds: 'com.veryloving.app',
-    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
-    googleAuthorizedParties: 'google-ios.apps.googleusercontent.com',
-    phoneAuthChallengeSecret: 'production-phone-challenge-secret-at-least-32-characters',
-    phoneAuthSubjectSecret: 'production-phone-subject-secret-at-least-32-characters',
-    twilioAccountSid: `AC${'a'.repeat(32)}`,
-    twilioAuthToken: 'production-twilio-auth-token-value',
-    twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
-    fetchImpl: async () => { throw new Error('must not run'); },
+  const voiceGateway = productionHTTPConfig({
+    httpOnlyDeployment: false,
     humeApiKey: 'server-only-hume-key',
-    humeConfigId: 'approved-config',
-    humeAllowedVoiceIds: 'approved-voice',
-    humeAllowClientResume: false,
+    humeConfigId: VALID_HUME_CONFIG_ID,
+    humeAllowedVoiceIds: VALID_HUME_VOICE_ID,
     clmBearerToken: 'server-only-clm-key'
-  }));
+  });
+  assert.doesNotThrow(() => validateServerConfig(voiceGateway));
+  assert.throws(
+    () => validateServerConfig({ ...voiceGateway, humeConfigId: 'approved-config' }),
+    /HUME_CONFIG_ID must be a canonical UUID/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...voiceGateway, humeAllowedVoiceIds: `${VALID_HUME_VOICE_ID},approved-voice` }),
+    /HUME_ALLOWED_VOICE_IDS must contain only canonical UUIDs/
+  );
 });
 
 test('HTTP-only production validation omits voice-gateway secrets but keeps the container fail-closed', async () => {

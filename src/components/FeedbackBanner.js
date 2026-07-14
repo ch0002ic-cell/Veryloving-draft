@@ -7,9 +7,9 @@ import { colors, fonts, radii, spacing } from '../constants/theme';
 const ENTERING = FadeIn.duration(180).reduceMotion(ReduceMotion.System);
 const EXITING = FadeOut.duration(140).reduceMotion(ReduceMotion.System);
 const toneStyles = {
-  error: { backgroundColor: colors.redSoft, borderColor: '#F2C9C9', icon: 'alert-circle', color: colors.red },
-  info: { backgroundColor: colors.blueSoft, borderColor: '#C9DCF8', icon: 'information-circle', color: colors.blue },
-  success: { backgroundColor: colors.greenSoft, borderColor: '#C5E8D5', icon: 'checkmark-circle', color: colors.green }
+  error: { backgroundColor: colors.redSoft, borderColor: '#F2C9C9', icon: 'alert-circle', color: colors.redAccessible },
+  info: { backgroundColor: colors.blueSoft, borderColor: '#C9DCF8', icon: 'information-circle', color: colors.blueAccessible },
+  success: { backgroundColor: colors.greenSoft, borderColor: '#C5E8D5', icon: 'checkmark-circle', color: colors.greenAccessible }
 };
 
 export function FeedbackBanner({ message, tone = 'error', actionLabel, onAction }) {

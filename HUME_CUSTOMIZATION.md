@@ -92,7 +92,7 @@ APP_AUTH_VERIFY_URL=
 
 Generate independent CLM and session secrets with `openssl rand -hex 32`. Do not use an `EXPO_PUBLIC_` variable for either server secret. `APP_AUTH_VERIFY_URL` is an optional external-verifier fallback; it is not needed when all protected callers use the in-repository session JWT. The safety API requires a verified principal with `sub`, so its supported production path is the built-in session JWT.
 
-Keep `HUME_ALLOW_CLIENT_RESUME=false` until a server-side ownership record binds every resumed chat group to the authenticated subject. If `HUME_CONFIG_ID` is set, it overrides the client choice; `HUME_ALLOWED_VOICE_IDS` restricts client-selected voices.
+Keep `HUME_ALLOW_CLIENT_RESUME=false` until a server-side ownership record binds every resumed chat group to the authenticated subject. If `HUME_CONFIG_ID` is set, it overrides the client choice; `HUME_ALLOWED_VOICE_IDS` restricts client-selected voices. Production container startup requires the configuration ID and every comma-separated allowed voice ID to be canonical UUIDs, so UI persona slugs or display names cannot silently become invalid Hume identifiers.
 
 The CLM has a deterministic safety response layer for urgent requests and service outages. To use an existing hosted model for richer non-urgent conversation, configure any OpenAI-compatible streaming endpoint:
 
@@ -167,7 +167,7 @@ The existing Hume gateway is a long-lived raw WebSocket adapter attached to an `
 
 ## Deploy On Railway
 
-An isolated staging container is currently live in Railway project `calm-delight`, environment `staging`, service `veryloving-clm-staging`, at `https://veryloving-clm-staging-staging.up.railway.app`. Deployment `f2ff7bcd-62e7-4e47-9280-678eb6c18117` built the Docker image and runs in Singapore. Public `/health` returned the exact liveness response; invalid Google exchange failed with `401`; disabled phone and CLM routes failed with `503`; and an invalid first WebSocket authentication frame was rejected with close code `4001`. This is staging liveness/fail-closed evidence only: Hume credentials/configuration, authenticated live audio, replay/revocation/rate limits, ingress restriction, load/backpressure, signed clients, production secrets, and rollback remain open.
+An isolated staging container is currently live in Railway project `calm-delight`, environment `staging`, service `veryloving-clm-staging`, at `https://veryloving-clm-staging-staging.up.railway.app`. Redeployment `7451045c-1ed7-4105-a4e2-a5e9421c71c5` runs the container artifact/config from commit `a879b8c` in Singapore. Public `/health` returned the exact liveness response; disabled phone and CLM routes failed with `503`; the server-only key and configured ID were accepted by Hume; and a synthetic first-party session completed the WebSocket upgrade, first-frame authentication, upstream Hume connection, and `auth_ok`. This is staging backend-handshake evidence only: signed-provider/client PCM audio, custom CLM/tools, replay/revocation/rate limits, ingress restriction, load/backpressure, production secrets, and rollback remain open.
 
 1. Create or select an isolated Railway project/environment and connect this repository at its root. The committed root `railway.toml` selects `server/Dockerfile`, watches `server/**` and `railway.toml`, sets health path `/health` with a 60-second timeout, and configures restart-on-failure with three retries. Do not set `RAILWAY_DOCKERFILE_PATH` unless deliberately overriding the reviewed file.
 2. In the service Variables tab, add:

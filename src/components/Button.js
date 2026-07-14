@@ -43,11 +43,11 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: { minHeight: 50, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18, overflow: 'hidden' },
-  compact: { minHeight: 40, paddingHorizontal: 12 },
+  compact: { minHeight: 44, paddingHorizontal: 12 },
   primary: { backgroundColor: colors.ink },
-  orange: { backgroundColor: colors.orange },
-  danger: { backgroundColor: colors.red },
-  ghost: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line },
+  orange: { backgroundColor: colors.orangeAccessible },
+  danger: { backgroundColor: colors.redAccessible },
+  ghost: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.controlBorder },
   disabled: { opacity: 0.45 },
   pressed: { transform: [{ scale: 0.98 }] },
   row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },

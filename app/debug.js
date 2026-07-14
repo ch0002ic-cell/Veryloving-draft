@@ -25,5 +25,5 @@ function safeConfigSummary() {
 export default function Debug() {
   const { t } = useI18n();
   if (!__DEV__) return <Redirect href="/" />;
-  return <Screen><Header title={t('debug.title')} subtitle={t('debug.subtitle')} /><Card><Text>{JSON.stringify(safeConfigSummary(), null, 2)}</Text></Card></Screen>;
+  return <Screen><Header title={t('debug.title')} subtitle={t('debug.subtitle')} showBack backLabel={t('common.back')} /><Card><Text>{JSON.stringify(safeConfigSummary(), null, 2)}</Text></Card></Screen>;
 }

@@ -182,7 +182,7 @@ test('Expo environment diagnostics are production-aware and never contain config
     EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios-redaction-check.apps.googleusercontent.com',
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.redaction-check.invalid/socket',
     EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.redaction-check.invalid',
-    EXPO_PUBLIC_HUME_CONFIG_ID: 'redaction-check-config-id',
+    EXPO_PUBLIC_HUME_CONFIG_ID: '123e4567-e89b-42d3-a456-426614174000',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
     EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
@@ -232,7 +232,7 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     /Production configuration is invalid/
   );
 
-  const safe = createAppConfig.createEnvironmentDiagnostics({
+  const safeEnvironment = {
     VERYLOVING_BUILD_PROFILE: 'production',
     EAS_BUILD: 'true',
     EXPO_PUBLIC_API_BASE_URL: 'https://api.example.invalid',
@@ -240,7 +240,7 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios.apps.googleusercontent.com',
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.example.invalid/socket',
     EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.example.invalid',
-    EXPO_PUBLIC_HUME_CONFIG_ID: 'approved-config-id',
+    EXPO_PUBLIC_HUME_CONFIG_ID: '123e4567-e89b-42d3-a456-426614174000',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
     EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
@@ -252,8 +252,21 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID: 'fff4',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.runtime',
     RNMAPBOX_MAPS_DOWNLOAD_TOKEN: 'sk.download'
-  });
+  };
+  const safe = createAppConfig.createEnvironmentDiagnostics(safeEnvironment);
   assert.doesNotThrow(() => createAppConfig.assertEnvironmentReady(safe));
+
+  const invalidHumeIdentifiers = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EXPO_PUBLIC_HUME_CONFIG_ID: 'not-a-uuid',
+    EXPO_PUBLIC_HUME_BRANDED_VOICE_ID: 'also-not-a-uuid'
+  });
+  assert.ok(invalidHumeIdentifiers.invalid.includes('hume_config_id_invalid'));
+  assert.ok(invalidHumeIdentifiers.invalid.includes('hume_branded_voice_id_invalid'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(invalidHumeIdentifiers),
+    /Production configuration is invalid/
+  );
 });
 
 test('Google iOS client IDs produce the native reversed URL scheme', () => {

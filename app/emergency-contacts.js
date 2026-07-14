@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Card } from '../src/components/Card';
@@ -22,6 +22,7 @@ export default function EmergencyContacts() {
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [callingId, setCallingId] = useState(null);
+  const [removingId, setRemovingId] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const nameValid = Boolean(name.trim());
 
@@ -47,11 +48,15 @@ export default function EmergencyContacts() {
   };
 
   const remove = async (contact) => {
+    if (removingId) return;
     try {
+      setRemovingId(contact.id);
       setFeedback(null);
       await removeContact(contact.id);
     } catch {
       setFeedback({ message: t('contacts.removeFailedMessage'), retry: () => remove(contact) });
+    } finally {
+      setRemovingId(null);
     }
   };
 
@@ -84,8 +89,8 @@ export default function EmergencyContacts() {
   };
 
   return (
-    <Screen scroll={false}>
-      <Header title={t('contacts.title')} subtitle={t('contacts.subtitle')} />
+    <Screen>
+      <Header title={t('contacts.title')} subtitle={t('contacts.subtitle')} showBack backLabel={t('common.back')} />
       <FeedbackBanner message={feedback?.message} actionLabel={t('common.retry')} onAction={feedback?.retry} />
       <Card style={styles.form}>
         <Text style={styles.title}>{t('contacts.addTitle')}</Text>
@@ -95,6 +100,7 @@ export default function EmergencyContacts() {
           autoCorrect={false}
           onChangeText={setName}
           placeholder={t('contacts.namePlaceholder')}
+          placeholderTextColor={colors.inkSoft}
           style={[styles.nameInput, submitted && !nameValid && styles.invalidInput]}
           value={name}
         />
@@ -113,37 +119,42 @@ export default function EmergencyContacts() {
           onPress={add}
         />
       </Card>
-      <FlatList
-        contentContainerStyle={styles.list}
-        data={contacts}
-        keyExtractor={(contact) => contact.id}
-        ListEmptyComponent={(
+      <View style={styles.list}>
+        {!contacts.length ? (
           <EmptyState
             image={images.bestie}
             title={t('contacts.emptyTitle')}
             message={t('contacts.emptyMessage')}
           />
-        )}
-        renderItem={({ item }) => (
-          <Card style={styles.contactCard}>
+        ) : contacts.map((contact) => (
+          <Card key={contact.id} style={styles.contactCard}>
             <View style={styles.contactCopy}>
-              <Text style={styles.contactName}>{item.name}</Text>
-              <Text style={styles.phone}>{formatE164ForDisplay(item.phone)}</Text>
+              <Text style={styles.contactName}>{contact.name}</Text>
+              <Text style={styles.phone}>{formatE164ForDisplay(contact.phone)}</Text>
             </View>
             <View style={styles.actions}>
               <Button
                 title={t('common.call')}
+                accessibilityLabel={t('contacts.callAccessibility', { name: contact.name })}
                 icon="call"
                 variant="ghost"
-                loading={callingId === item.id}
-                disabled={Boolean(callingId && callingId !== item.id)}
-                onPress={() => call(item)}
+                loading={callingId === contact.id}
+                disabled={Boolean((callingId && callingId !== contact.id) || removingId)}
+                onPress={() => call(contact)}
               />
-              <Button title={t('common.remove')} icon="trash-outline" variant="ghost" onPress={() => confirmRemove(item)} />
+              <Button
+                title={t('common.remove')}
+                accessibilityLabel={t('contacts.removeAccessibility', { name: contact.name })}
+                icon="trash-outline"
+                variant="ghost"
+                loading={removingId === contact.id}
+                disabled={Boolean((removingId && removingId !== contact.id) || callingId)}
+                onPress={() => confirmRemove(contact)}
+              />
             </View>
           </Card>
-        )}
-      />
+        ))}
+      </View>
     </Screen>
   );
 }
@@ -152,9 +163,9 @@ const styles = StyleSheet.create({
   form: { gap: 10 },
   title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
   label: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
-  nameInput: { minHeight: 50, paddingHorizontal: 12, borderWidth: 1, borderColor: colors.line, borderRadius: 8, backgroundColor: '#fff', fontFamily: fonts.regular, color: colors.ink },
-  invalidInput: { borderColor: colors.red },
-  error: { fontFamily: fonts.regular, color: colors.red, fontSize: 12 },
+  nameInput: { minHeight: 50, paddingHorizontal: 12, borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff', fontFamily: fonts.regular, color: colors.ink },
+  invalidInput: { borderColor: colors.redAccessible },
+  error: { fontFamily: fonts.regular, color: colors.redAccessible, fontSize: 12 },
   list: { paddingVertical: 4, paddingBottom: 20, gap: 10 },
   contactCard: { gap: 12 },
   contactCopy: { gap: 4 },

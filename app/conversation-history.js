@@ -74,7 +74,7 @@ export default function ConversationHistory() {
 
   return (
     <Screen scroll={false}>
-      <Header title={t('history.title')} subtitle={t('history.subtitle')} />
+      <Header title={t('history.title')} subtitle={t('history.subtitle')} showBack backLabel={t('common.back')} />
       <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={refresh} />
       <FlatList
         data={sessions}

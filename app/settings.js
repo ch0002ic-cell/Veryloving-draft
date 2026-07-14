@@ -103,7 +103,7 @@ export default function Settings() {
 
   return (
     <Screen>
-      <Header title={t('common.settings')} subtitle={user?.name || t('common.user')} />
+      <Header title={t('common.settings')} subtitle={user?.name || t('common.user')} showBack backLabel={t('common.back')} />
 
       <SettingsSection
         icon="language-outline"
@@ -209,7 +209,12 @@ function SettingToggle({ title, subtitle, value, onValueChange }) {
         <Text style={styles.toggleTitle}>{title}</Text>
         {subtitle ? <Text style={styles.muted}>{subtitle}</Text> : null}
       </View>
-      <Switch value={value} onValueChange={onValueChange} />
+      <Switch
+        accessibilityLabel={title}
+        accessibilityHint={subtitle}
+        value={value}
+        onValueChange={onValueChange}
+      />
     </View>
   );
 }
