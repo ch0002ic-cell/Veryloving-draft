@@ -33,8 +33,9 @@ function confirmEmergencyCall(contact) {
 }
 
 export async function triggerSOS(contacts = [], { accessToken, accountId, location } = {}) {
+  const backendEnabled = config.safetyBackendEnabled && Boolean(accessToken);
   let pendingAttempt = null;
-  if (config.safetyBackendEnabled) {
+  if (backendEnabled) {
     const synchronizedContactIds = contacts
       .map((contact) => contact.id)
       .filter((id) => /^contact_[A-Za-z0-9_-]{24}$/.test(id));
@@ -48,7 +49,7 @@ export async function triggerSOS(contacts = [], { accessToken, accountId, locati
     contacts,
     confirmCall: confirmEmergencyCall,
     openDialer: callNumber,
-    dispatchSOS: config.safetyBackendEnabled
+    dispatchSOS: backendEnabled
       ? (allContacts) => dispatchBackendSOS({
         accessToken,
         idempotencyKey: pendingAttempt.idempotencyKey,

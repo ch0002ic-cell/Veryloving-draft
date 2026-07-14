@@ -72,6 +72,8 @@ xcodebuild -workspace ios/VeryLoving.xcworkspace -scheme VeryLoving \
 xcrun simctl install booted /tmp/veryloving-derived/Build/Products/Debug-iphonesimulator/VeryLoving.app
 ```
 
+An unsigned simulator artifact cannot use the application Keychain entitlement required by Apple and Google provider SDKs. VeryLoving detects that simulator runtime before either provider module is loaded and shows an actionable explanation instead of the native Keychain error. Only a non-Expo-Go development build on the iOS Simulator exposes **Continue as demo (development only)**. Demo mode creates a process-only `Demo User` identity with no JWT, never persists an auth session, never authenticates a backend request, forces voice offline, and disappears on reload. It is absent from production, Expo Go, and physical-device builds; use a properly signed physical development build for real provider validation.
+
 The generated app declares background-audio and Bluetooth-central capabilities for active safety calls and NorthStar. The `expo-audio` PCM stream, audio-session restoration, background capture, microphone routing, BLE lifecycle, echo cancellation, and lock-screen behavior still require signed physical-device validation; a simulator or successful build cannot prove them.
 
 For command-line Android builds, make sure Gradle can find JDK 17 and your SDK:

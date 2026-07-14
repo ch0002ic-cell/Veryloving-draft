@@ -66,7 +66,7 @@ export async function buildUserDataExport({ accessToken } = {}) {
   const emergencyContacts = account?.id
     ? await loadEmergencyContactCache(account.id).catch(() => [])
     : [];
-  const remoteData = config.safetyBackendEnabled
+  const remoteData = config.safetyBackendEnabled && accessToken
     ? await fetchRemoteUserData(accessToken)
     : null;
   return {
@@ -146,7 +146,7 @@ export async function deleteLocalUserData({ localMutationLockHeld = false } = {}
 }
 
 export async function deleteAllUserData({ accessToken, ...options } = {}) {
-  if (config.safetyBackendEnabled) await deleteRemoteUserData(accessToken);
+  if (config.safetyBackendEnabled && accessToken) await deleteRemoteUserData(accessToken);
   const result = await deleteLocalUserData(options);
   await storage.setJSON(AUTH_STORAGE_KEYS.signedOut, {
     version: 1,

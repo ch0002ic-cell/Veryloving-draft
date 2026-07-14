@@ -13,11 +13,17 @@ import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { AppleSignInButton } from '../../src/components/AppleSignInButton';
 import { isAuthenticationCancellation } from '../../src/utils/auth-configuration';
 
+const DEMO_BUTTON_TITLE = 'Continue as demo (development only)';
+const DEMO_MODE_NOTICE = 'Demo mode uses local fake data only. Connected services are not authenticated, and this session resets when the app reloads.';
+
 export default function CreateAccount() {
   const {
     authCapabilities,
     authError,
     clearAuthError,
+    continueAsDemo,
+    demoModeAvailable,
+    isIOSSimulator,
     signInWithApple,
     signInWithGoogle,
     signInWithPhone
@@ -61,6 +67,21 @@ export default function CreateAccount() {
       setBusyAction(null);
     }
   };
+
+  const startDemo = async () => {
+    if (busyAction || !demoModeAvailable) return;
+    clearAuthError();
+    setBusyAction('demo');
+    try {
+      await continueAsDemo();
+      router.replace('/');
+    } catch (error) {
+      Alert.alert(t('auth.signInFailedTitle'), error?.userMessage || t('auth.signInFailedMessage'));
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
   return (
     <Screen>
       <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} />
@@ -72,6 +93,7 @@ export default function CreateAccount() {
         {appleSignInAvailable ? (
           <AppleSignInButton
             title={t('common.apple')}
+            nativeModuleAllowed={isIOSSimulator === null ? null : !isIOSSimulator}
             loading={busyAction === 'apple'}
             disabled={Boolean(busyAction)}
             onPress={() => startSocial('apple', signInWithApple)}
@@ -97,6 +119,19 @@ export default function CreateAccount() {
           disabled={Boolean(busyAction) || !phone?.isValid || !authCapabilities.phone.enabled}
         />
       </View>
+      {demoModeAvailable ? (
+        <View style={styles.demoCard}>
+          <FeedbackBanner message={DEMO_MODE_NOTICE} tone="info" />
+          <Button
+            title={DEMO_BUTTON_TITLE}
+            accessibilityLabel={DEMO_BUTTON_TITLE}
+            variant="ghost"
+            loading={busyAction === 'demo'}
+            disabled={Boolean(busyAction)}
+            onPress={startDemo}
+          />
+        </View>
+      ) : null}
       <Image source={images.mapOnboarding} style={styles.image} resizeMode="contain" />
     </Screen>
   );
@@ -105,6 +140,7 @@ export default function CreateAccount() {
 const styles = StyleSheet.create({
   socialRow: { gap: 10 },
   inputCard: { backgroundColor: '#fff', borderRadius: 8, padding: 16, gap: 12, borderWidth: 1, borderColor: colors.line },
+  demoCard: { gap: 10 },
   label: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 16 },
   image: { width: '100%', height: 180 }
 });

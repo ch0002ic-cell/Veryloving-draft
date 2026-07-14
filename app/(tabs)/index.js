@@ -53,7 +53,7 @@ export default function Home() {
     modeChangeRef.current = mode;
     setChangingMode(mode);
     try {
-      if (config.safetyBackendEnabled) await activateSafetyMode(mode, accessToken);
+      if (config.safetyBackendEnabled && accessToken) await activateSafetyMode(mode, accessToken);
       await updateSettings({ mode });
     } catch (error) {
       logger.warn('[SafetyMode] Could not save the requested local mode', {

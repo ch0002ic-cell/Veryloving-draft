@@ -14,10 +14,22 @@ export const AUTH_MESSAGES = Object.freeze({
   tooManyAttempts: 'Too many sign-in attempts. Please wait before trying again.',
   network: 'Unable to reach the sign-in service. Check your internet connection and try again.',
   timeout: 'Sign-in verification timed out. Please try again.',
-  appleFailed: 'Apple Sign-In could not be completed. Please try again.',
-  googleFailed: 'Google Sign-In could not be completed. Please try again.',
+  appleFailed: 'Apple Sign-In failed. Check your internet connection and try again.',
+  googleFailed: 'Google Sign-In failed. Check your internet connection and try again.',
   phoneFailed: 'Phone verification could not be completed. Please try again.'
 });
+
+export function createSimulatorAuthenticationError(provider, { demoAvailable = false } = {}) {
+  const normalizedProvider = provider === 'apple' ? 'apple' : 'google';
+  const providerName = normalizedProvider === 'apple' ? 'Apple' : 'Google';
+  const nextStep = demoAvailable
+    ? 'Open VeryLoving on a physical iPhone, or use “Continue as demo (development only)” below.'
+    : 'Open VeryLoving on a physical iPhone and try again.';
+  return createAuthError(
+    `${providerName.toUpperCase()}_AUTH_SIMULATOR_UNAVAILABLE`,
+    `${providerName} Sign-In is unavailable in this iOS Simulator build. ${nextStep}`
+  );
+}
 
 function hasConfiguredValue(value) {
   if (typeof value !== 'string') return false;

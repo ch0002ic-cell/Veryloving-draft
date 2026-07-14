@@ -138,9 +138,12 @@ test('Google Sign-In checks runtime capabilities before loading native code', ()
   );
   const google = auth.slice(auth.indexOf('const signInWithGoogle'), auth.indexOf('const signInWithPhone'));
   const guard = google.indexOf("requireCapability('google')");
+  const simulatorPreflight = google.indexOf("requireProviderRuntime('google')");
   const nativeImport = google.indexOf("import('@react-native-google-signin/google-signin')");
   assert.notEqual(guard, -1);
+  assert.notEqual(simulatorPreflight, -1);
   assert.ok(guard < nativeImport, 'Google configuration must be checked before loading its native module');
+  assert.ok(simulatorPreflight < nativeImport, 'Google simulator detection must run before loading its native module');
   assert.match(google, /GoogleSignin\.configure\(\{[\s\S]*webClientId: config\.googleWebClientId/);
   assert.match(google, /iosClientId: config\.googleIOSClientId/);
   assert.match(google, /exchangeProviderIdentity/);
@@ -150,11 +153,69 @@ test('Google Sign-In checks runtime capabilities before loading native code', ()
 test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const appleButton = readFileSync(path.resolve(process.cwd(), 'src/components/AppleSignInButton.js'), 'utf8');
+  const createAccount = readFileSync(path.resolve(process.cwd(), 'app/(auth)/create-account.js'), 'utf8');
   assert.doesNotMatch(auth, /import .*expo-apple-authentication/);
   assert.match(auth, /const signInWithApple[\s\S]*import\('expo-apple-authentication'\)/);
+  const apple = auth.slice(auth.indexOf('const signInWithApple'), auth.indexOf('const signInWithGoogle'));
+  assert.ok(
+    apple.indexOf("requireProviderRuntime('apple')") < apple.indexOf("import('expo-apple-authentication')"),
+    'Apple simulator detection must run before loading its native module'
+  );
   assert.match(auth, /const nonce = createAuthenticationNonce\(\)/);
   assert.match(auth, /AppleAuthentication\.signInAsync\(\{[\s\S]*nonce/);
   assert.match(auth, /provider: 'apple'[\s\S]*idToken: credential\.identityToken[\s\S]*nonce/);
+  const nativeButtonEffect = appleButton.slice(
+    appleButton.indexOf('useEffect(() =>'),
+    appleButton.indexOf('}, [nativeModuleAllowed])')
+  );
+  assert.ok(
+    nativeButtonEffect.indexOf('nativeModuleAllowed !== true')
+      < nativeButtonEffect.indexOf("import('expo-apple-authentication')"),
+    'The Apple button must resolve simulator eligibility before evaluating the native package'
+  );
+  assert.match(createAccount, /nativeModuleAllowed=\{isIOSSimulator === null \? null : !isIOSSimulator\}/);
+});
+
+test('development demo auth is volatile, internally guarded, and never creates a bearer token', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const createAccount = readFileSync(
+    path.resolve(process.cwd(), 'app/(auth)/create-account.js'),
+    'utf8'
+  );
+  const demoStart = auth.indexOf('const continueAsDemo = useCallback');
+  const demoEnd = auth.indexOf('\n\n  const signInWithPhone', demoStart);
+  assert.notEqual(demoStart, -1);
+  assert.notEqual(demoEnd, -1);
+  const demo = auth.slice(demoStart, demoEnd);
+
+  assert.match(demo, /authenticationRuntime\.isDemoModeAvailable\(\)/);
+  assert.match(demo, /setAccessToken\(null\)/);
+  assert.match(demo, /setUser\(DEVELOPMENT_DEMO_USER\)/);
+  assert.match(demo, /setOnboardingComplete\(true\)/);
+  assert.match(demo, /setSessionStatus\('demo'\)/);
+  assert.doesNotMatch(demo, /persist\(|secureStorage|exchangeProviderIdentity|createSessionEnvelope|JWT|token\s*=/i);
+  assert.match(auth, /signedInProvider === 'demo'[\s\S]*setSessionStatus\('signed-out'\)[\s\S]*return/);
+
+  assert.match(createAccount, /demoModeAvailable \? \(/);
+  assert.match(createAccount, /Continue as demo \(development only\)/);
+  assert.match(createAccount, /Demo mode uses local fake data only/);
+  assert.match(createAccount, /await continueAsDemo\(\)[\s\S]*router\.replace\('\/'\)/);
+  assert.doesNotMatch(createAccount, /demo-access-token|fake-jwt|Bearer demo/i);
+});
+
+test('demo and tokenless sessions keep connected safety and voice services offline', () => {
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  const home = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/index.js'), 'utf8');
+  const emergency = readFileSync(path.resolve(process.cwd(), 'src/services/emergency.js'), 'utf8');
+  const privacy = readFileSync(path.resolve(process.cwd(), 'src/services/privacy.js'), 'utf8');
+  const voice = readFileSync(path.resolve(process.cwd(), 'src/hooks/useHumeVoiceCall.js'), 'utf8');
+
+  assert.match(appContext, /syncRemote = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
+  assert.match(home, /config\.safetyBackendEnabled && accessToken/);
+  assert.match(emergency, /backendEnabled = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
+  assert.match(privacy, /config\.safetyBackendEnabled && accessToken/);
+  assert.match(voice, /forcedOffline = isDemoMode \|\| config\.enableOfflineMode/);
 });
 
 test('auth persistence writes one account-bound secure envelope', () => {

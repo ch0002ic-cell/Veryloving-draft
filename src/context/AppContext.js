@@ -371,7 +371,8 @@ export function AppProvider({ children }) {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     if (!user?.id) throw new Error('An authenticated account is required.');
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
-      const nextContact = config.safetyBackendEnabled
+      const syncRemote = config.safetyBackendEnabled && Boolean(accessToken);
+      const nextContact = syncRemote
         ? await createEmergencyContact(contact, accessToken)
         : { id: createAuthenticationNonce(), ...contact };
       const previous = contactsRef.current;
@@ -382,7 +383,7 @@ export function AppProvider({ children }) {
         await persistEmergencyContactCache(user.id, next);
         return nextContact;
       } catch (error) {
-        if (config.safetyBackendEnabled) {
+        if (syncRemote) {
           logger.warn('[AppState] Server contact was saved but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });
@@ -403,7 +404,8 @@ export function AppProvider({ children }) {
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = contactsRef.current;
       const remoteContact = /^contact_[A-Za-z0-9_-]{24}$/.test(contactId);
-      if (config.safetyBackendEnabled && remoteContact) {
+      const syncRemote = config.safetyBackendEnabled && Boolean(accessToken);
+      if (syncRemote && remoteContact) {
         await deleteEmergencyContact(contactId, accessToken);
       }
       const next = previous.filter((contact) => contact.id !== contactId);
@@ -413,7 +415,7 @@ export function AppProvider({ children }) {
         await persistEmergencyContactCache(user.id, next);
         return next;
       } catch (error) {
-        if (config.safetyBackendEnabled) {
+        if (syncRemote) {
           logger.warn('[AppState] Server contact was removed but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });

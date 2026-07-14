@@ -6,6 +6,7 @@ const {
   AUTH_MESSAGES,
   authenticationCapabilities,
   createAuthError,
+  createSimulatorAuthenticationError,
   isAuthenticationCancellation,
   isTransientAuthenticationError,
   userFacingAuthenticationError
@@ -118,4 +119,22 @@ test('authentication cancellations remain silent while server errors become safe
 
   const typed = createAuthError('AUTH_CONFIGURATION_MISSING', 'Safe configuration error');
   assert.equal(userFacingAuthenticationError('google', typed), typed);
+});
+
+test('simulator provider failures are typed, actionable, and mention demo only when available', () => {
+  const apple = createSimulatorAuthenticationError('apple', { demoAvailable: true });
+  assert.equal(apple.code, 'APPLE_AUTH_SIMULATOR_UNAVAILABLE');
+  assert.match(apple.userMessage, /unavailable in this iOS Simulator build/);
+  assert.match(apple.userMessage, /Continue as demo \(development only\)/);
+
+  const google = createSimulatorAuthenticationError('google');
+  assert.equal(google.code, 'GOOGLE_AUTH_SIMULATOR_UNAVAILABLE');
+  assert.match(google.userMessage, /physical iPhone and try again/);
+  assert.doesNotMatch(google.userMessage, /Continue as demo/);
+
+  assert.equal(
+    userFacingAuthenticationError('apple', new Error('native detail')).userMessage,
+    AUTH_MESSAGES.appleFailed
+  );
+  assert.match(AUTH_MESSAGES.googleFailed, /Check your internet connection and try again/);
 });

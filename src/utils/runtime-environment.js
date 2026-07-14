@@ -7,6 +7,18 @@ function loadExpoConstants() {
   }
 }
 
+function defaultDevelopmentMode() {
+  if (typeof __DEV__ !== 'undefined') return __DEV__ === true;
+  return typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production';
+}
+
+function normalizeApplicationModule(applicationModule) {
+  const candidates = [applicationModule, applicationModule?.default];
+  return candidates.find((candidate) => candidate
+    && typeof candidate.getIosApplicationReleaseTypeAsync === 'function'
+    && Number.isFinite(candidate.ApplicationReleaseType?.SIMULATOR)) || null;
+}
+
 export function runtimePlatformOS(
   constants = loadExpoConstants(),
   expoOS = typeof process !== 'undefined' ? process.env?.EXPO_OS : undefined
@@ -28,3 +40,62 @@ export function isExpoGoRuntime(constants = loadExpoConstants()) {
   return constants?.appOwnership === 'expo'
     || (constants?.executionEnvironment === 'storeClient' && Boolean(constants?.expoVersion));
 }
+
+/**
+ * Detect the iOS Simulator without loading provider SDKs that may touch the
+ * Keychain during evaluation. expo-application is the primary signal; the
+ * deprecated Constants model is retained only as a compatibility fallback.
+ */
+export async function detectIOSSimulatorRuntime({
+  platformOS = runtimePlatformOS(),
+  constants = loadExpoConstants(),
+  loadApplication = () => import('expo-application')
+} = {}) {
+  if (platformOS !== 'ios') return false;
+
+  const legacyModel = constants?.platform?.ios?.model;
+  if (typeof legacyModel === 'string' && /simulator/i.test(legacyModel)) return true;
+
+  try {
+    const Application = normalizeApplicationModule(await loadApplication());
+    if (!Application) return false;
+    const releaseType = await Application.getIosApplicationReleaseTypeAsync();
+    return releaseType === Application.ApplicationReleaseType.SIMULATOR;
+  } catch {
+    // An unavailable metadata preflight must never expose demo auth on an
+    // unknown runtime or incorrectly block a real-device provider flow.
+    return false;
+  }
+}
+
+export function createAuthenticationRuntime({
+  isDevelopment = defaultDevelopmentMode,
+  isExpoGo = isExpoGoRuntime,
+  platformOS = runtimePlatformOS,
+  constants = loadExpoConstants(),
+  loadApplication = () => import('expo-application')
+} = {}) {
+  let simulatorPromise = null;
+
+  const isIOSSimulator = () => {
+    if (!simulatorPromise) {
+      const resolvedPlatform = typeof platformOS === 'function' ? platformOS() : platformOS;
+      simulatorPromise = detectIOSSimulatorRuntime({
+        platformOS: resolvedPlatform,
+        constants,
+        loadApplication
+      });
+    }
+    return simulatorPromise;
+  };
+
+  const isDemoModeAvailable = async () => {
+    const development = typeof isDevelopment === 'function' ? isDevelopment() : isDevelopment;
+    if (development !== true || isExpoGo(constants)) return false;
+    return isIOSSimulator();
+  };
+
+  return Object.freeze({ isIOSSimulator, isDemoModeAvailable });
+}
+
+export const authenticationRuntime = createAuthenticationRuntime();

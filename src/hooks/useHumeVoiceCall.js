@@ -38,11 +38,11 @@ function voiceOverride(selectedVoice) {
 }
 
 export function useHumeVoiceCall({ initialSessionId } = {}) {
-  const { accessToken } = useAuth();
+  const { accessToken, isDemoMode } = useAuth();
   const { selectedVoice, settings } = useAppState();
   const networkState = useNetworkState();
   const isOnline = networkState.isConnected !== false && networkState.isInternetReachable !== false;
-  const forcedOffline = config.enableOfflineMode || settings.offlineMode;
+  const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
   const serviceRef = useRef(forcedOffline ? offlineEVIService : humeEVIService);
   const sessionIdRef = useRef(normalizeSessionId(initialSessionId) || createConversationSessionId());
   const suppressedUserEchoesRef = useRef(new Map());

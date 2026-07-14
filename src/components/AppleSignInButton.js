@@ -3,11 +3,18 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button } from './Button';
 import { colors } from '../constants/theme';
 
-export function AppleSignInButton({ disabled, loading, onPress, title }) {
+export function AppleSignInButton({ disabled, loading, nativeModuleAllowed = true, onPress, title }) {
   const [runtime, setRuntime] = useState({ status: 'loading', module: null });
 
   useEffect(() => {
     let active = true;
+    if (nativeModuleAllowed !== true) {
+      setRuntime({
+        status: nativeModuleAllowed === false ? 'unavailable' : 'loading',
+        module: null
+      });
+      return () => { active = false; };
+    }
     import('expo-apple-authentication').then(async (appleModule) => {
       const AppleAuthentication = typeof appleModule.isAvailableAsync === 'function'
         ? appleModule
@@ -24,7 +31,7 @@ export function AppleSignInButton({ disabled, loading, onPress, title }) {
       if (active) setRuntime({ status: 'unavailable', module: null });
     });
     return () => { active = false; };
-  }, []);
+  }, [nativeModuleAllowed]);
 
   if (runtime.status === 'loading') {
     return (

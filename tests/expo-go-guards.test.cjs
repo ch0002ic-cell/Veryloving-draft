@@ -14,7 +14,12 @@ const {
   detectSecureStorageMemoryReason,
   SECURE_STORAGE_MEMORY_REASON
 } = require('../src/services/secure-storage');
-const { isExpoGoRuntime, runtimePlatformOS } = require('../src/utils/runtime-environment');
+const {
+  createAuthenticationRuntime,
+  detectIOSSimulatorRuntime,
+  isExpoGoRuntime,
+  runtimePlatformOS
+} = require('../src/utils/runtime-environment');
 
 function sourceFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -37,6 +42,56 @@ test('Expo Go detection does not misclassify an SDK 57 development client', () =
   assert.equal(runtimePlatformOS({ platform: { ios: {} } }, undefined), 'ios');
   assert.equal(runtimePlatformOS({ platform: { android: {} } }, undefined), 'android');
   assert.equal(runtimePlatformOS(null, 'web'), 'web');
+});
+
+test('auth runtime detects iOS Simulator without loading provider SDKs', async () => {
+  let applicationLoads = 0;
+  const simulator = await detectIOSSimulatorRuntime({
+    platformOS: 'ios',
+    constants: null,
+    loadApplication: async () => {
+      applicationLoads += 1;
+      return {
+        ApplicationReleaseType: { SIMULATOR: 1, DEVELOPMENT: 3 },
+        getIosApplicationReleaseTypeAsync: async () => 1
+      };
+    }
+  });
+  assert.equal(simulator, true);
+  assert.equal(applicationLoads, 1);
+
+  assert.equal(await detectIOSSimulatorRuntime({
+    platformOS: 'ios',
+    constants: { platform: { ios: { model: 'iPhone Simulator' } } },
+    loadApplication: async () => { throw new Error('legacy fallback should win'); }
+  }), true);
+  assert.equal(await detectIOSSimulatorRuntime({
+    platformOS: 'android',
+    loadApplication: async () => { throw new Error('Android must not load iOS metadata'); }
+  }), false);
+  assert.equal(await detectIOSSimulatorRuntime({
+    platformOS: 'ios',
+    constants: null,
+    loadApplication: async () => { throw new Error('stale metadata module'); }
+  }), false);
+});
+
+test('demo authentication is limited to non-Expo-Go development simulators', async () => {
+  const runtime = ({ development = true, expoGo = false, releaseType = 1 } = {}) => createAuthenticationRuntime({
+    isDevelopment: () => development,
+    isExpoGo: () => expoGo,
+    platformOS: () => 'ios',
+    constants: null,
+    loadApplication: async () => ({
+      ApplicationReleaseType: { SIMULATOR: 1, DEVELOPMENT: 3 },
+      getIosApplicationReleaseTypeAsync: async () => releaseType
+    })
+  });
+
+  assert.equal(await runtime().isDemoModeAvailable(), true);
+  assert.equal(await runtime({ development: false }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ expoGo: true }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ releaseType: 3 }).isDemoModeAvailable(), false);
 });
 
 test('notification runtime never evaluates expo-notifications in Expo Go', async () => {

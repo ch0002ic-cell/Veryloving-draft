@@ -20,10 +20,14 @@ import {
 } from '../services/auth-session';
 import { secureStorage } from '../services/secure-storage';
 import { storage } from '../services/storage';
-import { isExpoGoRuntime } from '../utils/runtime-environment';
+import {
+  authenticationRuntime,
+  isExpoGoRuntime
+} from '../utils/runtime-environment';
 import {
   authenticationCapabilities,
   createAuthError,
+  createSimulatorAuthenticationError,
   isAuthenticationCancellation,
   isTransientAuthenticationError,
   userFacingAuthenticationError
@@ -46,6 +50,13 @@ const LEGACY_REFRESH_TOKEN_KEY = 'veryloving.auth.refreshToken';
 const LEGACY_USER_KEY = 'veryloving.auth.user';
 const ONBOARDING_KEY = 'veryloving.auth.onboarding';
 const LEGACY_SESSION_KEYS = [LEGACY_TOKEN_KEY, LEGACY_REFRESH_TOKEN_KEY, LEGACY_USER_KEY];
+const DEVELOPMENT_DEMO_USER = Object.freeze({
+  id: 'demo:local',
+  provider: 'demo',
+  name: 'Demo User',
+  email: 'demo@veryloving.invalid',
+  isDemo: true
+});
 
 export const AUTH_STORAGE_KEYS = {
   session: SESSION_KEY,
@@ -91,6 +102,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [pendingPhoneVerification, setPendingPhoneVerification] = useState(null);
+  const [isIOSSimulator, setIsIOSSimulator] = useState(null);
+  const [demoModeAvailable, setDemoModeAvailable] = useState(false);
   const refreshInFlightRef = useRef(null);
   const refreshRetryTimerRef = useRef(null);
   const refreshSessionRef = useRef(null);
@@ -100,6 +113,28 @@ export function AuthProvider({ children }) {
     platform: Platform.OS,
     expoGo: isExpoGoRuntime()
   }), []);
+  const isDemoMode = sessionStatus === 'demo' && user?.provider === 'demo';
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([
+      authenticationRuntime.isIOSSimulator(),
+      authenticationRuntime.isDemoModeAvailable()
+    ])
+      .then(([simulator, demoAvailable]) => {
+        if (!active) return;
+        setIsIOSSimulator(simulator);
+        setDemoModeAvailable(demoAvailable);
+      })
+      .catch(() => {
+        if (!active) return;
+        setIsIOSSimulator(false);
+        setDemoModeAvailable(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const scheduleRefreshRetry = useCallback(() => {
     if (refreshRetryTimerRef.current) return;
@@ -395,6 +430,10 @@ export function AuthProvider({ children }) {
     }
     const safeError = userFacingAuthenticationError(provider, error);
     setAuthError(safeError.userMessage);
+    if (safeError.code?.endsWith('_AUTH_SIMULATOR_UNAVAILABLE')) {
+      logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
+      return safeError;
+    }
     logger.error(`[Auth] ${provider} sign-in failed`, {
       errorCode: error?.code || error?.name || 'AUTH_FAILED',
       error
@@ -409,10 +448,18 @@ export function AuthProvider({ children }) {
     }
   }, [authCapabilities]);
 
+  const requireProviderRuntime = useCallback(async (provider) => {
+    if (!await authenticationRuntime.isIOSSimulator()) return;
+    throw createSimulatorAuthenticationError(provider, {
+      demoAvailable: await authenticationRuntime.isDemoModeAvailable()
+    });
+  }, []);
+
   const signInWithApple = useCallback(async () => {
     setAuthError(null);
     try {
       requireCapability('apple');
+      await requireProviderRuntime('apple');
       // The package is evaluated only in a configured native development or
       // signed build. Expo Go never enters this branch.
       const appleModule = await import('expo-apple-authentication');
@@ -444,12 +491,13 @@ export function AuthProvider({ children }) {
     } catch (error) {
       throw reportAuthenticationFailure('apple', error);
     }
-  }, [persist, reportAuthenticationFailure, requireCapability]);
+  }, [persist, reportAuthenticationFailure, requireCapability, requireProviderRuntime]);
 
   const signInWithGoogle = useCallback(async () => {
     setAuthError(null);
     try {
       requireCapability('google');
+      await requireProviderRuntime('google');
       const googleModule = await import('@react-native-google-signin/google-signin');
       const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
       if (!GoogleSignin) throw new Error('The native Google Sign-In module is unavailable.');
@@ -472,7 +520,28 @@ export function AuthProvider({ children }) {
     } catch (error) {
       throw reportAuthenticationFailure('google', error);
     }
-  }, [persist, reportAuthenticationFailure, requireCapability]);
+  }, [persist, reportAuthenticationFailure, requireCapability, requireProviderRuntime]);
+
+  const continueAsDemo = useCallback(async () => {
+    if (!await authenticationRuntime.isDemoModeAvailable()) {
+      throw createAuthError(
+        'DEMO_AUTH_UNAVAILABLE',
+        'Demo mode is available only in a VeryLoving development build running on the iOS Simulator.'
+      );
+    }
+    authGenerationRef.current += 1;
+    if (refreshRetryTimerRef.current) {
+      clearTimeout(refreshRetryTimerRef.current);
+      refreshRetryTimerRef.current = null;
+    }
+    setPendingPhoneVerification(null);
+    setAccessToken(null);
+    setUser(DEVELOPMENT_DEMO_USER);
+    setOnboardingComplete(true);
+    setSessionStatus('demo');
+    setAuthError(null);
+    return DEVELOPMENT_DEMO_USER;
+  }, []);
 
   const signInWithPhone = useCallback(async ({ e164, countryCode }) => {
     setAuthError(null);
@@ -528,6 +597,15 @@ export function AuthProvider({ children }) {
       clearTimeout(refreshRetryTimerRef.current);
       refreshRetryTimerRef.current = null;
     }
+    if (signedInProvider === 'demo') {
+      setUser(null);
+      setAccessToken(null);
+      setOnboardingComplete(false);
+      setSessionStatus('signed-out');
+      setAuthError(null);
+      setPendingPhoneVerification(null);
+      return;
+    }
     // Publish the non-sensitive signed-out marker before waiting behind any
     // in-flight Keychain mutation. A process restart must never resurrect the
     // session the user just left.
@@ -567,12 +645,16 @@ export function AuthProvider({ children }) {
     loading,
     authError,
     authCapabilities,
+    isIOSSimulator,
+    demoModeAvailable,
+    isDemoMode,
     pendingPhoneNumber: pendingPhoneVerification?.phone || null,
     hasPendingPhoneVerification: Boolean(pendingPhoneVerification?.verificationId),
     clearAuthError,
     signInWithApple,
     signInWithGoogle,
     signInWithPhone,
+    continueAsDemo,
     verifyCode,
     completeOnboarding,
     signOut
@@ -584,11 +666,15 @@ export function AuthProvider({ children }) {
     loading,
     authError,
     authCapabilities,
+    isIOSSimulator,
+    demoModeAvailable,
+    isDemoMode,
     pendingPhoneVerification,
     clearAuthError,
     signInWithApple,
     signInWithGoogle,
     signInWithPhone,
+    continueAsDemo,
     verifyCode,
     completeOnboarding,
     signOut
