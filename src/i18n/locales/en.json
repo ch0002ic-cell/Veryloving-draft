@@ -143,7 +143,7 @@
   },
   "home": {
     "subtitle": "Safety companion dashboard",
-    "modeStatus": "%{mode} MODE",
+    "modeStatus": "Mode: %{mode}",
     "companionReady": "%{name} is ready",
     "readyBody": "Voice, map, jewelry, and guardians are one tap away.",
     "safetyCall": "Safety call",
@@ -261,7 +261,7 @@
   "settings": {
     "voice": "Voice",
     "changeVoice": "Change voice",
-    "showCompanion": "Show companion",
+    "showCompanion": "Show companion button",
     "offlineMode": "Offline mode",
     "offlineModeSubtitle": "Use bundled companion responses when the network or Hume credentials are unavailable.",
     "privacyData": "Privacy & data",

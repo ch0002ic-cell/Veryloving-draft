@@ -3,6 +3,7 @@ import languageCatalog from './languages';
 
 export const DEFAULT_LANGUAGE = 'en';
 export const SYSTEM_LANGUAGE = 'system';
+export const TRANSLATION_FALLBACK_ENABLED = false;
 export const translations = Object.fromEntries(
   languageCatalog.filter((language) => language.messages).map((language) => [language.code, language.messages])
 );
@@ -15,7 +16,7 @@ export const supportedLanguages = languageCatalog
 
 const i18n = new I18n(translations);
 i18n.defaultLocale = DEFAULT_LANGUAGE;
-i18n.enableFallback = true;
+i18n.enableFallback = TRANSLATION_FALLBACK_ENABLED;
 i18n.locale = DEFAULT_LANGUAGE;
 
 export function normalizeLanguageCode(languageTag) {

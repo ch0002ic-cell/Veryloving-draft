@@ -51,7 +51,7 @@ module.exports = [
   {
     code: 'sq',
     englishName: 'Albanian',
-    nativeName: 'Living',
+    nativeName: 'Shqip',
     isRTL: false,
     messages: require('./locales/sq.json'),
     translationStatus: 'machine-generated',
@@ -87,7 +87,7 @@ module.exports = [
   {
     code: 'hy',
     englishName: 'Armenian',
-    nativeName: 'Living',
+    nativeName: 'Հայերեն',
     isRTL: false,
     messages: require('./locales/hy.json'),
     translationStatus: 'machine-generated',
@@ -168,7 +168,7 @@ module.exports = [
   {
     code: 'eu',
     englishName: 'Basque',
-    nativeName: 'Living',
+    nativeName: 'Euskara',
     isRTL: false,
     messages: require('./locales/eu.json'),
     translationStatus: 'machine-generated',
@@ -222,7 +222,7 @@ module.exports = [
   {
     code: 'my',
     englishName: 'Burmese',
-    nativeName: 'Living',
+    nativeName: 'မြန်မာ',
     isRTL: false,
     messages: require('./locales/my.json'),
     translationStatus: 'machine-generated',
@@ -321,7 +321,7 @@ module.exports = [
   {
     code: 'cs',
     englishName: 'Czech',
-    nativeName: 'Living',
+    nativeName: 'Čeština',
     isRTL: false,
     messages: require('./locales/cs.json'),
     translationStatus: 'machine-generated',
@@ -348,7 +348,7 @@ module.exports = [
   {
     code: 'nl',
     englishName: 'Dutch',
-    nativeName: 'Living',
+    nativeName: 'Nederlands',
     isRTL: false,
     messages: require('./locales/nl.json'),
     translationStatus: 'machine-generated',
@@ -438,7 +438,7 @@ module.exports = [
   {
     code: 'fr',
     englishName: 'French',
-    nativeName: 'Living',
+    nativeName: 'Français',
     isRTL: false,
     messages: require('./locales/fr.json'),
     translationStatus: 'maintained',
@@ -474,7 +474,7 @@ module.exports = [
   {
     code: 'ka',
     englishName: 'Georgian',
-    nativeName: 'Living',
+    nativeName: 'ქართული',
     isRTL: false,
     messages: require('./locales/ka.json'),
     translationStatus: 'machine-generated',
@@ -483,7 +483,7 @@ module.exports = [
   {
     code: 'de',
     englishName: 'German',
-    nativeName: 'Living',
+    nativeName: 'Deutsch',
     isRTL: false,
     messages: require('./locales/de.json'),
     translationStatus: 'machine-generated',
@@ -492,7 +492,7 @@ module.exports = [
   {
     code: 'el',
     englishName: 'Greek',
-    nativeName: 'Living',
+    nativeName: 'Ελληνικά',
     isRTL: false,
     messages: require('./locales/el.json'),
     translationStatus: 'machine-generated',
@@ -582,7 +582,7 @@ module.exports = [
   {
     code: 'is',
     englishName: 'Icelandic',
-    nativeName: 'Living',
+    nativeName: 'Íslenska',
     isRTL: false,
     messages: require('./locales/is.json'),
     translationStatus: 'machine-generated',
@@ -888,7 +888,7 @@ module.exports = [
   {
     code: 'mk',
     englishName: 'Macedonian',
-    nativeName: 'Living',
+    nativeName: 'Македонски',
     isRTL: false,
     messages: require('./locales/mk.json'),
     translationStatus: 'machine-generated',
@@ -906,7 +906,7 @@ module.exports = [
   {
     code: 'ms',
     englishName: 'Malay',
-    nativeName: 'Living',
+    nativeName: 'Melayu',
     isRTL: false,
     messages: require('./locales/ms.json'),
     translationStatus: 'machine-generated',
@@ -942,7 +942,7 @@ module.exports = [
   {
     code: 'mi',
     englishName: 'Māori',
-    nativeName: 'Living',
+    nativeName: 'Māori',
     isRTL: false,
     messages: require('./locales/mi.json'),
     translationStatus: 'machine-generated',
@@ -969,7 +969,7 @@ module.exports = [
   {
     code: 'mn',
     englishName: 'Mongolian',
-    nativeName: 'ᠬᠡᠯᠡ"}},"i":0}}]}\'>.mw-parser-output .font-mong{font-family:"Menk Hawang Tig","Menk Qagan Tig","Menk Garqag Tig","Menk Har_a Tig","Menk Scnin Tig","Oyun Gurban Ulus Tig","Oyun Qagan Tig","Oyun Garqag Tig","Oyun Har_a Tig","Oyun Scnin Tig","Oyun Agula Tig","Mongolian Baiti","Noto Sans Mongolian","Mongolian Universal White","Mongol Usug","Mongolian White","MongolianScript","Code2000","Menksoft Qagan"}.mw-parser-output .font-mong-mnc,.mw-parser-output .font-mong:lang(mnc-Mong),.mw-parser-output .font-mong:lang(dta-Mong),.mw-parser-output .font-mong:lang(sjo-Mong){font-family:"Abkai Xanyan","Abkai Xanyan LA","Abkai Xanyan VT","Abkai Xanyan XX","Abkai Xanyan SC","Abkai Buleku","Daicing White","Mongolian Baiti","Noto Sans Mongolian","Mongolian Universal White"}ᠮᠣᠩᠭᠣᠯ',
+    nativeName: 'Монгол',
     isRTL: false,
     messages: require('./locales/mn.json'),
     translationStatus: 'machine-generated',
@@ -1131,7 +1131,7 @@ module.exports = [
   {
     code: 'fa',
     englishName: 'Persian',
-    nativeName: 'Living',
+    nativeName: 'فارسی',
     isRTL: true,
     messages: require('./locales/fa.json'),
     translationStatus: 'machine-generated',
@@ -1176,7 +1176,7 @@ module.exports = [
   {
     code: 'ro',
     englishName: 'Romanian',
-    nativeName: 'Living',
+    nativeName: 'Română',
     isRTL: false,
     messages: require('./locales/ro.json'),
     translationStatus: 'machine-generated',
@@ -1302,7 +1302,7 @@ module.exports = [
   {
     code: 'sk',
     englishName: 'Slovak',
-    nativeName: 'Living',
+    nativeName: 'Slovenčina',
     isRTL: false,
     messages: require('./locales/sk.json'),
     translationStatus: 'machine-generated',
@@ -1446,7 +1446,7 @@ module.exports = [
   {
     code: 'bo',
     englishName: 'Tibetan',
-    nativeName: 'Living',
+    nativeName: 'བོད་སྐད་',
     isRTL: false,
     messages: require('./locales/bo.json'),
     translationStatus: 'machine-generated',
@@ -1581,7 +1581,7 @@ module.exports = [
   {
     code: 'cy',
     englishName: 'Welsh',
-    nativeName: 'Living',
+    nativeName: 'Cymraeg',
     isRTL: false,
     messages: require('./locales/cy.json'),
     translationStatus: 'machine-generated',

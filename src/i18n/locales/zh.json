@@ -261,7 +261,7 @@
   "settings": {
     "voice": "声音",
     "changeVoice": "更改声音",
-    "showCompanion": "显示伙伴",
+    "showCompanion": "显示伙伴按钮",
     "offlineMode": "离线模式",
     "offlineModeSubtitle": "当网络或 Hume 凭据不可用时，使用应用内置的伙伴回复。",
     "privacyData": "隐私与数据",
@@ -352,11 +352,11 @@
     "callContact": "拨打%{name}？",
     "addContact": "请先在设置中添加紧急联系人。",
     "quickShareTitle": "快速分享",
-    "quickShareMessage": "位置分享流程已准备就绪。连接后端分享接口后即可发送实时链接。"
+    "quickShareMessage": "通过设备的分享菜单发送一次性位置快照。发送后不会更新。"
   },
   "quickShare": {
     "title": "快速分享",
-    "subtitle": "位置分享流程已准备就绪。"
+    "subtitle": "分享一次性位置快照。发送后不会更新。"
   },
   "capybearTap": {
     "title": "Capybear 轻触",

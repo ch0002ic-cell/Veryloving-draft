@@ -6,11 +6,17 @@ VeryLoving stores phone numbers in canonical E.164 form and keeps interface lang
 
 The language registry represents all 183 assigned ISO 639-1 codes. Of those, 155 have complete catalogs and appear in the searchable Settings picker, including Arabic, German, Hindi, Italian, Japanese, Korean, Portuguese, and Russian. Regional tags resolve to their base catalog, such as `es-MX` to `es` and `zh-Hans-CN` to `zh`. Unsupported device languages fall back to English.
 
-English, Spanish, French, and Simplified Chinese are maintained catalogs. The other 151 selectable catalogs are machine-generated starting points and are marked `reviewRequired` in `src/i18n/language-registry.js`; safety, emergency, consent, and permission wording must receive native-speaker review before a localized store release.
+English, Spanish, French, and Simplified Chinese are maintained catalogs. The other 151 selectable catalogs are machine-generated starting points and are marked `reviewRequired` in `src/i18n/language-registry.js`; safety, emergency, consent, and permission wording must receive native-speaker review before a localized store release. Complete keys and passing automated checks do not certify linguistic accuracy.
 
-The following 28 assigned codes remain registered but intentionally unavailable because the translation providers used for this pass do not support them: `an`, `ae`, `bi`, `cu`, `kw`, `cr`, `hz`, `ho`, `io`, `ia`, `ie`, `ik`, `ki`, `kj`, `lu`, `na`, `nv`, `nd`, `ng`, `nn`, `oj`, `pi`, `rm`, `sc`, `vo`, `wa`, `ii`, and `za`. VeryLoving never presents an English copy as though it were a translation.
+The following 28 assigned codes remain registered but intentionally unavailable because the translation providers used for this pass do not support them: `an`, `ae`, `bi`, `cu`, `kw`, `cr`, `hz`, `ho`, `io`, `ia`, `ie`, `ik`, `ki`, `kj`, `lu`, `na`, `nv`, `nd`, `ng`, `nn`, `oj`, `pi`, `rm`, `sc`, `vo`, `wa`, `ii`, and `za`. When a device uses one of these languages, the app explicitly selects its English interface instead of labeling English copy as that language.
 
 Users can choose a catalog in Settings or leave the preference on System default. The preference is persisted with the rest of the app settings and survives relaunches.
+
+## Translation accuracy gate
+
+Runtime per-string fallback is disabled. Every selectable catalog must contain every key, so a missing safety string cannot be silently replaced with English. An unsupported device locale resolves to an explicitly English interface; it is not treated as a translated catalog.
+
+Do not copy English text into a non-English catalog to satisfy coverage. New or changed safety, emergency, consent, authentication, permission, map, or voice copy must be translated and reviewed for every locale intended for that release. A locale marked `reviewRequired` is not launch-certified, regardless of whether its automated checks pass; clear that flag only after a recorded native-speaker review.
 
 ## Right-to-left layouts
 

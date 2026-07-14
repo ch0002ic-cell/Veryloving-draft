@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { test } = require('node:test');
 const { storage } = require('../src/services/storage');
 const {
@@ -20,7 +22,7 @@ const { OperationTimeoutError, withTimeout } = require('../src/utils/async');
 const { chooseOfflineResponse } = require('../src/mocks/offlineResponses');
 const { sanitizeLogPayload, sanitizeUrl } = require('../src/utils/logger');
 
-test('voice and language settings survive storage reloads', async () => {
+test('voice, language, and companion visibility settings survive storage reloads', async () => {
   let stored = null;
   storage.setJSON = async (key, value) => {
     assert.equal(key, SETTINGS_KEY);
@@ -28,11 +30,41 @@ test('voice and language settings survive storage reloads', async () => {
   };
   storage.getJSON = async () => structuredClone(stored);
 
-  await persistSettings(mergeSettings(DEFAULT_SETTINGS, { selectedVoiceId: 'bestie', language: 'es' }));
+  await persistSettings(mergeSettings(DEFAULT_SETTINGS, {
+    selectedVoiceId: 'bestie',
+    language: 'es',
+    showCompanion: false
+  }));
   const reloaded = await loadSettings();
   assert.equal(reloaded.selectedVoiceId, 'bestie');
   assert.equal(reloaded.language, 'es');
+  assert.equal(reloaded.showCompanion, false);
   assert.equal(reloaded.mode, DEFAULT_SETTINGS.mode);
+  assert.equal(DEFAULT_SETTINGS.showCompanion, true);
+});
+
+test('companion preference hides only the Home shortcut, not emergency access', () => {
+  const homeSource = fs.readFileSync(path.resolve('app/(tabs)/index.js'), 'utf8');
+  const emergencySource = fs.readFileSync(path.resolve('app/emergency-sos.js'), 'utf8');
+
+  assert.match(
+    homeSource,
+    /settings\.showCompanion\s*\?\s*\([\s\S]*?t\('home\.safetyCall'\)[\s\S]*?router\.push\('\/safety-call'\)/
+  );
+  assert.match(
+    emergencySource,
+    /t\('emergency\.callCompanion'\)[\s\S]*?router\.push\('\/safety-call'\)/
+  );
+});
+
+test('localized status UI preserves language casing and selected-locale dates', () => {
+  const homeSource = fs.readFileSync(path.resolve('app/(tabs)/index.js'), 'utf8');
+  const mapSource = fs.readFileSync(path.resolve('app/(tabs)/map.js'), 'utf8');
+  const emergencySource = fs.readFileSync(path.resolve('app/emergency-sos.js'), 'utf8');
+
+  assert.doesNotMatch(homeSource, /modeName\.toUpperCase\(\)/);
+  assert.match(mapSource, /toLocaleString\(locale\)/);
+  assert.match(emergencySource, /toLocaleString\(locale\)/);
 });
 
 test('voice errors are actionable without leaking raw service details', () => {

@@ -8,6 +8,7 @@ const {
   normalizeLanguageCode,
   resolveLanguage,
   supportedLanguages,
+  TRANSLATION_FALLBACK_ENABLED,
   translateForLocale,
   translations
 } = require('../src/i18n/core');
@@ -179,6 +180,23 @@ test('language resolution supports regional tags, system preference, and fallbac
     translateForLocale('zh', 'safetyCall.messagesWaiting', { count: 2 }),
     '2条消息等待发送'
   );
+});
+
+test('selectable catalogs never use a hidden English per-string fallback', () => {
+  assert.equal(TRANSLATION_FALLBACK_ENABLED, false);
+  assert.equal(translateForLocale('en', 'settings.showCompanion'), 'Show companion button');
+  assert.equal(translateForLocale('es', 'settings.showCompanion'), 'Mostrar el botón del compañero');
+  assert.equal(translateForLocale('fr', 'settings.showCompanion'), 'Afficher le bouton du compagnon');
+  assert.equal(translateForLocale('zh', 'settings.showCompanion'), '显示伙伴按钮');
+  assert.equal(
+    translateForLocale('es', 'quickShare.subtitle'),
+    'Comparte una instantánea única de tu ubicación. No se actualizará después de enviarla.'
+  );
+  assert.equal(
+    translateForLocale('fr', 'quickShare.subtitle'),
+    'Partagez un instantané unique de votre position. Il ne sera pas actualisé après l’envoi.'
+  );
+  assert.equal(translateForLocale('zh', 'quickShare.subtitle'), '分享一次性位置快照。发送后不会更新。');
 });
 
 test('RTL language resolution is driven by catalog metadata', () => {

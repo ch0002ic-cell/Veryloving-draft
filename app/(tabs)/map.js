@@ -55,7 +55,7 @@ export default function MapScreen() {
   const shareInProgressRef = useRef(false);
   const Mapbox = useMemo(() => getMapboxModule(), []);
   const insets = useSafeAreaInsets();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
@@ -83,7 +83,7 @@ export default function MapScreen() {
       if (mountedRef.current && requestId === requestIdRef.current) {
         setLocation(nextLocation);
         if (nextLocation.isCached) {
-          const cachedMessage = `Live location is unavailable. Showing your last saved location from ${new Date(nextLocation.cachedAt).toLocaleString()}.`;
+          const cachedMessage = `Live location is unavailable. Showing your last saved location from ${new Date(nextLocation.cachedAt).toLocaleString(locale)}.`;
           setError(Mapbox ? cachedMessage : `${MAP_LOAD_FALLBACK_MESSAGE} ${cachedMessage}`);
         } else if (Mapbox) {
           cacheMapRegion(nextLocation).catch(() => {});
@@ -97,7 +97,7 @@ export default function MapScreen() {
     } finally {
       if (mountedRef.current && requestId === requestIdRef.current) setLoading(false);
     }
-  }, [Mapbox, t]);
+  }, [Mapbox, locale, t]);
 
   const retryMapAndLocation = useCallback(() => {
     if (mapLoadFailed) {

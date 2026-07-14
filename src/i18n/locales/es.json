@@ -143,7 +143,7 @@
   },
   "home": {
     "subtitle": "Panel del compañero de seguridad",
-    "modeStatus": "MODO %{mode}",
+    "modeStatus": "Modo: %{mode}",
     "companionReady": "%{name} está listo",
     "readyBody": "Voz, mapa, joya y guardianes están a un toque.",
     "safetyCall": "Llamada de seguridad",
@@ -261,7 +261,7 @@
   "settings": {
     "voice": "Voz",
     "changeVoice": "Cambiar voz",
-    "showCompanion": "Mostrar compañero",
+    "showCompanion": "Mostrar el botón del compañero",
     "offlineMode": "Modo sin conexión",
     "offlineModeSubtitle": "Usa respuestas incluidas cuando la red o las credenciales de Hume no estén disponibles.",
     "privacyData": "Privacidad y datos",
@@ -352,11 +352,11 @@
     "callContact": "¿Llamar a %{name}?",
     "addContact": "Añade un contacto de emergencia en Ajustes.",
     "quickShareTitle": "Envío rápido",
-    "quickShareMessage": "El flujo para compartir ubicación está listo. Conecta el endpoint del servidor para enviar enlaces en directo."
+    "quickShareMessage": "Comparte una instantánea única de tu ubicación mediante el menú para compartir del dispositivo. No se actualizará después de enviarla."
   },
   "quickShare": {
     "title": "Envío rápido",
-    "subtitle": "El flujo para compartir ubicación está listo."
+    "subtitle": "Comparte una instantánea única de tu ubicación. No se actualizará después de enviarla."
   },
   "capybearTap": {
     "title": "Toque de Capybear",

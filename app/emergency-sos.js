@@ -22,7 +22,7 @@ import { loadLastKnownLocation } from '../src/services/location-cache';
 export default function EmergencySOS() {
   const { contacts } = useAppState();
   const { accessToken, user } = useAuth();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [activating, setActivating] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [lastSOSStatus, setLastSOSStatus] = useState(null);
@@ -81,7 +81,7 @@ export default function EmergencySOS() {
           <Text style={{ fontFamily: fonts.bold }}>{LAST_SOS_ATTEMPT_TITLE}</Text>
           <Text style={{ fontFamily: fonts.regular }}>{sosStatusMessage(lastSOSStatus.status)}</Text>
           <Text style={{ fontFamily: fonts.regular }}>
-            {new Date(lastSOSStatus.recordedAt).toLocaleString()}
+            {new Date(lastSOSStatus.recordedAt).toLocaleString(locale)}
           </Text>
         </Card>
       ) : null}

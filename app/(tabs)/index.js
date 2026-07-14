@@ -73,13 +73,15 @@ export default function Home() {
       <Card style={styles.hero}>
         <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
         <View style={{ flex: 1 }}>
-          <StatusPill label={t('home.modeStatus', { mode: modeName.toUpperCase() })} tone="active" />
+          <StatusPill label={t('home.modeStatus', { mode: modeName })} tone="active" />
           <Text style={styles.heroTitle}>{t('home.companionReady', { name: voiceName })}</Text>
           <Text style={styles.muted}>{t('home.readyBody')}</Text>
         </View>
       </Card>
       <View style={styles.grid}>
-        <Button title={t('home.safetyCall')} icon="call" onPress={() => router.push('/safety-call')} />
+        {settings.showCompanion ? (
+          <Button title={t('home.safetyCall')} icon="call" onPress={() => router.push('/safety-call')} />
+        ) : null}
         <Button title={t('common.sos')} icon="warning" variant="danger" onPress={() => router.push('/emergency-sos')} />
         <Button title={t('common.friends')} icon="people" variant="ghost" onPress={() => router.push('/friends')} />
         <Button title={t('common.settings')} icon="settings" variant="ghost" onPress={() => router.push('/settings')} />

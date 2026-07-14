@@ -54,7 +54,33 @@ test('language registry represents every assigned ISO 639-1 code once', () => {
     assert.match(language.code, /^[a-z]{2}$/);
     assert.ok(language.englishName.trim(), `${language.code} must have an English name`);
     assert.ok(language.nativeName.trim(), `${language.code} must have a native name`);
+    assert.notEqual(language.nativeName, 'Living', `${language.code} has corrupted language metadata`);
+    assert.ok([...language.nativeName].length <= 80, `${language.code} native name is implausibly long`);
+    assert.doesNotMatch(
+      language.nativeName,
+      /[<>{}]|\.mw-parser-output|font-family|[\u0000-\u001F\u007F]/,
+      `${language.code} native name contains markup or control data`
+    );
     assert.equal(typeof language.isRTL, 'boolean');
+  }
+});
+
+test('reviewed safety catalogs do not silently reuse English source copy', () => {
+  const safetyPrefixes = ['emergency.', 'permissions.', 'privacy.', 'safetyCall.', 'home.mode', 'home.sos', 'onboarding.'];
+  const languageNeutralValues = new Set(['home.mode']);
+  const reviewed = availableLanguages.filter((language) => language.reviewRequired === false);
+
+  assert.deepEqual(reviewed.map((language) => language.code).sort(), ['en', 'es', 'fr', 'zh']);
+  for (const language of reviewed.filter((entry) => entry.code !== 'en')) {
+    const translated = flattenCatalog(language.messages);
+    for (const [key, englishValue] of Object.entries(reference)) {
+      if (!safetyPrefixes.some((prefix) => key.startsWith(prefix)) || languageNeutralValues.has(key)) continue;
+      assert.notEqual(
+        translated[key],
+        englishValue,
+        `${language.code}.${key} must not be an English safety fallback`
+      );
+    }
   }
 });
 
