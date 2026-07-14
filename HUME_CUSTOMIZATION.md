@@ -5,7 +5,7 @@ VeryLoving uses Hume's supported customization surfaces rather than modifying a 
 - An OpenAI-compatible SSE Custom Language Model endpoint at `POST /chat/completions`.
 - A `get_safety_tips` function tool registered on the EVI configuration.
 - `custom_session_id` in `session_settings` and `resumed_chat_group_id` on reconnect.
-- Hume's control plane to inject the CLM bearer key from the server after `chat_metadata` arrives.
+- The authenticated WebSocket gateway to replace any client-supplied CLM key with the server bearer in the first `session_settings` frame. A chat-ID control-plane endpoint remains a direct-development fallback only.
 - Octave voice design through the official TTS and voice-management endpoints.
 
 ## Implemented Architecture And Boundaries
@@ -13,7 +13,7 @@ VeryLoving uses Hume's supported customization surfaces rather than modifying a 
 This repository contains two runtime components:
 
 1. The Expo/React Native mobile client.
-2. A Node 22 service in `server/clm-server.cjs`, packaged by `server/Dockerfile` for HTTP plus raw WebSocket upgrades, with an HTTP-only Vercel entrypoint in `server/server.cjs`.
+2. A Node `22.x` service in `server/clm-server.cjs`, packaged by `server/Dockerfile` for HTTP plus raw WebSocket upgrades, with an HTTP-only Vercel Function adapter in `server/api/index.js`.
 
 The Node service implements:
 
@@ -30,7 +30,7 @@ The Node service implements:
 | `GET /v1/privacy/export` / `DELETE /v1/privacy/data` | Mobile app | VeryLoving session JWT | Exports or deletes the account's DynamoDB safety records; it does not orchestrate vendor deletion or session revocation. |
 | `GET` upgrade `/api/voice/hume-ws` | Mobile app | First WebSocket message carries the VeryLoving session JWT; gateway requires `voice:connect` | Opens Hume with the server-only key after authentication and relays bounded frames. |
 | `POST /v1/safety/tips` | Mobile-triggered Hume tool | Built-in session JWT first, optional `APP_AUTH_VERIFY_URL` fallback | Returns curated safety guidance. |
-| `POST /v1/hume/session/configure` | Mobile app after `chat_metadata` | Built-in session JWT first, optional `APP_AUTH_VERIFY_URL` fallback | Injects the CLM bearer into the Hume chat through Hume's control plane. |
+| `POST /v1/hume/session/configure` | Direct-development mobile path only | Built-in session JWT first, optional `APP_AUTH_VERIFY_URL` fallback | Development fallback for chat-ID control-plane configuration. Production returns `410`; the authenticated gateway configures proxy sessions. |
 
 The health endpoint and its response are covered by `server/clm-server.test.cjs`. It intentionally reports process liveness, not readiness of provider JWKS, session signing, DynamoDB, Hume credentials, WebSocket upgrades, or an optional upstream model. Protected endpoints fail closed when their required feature or authentication is absent.
 
@@ -45,7 +45,7 @@ Hume CLM -------------------------------------> POST /chat/completions (this rep
                                                     `--> optional upstream model
 ```
 
-Deploying `server/Dockerfile` provides both the HTTP endpoints and the WebSocket gateway above. Deploying `server/server.cjs` on Vercel provides the HTTP endpoints only. With configured AWS credentials and a compatible table, either HTTP path can provide DynamoDB persistence, account export, and account-record deletion for contacts, SOS acceptance, and current safety state. The service implements access/refresh JWT renewal but does **not** provision AWS infrastructure, persist refresh families for reuse detection/revocation, create deletion tombstones or vendor orchestration, provide SMS, push/contact delivery, SOS delivery receipts, a complete guardian delivery state machine, live sharing, route intelligence, or a single-use WebSocket-ticket service. This is a Node server entrypoint captured by Vercel, not a Next.js or SES implementation.
+Deploying `server/Dockerfile` provides both the HTTP endpoints and the WebSocket gateway above. Deploying `server/api/index.js` on Vercel provides the HTTP endpoints only. With configured AWS credentials and a compatible table, either HTTP path can provide DynamoDB persistence, account export, and account-record deletion for contacts, SOS acceptance, and current safety state. The service implements access/refresh JWT renewal but does **not** provision AWS infrastructure, persist refresh families for reuse detection/revocation, create deletion tombstones or vendor orchestration, provide SMS, push/contact delivery, SOS delivery receipts, a complete guardian delivery state machine, live sharing, route intelligence, or a single-use WebSocket-ticket service. This is a Node Function adapter, not a Next.js or SES implementation.
 
 The mobile client opens the configured proxy URL without credentials or Hume parameters in its query. Its first TLS-protected frame carries the short-lived VeryLoving session JWT plus bounded connection choices. The gateway verifies the JWT and `voice:connect` scope before opening Hume with the server-only API key. This removes bearer credentials from client URLs, but the session JWT is not a single-use voice ticket: replay protection, independent revocation, rate limiting, and ownership-bound resume/session configuration remain production gates. Query strings and logs must still be redacted because the server-to-Hume connection uses Hume's required credential query.
 
@@ -146,22 +146,24 @@ Expose the CLM through HTTPS before adding it to Hume. The public URL must end w
 
 ## Deploy HTTP Endpoints On Vercel
 
-Vercel can capture a Node server entrypoint that calls `listen()` during module startup. `server/server.cjs` uses that contract to mount the existing `createHandler()` routes as standard Node HTTP requests. It deliberately does not call `createVeryLovingCLMServer()` or attach the raw `upgrade` listener.
+Vercel requires supported functions under the project `api/` directory for this deployment. `server/api/index.js` invokes the existing `createHandler()` with `httpOnlyDeployment: true`; `server/vercel.json` rewrites every app route to that one Function while preserving the original path. The adapter deliberately does not call `createVeryLovingCLMServer()` or attach the raw `upgrade` listener.
 
-1. Import this repository into Vercel and set the project's **Root Directory** to `server`. This is required: Vercel must see `server.cjs`, `vercel.json`, and the server-specific `package.json` at the project root so it installs the AWS SDK and `ws` dependencies. Leave the framework preset and build/output commands at their zero-configuration defaults.
-2. Add the required production auth, phone, safety, JWT, Twilio, and DynamoDB values from `server/.env.example` to the Vercel project environment. Do not set `PORT`; Vercel captures the listening server. The HTTP-only entrypoint is marked in code, so it does not require the voice gateway's `HUME_API_KEY`, `HUME_CONFIG_ID`, or `HUME_ALLOWED_VOICE_IDS`. Set `HUME_CLM_BEARER_TOKEN` if this deployment will serve Hume's `/chat/completions` calls; without it that route fails closed with HTTP `503` while health, auth, and safety startup validation remains strict. Keep every secret server-side and never use an `EXPO_PUBLIC_` name for it. The full container entrypoint continues to require the complete Hume voice configuration in production.
-3. Deploy, then verify the captured HTTP entrypoint:
+1. Import this repository into Vercel and set the project's **Root Directory** to `server`. This is required: Vercel must see `api/index.js`, `vercel.json`, and the server-specific `package.json` at the project root so it installs the AWS SDK and `ws` dependencies. Leave the framework preset as Other and keep build/output commands at their defaults.
+2. Add the required production auth, phone, safety, JWT, Twilio, and DynamoDB values from `server/.env.example` to the Vercel project environment. Do not set `PORT`; Vercel invokes the Function and owns request routing. Shared configuration reads environment values, but HTTP-only startup does not require or validate `HUME_API_KEY`, `HUME_CONFIG_ID`, or `HUME_ALLOWED_VOICE_IDS` as gateway requirements. Do not install those gateway-only values in Vercel. Set `HUME_CLM_BEARER_TOKEN` if this deployment will serve Hume's `/chat/completions` calls; without it that route fails closed with HTTP `503` while health, auth, and safety startup validation remains strict. Keep every secret server-side and never use an `EXPO_PUBLIC_` name for it. The full container entrypoint continues to require complete Hume voice configuration in production.
+3. Deploy, then verify the HTTP Function adapter:
 
 ```bash
 curl --fail https://<vercel-project>.vercel.app/health
-curl -i https://<vercel-project>.vercel.app/chat/completions
+curl -i -X POST https://<vercel-project>.vercel.app/chat/completions \
+  -H 'Content-Type: application/json' \
+  --data '{"messages":[]}'
 ```
 
-The health request must return the documented liveness JSON, and the unauthenticated CLM request must fail closed. Then test provider exchange, Twilio Verify, DynamoDB account isolation, safety mutations, privacy export/deletion, authenticated CLM SSE, timeouts, and rollback against that exact deployment. `server/vercel.json` bounds a function invocation to 60 seconds; keep the configured upstream timeout below that ceiling and verify Hume's end-to-end CLM latency.
+The health request must return the documented liveness JSON. Without configured CLM authentication the POST returns `503`; after configuration, a missing/incorrect bearer returns `401`. Then run an authenticated SSE probe and test provider exchange, Twilio Verify, DynamoDB account isolation, safety mutations, privacy export/deletion, timeouts, and rollback against that exact deployment. Health or a route-level `404` is not authentication evidence. `server/vercel.json` bounds a function invocation to 60 seconds; keep the configured upstream timeout below that ceiling and verify Hume's end-to-end CLM latency.
 
 4. Set `EXPO_PUBLIC_API_BASE_URL=https://<vercel-project>.vercel.app`. The same root may be used for `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and Hume may use `https://<vercel-project>.vercel.app/chat/completions` as `HUME_CLM_URL`, only after their respective production tests pass.
 
-The existing Hume gateway is a long-lived raw WebSocket adapter attached to an `http.Server` upgrade event. It is not mounted by `server/server.cjs`, has not been adapted to or load-tested on Vercel's WebSocket facilities, and must not be inferred from a successful Vercel HTTP deployment. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` pointed at a separately reviewed `wss://` host (for example, the Docker service on Railway or ECS/Fargate) until a Vercel-specific transport is implemented and validated. Do not point it at `wss://<vercel-project>.vercel.app/api/voice/hume-ws`.
+The existing Hume gateway is a long-lived raw WebSocket adapter attached to an `http.Server` upgrade event. It is not mounted by `server/api/index.js`, has not been adapted to or load-tested on Vercel's WebSocket facilities, and must not be inferred from a successful Vercel HTTP deployment. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` pointed at a separately reviewed `wss://` host (for example, the Docker service on Railway or ECS/Fargate) until a Vercel-specific transport is implemented and validated. Do not point it at `wss://<vercel-project>.vercel.app/api/voice/hume-ws`.
 
 ## Deploy On Railway
 
@@ -211,7 +213,7 @@ The three upstream model variables are optional as a group. Phone authentication
 curl https://<railway-domain>/health
 ```
 
-6. Use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`. Configure the app with the domain root as `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and `wss://<railway-domain>/api/voice/hume-ws` as `EXPO_PUBLIC_HUME_WS_PROXY_URL`, only after HTTPS requests and WebSocket upgrades reach the same reviewed deployment.
+6. Choose one topology before assigning URLs. In a reviewed single-container deployment, use `https://<railway-domain>/chat/completions` as `HUME_CLM_URL`, the domain root as `EXPO_PUBLIC_API_BASE_URL` and `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, and `wss://<railway-domain>/api/voice/hume-ws` for voice. In the recommended Vercel-authoritative split, keep API/customization/CLM on Vercel, point only `EXPO_PUBLIC_HUME_WS_PROXY_URL` at Railway, and have the Railway ingress deny every public path except `/health` and the WebSocket upgrade route.
 
 Railway injects its own `PORT`; the server reads that value automatically. Secrets belong in Railway Variables, not Expo public variables or repository files.
 
@@ -280,7 +282,7 @@ curl -i https://<aws-domain>/chat/completions \
   --data '{"messages":[]}'
 ```
 
-The health request must succeed and the unauthenticated CLM request must fail. Then test provider exchange, invalid/expired session JWTs, Dynamo contact/SOS/session operations, the first-frame WebSocket handshake, an authenticated SSE request, a forced ECS task replacement (or App Runner redeploy), and rollback. Use the domain root as both mobile API/customization roots and `/api/voice/hume-ws` as the WSS path only after those tests pass.
+The health request must succeed and the unauthenticated CLM request must fail. Then test provider exchange, invalid/expired session JWTs, Dynamo contact/SOS/session operations, the first-frame WebSocket handshake, an authenticated SSE request, a forced ECS task replacement (or App Runner redeploy), and rollback. Use the AWS domain for every mobile/CLM/WSS URL only in the reviewed single-container topology. In the Vercel-authoritative split, point only WSS at AWS and deny its duplicate public HTTP API paths at the ALB/WAF.
 
 ## Production Authentication Contract
 
@@ -292,23 +294,23 @@ Before enabling CLM or live voice in a release build:
 2. Production-harden the implemented refresh flow with server-side refresh-family state, old-token reuse detection, revocation/account disablement, deletion tombstones, replay/abuse controls, provider credential-state checks, and consistent authenticated-request 401 retry. Rotation currently replaces the client-held token but does not invalidate the old stateless refresh JWT before expiry.
 3. Use an independently generated `SESSION_JWT_SECRET`, document rotation/overlap, and keep issuer/audience consistent across exchange, HTTP endpoints, and the gateway.
 4. Treat the first-frame session token as a bearer credential. Add connection rate limits, revocation, replay resistance or a narrower single-use ticket, and redact it from ingress, application, tracing, and crash telemetry.
-5. Keep client resume disabled until chat ownership is enforced, and bind `/v1/hume/session/configure` to a chat created by the same authenticated subject.
+5. Keep client resume disabled until chat ownership is enforced. Production proxy mode must continue configuring sessions in the authenticated gateway; keep the chat-ID `/v1/hume/session/configure` fallback restricted to direct development unless ownership binding is implemented.
 6. Rate-limit token exchange, session configuration, safety tools, safety mutations, and WebSocket creation independently. Record security events without message text, audio, precise location, raw session IDs, or credentials.
 
 Phone/SMS authentication is implemented through signed, short-lived challenges and Twilio Verify. Deployment credentials, Twilio geo/fraud/rate-limit policy, distributed API abuse controls, provider delivery evidence, and physical-device verification remain external launch work. `APP_AUTH_VERIFY_URL` remains an optional verifier fallback for app-facing HTTP endpoints; no developer bearer-token mechanism exists.
 
 ## Design The Branded Voice
 
-Generate three Octave 1 candidates:
+First inject `HUME_API_KEY` into the current process through the approved secret-manager runner; do not type the key on a command line or save it in shell history. Then generate three Octave 1 candidates:
 
 ```bash
-HUME_API_KEY=<key> npm run hume:voice:generate
+npm run hume:voice:generate
 ```
 
 Listen to the files under `artifacts/hume-voice/`, choose a `generationId` from its manifest, and save it:
 
 ```bash
-HUME_API_KEY=<key> npm run hume:voice:save -- <generation-id> "VeryLoving Warm Guardian"
+npm run hume:voice:save -- <generation-id> "VeryLoving Warm Guardian"
 ```
 
 The returned voice ID is used as `HUME_CUSTOM_VOICE_ID` during config provisioning and as `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` in the app.
@@ -317,8 +319,9 @@ The returned voice ID is used as `HUME_CUSTOM_VOICE_ID` during config provisioni
 
 The provisioning script registers the `get_safety_tips` function schema and creates an EVI 3 configuration that references both the tool and CLM. Supplying existing IDs publishes new versions instead of deleting production resources.
 
+Run it only from an audited operator process where the approved secret runner has already injected `HUME_API_KEY`; the examples below intentionally omit the secret.
+
 ```bash
-HUME_API_KEY=<key> \
 HUME_CLM_URL=https://voice-api.veryloving.ai/chat/completions \
 HUME_CUSTOM_VOICE_ID=<voice-id> \
 npm run hume:provision
@@ -327,7 +330,6 @@ npm run hume:provision
 The command prints the resulting `toolId` and `configId`. Save both in the deployment secret manager. To publish a later version without creating duplicate resources:
 
 ```bash
-HUME_API_KEY=<key> \
 HUME_CLM_URL=https://voice-api.veryloving.ai/chat/completions \
 HUME_TOOL_ID=<existing-tool-id> \
 HUME_CONFIG_ID=<existing-config-id> \
@@ -346,19 +348,19 @@ EXPO_PUBLIC_HUME_BRANDED_VOICE_ID=<voice-id>
 
 Leave `EXPO_PUBLIC_HUME_CONFIG_ID` empty when testing Hume's default EVI configuration. In proxy mode, the client never places it in the URL; it sends the choice in the first authenticated frame. A valid custom configuration ID is still required to activate VeryLoving's CLM, custom tools, and branded voice settings. Set server `HUME_CONFIG_ID` to the same approved value to prevent arbitrary client selection.
 
-Keep `EXPO_PUBLIC_HUME_CLM_ENABLED=false` until the control-plane and CLM endpoints are deployed. Otherwise the app intentionally blocks microphone startup when secure CLM setup fails.
+Keep `EXPO_PUBLIC_HUME_CLM_ENABLED=false` until the authenticated gateway and CLM endpoints are deployed. Otherwise the app intentionally blocks microphone startup when secure CLM setup fails.
 
 The current production mobile path must use `EXPO_PUBLIC_HUME_WS_PROXY_URL`, normally ending in `/api/voice/hume-ws` on the separately deployed container voice host. The Vercel HTTP adapter is not a valid value for this variable. A direct temporary Hume token remains a lower-level development option but is not fetched by the mobile hook. `EXPO_PUBLIC_HUME_API_KEY` remains a development-only compatibility path and is rejected at runtime in release builds; do not define it in an EAS production environment.
 
 ## Runtime Flow
 
-1. Apple/Google Sign-In returns a provider identity token; the app posts it to `/v1/auth/exchange`, then stores only the returned VeryLoving session JWT.
+1. Apple/Google Sign-In returns a provider identity token; the app posts it to `/v1/auth/exchange`, stores the validated VeryLoving access/refresh pair and profile in secure storage, and does not retain the provider assertion.
 2. The app opens the configured WSS proxy URL with no token or Hume connection parameters in the query.
 3. Its first frame is `{ type: "authenticate", access_token, connection: { config_id, voice_id, resumed_chat_group_id } }`.
 4. The gateway validates the session JWT and `voice:connect` scope, enforces configured Hume config/voice policy, then opens Hume with the server-only API key. On upstream open it sends `auth_ok` to the app; failures return `auth_error` and close.
-5. The app sends `custom_session_id` and the declared 48 kHz, mono, Linear16 format in `session_settings`.
-6. Hume returns `chat_metadata`; the app stores `chat_id` and `chat_group_id` locally and asks the authenticated backend to configure the chat. The Node service sends the CLM key through Hume's control plane.
-7. Only after secure CLM setup succeeds does the app enter `connected` and start the microphone.
+5. The app sends `custom_session_id` and the declared 48 kHz, mono, Linear16 format in `session_settings`. The gateway strips any client CLM key and injects its server-only `HUME_CLM_BEARER_TOKEN` before forwarding the first settings frame to Hume.
+6. Hume returns `chat_metadata`; the app stores `chat_id` and `chat_group_id` locally. Proxy mode does not make the separate chat-ID control-plane request.
+7. Only after authenticated gateway setup and `chat_metadata` succeed does the app enter `connected` and start the microphone.
 8. A root-mounted `expo-audio` stream requests 48 kHz mono Int16 buffers. The audio service validates the native format, base64-encodes each headerless PCM frame, and the WebSocket service sends chunked `audio_input` frames with a backpressure limit. Received assistant audio is queued and played serially.
 9. EVI tool calls are validated, executed against the authenticated safety-tips endpoint, and returned as correlated `tool_response` messages. Stale calls are aborted.
 

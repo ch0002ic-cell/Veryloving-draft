@@ -31,7 +31,7 @@ Empty values mean “not configured.” Boolean flags default to `false`; build 
 | `EXPO_PUBLIC_PHONE_AUTH_ENABLED` | Shows/enables phone authentication only after the deployed SMS endpoints are ready. | Release decision, not a vendor credential. Set `true` only with server `PHONE_AUTH_ENABLED=true`, complete Twilio Verify configuration, and passed abuse-control tests. Default: `false`. |
 | `EXPO_PUBLIC_HUME_WS_PROXY_URL` | TLS WebSocket endpoint for live PCM voice, normally `wss://<voice-host>/api/voice/hume-ws`. | URL of the separately deployed long-lived Node container. The Vercel HTTP adapter does not host this raw WebSocket route. Default: empty. |
 | `EXPO_PUBLIC_HUME_CONFIG_ID` | Public ID of the approved Hume EVI configuration containing the prompt, CLM, tools, and voice policy. | Hume Platform **EVI Configurations > More Options > Copy Configuration ID**, or the repository provisioning command. Default: empty. |
-| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root for CLM/control-plane calls from the app. | Deployed HTTP service URL; it can equal `EXPO_PUBLIC_API_BASE_URL` after verification. Default: empty, with the API base used as the runtime fallback. |
+| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root for authenticated CLM/tool HTTP calls from the app. | Deployed HTTP service URL; it can equal `EXPO_PUBLIC_API_BASE_URL` after verification. Default: empty, with the API base used as the runtime fallback. |
 | `EXPO_PUBLIC_HUME_CLM_ENABLED` | Enables the custom Hume language-model and tool integration. | Release readiness flag. Set `true` only after the config, bearer-protected CLM endpoint, and voice gateway pass end-to-end testing. Default: `false`. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Optional public ID of the approved Hume custom/library voice override. | Hume Voice Library or **My Voices**, or the repository voice-design command. Default: empty, which retains configured/default voice behavior. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct client-to-Hume development credential supported only in development builds. | Hume Platform API Keys. Default: empty. Prefer the server-side `HUME_API_KEY`; this variable must remain empty in preview and production because it is bundled into the app. |
@@ -77,10 +77,10 @@ Follow Google's [native-app OAuth guidance](https://developers.google.com/identi
 The repository's Vercel adapter serves ordinary HTTP routes. It does not replace the live voice WebSocket host.
 
 1. Import the repository in [Vercel](https://vercel.com/new) and set **Root Directory** to `server`.
-2. Leave framework, build, and output settings at their zero-configuration defaults so Vercel uses `server/server.cjs` and `server/vercel.json`.
+2. Leave framework, build, and output settings at their defaults. Vercel uses `server/api/index.js` as the HTTP-only Node Function and applies the catch-all route in `server/vercel.json`.
 3. Add the production values from `server/.env.example` under **Project Settings > Environment Variables**. Vercel's [environment-variable guide](https://vercel.com/docs/environment-variables) explains per-environment values. Store signing, Twilio, Hume, and upstream-model credentials as server secrets, never `EXPO_PUBLIC_*` values.
 4. Deploy, then verify `GET https://<project>.vercel.app/health` and the authenticated auth, phone, safety/privacy, and CLM routes. `/health` proves liveness only.
-5. Set `EXPO_PUBLIC_API_BASE_URL=https://<project>.vercel.app`. If the same deployment serves the reviewed CLM/control-plane routes, set `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` to the same root.
+5. Set `EXPO_PUBLIC_API_BASE_URL=https://<project>.vercel.app`. If the same deployment serves the reviewed CLM/tool HTTP routes, set `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` to the same root.
 6. Redeploy after changing Vercel variables; environment changes do not alter an existing immutable deployment.
 
 The Vercel adapter does not mount `/api/voice/hume-ws`. Vercel now documents [WebSocket support as a public beta](https://vercel.com/kb/guide/do-vercel-serverless-functions-support-websocket-connections), but this repository's raw Node `upgrade` gateway has not been adapted to that API or its function-duration/reconnect constraints. Deploy `server/Dockerfile` on a long-lived container platform that supports WebSocket upgrades (the repository runbook uses Railway or AWS), verify TLS/upgrades/authentication/backpressure, and set its `wss://` URL as `EXPO_PUBLIC_HUME_WS_PROXY_URL`.
@@ -144,4 +144,4 @@ Delete the pulled file after validation and keep it untracked. Then run the full
 npm run validate
 ```
 
-The authoritative external-owner and go/no-go evidence list is [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
+Follow [DEPLOYMENT_PLAN.md](./DEPLOYMENT_PLAN.md) to execute these steps in dependency order and record deployment evidence. The authoritative go/no-go evidence list remains [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).

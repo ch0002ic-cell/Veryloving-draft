@@ -36,11 +36,17 @@ function productionHTTPConfig(overrides = {}) {
   };
 }
 
-async function invoke(options, { method = 'GET', url = '/', headers = {}, body } = {}) {
-  const req = Readable.from(body === undefined ? [] : [Buffer.from(JSON.stringify(body))]);
+async function invoke(options, { method = 'GET', url = '/', headers = {}, body, rawBody } = {}) {
+  const requestBody = rawBody === undefined
+    ? (body === undefined ? undefined : JSON.stringify(body))
+    : rawBody;
+  const req = Readable.from(requestBody === undefined ? [] : [Buffer.from(requestBody)]);
   req.method = method;
   req.url = url;
   req.headers = Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value]));
+  if (requestBody !== undefined && !Object.hasOwn(req.headers, 'content-type')) {
+    req.headers['content-type'] = 'application/json';
+  }
   const chunks = [];
   const res = {
     headersSent: false,

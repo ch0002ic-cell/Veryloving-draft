@@ -12,3 +12,4 @@ build/
 *.mobileprovision
 .DS_Store
 artifacts/hume-voice/
+.vercel

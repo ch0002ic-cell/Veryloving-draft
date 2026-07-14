@@ -18,7 +18,6 @@ const {
   validatePhoneAuthConfig,
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
-const { attachVoiceGateway } = require('./voice-gateway.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
@@ -173,16 +172,29 @@ function bearerToken(req) {
 }
 
 async function readJson(req) {
+  const contentType = req.headers['content-type'];
+  const mediaType = typeof contentType === 'string'
+    ? contentType.split(';', 1)[0].trim().toLowerCase()
+    : '';
+  const jsonMediaType = mediaType === 'application/json'
+    || /^application\/[!#$%&'*+.^_`|~0-9a-z-]+\+json$/.test(mediaType);
+  if (!jsonMediaType) {
+    const error = new Error('Content-Type must be application/json');
+    error.statusCode = 415;
+    throw error;
+  }
+
   const chunks = [];
   let size = 0;
   for await (const chunk of req) {
-    size += chunk.length;
+    const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += bytes.length;
     if (size > MAX_BODY_BYTES) {
       const error = new Error('Request body is too large');
       error.statusCode = 413;
       throw error;
     }
-    chunks.push(chunk);
+    chunks.push(bytes);
   }
   if (!chunks.length) return {};
   try {
@@ -704,6 +716,7 @@ function createHandler(overrides = {}) {
 }
 
 function createVeryLovingCLMServer(options = {}) {
+  const { attachVoiceGateway } = require('./voice-gateway.cjs');
   const config = validateServerConfig(envConfig(options));
   const server = http.createServer(createHandler(config));
   attachVoiceGateway(server, config);

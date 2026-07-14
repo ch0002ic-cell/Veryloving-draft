@@ -24,7 +24,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 
 | External item | What is needed | Responsible | How to test |
 | --- | --- | --- | --- |
-| Hume credentials and EVI configuration | Production Hume account, server-only API key, CLM bearer, published tool/config IDs, branded voice ID, quotas, and retention approval. | Voice platform owner + Security | Provision a new and updated config; verify authenticated CLM SSE, tool correlation, control-plane `204`, quota/error handling, and redacted logs. |
+| Hume credentials and EVI configuration | Production Hume account, server-only API key, CLM bearer, published tool/config IDs, branded voice ID, quotas, and retention approval. | Voice platform owner + Security | Provision a new and updated config; verify authenticated CLM SSE, tool correlation, gateway-injected CLM authentication, quota/error handling, and redacted logs. |
 | Hume WebSocket production deployment | The in-repository first-frame authenticated `wss` gateway deployed behind TLS with token revocation/replay controls, rate limits, upgrade/idle-timeout policy, ownership-bound resume, quotas, and log redaction. | Backend/API owner + Security | Connect with valid, expired, replayed, wrong-audience, and revoked sessions; inspect proxy/ingress/tracing logs; run reconnect, backpressure, and load tests. |
 | Native Hume PCM validation | The implemented `expo-audio` 48 kHz mono Int16 stream proven to emit continuous frames and release audio resources correctly. | iOS/Android audio owner | Physical iOS/Android tests for two-way audio, frame timing, interruption, echo, Bluetooth routing, background/foreground, lock screen, and repeated start/stop. |
 | Production auth and SMS | Register Apple App ID `com.veryloving.app`, aligned Google Web/iOS/Android OAuth clients, exact backend `aud`/`azp` allowlists, and a Twilio Verify service; deploy the implemented provider exchange, signed phone challenge/check, and access/rotating-refresh renewal; add durable refresh-family revocation, uniform 401 recovery, distributed abuse controls, and provider delivery evidence. | Identity/backend owner + SMS vendor owner | Apple, Google, and phone tests for success, cancel, audience/presenter mismatch, expiry, old-refresh reuse, resend, throttling, revocation, 401 recovery, logout, deletion, and account switching. |
@@ -50,7 +50,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 
 ## Source And Deterministic Quality Gates
 
-Latest local evidence (14 July 2026): the redacted development environment validator, ESLint, 228/228 tests, Expo Doctor 20/20, and both production exports passed. The production environment validator remains deliberately blocked by the external values and readiness flags listed below. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. This does not close any unchecked production-service or physical-device item below.
+Latest local evidence (14 July 2026): the redacted development environment validator, ESLint, 234/234 tests, Expo Doctor 20/20, and the 2,557-module iOS and 2,640-module Android production exports passed. The production environment validator remains deliberately blocked by the external values and readiness flags listed below. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. This does not close any unchecked production-service or physical-device item below.
 
 - [ ] Working tree contains only reviewed release changes.
 - [ ] `npm ci` succeeds from a clean checkout using the release Node version.
@@ -79,8 +79,8 @@ Use [SETUP.md](./SETUP.md) for provider acquisition and the full purpose/source/
 | `EXPO_PUBLIC_PHONE_AUTH_ENABLED` | `true` only after the deployed Twilio Verify start/check endpoints pass readiness and abuse-control tests. | Public readiness flag; bundled | Identity/SMS owner + Release Engineering. |
 | `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Production `wss` endpoint for the separately hosted in-repository `/api/voice/hume-ws` gateway; no credentials in the URL and never the HTTP-only Vercel domain. | Public endpoint; bundled | Voice gateway deployment — Voice backend owner. |
 | `EXPO_PUBLIC_HUME_CONFIG_ID` | Published Hume EVI config ID; required when custom CLM is enabled. | Public identifier; bundled | Hume provisioning output — Voice platform owner. |
-| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root serving authenticated safety-tips and session-configure endpoints. | Public endpoint; bundled | CLM/API gateway deployment — Backend/API owner. |
-| `EXPO_PUBLIC_HUME_CLM_ENABLED` | `true` only after the CLM/control-plane contract passes production tests; otherwise `false`. | Public flag; bundled | Release decision — Voice platform owner + Release manager. |
+| `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root serving authenticated safety-tool HTTP calls. The production proxy configures Hume sessions in the gateway; direct session-configure returns `410` there. | Public endpoint; bundled | CLM/API gateway deployment — Backend/API owner. |
+| `EXPO_PUBLIC_HUME_CLM_ENABLED` | `true` only after the CLM and authenticated gateway contract passes production tests; otherwise `false`. | Public flag; bundled | Release decision — Voice platform owner + Release manager. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Approved Hume custom voice ID, or empty to use configured/default voice behavior. | Public identifier; bundled | Hume voice provisioning — Voice/brand owner. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Least-privilege public `pk.` runtime token restricted as Mapbox supports. Never use `sk.`. | Public; bundled | Mapbox account — Maps owner. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Normally `false`; `true` forces bundled offline companion behavior. | Public flag; bundled | Release configuration — Mobile owner. |
@@ -104,8 +104,8 @@ Use [SETUP.md](./SETUP.md) for provider acquisition and the full purpose/source/
 | Variable | Description / production value | Visibility | Source / owner |
 | --- | --- | --- | --- |
 | `NODE_ENV` | Must be `production`; activates strict startup validation. | Plain server config | Hosting platform — Backend/DevOps owner. |
-| `PORT` | HTTP and WebSocket listener port injected by Railway/App Runner or set to `8787` for the container. Do not set it on the Vercel captured-server deployment or override App Runner's reserved `PORT`. | Plain platform config | Hosting platform — DevOps owner. |
-| `HUME_API_KEY` | Hume server credential used by the voice gateway and control-plane requests. | Server secret | Hume account — Voice platform owner. |
+| `PORT` | HTTP and WebSocket listener port injected by Railway/App Runner or set to `8787` for the container. Do not set it on the Vercel Node Function deployment or override App Runner's reserved `PORT`. | Plain platform config | Hosting platform — DevOps owner. |
+| `HUME_API_KEY` | Hume server credential used by the voice gateway and operator/provisioning requests. | Server secret | Hume account — Voice platform owner. |
 | `HUME_CONFIG_ID` | Server-enforced EVI configuration ID; rejects conflicting client choices. | Plain identifier | Approved Hume config — Voice platform owner. |
 | `HUME_ALLOWED_VOICE_IDS` | Comma-separated allowlist of approved client-selectable voices; required by production startup validation. | Plain identifiers | Voice approval — Voice platform/brand owner. |
 | `HUME_ALLOW_CLIENT_RESUME` | Keep `false` until chat-group ownership is enforced. | Plain security flag | Security + Voice backend owner. |
@@ -164,7 +164,7 @@ These values are used by the provisioning/voice-design commands, not bundled int
 - [ ] `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` is available to the remote native builder and is not bundled into app `extra` values.
 - [ ] `EXPO_PUBLIC_HUME_WS_PROXY_URL` points to the deployed `/api/voice/hume-ws` gateway and contains no token or credential query.
 - [ ] `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL`, config ID, and branded voice ID match the deployed Hume account.
-- [ ] `EXPO_PUBLIC_HUME_CLM_ENABLED=true` only after the control-plane and authenticated tool endpoints pass production checks.
+- [ ] `EXPO_PUBLIC_HUME_CLM_ENABLED=true` only after the authenticated gateway, CLM, and tool endpoints pass production checks.
 - [ ] `EXPO_PUBLIC_ENABLE_OFFLINE_MODE=false` unless an approved release decision says otherwise; phone authentication uses only the production challenge/SMS service.
 - [ ] `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED=true`; server exchange/safety flags and protected endpoint probes pass.
 - [ ] Production has CLM and VL01 enabled; all service/battery/status/event/command UUIDs are firmware-approved and their schemas, authorization, and user-facing behavior are reviewed.
@@ -200,10 +200,10 @@ eas build --platform android --profile production
 
 ## Backend Deployment
 
-The deployable backend is the Node service in `server/`. `server/server.cjs` is a Vercel-captured HTTP entrypoint for Apple/Google exchange, Twilio Verify, access/refresh renewal, CLM/control-plane routes, and DynamoDB safety/privacy routes. `server/clm-server.cjs` plus `server/Dockerfile` also mounts the authenticated raw WebSocket gateway. This is not a Next.js or SES application, does not provision cloud infrastructure, and does not implement refresh-family revocation/reuse detection, distributed auth/SMS abuse state, push or guardian delivery, complete map routes/sharing, deletion tombstones, or vendor privacy orchestration.
+The deployable backend is the Node service in `server/`. `server/api/index.js` is the HTTP-only Vercel Function adapter for Apple/Google exchange, Twilio Verify, access/refresh renewal, CLM routes, and DynamoDB safety/privacy routes. `server/clm-server.cjs` plus `server/Dockerfile` also mounts the authenticated raw WebSocket gateway. This is not a Next.js or SES application, does not provision cloud infrastructure, and does not implement refresh-family revocation/reuse detection, distributed auth/SMS abuse state, push or guardian delivery, complete map routes/sharing, deletion tombstones, or vendor privacy orchestration.
 
 - [ ] `npm ci --prefix server` succeeds and `server/package-lock.json` is archived with the release.
-- [ ] For Vercel HTTP, set the project Root Directory to `server`, keep zero-configuration build/output settings, deploy `server.cjs`, and prove health, auth/phone, safety/privacy, CLM SSE, timeouts, and rollback. Set `EXPO_PUBLIC_API_BASE_URL` to its HTTPS root only after that evidence passes.
+- [ ] For Vercel HTTP, set the project Root Directory to `server`, keep framework/build/output settings at their defaults, deploy `api/index.js` with the committed catch-all rewrite, and prove health, auth/phone, safety/privacy, CLM SSE, timeouts, and rollback. Set `EXPO_PUBLIC_API_BASE_URL` to its HTTPS root only after that evidence passes.
 - [ ] Deploy `server/Dockerfile` on a reviewed long-lived host with `NODE_ENV=production`, platform-managed `PORT`, and WebSocket upgrade routing. Keep `EXPO_PUBLIC_HUME_WS_PROXY_URL` on this separate `wss://` host; the raw upgrade adapter is not mounted or validated on Vercel.
 - [ ] Configure independent `HUME_API_KEY`, `HUME_CLM_BEARER_TOKEN`, `SESSION_JWT_SECRET`, `PHONE_AUTH_CHALLENGE_SECRET`, and stable `PHONE_AUTH_SUBJECT_SECRET` values in the server secret manager.
 - [ ] Set `AUTH_EXCHANGE_ENABLED=true`, `PHONE_AUTH_ENABLED=true`, exact provider allowlists, Twilio Verify credentials/policy, issuer/audience/access+refresh TTLs, `SAFETY_API_ENABLED=true`, safety table/region/retention, and approved Hume config/voice policy. Keep client resume disabled until ownership enforcement exists.
@@ -226,7 +226,7 @@ curl --fail --silent --show-error https://<clm-domain>/health
 - [ ] `GET /v1/privacy/export` returns only the authenticated account's Dynamo records and `DELETE /v1/privacy/data` deletes them; session revocation/tombstone and backup/vendor deletion evidence is tracked separately.
 - [ ] `/api/voice/hume-ws` rejects absent/invalid/expired/wrong-scope first frames, never accepts a bearer query, enforces config/voice policy and backpressure, and passes production Hume tests.
 - [ ] `POST /v1/safety/tips` rejects missing/expired app authentication and returns the expected schema for a valid app session.
-- [ ] `POST /v1/hume/session/configure` rejects invalid auth/chat IDs and returns `204` only after the Hume control-plane request succeeds.
+- [ ] In production proxy mode, `POST /v1/hume/session/configure` returns `410` and the authenticated gateway injects the CLM bearer into the first sanitized `session_settings` frame; the direct-development fallback still rejects invalid auth/chat IDs and returns `204` only after its control-plane request succeeds.
 - [ ] Production refresh-family state/SMS, push/guardian delivery, and map/share services pass their own health, security, load, and rollback checks.
 - [ ] The mobile HTTP base/customization URL and Hume CLM URL route to the reviewed HTTP deployment; the mobile WebSocket proxy URL routes to the separately reviewed voice host. No release assumes that the Vercel HTTP domain exposes `/api/voice/hume-ws`.
 
