@@ -50,7 +50,7 @@ Grace is the release coordinator: every external gate needs a named individual a
 
 ## Source And Deterministic Quality Gates
 
-Latest local evidence (14 July 2026): `npm run validate` passed ESLint, 215/215 tests, Expo Doctor 20/20, and both production exports. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. This does not close any unchecked production-service or physical-device item below.
+Latest local evidence (14 July 2026): the redacted development environment validator, ESLint, 228/228 tests, Expo Doctor 20/20, and both production exports passed. The production environment validator remains deliberately blocked by the external values and readiness flags listed below. Clean iOS 26.5 simulator Debug runs passed the focused `onAnimatedValueUpdate` regression and a buffer-clean entitlement regression with none of the Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore warning signatures. This does not close any unchecked production-service or physical-device item below.
 
 - [ ] Working tree contains only reviewed release changes.
 - [ ] `npm ci` succeeds from a clean checkout using the release Node version.
@@ -66,6 +66,8 @@ Latest local evidence (14 July 2026): `npm run validate` passed ESLint, 215/215 
 - [ ] The release commit and dependency lockfile are archived with the evidence.
 
 ## Build Configuration And EAS
+
+Use [SETUP.md](./SETUP.md) for provider acquisition and the full purpose/source/default reference. Configuration is not complete until the redacted validator passes against the production profile and EAS contains the same variable names.
 
 ### Mobile And Native-Build Environment
 
@@ -148,6 +150,7 @@ These values are used by the provisioning/voice-design commands, not bundled int
 | `HUME_VOICE_NAME` | Approved stock Hume voice name when no custom voice ID is used; defaults to `Serene Assistant`. | Operator configuration | Voice/brand approval — Voice platform owner. |
 
 - [ ] EAS project owner, project ID, bundle ID, and Android package match the intended store applications.
+- [ ] **Configure environment variables:** follow [SETUP.md](./SETUP.md), then ensure `npm run validate-env -- --profile production` exits successfully against locally readable release values without printing a credential. The expected local Mapbox build-secret warning is closed separately with remote EAS evidence; every other warning is understood and recorded.
 - [ ] `eas env:list --environment production --scope project` shows the expected production variable names without copying values into the release record.
 - [ ] Every `EXPO_PUBLIC_` value is safe to expose in the binary; no Hume, Mapbox download, provider, signing, or backend secret uses that prefix.
 - [ ] `EXPO_PUBLIC_API_BASE_URL` points to the production HTTPS API gateway.

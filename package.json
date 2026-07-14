@@ -12,6 +12,7 @@
     "doctor": "npx expo-doctor",
     "lint": "eslint .",
     "test": "node --require @babel/register --test tests/*.test.cjs server/*.test.cjs",
+    "validate-env": "node scripts/validate-env.cjs",
     "validate": "node scripts/validate.cjs",
     "clm:start": "node server/clm-server.cjs",
     "hume:provision": "node scripts/provision-hume.mjs",

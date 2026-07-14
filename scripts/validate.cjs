@@ -9,6 +9,11 @@ const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 
 const steps = [
+  {
+    label: 'Development environment',
+    command: npmCommand,
+    args: ['run', 'validate-env', '--', '--profile', 'development', '--no-color']
+  },
   { label: 'ESLint', command: npmCommand, args: ['run', 'lint'] },
   { label: 'Tests', command: npmCommand, args: ['test'] },
   { label: 'Expo Doctor', command: npmCommand, args: ['run', 'doctor'] },

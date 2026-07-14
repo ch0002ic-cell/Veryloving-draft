@@ -29,6 +29,24 @@ cp server/.env.example server/.env
 
 Keep all server secrets out of `.env`. Expo variables beginning with `EXPO_PUBLIC_` are bundled into the app and must only contain public configuration.
 
+### Environment Setup
+
+The root `.env` configures the mobile bundle and native build; `server/.env` configures the local Node service. Follow [SETUP.md](./SETUP.md) for the purpose, source, default, and feature dependency of every root variable, plus current Mapbox, Google OAuth, Hume, Vercel, Twilio, DynamoDB, VL01, and EAS setup steps.
+
+Validate the local mobile/build environment without printing configured values:
+
+```bash
+npm run validate-env
+```
+
+Before a release build, validate the same values against the stricter production contract:
+
+```bash
+npm run validate-env -- --profile production
+```
+
+Missing optional development integrations are warnings; missing or invalid locally readable production requirements make the command fail. EAS secret values cannot be pulled for local validation, so the Mapbox native-download token warns locally and becomes blocking only on the remote EAS builder. The committed templates contain no credentials, and `.env`/`server/.env` stay untracked.
+
 Start Metro for a development build. LAN mode works with both Android devices and iOS simulators:
 
 ```bash
@@ -72,6 +90,8 @@ npx expo-doctor
 ### Environment Variable Reference
 
 Copy the committed templates and fill them locally or in the matching EAS/deployment environment. Do not commit values. The root `.env` is for public mobile configuration and local build inputs; `server/.env` is for the CLM service. Variables beginning with `EXPO_PUBLIC_` are embedded in the app bundle and are never secret.
+
+For provider dashboard links and one-time acquisition steps, use [SETUP.md](./SETUP.md). This section is the compact runtime contract; the launch owner/evidence matrix remains in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
 
 Mobile/public variables:
 
@@ -238,11 +258,13 @@ Run the complete release-oriented validation from a config-only source state (wi
 npm run validate
 ```
 
-The command runs ESLint, the deterministic test suite, Expo Doctor, then iOS and Android production exports in sequence. Both exports go to a unique temporary directory rather than the repository, and that directory is removed whether validation passes or fails. The command stops at the first failed gate and exits non-zero.
+The command first runs the redacted development-environment check, then ESLint, the deterministic test suite, Expo Doctor, and iOS/Android production exports in sequence. Both exports go to a unique temporary directory rather than the repository, and that directory is removed whether validation passes or fails. The command stops at the first failed gate and exits non-zero. Production credential readiness remains the separate `npm run validate-env -- --profile production` gate.
 
 The final 13 July 2026 audit run completed with ESLint clean, 163/163 tests, Expo Doctor 20/20, successful iOS/Android production exports, and 0 vulnerabilities from both root and server production dependency audits. The root result includes a narrow `xcode.uuid=11.1.1` override whose resolved tree and CommonJS `v4` compatibility were checked after the lockfile change. See [COMPREHENSIVE_FINAL_AUDIT.md](./COMPREHENSIVE_FINAL_AUDIT.md) for exact bundle evidence and the launch decision; green deterministic gates do not waive production-service or physical-device gates.
 
 The 14 July 2026 auth/Vercel/animation/entitlement follow-up then passed the same validator with ESLint clean, 215/215 tests, Expo Doctor 20/20, a 2,557-module/8.7 MB iOS Hermes export, and a 2,640-module/8.9 MB Android Hermes export. A clean Debug build installed on the iOS 26.5 simulator completed cold launch, onboarding/account transitions, and an isolated active voice-indicator probe without the historical `onAnimatedValueUpdate` warning. A subsequent buffer-clean cold launch produced one intentional notification-skip line and one memory-storage line, with no Dev Launcher `sharedPackageConnection`, notification-registration Keychain, or Auth SecureStore entitlement signature in the timestamped native-log query. This follow-up did not repeat the dependency audits or constitute a signed-device/provider deployment test.
+
+The environment-setup follow-up on 14 July 2026 passed the new redacted development validator, ESLint, 228/228 tests, Expo Doctor 20/20, and the same 2,557-module iOS and 2,640-module Android production exports. The intentionally incomplete local environment has no development validation errors; the production profile remains correctly blocked until the documented API, Hume, Mapbox, safety, and VL01 launch values are supplied.
 
 For a faster development loop, run tests and lint separately:
 

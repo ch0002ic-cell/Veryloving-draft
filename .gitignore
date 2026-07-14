@@ -5,6 +5,8 @@ build/
 /ios/
 /android/
 .env
+.env.*
+!.env.example
 *.jks
 *.p8
 *.mobileprovision
