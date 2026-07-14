@@ -1,12 +1,20 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { readFileSync } = require('node:fs');
+const { readFileSync, readdirSync } = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const { createNotificationsRuntime } = require('../src/services/notifications-runtime');
 const { createSecureStorage } = require('../src/services/secure-storage');
 const { isExpoGoRuntime } = require('../src/utils/runtime-environment');
+
+function sourceFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const absolutePath = path.join(directory, entry.name);
+    if (entry.isDirectory()) return sourceFiles(absolutePath);
+    return /\.(?:cjs|mjs|js|jsx|ts|tsx)$/.test(entry.name) ? [absolutePath] : [];
+  });
+}
 
 test('Expo Go detection does not misclassify an SDK 57 development client', () => {
   assert.equal(isExpoGoRuntime({ appOwnership: 'expo', executionEnvironment: 'storeClient' }), true);
@@ -76,6 +84,12 @@ test('Expo Go uses process memory without evaluating native SecureStore', async 
   });
 
   assert.equal(storage.isVolatile, true);
+  assert.deepEqual(await Promise.all([
+    storage.getItemAsync('veryloving.auth.token'),
+    storage.getItemAsync('veryloving.auth.refreshToken'),
+    storage.getItemAsync('veryloving.auth.user'),
+    storage.getItemAsync('veryloving.auth.onboarding')
+  ]), [null, null, null, null]);
   await Promise.all([
     storage.setItemAsync('token', 'value'),
     storage.setItemAsync('profile', 'tester')
@@ -108,35 +122,99 @@ test('Expo Go memory storage does not persist across JavaScript runtimes', async
 test('development and production storage delegate to native SecureStore without fallback', async () => {
   const values = new Map();
   let loads = 0;
+  let memoryModeActivations = 0;
   const storage = createSecureStorage({
     isExpoGo: () => false,
-    loadSecureStore: () => {
+    loadSecureStore: async () => {
       loads += 1;
       return {
         getItemAsync: async (key) => values.get(key) ?? null,
         setItemAsync: async (key, value) => values.set(key, value),
         deleteItemAsync: async (key) => values.delete(key)
       };
-    }
+    },
+    onMemoryMode: () => { memoryModeActivations += 1; }
   });
 
+  assert.deepEqual(await Promise.all([
+    storage.getItemAsync('token'),
+    storage.getItemAsync('refreshToken'),
+    storage.getItemAsync('user'),
+    storage.getItemAsync('onboarding')
+  ]), [null, null, null, null]);
   await storage.setItemAsync('token', 'native');
   assert.equal(await storage.getItemAsync('token'), 'native');
   assert.equal(loads, 1);
+  assert.equal(memoryModeActivations, 0);
 
+  let failedLoads = 0;
   const failingStorage = createSecureStorage({
     isExpoGo: () => false,
-    loadSecureStore: () => { throw new Error('ExpoSecureStore is missing'); }
+    loadSecureStore: () => {
+      failedLoads += 1;
+      throw new Error('ExpoSecureStore is missing');
+    }
   });
   await assert.rejects(failingStorage.getItemAsync('token'), /ExpoSecureStore is missing/);
+  await assert.rejects(failingStorage.getItemAsync('token'), /ExpoSecureStore is missing/);
+  assert.equal(failedLoads, 2);
 
+  let rejectingLoads = 0;
   const rejectingStorage = createSecureStorage({
     isExpoGo: () => false,
-    loadSecureStore: () => ({
-      getItemAsync: async () => { throw new Error('Keychain read failed'); }
-    })
+    loadSecureStore: () => {
+      rejectingLoads += 1;
+      return {
+        getItemAsync: async () => { throw new Error('Keychain read failed'); },
+        setItemAsync: async () => {},
+        deleteItemAsync: async () => {}
+      };
+    }
   });
   await assert.rejects(rejectingStorage.getItemAsync('token'), /Keychain read failed/);
+  await assert.rejects(rejectingStorage.getItemAsync('token'), /Keychain read failed/);
+  assert.equal(rejectingLoads, 1);
+  assert.equal(rejectingStorage.isVolatile, false);
+});
+
+test('dynamic SecureStore import normalizes default exports and retries invalid modules', async () => {
+  const values = new Map();
+  const backend = {
+    getItemAsync: async (key) => values.get(key) ?? null,
+    setItemAsync: async (key, value) => values.set(key, value),
+    deleteItemAsync: async (key) => values.delete(key)
+  };
+  let loads = 0;
+  const storage = createSecureStorage({
+    isExpoGo: () => false,
+    loadSecureStore: async () => {
+      loads += 1;
+      return loads === 1 ? { default: {} } : { default: backend };
+    }
+  });
+
+  await assert.rejects(storage.getItemAsync('token'), (error) => {
+    assert.equal(error.code, 'SECURE_STORAGE_MODULE_INVALID');
+    return true;
+  });
+  await storage.setItemAsync('token', 'native');
+  assert.equal(await storage.getItemAsync('token'), 'native');
+  assert.equal(loads, 2);
+});
+
+test('native Keychain package roots have exactly one guarded runtime loader each', () => {
+  const roots = ['app', 'src', 'server', 'scripts', 'plugins']
+    .map((directory) => path.resolve(process.cwd(), directory));
+  const references = roots.flatMap(sourceFiles).flatMap((absolutePath) => {
+    const source = readFileSync(absolutePath, 'utf8');
+    if (!/expo-(?:secure-store|notifications)/.test(source)) return [];
+    return [path.relative(process.cwd(), absolutePath)];
+  }).sort();
+
+  assert.deepEqual(references, [
+    'src/services/notifications.js',
+    'src/services/secure-storage.js'
+  ]);
 });
 
 test('entitlement-sensitive native paths remain guarded without disabling supported Apple auth', () => {
@@ -156,10 +234,16 @@ test('entitlement-sensitive native paths remain guarded without disabling suppor
   assert.doesNotMatch(auth, /import .*expo-secure-store/);
   assert.match(auth, /if \(!secureStorage\.isVolatile\) \{[\s\S]*Could not restore the secure session/);
   assert.doesNotMatch(secureStorage, /import .*expo-secure-store/);
+  assert.doesNotMatch(secureStorage, /require\(['"]expo-secure-store['"]\)/);
+  assert.match(secureStorage, /loadSecureStore = \(\) => import\('expo-secure-store'\)/);
+  const secureStorageInvoke = secureStorage.slice(
+    secureStorage.indexOf('const invoke = async'),
+    secureStorage.indexOf('return {', secureStorage.indexOf('const invoke = async'))
+  );
   assert.ok(
-    secureStorage.indexOf('if (volatile) return memoryBackend')
-      < secureStorage.indexOf('nativeBackend = loadSecureStore()'),
-    'Expo Go memory selection must precede the native SecureStore loader'
+    secureStorageInvoke.indexOf('if (volatile) return memoryBackend')
+      < secureStorageInvoke.indexOf('await getNativeBackend()'),
+    'Every operation must select Expo Go memory before requesting the dynamic SecureStore module'
   );
   assert.doesNotMatch(auth, /import .*expo-apple-authentication/);
   assert.match(auth, /const signInWithApple[\s\S]*require\('expo-apple-authentication'\)/);

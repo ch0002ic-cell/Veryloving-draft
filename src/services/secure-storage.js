@@ -13,14 +13,27 @@ function createMemoryBackend(memory) {
   };
 }
 
+function normalizeSecureStoreModule(secureStoreModule) {
+  const candidates = [secureStoreModule, secureStoreModule?.default];
+  const backend = candidates.find((candidate) => candidate
+    && typeof candidate.getItemAsync === 'function'
+    && typeof candidate.setItemAsync === 'function'
+    && typeof candidate.deleteItemAsync === 'function');
+  if (backend) return backend;
+
+  const error = new Error('The native secure-storage module is unavailable in this build.');
+  error.code = 'SECURE_STORAGE_MODULE_INVALID';
+  throw error;
+}
+
 export function createSecureStorage({
   isExpoGo = isExpoGoRuntime,
-  loadSecureStore = () => require('expo-secure-store'),
+  loadSecureStore = () => import('expo-secure-store'),
   onMemoryMode = () => {}
 } = {}) {
   const memory = new Map();
   const memoryBackend = createMemoryBackend(memory);
-  let nativeBackend = null;
+  let nativeBackendPromise = null;
   const volatile = Boolean(isExpoGo());
 
   // Expo Go's host binary does not carry VeryLoving's Keychain access group.
@@ -28,9 +41,24 @@ export function createSecureStorage({
   // evaluated and cannot emit an entitlement warning during module loading.
   if (volatile) onMemoryMode();
 
+  const getNativeBackend = () => {
+    if (!nativeBackendPromise) {
+      const attempt = Promise.resolve()
+        .then(loadSecureStore)
+        .then(normalizeSecureStoreModule);
+      nativeBackendPromise = attempt;
+      attempt.catch(() => {
+        // A rebuilt development client can retry a stale or missing native
+        // module without retaining a permanently rejected import promise.
+        if (nativeBackendPromise === attempt) nativeBackendPromise = null;
+      });
+    }
+    return nativeBackendPromise;
+  };
+
   const invoke = async (method, args) => {
     if (volatile) return memoryBackend[method](...args);
-    if (!nativeBackend) nativeBackend = loadSecureStore();
+    const nativeBackend = await getNativeBackend();
     return nativeBackend[method](...args);
   };
 
