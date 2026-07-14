@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { colors } from '../../src/constants/theme';
@@ -8,7 +8,7 @@ import {
 } from '../../src/utils/auth-routing';
 
 export default function AuthLayout() {
-  const { loading, user } = useAuth();
+  const { loading, onboardingComplete, user } = useAuth();
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}>
@@ -16,6 +16,10 @@ export default function AuthLayout() {
       </View>
     );
   }
+  // Navigate only after AuthContext has committed both pieces of state. An
+  // imperative redirect from a sign-in handler can race React's state update
+  // and make the root index observe the previous signed-out session.
+  if (user && onboardingComplete) return <Redirect href="/(tabs)" />;
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!user}>

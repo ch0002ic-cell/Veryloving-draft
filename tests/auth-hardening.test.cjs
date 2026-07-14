@@ -179,6 +179,10 @@ test('Apple Sign-In binds a secure nonce and exchanges the provider credential',
 
 test('development demo auth is volatile, internally guarded, and never creates a bearer token', () => {
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const authLayout = readFileSync(
+    path.resolve(process.cwd(), 'app/(auth)/_layout.js'),
+    'utf8'
+  );
   const createAccount = readFileSync(
     path.resolve(process.cwd(), 'app/(auth)/create-account.js'),
     'utf8'
@@ -200,7 +204,13 @@ test('development demo auth is volatile, internally guarded, and never creates a
   assert.match(createAccount, /demoModeAvailable \? \(/);
   assert.match(createAccount, /Continue as demo \(development only\)/);
   assert.match(createAccount, /Demo mode uses local fake data only/);
-  assert.match(createAccount, /await continueAsDemo\(\)[\s\S]*router\.replace\('\/'\)/);
+  const demoHandler = createAccount.slice(
+    createAccount.indexOf('const startDemo'),
+    createAccount.indexOf('\n\n  return (')
+  );
+  assert.match(demoHandler, /await continueAsDemo\(\)/);
+  assert.doesNotMatch(demoHandler, /router\.(?:push|replace)/);
+  assert.match(authLayout, /if \(user && onboardingComplete\) return <Redirect href="\/\(tabs\)" \/>/);
   assert.doesNotMatch(createAccount, /demo-access-token|fake-jwt|Bearer demo/i);
 });
 

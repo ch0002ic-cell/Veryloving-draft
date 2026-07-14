@@ -74,7 +74,6 @@ export default function CreateAccount() {
     setBusyAction('demo');
     try {
       await continueAsDemo();
-      router.replace('/');
     } catch (error) {
       Alert.alert(t('auth.signInFailedTitle'), error?.userMessage || t('auth.signInFailedMessage'));
     } finally {
