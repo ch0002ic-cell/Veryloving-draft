@@ -1,11 +1,21 @@
 const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
-const supportedLocales = languageCatalog
-  .filter((language) => language.messages)
-  .map((language) => language.code);
+const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
+
+function selectSupportedLocales(env = process.env) {
+  const enableRTLQA = env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES === 'true';
+  return languageCatalog
+    .filter((language) => language.messages && (
+      language.reviewRequired === false
+      || (enableRTLQA && RTL_QA_LANGUAGE_CODES.has(language.code))
+    ))
+    .map((language) => language.code);
+}
+
+const supportedLocales = selectSupportedLocales();
 const nativeLocales = Object.fromEntries(
   languageCatalog
-    .filter((language) => language.messages?.native)
+    .filter((language) => supportedLocales.includes(language.code) && language.messages?.native)
     .map((language) => [language.code, language.messages.native])
 );
 
@@ -108,6 +118,10 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && !phoneAuthEnabled) invalid.push('phone_auth_must_be_enabled');
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
+  if (production && offlineModeEnabled) invalid.push('offline_mode_must_be_disabled');
+  if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
+    invalid.push('public_hume_api_key_must_not_be_set');
+  }
   for (const [name, value] of [
     ['hume_config_id', env.EXPO_PUBLIC_HUME_CONFIG_ID],
     ['hume_branded_voice_id', env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID]
@@ -148,10 +162,6 @@ function createEnvironmentDiagnostics(env = {}) {
   }
 
   const warnings = [];
-  if (production && offlineModeEnabled) warnings.push('offline_mode_forced_for_production');
-  if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
-    warnings.push('public_hume_api_key_must_not_be_set_for_production');
-  }
   if (production && !easBuild && !configured.mapboxDownloadToken) {
     warnings.push('mapbox_download_token_not_verifiable_during_local_config_resolution');
   }
@@ -196,7 +206,9 @@ const config = {
   "name": "VeryLoving",
   "slug": "veryloving-react-native",
   "version": "1.0.0",
-  "orientation": "portrait",
+  // TestFlight is the release-candidate runtime, including iPad split-screen
+  // and rotation. Keep native orientation handling responsive on every device.
+  "orientation": "default",
   "icon": "./assets/icon.png",
   "userInterfaceStyle": "light",
   "backgroundColor": "#FFF8EF",
@@ -207,20 +219,14 @@ const config = {
   ],
   "ios": {
     "supportsTablet": true,
+    "requireFullScreen": false,
     "usesAppleSignIn": true,
     "bundleIdentifier": "com.veryloving.app",
     "buildNumber": "1",
     "infoPlist": {
       "NSMicrophoneUsageDescription": "VeryLoving needs access to your microphone for safety calls",
       "NSLocationWhenInUseUsageDescription": "VeryLoving needs your location to show the map and provide safety features",
-      "NSCameraUsageDescription": "VeryLoving needs your camera to take a profile photo.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving needs access to your photo library to choose a profile picture.",
       "NSBluetoothAlwaysUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
-      "UIBackgroundModes": [
-        "audio",
-        "bluetooth-central"
-      ],
       "ITSAppUsesNonExemptEncryption": false
     },
     "privacyManifests": {
@@ -372,6 +378,12 @@ const config = {
     "versionCode": 3,
     "allowBackup": false,
     "softwareKeyboardLayoutMode": "resize",
+    // FileSystem is used only with app-private cache paths. Its legacy package
+    // manifest still advertises broad storage access on older Android devices.
+    "blockedPermissions": [
+      "android.permission.READ_EXTERNAL_STORAGE",
+      "android.permission.WRITE_EXTERNAL_STORAGE"
+    ],
     "permissions": [
       "android.permission.ACCESS_COARSE_LOCATION",
       "android.permission.ACCESS_FINE_LOCATION",
@@ -380,8 +392,7 @@ const config = {
       "android.permission.FOREGROUND_SERVICE",
       "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
       "android.permission.FOREGROUND_SERVICE_MICROPHONE",
-      "android.permission.POST_NOTIFICATIONS",
-      "android.permission.CAMERA"
+      "android.permission.POST_NOTIFICATIONS"
     ],
     "predictiveBackGestureEnabled": false
   },
@@ -415,20 +426,6 @@ const config = {
         "image": "./assets/icon.png",
         "imageWidth": 180,
         "resizeMode": "contain"
-      }
-    ],
-    [
-      "expo-image-picker",
-      {
-        "photosPermission": "Allow VeryLoving to access photos you choose for your profile or safety sharing.",
-        "cameraPermission": "Allow VeryLoving to use the camera when you choose to take a profile or safety photo.",
-        "microphonePermission": "Allow VeryLoving to use the microphone for safety and AI companion calls.",
-        "colors": {
-          "cropToolbarColor": "#FFF8EF",
-          "cropToolbarIconColor": "#304557",
-          "cropToolbarActionTextColor": "#304557",
-          "cropBackgroundColor": "#FFF8EF"
-        }
       }
     ],
     "@react-native-google-signin/google-signin",
@@ -569,3 +566,4 @@ module.exports = createAppConfig;
 module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;
 module.exports.assertEnvironmentReady = assertEnvironmentReady;
 module.exports.reversedGoogleClientId = reversedGoogleClientId;
+module.exports.selectSupportedLocales = selectSupportedLocales;

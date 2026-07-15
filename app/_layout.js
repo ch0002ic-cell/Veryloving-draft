@@ -12,8 +12,15 @@ import { colors } from '../src/constants/theme';
 import { PROTECTED_ROOT_ROUTES } from '../src/utils/auth-routing';
 import { AppErrorBoundary } from '../src/components/AppErrorBoundary';
 import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
+import { NavigationPersistenceTracker } from '../src/components/NavigationPersistenceTracker';
 import { initializeNotifications } from '../src/services/notifications';
 import { logger } from '../src/utils/logger';
+
+const OUTER_ERROR_COPY = Object.freeze({
+  title: 'VeryLoving encountered a problem',
+  message: 'Close and reopen the app if retrying does not resolve the issue.',
+  retryLabel: 'Retry'
+});
 
 if (Platform.OS !== 'web') {
   I18nManager.allowRTL(true);
@@ -30,6 +37,7 @@ function LocalizedNavigation() {
   const navigation = (
     <>
       <StatusBar style="dark" backgroundColor={colors.cream} />
+      <NavigationPersistenceTracker />
       <Stack
         screenOptions={{
           animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'simple_push',
@@ -71,7 +79,7 @@ function LocalizedErrorBoundary({ children }) {
   );
 }
 
-export default function RootLayout() {
+function RootRuntime() {
   const fontsReady = useAppFonts();
   useEffect(() => {
     initializeNotifications().catch((error) => {
@@ -94,5 +102,17 @@ export default function RootLayout() {
         </AppProvider>
       </AuthProvider>
     </SafeAreaProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppErrorBoundary
+      title={OUTER_ERROR_COPY.title}
+      message={OUTER_ERROR_COPY.message}
+      retryLabel={OUTER_ERROR_COPY.retryLabel}
+    >
+      <RootRuntime />
+    </AppErrorBoundary>
   );
 }

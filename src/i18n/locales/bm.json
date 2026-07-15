@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving mago bɛ mikro sɔrɔli la lakana kama ani AI taamaɲɔgɔn weleli kama.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving bɛ baara kɛ ni i sigiyɔrɔ ye lakana karti ni lakanafɛnw kɛrɛfɛ.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving bɛ baara kɛ ni i ka yɔrɔ ye walasa ka dɛmɛ don lakana-seli ni kɔrɔtɔko boliw la.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving bɛ baara kɛ ni kɔkanna yɔrɔ ye walasa ka se lakananenw ni farati-yɔrɔ kɛrɛfɛfɛnw ma.",
-      "NSCameraUsageDescription": "VeryLoving bɛ baara kɛ ni kamera ye dɔrɔn ni i y’a sugandi ka profil walima lakana foto ta.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving bɛ baara kɛ ni i ka fototalan ye dɔrɔn ni i ye profil walima lakana ja sugandi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka ɲɔgɔn sɔrɔ i ka NorthStar lakana biyew la.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka ɲɔgɔn sɔrɔ i ka NorthStar lakana biyew la."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving bɛ baara kɛ ni Bluetooth ye walasa ka ɲɔgɔn sɔrɔ i ka NorthStar lakana biyew la."
     },
     "android": {
       "app_name": "VeryLoving"

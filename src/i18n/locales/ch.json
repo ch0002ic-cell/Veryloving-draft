@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving nisisåriu na guaha mikrofon-ña para i inañadi yan AI i inagang i mangga'chong-ña.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ha usa i lugat-mu para i mapa yan i siñat siha gi fi'on-mu.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ha usa i lugat-mu para u na'siguru na manmatto yan manmatto gi tiempon emergensia.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ha usa i lugat gi i sanlagu para i safu na finatto yan i lugåt peligro gi fi'on-ña.",
-      "NSCameraUsageDescription": "VeryLoving ha usa i kamera ha' yanggen malago' hao para un chule' un litråtu pat un litråtu put inañadi.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ha usa i litråtu-mu ha' yanggen un ayek un prugråma pat un litråtu put inañadi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu."
     },
     "android": {
       "app_name": "VeryLoving"

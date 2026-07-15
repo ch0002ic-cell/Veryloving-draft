@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving brauch Mikrofonzougang fir Sécherheet an AI Begleeder-Uruff.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving benotzt Är Plaz fir d'Sécherheetskaart an d'Sécherheetsfeatures an der Géigend.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving benotzt Är Standuert fir sécher Arrivée an Noutflëss z'ënnerstëtzen.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving benotzt Hannergrondlag fir sécher Arrivée an no bei Geforenzonen.",
-      "NSCameraUsageDescription": "VeryLoving benotzt d'Kamera nëmmen, wann Dir eng Profil- oder Sécherheetsfoto maache wëllt.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving benotzt Är Fotobibliothéik nëmmen, wann Dir e Profil oder Sécherheetsbild wielt.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving benotzt Bluetooth fir mat Ärem NorthStar Sécherheetsschmuck ze verbannen.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving benotzt Bluetooth fir mat Ärem NorthStar Sécherheetsschmuck ze verbannen."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving benotzt Bluetooth fir mat Ärem NorthStar Sécherheetsschmuck ze verbannen."
     },
     "android": {
       "app_name": "VeryLoving"

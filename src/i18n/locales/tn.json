@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving e tlhoka go kgona go dirisa maekerofouno go bona pabalesego le AI megala e e tsamayang le yone.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving e dirisa lefelo la gago la mmapa wa pabalesego le dikarolo tsa pabalesego tse di gaufi.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving e dirisa lefelo la gago go tshegetsa diphallo tsa go goroga ka pabalesego le tsa tshoganyetso.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving e dirisa lefelo la lemorago la go goroga ka pabalesego le diponagalo tsa lefelo le le kotsi le le gaufi.",
-      "NSCameraUsageDescription": "VeryLoving e dirisa khamera fela fa o tlhopha go tsaya senepe sa porofaele kgotsa sa pabalesego.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving e dirisa laeborari ya gago ya dinepe fela fa o tlhopha porofaele kgotsa setshwantsho sa pabalesego.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -28,6 +28,7 @@ function productionEnvironment(overrides = {}) {
     EXPO_PUBLIC_HUME_API_KEY: '',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.public-placeholder',
     EXPO_PUBLIC_ENABLE_OFFLINE_MODE: 'false',
+    EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'false',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
     EXPO_PUBLIC_VL01_ENABLED: 'true',
     EXPO_PUBLIC_VL01_SERVICE_UUID: '180f',
@@ -111,6 +112,16 @@ test('production reports missing requirements and rejects public secrets', () =>
   assert.equal(errors.has('EXPO_PUBLIC_ENABLE_OFFLINE_MODE'), true);
   assert.equal(errors.has('EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN'), true);
   assert.doesNotMatch(JSON.stringify(results), /must-not-be-printed|sk\.wrong-kind/);
+});
+
+test('RTL QA locale flag must be an explicit boolean', () => {
+  const environment = productionEnvironment({
+    EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'yes'
+  });
+  const results = validateEnvironment(environment, { profile: 'production' });
+  const issue = results.find((result) => result.name === 'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES');
+  assert.equal(issue?.level, 'error');
+  assert.match(issue?.message || '', /true or false/);
 });
 
 test('Hume configuration and voice overrides must be canonical IDs', () => {

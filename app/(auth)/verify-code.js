@@ -9,6 +9,7 @@ import { useAuth } from '../../src/context/AuthContext';
 import { colors, fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { formatE164ForDisplay } from '../../src/utils/phone';
+import { authenticationErrorTranslationKey } from '../../src/utils/auth-configuration';
 
 export default function VerifyCode() {
   const {
@@ -35,7 +36,7 @@ export default function VerifyCode() {
       setError(null);
       await verifyCode(code);
     } catch (verificationError) {
-      setError(verificationError?.userMessage || verificationError.message);
+      setError(t(authenticationErrorTranslationKey(verificationError)));
     } finally {
       setSubmitting(false);
     }
@@ -53,6 +54,7 @@ export default function VerifyCode() {
       <FeedbackBanner message={error || authError} />
       <Text style={styles.label}>{t('auth.verificationCode')}</Text>
       <TextInput
+        accessibilityLabel={t('auth.verificationCode')}
         autoComplete="one-time-code"
         keyboardType="number-pad"
         maxLength={6}

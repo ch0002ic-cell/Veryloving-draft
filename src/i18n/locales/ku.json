@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving پێویستی بە دەستگەیشتنی مایکرۆفۆن هەیە بۆ سەلامەتی و پەیوەندی AI یاوەر.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving شوێنەکەت بەکاردەهێنێت بۆ نەخشەی سەلامەتی و تایبەتمەندیەکانی سەلامەتی نزیک.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving شوێنەکەت بەکاردەهێنێت بۆ پاڵپشتی گەیشتنی سەلامەت و لێشاوی فریاگوزاری.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving شوێنی پاشبنەما بەکاردەهێنێت بۆ گەیشتنی سەلامەت و تایبەتمەندیەکانی ناوچەی مەترسی نزیک.",
-      "NSCameraUsageDescription": "VeryLoving کامێراکە تەنها کاتێک بەکاردەهێنێت کە تۆ بڕیار بدەیت وێنەیەکی پرۆفایل یان سەلامەتی بگریت.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving کتێبخانەی وێنەکانت تەنها کاتێک بەکاردێنێت کە وێنەیەکی پرۆفایل یان سەلامەتی هەڵدەبژێریت.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth بەکاردەهێنێت بۆ گرێدان بە خشڵی سەلامەتی NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth بەکاردەهێنێت بۆ گرێدان بە خشڵی سەلامەتی NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth بەکاردەهێنێت بۆ گرێدان بە خشڵی سەلامەتی NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

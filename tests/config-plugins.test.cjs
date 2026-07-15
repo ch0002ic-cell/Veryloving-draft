@@ -123,6 +123,20 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
 
   assert.equal(config.ios.privacyManifests.NSPrivacyTracking, false);
   assert.equal(config.ios.usesAppleSignIn, true);
+  assert.equal(config.ios.supportsTablet, true);
+  assert.equal(config.ios.requireFullScreen, false);
+  assert.equal(config.orientation, 'default');
+  for (const locale of Object.values(config.locales)) {
+    assert.deepEqual(
+      Object.keys(locale.ios).sort(),
+      [
+        'CFBundleDisplayName',
+        'NSBluetoothAlwaysUsageDescription',
+        'NSLocationWhenInUseUsageDescription',
+        'NSMicrophoneUsageDescription'
+      ]
+    );
+  }
   assert.equal(config.extra.appleClientId, config.ios.bundleIdentifier);
   assert.equal(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.length, 13);
   assert.ok(plugins.includes('./plugins/withPodfile.js'));
@@ -131,8 +145,9 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
   assert.ok(plugins.includes('./plugins/withAndroidManifest.js'));
 });
 
-test('Expo config owns Android permissions, keyboard behavior, and launch appearance', () => {
+test('Expo config minimizes native permissions and owns launch appearance', () => {
   const config = require('../app.config')();
+  const packageJSON = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   const plugins = new Map(config.plugins.map((plugin) => Array.isArray(plugin)
     ? [plugin[0], plugin[1]]
     : [plugin, undefined]));
@@ -141,14 +156,18 @@ test('Expo config owns Android permissions, keyboard behavior, and launch appear
   assert.equal(config.android.allowBackup, false);
   assert.equal(config.android.softwareKeyboardLayoutMode, 'resize');
   assert.equal(config.android.adaptiveIcon.monochromeImage, './assets/images/misc/StarIcon.png');
+  assert.deepEqual(config.android.blockedPermissions, [
+    'android.permission.READ_EXTERNAL_STORAGE',
+    'android.permission.WRITE_EXTERNAL_STORAGE'
+  ]);
   for (const permission of [
     'android.permission.ACCESS_FINE_LOCATION',
     'android.permission.RECORD_AUDIO',
-    'android.permission.POST_NOTIFICATIONS',
-    'android.permission.CAMERA'
+    'android.permission.POST_NOTIFICATIONS'
   ]) {
     assert.ok(permissions.has(permission), `${permission} must be declared`);
   }
+  assert.equal(permissions.has('android.permission.CAMERA'), false);
   assert.equal(permissions.has('android.permission.BLUETOOTH_ADVERTISE'), false);
   assert.equal(plugins.get('react-native-ble-plx').neverForLocation, true);
   assert.equal(plugins.get('react-native-ble-plx').isBackgroundEnabled, false);
@@ -168,9 +187,17 @@ test('Expo config owns Android permissions, keyboard behavior, and launch appear
     false
   );
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSLocationAlwaysUsageDescription'), false);
+  assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSCameraUsageDescription'), false);
+  assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSPhotoLibraryUsageDescription'), false);
+  assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSBluetoothPeripheralUsageDescription'), false);
+  assert.equal(Object.hasOwn(config.ios.infoPlist, 'UIBackgroundModes'), false);
   assert.equal(plugins.get('expo-status-bar').style, 'dark');
   assert.equal(plugins.get('expo-splash-screen').backgroundColor, '#FFF8EF');
-  assert.equal(plugins.get('expo-image-picker').cameraPermission.includes('VeryLoving'), true);
+  assert.equal(plugins.has('expo-image-picker'), false);
+  assert.equal(Object.hasOwn(packageJSON.dependencies, 'expo-image-picker'), false);
+  assert.equal(plugins.get('expo-audio').enableBackgroundPlayback, true);
+  assert.equal(plugins.get('expo-audio').enableBackgroundRecording, true);
+  assert.deepEqual(plugins.get('react-native-ble-plx').modes, ['central']);
 });
 
 test('Expo environment diagnostics are production-aware and never contain configuration values', () => {
@@ -211,6 +238,7 @@ test('Expo environment diagnostics identify unsafe production configuration with
     EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'not-a-google-client',
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://voice.example.test',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_ENABLE_OFFLINE_MODE: 'true',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'sk.should-not-be-public',
     EXPO_PUBLIC_HUME_API_KEY: 'must-not-ship'
   });
@@ -219,7 +247,8 @@ test('Expo environment diagnostics identify unsafe production configuration with
   assert.ok(diagnostics.invalid.includes('api_base_url_must_use_https'));
   assert.ok(diagnostics.invalid.includes('hume_websocket_proxy_must_use_wss'));
   assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
-  assert.ok(diagnostics.warnings.includes('public_hume_api_key_must_not_be_set_for_production'));
+  assert.ok(diagnostics.invalid.includes('public_hume_api_key_must_not_be_set'));
+  assert.ok(diagnostics.invalid.includes('offline_mode_must_be_disabled'));
 });
 
 test('remote production builds fail closed on missing or unsafe configuration', () => {
@@ -267,6 +296,26 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     () => createAppConfig.assertEnvironmentReady(invalidHumeIdentifiers),
     /Production configuration is invalid/
   );
+
+  const bundledPublicSecret = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EXPO_PUBLIC_HUME_API_KEY: 'must-never-ship'
+  });
+  assert.ok(bundledPublicSecret.invalid.includes('public_hume_api_key_must_not_be_set'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(bundledPublicSecret),
+    /Production configuration is invalid/
+  );
+
+  const forcedOffline = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EXPO_PUBLIC_ENABLE_OFFLINE_MODE: 'true'
+  });
+  assert.ok(forcedOffline.invalid.includes('offline_mode_must_be_disabled'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(forcedOffline),
+    /Production configuration is invalid/
+  );
 });
 
 test('Google iOS client IDs produce the native reversed URL scheme', () => {
@@ -307,4 +356,13 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.production.environment, 'production');
   assert.equal(eas.build.production.distribution, 'store');
   assert.equal(eas.build.production.autoIncrement, true);
+  assert.equal(eas.build.production.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'false');
+  assert.equal(eas.build.testflight.extends, 'production');
+  assert.equal(eas.build.testflight.environment, 'production');
+  assert.equal(eas.build.testflight.distribution, 'store');
+  assert.equal(eas.build.testflight.autoIncrement, true);
+  assert.equal(eas.build.testflight.ios.simulator, false);
+  assert.equal(eas.build.testflight.env.VERYLOVING_BUILD_PROFILE, 'production');
+  assert.equal(eas.build.testflight.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
+  assert.deepEqual(eas.submit.testflight, {});
 });

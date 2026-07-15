@@ -56,7 +56,7 @@ export default function DeviceManagement() {
         accessibilityLabel={device.id ? `${t('common.remove')} ${device.name}` : t('device.connect')}
         variant={device.id ? 'danger' : 'primary'}
         loading={busy}
-        onPress={() => device.id ? remove() : router.push('/(auth)/jewelry-setup?mode=standalone')}
+        onPress={() => device.id ? remove() : router.push('/jewelry-setup?mode=standalone')}
       />
     </Screen>
   );

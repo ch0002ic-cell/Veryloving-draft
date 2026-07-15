@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
 import { Screen } from '../../../src/components/Screen';
 import { Header } from '../../../src/components/Header';
 import { Card } from '../../../src/components/Card';
@@ -11,10 +10,13 @@ import { useAppState } from '../../../src/context/AppContext';
 import { useI18n } from '../../../src/context/I18nContext';
 import { colors, fonts } from '../../../src/constants/theme';
 import { logger } from '../../../src/utils/logger';
+import { FeedbackBanner } from '../../../src/components/FeedbackBanner';
+import { useOnboardingNavigation } from '../../../src/hooks/useOnboardingNavigation';
 
 export default function ChooseVoiceTutorial() {
   const { settings, updateSettings } = useAppState();
   const { t } = useI18n();
+  const { advanceTo, advancing, navigationError } = useOnboardingNavigation();
   const [savingVoiceId, setSavingVoiceId] = useState(null);
 
   const selectVoice = async (voiceId) => {
@@ -57,16 +59,18 @@ export default function ChooseVoiceTutorial() {
           </Card>
         );
       })}
+      <FeedbackBanner message={navigationError} />
       <Button
         title={t('common.continue')}
-        onPress={() => router.push('/(auth)/completion')}
-        disabled={Boolean(savingVoiceId)}
+        loading={advancing}
+        onPress={() => advanceTo('/(auth)/tutorial/home-mode')}
+        disabled={Boolean(savingVoiceId) || advancing}
       />
       <Button
         title={t('common.skipTutorial')}
         variant="ghost"
-        onPress={() => router.replace('/(auth)/completion')}
-        disabled={Boolean(savingVoiceId)}
+        onPress={() => advanceTo('/(auth)/completion', { replace: true })}
+        disabled={Boolean(savingVoiceId) || advancing}
       />
     </Screen>
   );

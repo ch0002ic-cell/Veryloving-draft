@@ -10,7 +10,7 @@ import { useI18n } from '../src/context/I18nContext';
 import { logger } from '../src/utils/logger';
 
 export default function QuickShareLocation() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const mountedRef = useRef(true);
   const startedRef = useRef(false);
   const [busy, setBusy] = useState(true);
@@ -21,18 +21,18 @@ export default function QuickShareLocation() {
     setError(null);
     try {
       const location = await requestCurrentLocation();
-      await shareQuickLocation(location);
+      await shareQuickLocation(location, { locale });
     } catch (shareError) {
       logger.warn('[QuickShare] Could not share a location snapshot', {
         errorCode: shareError?.code || shareError?.name || 'LOCATION_SHARE_FAILED'
       });
       if (mountedRef.current) {
-        setError(shareError?.message || 'We could not share your location. Check location access and try again.');
+        setError(t('releaseCritical.locationShareFailed'));
       }
     } finally {
       if (mountedRef.current) setBusy(false);
     }
-  }, []);
+  }, [locale, t]);
 
   useEffect(() => {
     mountedRef.current = true;

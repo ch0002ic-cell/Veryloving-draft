@@ -4,6 +4,7 @@ import { runSOSFlow } from './sos-flow';
 import {
   clearPendingSOSAttempt,
   loadOrCreatePendingSOSAttempt,
+  markSOSAttemptAccepted,
   runAndPersistSOS
 } from './sos-state';
 import { shareLocationSnapshot } from './location-share';
@@ -32,6 +33,21 @@ function confirmEmergencyCall(contact) {
   });
 }
 
+async function finalizeAcceptedSOSAttempt(idempotencyKey) {
+  if (!idempotencyKey) return;
+  try {
+    // Keep the accepted tombstone until the next activation replaces it. A
+    // process restart between acceptance and cleanup therefore cannot reuse the
+    // completed request as though it were an indeterminate retry.
+    await markSOSAttemptAccepted(idempotencyKey);
+  } catch {
+    // If durable state could not be updated, removing the old pending key is the
+    // next safest outcome. markSOSAttemptAccepted also retains an in-memory
+    // acceptance guard when both operations are unavailable.
+    await clearPendingSOSAttempt(idempotencyKey).catch(() => {});
+  }
+}
+
 export async function triggerSOS(contacts = [], { accessToken, accountId, location } = {}) {
   const backendEnabled = config.safetyBackendEnabled && Boolean(accessToken);
   let pendingAttempt = null;
@@ -45,21 +61,29 @@ export async function triggerSOS(contacts = [], { accessToken, accountId, locati
       contactIds: synchronizedContactIds
     }).catch(() => ({ idempotencyKey: createAuthenticationNonce() }));
   }
-  const result = await runAndPersistSOS(() => runSOSFlow({
-    contacts,
-    confirmCall: confirmEmergencyCall,
-    openDialer: callNumber,
-    dispatchSOS: backendEnabled
-      ? (allContacts) => dispatchBackendSOS({
-        accessToken,
-        idempotencyKey: pendingAttempt.idempotencyKey,
-        contactIds: allContacts.map((contact) => contact.id).filter(Boolean),
-        location
-      })
-      : undefined
-  }));
+  let result;
+  try {
+    result = await runAndPersistSOS(() => runSOSFlow({
+      contacts,
+      confirmCall: confirmEmergencyCall,
+      openDialer: callNumber,
+      dispatchSOS: backendEnabled
+        ? (allContacts) => dispatchBackendSOS({
+          accessToken,
+          idempotencyKey: pendingAttempt.idempotencyKey,
+          contactIds: allContacts.map((contact) => contact.id).filter(Boolean),
+          location
+        })
+        : undefined
+    }));
+  } catch (error) {
+    if (error?.backendStatus === 'accepted') {
+      await finalizeAcceptedSOSAttempt(pendingAttempt?.idempotencyKey);
+    }
+    throw error;
+  }
   if (result.backendStatus === 'accepted' && pendingAttempt?.idempotencyKey) {
-    await clearPendingSOSAttempt(pendingAttempt.idempotencyKey).catch(() => {});
+    await finalizeAcceptedSOSAttempt(pendingAttempt.idempotencyKey);
   }
   return result;
 }
@@ -68,6 +92,6 @@ export function callNumber(phone) {
   return openPhoneCall(phone, Linking);
 }
 
-export function shareQuickLocation(location) {
-  return shareLocationSnapshot(location, Share);
+export function shareQuickLocation(location, options) {
+  return shareLocationSnapshot(location, Share, options);
 }

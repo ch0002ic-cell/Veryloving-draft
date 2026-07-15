@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving nisqa.",
       "NSMicrophoneUsageDescription": "VeryLoving micrófono yaykuyta munan mana imamanta manchachiypaq chaymanta AI compañero waqyaykunapaq.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving maypi kasqaykita llamk'achin seguridad mapapaq chaymanta qaylla seguridad ruwanakunapaq.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving maypi kasqaykita llamk'achin, mana imamanta manchachikuq-chayay chaymanta emergencia flujos yanapakuypaq.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving qhipa kitita llamk'achin mana imamanta manchachikuq-chayamuypaq chaymanta qaylla peligro-zona ruwanakunapaq.",
-      "NSCameraUsageDescription": "VeryLoving huk perfil utaq seguridad fotota hurquyta akllaptiykilla cámarata llamk'achin.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving foto bibliotecaykita llamk'achin huk perfil utaq seguridad siq'ita akllaptiykilla.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq."
     },
     "android": {
       "app_name": "VeryLoving nisqa."

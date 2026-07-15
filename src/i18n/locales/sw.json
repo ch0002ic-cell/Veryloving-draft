@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving inahitaji ufikiaji wa maikrofoni kwa usalama na simu AI mwenza.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving hutumia eneo lako kwa ramani ya usalama na vipengele vya usalama vilivyo karibu.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving hutumia eneo lako kusaidia kuwasili salama na mtiririko wa dharura.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving hutumia eneo la usuli kwa usalama na vipengele vya karibu vya eneo la hatari.",
-      "NSCameraUsageDescription": "VeryLoving hutumia kamera tu unapochagua kuchukua wasifu au picha ya usalama.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving hutumia maktaba yako ya picha tu unapochagua wasifu au picha ya usalama.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

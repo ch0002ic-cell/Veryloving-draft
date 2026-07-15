@@ -17,6 +17,7 @@ export function FeedbackBanner({ message, tone = 'error', actionLabel, onAction 
   const palette = toneStyles[tone] || toneStyles.info;
   return (
     <Animated.View
+      accessibilityLiveRegion={tone === 'error' ? 'assertive' : 'polite'}
       accessibilityRole={tone === 'error' ? 'alert' : 'summary'}
       entering={ENTERING}
       exiting={EXITING}

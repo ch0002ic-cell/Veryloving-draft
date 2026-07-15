@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving buƙatar samun damar makirufo don aminci da kiran abokin AI.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving amfani da wurinka don taswirar tsaro da siffofin tsaro na kusa.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving amfani da wurinka don tallafawa aminci-zuwan da kwararar gaggawa.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving amfani da wuri na baya don aminci-isowa da kuma kusa da hadarin zone fasali.",
-      "NSCameraUsageDescription": "VeryLoving amfani da kyamara ne kawai lokacin da ka zaɓi ɗaukar hoto ko aminci.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving amfani da ɗakin karatu na hotunan ka ne kawai idan ka zaɓi bayanin martaba ko hoton aminci.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku."
     },
     "android": {
       "app_name": "VeryLoving"

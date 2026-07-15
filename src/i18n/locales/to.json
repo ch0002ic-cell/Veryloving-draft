@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "ʻVeryLoving fie maʻu ke hu ki he maika ke malu mo AI ʻa e ngaahi telefoni mo e hoa.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving fakaʻaongaʻi ho feituʻu ki he mape malu mo e ngaahi meʻa malu ofi mai.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e feituʻu ʻoku ke ʻi ai ke tokoni ki he tuʻuta malu mo e ngaahi meʻa fakatuʻupakee.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving fakaʻaongaʻi ʻa e feituʻu puipuituʻa ki he tuʻuta malu mo e feituʻu fakatuʻutamaki ofi mai.",
-      "NSCameraUsageDescription": "ʻVeryLoving fakaʻaongaʻi pe ʻa e meʻafaitaa ʻi he taimi ʻoku ke fili ai ke faitaaʻi ha fakamatala fakafoʻituitui pe ta malu.",
-      "NSPhotoLibraryUsageDescription": "ʻVeryLoving fakaʻaongaʻi pe hoʻo laipeli taa ʻi he taimi ʻoku ke fili ai ha fakamatala fakafoʻituitui pe ʻimisi malu.",
-      "NSBluetoothAlwaysUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi.",
-      "NSBluetoothPeripheralUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi."
+      "NSBluetoothAlwaysUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi."
     },
     "android": {
       "app_name": "VeryLoving"

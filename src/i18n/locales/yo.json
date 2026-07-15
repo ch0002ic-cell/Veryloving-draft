@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving nilo iraye si gbohungbohun fun aabo ati AI awọn ipe ẹlẹgbẹ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving nlo ipo rẹ fun maapu aabo ati awọn ẹya aabo nitosi.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving nlo ipo rẹ lati ṣe atilẹyin wiwa-ailewu ati ṣiṣan pajawiri.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving n lo ipo abẹlẹ fun wiwa-ailewu ati awọn ẹya agbegbe-ewu nitosi.",
-      "NSCameraUsageDescription": "VeryLoving nlo kamẹra nikan nigbati o yan lati ya profaili tabi fọto ailewu.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving nlo ile-ikawe fọto rẹ nikan nigbati o yan profaili kan tabi aworan ailewu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving nlo Bluetooth lati sopọ si NorthStar ohun ọṣọ aabo rẹ.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving nlo Bluetooth lati sopọ si NorthStar ohun ọṣọ aabo rẹ."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving nlo Bluetooth lati sopọ si NorthStar ohun ọṣọ aabo rẹ."
     },
     "android": {
       "app_name": "VeryLoving"

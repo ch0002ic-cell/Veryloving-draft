@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving oikotevẽ micrófono jeike seguridad ha AI compañero ñehenói.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving oipuru nde reimeha pe mapa seguridad rehegua ha umi mba’e seguridad rehegua hi’aguĩvape g̃uarã.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving oipuru nde reimeha oipytyvõ hag̃ua umi flujo de llegada segura ha emergencia.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving oipuru tenda tenondegua umi mba’ekuaarã zona de peligro-pe g̃uarã, og̃uahẽha seguro ha hi’aguĩva.",
-      "NSCameraUsageDescription": "VeryLoving oipuru cámara reiporavóramo añoite rejagarra hag̃ua peteĩ perfil térã taꞌãngamýi seguridad rehegua.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving oipuru nde taꞌãngamýi ryru reiporavóramo añoite peteĩ perfil térã taꞌãnga seguridad rehegua.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive."
     },
     "android": {
       "app_name": "VeryLoving"

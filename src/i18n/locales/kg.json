@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving kele na mfunu ya kukota na mikro sambu na lutaninu mpi AI kubinga ya banduku.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ke sadilaka kisika na nge sambu na karte ya lutaninu mpi bima ya lutaninu yina kele pene-pene.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ke sadilaka kisika na nge sambu na kusadisa ba nzila ya kukwisa na lutaninu mpi ya nswalu.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ke sadilaka kisika ya nima sambu na bima ya kisika ya kigonsa ya pene-pene mpi ya kisika ya kigonsa.",
-      "NSCameraUsageDescription": "VeryLoving ke sadilaka kamera kaka ntangu nge ke ponaka kubaka foto ya kimuntu to ya lutaninu.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ke sadilaka biblioteke ya bafoto na nge kaka kana nge pona kifwanisu ya profil to ya lutaninu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

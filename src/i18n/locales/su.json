@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving peryogi aksés mikropon pikeun kaamanan sareng AI telepon pendamping.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving nganggo lokasi anjeun pikeun peta kaamanan sareng fitur kaamanan caket dieu.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ngagunakeun lokasi anjeun pikeun ngadukung kadatangan aman sareng aliran darurat.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ngagunakeun lokasi latar tukang pikeun fitur zona bahaya anu aman sareng caket dieu.",
-      "NSCameraUsageDescription": "VeryLoving nganggo kaméra ngan nalika anjeun milih nyandak poto profil atanapi kaamanan.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ngagunakeun perpustakaan poto anjeun ngan lamun anjeun milih profil atawa gambar kaamanan.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun."
     },
     "android": {
       "app_name": "VeryLoving"

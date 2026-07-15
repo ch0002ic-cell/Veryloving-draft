@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving хәүефһеҙлек һәм AI ярҙамсы шылтыратыуҙар өсөн микрофон аша инеү кәрәк.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving һеҙҙең урынығыҙҙы хәүефһеҙлек картаһы һәм яҡындағы хәүефһеҙлек функциялары өсөн ҡуллана.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving һеҙҙең урынығыҙҙы хәүефһеҙ килеү һәм ашығыс ағыуҙарҙы тәьмин итеү өсөн ҡуллана.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving хәүефһеҙ килеү һәм яҡын тирә-яҡтағы хәүеф зонаһы функциялары өсөн фон урынлашыуын ҡуллана.",
-      "NSCameraUsageDescription": "VeryLoving камераны тик профиль йәки хәүефһеҙлек фотоһүрәте төшөргәндә генә ҡуллана.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving фото китапханағыҙҙы тик профиль йәки хәүефһеҙлек фотоһы һайлағанда ғына ҡуллана.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth NorthStar хәүефһеҙлек биҙәүестәренә тоташтырыу өсөн ҡуллана.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth NorthStar хәүефһеҙлек биҙәүестәренә тоташтырыу өсөн ҡуллана."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth NorthStar хәүефһеҙлек биҙәүестәренә тоташтырыу өсөн ҡуллана."
     },
     "android": {
       "app_name": "VeryLoving"

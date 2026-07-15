@@ -9,8 +9,13 @@ import {
   googleSignInCancellationError
 } from '../utils/google-auth';
 import {
+  COMPLETION_ONBOARDING_ROUTE,
+  createOnboardingProgress,
   createOnboardingMarker,
-  isOnboardingMarkerValid
+  INITIAL_ONBOARDING_ROUTE,
+  isOnboardingMarkerValid,
+  nextOnboardingProgress,
+  parseOnboardingProgress
 } from '../utils/onboarding-state';
 import {
   confirmPhoneVerification,
@@ -26,6 +31,7 @@ import {
 } from '../utils/runtime-environment';
 import {
   authenticationCapabilities,
+  authenticationErrorTranslationKey,
   createAuthError,
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
@@ -42,6 +48,12 @@ import {
   migrateLegacySession,
   parseSessionEnvelope
 } from '../utils/session-envelope';
+import { withTimeout } from '../utils/async';
+import {
+  createPhoneVerificationState,
+  parsePhoneVerificationState
+} from '../utils/phone-verification-state';
+import { ensureAccountDataOwner } from '../services/account-data-boundary';
 const AuthContext = createContext(null);
 const SESSION_KEY = 'veryloving.auth.session.v1';
 const SIGNED_OUT_KEY = 'veryloving.auth.signedOut';
@@ -49,6 +61,9 @@ const LEGACY_TOKEN_KEY = 'veryloving.auth.token';
 const LEGACY_REFRESH_TOKEN_KEY = 'veryloving.auth.refreshToken';
 const LEGACY_USER_KEY = 'veryloving.auth.user';
 const ONBOARDING_KEY = 'veryloving.auth.onboarding';
+const ONBOARDING_PROGRESS_KEY = 'veryloving.auth.onboardingProgress.v1';
+const PHONE_VERIFICATION_KEY = 'veryloving.auth.phoneVerification.v1';
+const AUTH_RESTORE_TIMEOUT_MS = 12000;
 const LEGACY_SESSION_KEYS = [LEGACY_TOKEN_KEY, LEGACY_REFRESH_TOKEN_KEY, LEGACY_USER_KEY];
 const DEVELOPMENT_DEMO_USER = Object.freeze({
   id: 'demo:local',
@@ -64,7 +79,9 @@ export const AUTH_STORAGE_KEYS = {
   token: LEGACY_TOKEN_KEY,
   refreshToken: LEGACY_REFRESH_TOKEN_KEY,
   user: LEGACY_USER_KEY,
-  onboarding: ONBOARDING_KEY
+  onboarding: ONBOARDING_KEY,
+  onboardingProgress: ONBOARDING_PROGRESS_KEY,
+  phoneVerification: PHONE_VERIFICATION_KEY
 };
 
 async function removeLegacySessionKeys() {
@@ -83,6 +100,8 @@ async function invalidatePersistedSession() {
   const results = await Promise.allSettled([
     secureStorage.deleteItemAsync(SESSION_KEY),
     secureStorage.deleteItemAsync(ONBOARDING_KEY),
+    secureStorage.deleteItemAsync(ONBOARDING_PROGRESS_KEY),
+    secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY),
     ...LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key))
   ]);
   if (!tombstoneStored && results[0].status === 'rejected') {
@@ -99,6 +118,7 @@ export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   const [sessionStatus, setSessionStatus] = useState('loading');
   const [onboardingComplete, setOnboardingComplete] = useState(false);
+  const [onboardingRoute, setOnboardingRoute] = useState(INITIAL_ONBOARDING_ROUTE);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
   const [pendingPhoneVerification, setPendingPhoneVerification] = useState(null);
@@ -109,6 +129,7 @@ export function AuthProvider({ children }) {
   const refreshSessionRef = useRef(null);
   const authGenerationRef = useRef(0);
   const sessionMutationRef = useRef(Promise.resolve());
+  const onboardingProgressRef = useRef(null);
   const authCapabilities = useMemo(() => authenticationCapabilities(config, {
     platform: Platform.OS,
     expoGo: isExpoGoRuntime()
@@ -224,6 +245,8 @@ export function AuthProvider({ children }) {
             setAccessToken(null);
             setUser(null);
             setOnboardingComplete(false);
+            onboardingProgressRef.current = null;
+            setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
             setSessionStatus('reauthentication-required');
           });
         } else {
@@ -248,25 +271,47 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     let active = true;
     const authGeneration = authGenerationRef.current;
-    Promise.all([
+    withTimeout(Promise.all([
       storage.getRaw(SIGNED_OUT_KEY),
       secureStorage.getItemAsync(SESSION_KEY),
       secureStorage.getItemAsync(ONBOARDING_KEY),
+      secureStorage.getItemAsync(ONBOARDING_PROGRESS_KEY),
+      secureStorage.getItemAsync(PHONE_VERIFICATION_KEY),
       secureStorage.getItemAsync(LEGACY_TOKEN_KEY),
       secureStorage.getItemAsync(LEGACY_REFRESH_TOKEN_KEY),
       secureStorage.getItemAsync(LEGACY_USER_KEY)
-    ]).then(async ([signedOutMarker, rawEnvelope, rawOnboarding, legacyToken, legacyRefresh, legacyUser]) => {
+    ]), AUTH_RESTORE_TIMEOUT_MS, 'Secure session restoration timed out.').then(async ([
+      signedOutMarker,
+      rawEnvelope,
+      rawOnboarding,
+      rawOnboardingProgress,
+      rawPhoneVerification,
+      legacyToken,
+      legacyRefresh,
+      legacyUser
+    ]) => {
       if (!active || authGeneration !== authGenerationRef.current) return;
       if (signedOutMarker) {
         await runSessionMutation(() => Promise.allSettled([
           secureStorage.deleteItemAsync(SESSION_KEY),
           secureStorage.deleteItemAsync(ONBOARDING_KEY),
+          secureStorage.deleteItemAsync(ONBOARDING_PROGRESS_KEY),
+          secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY),
           ...LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key))
         ]));
         if (active && authGeneration === authGenerationRef.current) {
+          onboardingProgressRef.current = null;
+          setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
+          setPendingPhoneVerification(null);
           setSessionStatus('signed-out');
         }
         return;
+      }
+
+      const restoredPhoneVerification = parsePhoneVerificationState(rawPhoneVerification);
+      setPendingPhoneVerification(restoredPhoneVerification);
+      if (rawPhoneVerification && !restoredPhoneVerification) {
+        secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
       }
 
       let envelope = parseSessionEnvelope(rawEnvelope, {
@@ -287,23 +332,50 @@ export function AuthProvider({ children }) {
         }
       }
 
+      // Never publish an authenticated profile until every device-local data
+      // surface is either owned by this account or has been cleared. This also
+      // handles a process that was killed after writing the sign-out tombstone
+      // but before Settings finished its best-effort local cleanup.
+      if (envelope?.user?.id) {
+        const boundary = await ensureAccountDataOwner(envelope.user.id);
+        if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
+          warningCount: boundary.warnings
+        });
+      }
+
       if (envelope && isSessionTokenUsable(envelope.accessToken)) {
+        const complete = isOnboardingMarkerValid(rawOnboarding, envelope.user.id);
+        const progress = complete
+          ? createOnboardingProgress(envelope.user.id, COMPLETION_ONBOARDING_ROUTE)
+          : parseOnboardingProgress(rawOnboardingProgress, envelope.user.id)
+            || createOnboardingProgress(envelope.user.id);
         setAccessToken(envelope.accessToken);
         setUser(envelope.user);
         setSessionStatus('active');
-        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, envelope.user.id));
+        onboardingProgressRef.current = progress;
+        setOnboardingRoute(progress.route);
+        setOnboardingComplete(complete);
       } else if (envelope) {
+        const complete = isOnboardingMarkerValid(rawOnboarding, envelope.user.id);
+        const progress = complete
+          ? createOnboardingProgress(envelope.user.id, COMPLETION_ONBOARDING_ROUTE)
+          : parseOnboardingProgress(rawOnboardingProgress, envelope.user.id)
+            || createOnboardingProgress(envelope.user.id);
         setUser(envelope.user);
-        setOnboardingComplete(isOnboardingMarkerValid(rawOnboarding, envelope.user.id));
+        onboardingProgressRef.current = progress;
+        setOnboardingRoute(progress.route);
+        setOnboardingComplete(complete);
         try {
           await refreshSession(envelope.refreshToken);
         } catch {
           // refreshSession distinguishes a rejected session from a temporary
           // outage and preserves offline state only for the latter.
         }
-      } else if (rawEnvelope || legacyToken || legacyRefresh || legacyUser || rawOnboarding) {
+      } else if (rawEnvelope || legacyToken || legacyRefresh || legacyUser || rawOnboarding || rawOnboardingProgress) {
         await runSessionMutation(() => invalidatePersistedSession());
         if (active && authGeneration === authGenerationRef.current) {
+          onboardingProgressRef.current = null;
+          setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
           setSessionStatus('reauthentication-required');
         }
       } else {
@@ -317,6 +389,9 @@ export function AuthProvider({ children }) {
       if (!secureStorage.isVolatile) {
         logger.warn('[Auth] Could not restore the secure session', error);
       }
+      onboardingProgressRef.current = null;
+      setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
+      setAuthError(translate('auth.signInFailedMessage'));
       setSessionStatus('signed-out');
     }).finally(() => {
       if (active) setLoading(false);
@@ -357,9 +432,13 @@ export function AuthProvider({ children }) {
     const remaining = pendingPhoneVerification.expiresAt - Date.now();
     if (remaining <= 0) {
       setPendingPhoneVerification(null);
+      secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
       return undefined;
     }
-    const timer = setTimeout(() => setPendingPhoneVerification(null), remaining);
+    const timer = setTimeout(() => {
+      setPendingPhoneVerification(null);
+      secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
+    }, remaining);
     return () => clearTimeout(timer);
   }, [pendingPhoneVerification]);
 
@@ -376,7 +455,15 @@ export function AuthProvider({ children }) {
     if (!nextEnvelope) {
       throw createAuthError('AUTH_RESPONSE_INVALID', 'The authentication server returned an invalid session.');
     }
+    const initialProgress = createOnboardingProgress(nextEnvelope.user.id);
     const serializedEnvelope = JSON.stringify(nextEnvelope);
+    const boundary = await ensureAccountDataOwner(nextEnvelope.user.id);
+    if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
+      warningCount: boundary.warnings
+    });
+    if (authGeneration !== authGenerationRef.current) {
+      throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+    }
     await runSessionMutation(async () => {
       if (authGeneration !== authGenerationRef.current) {
         throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
@@ -384,6 +471,8 @@ export function AuthProvider({ children }) {
       try {
         await secureStorage.deleteItemAsync(ONBOARDING_KEY);
         await secureStorage.setItemAsync(SESSION_KEY, serializedEnvelope);
+        await secureStorage.setItemAsync(ONBOARDING_PROGRESS_KEY, JSON.stringify(initialProgress));
+        await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
         await storage.remove(SIGNED_OUT_KEY);
         await removeLegacySessionKeys();
       } catch (error) {
@@ -392,6 +481,8 @@ export function AuthProvider({ children }) {
           setUser(null);
           setAccessToken(null);
           setOnboardingComplete(false);
+          onboardingProgressRef.current = null;
+          setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
           setSessionStatus('signed-out');
         }
         throw error;
@@ -402,13 +493,44 @@ export function AuthProvider({ children }) {
       setUser(nextEnvelope.user);
       setAccessToken(nextEnvelope.accessToken);
       setSessionStatus('active');
+      onboardingProgressRef.current = initialProgress;
+      setOnboardingRoute(initialProgress.route);
       setOnboardingComplete(false);
+      setPendingPhoneVerification(null);
       setAuthError(null);
     });
   }, [runSessionMutation]);
 
+  const advanceOnboarding = useCallback(async (nextRoute) => {
+    if (!user?.id) throw new Error('A signed-in user is required to continue onboarding.');
+    const authGeneration = authGenerationRef.current;
+    return runSessionMutation(async () => {
+      if (authGeneration !== authGenerationRef.current) {
+        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+      }
+      const nextProgress = nextOnboardingProgress(
+        onboardingProgressRef.current,
+        user.id,
+        nextRoute
+      );
+      if (nextProgress !== onboardingProgressRef.current) {
+        await secureStorage.setItemAsync(ONBOARDING_PROGRESS_KEY, JSON.stringify(nextProgress));
+      }
+      if (authGeneration === authGenerationRef.current) {
+        onboardingProgressRef.current = nextProgress;
+        setOnboardingRoute(nextProgress.route);
+      }
+      return nextProgress.route;
+    });
+  }, [runSessionMutation, user?.id]);
+
   const completeOnboarding = useCallback(async () => {
     if (!user?.id) throw new Error('A signed-in user is required to complete onboarding.');
+    if (onboardingProgressRef.current?.route !== COMPLETION_ONBOARDING_ROUTE) {
+      const error = new Error('Complete the required onboarding steps before continuing.');
+      error.code = 'ONBOARDING_INCOMPLETE';
+      throw error;
+    }
     const authGeneration = authGenerationRef.current;
     const marker = createOnboardingMarker(user.id);
     await runSessionMutation(async () => {
@@ -416,6 +538,11 @@ export function AuthProvider({ children }) {
         throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
       }
       await secureStorage.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
+      await secureStorage.deleteItemAsync(ONBOARDING_PROGRESS_KEY).catch((error) => {
+        logger.warn('[Auth] Completed onboarding progress cleanup is pending', {
+          errorCode: error?.code || error?.name || 'ONBOARDING_PROGRESS_CLEANUP_FAILED'
+        });
+      });
       if (authGeneration === authGenerationRef.current) setOnboardingComplete(true);
     });
   }, [runSessionMutation, user?.id]);
@@ -429,7 +556,7 @@ export function AuthProvider({ children }) {
       return error;
     }
     const safeError = userFacingAuthenticationError(provider, error);
-    setAuthError(safeError.userMessage);
+    setAuthError(translate(authenticationErrorTranslationKey(safeError)));
     if (safeError.code?.endsWith('_AUTH_SIMULATOR_UNAVAILABLE')) {
       logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
       return safeError;
@@ -530,11 +657,20 @@ export function AuthProvider({ children }) {
       );
     }
     authGenerationRef.current += 1;
+    const authGeneration = authGenerationRef.current;
     if (refreshRetryTimerRef.current) {
       clearTimeout(refreshRetryTimerRef.current);
       refreshRetryTimerRef.current = null;
     }
+    const boundary = await ensureAccountDataOwner(DEVELOPMENT_DEMO_USER.id);
+    if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
+      warningCount: boundary.warnings
+    });
+    if (authGenerationRef.current !== authGeneration) {
+      throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+    }
     setPendingPhoneVerification(null);
+    await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
     setAccessToken(null);
     setUser(DEVELOPMENT_DEMO_USER);
     setOnboardingComplete(true);
@@ -547,6 +683,7 @@ export function AuthProvider({ children }) {
     setAuthError(null);
     setPendingPhoneVerification(null);
     try {
+      await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
       requireCapability('phone');
       const phone = createPhoneValue(e164, countryCode);
       if (!phone.isValid) {
@@ -559,8 +696,13 @@ export function AuthProvider({ children }) {
         phone: phone.e164,
         countryCode: phone.countryCode
       });
-      setPendingPhoneVerification(challenge);
-      return { phone: challenge.phone, countryCode: challenge.countryCode };
+      const persistedChallenge = createPhoneVerificationState(challenge);
+      if (!persistedChallenge) {
+        throw createAuthError('AUTH_RESPONSE_INVALID', 'The phone verification server returned an invalid challenge.');
+      }
+      await secureStorage.setItemAsync(PHONE_VERIFICATION_KEY, JSON.stringify(persistedChallenge));
+      setPendingPhoneVerification(persistedChallenge);
+      return { phone: persistedChallenge.phone, countryCode: persistedChallenge.countryCode };
     } catch (error) {
       throw reportAuthenticationFailure('phone', error);
     }
@@ -601,9 +743,12 @@ export function AuthProvider({ children }) {
       setUser(null);
       setAccessToken(null);
       setOnboardingComplete(false);
+      onboardingProgressRef.current = null;
+      setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
       setSessionStatus('signed-out');
       setAuthError(null);
       setPendingPhoneVerification(null);
+      await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
       return;
     }
     // Publish the non-sensitive signed-out marker before waiting behind any
@@ -618,6 +763,8 @@ export function AuthProvider({ children }) {
       setUser(null);
       setAccessToken(null);
       setOnboardingComplete(false);
+      onboardingProgressRef.current = null;
+      setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
       setSessionStatus('signed-out');
       setAuthError(null);
       setPendingPhoneVerification(null);
@@ -642,6 +789,7 @@ export function AuthProvider({ children }) {
     accessToken,
     sessionStatus,
     onboardingComplete,
+    onboardingRoute,
     loading,
     authError,
     authCapabilities,
@@ -656,6 +804,7 @@ export function AuthProvider({ children }) {
     signInWithPhone,
     continueAsDemo,
     verifyCode,
+    advanceOnboarding,
     completeOnboarding,
     signOut
   }), [
@@ -663,6 +812,7 @@ export function AuthProvider({ children }) {
     accessToken,
     sessionStatus,
     onboardingComplete,
+    onboardingRoute,
     loading,
     authError,
     authCapabilities,
@@ -676,6 +826,7 @@ export function AuthProvider({ children }) {
     signInWithPhone,
     continueAsDemo,
     verifyCode,
+    advanceOnboarding,
     completeOnboarding,
     signOut
   ]);

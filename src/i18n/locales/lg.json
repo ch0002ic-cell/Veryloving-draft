@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving yeetaaga okuyingira mu mayirofooni olw’obukuumi n’okukuba essimu AI omubeezi.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ekozesa ekifo kyo ku maapu y’obukuumi n’ebintu eby’obukuumi ebiriraanyewo.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ekozesa ekifo kyo okuwagira okutambula okw’obukuumi-okutuuka n’okutambula okw’amangu.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ekozesa ekifo eky’emabega ku bifaananyi eby’okutuuka mu ngeri ey’obukuumi n’ebifo eby’akabi ebiriraanyewo.",
-      "NSCameraUsageDescription": "VeryLoving ekozesa kamera yokka nga osazeewo okukuba ekifaananyi kya profile oba eky’obukuumi.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ekozesa etterekero lyo ery’ebifaananyi ng’olonze ekifaananyi ky’ebifaananyi oba eky’obukuumi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -628,9 +628,22 @@ export class HumeEVIService {
       this.messageHandler.onError?.(new Error('Voice chat is still connecting. Please wait a moment and try again.'));
       return false;
     }
-    this.socket.send(JSON.stringify({ type: 'user_input', text }));
-    logger.voice('[HumeEVIService] Text sent', { characters: text.length });
-    return true;
+    try {
+      // The socket can close between the readiness check and native send(). A
+      // false return lets the caller take its durable offline-queue path exactly
+      // once instead of losing the text to a thrown bridge exception.
+      this.socket.send(JSON.stringify({ type: 'user_input', text }));
+      logger.voice('[HumeEVIService] Text sent', { characters: text.length });
+      return true;
+    } catch (nativeError) {
+      logger.warn('[HumeEVIService] Text send failed after the socket readiness check', {
+        name: nativeError?.name || 'WebSocketSendError'
+      });
+      const error = new Error('The voice connection was interrupted while sending your message.');
+      error.code = 'VOICE_TEXT_SEND_FAILED';
+      this.messageHandler.onError?.(error);
+      return false;
+    }
   }
 
   async disconnect() {

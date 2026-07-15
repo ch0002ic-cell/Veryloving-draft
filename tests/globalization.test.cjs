@@ -1,12 +1,19 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { spawnSync } = require('node:child_process');
+const { readFileSync } = require('node:fs');
+const path = require('node:path');
 const { test } = require('node:test');
 const {
+  catalogLanguages,
   getTranslationKeys,
   isRTLLanguage,
+  maintainedLanguages,
   normalizeLanguageCode,
   resolveLanguage,
+  RTL_QA_LANGUAGE_CODES,
+  selectRuntimeLanguageCodes,
   supportedLanguages,
   TRANSLATION_FALLBACK_ENABLED,
   translateForLocale,
@@ -23,6 +30,7 @@ const {
 } = require('../src/utils/phone');
 const { ENGLISH_COUNTRY_NAMES } = require('../src/data/country-names-en');
 const { DEFAULT_SETTINGS, mergeSettings } = require('../src/services/settings-store');
+const releaseCriticalMessages = require('../src/i18n/release-critical-messages').default;
 
 function valueAtPath(value, path) {
   return path.split('.').reduce((current, key) => current?.[key], value);
@@ -157,16 +165,27 @@ test('language resolution supports regional tags, system preference, and fallbac
   assert.equal(normalizeLanguageCode('es-MX'), 'es');
   assert.equal(normalizeLanguageCode('fr-CA'), 'fr');
   assert.equal(normalizeLanguageCode('zh-Hans-CN'), 'zh');
-  assert.equal(normalizeLanguageCode('ar-SA'), 'ar');
-  assert.equal(normalizeLanguageCode('de-DE'), 'de');
+  assert.equal(normalizeLanguageCode('zh-CN'), 'zh');
+  assert.equal(normalizeLanguageCode('zh-SG'), 'zh');
+  assert.equal(normalizeLanguageCode('zh-Hant'), null);
+  assert.equal(normalizeLanguageCode('zh-Hant-TW'), null);
+  assert.equal(normalizeLanguageCode('zh-TW'), null);
+  assert.equal(normalizeLanguageCode('zh-HK'), null);
+  assert.equal(normalizeLanguageCode('zh-MO'), null);
+  assert.equal(normalizeLanguageCode('zh-Hans-TW'), 'zh');
+  assert.equal(normalizeLanguageCode('ar-SA'), null);
+  assert.equal(normalizeLanguageCode('de-DE'), null);
   assert.equal(resolveLanguage('system', [{ languageTag: 'es-ES' }]), 'es');
   assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hans' }]), 'zh');
-  assert.equal(resolveLanguage('system', [{ languageTag: 'ja-JP' }]), 'ja');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hant-TW' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'zh-HK' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageTag: 'ja-JP' }]), 'en');
   assert.equal(resolveLanguage('system', [{ languageTag: 'ae-AF' }]), 'en');
   assert.equal(resolveLanguage('en', [{ languageTag: 'es-ES' }]), 'en');
   assert.equal(translateForLocale('es', 'auth.createAccount'), 'Crear cuenta');
   assert.equal(translateForLocale('fr', 'auth.createAccount'), 'Créer un compte');
   assert.equal(translateForLocale('zh', 'auth.createAccount'), '创建账户');
+  assert.equal(translateForLocale('zh-Hant-TW', 'auth.createAccount'), 'Create account');
   assert.equal(translateForLocale('en', 'auth.createAccount'), 'Create account');
   assert.equal(
     translateForLocale('es', 'safetyCall.messagesWaiting', { count: 2 }),
@@ -197,6 +216,31 @@ test('selectable catalogs never use a hidden English per-string fallback', () =>
     'Partagez un instantané unique de votre position. Il ne sera pas actualisé après l’envoi.'
   );
   assert.equal(translateForLocale('zh', 'quickShare.subtitle'), '分享一次性位置快照。发送后不会更新。');
+  assert.match(translateForLocale('es', 'releaseCritical.sosDialerOpened'), /llamada no está confirmada/i);
+  assert.match(translateForLocale('fr', 'releaseCritical.locationShareFailed'), /partager votre position/i);
+  assert.match(translateForLocale('zh', 'releaseCritical.authCodeInvalid'), /验证码/);
+});
+
+test('release language gating keeps generated catalogs out of production and adds only RTL QA targets', () => {
+  assert.equal(catalogLanguages.length, 155);
+  assert.deepEqual([...maintainedLanguages].sort(), ['en', 'es', 'fr', 'zh']);
+  assert.deepEqual([...supportedLanguages].sort(), ['en', 'es', 'fr', 'zh']);
+  assert.deepEqual([...RTL_QA_LANGUAGE_CODES].sort(), ['ar', 'he']);
+  assert.deepEqual(
+    selectRuntimeLanguageCodes({ enableRTLQA: true }).sort(),
+    ['ar', 'en', 'es', 'fr', 'he', 'zh']
+  );
+  const releaseKeys = Object.keys(releaseCriticalMessages.en).sort();
+  for (const locale of ['en', 'es', 'fr', 'zh', 'ar', 'he']) {
+    assert.deepEqual(Object.keys(releaseCriticalMessages[locale]).sort(), releaseKeys);
+    for (const key of releaseKeys) {
+      assert.deepEqual(
+        interpolationTokens(releaseCriticalMessages[locale][key]),
+        interpolationTokens(releaseCriticalMessages.en[key]),
+        `${locale}.releaseCritical.${key} must preserve placeholders`
+      );
+    }
+  }
 });
 
 test('RTL language resolution is driven by catalog metadata', () => {
@@ -209,11 +253,16 @@ test('RTL language resolution is driven by catalog metadata', () => {
 });
 
 test('Expo config derives native locale declarations from the language catalog', () => {
-  const config = require('../app.config')();
+  const appConfig = require('../app.config');
+  const config = appConfig();
   const localizationPlugin = config.plugins.find((plugin) => Array.isArray(plugin) && plugin[0] === 'expo-localization');
   assert.deepEqual(localizationPlugin[1].supportedLocales.ios, supportedLanguages);
   assert.deepEqual(localizationPlugin[1].supportedLocales.android, supportedLanguages);
-  assert.equal(supportedLanguages.length, 155);
+  assert.deepEqual(Object.keys(config.locales), supportedLanguages);
+  assert.deepEqual(
+    appConfig.selectSupportedLocales({ EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true' }).sort(),
+    ['ar', 'en', 'es', 'fr', 'he', 'zh']
+  );
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
   assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
   assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);
@@ -223,4 +272,51 @@ test('language preference is retained by settings merges', () => {
   const settings = mergeSettings(DEFAULT_SETTINGS, { language: 'es' });
   assert.equal(settings.language, 'es');
   assert.equal(mergeSettings(settings, { offlineMode: true }).language, 'es');
+});
+
+test('language selector persists before publishing and visibly marks the current choice', () => {
+  const selector = readFileSync(path.resolve(process.cwd(), 'src/components/LanguageSelector.js'), 'utf8');
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  const i18nContext = readFileSync(path.resolve(process.cwd(), 'src/context/I18nContext.js'), 'utf8');
+
+  assert.match(selector, /await setLanguage\(languageCode\)/);
+  assert.match(selector, /const selected = item\.code === languagePreference/);
+  assert.match(selector, /accessibilityState=\{\{ checked: selected/);
+  assert.match(selector, /selected \? <Ionicons name="checkmark-circle"/);
+  assert.match(i18nContext, /const locale = resolveLanguage\(languagePreference, locales\)/);
+  assert.match(i18nContext, /await updateSettings\(\{ language \}\)/);
+
+  const updateSettings = appContext.slice(
+    appContext.indexOf('const updateSettings'),
+    appContext.indexOf('const addContact')
+  );
+  const persisted = updateSettings.indexOf('await persistSettings(next)');
+  const published = updateSettings.indexOf('setSettings(next)');
+  assert.ok(persisted >= 0 && persisted < published, 'Language/settings must persist before context publishes them');
+});
+
+test('TestFlight RTL runtime resolves Arabic and Hebrew with localized critical copy', () => {
+  const probe = spawnSync(process.execPath, [
+    '--require',
+    '@babel/register',
+    '-e',
+    `const core = require('./src/i18n/core'); process.stdout.write(JSON.stringify({
+      supported: [...core.supportedLanguages].sort(),
+      arabic: core.resolveLanguage('ar-SA'),
+      hebrew: core.resolveLanguage('he-IL'),
+      rtl: core.isRTLLanguage(core.resolveLanguage('ar-SA')),
+      copy: core.translateForLocale('ar', 'releaseCritical.sosDialerOpened')
+    }));`
+  ], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: { ...process.env, EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true' }
+  });
+  assert.equal(probe.status, 0, probe.stderr);
+  const result = JSON.parse(probe.stdout);
+  assert.deepEqual(result.supported, ['ar', 'en', 'es', 'fr', 'he', 'zh']);
+  assert.equal(result.arabic, 'ar');
+  assert.equal(result.hebrew, 'he');
+  assert.equal(result.rtl, true);
+  assert.match(result.copy, /[\u0600-\u06FF]/);
 });

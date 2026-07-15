@@ -10,7 +10,6 @@ import {
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
 
 export { dangerZones, requestCurrentLocation, requestLocationPermission } from './mapbox-core';
-export const MAP_LOAD_FALLBACK_MESSAGE = 'Unable to load map — please check your internet connection.';
 
 let cacheQueue = Promise.resolve();
 

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving howpsuzlyk we ýoldaş jaňlary üçin mikrofon AI gerek.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving howpsuzlyk kartasy we golaýdaky howpsuzlyk aýratynlyklary üçin siziň ýerleşýän ýeriňizi ulanýar.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving siziň ýaşaýan ýeriňizi howpsuz we çykgynsyz ýagdaýa düşen akymlary goldamak üçin ulanýar.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving howpsuz gelmek we golaýdaky howply zonalaryň aýratynlyklary üçin arka plandaky ýeri ulanýar.",
-      "NSCameraUsageDescription": "VeryLoving kamerany diňe profil ýa-da howpsuzlyk suratyny çekeniňizde ulanýar.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving diňe profil ýa-da howpsuzlyk suratyny saýlanyňyzda surat kitaphanaňyzy ulanýar.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar."
     },
     "android": {
       "app_name": "VeryLoving"

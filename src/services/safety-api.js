@@ -2,6 +2,38 @@ import { config } from '../utils/config';
 import { createAuthenticationNonce } from '../utils/session-token';
 
 const REQUEST_TIMEOUT_MS = 10000;
+export const SOS_LOCATION_MAX_AGE_MS = 5 * 60 * 1000;
+
+function finiteCoordinate(value, limit) {
+  if (value === null || value === undefined || value === '') return null;
+  const coordinate = Number(value);
+  if (!Number.isFinite(coordinate) || Math.abs(coordinate) > limit) return null;
+  return coordinate;
+}
+
+/**
+ * The server treats SOS location as optional, but rejects the whole request if
+ * a supplied snapshot is stale. Normalize only a recent, valid snapshot so an
+ * old offline cache can never prevent the emergency event itself from being
+ * accepted.
+ */
+export function normalizeSOSLocation(
+  location,
+  { now = Date.now, maxAgeMs = SOS_LOCATION_MAX_AGE_MS } = {}
+) {
+  const latitude = finiteCoordinate(location?.latitude ?? location?.coords?.latitude, 90);
+  const longitude = finiteCoordinate(location?.longitude ?? location?.coords?.longitude, 180);
+  const capturedAt = Number(location?.capturedAt ?? location?.timestamp ?? location?.cachedAt);
+  const timestamp = now();
+  if (
+    latitude === null
+    || longitude === null
+    || !Number.isFinite(capturedAt)
+    || !Number.isFinite(timestamp)
+    || Math.abs(timestamp - capturedAt) > maxAgeMs
+  ) return null;
+  return { latitude, longitude, capturedAt };
+}
 
 export async function safetyRequest(path, {
   accessToken,
@@ -63,6 +95,15 @@ export function createEmergencyContact(contact, accessToken) {
   return safetyRequest('/v1/emergency-contacts', { accessToken, method: 'POST', body: contact });
 }
 
+export function updateEmergencyContact(contactId, contact, accessToken, options = {}) {
+  return safetyRequest(`/v1/emergency-contacts/${encodeURIComponent(contactId)}`, {
+    ...options,
+    accessToken,
+    method: 'PATCH',
+    body: contact
+  });
+}
+
 export function deleteEmergencyContact(contactId, accessToken) {
   return safetyRequest(`/v1/emergency-contacts/${encodeURIComponent(contactId)}`, {
     accessToken,
@@ -88,15 +129,17 @@ export async function fetchCurrentSafetyMode(accessToken) {
 }
 
 export function dispatchSOS({ contactIds, accessToken, location, source = 'app', idempotencyKey = createAuthenticationNonce() }) {
+  const occurredAt = Date.now();
+  const recentLocation = normalizeSOSLocation(location, { now: () => occurredAt });
   return safetyRequest('/v1/sos-events', {
     accessToken,
     method: 'POST',
     body: {
       idempotencyKey,
       source,
-      occurredAt: Date.now(),
+      occurredAt,
       contactIds,
-      ...(location ? { location } : {})
+      ...(recentLocation ? { location: recentLocation } : {})
     }
   });
 }

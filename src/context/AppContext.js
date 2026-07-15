@@ -21,6 +21,8 @@ import {
 } from '../services/safety-api';
 import { createAuthenticationNonce } from '../utils/session-token';
 import { loadEmergencyContactCache, persistEmergencyContactCache } from '../services/emergency-contact-store';
+import { editEmergencyContact } from '../services/emergency-contact-edit';
+import { withTimeout } from '../utils/async';
 
 const AppContext = createContext(null);
 const DEFAULT_CONTACTS = [];
@@ -28,6 +30,8 @@ const DEFAULT_FRIENDS = [];
 
 export function AppProvider({ children }) {
   const { accessToken, loading: authLoading, user } = useAuth();
+  const activeAccountIdRef = useRef(user?.id || null);
+  activeAccountIdRef.current = user?.id || null;
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const settingsRef = useRef(DEFAULT_SETTINGS);
   const settingsMutationQueueRef = useRef(Promise.resolve());
@@ -44,26 +48,40 @@ export function AppProvider({ children }) {
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
+  const [settingsAccountId, setSettingsAccountId] = useState(undefined);
   const [contactsAccountId, setContactsAccountId] = useState(null);
+  const expectedSettingsAccountId = user?.id || null;
   const isHydrated = localStateHydrated
     && !authLoading
+    && settingsAccountId === expectedSettingsAccountId
     && (!user?.id || contactsAccountId === user.id);
 
   useEffect(() => {
+    if (authLoading) return undefined;
     let active = true;
-    loadSettings().then((savedSettings) => {
+    const accountId = user?.id || null;
+    setLocalStateHydrated(false);
+    withTimeout(loadSettings(), 8000, 'Settings restoration timed out.').then((savedSettings) => {
       if (!active) return;
       settingsRef.current = savedSettings;
       setSettings(savedSettings);
     }).catch((error) => {
       logger.warn('[AppState] Could not restore local settings', error);
+      if (!active) return;
+      // Never retain an in-memory previous-account preference snapshot when
+      // the newly established account boundary cannot be read.
+      settingsRef.current = DEFAULT_SETTINGS;
+      setSettings(DEFAULT_SETTINGS);
     }).finally(() => {
-      if (active) setLocalStateHydrated(true);
+      if (active) {
+        setSettingsAccountId(accountId);
+        setLocalStateHydrated(true);
+      }
     });
     return () => {
       active = false;
     };
-  }, []);
+  }, [authLoading, user?.id]);
 
   useEffect(() => {
     if (authLoading || !localStateHydrated) return undefined;
@@ -72,10 +90,8 @@ export function AppProvider({ children }) {
       const pairedDeviceId = deviceRef.current.id;
       deviceGenerationRef.current += 1;
       deviceAccountIdRef.current = null;
-      settingsRef.current = DEFAULT_SETTINGS;
       contactsRef.current = DEFAULT_CONTACTS;
       deviceRef.current = DEFAULT_DEVICE;
-      setSettings(DEFAULT_SETTINGS);
       setContacts(DEFAULT_CONTACTS);
       setDeviceState(DEFAULT_DEVICE);
       setDeviceTelemetry({ status: null, event: null });
@@ -89,13 +105,17 @@ export function AppProvider({ children }) {
     if (deviceAccountIdRef.current !== accountId) {
       const previousDeviceId = deviceRef.current.id;
       deviceGenerationRef.current += 1;
+      const restoreGeneration = deviceGenerationRef.current;
       deviceAccountIdRef.current = accountId;
       deviceRef.current = DEFAULT_DEVICE;
       setDeviceState(DEFAULT_DEVICE);
       setDeviceTelemetry({ status: null, event: null });
       if (previousDeviceId) bleService.disconnect(previousDeviceId).catch(() => {});
-      loadPairedDevice(accountId).then((savedDevice) => {
-        if (deviceAccountIdRef.current !== accountId) return;
+      withTimeout(loadPairedDevice(accountId), 8000, 'Paired-device restoration timed out.').then((savedDevice) => {
+        if (
+          deviceAccountIdRef.current !== accountId
+          || deviceGenerationRef.current !== restoreGeneration
+        ) return;
         deviceRef.current = savedDevice;
         setDeviceState(savedDevice);
       }).catch((error) => logger.warn('[AppState] Could not restore the account-bound paired device', {
@@ -106,7 +126,11 @@ export function AppProvider({ children }) {
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       let cachedContacts = DEFAULT_CONTACTS;
       try {
-        cachedContacts = await loadEmergencyContactCache(accountId);
+        cachedContacts = await withTimeout(
+          loadEmergencyContactCache(accountId),
+          8000,
+          'Emergency-contact restoration timed out.'
+        );
       } catch (error) {
         logger.warn('[AppState] Could not load the secure emergency-contact cache', {
           errorCode: error?.code || error?.name || 'CONTACT_CACHE_LOAD_FAILED'
@@ -179,6 +203,7 @@ export function AppProvider({ children }) {
       if (next.id && (!user?.id || next.accountId !== user.id)) {
         throw new Error('The paired device is not bound to the active account.');
       }
+      deviceGenerationRef.current += 1;
       deviceRef.current = next;
       setDeviceState(next);
       try {
@@ -199,11 +224,9 @@ export function AppProvider({ children }) {
   useEffect(() => bleService.setEventHandler({
     onBattery: (deviceId, battery) => {
       if (deviceRef.current.id !== deviceId) return;
-      setDevice((current) => ({ ...current, battery })).catch((error) => {
-        logger.warn('[AppState] Could not apply a live device battery update', {
-          errorCode: error?.code || error?.name || 'DEVICE_STATE_UPDATE_FAILED'
-        });
-      });
+      const next = { ...deviceRef.current, battery };
+      deviceRef.current = next;
+      setDeviceState(next);
     },
     onStatus: (deviceId, value) => {
       if (deviceRef.current.id !== deviceId) return;
@@ -352,16 +375,10 @@ export function AppProvider({ children }) {
     const operation = settingsMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = settingsRef.current;
       const next = mergeSettings(previous, patch);
+      await persistSettings(next);
       settingsRef.current = next;
       setSettings(next);
-      try {
-        await persistSettings(next);
-        return next;
-      } catch (error) {
-        settingsRef.current = previous;
-        setSettings(previous);
-        throw error;
-      }
+      return next;
     });
     settingsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
     return operation;
@@ -430,13 +447,53 @@ export function AppProvider({ children }) {
     return operation;
   }, [accessToken, user?.id]);
 
-  const resetLocalState = useCallback(() => {
+  const updateContact = useCallback(async (contactId, edit) => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
+    if (!user?.id) throw new Error('An authenticated account is required.');
+    const accountId = user.id;
+    const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      try {
+        const result = await editEmergencyContact({
+          accessToken,
+          accountId,
+          contactId,
+          contacts: contactsRef.current,
+          edit,
+          isAccountActive: () => activeAccountIdRef.current === accountId
+        });
+        if (activeAccountIdRef.current !== accountId) {
+          const error = new Error('The authenticated account changed during the contact update.');
+          error.code = 'CONTACT_ACCOUNT_CHANGED';
+          throw error;
+        }
+        contactsRef.current = result.contacts;
+        setContacts(result.contacts);
+        if (result.cacheWarning) {
+          logger.warn('[AppState] Server contact was updated but its secure offline cache could not be refreshed', {
+            errorCode: 'CONTACT_CACHE_WRITE_FAILED'
+          });
+        }
+        return result.contact;
+      } catch (error) {
+        if (Array.isArray(error?.latestContacts) && activeAccountIdRef.current === accountId) {
+          contactsRef.current = error.latestContacts;
+          setContacts(error.latestContacts);
+        }
+        throw error;
+      }
+    });
+    contactsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
+    return operation;
+  }, [accessToken, user?.id]);
+
+  const resetLocalState = useCallback(({ language = DEFAULT_SETTINGS.language } = {}) => {
     const pairedDeviceId = deviceRef.current.id;
     deviceGenerationRef.current += 1;
-    settingsRef.current = DEFAULT_SETTINGS;
+    const nextSettings = mergeSettings(DEFAULT_SETTINGS, { language });
+    settingsRef.current = nextSettings;
     contactsRef.current = DEFAULT_CONTACTS;
     deviceRef.current = DEFAULT_DEVICE;
-    setSettings(DEFAULT_SETTINGS);
+    setSettings(nextSettings);
     setContacts(DEFAULT_CONTACTS);
     setDeviceState(DEFAULT_DEVICE);
     setDeviceTelemetry({ status: null, event: null });
@@ -477,7 +534,7 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

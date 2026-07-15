@@ -35,12 +35,28 @@
       "environment": "production",
       "env": {
         "VERYLOVING_BUILD_PROFILE": "production",
-        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "false"
       },
       "autoIncrement": true
+    },
+    "testflight": {
+      "extends": "production",
+      "distribution": "store",
+      "environment": "production",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "production",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
+      },
+      "autoIncrement": true,
+      "ios": {
+        "simulator": false
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {},
+    "testflight": {}
   }
 }

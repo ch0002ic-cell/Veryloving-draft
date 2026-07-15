@@ -22,6 +22,12 @@ import { config } from '../utils/config';
 import { deleteRemoteUserData, fetchRemoteUserData } from './safety-api';
 import { secureStorage } from './secure-storage';
 import { parseSessionEnvelope } from '../utils/session-envelope';
+import { clearSavedPlaces, loadSavedPlaces } from './saved-place-store';
+import { setCapybearReminderEnabled } from './capybear-reminder';
+import {
+  attachRemoteDataToExport,
+  REMOTE_DATA_EXPORT_STATUS
+} from './privacy-export';
 
 export const PRIVACY_POLICY_URL = 'https://veryloving.ai/privacy';
 export { hasLocalUserDataDeletionWarnings };
@@ -66,10 +72,10 @@ export async function buildUserDataExport({ accessToken } = {}) {
   const emergencyContacts = account?.id
     ? await loadEmergencyContactCache(account.id).catch(() => [])
     : [];
-  const remoteData = config.safetyBackendEnabled && accessToken
-    ? await fetchRemoteUserData(accessToken)
-    : null;
-  return {
+  const savedPlaces = account?.id
+    ? await loadSavedPlaces(account.id).catch(() => [])
+    : [];
+  const localSnapshot = {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
     app: {
@@ -79,14 +85,25 @@ export async function buildUserDataExport({ accessToken } = {}) {
     account,
     settings: localStorage['veryloving.settings'] || null,
     emergencyContacts,
+    savedPlaces,
     conversations,
-    remoteData,
     localStorage,
     permissionRationales: Object.fromEntries(
       Object.entries(localStorage).filter(([key]) => key.startsWith(RATIONALE_PREFIX))
     ),
     localStorageKeys: Object.keys(localStorage).filter((key) => key !== CONVERSATION_HISTORY_KEY)
   };
+  const snapshot = await attachRemoteDataToExport(localSnapshot, {
+    backendEnabled: config.safetyBackendEnabled,
+    accessToken,
+    fetchRemoteData: fetchRemoteUserData
+  });
+  if (snapshot.remoteDataStatus === REMOTE_DATA_EXPORT_STATUS.unavailable) {
+    logger.warn('[Privacy] Remote data was unavailable; local export remains complete', {
+      errorCode: snapshot.remoteDataErrorCode
+    });
+  }
+  return snapshot;
 }
 
 export async function exportUserData(options) {
@@ -119,45 +136,85 @@ export async function exportUserData(options) {
   }
 }
 
-export async function deleteLocalUserData({ localMutationLockHeld = false } = {}) {
-  const [localResult, secureContactResult] = await Promise.allSettled([
+export async function deleteLocalUserData({
+  localMutationLockHeld = false,
+  preserveLanguage = false
+} = {}) {
+  const [reminderResult] = await Promise.allSettled([
+    setCapybearReminderEnabled(false)
+  ]);
+  const [localResult, secureContactResult, savedPlacesResult] = await Promise.allSettled([
     deleteLocalUserStores({
       mutationLockHeld: localMutationLockHeld,
+      preserveLanguage,
       purgeArtifacts: () => purgePrivacyArtifacts([
         purgeVoiceAudioCache,
         purgeOfflineMapCache
       ])
     }),
-    clearEmergencyContactCache()
+    clearEmergencyContactCache(),
+    clearSavedPlaces()
   ]);
-  if (localResult.status === 'rejected') throw localResult.reason;
   const result = {
-    ...localResult.value,
-    secureStoreFailures: secureContactResult.status === 'rejected' ? 1 : 0
+    ...(localResult.status === 'fulfilled' ? localResult.value : {
+      drainFailures: 0,
+      artifactCleanup: null
+    }),
+    localStoreFailures: localResult.status === 'rejected' ? 1 : 0,
+    notificationFailures: reminderResult.status === 'rejected' ? 1 : 0,
+    secureStoreFailures: (secureContactResult.status === 'rejected' ? 1 : 0)
+      + (savedPlacesResult.status === 'rejected' ? 1 : 0)
   };
   const artifactFailures = Number(result?.artifactCleanup?.failures) || 0;
   if (hasLocalUserDataDeletionWarnings(result)) {
     logger.warn('[Privacy] Local deletion completed with residual artifact warnings', {
       drainFailures: result?.drainFailures || 0,
-      artifactFailures
+      artifactFailures,
+      localStoreFailures: result.localStoreFailures,
+      notificationFailures: result.notificationFailures
     });
   }
   return result;
 }
 
 export async function deleteAllUserData({ accessToken, ...options } = {}) {
-  if (config.safetyBackendEnabled && accessToken) await deleteRemoteUserData(accessToken);
-  const result = await deleteLocalUserData(options);
-  await storage.setJSON(AUTH_STORAGE_KEYS.signedOut, {
-    version: 1,
-    signedOutAt: Date.now()
-  });
+  // A backend deletion failure must leave the authenticated local session
+  // intact so the user can retry. Clearing credentials in parallel would
+  // strand remote data behind a token the app no longer possesses while the
+  // UI appeared signed out. The server operation is idempotent, so a later
+  // retry remains safe if the response was lost after deletion completed.
+  if (config.safetyBackendEnabled) {
+    if (!accessToken) {
+      const error = new Error('Authentication is required to delete remote account data.');
+      error.code = 'PRIVACY_AUTHENTICATION_REQUIRED';
+      throw error;
+    }
+    await deleteRemoteUserData(accessToken);
+  }
+
+  let result;
+  try {
+    result = await deleteLocalUserData({ ...options, preserveLanguage: false });
+  } catch {
+    result = { localStoreFailures: 1, secureStoreFailures: 0 };
+  }
+  let tombstoneFailures = 0;
+  try {
+    await storage.setJSON(AUTH_STORAGE_KEYS.signedOut, {
+      version: 1,
+      signedOutAt: Date.now()
+    });
+  } catch {
+    tombstoneFailures = 1;
+  }
   const secureResults = await Promise.allSettled([
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.session),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.token),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.refreshToken),
     secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.user),
-    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding)
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.onboarding),
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.onboardingProgress),
+    secureStorage.deleteItemAsync(AUTH_STORAGE_KEYS.phoneVerification)
   ]);
   const secureStoreFailures = secureResults.filter(({ status }) => status === 'rejected').length;
   if (secureStoreFailures) {
@@ -171,6 +228,8 @@ export async function deleteAllUserData({ accessToken, ...options } = {}) {
   }
   return {
     ...result,
+    remoteDeletionFailures: 0,
+    tombstoneFailures,
     secureStoreFailures: (Number(result.secureStoreFailures) || 0) + secureStoreFailures
   };
 }

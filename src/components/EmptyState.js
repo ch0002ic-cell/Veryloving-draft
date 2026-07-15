@@ -12,7 +12,7 @@ export function EmptyState({ image, title, message, actionLabel, onAction, compa
       entering={EMPTY_ENTERING}
       style={[styles.wrap, compact && styles.compactWrap]}
     >
-      {image ? <Image source={image} resizeMode="contain" style={[styles.image, compact && styles.compactImage]} /> : null}
+      {image ? <Image accessible={false} source={image} resizeMode="contain" style={[styles.image, compact && styles.compactImage]} /> : null}
       <View style={[styles.copy, compact && styles.compactCopy]}>
         <Text style={[styles.title, compact && styles.compactText]}>{title}</Text>
         <Text style={[styles.message, compact && styles.compactText]}>{message}</Text>

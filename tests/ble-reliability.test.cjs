@@ -6,6 +6,7 @@ const { test } = require('node:test');
 const {
   BLE_ERROR_CODES,
   BLEOperationError,
+  bleErrorTranslationKey,
   classifyNativeBLEError,
   errorCodeForBluetoothState
 } = require('../src/services/ble-errors');
@@ -66,6 +67,19 @@ test('BLE state and native failures map to stable actionable codes', () => {
   assert.equal(errorCodeForBluetoothState('Unauthorized'), BLE_ERROR_CODES.permissionDenied);
   assert.equal(classifyNativeBLEError({ errorCode: 102 }), BLE_ERROR_CODES.poweredOff);
   assert.equal(classifyNativeBLEError({ errorCode: 200 }, 'connect'), BLE_ERROR_CODES.connectFailed);
+  assert.equal(
+    bleErrorTranslationKey({ code: BLE_ERROR_CODES.permissionDenied }),
+    'releaseCritical.blePermission'
+  );
+  assert.equal(
+    bleErrorTranslationKey({ code: BLE_ERROR_CODES.poweredOff }),
+    'releaseCritical.blePoweredOff'
+  );
+  assert.equal(
+    bleErrorTranslationKey({ code: BLE_ERROR_CODES.connectFailed }, 'connect'),
+    'releaseCritical.bleConnectFailed'
+  );
+  assert.equal(bleErrorTranslationKey(new Error('raw native text'), 'scan'), 'releaseCritical.bleScanFailed');
 });
 
 test('paired device persistence strips native data and hydrates as reconnecting', async () => {

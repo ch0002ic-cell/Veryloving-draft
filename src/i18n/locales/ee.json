@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hiã nuƒomɔ̃ ƒe zazã hena dedienɔnɔ kple AI zɔhɛ kaƒoƒo.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving zãa afi si nèle hena dedienɔnɔ ƒe anyigbatata kple dedienɔnɔ ƒe nɔnɔme siwo te ɖe ŋuwò.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving zãa afi si nèle tsɔ doa alɔ dedienɔnɔ-vava kple kpata ƒe sisi.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving zãa megbe teƒe hena dedienɔnɔ-vava kple afɔku-teƒe ƒe nɔnɔme siwo te ɖe eŋu.",
-      "NSCameraUsageDescription": "VeryLoving zãa fotoɖemɔ̃a ne ètiae be yeaɖe yeƒe nɔnɔmetata alo dedienɔnɔ ƒe foto ko.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving zãa wò fotowo ƒe agbalẽdzraɖoƒe ne ètia wò nɔnɔmetata alo dedienɔnɔ ƒe nɔnɔmetata ko.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving zãa Bluetooth tsɔ doa ka kple wò NorthStar dedienɔnɔ ƒe atsyɔ̃ɖonuwo.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving zãa Bluetooth tsɔ doa ka kple wò NorthStar dedienɔnɔ ƒe atsyɔ̃ɖonuwo."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving zãa Bluetooth tsɔ doa ka kple wò NorthStar dedienɔnɔ ƒe atsyɔ̃ɖonuwo."
     },
     "android": {
       "app_name": "VeryLoving"

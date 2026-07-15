@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving u baahan yahay marin makarafoon si ammaan ah iyo wicitaannada saaxiibka AI.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving isticmaalaa goobtaada khariidadda badbaadada iyo astaamaha badbaadada ee agagaarka.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving isticmaalaa goobtaada si ay u taageerto socodka badbaadada iyo socodka degdegga ah.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving isticmaashaa goobta asalka ah si ay u gaarto badbaado iyo astaamaha aagga khatarta ah.",
-      "NSCameraUsageDescription": "VeryLoving isticmaalaa kamaradda kaliya markaad doorato inaad sawir profile ama badbaado qaadato.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving isticmaalaa maktabaddaada sawirrada oo kaliya markaad doorato profile ama sawir badbaado ah.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ej aikuj in maroñ in bōk microphone ñan kejbãrok im AI call ko an ro mōttan.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ej kōjerbal jikin eo am ñan mep in kejbãrok eo im kein kejbãrok ko iturin.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ej kōjerbal jikin eo am ñan jibañ ro rej itok ilo jimwe im ilo ien ko rebin.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ej kōjerbal jikin ko itulik ñan jikin ko rejimwe im jikin ko rebin.",
-      "NSCameraUsageDescription": "VeryLoving ej kōjerbal camera eo wot ñe kwoj kōnaan bōk juon pija in profile ak pija in kejbãrok.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ej kōjerbal jikin pija ko am wōt ñe kwoj kālet juon pija in pija ak pija in kōjparok.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am."
     },
     "android": {
       "app_name": "VeryLoving"

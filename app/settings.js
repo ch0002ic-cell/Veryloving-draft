@@ -18,6 +18,7 @@ import {
 import { colors, fonts, spacing } from '../src/constants/theme';
 import { LanguageSelector } from '../src/components/LanguageSelector';
 import { useI18n } from '../src/context/I18nContext';
+import { setCapybearReminderEnabled } from '../src/services/capybear-reminder';
 
 export default function Settings() {
   const { settings, updateSettings, selectedVoice, resetLocalState, lockAndFlushLocalMutations } = useAppState();
@@ -81,18 +82,47 @@ export default function Settings() {
     }
   };
 
+  const updateReminderPreference = async (enabled) => {
+    if (busyAction) return;
+    setBusyAction('reminder');
+    try {
+      const result = await setCapybearReminderEnabled(enabled);
+      if (enabled && !result.enabled) {
+        Alert.alert(t('permissions.notificationsTitle'), t('permissions.notificationsRationaleMessage'));
+        return;
+      }
+      try {
+        await updateSettings({ reminderEnabled: result.enabled });
+      } catch (error) {
+        await setCapybearReminderEnabled(!result.enabled).catch(() => {});
+        throw error;
+      }
+    } catch {
+      Alert.alert(t('settings.updateFailedTitle'), t('settings.updateFailedMessage'));
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
   const handleSignOut = async () => {
     let releaseLocalMutations;
+    let deletionWarning = false;
     try {
       setBusyAction('signOut');
-      releaseLocalMutations = await lockAndFlushLocalMutations();
-      const deletion = await deleteLocalUserData({ localMutationLockHeld: true });
-      resetLocalState();
+      try {
+        releaseLocalMutations = await lockAndFlushLocalMutations();
+        const deletion = await deleteLocalUserData({
+          localMutationLockHeld: true,
+          preserveLanguage: true
+        });
+        deletionWarning = hasLocalUserDataDeletionWarnings(deletion);
+      } catch {
+        deletionWarning = true;
+      }
+      resetLocalState({ language: settings.language });
       await signOut();
       router.replace('/(auth)/onboarding');
-      if (hasLocalUserDataDeletionWarnings(deletion)) {
-        Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
-      }
+      if (deletionWarning) Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
     } catch {
       Alert.alert(t('settings.signOutFailedTitle'), t('settings.signOutFailedMessage'));
     } finally {
@@ -136,6 +166,14 @@ export default function Settings() {
           subtitle={t('settings.offlineModeSubtitle')}
           value={settings.offlineMode}
           onValueChange={(offlineMode) => updatePreference({ offlineMode })}
+        />
+        <View style={styles.divider} />
+        <SettingToggle
+          title={t('auth.capybearReminder')}
+          subtitle={t('permissions.notificationsBody')}
+          value={settings.reminderEnabled}
+          disabled={busyAction !== null}
+          onValueChange={updateReminderPreference}
         />
       </SettingsSection>
 
@@ -202,7 +240,7 @@ function SettingLink({ icon, title, subtitle, onPress }) {
   );
 }
 
-function SettingToggle({ title, subtitle, value, onValueChange }) {
+function SettingToggle({ title, subtitle, value, disabled = false, onValueChange }) {
   return (
     <View style={styles.toggleRow}>
       <View style={styles.toggleText}>
@@ -212,6 +250,7 @@ function SettingToggle({ title, subtitle, value, onValueChange }) {
       <Switch
         accessibilityLabel={title}
         accessibilityHint={subtitle}
+        disabled={disabled}
         value={value}
         onValueChange={onValueChange}
       />

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving nageenyaaf maaykiroofooniin fayyadamuu fi AI bilbila hiriyyaa barbaada.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving bakka jirtu kaartaa nageenyaa fi amaloota nageenya dhiyoo jiraniif fayyadama.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving bakka jirtu fayyadamuun dhangala’aa nageenya-dhufaatii fi hatattamaa deeggara.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving amaloota nageenya-dhufaatii fi naannoo balaa dhiyoo ta'aniif bakka duubaa fayyadama.",
-      "NSCameraUsageDescription": "VeryLoving kaameraa kan fayyadamu yeroo piroofaayilii ykn suuraa nageenyaa kaasuu filattan qofa.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving mana kitaabaa suuraa kee kan fayyadamu yeroo piroofaayilii ykn fakkii nageenyaa filattu qofa.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa."
     },
     "android": {
       "app_name": "VeryLoving"

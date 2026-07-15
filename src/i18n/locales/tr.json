@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving güvenlik ve AI yardımcı çağrıları için mikrofon erişimine ihtiyaç duyuyor.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving, güvenlik haritası ve yakındaki güvenlik özellikleri için konumunuzu kullanır.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving, konumunuzu güvenli varış ve acil durum akışlarını desteklemek için kullanır.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving, güvenli varış ve yakın tehlike bölgesi özellikleri için arka plan konumunu kullanır.",
-      "NSCameraUsageDescription": "VeryLoving kamerayı sadece profil veya güvenlik fotoğrafı çekmeyi seçtiğinizde kullanır.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving, sadece profil veya güvenlik görseli seçtiğinizde fotoğraf kütüphanenizi kullanır.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving, NorthStar güvenlik takılarınıza bağlanmak için Bluetooth kullanır.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving, NorthStar güvenlik takılarınıza bağlanmak için Bluetooth kullanır."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving, NorthStar güvenlik takılarınıza bağlanmak için Bluetooth kullanır."
     },
     "android": {
       "app_name": "VeryLoving"

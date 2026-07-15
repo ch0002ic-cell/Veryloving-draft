@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving soxla mikro ngir kaaraange ak AI woote àndadoo.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving dafay jëfandikoo sa barab ngir kàrtu kaaraange ak man-mani kaaraange yi la gëna jege.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving dafay jëfandikoo sa barab ngir jàppale ñiy ñëw ci jàmm ak ci jafe-jafe yi.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving dafay jëfandikoo barabu ginaaw ngir yegsi ci jàmm ak màndarga zone danger yu jege.",
-      "NSCameraUsageDescription": "VeryLoving du jëfandikoo kameraa bi sudee danga tànn jël nataalu profil wala nataalu kaaraange.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving du jëfandikoo sa bibliotek foto sudee danga tànn ab profil wala nataalu kaaraange.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange."
     },
     "android": {
       "app_name": "VeryLoving"

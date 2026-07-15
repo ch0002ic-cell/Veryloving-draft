@@ -60,3 +60,29 @@ export function classifyNativeBLEError(error, phase = 'scan') {
   if (phase === 'disconnect') return BLE_ERROR_CODES.disconnectFailed;
   return BLE_ERROR_CODES.scanFailed;
 }
+
+export function bleErrorTranslationKey(error, phase = error?.phase) {
+  switch (error?.code) {
+    case BLE_ERROR_CODES.permissionDenied:
+    case BLE_ERROR_CODES.permissionRequestFailed:
+      return 'releaseCritical.blePermission';
+    case BLE_ERROR_CODES.poweredOff:
+      return 'releaseCritical.blePoweredOff';
+    case BLE_ERROR_CODES.unavailable:
+    case BLE_ERROR_CODES.notReady:
+    case BLE_ERROR_CODES.protocolNotConfigured:
+      return 'releaseCritical.bleUnavailable';
+    case BLE_ERROR_CODES.noDevices:
+      return 'releaseCritical.bleNoDevices';
+    case BLE_ERROR_CODES.invalidDevice:
+    case BLE_ERROR_CODES.connectTimeout:
+    case BLE_ERROR_CODES.connectFailed:
+    case BLE_ERROR_CODES.incompatibleDevice:
+    case BLE_ERROR_CODES.disconnectFailed:
+      return 'releaseCritical.bleConnectFailed';
+    default:
+      return phase === 'connect'
+        ? 'releaseCritical.bleConnectFailed'
+        : 'releaseCritical.bleScanFailed';
+  }
+}

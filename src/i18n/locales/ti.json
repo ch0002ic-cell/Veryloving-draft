@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ንድሕንነትን AI መገላግልትን ማይክሮፎን የድልየና እዩ።",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ንናይ ድሕንነት ካርታን ኣብ ጥቓኻ ዘሎ ናይ ድሕንነት መምርሒታትን ንቦታኻ ትጥቀመሉ።",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ቦታ ብውሕስነት ንምምጻእን ህጹጽ ዋሕዚ ንምድጋፍ ትጥቀመሉ።",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ድሕረ-ባይታ ንምምጻእን ኣብ ጥቓ ሓደገኛ ዞባን ዘሎ ባህርያት ይጥቀም።",
-      "NSCameraUsageDescription": "VeryLoving ካሜራ እትጥቀመላ ፕሮፋይል ወይ ናይ ድሕንነት ስእሊ ኽትወስድ ምስ እትመርጽ ጥራይ እዩ።",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ናይ ስእሊ ቤተ-መጻሕፍቲ እትጥቀመሉ ፕሮፋይል ወይ ናይ ድሕንነት ስእሊ ኽትመርጽ ከለኻ ጥራይ እዩ።",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ምስ NorthStar ድሕንነት ስልማትካ ንምትሕሓዝ Bluetooth ትጥቀም።",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ምስ NorthStar ድሕንነት ስልማትካ ንምትሕሓዝ Bluetooth ትጥቀም።"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ምስ NorthStar ድሕንነት ስልማትካ ንምትሕሓዝ Bluetooth ትጥቀም።"
     },
     "android": {
       "app_name": "VeryLoving"

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "E hinaaro VeryLoving i te micro no te paruru e no te AI i te mau niuniu.",
       "NSLocationWhenInUseUsageDescription": "E faaohipa VeryLoving i to outou vahi no te hoho'a fenua parururaa e te mau rave'a parururaa i piha'i iho mai.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "E faaohipa VeryLoving i to outou vahi no te turu i te mau tereraa rû e te mau tereraa rû.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving faaohipa oia i te vahi i muri mai no te tapaeraa ma te papû e no te vahi atâta.",
-      "NSCameraUsageDescription": "VeryLoving e faaohipa oia i te pata hoho'a ia ma'iti ana'e outou i te pata i te hoho'a e aore râ, i te hoê hoho'a paruru.",
-      "NSPhotoLibraryUsageDescription": "E faaohipa VeryLoving i ta outou vairaa hoho'a ia ma'iti ana'e outou i te hoê hoho'a e aore râ, i te hoê hoho'a paruru.",
-      "NSBluetoothAlwaysUsageDescription": "E faaohipa VeryLoving i te Bluetooth no te tuati i ta outou mau tao'a NorthStar no te parururaa.",
-      "NSBluetoothPeripheralUsageDescription": "E faaohipa VeryLoving i te Bluetooth no te tuati i ta outou mau tao'a NorthStar no te parururaa."
+      "NSBluetoothAlwaysUsageDescription": "E faaohipa VeryLoving i te Bluetooth no te tuati i ta outou mau tao'a NorthStar no te parururaa."
     },
     "android": {
       "app_name": "VeryLoving"

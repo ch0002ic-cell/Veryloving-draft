@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving דאַרף מיקראָפאָן אַקסעס פֿאַר זיכערקייַט און AI באַגלייטער קאַללס.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ניצט דיין אָרט פֿאַר די זיכערקייַט מאַפּע און נאָענט זיכערקייַט פֿעיִקייטן.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ניצט דיין אָרט צו שטיצן זיכער אָנקומען און נויטפאַל פלאָוז.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ניצט הינטערגרונט אָרט פֿאַר זיכער אָנקומען און נירביי געפאַר-זאָנע פֿעיִקייטן.",
-      "NSCameraUsageDescription": "VeryLoving ניצט די אַפּאַראַט בלויז ווען איר קלייַבן צו נעמען אַ פּראָפיל אָדער זיכערקייַט פאָטאָ.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ניצט דיין פאָטאָ ביבליאָטעק בלויז ווען איר קלייַבן אַ פּראָפיל אָדער זיכערקייַט בילד.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ניצט Bluetooth צו פאַרבינדן צו דיין NorthStar זיכערקייַט צירונג.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ניצט Bluetooth צו פאַרבינדן צו דיין NorthStar זיכערקייַט צירונג."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ניצט Bluetooth צו פאַרבינדן צו דיין NorthStar זיכערקייַט צירונג."
     },
     "android": {
       "app_name": "VeryLoving"

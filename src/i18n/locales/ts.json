@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving yi lava mfikelelo wa microphone ku hlayiseka na AI ku bela riqingho ra munghana.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving yi tirhisa ndhawu ya wena eka mepe wa vuhlayiseki na switirhisiwa swa vuhlayiseki swa le kusuhi.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving yi tirhisa ndhawu ya wena ku seketela ku khuluka ka ku fika loku hlayisekeke na ka xihatla.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving yi tirhisa ndhawu ya le ndzhaku ya ku fika loku hlayisekeke na swihlawulekisi swa ndhawu ya khombo ya le kusuhi.",
-      "NSCameraUsageDescription": "VeryLoving yi tirhisa khamera ntsena loko u hlawula ku teka xifaniso xa profile kumbe xa vuhlayiseki.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving yi tirhisa layiburari ya wena ya swifaniso ntsena loko u hlawula xifaniso xa phurofayili kumbe xa vuhlayiseki.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving куркынычсызлык һәм юлдаш шалтыратулар өчен микрофон AI кирәк.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving сезнең урыныгызны куркынычсызлык картасы һәм якындагы куркынычсызлык функцияләре өчен куллана.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving сезнең урнашуыгызны куркынычсыз килеп җитү һәм ашыгыч ярдәм агымнары өчен куллана.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving куркынычсыз килеп җитү һәм якындагы куркыныч зона үзенчәлекләре өчен фон урынын куллана.",
-      "NSCameraUsageDescription": "VeryLoving камераны профиль яки куркынычсызлык фотосы ясаганда гына куллана.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving фототекагызны профиль яки куркынычсызлык сурәте сайлаганда гына куллана.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth куркынычсызлык бизәнү әйберләренә тоташтыру өчен NorthStar куллана.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth куркынычсызлык бизәнү әйберләренә тоташтыру өчен NorthStar куллана."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth куркынычсызлык бизәнү әйберләренә тоташтыру өчен NorthStar куллана."
     },
     "android": {
       "app_name": "VeryLoving"

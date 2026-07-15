@@ -71,6 +71,48 @@ test('every current TextInput placeholder has an explicit accessible colour', ()
   }
 });
 
+test('critical text inputs expose localized programmatic labels', () => {
+  for (const [relativePath, label] of [
+    ['app/(auth)/verify-code.js', "t('auth.verificationCode')"],
+    ['app/emergency-contacts.js', "t('contacts.name')"],
+    ['app/safety-call.js', "t('safetyCall.typePlaceholder')"],
+    ['src/components/CountryPicker.js', "t('phone.searchCountry')"],
+    ['src/components/LanguageSelector.js', "t('languages.search')"]
+  ]) {
+    const inputs = source(relativePath).match(/<TextInput\b[\s\S]*?\/>/g) || [];
+    assert.ok(
+      inputs.some((input) => input.includes(`accessibilityLabel={${label}}`)),
+      `${relativePath} must associate its critical input with a localized accessibility label`
+    );
+  }
+});
+
+test('shared async feedback is announced with status semantics', () => {
+  const feedbackBanner = source('src/components/FeedbackBanner.js');
+  assert.match(
+    feedbackBanner,
+    /accessibilityLiveRegion=\{tone === 'error' \? 'assertive' : 'polite'\}/
+  );
+
+  const loadingState = source('src/components/LoadingState.js');
+  assert.match(loadingState, /\baccessible\b/);
+  assert.match(loadingState, /accessibilityLabel=\{message\}/);
+  assert.match(loadingState, /accessibilityLiveRegion="polite"/);
+  assert.match(loadingState, /accessibilityRole="progressbar"/);
+  assert.match(loadingState, /accessibilityState=\{\{ busy: true \}\}/);
+});
+
+test('map annotations are named and decorative empty-state art stays silent', () => {
+  const map = source('app/(tabs)/map.js');
+  assert.match(map, /title=\{zoneTitle\}/);
+  assert.match(map, /snippet=\{zoneDescription\}/);
+  assert.match(map, /accessibilityLabel=\{zoneTitle\}/);
+  assert.match(map, /accessibilityHint=\{zoneDescription\}/);
+
+  const emptyState = source('src/components/EmptyState.js');
+  assert.match(emptyState, /<Image accessible=\{false\}/);
+});
+
 test('protected detail screens expose visible, localized back navigation', () => {
   for (const relativePath of [
     'app/settings.js',

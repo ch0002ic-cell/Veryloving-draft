@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { AccessibilityInfo, Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Card } from '../src/components/Card';
@@ -10,15 +10,17 @@ import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { useAppState } from '../src/context/AppContext';
 import { useI18n } from '../src/context/I18nContext';
 import { callNumber } from '../src/services/emergency';
-import { formatE164ForDisplay } from '../src/utils/phone';
+import { formatE164ForDisplay, phoneValueFromE164 } from '../src/utils/phone';
 import { colors, fonts } from '../src/constants/theme';
 import { images } from '../src/constants/assets';
 
 export default function EmergencyContacts() {
-  const { addContact, contacts, removeContact } = useAppState();
+  const { addContact, contacts, removeContact, updateContact } = useAppState();
   const { t } = useI18n();
+  const nameInputRef = useRef(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [callingId, setCallingId] = useState(null);
@@ -26,25 +28,59 @@ export default function EmergencyContacts() {
   const [feedback, setFeedback] = useState(null);
   const nameValid = Boolean(name.trim());
 
-  const add = async () => {
+  useEffect(() => {
+    if (!editingId) return undefined;
+    const timer = setTimeout(() => {
+      nameInputRef.current?.focus();
+      AccessibilityInfo.announceForAccessibility?.(t('releaseCritical.editContactTitle'));
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [editingId, t]);
+
+  const resetForm = () => {
+    setEditingId(null);
+    setName('');
+    setPhone(null);
+    setSubmitted(false);
+  };
+
+  const save = async () => {
     setSubmitted(true);
     if (!nameValid || !phone?.isValid) return;
     setSaving(true);
     setFeedback(null);
+    const editId = editingId;
     try {
-      await addContact({
+      const nextContact = {
         countryCode: phone.countryCode,
         name: name.trim(),
         phone: phone.e164
-      });
-      setName('');
-      setPhone(null);
-      setSubmitted(false);
+      };
+      if (editId) await updateContact(editId, nextContact);
+      else await addContact(nextContact);
+      resetForm();
+      if (editId) {
+        setFeedback({ message: t('releaseCritical.contactUpdated'), tone: 'success' });
+      }
     } catch {
-      setFeedback({ message: t('contacts.saveFailedMessage'), retry: add });
+      setFeedback({ message: t('contacts.saveFailedMessage'), retry: 'save', tone: 'error' });
     } finally {
       setSaving(false);
     }
+  };
+
+  const startEdit = (contact) => {
+    if (saving || callingId || removingId) return;
+    setFeedback(null);
+    setSubmitted(false);
+    setEditingId(contact.id);
+    setName(contact.name);
+    setPhone(phoneValueFromE164(contact.phone, contact.countryCode));
+  };
+
+  const cancelEdit = () => {
+    resetForm();
+    setFeedback(null);
   };
 
   const remove = async (contact) => {
@@ -53,6 +89,7 @@ export default function EmergencyContacts() {
       setRemovingId(contact.id);
       setFeedback(null);
       await removeContact(contact.id);
+      if (editingId === contact.id) resetForm();
     } catch {
       setFeedback({ message: t('contacts.removeFailedMessage'), retry: () => remove(contact) });
     } finally {
@@ -91,13 +128,23 @@ export default function EmergencyContacts() {
   return (
     <Screen>
       <Header title={t('contacts.title')} subtitle={t('contacts.subtitle')} showBack backLabel={t('common.back')} />
-      <FeedbackBanner message={feedback?.message} actionLabel={t('common.retry')} onAction={feedback?.retry} />
+      <FeedbackBanner
+        message={feedback?.message}
+        tone={feedback?.tone}
+        actionLabel={t('common.retry')}
+        onAction={feedback?.retry === 'save' ? save : feedback?.retry}
+      />
       <Card style={styles.form}>
-        <Text style={styles.title}>{t('contacts.addTitle')}</Text>
+        <Text accessibilityRole="header" style={styles.title}>
+          {editingId ? t('releaseCritical.editContactTitle') : t('contacts.addTitle')}
+        </Text>
         <Text style={styles.label}>{t('contacts.name')}</Text>
         <TextInput
+          ref={nameInputRef}
+          accessibilityLabel={t('contacts.name')}
           autoCapitalize="words"
           autoCorrect={false}
+          maxLength={100}
           onChangeText={setName}
           placeholder={t('contacts.namePlaceholder')}
           placeholderTextColor={colors.inkSoft}
@@ -112,12 +159,21 @@ export default function EmergencyContacts() {
           value={phone}
         />
         <Button
-          title={t('contacts.add')}
-          icon="person-add"
+          title={editingId ? t('common.save') : t('contacts.add')}
+          icon={editingId ? 'checkmark' : 'person-add'}
           loading={saving}
           disabled={!nameValid || !phone?.isValid}
-          onPress={add}
+          onPress={save}
         />
+        {editingId ? (
+          <Button
+            title={t('common.cancel')}
+            icon="close"
+            variant="ghost"
+            disabled={saving}
+            onPress={cancelEdit}
+          />
+        ) : null}
       </Card>
       <View style={styles.list}>
         {!contacts.length ? (
@@ -134,12 +190,20 @@ export default function EmergencyContacts() {
             </View>
             <View style={styles.actions}>
               <Button
+                title={t('releaseCritical.editContact')}
+                accessibilityLabel={t('releaseCritical.editContactAccessibility', { name: contact.name })}
+                icon="create-outline"
+                variant="ghost"
+                disabled={Boolean(saving || callingId || removingId)}
+                onPress={() => startEdit(contact)}
+              />
+              <Button
                 title={t('common.call')}
                 accessibilityLabel={t('contacts.callAccessibility', { name: contact.name })}
                 icon="call"
                 variant="ghost"
                 loading={callingId === contact.id}
-                disabled={Boolean((callingId && callingId !== contact.id) || removingId)}
+                disabled={Boolean(saving || (callingId && callingId !== contact.id) || removingId)}
                 onPress={() => call(contact)}
               />
               <Button
@@ -148,7 +212,7 @@ export default function EmergencyContacts() {
                 icon="trash-outline"
                 variant="ghost"
                 loading={removingId === contact.id}
-                disabled={Boolean((removingId && removingId !== contact.id) || callingId)}
+                disabled={Boolean(saving || (removingId && removingId !== contact.id) || callingId)}
                 onPress={() => confirmRemove(contact)}
               />
             </View>

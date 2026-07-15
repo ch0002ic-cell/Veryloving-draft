@@ -98,9 +98,17 @@ class AudioService {
     }
     await this.startVoiceCallMode();
     try {
-      if (!await explainPermission('microphone')) throw new Error('Microphone permission was not requested.');
+      if (!await explainPermission('microphone')) {
+        const error = new Error('Microphone permission was not requested.');
+        error.code = 'MICROPHONE_NOT_REQUESTED';
+        throw error;
+      }
       const permission = await requestRecordingPermissionsAsync();
-      if (!permission.granted) throw new Error('Microphone permission is required.');
+      if (!permission.granted) {
+        const error = new Error('Microphone permission is required.');
+        error.code = 'MICROPHONE_PERMISSION_DENIED';
+        throw error;
+      }
       this.recording = stream;
       this.pcmFormatWarningShown = false;
       await stream.start();

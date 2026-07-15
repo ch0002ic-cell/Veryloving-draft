@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, FlatList, StyleSheet, Text } from 'react-native';
+import { AppState, FlatList, Linking, StyleSheet, Text } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
@@ -13,6 +13,8 @@ import { EmptyState } from '../../src/components/EmptyState';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { LoadingState } from '../../src/components/LoadingState';
 import { images } from '../../src/constants/assets';
+import { useAuth } from '../../src/context/AuthContext';
+import { bleErrorTranslationKey } from '../../src/services/ble-errors';
 
 export default function JewelrySetup() {
   const params = useLocalSearchParams();
@@ -25,17 +27,27 @@ export default function JewelrySetup() {
   const mountedRef = useRef(true);
   const appStateRef = useRef(AppState.currentState);
   const stopScanRef = useRef(null);
+  const finishingRef = useRef(false);
   const { setDevice } = useAppState();
+  const { advanceOnboarding } = useAuth();
   const { t } = useI18n();
 
-  const finishSetup = useCallback(() => {
+  const finishSetup = useCallback(async () => {
+    if (finishingRef.current) return;
+    finishingRef.current = true;
     if (!standalone) {
-      router.push('/(auth)/capybear-setup');
+      try {
+        await advanceOnboarding('/(auth)/capybear-setup');
+        router.push('/(auth)/capybear-setup');
+      } catch {
+        finishingRef.current = false;
+        if (mountedRef.current) setError(t('settings.updateFailedMessage'));
+      }
       return;
     }
     if (router.canGoBack()) router.back();
     else router.replace('/device-management');
-  }, [standalone]);
+  }, [advanceOnboarding, standalone, t]);
 
   const stopScan = useCallback(() => {
     stopScanRef.current?.();
@@ -70,7 +82,10 @@ export default function JewelrySetup() {
           setDevices((items) => items.find((item) => item.id === nextDevice.id) ? items : [...items, nextDevice]);
         },
         {
-          onError: (scanError) => mountedRef.current && setError(scanError.message),
+          onError: (scanError) => mountedRef.current && setError({
+            code: scanError?.code,
+            translationKey: bleErrorTranslationKey(scanError, 'scan')
+          }),
           onComplete: () => mountedRef.current && setScanning(false)
         }
       );
@@ -79,7 +94,10 @@ export default function JewelrySetup() {
     } catch (scanError) {
       if (mountedRef.current) {
         setScanning(false);
-        setError(scanError.message || t('jewelry.scanStartFailed'));
+        setError({
+          code: scanError?.code,
+          translationKey: bleErrorTranslationKey(scanError, 'scan')
+        });
       }
     }
   }, [stopScan, t]);
@@ -98,13 +116,14 @@ export default function JewelrySetup() {
       }
       await setDevice(connected);
       remembered = true;
-      if (mountedRef.current) finishSetup();
+      if (mountedRef.current) await finishSetup();
     } catch (connectionError) {
       if (connected && !remembered) await bleService.disconnect(connected.id).catch(() => {});
       if (mountedRef.current) {
-        setError(connectionError?.code?.startsWith('BLE_')
-          ? connectionError.message
-          : t('jewelry.connectFailed'));
+        setError({
+          code: connectionError?.code,
+          translationKey: bleErrorTranslationKey(connectionError, 'connect')
+        });
       }
     } finally {
       if (mountedRef.current) setConnectingId(null);
@@ -120,7 +139,13 @@ export default function JewelrySetup() {
         onPress={scan}
         loading={scanning}
       />
-      <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={scan} />
+      <FeedbackBanner
+        message={error?.translationKey ? t(error.translationKey) : error}
+        actionLabel={error?.code === 'BLE_PERMISSION_DENIED' ? t('common.settings') : t('common.retry')}
+        onAction={error?.code === 'BLE_PERMISSION_DENIED'
+          ? () => Linking.openSettings().catch(() => {})
+          : scan}
+      />
       <FlatList
         data={devices}
         keyExtractor={(item) => item.id}

@@ -38,6 +38,7 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
           <View style={styles.searchRow}>
             <Ionicons name="search" size={20} color={colors.inkSoft} />
             <TextInput
+              accessibilityLabel={t('phone.searchCountry')}
               autoCapitalize="none"
               autoCorrect={false}
               clearButtonMode="while-editing"

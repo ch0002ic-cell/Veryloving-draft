@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving २.",
       "NSMicrophoneUsageDescription": "VeryLoving इत्यस्य सुरक्षायाः कृते माइक्रोफोन-प्रवेशस्य आवश्यकता वर्तते तथा च AI सहचर-कॉलस्य आवश्यकता वर्तते ।",
       "NSLocationWhenInUseUsageDescription": "VeryLoving सुरक्षानक्शस्य समीपस्थसुरक्षाविशेषतानां च कृते भवतः स्थानस्य उपयोगं करोति ।",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving सुरक्षित-आगमनस्य आपत्कालीनप्रवाहस्य च समर्थनार्थं भवतः स्थानस्य उपयोगं करोति ।",
-      "NSLocationAlwaysUsageDescription": "VeryLoving सुरक्षित-आगमनस्य तथा समीपस्थस्य खतरा-क्षेत्रस्य विशेषतानां कृते पृष्ठभूमिस्थानस्य उपयोगं करोति ।",
-      "NSCameraUsageDescription": "VeryLoving केवलं तदा एव कॅमेरा-उपयोगं करोति यदा भवान् प्रोफाइलं वा सुरक्षा-चित्रं वा ग्रहीतुं चयनं करोति ।",
-      "NSPhotoLibraryUsageDescription": "VeryLoving केवलं तदा एव भवतः छायाचित्रपुस्तकालयस्य उपयोगं करोति यदा भवान् प्रोफाइलं वा सुरक्षाप्रतिबिम्बं वा चिनोति।",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving भवतः NorthStar सुरक्षा-आभूषणैः सह सम्बद्धं कर्तुं Bluetooth इत्यस्य उपयोगं करोति ।",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving भवतः NorthStar सुरक्षा-आभूषणैः सह सम्बद्धं कर्तुं Bluetooth इत्यस्य उपयोगं करोति ।"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving भवतः NorthStar सुरक्षा-आभूषणैः सह सम्बद्धं कर्तुं Bluetooth इत्यस्य उपयोगं करोति ।"
     },
     "android": {
       "app_name": "VeryLoving २."

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving bezwen aksè mikwofòn pou sekirite ak apèl konpayon AI",
       "NSLocationWhenInUseUsageDescription": "VeryLoving sèvi ak kote ou ye pou kat jeyografik la sekirite ak karakteristik sekirite ki tou pre.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving itilize kote ou ye pou sipòte arive san danje ak koule ijans.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving itilize kote background pou arive san danje ak karakteristik zòn danje ki tou pre.",
-      "NSCameraUsageDescription": "VeryLoving itilize kamera a sèlman lè ou chwazi pou pran yon pwofil oswa foto sekirite.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving itilize bibliyotèk foto ou sèlman lè ou chwazi yon pwofil oswa imaj sekirite.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou"
     },
     "android": {
       "app_name": "VeryLoving"

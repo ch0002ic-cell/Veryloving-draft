@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving кхерамазаллина а, AI накъостийн зӀенашна а микрофон оьшу.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving лелайо хьан меттиг кхерамазаллин картана а, гергарчу кхерамзаллин агӀонашна а.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving лелайо хьан меттиг маьрша кхачаран а, сихаллин дӀасалеларан а гӀоьнна.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving лелайо фонан меттиг кхераме-кхачаран а, гергарчу кхерамечу зонан а башхаллашна.",
-      "NSCameraUsageDescription": "VeryLoving лелайо камера ахь профилан я кхерамзаллин сурт даккха лаахь бен.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving лелайо хьан суртийн библиотека ахь профилан я кхерамзаллин сурт хаьржича бен.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving лелайо Bluetooth хьан NorthStar кхерамазаллин ювелиран хӀуманашца зӀе латто.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving лелайо Bluetooth хьан NorthStar кхерамзаллин ювелиран хӀуманашца зӀе латто."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving лелайо Bluetooth хьан NorthStar кхерамазаллин ювелиран хӀуманашца зӀе латто."
     },
     "android": {
       "app_name": "VeryLoving"

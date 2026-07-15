@@ -22,7 +22,10 @@ import {
 import { configureHumeCustomSession } from '../services/hume-session';
 import { executeHumeTool } from '../services/hume-tools';
 import { logger } from '../utils/logger';
-import { userFacingVoiceError, voiceCallCopy } from '../utils/user-facing-error';
+import {
+  userFacingVoiceErrorKey,
+  voiceCallCopyKeys
+} from '../utils/user-facing-error';
 import { humeVoiceOverride } from '../utils/hume-voice';
 
 function normalizeSessionId(value) {
@@ -60,7 +63,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
 
   const presentError = useCallback((nextError) => {
     if (!mountedRef.current) return;
-    setError({ message: userFacingVoiceError(nextError, { isOnline }) });
+    setError({
+      code: typeof nextError?.code === 'string' ? nextError.code : null,
+      translationKey: userFacingVoiceErrorKey(nextError, { isOnline })
+    });
   }, [isOnline]);
 
   const refreshPendingCount = useCallback(async () => {
@@ -128,7 +134,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
         }
       },
       onFailed: async (queued, queueError) => {
-        const deliveryError = userFacingVoiceError(queueError, { isOnline: true });
+        const deliveryError = userFacingVoiceErrorKey(queueError, { isOnline: true });
         await updateConversationMessage(queued.sessionId, queued.id, { deliveryStatus: 'failed', deliveryError });
         if (mountedRef.current) {
           setMessages((items) => items.map((item) => item.id === queued.id
@@ -202,7 +208,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
 
   useEffect(() => {
     if (!isOnline) {
-      setNotice(voiceCallCopy.offline);
+      setNotice(voiceCallCopyKeys.offline);
       return;
     }
     if (humeEVIService.getState() === 'connected') {
@@ -266,7 +272,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
         voiceName: selectedVoice.displayName
       });
       const useOfflineService = forcedOffline || !isOnline;
-      if (useOfflineService && !isOnline) setNotice(voiceCallCopy.offline);
+      if (useOfflineService && !isOnline) setNotice(voiceCallCopyKeys.offline);
       await connectService(useOfflineService ? offlineEVIService : humeEVIService);
       return true;
     } catch (startError) {
@@ -337,7 +343,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       await refreshPendingCount();
       if (service === offlineEVIService && service.getState() === 'connected') service.sendText(text, { emitUser: false });
       else setFallbackAvailable(true);
-      setNotice(isOnline ? voiceCallCopy.queued : voiceCallCopy.offline);
+      setNotice(isOnline ? voiceCallCopyKeys.queued : voiceCallCopyKeys.offline);
       return false;
     } catch (queueError) {
       logger.warn('[VoiceCall] Could not persist the offline message', {
@@ -355,9 +361,9 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     setMessages((items) => items.map((item) => item.id === messageId
       ? { ...item, deliveryStatus: 'queued', deliveryError: null }
       : item));
-    setNotice(voiceCallCopy.retrying);
+    setNotice(voiceCallCopyKeys.retrying);
     if (!isOnline) {
-      setNotice(voiceCallCopy.offline);
+      setNotice(voiceCallCopyKeys.offline);
       return false;
     }
     if (humeEVIService.getState() === 'connected') {
@@ -365,7 +371,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       return true;
     }
     if (!forcedOffline) await retryOnline();
-    else setNotice(voiceCallCopy.queued);
+    else setNotice(voiceCallCopyKeys.queued);
     return false;
   }, [flushPendingMessages, forcedOffline, isOnline, retryOnline]);
 

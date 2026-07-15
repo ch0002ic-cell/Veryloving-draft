@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hevur brúk fyri mikrofonatgongd fyri trygd og AI samrøður við fylgisveinar.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving brúkar staðsetingina hjá tær til trygdarkortið og nærliggjandi trygdarfunktiónir.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving brúkar tína staðseting til at stuðla tryggum komu og neyðartilfari.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving brúkar bakgrundarstaðseting til trygga komu og nærliggjandi vandasvæði.",
-      "NSCameraUsageDescription": "VeryLoving brúkar myndatólið bert, tá tú velur at taka profil- ella trygdarmynd.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving brúkar myndasavnið títt bert, tá tú velur eina profil ella trygdarmynd.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving brúkar Bluetooth til at knýta seg til tínar NorthStar trygdarsmykkur.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving brúkar Bluetooth til at knýta seg til tínar NorthStar trygdarsmykkur."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving brúkar Bluetooth til at knýta seg til tínar NorthStar trygdarsmykkur."
     },
     "android": {
       "app_name": "VeryLoving"

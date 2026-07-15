@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving azali na mposa ya microphone mpo na libateli mpe AI baninga.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving kosalela karte ya likama mpe biloko ya likama oyo ezali pene na yo.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving kosalela esika ofandi mpo na kosalisa bato oyo bazali koya na likama mpe na likama te.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving esalelaka esika ya liboso mpo na kokoma na likama mpe na bisika ya likama oyo ezali pene.",
-      "NSCameraUsageDescription": "VeryLoving kosalela aparɛyi yango kaka soki oponi kozwa fɔtɔ to fɔtɔ ya libateli.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving kosalela bibliothèque ya bilili kaka soki oponi profil to elilingi ya libateli.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo."
     },
     "android": {
       "app_name": "VeryLoving"

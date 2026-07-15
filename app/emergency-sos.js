@@ -9,15 +9,22 @@ import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { images } from '../src/constants/assets';
 import { triggerSOS } from '../src/services/emergency';
 import {
-  LAST_SOS_ATTEMPT_TITLE,
   loadSOSStatus,
-  sosStatusMessage
+  sosStatusTranslationKey
 } from '../src/services/sos-state';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { useAuth } from '../src/context/AuthContext';
 import { loadLastKnownLocation } from '../src/services/location-cache';
+
+function closeScreen() {
+  if (router.canGoBack()) {
+    router.back();
+    return;
+  }
+  router.replace('/(tabs)');
+}
 
 export default function EmergencySOS() {
   const { contacts } = useAppState();
@@ -78,8 +85,8 @@ export default function EmergencySOS() {
       </Card>
       {lastSOSStatus ? (
         <Card>
-          <Text style={{ fontFamily: fonts.bold }}>{LAST_SOS_ATTEMPT_TITLE}</Text>
-          <Text style={{ fontFamily: fonts.regular }}>{sosStatusMessage(lastSOSStatus.status)}</Text>
+          <Text style={{ fontFamily: fonts.bold }}>{t('releaseCritical.lastSOSAttempt')}</Text>
+          <Text style={{ fontFamily: fonts.regular }}>{t(sosStatusTranslationKey(lastSOSStatus.status))}</Text>
           <Text style={{ fontFamily: fonts.regular }}>
             {new Date(lastSOSStatus.recordedAt).toLocaleString(locale)}
           </Text>
@@ -93,7 +100,7 @@ export default function EmergencySOS() {
         onPress={activate}
       />
       <Button title={t('emergency.callCompanion')} disabled={activating} onPress={() => router.push('/safety-call')} />
-      <Button title={t('common.cancel')} variant="ghost" disabled={activating} onPress={() => router.back()} />
+      <Button title={t('common.cancel')} variant="ghost" disabled={activating} onPress={closeScreen} />
     </Screen>
   );
 }

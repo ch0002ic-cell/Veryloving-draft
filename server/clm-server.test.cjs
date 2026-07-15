@@ -502,6 +502,12 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
   const repository = {
     async listContacts() { return records.contacts; },
     async createContact(_userId, contact) { records.contacts.push(contact); return contact; },
+    async updateContact(_userId, contactId, contact, expectedVersion) {
+      const index = records.contacts.findIndex((item) => item.id === contactId && item.version === expectedVersion);
+      if (index < 0) throw Object.assign(new Error('conflict'), { statusCode: 409 });
+      records.contacts[index] = contact;
+      return contact;
+    },
     async deleteContact(_userId, contactId) {
       records.contacts = records.contacts.filter((contact) => contact.id !== contactId);
     },
@@ -555,6 +561,37 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
   });
   assert.equal(listed.status, 200);
   assert.equal(listed.json.contacts.length, 1);
+
+  const updated = await invoke(config, {
+    method: 'PATCH',
+    url: `/v1/emergency-contacts/${created.json.id}`,
+    headers: authorization,
+    body: {
+      name: 'Grace Lee',
+      phone: '+6598765432',
+      countryCode: 'SG',
+      version: created.json.version
+    }
+  });
+  assert.equal(updated.status, 200);
+  assert.equal(updated.json.id, created.json.id);
+  assert.equal(updated.json.name, 'Grace Lee');
+  assert.equal(updated.json.phone, '+6598765432');
+  assert.equal(updated.json.version, 2);
+
+  const staleUpdate = await invoke(config, {
+    method: 'PATCH',
+    url: `/v1/emergency-contacts/${created.json.id}`,
+    headers: authorization,
+    body: {
+      name: 'Stale edit',
+      phone: '+6591234567',
+      countryCode: 'SG',
+      version: created.json.version
+    }
+  });
+  assert.equal(staleUpdate.status, 409);
+  assert.equal(records.contacts[0].name, 'Grace Lee');
 
   const mode = await invoke(config, {
     method: 'POST',

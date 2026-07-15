@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving 안전을 위해 마이크 접근과 AI 동반 통화가 필요합니다.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving 안전 지도와 인근 안전 기능을 위해 당신의 위치를 사용합니다.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving 귀하의 위치를 활용해 안전한 도착과 긴급 상황 흐름을 지원합니다.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving 안전한 도착 및 인근 위험 구역 기능을 위해 배경 위치를 사용합니다.",
-      "NSCameraUsageDescription": "VeryLoving 프로필 사진이나 안전 사진을 찍을 때만 카메라를 사용합니다.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving 프로필이나 안전 이미지를 선택할 때만 사진 라이브러리를 사용합니다.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth 사용해 NorthStar 안전 주얼리에 연결됩니다.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth 사용해 NorthStar 안전 주얼리에 연결됩니다."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth 사용해 NorthStar 안전 주얼리에 연결됩니다."
     },
     "android": {
       "app_name": "VeryLoving"

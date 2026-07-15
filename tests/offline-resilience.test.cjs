@@ -22,8 +22,10 @@ const {
   clearPendingSOSAttempt,
   loadSOSStatus,
   loadOrCreatePendingSOSAttempt,
+  markSOSAttemptAccepted,
   runAndPersistSOS,
-  sosStatusMessage
+  SOS_ATTEMPT_STATUS,
+  sosStatusTranslationKey
 } = require('../src/services/sos-state');
 const {
   lockAndDrainLocalUserDataMutations,
@@ -385,9 +387,10 @@ test('SOS outcome and failure status survive local reload without duplicating co
     { storageImpl: storage, now: () => 6_000, loggerImpl: { warn() {} } }
   ), /dialer failed/);
   assert.equal((await loadSOSStatus({ storageImpl: storage })).status, 'dialer_failed');
-  assert.match(sosStatusMessage('dialer_opened'), /call not confirmed/i);
-  assert.match(sosStatusMessage('cancelled'), /no call was placed/i);
-  assert.match(sosStatusMessage('dialer_failed'), /no call was placed/i);
+  assert.equal(sosStatusTranslationKey('dialer_opened'), 'releaseCritical.sosDialerOpened');
+  assert.equal(sosStatusTranslationKey('cancelled'), 'releaseCritical.sosCancelled');
+  assert.equal(sosStatusTranslationKey('dialer_failed'), 'releaseCritical.sosDialerFailed');
+  assert.equal(sosStatusTranslationKey('unexpected'), 'releaseCritical.sosUnknown');
 });
 
 test('SOS retry idempotency survives reload until a definitive backend receipt', async () => {
@@ -406,12 +409,87 @@ test('SOS retry idempotency survives reload until a definitive backend receipt',
     contactIds: ['contact_a', 'contact_b']
   });
   assert.equal(retry.idempotencyKey, first.idempotencyKey);
+  assert.equal(retry.status, SOS_ATTEMPT_STATUS.pending);
   assert.equal(generated, 1);
   assert.equal(storage.has(PENDING_SOS_ATTEMPT_KEY), true);
 
+  assert.equal(await markSOSAttemptAccepted(first.idempotencyKey, {
+    storageImpl: storage,
+    now: () => 10_100
+  }), true);
+  assert.equal(storage.value(PENDING_SOS_ATTEMPT_KEY).status, SOS_ATTEMPT_STATUS.accepted);
+  assert.equal(storage.value(PENDING_SOS_ATTEMPT_KEY).acceptedAt, 10_100);
+
+  const nextActivation = await loadOrCreatePendingSOSAttempt(options);
+  assert.notEqual(nextActivation.idempotencyKey, first.idempotencyKey);
+  assert.equal(nextActivation.status, SOS_ATTEMPT_STATUS.pending);
+  assert.equal(generated, 2);
+
+  const indeterminateRetry = await loadOrCreatePendingSOSAttempt(options);
+  assert.equal(indeterminateRetry.idempotencyKey, nextActivation.idempotencyKey);
+  assert.equal(generated, 2);
+
   assert.equal(await clearPendingSOSAttempt('another-key', { storageImpl: storage }), false);
-  assert.equal(await clearPendingSOSAttempt(first.idempotencyKey, { storageImpl: storage }), true);
+  assert.equal(await clearPendingSOSAttempt(nextActivation.idempotencyKey, { storageImpl: storage }), true);
   assert.equal(storage.has(PENDING_SOS_ATTEMPT_KEY), false);
+});
+
+test('accepted SOS persistence failure removes the reusable pending key as a safe fallback', async () => {
+  const storage = memoryStorage();
+  let generated = 0;
+  const options = {
+    accountId: 'google:account-a',
+    contactIds: ['contact_a'],
+    storageImpl: storage,
+    now: () => 20_000,
+    createId: () => `fallback-key-${++generated}`
+  };
+  const first = await loadOrCreatePendingSOSAttempt(options);
+  const persist = storage.setJSON;
+  storage.setJSON = async (key, value) => {
+    if (key === PENDING_SOS_ATTEMPT_KEY && value?.status === SOS_ATTEMPT_STATUS.accepted) {
+      throw new Error('accepted status write failed');
+    }
+    return persist(key, value);
+  };
+
+  await assert.rejects(
+    markSOSAttemptAccepted(first.idempotencyKey, { storageImpl: storage }),
+    /accepted status write failed/
+  );
+  assert.equal(storage.has(PENDING_SOS_ATTEMPT_KEY), false);
+
+  storage.setJSON = persist;
+  const next = await loadOrCreatePendingSOSAttempt(options);
+  assert.notEqual(next.idempotencyKey, first.idempotencyKey);
+  assert.equal(generated, 2);
+});
+
+test('accepted SOS key remains guarded when storage is briefly unreadable after acceptance', async () => {
+  const storage = memoryStorage();
+  let generated = 0;
+  const options = {
+    accountId: 'google:account-storage-recovery',
+    contactIds: ['contact_a'],
+    storageImpl: storage,
+    now: () => 30_000,
+    createId: () => `recovery-key-${++generated}`
+  };
+  const accepted = await loadOrCreatePendingSOSAttempt(options);
+  const getJSON = storage.getJSON;
+  storage.getJSON = async () => {
+    throw new Error('temporary storage read failure');
+  };
+
+  await assert.rejects(
+    markSOSAttemptAccepted(accepted.idempotencyKey, { storageImpl: storage }),
+    /temporary storage read failure/
+  );
+
+  storage.getJSON = getJSON;
+  const next = await loadOrCreatePendingSOSAttempt(options);
+  assert.notEqual(next.idempotencyKey, accepted.idempotencyKey);
+  assert.equal(generated, 2);
 });
 
 test('local cleanup drains an in-flight write and blocks stale writers until release', async () => {

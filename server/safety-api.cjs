@@ -50,7 +50,8 @@ function createDynamoSafetyRepository({ tableName, region }) {
     DynamoDBDocumentClient,
     GetCommand,
     PutCommand,
-    QueryCommand
+    QueryCommand,
+    UpdateCommand
   } = require('@aws-sdk/lib-dynamodb');
   const documentClient = DynamoDBDocumentClient.from(new DynamoDBClient({ region }), {
     marshallOptions: { removeUndefinedValues: true }
@@ -98,6 +99,43 @@ function createDynamoSafetyRepository({ tableName, region }) {
         if (!existing.Item) throw error;
         const { id, name, phone, countryCode, version } = existing.Item;
         return { id, name, phone, countryCode, version };
+      }
+    },
+    async updateContact(userId, contactId, contact, expectedVersion) {
+      const key = { PK: `USER#${userId}`, SK: `CONTACT#${contactId}` };
+      try {
+        const result = await documentClient.send(new UpdateCommand({
+          TableName: tableName,
+          Key: key,
+          UpdateExpression: 'SET #name = :name, phone = :phone, countryCode = :countryCode, #version = :nextVersion, updatedAt = :updatedAt',
+          ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #version = :expectedVersion',
+          ExpressionAttributeNames: {
+            '#name': 'name',
+            '#version': 'version'
+          },
+          ExpressionAttributeValues: {
+            ':name': contact.name,
+            ':phone': contact.phone,
+            ':countryCode': contact.countryCode,
+            ':expectedVersion': expectedVersion,
+            ':nextVersion': contact.version,
+            ':updatedAt': contact.updatedAt
+          },
+          ReturnValues: 'ALL_NEW'
+        }));
+        const { id, name, phone, countryCode, version } = result.Attributes || {};
+        return { id, name, phone, countryCode, version };
+      } catch (error) {
+        if (error?.name !== 'ConditionalCheckFailedException') throw error;
+        const current = await documentClient.send(new GetCommand({
+          TableName: tableName,
+          Key: key,
+          ConsistentRead: true
+        }));
+        throw Object.assign(
+          new Error(current.Item ? 'Emergency contact changed; refresh and try again' : 'Emergency contact not found'),
+          { statusCode: current.Item ? 409 : 404 }
+        );
       }
     },
     async deleteContact(userId, contactId) {
@@ -225,6 +263,31 @@ async function handleSafetyAPI({ req, res, url, body, principal, repository, ret
     return true;
   }
   const contactMatch = /^\/v1\/emergency-contacts\/(contact_[A-Za-z0-9_-]{24})$/.exec(url.pathname);
+  if (req.method === 'PATCH' && contactMatch) {
+    requireScope(principal, 'safety:write');
+    const input = validateContactInput(body);
+    const expectedVersion = Number(body?.version);
+    if (!Number.isInteger(expectedVersion) || expectedVersion < 1) {
+      throw Object.assign(new Error('version is invalid'), { statusCode: 400 });
+    }
+    const existingContacts = await repository.listContacts(userId);
+    const existing = existingContacts.find((contact) => contact.id === contactMatch[1]);
+    if (!existing) throw Object.assign(new Error('Emergency contact not found'), { statusCode: 404 });
+    if (existing.version !== expectedVersion) {
+      throw Object.assign(new Error('Emergency contact changed; refresh and try again'), { statusCode: 409 });
+    }
+    if (existingContacts.some((contact) => contact.id !== existing.id && contact.phone === input.phone)) {
+      throw Object.assign(new Error('An emergency contact already uses this phone number'), { statusCode: 409 });
+    }
+    const updated = {
+      id: existing.id,
+      ...input,
+      version: expectedVersion + 1,
+      updatedAt: Date.now()
+    };
+    json(res, 200, await repository.updateContact(userId, existing.id, updated, expectedVersion));
+    return true;
+  }
   if (req.method === 'DELETE' && contactMatch) {
     requireScope(principal, 'safety:write');
     await repository.deleteContact(userId, contactMatch[1]);

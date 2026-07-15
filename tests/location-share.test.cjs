@@ -19,8 +19,22 @@ test('quick share creates an honest, static current-location payload', () => {
   assert.match(content.message, /location recorded at 2026-07-13T04:00:00\.000Z/);
   assert.match(content.message, /query=1\.3521,103\.8198/);
   assert.match(content.message, /one-time location snapshot/i);
-  assert.match(content.message, /does not update after sharing/i);
+  assert.match(content.message, /does not update after sending/i);
   assert.doesNotMatch(content.message, /live|revoc|tracking/i);
+});
+
+test('quick share localizes safety copy while retaining exact coordinates and freshness', () => {
+  const content = buildLocationShareContent({
+    isCached: true,
+    cachedAt: Date.parse('2026-07-12T23:00:00.000Z'),
+    coords: { latitude: 40.4168, longitude: -3.7038 }
+  }, { locale: 'es' });
+
+  assert.match(content.title, /Envío rápido/);
+  assert.match(content.message, /última ubicación guardada/i);
+  assert.match(content.message, /2026-07-12T23:00:00\.000Z/);
+  assert.match(content.message, /query=40\.4168,-3\.7038/);
+  assert.match(content.message, /No se actualizará/);
 });
 
 test('quick share labels cached coordinates as the last saved location', () => {
@@ -65,6 +79,6 @@ test('the safety map exposes Quick Share and passes a resolved location to it', 
   const mapScreen = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/map.js'), 'utf8');
   assert.match(mapScreen, /title=\{t\('quickShare\.title'\)\}/);
   assert.match(mapScreen, /const shareLocation = location \|\| await requestCurrentLocation\(\)/);
-  assert.match(mapScreen, /await shareQuickLocation\(shareLocation\)/);
+  assert.match(mapScreen, /await shareQuickLocation\(shareLocation, \{ locale \}\)/);
   assert.match(mapScreen, /shareInProgressRef\.current/);
 });

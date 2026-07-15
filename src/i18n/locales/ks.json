@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving حفاظت تہٕ AI سٲتھی کالہٕ خٲطرٕ چھِ مایکروفون تام رسٲیی ہٕنٛز ضرورت۔",
       "NSLocationWhenInUseUsageDescription": "VeryLoving چھُ تُہٕنٛز جاے حِفٲظتی نقشہٕ تہٕ نزدیٖکی حِفٲظتی خصوٗصیَتن باپتھ اِستعمال کَران۔",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving چھُ تُہٕنٛز جاے محفوٗظ آمد تہٕ ہنگٲمی بہاؤ سہارٕ دِنہٕ خٲطرٕ استعمال کران۔",
-      "NSLocationAlwaysUsageDescription": "VeryLoving محفوظ آمد تہٕ نزدیکی خطرٕک زون کین خصوصیاتن خٲطرٕ پس منظرٕچ لوکیشن استعمال کران۔",
-      "NSCameraUsageDescription": "VeryLoving چھُ کیمرا صرف تمہِ ساتہٕ استعمال کران ییٚلہِ تُہۍ پروفائل یا حفاظتی فوٹو تُلنُک انتخاب کران چھِو۔",
-      "NSPhotoLibraryUsageDescription": "VeryLoving چھُ تُہٕنٛز فوٹو لائبریری صرف تمہِ ساتہٕ استعمال کران ییٚلہِ تُہۍ پروفائل یا حفاظتی تصویٖرُک انتخاب کٔرِو۔",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving چھُ تُہنٛدِس NorthStar حِفاظتی زیورات سۭتۍ رٲبطہٕ کرنہٕ خٲطرٕ Bluetooth استعمال کران۔",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving چھُ تُہنٛدِس NorthStar حِفاظتی زیورات سۭتۍ رٲبطہٕ کرنہٕ خٲطرٕ Bluetooth استعمال کران۔"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving چھُ تُہنٛدِس NorthStar حِفاظتی زیورات سۭتۍ رٲبطہٕ کرنہٕ خٲطرٕ Bluetooth استعمال کران۔"
     },
     "android": {
       "app_name": "VeryLoving"

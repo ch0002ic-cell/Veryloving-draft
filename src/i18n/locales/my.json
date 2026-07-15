@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving လုံခြုံရေးအတွက် မိုက်ကရိုဖုန်း အသုံးပြုဖို့လိုပြီး AI ခေါ်ဆိုမှုအတွက် လိုအပ်သည်။",
       "NSLocationWhenInUseUsageDescription": "VeryLoving လုံခြုံရေးမြေပုံနှင့် အနီးအနားရှိ လုံခြုံရေးအသွင်အပြင်များအတွက် သင့်တည်နေရာကို အသုံးပြုသည်။",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ဘေးကင်းစွာရောက်ရှိခြင်းနှင့် အရေးပေါ်စီးဆင်းမှုများကို ထောက်ပံ့ရန် သင့်တည်နေရာကို အသုံးပြုသည်။",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ဘေးကင်းစွာရောက်ရှိခြင်းနှင့် အနီးအနားရှိ အန္တရာယ်ဇုန်အသွင်အပြင်များအတွက် နောက်ခံတည်နေရာကို အသုံးပြုသည်။",
-      "NSCameraUsageDescription": "VeryLoving ကိုယ်ရေးရာဇဝင်တစ်ခု သို့မဟုတ် ဘေးကင်းရေးဓာတ်ပုံရိုက်ရန် သင်ရွေးချယ်သည့်အခါမှသာ ကင်မရာကို အသုံးပြုသည်။",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ကိုယ်ရေးရာဇဝင်တစ်ခု သို့မဟုတ် ဘေးကင်းသောရုပ်ပုံကို သင်ရွေးချယ်မှသာ သင့်ဓာတ်ပုံစာကြည့်တိုက်ကို အသုံးပြုသည်။",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth လုံခြုံ ရေး ရတနာ များ နှင့် ချိတ်ဆက် ရန် NorthStar ကို အသုံးပြု သည် ။",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth လုံခြုံ ရေး ရတနာ များ နှင့် ချိတ်ဆက် ရန် NorthStar ကို အသုံးပြု သည် ။"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth လုံခြုံ ရေး ရတနာ များ နှင့် ချိတ်ဆက် ရန် NorthStar ကို အသုံးပြု သည် ။"
     },
     "android": {
       "app_name": "VeryLoving"

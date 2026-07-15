@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving dia mila fidirana amin'ny mikrô ho an'ny fiarovana sy ny antso AI mpiara-miasa.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving dia mampiasa ny toerana misy anao ho an'ny sarintany fiarovana sy ny fiarovana akaiky.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving dia mampiasa ny toerana misy anao hanohanana ny fahatongavana azo antoka sy ny fikorianan'ny vonjy taitra.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving dia mampiasa toerana ambadika ho an'ny fahatongavana azo antoka sy ny faritra mampidi-doza akaiky.",
-      "NSCameraUsageDescription": "VeryLoving mampiasa ny fakantsary raha tsy misafidy ny haka ny mombamomba na ny sary fiarovana.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving mampiasa ny tranomboky sarinao raha tsy misafidy ny mombamomba anao na sary azo antoka.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

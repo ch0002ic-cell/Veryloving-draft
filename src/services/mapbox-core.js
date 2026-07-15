@@ -5,19 +5,33 @@ import { translate } from '../i18n/core';
 import { loadLastKnownLocation, saveLastKnownLocation } from './location-cache';
 import { logger } from '../utils/logger';
 
-export const dangerZones = [
+const SAMPLE_DANGER_ZONES = [
   { id: 'queen-west', nameKey: 'map.zones.crowding', coordinate: [-79.400, 43.648], radius: 220, risk: 'medium' },
   { id: 'casa-loma', nameKey: 'map.zones.lowLighting', coordinate: [-79.409, 43.678], radius: 180, risk: 'low' }
 ];
+
+const DEVELOPMENT_RUNTIME = typeof __DEV__ !== 'undefined' && __DEV__;
+
+// These coordinates are visual-development fixtures, not authoritative risk
+// intelligence. A TestFlight/store build must never present them as live
+// safety data while the production danger-zone service is still external.
+export const dangerZones = Object.freeze(DEVELOPMENT_RUNTIME ? SAMPLE_DANGER_ZONES : []);
+
+function locationAccessError(code, translationKey) {
+  const error = new Error(translate(translationKey));
+  error.code = code;
+  error.userFacing = true;
+  return error;
+}
 
 export async function requestLocationPermission({ showRationale = true } = {}) {
   const existing = await Location.getForegroundPermissionsAsync();
   if (existing.granted) return existing;
   if (!existing.granted && showRationale && !await explainPermission('location')) {
-    throw new Error(translate('map.notRequested'));
+    throw locationAccessError('LOCATION_NOT_REQUESTED', 'map.notRequested');
   }
   const permission = await Location.requestForegroundPermissionsAsync();
-  if (!permission.granted) throw new Error(translate('map.permissionOff'));
+  if (!permission.granted) throw locationAccessError('LOCATION_PERMISSION_DENIED', 'map.permissionOff');
   return permission;
 }
 

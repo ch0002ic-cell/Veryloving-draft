@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ta feme er microphone son slaynt as AI glareyn companion.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving t'eh usaghey dty ard-valley son y map s'saghney as ny s'saghney t'ayn.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving t'eh usaghey dty ard-valley dy chur tastey da slystaghyn ry-gheddyn as ry-gheddyn.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving t'eh uss 'sy stayd 'sy 'cho-chaslys' son 'safe-arrival' as 'danger-zone'.",
-      "NSCameraUsageDescription": "VeryLoving t'eh usaghey y chamera agh tra t'ou uss roshtyn dy ghoaill ymmyd jeh'n 'profile' ny 'safety photo'.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving t'eh usaghey dty leabharlann photo agh tra t'ou uss roshtyn profil ny ymmyd jeh ymmyd.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving t'eh uss Bluetooth dy cheangley rish dty NorthStar jewelry slaynt.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving t'eh uss Bluetooth dy cheangley rish dty NorthStar jewelry slaynt."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving t'eh uss Bluetooth dy cheangley rish dty NorthStar jewelry slaynt."
     },
     "android": {
       "app_name": "VeryLoving"

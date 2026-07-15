@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving хъæуы микрофоны бацæуæн æдасдзинады тыххæй æмæ AI æмбал сидтытæ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving пайда кæны дæ бынатæй æдасдзинады картæ æмæ хæстæг æдасдзинады æууæлтæн.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving пайда кæны дæ бынатæй æдас æрбацыд æмæ æнæнхъæлæджы уавæрты æххуысæн.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving пайда кæны фонон бынатæй æдас æрбацыд æмæ хæстæг тæссаг зонæйы функцитæн.",
-      "NSCameraUsageDescription": "VeryLoving пайда кæны камерæйæ æрмæстдæр уæд, кæд æмæ равзарай профилы кæнæ æдасдзинады къам сисын.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving пайда кæны дæ къамты библиотекæйæ æрмæстдæр уæд, куы равзарай профил кæнæ æдасдзинады ныв.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving пайда кæны Bluetooth-йæ, цæмæй баиу уа дæ NorthStar æдасдзинады згъæрæдтæм.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving пайда кæны Bluetooth-йæ, цæмæй баиу уа дæ NorthStar æдасдзинады згъæрæдтæм."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving пайда кæны Bluetooth-йæ, цæмæй баиу уа дæ NorthStar æдасдзинады згъæрæдтæм."
     },
     "android": {
       "app_name": "VeryLoving"

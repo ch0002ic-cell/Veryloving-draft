@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ina haani heɓde mikroo ngam kisal e noddaali AI sehilaaɓe.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving huutortoo ko nokku maa ngam kartal kisal e geɗe kisal ɓadiiɗe.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving huutortoo ko nokku maa ngam wallitde gartugol kisal e yah-ngartaa.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving huutortoo ko nokku caggal ngam yettaade kisal e sifaaji nokkuuji kulɓiniiɗi ɓadiiɗi.",
-      "NSCameraUsageDescription": "VeryLoving huutortoo ko kamera tan so a suɓiima ƴettude foto nate walla foto kisal.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving huutortoo ko defterdu foto maa tan so a suɓiima natal nate walla kisal.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jeewte kisal maa.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jeewte kisal maa."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving huutortoo ko Bluetooth ngam jokkondirde e NorthStar jeewte kisal maa."
     },
     "android": {
       "app_name": "VeryLoving"

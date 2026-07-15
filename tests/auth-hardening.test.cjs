@@ -17,7 +17,7 @@ const {
 
 function routeNames(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    if (entry.name.startsWith('_')) return [];
+    if (entry.name.startsWith('_') || entry.name.startsWith('+')) return [];
     if (entry.isDirectory()) return [entry.name];
     return entry.name.endsWith('.js') ? [entry.name.slice(0, -3)] : [];
   }).sort();
@@ -35,6 +35,33 @@ test('every authentication route is assigned to exactly one access state', () =>
   assert.equal(new Set(classified).size, classified.length);
   assert.deepEqual(routeNames(authDirectory), classified.slice().sort());
   assert.equal(AUTHENTICATED_ONBOARDING_ROUTES[0], 'location-permission');
+});
+
+test('completed accounts open standalone jewelry setup through a protected root route', () => {
+  const deviceManagement = readFileSync(
+    path.resolve(process.cwd(), 'app/device-management.js'),
+    'utf8'
+  );
+  const protectedEntry = readFileSync(
+    path.resolve(process.cwd(), 'app/jewelry-setup.js'),
+    'utf8'
+  );
+
+  assert.equal(PROTECTED_ROOT_ROUTES.includes('jewelry-setup'), true);
+  assert.equal(AUTHENTICATED_ONBOARDING_ROUTES.includes('jewelry-setup'), true);
+  assert.match(deviceManagement, /router\.push\('\/jewelry-setup\?mode=standalone'\)/);
+  assert.doesNotMatch(deviceManagement, /\/\(auth\)\/jewelry-setup\?mode=standalone/);
+  assert.match(protectedEntry, /export \{ default \} from '\.\/\(auth\)\/jewelry-setup';/);
+});
+
+test('modal close actions return home when there is no navigation history', () => {
+  for (const relativePath of ['app/safety-call.js', 'app/emergency-sos.js']) {
+    const screen = readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
+    assert.match(screen, /function closeScreen\(\)/, `${relativePath} must share a guarded close action`);
+    assert.match(screen, /if \(router\.canGoBack\(\)\) \{[\s\S]*?router\.back\(\);[\s\S]*?return;[\s\S]*?\}/);
+    assert.match(screen, /router\.replace\('\/\(tabs\)'\)/);
+    assert.match(screen, /onPress=\{closeScreen\}/);
+  }
 });
 
 test('phone authentication uses the backend and keeps PII out of route parameters', () => {
@@ -72,8 +99,6 @@ test('all onboarding exits pass through the completion gate', () => {
     'app/(auth)/capybear-setup.js',
     'app/(auth)/capybear-reminder.js',
     'app/(auth)/tutorial/choose-voice.js',
-    'app/(auth)/tutorial/onsen-scene.js',
-    'app/(auth)/tutorial/safety-call.js',
     'src/components/TutorialPage.js'
   ];
   for (const relativePath of onboardingFiles) {
@@ -96,8 +121,8 @@ test('choose-voice onboarding provides a real selector before completion', () =>
   assert.match(screen, /await updateSettings\(\{ selectedVoiceId: voiceId \}\)/);
   assert.match(screen, /catch \(error\)/);
   assert.match(screen, /logger\.warn\('\[Onboarding\] Could not persist voice selection'/);
-  assert.match(screen, /router\.push\('\/\(auth\)\/completion'\)/);
-  assert.doesNotMatch(screen, /router\.(?:push|replace)\('\/voices'\)/);
+  assert.match(screen, /advanceTo\('\/\(auth\)\/completion'/);
+  assert.doesNotMatch(screen, /(?:router\.(?:push|replace)|advanceTo)\('\/voices'\)/);
 });
 
 test('dashboard safety-mode persistence failures are handled without claiming delivery', () => {
@@ -198,7 +223,7 @@ test('development demo auth is volatile, internally guarded, and never creates a
   assert.match(demo, /setUser\(DEVELOPMENT_DEMO_USER\)/);
   assert.match(demo, /setOnboardingComplete\(true\)/);
   assert.match(demo, /setSessionStatus\('demo'\)/);
-  assert.doesNotMatch(demo, /persist\(|secureStorage|exchangeProviderIdentity|createSessionEnvelope|JWT|token\s*=/i);
+  assert.doesNotMatch(demo, /persist\(|secureStorage\.(?:setItem|getItem)|exchangeProviderIdentity|createSessionEnvelope|JWT|token\s*=/i);
   assert.match(auth, /signedInProvider === 'demo'[\s\S]*setSessionStatus\('signed-out'\)[\s\S]*return/);
 
   assert.match(createAccount, /demoModeAvailable \? \(/);
@@ -224,7 +249,7 @@ test('demo and tokenless sessions keep connected safety and voice services offli
   assert.match(appContext, /syncRemote = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
   assert.match(home, /config\.safetyBackendEnabled && accessToken/);
   assert.match(emergency, /backendEnabled = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
-  assert.match(privacy, /config\.safetyBackendEnabled && accessToken/);
+  assert.match(privacy, /if \(config\.safetyBackendEnabled\)[\s\S]*if \(!accessToken\)[\s\S]*PRIVACY_AUTHENTICATION_REQUIRED/);
   assert.match(voice, /forcedOffline = isDemoMode \|\| config\.enableOfflineMode/);
 });
 
@@ -254,8 +279,12 @@ test('auth restore migrates only validated legacy sessions and refresh stays ato
 test('privacy deletion keeps sign-out progressing after protected Keychain cleanup failures', () => {
   const privacy = readFileSync(path.resolve(process.cwd(), 'src/services/privacy.js'), 'utf8');
   const deletion = privacy.slice(privacy.indexOf('export async function deleteAllUserData'));
+  const remoteDeletion = deletion.indexOf('await deleteRemoteUserData(accessToken)');
+  const localDeletion = deletion.indexOf('await deleteLocalUserData');
   const tombstone = deletion.indexOf('storage.setJSON(AUTH_STORAGE_KEYS.signedOut');
-  const cleanup = deletion.indexOf('Promise.allSettled');
+  const cleanup = deletion.indexOf('const secureResults = await Promise.allSettled');
+  assert.notEqual(remoteDeletion, -1);
+  assert.ok(remoteDeletion < localDeletion, 'Remote deletion must succeed before local credentials are removed');
   assert.notEqual(tombstone, -1);
   assert.ok(tombstone < cleanup, 'The signed-out tombstone must precede best-effort Keychain cleanup');
   assert.match(deletion, /secureStoreFailures: \(Number\(result\.secureStoreFailures\) \|\| 0\) \+ secureStoreFailures/);
@@ -267,20 +296,52 @@ test('production UI contains no in-memory demo guardian action', () => {
   assert.doesNotMatch(friends, /addDemo|enableMockPhoneAuth|__DEV__/);
 });
 
-test('root navigation has a render error boundary', () => {
+test('root navigation has outer and localized render error boundaries', () => {
   const { readFileSync } = require('node:fs');
   const layout = readFileSync(path.resolve(process.cwd(), 'app/_layout.js'), 'utf8');
   assert.match(layout, /<LocalizedErrorBoundary>[\s\S]*<LocalizedNavigation \/>/);
+  assert.match(layout, /function RootRuntime\(\)[\s\S]*<AudioStreamBridge \/>[\s\S]*<AuthProvider>/);
+  assert.match(layout, /export default function RootLayout\(\)[\s\S]*<AppErrorBoundary[\s\S]*<RootRuntime \/>[\s\S]*<\/AppErrorBoundary>/);
   const boundary = readFileSync(path.resolve(process.cwd(), 'src/components/AppErrorBoundary.js'), 'utf8');
   assert.match(boundary, /getDerivedStateFromError/);
   assert.match(boundary, /componentDidCatch/);
 });
 
-test('cold-start resume sends incomplete accounts to the first permission step', () => {
+test('cold-start routing prioritizes phone verification and persisted onboarding progress', () => {
   const { readFileSync } = require('node:fs');
   const index = readFileSync(path.resolve(process.cwd(), 'app/index.js'), 'utf8');
-  assert.match(index, /onboardingComplete \? '\/\(tabs\)' : '\/\(auth\)\/location-permission'/);
-  assert.doesNotMatch(index, /onboardingComplete \? '\/\(tabs\)' : '\/\(auth\)\/device-check'/);
+  const phoneRoute = index.indexOf('if (!user && hasPendingPhoneVerification)');
+  const signedOutRoute = index.indexOf('if (!user) return');
+  const onboardingRoute = index.indexOf('if (!onboardingComplete)');
+  const safeRestore = index.indexOf('restoration.accountId !== user.id');
+  assert.ok(phoneRoute < signedOutRoute);
+  assert.ok(signedOutRoute < onboardingRoute);
+  assert.ok(onboardingRoute < safeRestore);
+  assert.match(index, /if \(!onboardingComplete\) return <Redirect href=\{onboardingRoute\} \/>/);
+});
+
+test('safe navigation restoration is tracked at the root without replacing initial links', () => {
+  const layout = readFileSync(path.resolve(process.cwd(), 'app/_layout.js'), 'utf8');
+  const index = readFileSync(path.resolve(process.cwd(), 'app/index.js'), 'utf8');
+  const tracker = readFileSync(
+    path.resolve(process.cwd(), 'src/components/NavigationPersistenceTracker.js'),
+    'utf8'
+  );
+  assert.match(layout, /<NavigationPersistenceTracker \/>/);
+  assert.match(tracker, /safeNavigationDestinationForSegments\(segments\)/);
+  assert.match(tracker, /persistSafeNavigationDestination\(user\.id, destination\)/);
+  assert.match(index, /Linking\.getInitialURL\(\)/);
+  assert.match(index, /restoreSafeNavigationDestination\(accountId, initialURL\)/);
+  assert.match(index, /restoration\.destination \|\| '\/\(tabs\)'/);
+});
+
+test('the localized not-found route offers guarded Back and Home actions', () => {
+  const screen = readFileSync(path.resolve(process.cwd(), 'app/+not-found.js'), 'utf8');
+  assert.match(screen, /const \{ t \} = useI18n\(\)/);
+  assert.match(screen, /if \(router\.canGoBack\(\)\)/);
+  assert.match(screen, /router\.replace\(homeRoute\)/);
+  assert.match(screen, /backLabel=\{t\('common\.back'\)\}/);
+  assert.match(screen, /title=\{t\('common\.home'\)\}/);
 });
 
 test('notification permission screen catches native errors and prevents duplicate navigation', () => {

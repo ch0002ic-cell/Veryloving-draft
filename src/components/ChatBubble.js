@@ -8,6 +8,10 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
   const user = role === 'user';
   const failed = user && deliveryStatus === 'failed';
   const queued = user && deliveryStatus === 'queued';
+  const deliveryErrorKey = typeof deliveryError === 'string'
+    && /^(?:errors|releaseCritical)\.[A-Za-z0-9_.]+$/.test(deliveryError)
+    ? deliveryError
+    : null;
   return (
     <View style={[styles.group, user ? styles.userGroup : styles.assistantGroup]}>
       <View style={[styles.bubble, user ? styles.user : styles.assistant, failed && styles.failedBubble]}>
@@ -16,7 +20,7 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
       {queued ? <Text style={styles.delivery}>{t('chat.waiting')}</Text> : null}
       {failed ? (
         <View style={styles.failureRow}>
-          <Text style={styles.failureText}>{deliveryError || t('chat.notSent')}</Text>
+          <Text style={styles.failureText}>{deliveryErrorKey ? t(deliveryErrorKey) : t('chat.notSent')}</Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.retryAccessibility')}

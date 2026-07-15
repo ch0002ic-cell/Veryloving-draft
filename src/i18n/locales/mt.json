@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving jeħtieġ aċċess mikrofoniku għas-sigurtà u AI sejħiet ta' sħubija.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving juża l-post tiegħek għall-mappa tas-sigurtà u l-karatteristiċi tas-sigurtà fil-viċin.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving juża l-post tiegħek biex jappoġġja flussi ta' wasla sigura u ta' emerġenza.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving juża post ta' sfond għal wasla sigura u karatteristiċi ta' żona ta' periklu viċin.",
-      "NSCameraUsageDescription": "VeryLoving tuża l-kamera biss meta tagħżel li tieħu profil jew ritratt ta' sigurtà.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving tuża l-librerija tar-ritratti tiegħek biss meta tagħżel profil jew immaġni ta' sigurtà.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

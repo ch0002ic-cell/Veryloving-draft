@@ -5,6 +5,8 @@ const { test } = require('node:test');
 const {
   AUTH_MESSAGES,
   authenticationCapabilities,
+  authenticationCapabilityTranslationKey,
+  authenticationErrorTranslationKey,
   createAuthError,
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
@@ -119,6 +121,19 @@ test('authentication cancellations remain silent while server errors become safe
 
   const typed = createAuthError('AUTH_CONFIGURATION_MISSING', 'Safe configuration error');
   assert.equal(userFacingAuthenticationError('google', typed), typed);
+});
+
+test('auth presentation maps typed failures to localized catalog keys', () => {
+  assert.equal(authenticationErrorTranslationKey({ code: 'PHONE_NUMBER_INVALID' }), 'phone.invalid');
+  assert.equal(authenticationErrorTranslationKey({ code: 'PHONE_AUTH_CODE_INVALID' }), 'releaseCritical.authCodeInvalid');
+  assert.equal(authenticationErrorTranslationKey({ code: 'AUTH_HTTP_429' }), 'releaseCritical.authRateLimited');
+  assert.equal(authenticationErrorTranslationKey({ code: 'AUTH_NETWORK_ERROR' }), 'releaseCritical.authNetwork');
+  assert.equal(authenticationErrorTranslationKey(new Error('raw provider detail')), 'auth.signInFailedMessage');
+  assert.equal(
+    authenticationCapabilityTranslationKey({ enabled: false, code: 'GOOGLE_AUTH_CONFIGURATION_MISSING' }),
+    'releaseCritical.authUnavailable'
+  );
+  assert.equal(authenticationCapabilityTranslationKey({ enabled: true }), null);
 });
 
 test('simulator provider failures are typed, actionable, and mention demo only when available', () => {

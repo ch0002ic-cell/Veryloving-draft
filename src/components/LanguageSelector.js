@@ -81,6 +81,7 @@ export function LanguageSelector({ onError }) {
             <View style={styles.searchRow}>
               <Ionicons name="search" size={20} color={colors.inkSoft} />
               <TextInput
+                accessibilityLabel={t('languages.search')}
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="while-editing"

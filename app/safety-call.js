@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Keyboard, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Keyboard, Linking, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Button } from '../src/components/Button';
@@ -18,6 +18,14 @@ function connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t
   if (status === 'connected') return t('safetyCall.connected');
   if (status === 'error') return t('safetyCall.interrupted');
   return t('safetyCall.ready');
+}
+
+function closeScreen() {
+  if (router.canGoBack()) {
+    router.back();
+    return;
+  }
+  router.replace('/(tabs)');
 }
 
 export default function SafetyCall() {
@@ -84,7 +92,7 @@ export default function SafetyCall() {
   return (
     <Screen scroll={false}>
       <View style={styles.header}>
-        <Button title={t('common.close')} variant="ghost" compact onPress={() => router.back()} />
+        <Button title={t('common.close')} variant="ghost" compact onPress={closeScreen} />
         <View style={styles.connectionStatus}>
           {isConnecting ? <ActivityIndicator size="small" color={colors.orangeAccessible} /> : null}
           <Text style={styles.status}>
@@ -101,11 +109,15 @@ export default function SafetyCall() {
         {pendingMessageCount ? (
           <Text style={styles.queued}>{t('safetyCall.messagesWaiting', { count: pendingMessageCount })}</Text>
         ) : null}
-        <FeedbackBanner message={notice} tone="info" />
+        <FeedbackBanner message={notice ? t(notice) : null} tone="info" />
         <FeedbackBanner
-          message={error?.message}
-          actionLabel={canRetryOnline ? t('common.retry') : undefined}
-          onAction={canRetryOnline ? retryOnline : undefined}
+          message={error?.translationKey ? t(error.translationKey) : null}
+          actionLabel={error?.code === 'MICROPHONE_PERMISSION_DENIED'
+            ? t('common.settings')
+            : canRetryOnline ? t('common.retry') : undefined}
+          onAction={error?.code === 'MICROPHONE_PERMISSION_DENIED'
+            ? () => Linking.openSettings().catch(() => {})
+            : canRetryOnline ? retryOnline : undefined}
         />
         {fallbackAvailable ? <Button title={t('safetyCall.useOffline')} variant="ghost" onPress={startOfflineFallback} loading={isConnecting} /> : null}
         {canRetryOnline ? <Button title={t('safetyCall.reconnect')} variant="ghost" onPress={retryOnline} loading={isConnecting} /> : null}
@@ -140,6 +152,7 @@ export default function SafetyCall() {
 
       <View style={styles.inputRow}>
         <TextInput
+          accessibilityLabel={t('safetyCall.typePlaceholder')}
           value={text}
           onChangeText={setText}
           placeholder={t('safetyCall.typePlaceholder')}

@@ -11,7 +11,11 @@ import { GlobalPhoneInput } from '../../src/components/GlobalPhoneInput';
 import { useI18n } from '../../src/context/I18nContext';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { AppleSignInButton } from '../../src/components/AppleSignInButton';
-import { isAuthenticationCancellation } from '../../src/utils/auth-configuration';
+import {
+  authenticationCapabilityTranslationKey,
+  authenticationErrorTranslationKey,
+  isAuthenticationCancellation
+} from '../../src/utils/auth-configuration';
 
 const DEMO_BUTTON_TITLE = 'Continue as demo (development only)';
 const DEMO_MODE_NOTICE = 'Demo mode uses local fake data only. Connected services are not authenticated, and this session resets when the app reloads.';
@@ -33,11 +37,11 @@ export default function CreateAccount() {
   const [busyAction, setBusyAction] = useState(null);
   const appleSignInAvailable = authCapabilities.apple.enabled;
   const googleSignInAvailable = authCapabilities.google.enabled;
-  const configurationMessages = [
-    Platform.OS === 'ios' ? authCapabilities.apple.message : null,
-    ['ios', 'android'].includes(Platform.OS) ? authCapabilities.google.message : null,
-    authCapabilities.phone.message
-  ].filter(Boolean);
+  const configurationMessages = [...new Set([
+    Platform.OS === 'ios' ? authenticationCapabilityTranslationKey(authCapabilities.apple) : null,
+    ['ios', 'android'].includes(Platform.OS) ? authenticationCapabilityTranslationKey(authCapabilities.google) : null,
+    authenticationCapabilityTranslationKey(authCapabilities.phone)
+  ].filter(Boolean))].map((key) => t(key));
 
   const startSocial = async (provider, signIn) => {
     if (busyAction) return;
@@ -47,7 +51,7 @@ export default function CreateAccount() {
       await signIn();
     } catch (error) {
       if (!isAuthenticationCancellation(error)) {
-        Alert.alert(t('auth.signInFailedTitle'), error?.userMessage || t('auth.signInFailedMessage'));
+        Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
       }
     } finally {
       setBusyAction(null);
@@ -62,7 +66,7 @@ export default function CreateAccount() {
       await signInWithPhone(phone);
       router.push('/(auth)/verify-code');
     } catch (error) {
-      Alert.alert(t('auth.signInFailedTitle'), error?.userMessage || t('auth.signInFailedMessage'));
+      Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
     } finally {
       setBusyAction(null);
     }
@@ -75,7 +79,7 @@ export default function CreateAccount() {
     try {
       await continueAsDemo();
     } catch (error) {
-      Alert.alert(t('auth.signInFailedTitle'), error?.userMessage || t('auth.signInFailedMessage'));
+      Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
     } finally {
       setBusyAction(null);
     }

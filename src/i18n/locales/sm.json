@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving te mana'omia le avanoa o masini faaleotele leo mo le saogalemu ma AI soa vala'au.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving te fa'aaogaina lou nofoaga mo le fa'afanua o le saogalemu ma vaega saogalemu lata ane.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving te fa'aaogaina lou nofoaga e lagolago ai le saogalemu taunu'u mai ma fa'alavelave fa'afuase'i.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving fa'aaogaina le nofoaga i tua mo le saogalemu taunu'u mai ma lata ane lamatiaga-sone foliga.",
-      "NSCameraUsageDescription": "VeryLoving te fa'aaogaina le mea pu'eata pe a e filifili e pu'eina se ata po'o se ata saogalemu.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving te faaaogaina lau potutusi o ata pe a e filifilia se talaaga otooto po o se ata o le saogalemu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga."
     },
     "android": {
       "app_name": "VeryLoving"

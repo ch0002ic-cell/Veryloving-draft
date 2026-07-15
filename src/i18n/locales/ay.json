@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ukax micrófono ukar mantañapawa seguridad ukat AI compañero jawsañataki.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ukax kawkhantix jikxataskta ukax seguridad mapa ukat jak’ankir seguridad ukanakatakiw apnaqi.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ukax kawkhantix jikxataskta ukx apnaqi, jan kuna usun puriñ ukhamarak jan walt’äwinak utjki ukanakar yanapt’añataki.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ukax qhipa uñtawi apnaqi, jan kuna usun puriñapataki ukhamarak jak’a jan walt’äw zona ukan lurawinakapataki.",
-      "NSCameraUsageDescription": "VeryLoving ukax cámara ukax kunapachatix perfil jan ukax seguridad foto apsuñ amtki ukhakiw apnaqasi.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ukax foto biblioteca uka apnaqi, kunapachatix perfil jan ukax seguridad uñacht’awinak ajllktan ukhakiw apnaqasi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki."
     },
     "android": {
       "app_name": "VeryLoving"

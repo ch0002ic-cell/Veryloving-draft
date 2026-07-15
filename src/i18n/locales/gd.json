@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "Feumaidh VeryLoving cothrom air a’ mhicreofon airson sàbhailteachd agus fiosan companach AI.",
       "NSLocationWhenInUseUsageDescription": "Cleachdaidh VeryLoving d’ ionad airson a’ mhapa sàbhailteachd agus feartan sàbhailteachd faisg air làimh.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "Cleachdaidh VeryLoving d’ ionad gus taic a thoirt do shruthan-inntrigidh sàbhailte agus èiginn.",
-      "NSLocationAlwaysUsageDescription": "Tha VeryLoving a’ cleachdadh cùl-ionad airson feartan ruigsinn sàbhailte agus sòn cunnart faisg air làimh.",
-      "NSCameraUsageDescription": "VeryLoving a’ cleachdadh a’ chamara ach nuair a thaghas tu dealbh pròifil no sàbhailteachd a thogail.\nCleachdaidh",
-      "NSPhotoLibraryUsageDescription": "VeryLoving leabharlann nan dealbhan agad a-mhàin nuair a thaghas tu ìomhaigh pròifil no sàbhailteachd.",
-      "NSBluetoothAlwaysUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad.",
-      "NSBluetoothPeripheralUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad."
+      "NSBluetoothAlwaysUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad."
     },
     "android": {
       "app_name": "VeryLoving"

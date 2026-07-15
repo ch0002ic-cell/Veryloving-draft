@@ -14,6 +14,7 @@ const {
   purgeOfflineMapRegion
 } = require('../src/services/offline-map-cache');
 const { queueOfflineMessage } = require('../src/services/offline-message-queue');
+const { DEFAULT_SETTINGS, persistSettings } = require('../src/services/settings-store');
 const { storage } = require('../src/services/storage');
 const { purgePrivacyArtifacts } = require('../src/services/privacy-artifact-cleanup');
 
@@ -55,6 +56,60 @@ test('an ancillary artifact failure cannot block the user-data key sweep', async
   assert.deepEqual([...memory.entries()], [['unrelated.host.preference', true]]);
   assert.equal(result.artifactCleanup.failures, 1);
   assert.equal(hasLocalUserDataDeletionWarnings(result), true);
+});
+
+test('ordinary sign-out preserves only the normalized global language preference', async () => {
+  const memory = new Map([
+    ['veryloving.settings', {
+      schemaVersion: 2,
+      language: 'fr',
+      mode: 'emergency',
+      selectedVoiceId: 'boyfriend',
+      showCompanion: false,
+      offlineMode: true,
+      reminderEnabled: true
+    }],
+    ['veryloving.conversationHistory', [{ id: 'private-call' }]],
+    ['veryloving.lastKnownLocation', { coords: { latitude: 1, longitude: 2 } }],
+    ['unrelated.host.preference', true]
+  ]);
+  storage.getJSON = async (key, fallback) => memory.has(key) ? structuredClone(memory.get(key)) : fallback;
+  storage.setJSON = async (key, value) => memory.set(key, structuredClone(value));
+  storage.keys = async () => [...memory.keys()];
+  storage.removeMany = async (keys) => keys.forEach((key) => memory.delete(key));
+
+  const result = await deleteLocalUserStores({ preserveLanguage: true });
+
+  assert.equal(result.languagePreservationFailures, 0);
+  assert.deepEqual(memory.get('veryloving.settings'), {
+    schemaVersion: 2,
+    language: 'fr',
+    mode: 'home',
+    selectedVoiceId: 'capybara',
+    showCompanion: true,
+    offlineMode: false,
+    reminderEnabled: false
+  });
+  assert.deepEqual(memory.get('unrelated.host.preference'), true);
+  assert.equal(memory.has('veryloving.conversationHistory'), false);
+  assert.equal(memory.has('veryloving.lastKnownLocation'), false);
+});
+
+test('account switching can sweep user data without opening a residual-session restore window', async () => {
+  const tombstone = { version: 1, signedOutAt: 123 };
+  const memory = new Map([
+    ['veryloving.auth.signedOut', tombstone],
+    ['veryloving.conversationHistory', [{ id: 'private-call' }]],
+    ['veryloving.settings', { schemaVersion: 2, language: 'en' }]
+  ]);
+  storage.getJSON = async (key, fallback) => memory.has(key) ? structuredClone(memory.get(key)) : fallback;
+  storage.setJSON = async (key, value) => memory.set(key, structuredClone(value));
+  storage.keys = async () => [...memory.keys()];
+  storage.removeMany = async (keys) => keys.forEach((key) => memory.delete(key));
+
+  await deleteLocalUserStores({ preserveSignedOutTombstone: true });
+
+  assert.deepEqual(memory, new Map([['veryloving.auth.signedOut', tombstone]]));
 });
 
 test('a synchronous artifact purge failure cannot prevent the other privacy purge', async () => {
@@ -131,7 +186,7 @@ test('native map deletion failure survives the broad user-data sweep for retry',
   assert.equal(memory.has(OFFLINE_MAP_CLEANUP_RETRY_KEY), false);
 });
 
-test('voice writers cannot recreate local data after the cleanup lock is acquired', async () => {
+test('conversation, queue, and settings writers cannot recreate data after cleanup locks', async () => {
   const memory = new Map([
     ['veryloving.conversationHistory', [{ id: 'private-call' }]],
     ['veryloving.offlineMessageQueue', [{ id: 'private-message' }]],
@@ -146,7 +201,7 @@ test('voice writers cannot recreate local data after the cleanup lock is acquire
     // Artifact cleanup runs after deleteLocalUserStores has acquired and
     // drained the shared mutation lock, but before the final prefix sweep.
     purgeArtifacts: async () => {
-      const attemptedVoiceWrites = [
+      const attemptedWrites = [
         appendConversationMessage({
           sessionId: 'stale-session',
           role: 'user',
@@ -156,9 +211,10 @@ test('voice writers cannot recreate local data after the cleanup lock is acquire
           id: 'stale-queued-message',
           sessionId: 'stale-session',
           text: 'Do not restore this after logout.'
-        })
+        }),
+        persistSettings({ ...DEFAULT_SETTINGS, selectedVoiceId: 'boyfriend' })
       ];
-      await Promise.all(attemptedVoiceWrites.map((attempt) => assert.rejects(
+      await Promise.all(attemptedWrites.map((attempt) => assert.rejects(
         attempt,
         (error) => error.code === 'LOCAL_DATA_CLEANUP_LOCKED'
       )));

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving mikrofon hozzáférésre van szüksége a biztonság érdekében, és AI kísérőhívásokat kap.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving a helyedet használja a biztonsági térképhez és a közeli biztonsági funkciókhoz.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving a helyedet használja a biztonságos érkezés és vészhelyzeti folyamatok támogatására.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving háttérhelyzetet használ a biztonságos érkezéshez és a közeli veszélyzóna jellemzőihez.",
-      "NSCameraUsageDescription": "VeryLoving csak akkor használja a kamerát, ha profil- vagy biztonsági fotót készítesz.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving csak akkor használja a fotókönyvtárat, ha profilt vagy biztonsági képet választasz.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth segítségével csatlakozik NorthStar biztonsági ékszerekhez.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth segítségével csatlakozik NorthStar biztonsági ékszerekhez."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth segítségével csatlakozik NorthStar biztonsági ékszerekhez."
     },
     "android": {
       "app_name": "VeryLoving"

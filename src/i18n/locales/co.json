@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hà bisognu d'accessu à u microfonu per a sicurità è AI chjama di cumpagnie.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving usa a vostra situazione per a mappa di sicurezza è e funzioni di sicurezza vicinu.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving usa u vostru locu per sustene l'arrivu sicuru è i flussi d'emergenza.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving usa u locu di fondo per l'arrivu sicuru è e funzioni di zona di periculu vicinu.",
-      "NSCameraUsageDescription": "VeryLoving usa a camera solu quandu sceglite di piglià un prufilu o una foto di sicurità.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving usa a vostra libreria di foto solu quandu sceglite un prufilu o una maghjina di sicurità.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving usa Bluetooth per cunnette cù i vostri NorthStar ghjuvelli di sicurità.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving usa Bluetooth per cunnette cù i vostri NorthStar ghjuvelli di sicurità."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving usa Bluetooth per cunnette cù i vostri NorthStar ghjuvelli di sicurità."
     },
     "android": {
       "app_name": "VeryLoving"

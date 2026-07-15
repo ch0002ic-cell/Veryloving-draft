@@ -111,6 +111,40 @@ export function isTransientAuthenticationError(error) {
   return [408, 425, 429].includes(status) || status >= 500;
 }
 
+export function authenticationErrorTranslationKey(error) {
+  switch (error?.code) {
+    case 'PHONE_NUMBER_INVALID':
+      return 'phone.invalid';
+    case 'PHONE_AUTH_CODE_INVALID':
+      return 'releaseCritical.authCodeInvalid';
+    case 'AUTH_RATE_LIMITED':
+    case 'AUTH_HTTP_429':
+      return 'releaseCritical.authRateLimited';
+    case 'AUTH_TIMEOUT':
+      return 'releaseCritical.authTimeout';
+    case 'AUTH_NETWORK_ERROR':
+      return 'releaseCritical.authNetwork';
+    case 'APPLE_AUTH_UNAVAILABLE':
+    case 'APPLE_AUTH_CONFIGURATION_MISSING':
+    case 'APPLE_AUTH_REQUIRES_DEVELOPMENT_BUILD':
+    case 'GOOGLE_AUTH_UNAVAILABLE':
+    case 'GOOGLE_AUTH_CONFIGURATION_MISSING':
+    case 'GOOGLE_AUTH_BACKEND_MISSING':
+    case 'GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD':
+    case 'PHONE_AUTH_UNAVAILABLE':
+    case 'PHONE_AUTH_CONFIGURATION_MISSING':
+    case 'VOICE_CONFIGURATION_MISSING':
+    case 'VOICE_CONFIGURATION_INVALID':
+      return 'releaseCritical.authUnavailable';
+    default:
+      return 'auth.signInFailedMessage';
+  }
+}
+
+export function authenticationCapabilityTranslationKey(capability) {
+  return capability?.enabled ? null : authenticationErrorTranslationKey({ code: capability?.code });
+}
+
 export function userFacingAuthenticationError(provider, error) {
   if (error?.userMessage) return error;
   if (isAuthenticationCancellation(error)) return error;

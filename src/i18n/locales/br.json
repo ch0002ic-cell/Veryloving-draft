@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving en deus ezhomm eus ur mikro evit ar surentez ha AI galvoù kenlabourerien.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving a implij ho lec'hiadur evit ar gartenn surentez hag ar perzhioù surentez tost.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving a implij ho lec'hiadur evit skoazellañ ar mont en-dro en un doare sur hag ar mont en-dro en arvar.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving a implij al lec'hiadur a-dreñv evit an elfennoù da erruout en un doare sur ha lec'hioù dañjerus tost.",
-      "NSCameraUsageDescription": "VeryLoving ne implij ar c'hamera nemet pa zibabit tennañ ur profil pe ur foto surentez.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ne implij ho levraoueg luc'hskeudennoù nemet pa zibabit ur profil pe ur skeudenn surentez.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ຕ້ອງການ ໄມ ໂກ ເພື່ອ ຄວາມ ປອດ ໄພ ແລະ AI ການ ເອີ້ນ ຂອງ ຄູ່ ຄອງ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ສໍາລັບ ແຜນ ທີ່ ຄວາມ ປອດ ໄພ ແລະ ລັກສະນະ ຄວາມ ປອດ ໄພ ທີ່ຢູ່ ໃກ້ໆ.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ເພື່ອ ສົ່ງ ເສີມ ການ ເດີນທາງ ໄປ ເຖິງ ແລະ ສຸກ ເສີນ.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ໃຊ້ສະຖານທີ່ພູມຫຼັງສໍາລັບລັກສະນະທີ່ປອດໄພແລະເຂດອັນຕະລາຍທີ່ຢູ່ໃກ້ໆ.",
-      "NSCameraUsageDescription": "VeryLoving ໃຊ້ ກ້ອງຖ່າຍຮູບ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ທີ່ ຈະ ຖ່າຍ ຮູບ ຫລື ຮູບ ພາບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ໃຊ້ ຫໍ ສະ ຫມຸດ ຮູບ ຂອງ ທ່ານ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ຮູບ ພາບ ຫລື ຮູບ ພາບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ."
     },
     "android": {
       "app_name": "VeryLoving"

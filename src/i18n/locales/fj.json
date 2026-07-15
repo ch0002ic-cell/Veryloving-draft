@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving gadreva na microphone me baleta na veitaqomaki kei na AI veikacivi ni itokani.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving vakayagataka na nomu vanua me baleta na mape ni tataqomaki kei na veitaqomaki voleka.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving vakayagataka na vanua o tiko kina me tokona na taqomaki ni yaco mai kei na leqa tubukoso.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving vakayagataka na vanua e muri me baleta na taqomaki ni yaco mai kei na vanua rerevaki voleka.",
-      "NSCameraUsageDescription": "VeryLoving vakayagataka ga na itaba ni o digitaka mo taura e dua na itaba ni itukutuku se itaba ni tataqomaki.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving vakayagataka ga na nomu laibari ni itaba ni o digitaka e dua na itukutuku se iyaloyalo ni veitaqomaki.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

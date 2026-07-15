@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLovingdǝ microphone fando mǝradǝzǝna kǝla nǝlefa-a kuru AI sawa-a bowotǝro.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving nanǝm faidatin map nǝlefabe-a kuru awowa nǝlefabe karǝngǝbe-aro.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving nanǝm faidatǝ banazǝgǝ nǝlefa-nazǝgǝ-a kuru letǝ azallata-a.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving na ngawobe faidatin nəlefa-nazəgə-a kuru alama-a na tajirwabe karəngən-aro.",
-      "NSCameraUsageDescription": "VeryLoving də camera faidatin sa foto kəlanzəye au foto nəlefaye gotə bas lan.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving foto librarybe faidatin loktu foto kəlanzəbe au foto nəlewabe karnəm bas.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving də Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving maykorofoon gufneh amaan kee AI waklentit seecooca.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ku aracat duqaysimak amaan le karta kee xayikket tan amaan weeloola.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ku aracat duqaysimak amaan le gufne kee sissik catoh cayxi qokolta.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving aydaadi aracat duqaysimak amaan le gufne kee xayi qawwalaylah rasih weeloola.",
-      "NSCameraUsageDescription": "VeryLoving kaameerat duqaysimtam dubuk atu porofaayil akkek amaan le muuci beytam doorte wak.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ku muucih kitoobah buxat dubuk atu porofaayil akkek amaan le muuci doorta wak xoqoysimta.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila."
     },
     "android": {
       "app_name": "VeryLoving"

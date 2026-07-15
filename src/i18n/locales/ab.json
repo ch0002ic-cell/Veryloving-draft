@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ашәарҭадаразы амикрофон ахархәара аҭахуп, насгьы AI аҩызцәа рыԥхьарақәа.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ахархәара аиуеит уахьыҟоу ашәарҭадаратә карта азы, насгьы ааигәа иҟоу ашәарҭадаратә ҟазшьақәа рзы.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ихы иаирхәоит уахьыҟоу ашәарҭадара-анеиреи аҭагылазаашьа ҭакԥхықәралатәи ацәырҵрақәеи рыцхрааразы.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ихы иаирхәоит аҵыхәтәантәи аҭыԥ ашәарҭадаратә-анаӡара азы, насгьы ааигәа иҟоу ашәарҭаратә зона аҷыдарақәа рзы.",
-      "NSCameraUsageDescription": "VeryLoving акамера ахархәоит апрофиль ма ашәарҭадаратә фотоҭыхра аналухуа мацара.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving уфотобиблиотека ахархәоит апрофиль ма ашәарҭадаратә сахьа аналухуа мацара.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ахархәоит Bluetooth уара NorthStar ашәарҭадаратә хьымаҭәақәа рыҽрыдҳәаларазы.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ахархәоит Bluetooth уара NorthStar ашәарҭадаратә хьымаҭәақәа рыҽрыдҳәаларазы."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ахархәоит Bluetooth уара NorthStar ашәарҭадаратә хьымаҭәақәа рыҽрыдҳәаларазы."
     },
     "android": {
       "app_name": "VeryLoving"

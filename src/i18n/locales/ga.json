@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving gá rochtain ar mhicreafón ar mhaithe le sábháilteacht agus glaonna compánach AI.",
       "NSLocationWhenInUseUsageDescription": "Úsáideann VeryLoving do shuíomh don léarscáil sábháilteachta agus do ghnéithe sábháilteachta in aice láimhe.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving úsáideann sé do shuíomh chun tacú le sreafaí sábháilte agus éigeandála.",
-      "NSLocationAlwaysUsageDescription": "Úsáideann VeryLoving suíomh cúlra le haghaidh gnéithe sábháilte agus crios contúirte in aice láimhe.",
-      "NSCameraUsageDescription": "Ní úsáideann VeryLoving an ceamara ach amháin nuair a roghnaíonn tú próifíl nó grianghraf sábháilteachta a thógáil.",
-      "NSPhotoLibraryUsageDescription": "Ní úsáideann VeryLoving do leabharlann grianghraf ach amháin nuair a roghnaíonn tú próifíl nó íomhá sábháilteachta.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

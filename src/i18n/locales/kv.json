@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving колӧ микрофон пырӧм безопасносьт да AI компаньон звӧнокъяс.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving вӧдитчӧ тіян оланінӧн безопасносьт карта да орчча безопасносьт тшупӧдъяс вылӧ.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving вӧдитчӧ тіян локацияӧн, медым отсавны безопаснӧй воӧмлы да аварийнӧй потокъяслы.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving вӧдитчӧ фонӧвӧй меститчӧмӧн безопаснӧй-воӧм да орчча опаснӧй-зона характеристикаяс вылӧ.",
-      "NSCameraUsageDescription": "VeryLoving камераӧн ​​вӧдитчӧ сӧмын сэки, кор тэ бӧрйин нуӧдны профиль либӧ безопасносьт фото.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving вӧдитчӧ тіян фотобиблиотекаӧн сӧмын сэки, кор ті бӧръяланныд профиль либӧ безопасносьт серпас.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving вӧдитчӧ Bluetooth-ӧн, медым йитны тіян NorthStar безопасносьт ювелирнӧй изделиеяскӧд.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving вӧдитчӧ Bluetooth-ӧн, медым йитны тіян NorthStar безопасносьт ювелирнӧй изделиеяскӧд."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving вӧдитчӧ Bluetooth-ӧн, медым йитны тіян NorthStar безопасносьт ювелирнӧй изделиеяскӧд."
     },
     "android": {
       "app_name": "VeryLoving"

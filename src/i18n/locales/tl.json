@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving\nKailangan ng",
       "NSMicrophoneUsageDescription": "VeryLoving ng access sa mikropono para sa kaligtasan at AI mga kasamang tawag.\nGinagamit ng",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ang iyong lokasyon para sa mapa ng kaligtasan at mga tampok na pangkaligtasan sa malapit.\nGinagamit ng",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ang iyong lokasyon upang suportahan ang ligtas na pagdating at mga daloy ng emergency.\nGumagamit ang",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ng lokasyon sa background para sa ligtas na pagdating at mga tampok na malapit sa danger-zone.\nGinagamit lang ng",
-      "NSCameraUsageDescription": "VeryLoving ang camera kapag pinili mong kumuha ng profile o larawang pangkaligtasan.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ang iyong library ng larawan kapag pumili ka ng profile o larawang pangkaligtasan.\nGumagamit ang",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan.\nGumagamit ang",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan.\nGumagamit ang"
     },
     "android": {
       "app_name": "VeryLoving"

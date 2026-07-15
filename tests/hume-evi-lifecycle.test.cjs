@@ -161,6 +161,23 @@ test('microphone PCM frames become bounded Hume audio_input messages only while 
   assert.equal(fakeAudioService.callback, null);
 });
 
+test('a text-send race returns false for durable queue fallback and surfaces a safe error', () => {
+  const service = readyService();
+  const received = [];
+  let sendCalls = 0;
+  service.socket.send = () => {
+    sendCalls += 1;
+    throw new Error('native socket detail must not escape');
+  };
+  service.setMessageHandler({ onError: (error) => received.push(error) });
+
+  assert.equal(service.sendText('Please stay with me'), false);
+  assert.equal(sendCalls, 1);
+  assert.equal(received.length, 1);
+  assert.equal(received[0].code, 'VOICE_TEXT_SEND_FAILED');
+  assert.doesNotMatch(received[0].message, /native socket detail/);
+});
+
 test('chat metadata does not replenish the bounded reconnect budget', async () => {
   fakeAudioService.startRecording = async () => {};
   fakeAudioService.stopRecording = async () => {};

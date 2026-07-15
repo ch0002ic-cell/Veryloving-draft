@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving къваригӀуна микрофоналъул нух хӀинкъи гьечӀолъиялъе ва AI гьудулзабазул ахӀиязе.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving хӀалтӀизабула дур бакӀ хӀинкъи гьечӀолъиялъул картаялъе ва аскӀор ругел хӀинкъи гьечӀолъиялъул рахъалъ.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving хӀалтӀизабула дур бакӀ хӀинкъи гьечӀого рачӀиналъул ва хӀинкъи гьечӀолъиялъул чвахиязул рахъкквезе.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving хӀалтӀизабула фоналъул бакӀ хӀинкъи гьечӀеб рачӀиналъул ва аскӀоб бугеб хӀинкъиялъул зоналъул хаслъабазе.",
-      "NSCameraUsageDescription": "VeryLoving хӀалтӀизабула камера гӀицӀго нужеца профилалъул яги хӀинкъи гьечӀолъиялъул сурат бахъизе тӀаса бищараб мехалъ.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving хӀалтӀизабула дур суратазул библиотека гӀицӀго дуца профиль яги хӀинкъи гьечӀолъиялъул сурат тӀаса бищараб мехалъ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving хӀалтӀизабула Bluetooth нужер NorthStar хӀинкъи гьечӀолъиялъул жалазда гьоркьоб бухьен гьабизе.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving хӀалтӀизабула Bluetooth нужер NorthStar хӀинкъи гьечӀолъиялъул жалазда гьоркьоб бухьен гьабизе."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving хӀалтӀизабула Bluetooth нужер NorthStar хӀинкъи гьечӀолъиялъул жалазда гьоркьоб бухьен гьабизе."
     },
     "android": {
       "app_name": "VeryLoving"

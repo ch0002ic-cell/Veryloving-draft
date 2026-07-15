@@ -5,16 +5,22 @@ import { createAuthenticationNonce } from '../utils/session-token';
 
 export const LAST_SOS_STATUS_KEY = 'veryloving.lastSOSStatus';
 export const PENDING_SOS_ATTEMPT_KEY = 'veryloving.pendingSOSAttempt';
-export const LAST_SOS_ATTEMPT_TITLE = 'Last SOS attempt';
 const PENDING_SOS_MAX_AGE_MS = 15 * 60 * 1000;
+const SOS_ATTEMPT_VERSION = 2;
 let pendingSOSMutationQueue = Promise.resolve();
+const acceptedSOSAttemptKeys = new Set();
 
-export const SOS_STATUS_MESSAGES = Object.freeze({
-  dialer_opened: 'Phone dialer opened; call not confirmed.',
-  cancelled: 'Cancelled; no call was placed.',
-  contact_required: 'No emergency contact was available; no call was placed.',
-  dialer_failed: 'The phone dialer could not open; no call was placed.',
-  unknown: 'The last SOS attempt could not be confirmed.'
+export const SOS_ATTEMPT_STATUS = Object.freeze({
+  pending: 'pending',
+  accepted: 'accepted'
+});
+
+export const SOS_STATUS_TRANSLATION_KEYS = Object.freeze({
+  dialer_opened: 'releaseCritical.sosDialerOpened',
+  cancelled: 'releaseCritical.sosCancelled',
+  contact_required: 'releaseCritical.sosContactRequired',
+  dialer_failed: 'releaseCritical.sosDialerFailed',
+  unknown: 'releaseCritical.sosUnknown'
 });
 
 export function createSOSStatus(result, { now = Date.now, failed = false } = {}) {
@@ -29,8 +35,8 @@ export function createSOSStatus(result, { now = Date.now, failed = false } = {})
   };
 }
 
-export function sosStatusMessage(status) {
-  return SOS_STATUS_MESSAGES[status] || SOS_STATUS_MESSAGES.unknown;
+export function sosStatusTranslationKey(status) {
+  return SOS_STATUS_TRANSLATION_KEYS[status] || SOS_STATUS_TRANSLATION_KEYS.unknown;
 }
 
 export async function saveSOSStatus(
@@ -54,6 +60,13 @@ function contactFingerprint(contactIds) {
   return [...new Set((contactIds || []).filter(Boolean))].sort().join('|');
 }
 
+function attemptStatus(attempt) {
+  // Version 1 records predate explicit delivery state and always represented
+  // an indeterminate/pending backend attempt.
+  if (attempt?.version === 1) return SOS_ATTEMPT_STATUS.pending;
+  return attempt?.status;
+}
+
 export function loadOrCreatePendingSOSAttempt({
   accountId,
   contactIds,
@@ -68,7 +81,9 @@ export function loadOrCreatePendingSOSAttempt({
     const current = await storageImpl.getJSON(PENDING_SOS_ATTEMPT_KEY, null);
     const timestamp = now();
     if (
-      current?.version === 1
+      [1, SOS_ATTEMPT_VERSION].includes(current?.version)
+      && attemptStatus(current) === SOS_ATTEMPT_STATUS.pending
+      && !acceptedSOSAttemptKeys.has(current.idempotencyKey)
       && current.accountId === accountId
       && current.contactFingerprint === fingerprint
       && typeof current.idempotencyKey === 'string'
@@ -77,14 +92,53 @@ export function loadOrCreatePendingSOSAttempt({
       && timestamp - current.createdAt <= PENDING_SOS_MAX_AGE_MS
     ) return current;
     const next = {
-      version: 1,
+      version: SOS_ATTEMPT_VERSION,
+      status: SOS_ATTEMPT_STATUS.pending,
       accountId,
       contactFingerprint: fingerprint,
       idempotencyKey: createId(),
       createdAt: timestamp
     };
     await runLocalUserDataMutation(() => storageImpl.setJSON(PENDING_SOS_ATTEMPT_KEY, next));
+    // There is only one durable SOS attempt slot. Once its replacement is
+    // safely persisted, no older process-local acceptance guard is needed.
+    acceptedSOSAttemptKeys.clear();
     return next;
+  });
+  pendingSOSMutationQueue = operation.then(() => undefined, () => undefined);
+  return operation;
+}
+
+export function markSOSAttemptAccepted(
+  idempotencyKey,
+  { storageImpl = storage, now = Date.now } = {}
+) {
+  if (!idempotencyKey) return Promise.resolve(false);
+  const operation = pendingSOSMutationQueue.catch(() => {}).then(async () => {
+    // The server receipt is authoritative even if local storage becomes
+    // unreadable at this exact moment. Guard the accepted key before any
+    // storage access so a transient read failure cannot make it reusable in
+    // this process once storage recovers.
+    acceptedSOSAttemptKeys.add(idempotencyKey);
+    const current = await storageImpl.getJSON(PENDING_SOS_ATTEMPT_KEY, null);
+    if (!current || current.idempotencyKey !== idempotencyKey) return false;
+
+    const accepted = {
+      ...current,
+      version: SOS_ATTEMPT_VERSION,
+      status: SOS_ATTEMPT_STATUS.accepted,
+      acceptedAt: now()
+    };
+    try {
+      await runLocalUserDataMutation(() => storageImpl.setJSON(PENDING_SOS_ATTEMPT_KEY, accepted));
+    } catch (error) {
+      // Removing the pending record is a safe fallback: the next activation
+      // will create a new key. Preserve the original persistence error so the
+      // caller can log degraded bookkeeping without masking SOS acceptance.
+      await runLocalUserDataMutation(() => storageImpl.remove(PENDING_SOS_ATTEMPT_KEY)).catch(() => {});
+      throw error;
+    }
+    return true;
   });
   pendingSOSMutationQueue = operation.then(() => undefined, () => undefined);
   return operation;
@@ -95,6 +149,7 @@ export function clearPendingSOSAttempt(idempotencyKey, { storageImpl = storage }
     const current = await storageImpl.getJSON(PENDING_SOS_ATTEMPT_KEY, null);
     if (!current || current.idempotencyKey !== idempotencyKey) return false;
     await runLocalUserDataMutation(() => storageImpl.remove(PENDING_SOS_ATTEMPT_KEY));
+    acceptedSOSAttemptKeys.delete(idempotencyKey);
     return true;
   });
   pendingSOSMutationQueue = operation.then(() => undefined, () => undefined);

@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving সুৰক্ষাৰ বাবে মাইক্ৰ'ফোন প্ৰৱেশাধিকাৰ আৰু AI সহযোগী কলৰ প্ৰয়োজন।",
       "NSLocationWhenInUseUsageDescription": "VeryLoving সুৰক্ষা মেপ আৰু নিকটৱৰ্তী সুৰক্ষা সুবিধাবোৰৰ বাবে আপোনাৰ অৱস্থান ব্যৱহাৰ কৰে।",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving সুৰক্ষিত-আগমন আৰু জৰুৰীকালীন প্ৰবাহ সমৰ্থন কৰিবলৈ আপোনাৰ অৱস্থান ব্যৱহাৰ কৰে।",
-      "NSLocationAlwaysUsageDescription": "VeryLoving সুৰক্ষিত-আগমন আৰু নিকটৱৰ্তী বিপদ-ক্ষেত্ৰৰ সুবিধাৰ বাবে পৃষ্ঠভূমিৰ অৱস্থান ব্যৱহাৰ কৰে।",
-      "NSCameraUsageDescription": "VeryLoving কেমেৰাটো কেৱল তেতিয়াহে ব্যৱহাৰ কৰে যেতিয়া আপুনি এটা প্ৰ'ফাইল বা সুৰক্ষা ফটো ল'ব বিচাৰে।",
-      "NSPhotoLibraryUsageDescription": "আপুনি প্ৰ'ফাইল বা সুৰক্ষা প্ৰতিচ্ছবি এটা বাছনি কৰিলেহে VeryLoving আপোনাৰ ফটো লাইব্ৰেৰী ব্যৱহাৰ কৰে।",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving আপোনাৰ NorthStar সুৰক্ষা গহনাৰ সৈতে সংযোগ কৰিবলৈ Bluetooth ব্যৱহাৰ কৰে।",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving আপোনাৰ NorthStar সুৰক্ষা গহনাৰ সৈতে সংযোগ কৰিবলৈ Bluetooth ব্যৱহাৰ কৰে।"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving আপোনাৰ NorthStar সুৰক্ষা গহনাৰ সৈতে সংযোগ কৰিবলৈ Bluetooth ব্যৱহাৰ কৰে।"
     },
     "android": {
       "app_name": "VeryLoving"

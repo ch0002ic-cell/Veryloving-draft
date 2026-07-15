@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving tortor ligula, facilisis accessum ad salutem et ad socium AI vocat.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving loco tuo utitur ad tabulam tutandam et ad lineamenta prope salutem.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving loco tuo utitur ad tutam adventum et necessitatem fluit.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving loco usus background est ad features tutum adventus et prope periculi zonam.",
-      "NSCameraUsageDescription": "VeryLoving camera utitur tantum cum profile aut salutem photo accipere voles.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving bibliotheca tua photo utitur tantum cum figuram vel imaginem salutis accipias.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem."
     },
     "android": {
       "app_name": "VeryLoving"

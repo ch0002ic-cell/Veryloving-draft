@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ސޭފްޓީ އަށް މައިކްރޯފޯން އެކްސެސް ބޭނުންވެ AI އެވެ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ސޭފްޓީ މެޕާއި ކައިރި ސޭފްޓީ ފީޗާސްތަކަށް ލޮކޭޝަން ބޭނުންކުރެއެވެ.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving ލޮކޭޝަން ބޭނުން ކުރަނީ ރައްކާތެރި އަދި އިމަޖެންސީ ފްލޯތަކަށް ސަޕޯޓް ކުރުމަށެވެ.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving ބެކްގްރައުންޑް ލޮކޭޝަން ބޭނުންކުރަނީ ސޭފް-އެރައިވަލް އަދި ކައިރި ޑޭންޖާ ޒޯން ފީޗާސްތަކަށެވެ.",
-      "NSCameraUsageDescription": "VeryLoving ކެމެރާ ބޭނުންކުރަނީ ޕްރޮފައިލް ނުވަތަ ސޭފްޓީ ފޮޓޯ ނެގުމަށް އިޚްތިޔާރު ކުރާއިރު އެކަންޏެވެ.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving ފޮޓޯ ލައިބްރަރީ ބޭނުން ކުރަނީ ޕްރޮފައިލް ނުވަތަ ސޭފްޓީ އިމޭޖެއް ޚިޔާރުކުރާއިރު އެކަންޏެވެ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth ބޭނުންކުރަނީ NorthStar ސޭފްޓީ ގަހަނާ ގުޅުވާލުމަށެވެ.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving Bluetooth ބޭނުންކުރަނީ NorthStar ސޭފްޓީ ގަހަނާ ގުޅުވާލުމަށެވެ."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth ބޭނުންކުރަނީ NorthStar ސޭފްޓީ ގަހަނާ ގުޅުވާލުމަށެވެ."
     },
     "android": {
       "app_name": "VeryLoving"

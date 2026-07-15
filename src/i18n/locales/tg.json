@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving барои бехатарӣ ва зангҳои ҳамроҳи AI дастрасии микрофон лозим аст.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving макони шуморо барои харитаи бехатарӣ ва хусусиятҳои бехатарии наздик истифода мебарад.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving макони шуморо барои дастгирии ҷараёни расидани бехатар ва ҳолати фавқулодда истифода мебарад.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving макони заминаро барои расидани бехатар ва хусусиятҳои минтақаи хатарноки наздик истифода мебарад.",
-      "NSCameraUsageDescription": "VeryLoving камераро танҳо вақте истифода мебарад, ки шумо профил ё акси бехатариро интихоб мекунед.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving китобхонаи аксҳои шуморо танҳо ҳангоми интихоби профил ё тасвири бехатар истифода мебарад.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving барои пайваст шудан ба ҷавоҳироти бехатарии NorthStar аз Bluetooth истифода мебарад.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving барои пайваст шудан ба ҷавоҳироти бехатарии NorthStar аз Bluetooth истифода мебарад."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving барои пайваст шудан ба ҷавоҳироти бехатарии NorthStar аз Bluetooth истифода мебарад."
     },
     "android": {
       "app_name": "VeryLoving"

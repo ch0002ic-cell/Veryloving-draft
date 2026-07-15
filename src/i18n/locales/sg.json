@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving a hunda ti wara micro ti tene a bata mo nzoni nga na AI a-appel ti kamarade.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving lo sara kua na ndo ti mo ti sara na carte ti sécurité nga na a-appareil ti sécurité so ayeke nduru na mo.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving lo yeke na ndo so mo yeke dä ti mû maboko na azo so ayeke si nzoni nga na azo so ayeke si hio.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving lo yeke na ndo ti peko ti safe-arrivée nga na aye so ayeke nduru na danger-zone.",
-      "NSCameraUsageDescription": "VeryLoving lo yeke sara kua na caméra gi na ngoi so lo soro ti mû foto ti profil wala ti sécurité.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving asala kusala na bibliothèque ti afoto ti mo gi tongana mo soro mbeni profil wala mbeni image ti batango tele.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele."
     },
     "android": {
       "app_name": "VeryLoving"

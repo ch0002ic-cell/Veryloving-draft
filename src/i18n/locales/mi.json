@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hiahia ana ki te urunga uruoro mō te haumaru me te AI waea hoa.",
       "NSLocationWhenInUseUsageDescription": "Ka whakamahi VeryLoving i tō tauwāhi mō te mahere haumaru me ngā āhuahira haumaru pātata.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving whakamahi i tō tauwāhi hei tautoko i ngā rerenga haumaru, ohotata hoki.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving whakamahi ana i te tauwāhi papamuri mō ngā āhuahira rohe mōrearea haumaru me ngā āhuahira rohe mōrearea pātata.",
-      "NSCameraUsageDescription": "VeryLoving whakamahi anake i te kāmera ina kōwhiri koe ki te tango i tētahi whakaahua kōtaha, haumaru rānei.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving whakamahi anake i tō puna whakaahua ina kōwhiri koe i tētahi kōtaha, atahanga haumaru rānei.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar."
     },
     "android": {
       "app_name": "VeryLoving"

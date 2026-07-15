@@ -390,12 +390,7 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving isumannaallisaanermut aamma AI inngiaqateqarnissamut mikrofonimik atuisoqartariaqarpoq.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving isumannaallisaanermut nunap assiga aamma isumannaallisaanermut qanittukkut sumiiffiit atortarpai.",
-      "NSLocationAlwaysAndWhenInUseUsageDescription": "VeryLoving sumiiffiit atortarpai isumannaatsumik tikittarnermut aamma ajunaarnersuaqarneranik tapersersuinermut.",
-      "NSLocationAlwaysUsageDescription": "VeryLoving isumannaatsumik tikittarnermut aamma qanittumi ulorianartorsiorfiusumi pisunut tunuliaqutaasoq atortarpaa.",
-      "NSCameraUsageDescription": "VeryLoving aatsaat profilimik imaluunniit isumannaallisaanermik assiliineq toqqarukku kamera atortarpaa.",
-      "NSPhotoLibraryUsageDescription": "VeryLoving assiliarnik atuakkiorfiit atortarpai aatsaat profilimik imaluunniit isumannaallisaanermut assimik toqqaagaanni.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq.",
-      "NSBluetoothPeripheralUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq."
     },
     "android": {
       "app_name": "VeryLoving"

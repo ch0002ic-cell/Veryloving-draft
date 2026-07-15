@@ -38,6 +38,10 @@ export async function initializeNotifications() {
   return Boolean(await notificationsRuntime.getModule());
 }
 
+export async function getNotificationsModule() {
+  return notificationsRuntime.getModule();
+}
+
 export async function requestNotificationPermission({ showRationale = true } = {}) {
   const Notifications = await notificationsRuntime.getModule();
   if (!Notifications) return false;

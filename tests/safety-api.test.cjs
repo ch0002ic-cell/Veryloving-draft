@@ -11,7 +11,12 @@ Module._load = function loadSafetyConfig(request, parent, isMain) {
   }
   return originalLoad.call(this, request, parent, isMain);
 };
-const { safetyRequest } = require('../src/services/safety-api');
+const {
+  dispatchSOS,
+  normalizeSOSLocation,
+  safetyRequest,
+  SOS_LOCATION_MAX_AGE_MS
+} = require('../src/services/safety-api');
 Module._load = originalLoad;
 
 const runtimeConfig = { safetyBackendEnabled: true, apiBaseUrl: 'https://api.example.test/' };
@@ -62,4 +67,58 @@ test('safety client fails closed without auth and aborts stalled requests', asyn
       }, { once: true });
     })
   }), (error) => error.code === 'SAFETY_TIMEOUT');
+});
+
+test('SOS location normalization omits stale optional cache without blocking the event', () => {
+  const now = 1_000_000;
+  assert.deepEqual(normalizeSOSLocation({
+    timestamp: now - SOS_LOCATION_MAX_AGE_MS,
+    coords: { latitude: 1.3521, longitude: 103.8198 }
+  }, { now: () => now }), {
+    latitude: 1.3521,
+    longitude: 103.8198,
+    capturedAt: now - SOS_LOCATION_MAX_AGE_MS
+  });
+
+  assert.equal(normalizeSOSLocation({
+    isCached: true,
+    cachedAt: now - SOS_LOCATION_MAX_AGE_MS - 1,
+    coords: { latitude: 1.3521, longitude: 103.8198 }
+  }, { now: () => now }), null);
+
+  assert.equal(normalizeSOSLocation({
+    timestamp: now,
+    coords: { latitude: 91, longitude: 103.8198 }
+  }, { now: () => now }), null);
+});
+
+test('SOS dispatch leaves a stale cached location out of the request body', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalNow = Date.now;
+  const requests = [];
+  try {
+    Date.now = () => 2_000_000;
+    globalThis.fetch = async (_url, options) => {
+      requests.push(JSON.parse(options.body));
+      return { ok: true, status: 202, json: async () => ({ id: 'sos-receipt', status: 'accepted' }) };
+    };
+
+    await dispatchSOS({
+      accessToken: 'first-party-session',
+      idempotencyKey: 'durable-idempotency-key',
+      contactIds: ['contact_abcdefghijklmnopqrstuvwx'],
+      location: {
+        isCached: true,
+        cachedAt: 2_000_000 - SOS_LOCATION_MAX_AGE_MS - 1,
+        coords: { latitude: 1.3521, longitude: 103.8198 }
+      }
+    });
+  } finally {
+    Date.now = originalNow;
+    globalThis.fetch = originalFetch;
+  }
+
+  assert.equal(requests.length, 1);
+  assert.equal(Object.hasOwn(requests[0], 'location'), false);
+  assert.equal(requests[0].occurredAt, 2_000_000);
 });

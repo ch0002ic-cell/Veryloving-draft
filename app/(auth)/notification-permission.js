@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
-import { Linking, Text } from 'react-native';
+import { AppState, Linking, Text } from 'react-native';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
@@ -12,9 +12,11 @@ import {
 } from '../../src/services/notifications';
 import { fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
+import { useAuth } from '../../src/context/AuthContext';
 
 export default function NotificationPermission() {
   const { t } = useI18n();
+  const { advanceOnboarding } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [notificationsAvailable, setNotificationsAvailable] = useState(null);
@@ -22,6 +24,7 @@ export default function NotificationPermission() {
   const [permissionDenied, setPermissionDenied] = useState(false);
   const requestingRef = useRef(false);
   const navigatingRef = useRef(false);
+  const awaitingSettingsReturnRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -53,11 +56,18 @@ export default function NotificationPermission() {
     }
   }, [t]);
 
-  const continueOnboarding = useCallback(() => {
+  const continueOnboarding = useCallback(async () => {
     if (navigatingRef.current) return;
     navigatingRef.current = true;
-    router.push('/(auth)/device-check');
-  }, []);
+    setError(null);
+    try {
+      await advanceOnboarding('/(auth)/device-check');
+      router.push('/(auth)/device-check');
+    } catch {
+      navigatingRef.current = false;
+      setError(t('settings.updateFailedMessage'));
+    }
+  }, [advanceOnboarding, t]);
 
   const requestPermission = useCallback(async () => {
     if (requestingRef.current || navigatingRef.current) return;
@@ -66,11 +76,11 @@ export default function NotificationPermission() {
     setError(null);
     try {
       if (notificationsAvailable !== true) {
-        continueOnboarding();
+        await continueOnboarding();
         return;
       }
       const granted = await requestNotificationPermission({ showRationale: false });
-      if (granted) continueOnboarding();
+      if (granted) await continueOnboarding();
       else {
         setPermissionDenied(true);
         setError(t('permissions.notificationsRationaleMessage'));
@@ -84,14 +94,35 @@ export default function NotificationPermission() {
     }
   }, [continueOnboarding, notificationsAvailable, t]);
 
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async (nextState) => {
+      if (nextState !== 'active' || !awaitingSettingsReturnRef.current || navigatingRef.current) return;
+      awaitingSettingsReturnRef.current = false;
+      requestingRef.current = true;
+      setBusy(true);
+      try {
+        const granted = await requestNotificationPermission({ showRationale: false });
+        if (granted) await continueOnboarding();
+        else setError(t('permissions.notificationsRationaleMessage'));
+      } catch {
+        setError(t('permissions.notificationsRationaleMessage'));
+      } finally {
+        requestingRef.current = false;
+        setBusy(false);
+      }
+    });
+    return () => subscription.remove();
+  }, [continueOnboarding, t]);
+
   const openNotificationSettings = useCallback(async () => {
     if (requestingRef.current || navigatingRef.current) return;
     requestingRef.current = true;
     setBusy(true);
     try {
+      awaitingSettingsReturnRef.current = true;
       await Linking.openSettings();
-      continueOnboarding();
     } catch {
+      awaitingSettingsReturnRef.current = false;
       setError(t('permissions.notificationsRationaleMessage'));
     } finally {
       requestingRef.current = false;

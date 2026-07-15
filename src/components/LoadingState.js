@@ -3,7 +3,14 @@ import { colors, fonts, spacing } from '../constants/theme';
 
 export function LoadingState({ message, compact = false }) {
   return (
-    <View accessibilityRole="progressbar" style={[styles.wrap, compact && styles.compact]}>
+    <View
+      accessible
+      accessibilityLabel={message}
+      accessibilityLiveRegion="polite"
+      accessibilityRole="progressbar"
+      accessibilityState={{ busy: true }}
+      style={[styles.wrap, compact && styles.compact]}
+    >
       <ActivityIndicator color={colors.orangeAccessible} />
       {message ? <Text style={styles.message}>{message}</Text> : null}
     </View>
