@@ -6,6 +6,7 @@ const path = require('node:path');
 const { test } = require('node:test');
 const languageCatalog = require('../src/i18n/languages');
 const english = require('../src/i18n/locales/en.json');
+const releaseCriticalMessages = require('../src/i18n/release-critical-messages').default;
 
 const localeDirectory = path.resolve('src/i18n/locales');
 const assignedLanguages = languageCatalog.filter((language) => language.code !== 'system');
@@ -105,6 +106,31 @@ test('every selectable catalog exactly covers English with non-empty strings', (
     }
     if (language.code !== 'en') {
       assert.ok(englishIdenticalValues < referenceKeys.length / 2, `${language.code} appears to be an English fallback`);
+    }
+  }
+});
+
+test('effective critical-copy coverage is explicit for full-catalog QA', () => {
+  const criticalKeys = Object.keys(releaseCriticalMessages.en).sort();
+  const translatedCodes = Object.keys(releaseCriticalMessages).sort();
+  const fallbackCodes = availableLanguages
+    .map((language) => language.code)
+    .filter((code) => !translatedCodes.includes(code))
+    .sort();
+
+  assert.equal(criticalKeys.length, 34);
+  assert.deepEqual(translatedCodes, ['ar', 'en', 'es', 'fr', 'he', 'zh']);
+  assert.equal(fallbackCodes.length, 149);
+  for (const code of translatedCodes) {
+    assert.deepEqual(Object.keys(releaseCriticalMessages[code]).sort(), criticalKeys);
+    for (const key of criticalKeys) {
+      assert.equal(typeof releaseCriticalMessages[code][key], 'string');
+      assert.ok(releaseCriticalMessages[code][key].trim());
+      assert.deepEqual(
+        interpolationTokens(releaseCriticalMessages[code][key]),
+        interpolationTokens(releaseCriticalMessages.en[key]),
+        `${code}.releaseCritical.${key} must preserve placeholders`
+      );
     }
   }
 });

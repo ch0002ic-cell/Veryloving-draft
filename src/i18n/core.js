@@ -8,9 +8,11 @@ export const TRANSLATION_FALLBACK_ENABLED = false;
 export const RTL_QA_LANGUAGE_CODES = Object.freeze(['ar', 'he']);
 export const RTL_QA_LANGUAGES_ENABLED = process.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES === 'true';
 export const ALL_CATALOG_LANGUAGES_REQUESTED = process.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
-export const ALL_CATALOG_LANGUAGES_ENABLED = ALL_CATALOG_LANGUAGES_REQUESTED
-  && typeof __DEV__ !== 'undefined'
-  && __DEV__ === true;
+// App config and the environment validator authorize this flag only for
+// development or the production-strict TestFlight catalog-QA profile. Do not
+// add an __DEV__ check here: signed TestFlight bundles intentionally run with
+// __DEV__ false and must still be able to exercise the full catalog.
+export const ALL_CATALOG_LANGUAGES_ENABLED = ALL_CATALOG_LANGUAGES_REQUESTED;
 export const catalogLanguages = languageCatalog
   .filter((language) => language.messages)
   .map((language) => language.code);
@@ -22,9 +24,9 @@ export function selectRuntimeLanguageCodes({
   enableRTLQA = RTL_QA_LANGUAGES_ENABLED,
   showAllCatalogs = ALL_CATALOG_LANGUAGES_ENABLED
 } = {}) {
-  // The full catalog is a development-only translation-audit surface. The
-  // default is guarded by __DEV__, so a mistakenly configured release bundle
-  // still exposes only reviewed or explicitly approved QA locales.
+  // Full-catalog selection is an explicitly configured QA surface. Public
+  // production remains fail-closed in app.config.js, the environment
+  // validator, and the committed EAS profiles.
   if (showAllCatalogs) return [...catalogLanguages];
   const allowed = new Set([
     ...maintainedLanguages,
@@ -36,17 +38,54 @@ export function selectRuntimeLanguageCodes({
 }
 
 export const supportedLanguages = selectRuntimeLanguageCodes();
+export const releaseCriticalTranslatedLanguages = Object.freeze(Object.keys(releaseCriticalMessages));
+const releaseCriticalTranslatedLanguageSet = new Set(releaseCriticalTranslatedLanguages);
+export const releaseCriticalFallbackLanguages = Object.freeze(
+  supportedLanguages.filter((code) => !releaseCriticalTranslatedLanguageSet.has(code))
+);
+
+export function releaseCriticalMessagesForLanguage(languageCode) {
+  // The full-catalog QA profile must never expose raw i18n missing-key text in
+  // authentication or safety flows. Until the newer critical overlay is
+  // translated for a catalog, use the complete English fail-safe explicitly
+  // and surface that status in the language picker. i18n's implicit fallback
+  // remains disabled, so this cannot conceal arbitrary catalog drift.
+  return releaseCriticalMessages[languageCode] || releaseCriticalMessages[DEFAULT_LANGUAGE];
+}
+
 export const translations = Object.fromEntries(
   languageCatalog
     .filter((language) => supportedLanguages.includes(language.code))
     .map((language) => [language.code, {
       ...language.messages,
-      releaseCritical: releaseCriticalMessages[language.code]
+      releaseCritical: releaseCriticalMessagesForLanguage(language.code)
     }])
 );
 export const languageOptions = languageCatalog
   .filter((language) => language.code === SYSTEM_LANGUAGE || supportedLanguages.includes(language.code))
-  .map(({ messages, ...language }) => language);
+  .map(({ messages, ...language }) => ({
+    ...language,
+    usesEnglishReleaseCriticalFallback: language.code !== SYSTEM_LANGUAGE
+      && !releaseCriticalTranslatedLanguageSet.has(language.code)
+  }));
+
+function normalizeLanguageSearchValue(value) {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/\p{Mark}/gu, '')
+    .toLocaleLowerCase();
+}
+
+export function filterLanguageOptions(options, query, systemLabel = '') {
+  const normalized = normalizeLanguageSearchValue(query).trim();
+  if (!normalized) return options;
+  return (options || []).filter((language) => [
+    language.code,
+    language.nativeName,
+    language.englishName,
+    language.code === SYSTEM_LANGUAGE ? systemLabel : ''
+  ].filter(Boolean).some((value) => normalizeLanguageSearchValue(value).includes(normalized)));
+}
 
 const i18n = new I18n(translations);
 i18n.defaultLocale = DEFAULT_LANGUAGE;

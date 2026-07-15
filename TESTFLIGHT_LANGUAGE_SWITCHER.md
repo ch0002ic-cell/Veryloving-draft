@@ -1,7 +1,7 @@
 # How to Test the Language Switcher on TestFlight
 
 Audience: Grace and mobile QA
-Primary acceptance artifact: the exact signed TestFlight build recorded below
+Primary acceptance artifact: the exact signed TestFlight build and language profile recorded below
 
 ## Current Verification Status
 
@@ -9,7 +9,12 @@ The language-switching implementation, persistence contract, locale gate, select
 
 **Physical-device status for this change set: BLOCKED — EXTERNAL.** No physical iPhone is connected to the engineering environment, and the authenticated Expo account does not have read/build permission for the configured EAS project. Therefore this document does not claim that the current commit has passed on a real device. An EAS project owner must grant access or build the committed SHA, publish it to TestFlight, and complete the steps below.
 
-The dedicated `testflight` EAS profile is the required artifact for this test. It exposes the reviewed production set—English, Spanish, French, and Simplified Chinese—plus Arabic and Hebrew solely for signed RTL QA. It explicitly keeps `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false`; a build showing the other 149 unreviewed catalogs is a development audit artifact and must not be accepted as the TestFlight candidate.
+There are two intentionally different signed artifacts:
+
+- `testflight` is the base QA candidate. It exposes reviewed English, Spanish, French, and Simplified Chinese plus Arabic and Hebrew for RTL QA: six catalogs and System default.
+- `testflight-full-catalog` is a separately named layout/coverage audit. It exposes all 155 JSON catalogs and System default without a code change. It remains production-like for readiness validation but marks affected language rows and the selected-language trigger `QA`, so it is not translation-complete acceptance.
+
+The 155 JSON files each contain 319 complete base keys. The 149 catalogs beyond the base TestFlight six still lack translations for 34 newer `releaseCritical` strings—5,066 values total. The full-catalog profile deliberately applies the `QA` badge to those choices and supplies English for the critical safety strings. Record that fallback as expected audit behavior; never interpret it as a native-language PASS.
 
 ## Test Record
 
@@ -17,6 +22,7 @@ The dedicated `testflight` EAS profile is the required artifact for this test. I
 - Date/time and timezone:
 - Git commit SHA:
 - App version / TestFlight build number:
+- EAS language profile (`testflight` or `testflight-full-catalog`):
 - Device model / iOS version:
 - Clean install or upgrade from build:
 - Evidence link:
@@ -25,10 +31,14 @@ Do not reuse a PASS from Expo Go, a simulator, a development build, or another T
 
 ## Install the Candidate
 
-1. The EAS project owner builds the exact committed SHA with:
+1. The EAS project owner builds the exact committed SHA with the profile required by the test plan:
 
    ```bash
+   # Base six-locale candidate
    eas build --platform ios --profile testflight
+
+   # Separate 155-catalog layout/coverage audit
+   eas build --platform ios --profile testflight-full-catalog
    ```
 
 2. After the archive succeeds, submit that exact build to App Store Connect and add it to Grace's internal TestFlight group.
@@ -41,19 +51,31 @@ Do not reuse a PASS from Expo Go, a simulator, a development build, or another T
 ### Immediate change and selected state
 
 1. Sign in, complete onboarding if needed, and open **Settings → Language**.
-2. Confirm the list contains exactly **System default, English, Spanish, French, Simplified Chinese, Arabic, and Hebrew**.
+2. Confirm the picker matches the recorded profile:
+   - base `testflight`: exactly **System default, English, Spanish, French, Simplified Chinese, Arabic, and Hebrew** (7 rows);
+   - `testflight-full-catalog`: **System default plus 155 catalogs** (156 rows), with a `QA` badge on the 149 fallback-affected rows and selected-language trigger.
 3. Select **Spanish**.
 4. Confirm the sheet closes, the visible Settings copy changes immediately, and the language trigger reads `Español / ES`.
 5. Reopen Language and confirm Spanish has the visible selected/checkmark state. With VoiceOver enabled, confirm the row is announced as selected.
 6. Open Home, Map, Settings, emergency contacts, Saved Places, voice, history, privacy, and the SOS confirmation. Confirm app-owned copy changes and no raw native/provider error is displayed.
 7. Repeat steps 3–6 for **French** and **Simplified Chinese**.
 
+### Full-catalog layout and coverage audit
+
+Run this section only on `testflight-full-catalog`:
+
+1. Search by English name, native name, and code. Confirm searches for German/`de`, Portuguese/`pt`, and Russian/`ru` return the expected rows without a long freeze or broken scroll position.
+2. Select German, Portuguese, and Russian in turn. Confirm mounted app-owned base UI updates immediately, the selected row/checkmark follows the choice, and the trigger reads the language code plus `QA`.
+3. Open auth, map/share, SOS, BLE, voice, contacts, and Saved Places error surfaces. Where one of the 34 newer critical keys appears, confirm it is readable English rather than a missing-key diagnostic. Return to Settings and confirm the selected-language trigger still shows `QA`. This is an expected explicit fallback, not translated-language evidence.
+4. Select an additional RTL catalog such as Urdu. Confirm the direction transition is bounded, the layout mirrors, numeric content remains readable, and the selected-language trigger shows `QA` after returning to Settings.
+5. Record any clipped text, overflow, missing-key diagnostic, blank label, stale mixed-language base copy, unusable search, reload loop, or crash as a defect. English critical fallback by itself is not a defect in this audit profile.
+
 ### Persistence
 
 1. Leave the app in Spanish on a safe screen such as Settings.
 2. Remove VeryLoving from the app switcher, then launch it again from TestFlight or the Home Screen.
 3. Confirm Spanish remains active, Settings remains translated, and Spanish remains selected in the Language sheet.
-4. Repeat after restarting the iPhone and after upgrading from the previous TestFlight build.
+4. Repeat after restarting the iPhone and after upgrading from the previous TestFlight build. On the full-catalog profile, use at least one locale outside the base six and confirm its `QA` trigger badge also returns in Settings.
 
 ### RTL behavior
 
@@ -72,8 +94,9 @@ Arabic and Hebrew are TestFlight QA locales, not public-release approvals. Recor
 
 1. Select **System default** in VeryLoving.
 2. In iOS Settings, change the preferred app/device language to Spanish, French, or Simplified Chinese; terminate and relaunch VeryLoving.
-3. Confirm the matching maintained interface is used.
-4. Select an unsupported language or Traditional Chinese. Confirm VeryLoving explicitly uses English instead of labeling English or Simplified Chinese copy as the unsupported locale.
+3. Confirm the matching interface is used.
+4. On the base profile, choose a language outside its six. Confirm VeryLoving uses English rather than claiming that unavailable locale.
+5. On the full-catalog profile, choose one of the 28 registered codes with no JSON catalog. Confirm the app uses English. Traditional Chinese also remains explicitly unsupported and must not be mislabeled as Simplified Chinese.
 
 ## Pass/Fail Criteria
 
@@ -84,7 +107,9 @@ Mark **PASS** only when every applicable item below is observed on the recorded 
 - The preference survives force-quit, device restart, and supported-build upgrade.
 - Arabic and Hebrew perform a bounded direction reload, mirror correctly, persist, and never loop.
 - Enabled reminder copy follows the selected locale without leaving an old-language schedule.
-- System default follows maintained device locales and falls back honestly to English.
+- System default follows a catalog available in the recorded profile and falls back honestly to English when that profile has no matching catalog.
+- Full-catalog mode, when selected, contains 156 rows, keeps search/scroll responsive, switches and persists representative additional LTR/RTL catalogs, and retains `QA` badges on affected picker rows/triggers.
+- The 149 additional catalogs show no missing-key diagnostics for critical errors: the explicit English critical safety fallback appears while the selected language remains marked `QA` in Settings and is recorded as untranslated audit copy, never as a linguistic PASS.
 - No screen shows mixed stale app-owned copy, a raw technical error, a crash, or an unrecoverable blank state.
 
 Mark **FAIL** for any reproducible mismatch. Record expected/actual behavior, screen, exact build, language transition, install type, and a screenshot/video. Capture at minimum Spanish selected, Spanish after relaunch, Arabic selected, the same representative screen in LTR and RTL, and a short English → Arabic → relaunch → English recording.

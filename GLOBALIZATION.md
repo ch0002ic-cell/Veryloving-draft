@@ -4,12 +4,13 @@ VeryLoving stores phone numbers in canonical E.164 form and keeps interface lang
 
 ## Supported interface languages
 
-The language registry represents all 183 assigned ISO 639-1 codes, and 155 catalog files remain structurally complete translation work products. Runtime availability is quality-gated:
+The language registry represents all 183 assigned ISO 639-1 codes. There are 155 JSON catalogs, each with the same 319 non-empty base keys and placeholder structure as English. Runtime availability is quality-gated:
 
 - public production builds expose reviewed English (`en`), Spanish (`es`), French (`fr`), and Simplified Chinese (`zh`);
-- the dedicated TestFlight QA profile additionally exposes Arabic (`ar`) and Hebrew (`he`) when `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=true`;
-- the other 149 catalog work products are not selectable in preview, TestFlight, or production until their `reviewRequired` status is cleared after recorded native-speaker and safety-copy review;
-- developers can temporarily expose all 155 complete catalogs with `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true`, but only in a development runtime and a native config explicitly built with `VERYLOVING_BUILD_PROFILE=development`.
+- the base `testflight` profile additionally exposes Arabic (`ar`) and Hebrew (`he`) for signed RTL QA, for six selectable catalogs in total;
+- the dedicated signed `testflight-full-catalog` profile exposes all 155 catalogs for layout, search, persistence, and RTL coverage without changing code;
+- developers can also expose all 155 catalogs with `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` and `VERYLOVING_BUILD_PROFILE=development`;
+- preview, the base TestFlight profile, and public production remain restricted; only development metadata and the named `testflight-full-catalog` metadata may enable the catalog-audit policy.
 
 Regional tags resolve to an available base catalog, such as `es-MX` to `es` and `zh-Hans-CN` to `zh`. Traditional Chinese requests (`zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO`) deliberately resolve to English rather than being mislabeled as the maintained Simplified Chinese catalog. Unsupported device languages also resolve to an explicitly English interface.
 
@@ -21,11 +22,11 @@ Users can choose an available catalog in Settings or leave the preference on Sys
 
 ## Translation accuracy gate
 
-Runtime per-string fallback is disabled. Every available catalog must contain every key, so a missing safety string cannot be silently replaced with English. A six-locale release-critical overlay keeps auth, location/map/share, SOS, BLE, voice, and Saved Places errors complete for the production plus TestFlight QA set. Raw native/provider errors are mapped to stable translation keys at render boundaries.
+General runtime per-string fallback is disabled. Each JSON catalog covers all 319 base keys, but 34 newer `releaseCritical` strings live in a separate overlay. Only `en/es/fr/zh/ar/he` currently have translated overlay values. The other 149 full-catalog QA locales therefore represent **5,066 translation values still outstanding** (`149 × 34`). In full-catalog mode, code deliberately supplies the English safety overlay and marks affected choices `QA` in the language picker/trigger instead of exposing a missing-key diagnostic or implying that the fallback is translated. This narrow, explicit fallback does not make those catalogs translation-complete or release-approved. Raw native/provider errors are mapped to stable translation keys at render boundaries.
 
 Do not copy English text into a non-English catalog to satisfy coverage. New or changed safety, emergency, consent, authentication, permission, map, voice, privacy, or notification copy must be translated and reviewed for every locale intended for that release. A locale marked `reviewRequired` is not launch-certified, regardless of whether its automated checks pass; clear that flag only after a recorded native-speaker review.
 
-### Development catalog audit mode
+### Full-catalog QA mode
 
 To inspect the retained catalogs without weakening release behavior, start a development client with:
 
@@ -35,15 +36,23 @@ EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true \
 npx expo start --dev-client
 ```
 
-Use the same two variables with `npx expo run:ios` or a development EAS build when native `supportedLocales` and permission strings also need to be regenerated. The picker then contains **System default plus 155 catalogs**. The runtime guard ignores this flag when `__DEV__` is false; app config also ignores it unless the build profile is explicitly `development`. The environment validator rejects it in preview and production, while committed preview, TestFlight, and production profiles pin it to `false`.
+Use the same variables with `npx expo run:ios` or the development EAS profile when native `supportedLocales` and permission strings also need to be regenerated. The picker contains **System default plus 155 catalogs**.
 
-This is translation-audit evidence only. The additional catalogs are machine-generated and unreviewed, and the newer `releaseCritical` overlay exists only for `en/es/fr/zh/ar/he`. Critical flows in an audit-only locale can therefore surface missing-key diagnostics until that locale receives complete translated critical copy and review. Do not use full-catalog mode for stakeholder acceptance, TestFlight evidence, or a store artifact.
+For the same audit in a signed physical-device/TestFlight runtime, build the named profile instead of editing source or `.env`:
+
+```bash
+eas build --platform ios --profile testflight-full-catalog
+```
+
+`testflight-full-catalog` is still production-like for credentials, secure transports, entitlements, and readiness validation; its only language-policy expansion is the explicit full-catalog metadata. The base `testflight` profile keeps `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false` and exposes only `en/es/fr/zh/ar/he`. Public `production` keeps the flag false and exposes only `en/es/fr/zh`.
+
+The full-catalog artifact is layout/coverage audit evidence only. Its 149 additional catalogs are machine-generated and unreviewed, its 34 critical strings use the explicit English safety fallback, and affected choices must retain their `QA` picker/trigger badge. It cannot establish translation completeness, native-speaker approval, stakeholder language acceptance, or public-release readiness.
 
 ## Right-to-left layouts
 
-The registry identifies Arabic, Divehi, Persian, Hebrew, Kashmiri, Sorani Kurdish, Pashto, Sindhi, Uyghur, Urdu, and Yiddish as RTL, but only Arabic and Hebrew can currently enter the signed TestFlight QA runtime. Native builds apply `I18nManager`, left/right swapping, and one process reload when crossing between LTR and RTL; web applies the matching root `dir`. The selected locale and enabled target-locale reminder state are made durable before a safe reload, so the new process hydrates into the requested direction.
+The registry identifies Arabic, Divehi, Persian, Hebrew, Kashmiri, Sorani Kurdish, Pashto, Sindhi, Uyghur, Urdu, and Yiddish as RTL. The base TestFlight profile exposes Arabic and Hebrew; `testflight-full-catalog` exposes all 11 for signed layout auditing. Native builds apply `I18nManager`, left/right swapping, and one process reload when crossing between LTR and RTL; web applies the matching root `dir`. The selected locale and enabled target-locale reminder state are made durable before a safe reload, so the new process hydrates into the requested direction.
 
-RTL is not certified by unit tests. For every TestFlight build number, follow [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md): verify Arabic and Hebrew on a clean install and upgrade, kill/relaunch after both direction changes, inspect every screen/modal/map annotation, and test Dynamic Type, VoiceOver, keyboard entry, phone numbers, mixed-direction text, rotation, iPhone SE-class width, current Pro-class iPhone, and iPad split view. Native-speaker signoff remains required.
+RTL is not certified by unit tests. For every base TestFlight build number, follow [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md): verify Arabic and Hebrew on a clean install and upgrade, kill/relaunch after both direction changes, inspect every screen/modal/map annotation, and test Dynamic Type, VoiceOver, keyboard entry, phone numbers, mixed-direction text, rotation, iPhone SE-class width, current Pro-class iPhone, and iPad split view. For a full-catalog build, repeat the direction matrix with representative additional RTL catalogs and verify the selected language's `QA` badge again after returning to Settings. Native-speaker signoff remains required for linguistic approval.
 
 ## Phone numbers
 
@@ -68,6 +77,6 @@ Persist or send `e164`, never `formatted`. The auth profile and emergency-contac
 3. Run `npm test`. Coverage fails on a missing, extra, empty, or placeholder-damaged value and when catalog files drift from registry metadata.
 4. Arrange native-speaker and safety-copy review, then clear `reviewRequired` only when that review is recorded.
 
-`app.config.js` derives native `supportedLocales` and localized permission strings from the same quality-gated language selection used at runtime, so a CNG prebuild cannot advertise an unavailable language. The TestFlight profile injects only the explicit Arabic/Hebrew QA flag and pins the development-only full-catalog flag to `false`. JSON comments are invalid, so review status lives in registry metadata instead of being mixed into user-facing strings.
+`app.config.js` derives native `supportedLocales` and localized permission strings from the same profile-aware language selection used at runtime, so a CNG prebuild cannot advertise an unavailable language. The base TestFlight profile injects only the Arabic/Hebrew QA flag; `testflight-full-catalog` carries the explicit signed-audit metadata; production remains restricted to reviewed catalogs. JSON comments are invalid, so review status lives in registry metadata instead of being mixed into user-facing strings.
 
 The Hume/CLM response language is intentionally independent. A later AI-language preference can reuse the resolved locale without changing the UI catalog architecture.

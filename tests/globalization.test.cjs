@@ -11,6 +11,8 @@ const {
   isRTLLanguage,
   maintainedLanguages,
   normalizeLanguageCode,
+  releaseCriticalFallbackLanguages,
+  releaseCriticalMessagesForLanguage,
   resolveLanguage,
   RTL_QA_LANGUAGE_CODES,
   selectRuntimeLanguageCodes,
@@ -203,6 +205,7 @@ test('language resolution supports regional tags, system preference, and fallbac
 
 test('selectable catalogs never use a hidden English per-string fallback', () => {
   assert.equal(TRANSLATION_FALLBACK_ENABLED, false);
+  assert.deepEqual(releaseCriticalFallbackLanguages, []);
   assert.equal(translateForLocale('en', 'settings.showCompanion'), 'Show companion button');
   assert.equal(translateForLocale('es', 'settings.showCompanion'), 'Mostrar el botón del compañero');
   assert.equal(translateForLocale('fr', 'settings.showCompanion'), 'Afficher le bouton du compagnon');
@@ -219,6 +222,7 @@ test('selectable catalogs never use a hidden English per-string fallback', () =>
   assert.match(translateForLocale('es', 'releaseCritical.sosDialerOpened'), /llamada no está confirmada/i);
   assert.match(translateForLocale('fr', 'releaseCritical.locationShareFailed'), /partager votre position/i);
   assert.match(translateForLocale('zh', 'releaseCritical.authCodeInvalid'), /验证码/);
+  assert.equal(releaseCriticalMessagesForLanguage('de'), releaseCriticalMessages.en);
 });
 
 test('release language gating keeps generated catalogs out of production and adds only RTL QA targets', () => {
@@ -296,6 +300,10 @@ test('Expo config derives native locale declarations from the language catalog',
     EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
     VERYLOVING_BUILD_PROFILE: 'production'
   }), false);
+  assert.equal(appConfig.showAllCatalogLanguagesEnabled({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'testflight'
+  }), true);
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
   assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
   assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);
@@ -316,6 +324,10 @@ test('language selector persists before publishing and visibly marks the current
   assert.match(selector, /const selected = item\.code === languagePreference/);
   assert.match(selector, /accessibilityState=\{\{ checked: selected/);
   assert.match(selector, /selected \? <Ionicons name="checkmark-circle"/);
+  assert.match(selector, /<FlatList/);
+  assert.match(selector, /initialNumToRender=\{24\}/);
+  assert.match(selector, /filterLanguageOptions/);
+  assert.match(selector, /usesEnglishReleaseCriticalFallback/);
   assert.match(i18nContext, /const locale = resolveLanguage\(languagePreference, locales\)/);
   assert.match(i18nContext, /await updateSettings\(\{ language \}\)/);
 
@@ -354,7 +366,7 @@ test('TestFlight RTL runtime resolves Arabic and Hebrew with localized critical 
   assert.match(result.copy, /[\u0600-\u06FF]/);
 });
 
-test('development catalog audit mode exposes all complete catalogs and switches a restored locale', () => {
+test('development catalog audit mode exposes all base catalogs and switches a restored locale', () => {
   const probe = spawnSync(process.execPath, [
     '--require',
     '@babel/register',
@@ -380,15 +392,29 @@ test('development catalog audit mode exposes all complete catalogs and switches 
   assert.equal(result.copy, 'Konto erstellen');
 });
 
-test('release runtime ignores the full-catalog flag even when RTL QA remains enabled', () => {
+test('signed full-catalog QA runtime exposes 155 locales without raw critical missing keys', () => {
   const probe = spawnSync(process.execPath, [
     '--require',
     '@babel/register',
     '-e',
-    `global.__DEV__ = false; const core = require('./src/i18n/core'); process.stdout.write(JSON.stringify({
-      supported: [...core.supportedLanguages].sort(),
+    `global.__DEV__ = false; const core = require('./src/i18n/core'); const { DEFAULT_SETTINGS, mergeSettings } = require('./src/services/settings-store'); const referenceKeys = core.getTranslationKeys(core.translations.en); process.stdout.write(JSON.stringify({
+      count: core.supportedLanguages.length,
+      options: core.languageOptions.length,
       german: core.resolveLanguage('de-DE'),
-      copy: core.translateForLocale('de', 'auth.createAccount')
+      portuguese: core.translateForLocale('pt-BR', 'auth.createAccount'),
+      russian: core.translateForLocale('ru-RU', 'auth.createAccount'),
+      urdu: core.resolveLanguage('ur-PK'),
+      urduRTL: core.isRTLLanguage(core.resolveLanguage('ur-PK')),
+      unsupported: core.resolveLanguage('ae-AF'),
+      germanCopy: core.translateForLocale('de', 'auth.createAccount'),
+      criticalCopy: core.translateForLocale('de', 'releaseCritical.authNetwork'),
+      englishCriticalCopy: core.translateForLocale('en', 'releaseCritical.authNetwork'),
+      fallbackCount: core.releaseCriticalFallbackLanguages.length,
+      qaMarkers: core.languageOptions.filter((option) => option.usesEnglishReleaseCriticalFallback).length,
+      emptySearchCount: core.filterLanguageOptions(core.languageOptions, '').length,
+      searchMatches: Object.fromEntries(['German', 'Portuguese', 'Russian', 'اردو'].map((query) => [query, core.filterLanguageOptions(core.languageOptions, query).map((option) => option.code)])),
+      exactEffectiveSchema: core.supportedLanguages.every((code) => JSON.stringify(core.getTranslationKeys(core.translations[code])) === JSON.stringify(referenceKeys)),
+      persisted: mergeSettings(DEFAULT_SETTINGS, { language: 'de' }).language
     }));`
   ], {
     cwd: process.cwd(),
@@ -402,7 +428,24 @@ test('release runtime ignores the full-catalog flag even when RTL QA remains ena
   });
   assert.equal(probe.status, 0, probe.stderr);
   const result = JSON.parse(probe.stdout);
-  assert.deepEqual(result.supported, ['ar', 'en', 'es', 'fr', 'he', 'zh']);
-  assert.equal(result.german, 'en');
-  assert.equal(result.copy, 'Create account');
+  assert.equal(result.count, 155);
+  assert.equal(result.options, 156);
+  assert.equal(result.german, 'de');
+  assert.equal(result.portuguese, 'Criar conta');
+  assert.equal(result.russian, 'Создать аккаунт');
+  assert.equal(result.urdu, 'ur');
+  assert.equal(result.urduRTL, true);
+  assert.equal(result.unsupported, 'en');
+  assert.equal(result.germanCopy, 'Konto erstellen');
+  assert.equal(result.criticalCopy, result.englishCriticalCopy);
+  assert.doesNotMatch(result.criticalCopy, /\[missing .* translation\]/);
+  assert.equal(result.fallbackCount, 149);
+  assert.equal(result.qaMarkers, 149);
+  assert.equal(result.emptySearchCount, 156);
+  assert.ok(result.searchMatches.German.includes('de'));
+  assert.ok(result.searchMatches.Portuguese.includes('pt'));
+  assert.ok(result.searchMatches.Russian.includes('ru'));
+  assert.ok(result.searchMatches['اردو'].includes('ur'));
+  assert.equal(result.exactEffectiveSchema, true);
+  assert.equal(result.persisted, 'de');
 });

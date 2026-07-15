@@ -5,7 +5,7 @@ const { resolve } = require('node:path');
 const { URL } = require('node:url');
 
 const PROJECT_ROOT = resolve(__dirname, '..');
-const VALID_PROFILES = new Set(['development', 'preview', 'production']);
+const VALID_PROFILES = new Set(['development', 'preview', 'production', 'testflight']);
 const BOOLEAN_VARIABLES = new Set([
   'EXPO_PUBLIC_PHONE_AUTH_ENABLED',
   'EXPO_PUBLIC_HUME_CLM_ENABLED',
@@ -146,8 +146,9 @@ function makeResult(name, level, message) {
 
 function validateEnvironment(env, { profile = 'development', fileEnvironment = {} } = {}) {
   const results = [];
-  const production = profile === 'production';
+  const production = profile === 'production' || profile === 'testflight';
   const preview = profile === 'preview';
+  const fullCatalogLanguagesAllowed = profile === 'development' || profile === 'testflight';
   const remoteEASBuild = env.EAS_BUILD === '1' || env.EAS_BUILD === 'true';
   const strictTransport = production || preview;
   const required = new Map();
@@ -261,8 +262,8 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
       continue;
     }
 
-    if (name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES' && (production || preview) && enabled(env, name)) {
-      results.push(makeResult(name, 'error', 'must be false outside development; unreviewed catalogs are audit-only'));
+    if (name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES' && !fullCatalogLanguagesAllowed && enabled(env, name)) {
+      results.push(makeResult(name, 'error', 'must be false outside development or the dedicated TestFlight catalog-QA profile'));
       continue;
     }
 
@@ -341,7 +342,7 @@ function parseArguments(argv) {
   }
   if (!options.file) throw new Error('--file requires a path');
   if (options.profile && !VALID_PROFILES.has(options.profile)) {
-    throw new Error('--profile must be development, preview, or production');
+    throw new Error('--profile must be development, preview, production, or testflight');
   }
   return options;
 }
@@ -387,7 +388,7 @@ function renderReport({ results, profile, filePath, fileFound, color = true }) {
 
 function usage() {
   return [
-    'Usage: npm run validate-env -- [--file <path>] [--profile development|preview|production] [--no-color]',
+    'Usage: npm run validate-env -- [--file <path>] [--profile development|preview|production|testflight] [--no-color]',
     '',
     'The environment file is loaded first and explicit process variables override it.',
     'Only variable names and validation states are printed; values are never printed.'
@@ -413,7 +414,7 @@ function run(argv = process.argv.slice(2), processEnvironment = process.env) {
   const environment = { ...fileEnvironment, ...processEnvironment };
   const profile = options.profile || environment.VERYLOVING_BUILD_PROFILE || 'development';
   if (!VALID_PROFILES.has(profile)) {
-    process.stderr.write('Effective profile must be development, preview, or production.\n');
+    process.stderr.write('Effective profile must be development, preview, production, or testflight.\n');
     return 2;
   }
   environment.VERYLOVING_BUILD_PROFILE = profile;

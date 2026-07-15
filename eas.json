@@ -48,7 +48,7 @@
       "distribution": "store",
       "environment": "production",
       "env": {
-        "VERYLOVING_BUILD_PROFILE": "production",
+        "VERYLOVING_BUILD_PROFILE": "testflight",
         "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
         "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "false",
         "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
@@ -57,10 +57,20 @@
       "ios": {
         "simulator": false
       }
+    },
+    "testflight-full-catalog": {
+      "extends": "testflight",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "testflight",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "true",
+        "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
+      }
     }
   },
   "submit": {
     "production": {},
-    "testflight": {}
+    "testflight": {},
+    "testflight-full-catalog": {}
   }
 }

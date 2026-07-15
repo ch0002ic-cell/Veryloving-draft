@@ -1,16 +1,18 @@
 const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
 const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
+const FULL_CATALOG_LANGUAGE_PROFILES = new Set(['development', 'testflight']);
+const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight']);
 
-function isDevelopmentLanguageCatalogEnvironment(env = process.env) {
+function isFullCatalogLanguageEnvironment(env = process.env) {
   const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
   return typeof requestedProfile === 'string'
-    && requestedProfile.trim() === 'development';
+    && FULL_CATALOG_LANGUAGE_PROFILES.has(requestedProfile.trim());
 }
 
 function showAllCatalogLanguagesEnabled(env = process.env) {
   return env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true'
-    && isDevelopmentLanguageCatalogEnvironment(env);
+    && isFullCatalogLanguageEnvironment(env);
 }
 
 function selectSupportedLocales(env = process.env) {
@@ -70,7 +72,10 @@ function createEnvironmentDiagnostics(env = {}) {
     ? requestedProfile.trim()
     : 'local';
   const easBuild = env.EAS_BUILD === 'true' || env.EAS_BUILD === '1';
-  const production = buildProfile === 'production';
+  // TestFlight artifacts exercise the same credentials, transports, provider
+  // paths, and hardware contracts as App Store candidates. Their optional
+  // catalog-QA surface must not weaken any production readiness requirement.
+  const production = PRODUCTION_LIKE_PROFILES.has(buildProfile);
   const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
@@ -138,7 +143,7 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
   if (production && offlineModeEnabled) invalid.push('offline_mode_must_be_disabled');
   if (showAllLanguagesRequested && !showAllLanguagesEnabled) {
-    invalid.push('all_languages_development_only');
+    invalid.push('all_languages_not_allowed_for_profile');
   }
   if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
     invalid.push('public_hume_api_key_must_not_be_set');
@@ -207,10 +212,14 @@ function createEnvironmentDiagnostics(env = {}) {
 }
 
 function assertEnvironmentReady(diagnostics) {
-  if (!diagnostics.production || diagnostics.context !== 'eas-build') return;
-  const blockers = [...diagnostics.missingRequired.map((key) => `missing_${key}`), ...diagnostics.invalid];
-  if (blockers.length) {
-    throw new Error(`[VeryLoving config] Production configuration is invalid: ${blockers.join(', ')}`);
+  if (diagnostics.production && diagnostics.context === 'eas-build') {
+    const blockers = [...diagnostics.missingRequired.map((key) => `missing_${key}`), ...diagnostics.invalid];
+    if (blockers.length) {
+      throw new Error(`[VeryLoving config] Production configuration is invalid: ${blockers.join(', ')}`);
+    }
+  }
+  if (diagnostics.invalid.includes('all_languages_not_allowed_for_profile')) {
+    throw new Error('[VeryLoving config] Full language catalogs are not allowed for this build profile.');
   }
 }
 
@@ -589,5 +598,5 @@ module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;
 module.exports.assertEnvironmentReady = assertEnvironmentReady;
 module.exports.reversedGoogleClientId = reversedGoogleClientId;
 module.exports.selectSupportedLocales = selectSupportedLocales;
-module.exports.isDevelopmentLanguageCatalogEnvironment = isDevelopmentLanguageCatalogEnvironment;
+module.exports.isFullCatalogLanguageEnvironment = isFullCatalogLanguageEnvironment;
 module.exports.showAllCatalogLanguagesEnabled = showAllCatalogLanguagesEnabled;

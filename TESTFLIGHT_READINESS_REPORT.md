@@ -20,7 +20,7 @@ Environment available for this audit: iPhone 17 Pro simulator (iOS 26.5), static
 | Rejected/restored sessions lacked a specific recovery message. | Session invalidation changed route state without durable user-facing error semantics. | Store a localized session-expired translation key and render it reactively. |
 | Google logout could race a rapid re-login. | Native provider sign-out ran unawaited after local invalidation. | Await native sign-out behind a five-second bound while keeping local invalidation authoritative. |
 | Some visible errors stayed in the old language after switching locale. | Screens stored already-translated text in component state. | Store stable translation keys for onboarding, permission, device, auth, and SOS feedback, then translate during render. Added locale-reactivity tests. |
-| The picker appeared to have lost 149 of the 155 complete catalogs. | Commit `94a7c71` intentionally quality-gated release selection to reviewed `en/es/fr/zh`, plus `ar/he` in the RTL-QA profile; the catalogs were not deleted. | Add `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` as a fail-closed development catalog-audit switch. Runtime `__DEV__`, explicit native build-profile checks, environment validation, and pinned release-profile values prevent it from changing preview, TestFlight, or production. |
+| The picker appeared to have lost 149 of the 155 JSON catalogs. | Commit `94a7c71` intentionally quality-gated release selection to reviewed `en/es/fr/zh`, plus `ar/he` in the base RTL-QA profile; the catalogs were not deleted. | Keep the base `testflight` profile at six and production at four, while adding separately named `testflight-full-catalog` metadata that enables all 155 in a signed audit build without code changes. The audit profile is production-like for readiness, marks fallback-affected picker rows/triggers `QA`, and is not a translation-approval artifact. |
 | Changing language could retrigger onboarding-completion persistence. | The completion callback depended on the translation function. | Remove the locale dependency and keep translated errors at the render boundary. |
 | A privacy export could silently omit contacts or Saved Places. | Protected-store read failures were converted to empty arrays. | Fail the export visibly so the user can retry rather than receive an incomplete archive presented as complete. |
 | Local emergency contacts could be blocked by connected-delivery bookkeeping. | SOS idempotency preflight ran before the independent native dialer path and included unsynchronized local IDs. | Enable connected delivery only for valid synchronized IDs and run preflight in parallel with the dialer fallback. Added local-only and synchronous-failure coverage. |
@@ -39,7 +39,7 @@ Status meanings:
 
 | Flow | Status | Evidence from this audit | Still required on TestFlight / production-like setup |
 | --- | --- | --- | --- |
-| Language switcher | **PASS (simulator/source); PARTIAL — EXTERNAL** | English showed the selected checkmark; selecting Spanish immediately translated Settings; terminating and relaunching restored Spanish on onboarding. The repository still has 155 complete catalogs; tests prove development audit mode resolves German while release mode remains restricted to the expected six TestFlight locales. System fallback, supported-locale gating, RTL direction, numeric LTR isolation, and reload-loop guards pass tests. Arabic/RTL had already passed the preceding simulator verification for this source line. | Repeat immediate update, force-quit persistence, Arabic/Hebrew mirroring, notification copy, and LTR return on the exact signed build; obtain native-speaker approval. Confirm the candidate contains exactly System default plus `en/es/fr/zh/ar/he`, with full-catalog audit mode off. |
+| Language switcher | **PASS (recorded simulator/source); PARTIAL — EXTERNAL** | English showed the selected checkmark; selecting Spanish immediately translated Settings; terminating and relaunching restored Spanish on onboarding. The repository has 155 JSON catalogs with 319 complete base keys each. The base TestFlight policy exposes six; the separately named full-catalog policy exposes all 155 for audit. System fallback, RTL direction, numeric LTR isolation, and reload-loop guards have deterministic coverage. | On base `testflight`, confirm exactly System plus `en/es/fr/zh/ar/he` and repeat signed-device persistence/RTL tests. On `testflight-full-catalog`, confirm 156 rows, affected picker/trigger `QA` badges, German/Portuguese/Russian switching, additional RTL such as Urdu, and the explicit English fallback for the 34 critical keys. The 149 additional catalogs still need 5,066 translated critical values and native-speaker review. |
 | Authentication | **PARTIAL — EXTERNAL** | Protected routing, token-envelope validation, refresh/offline/rejection behavior, phone challenge resume, account isolation, logout, and safe errors pass. Simulator demo is correctly volatile and tokenless. | Apple/Google/Twilio success, cancel, logout, Keychain persistence, provider credential state, refresh revocation/reuse, abuse controls, and two-account tests with production credentials. |
 | Onboarding | **PASS (simulator/source); PARTIAL — EXTERNAL** | Onboarding rendered and navigation/progress/permission state machines pass, including process-safe resume and no locale-triggered completion write. | Native location/notification prompts, deny/revoke/Settings recovery, APNs scheduling, and clean-install/upgrade tests on a signed device. |
 | Navigation/routing | **PASS (simulator/source); PARTIAL — EXTERNAL** | Protected stacks, Back recovery, stable account-bound restoration, unknown-route recovery, and custom-link allowlist tests pass. Home, Map, Settings, contacts, SOS, and Safety Call were navigated without a crash. | Universal/custom-link launch from other apps, swipe-back behavior, process restoration, and iPad split-view navigation on the exact TestFlight build. |
@@ -63,16 +63,19 @@ Status meanings:
 
 ## Deterministic Release Gates
 
-| Gate | Result |
+These are the current source and bundle results. They do not claim a signed `testflight-full-catalog` archive or physical-device run.
+
+| Gate | Recorded result |
 | --- | --- |
-| `npm test` | **PASS — 339/339, 0 failed, 0 skipped** |
+| `npm test` | **PASS — 340/340, 0 failed, 0 skipped** |
 | `npm run lint` | **PASS** |
 | `git diff --check` | **PASS** |
 | `npx expo-doctor` | **PASS — 20/20** |
 | `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=true EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false npx expo export --platform ios` | **PASS** |
 | `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=true EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false npx expo export --platform android` | **PASS** |
-| Full-catalog development runtime/native probes | **PASS — 155 translations, 156 picker rows including System default, 155 iOS and Android native locale declarations; German and Urdu RTL samples resolve correctly** |
-| Full-catalog iOS/Android development exports | **PASS — `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true`, explicit development profile, dev bundles** |
+| Full-catalog release-runtime/native probes | **PASS — `__DEV__=false`, 155 base catalogs, 156 picker rows including System default, 155 iOS and Android native locale declarations; German/Portuguese/Russian and Urdu RTL samples resolve correctly** |
+| Full-catalog iOS/Android release exports | **PASS — production-mode bundles with `VERYLOVING_BUILD_PROFILE=testflight` and `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true`; iOS 2,575 modules/8.7 MB, Android 2,658 modules/8.9 MB** |
+| `testflight-full-catalog` signed archive and physical install | **BLOCKED — EXTERNAL; no signed-device or linguistic PASS is claimed** |
 | `npm run validate-env -- --profile production --no-color` with full-catalog mode explicitly off | **FAIL — 13 OK, 2 warnings, 9 unrelated release errors** |
 | Signed EAS/TestFlight archive and physical install | **BLOCKED — EXTERNAL** |
 
@@ -91,6 +94,6 @@ The optional branded Hume voice ID and RTL-QA flag also warn locally. EAS may ho
 ## Required Handoff Action
 
 1. An authorized Expo project owner supplies the production variables above and proves the backend/provider/hardware dependencies are actually ready.
-2. Build and upload the exact commit with `eas build --platform ios --profile testflight` (or the repository’s approved production/TestFlight profile).
-3. Grace runs [TESTFLIGHT_LANGUAGE_SWITCHER.md](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, then [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md), recording the exact commit, build number, devices, outcomes, and blockers.
+2. Build the exact commit with `eas build --platform ios --profile testflight` for the six-locale base candidate. When the 155-catalog layout audit is requested, create a distinct build with `eas build --platform ios --profile testflight-full-catalog`; never substitute one profile's result for the other.
+3. Grace runs [TESTFLIGHT_LANGUAGE_SWITCHER.md](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, then [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md), recording the exact commit, profile, build number, devices, outcomes, picker/trigger `QA` badges, fallback observations, and blockers.
 4. Keep the decision at **NO-GO** until the production validator passes and every applicable P1 signed-device/external gate has named evidence.

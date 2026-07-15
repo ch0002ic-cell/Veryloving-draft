@@ -15,10 +15,12 @@ A local iOS 26.5 Simulator debug target compiled, ad-hoc signed, installed, and 
 
 Automated evidence at this audit point:
 
-| Gate | Result |
+The following table records the current source and release-export baseline. It does not claim that a signed full-catalog profile has been built or physically tested.
+
+| Gate | Recorded result |
 | --- | --- |
 | ESLint | Pass |
-| Deterministic tests | **339/339 pass; 0 skipped or failed** |
+| Deterministic tests | **340/340 pass; 0 skipped or failed** |
 | `git diff --check` | Pass |
 | Expo Doctor | **20/20** |
 | iOS JavaScript production export | Pass through `npm run validate` |
@@ -31,7 +33,7 @@ The status column names the evidence layer. **PASS (source/automated)** means th
 
 | Area | Status | What was verified / what remains |
 | --- | --- | --- |
-| Language switcher | **PASS (source/automated); REQUIRES TESTFLIGHT** | Durable-before-publish selection, immediate same-direction rendering, checked/radio state, system fallback, release locale gate, reminder localization, generation-safe LTR/RTL reload ordering, and restart hydration are covered. Physical process reload, notification text, mirroring, and screenshots remain open. |
+| Language switcher | **PASS (source/automated); REQUIRES TESTFLIGHT** | Durable-before-publish selection, immediate same-direction rendering, checked/radio state, system fallback, profile-specific locale gates, reminder localization, generation-safe LTR/RTL reload ordering, and restart hydration are covered. The base profile has six catalogs; the separately marked full-catalog profile has 155 for layout audit. Physical process reload, search/scroll behavior, notification text, mirroring, and screenshots remain open. |
 | Navigation and routing | **PASS (source/automated); REQUIRES TESTFLIGHT** | Public/protected stacks, ordered auth/onboarding resume, account-bound stable restoration, back/home fallbacks, and direct operating-system URL sanitization pass. Signed universal/custom links and gesture/hardware Back behavior remain device checks. |
 | Global state | **PASS (source/automated); REQUIRES TESTFLIGHT** | Auth, settings, contacts, and device hydration are bounded, serialized, account-checked, and persist-before-publish. Signed Keychain lifecycle and provider refresh across process death remain open. |
 | Data persistence | **PASS for implemented baseline; P1 gaps remain** | Preferences, history, contacts including edit, Saved Places, queues, SOS/navigation resilience, and device metadata have persistence/cleanup tests. Remote contact edit needs the current backend deployment; plaintext AsyncStorage content still has an at-rest-encryption gate. |
@@ -39,7 +41,7 @@ The status column names the evidence layer. **PASS (source/automated)** means th
 | Components/accessibility | **PASS (source/automated); REQUIRES TESTFLIGHT** | Tokens, contrast, programmatic labels, live status, selected state, map semantics, decorative-image hiding, safe-area modals, and back controls pass. VoiceOver, Dynamic Type, hit targets, rotation, and split view require physical QA. |
 | Permissions | **PASS for active source/config; REQUIRES TESTFLIGHT** | Location, notification, microphone, and Bluetooth rationales plus denial/Settings recovery are implemented; unused camera/photo permission declarations were removed. Native prompts, revocation, notification delivery, and background behavior require a signed device. |
 | Background/foreground | **PARTIAL; REQUIRES EXTERNAL HARDWARE/SERVICES** | App-state rechecks, bounded reconnect/queue behavior, cleanup, and ownership guards pass. Audio routes, lock screen, APNs, Hume, and physical VL01 reconnect/memory behavior remain unproven. |
-| RTL | **PASS (source/automated); REQUIRES TESTFLIGHT/NATIVE SPEAKERS** | Arabic/Hebrew TestFlight-only exposure, RTL metadata, target-locale persistence, reminder ordering, reload-loop guards, and LTR return logic pass. Visual/gesture correctness and linguistic safety approval remain open. |
+| RTL | **PASS (source/automated); REQUIRES TESTFLIGHT/NATIVE SPEAKERS** | Arabic/Hebrew base-TestFlight exposure, all 11 available RTL catalogs in the separately marked full-catalog profile, target-locale persistence, reminder ordering, reload-loop guards, and LTR return logic are covered. Visual/gesture correctness and linguistic safety approval remain open. |
 | Developer-only isolation | **PASS (source/automated)** | Demo auth requires development plus a confirmed iOS Simulator and is tokenless/volatile; store danger-zone fixtures resolve to none; production config rejects forced offline mode/public Hume secrets; camera/image-picker stubs are removed. Shipped offline responses and cached data are intentional production-safe fallbacks, not test doubles. |
 
 ## UI Framework Overview
@@ -132,9 +134,9 @@ Conversation history is stored and retrievable, and contacts/safety settings res
 ### Internationalization and RTL
 
 - Production runtime/native declarations expose only reviewed `en/es/fr/zh`.
-- The `testflight` profile explicitly adds only `ar/he` for signed RTL QA. Both remain `reviewRequired` until native-speaker approval.
-- All 155 catalog files remain for translation parity/review. A fail-closed `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` switch adds the 149 catalogs beyond TestFlight's six only in a development runtime/profile; preview, TestFlight, and production keep them nonselectable.
-- Runtime per-string fallback remains disabled. A release-critical six-locale overlay covers auth, location/map/share, SOS, BLE, voice, and Saved Places. Reminder strings continue to come from the complete locale catalogs.
+- The base `testflight` profile explicitly adds only `ar/he` for signed RTL QA. Both remain `reviewRequired` until native-speaker approval.
+- All 155 JSON catalogs contain 319 complete base keys. `testflight-full-catalog` is a separately named, production-like signed layout/coverage audit that enables all 155 without a code change; preview, base TestFlight, and production remain restricted.
+- General per-string fallback remains disabled. A 34-key release-critical overlay is translated only for `en/es/fr/zh/ar/he`. The other 149 catalogs therefore lack 5,066 translated critical values; full mode deliberately supplies English for that narrow safety overlay and marks affected language-picker rows/triggers `QA`. This is not translation-complete evidence.
 - Same-direction language selection updates mounted UI after durable persistence. Direction changes create a generation token before settings publication, schedule target-locale reminder copy with bounded cleanup, and allow one native `I18nManager` reload only after the current transition is safe. Superseded or uncertain native work defers automatic reload instead of leaving a stale notification schedule or reload loop.
 - Traditional Chinese device tags do not silently receive Simplified Chinese; they resolve to explicit English until a reviewed Traditional catalog exists.
 
@@ -147,7 +149,7 @@ Signed TestFlight evidence is still required for actual process reload, visual m
 - Obsolete iOS Bluetooth/location permission strings were removed. iOS `UIBackgroundModes` are contributed by the active audio/BLE plugins; Android audio foreground-service permissions remain explicitly declared for the active feature.
 - Android blocks legacy broad external-storage permissions and keeps only active notification/location/BLE/audio requirements.
 - Production config now fails closed if forced offline mode or a public Hume API key is present.
-- The dedicated TestFlight profile uses store distribution, the production EAS environment, a real-device archive, and auto-incremented build numbers.
+- Both TestFlight profiles use store distribution, production-like readiness checks, real-device archives, and auto-incremented build numbers. Only `testflight-full-catalog` expands the catalog surface, and affected language choices remain marked `QA` in the picker/trigger.
 - Demo authentication is available only when `__DEV__` is true, the host is not Expo Go, and native metadata confirms an iOS Simulator; it is volatile, tokenless, and absent from TestFlight. Visual-development danger-zone fixtures are likewise compiled to an empty list in store builds. The bundled offline companion is an explicitly labeled product fallback, not a simulator mock.
 
 ## TestFlight Acceptance Plan
@@ -161,7 +163,7 @@ The exact archive build number must pass every applicable row; results from anot
 | Authentication | Real Apple, Google, and SMS success/cancel/error/expiry/revocation paths plus sign-out and two-account switching. |
 | Preferences | Language, voice, reminder, companion visibility, offline preference, contacts, Saved Places, and paired-device state survive the intended lifecycle. |
 | Permissions | Allow, deny, restricted/unavailable, revoke in Settings, return to foreground, and retry for notification/location/microphone/Bluetooth. No camera/photo prompt. |
-| RTL/responsive | `en/es/fr/zh/ar/he`, repeated LTR/RTL relaunch, iPhone SE-class, current Pro-class, iPad portrait/landscape/split view, Dynamic Type, VoiceOver, keyboard. |
+| RTL/responsive | Base profile: `en/es/fr/zh/ar/he` with repeated LTR/RTL relaunch. Full-catalog profile: 156 picker rows; German/Portuguese/Russian plus representative additional RTL such as Urdu; affected picker/trigger `QA` badges and expected English critical overlay. Both: iPhone SE-class, current Pro-class, iPad portrait/landscape/split view, Dynamic Type, VoiceOver, keyboard. |
 | Safety/map/privacy | Fresh/stale location, Mapbox/offline cache, static Quick Share wording, duplicate SOS, dialer fallback, backend outage, partial export, failed/successful remote deletion, no false delivery copy. |
 | Voice/BLE/background | Hume live/offline/reconnect/queue, audio interruptions/routes/lock screen, physical VL01 pair/events/reconnect/loss, foreground/background and repeated cleanup. |
 | Performance | Long map/history lists, rapid navigation, repeated calls/pairing, memory pressure, render profiling, crash/ANR and network-duplication review. |
@@ -186,6 +188,6 @@ The exact archive build number must pass every applicable row; results from anot
 
 ## Handoff Decision
 
-The next action is for an authorized project owner to build the exact committed source with `eas build --platform ios --profile testflight`, upload that archive to TestFlight, run [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, and then execute [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md) against the exact signed build number. The current EAS account is authenticated but lacks read/build access to the configured project, and no physical iPhone is connected; those external facts block signed-device execution here. Attach the redacted build/access record and assign its owner rather than substituting Expo Go or simulator evidence.
+The next action is for an authorized project owner to build the exact committed source with `eas build --platform ios --profile testflight` for the six-locale candidate and, when requested, `eas build --platform ios --profile testflight-full-catalog` for the separately identified 155-catalog audit. Upload and test each artifact under its own build record, run [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, and then execute [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md). The current EAS account is authenticated but lacks read/build access to the configured project, and no physical iPhone is connected; those external facts block signed-device execution here. Attach the redacted build/access record and assign its owner rather than substituting Expo Go or simulator evidence.
 
 Grace can treat the UI framework as ready for a TestFlight candidate build, but not as a released or fully verified safety product. The decision remains **NO-GO** until every P1 row has a named owner, due date, release-SHA/build-number-specific evidence, and approval in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).

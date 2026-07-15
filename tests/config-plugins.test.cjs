@@ -250,7 +250,7 @@ test('Expo environment diagnostics identify unsafe production configuration with
   assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
   assert.ok(diagnostics.invalid.includes('public_hume_api_key_must_not_be_set'));
   assert.ok(diagnostics.invalid.includes('offline_mode_must_be_disabled'));
-  assert.ok(diagnostics.invalid.includes('all_languages_development_only'));
+  assert.ok(diagnostics.invalid.includes('all_languages_not_allowed_for_profile'));
 });
 
 test('remote production builds fail closed on missing or unsafe configuration', () => {
@@ -319,13 +319,46 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     /Production configuration is invalid/
   );
 
-  const unreviewedLanguages = createAppConfig.createEnvironmentDiagnostics({
+  const unauthorizedCatalogProfile = createAppConfig.createEnvironmentDiagnostics({
     ...safeEnvironment,
     EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
   });
-  assert.ok(unreviewedLanguages.invalid.includes('all_languages_development_only'));
+  assert.ok(unauthorizedCatalogProfile.invalid.includes('all_languages_not_allowed_for_profile'));
   assert.throws(
-    () => createAppConfig.assertEnvironmentReady(unreviewedLanguages),
+    () => createAppConfig.assertEnvironmentReady(unauthorizedCatalogProfile),
+    /Production configuration is invalid/
+  );
+
+  const localUnauthorizedCatalogProfile = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EAS_BUILD: 'false',
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
+  });
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(localUnauthorizedCatalogProfile),
+    /Full language catalogs are not allowed/
+  );
+
+  const signedFullCatalogQA = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    VERYLOVING_BUILD_PROFILE: 'testflight',
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true'
+  });
+  assert.equal(signedFullCatalogQA.production, true);
+  assert.equal(signedFullCatalogQA.flags.showAllLanguagesEnabled, true);
+  assert.deepEqual(signedFullCatalogQA.missingRequired, []);
+  assert.deepEqual(signedFullCatalogQA.invalid, []);
+  assert.doesNotThrow(() => createAppConfig.assertEnvironmentReady(signedFullCatalogQA));
+
+  const incompleteTestFlight = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'testflight',
+    EAS_BUILD: 'true',
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
+  });
+  assert.equal(incompleteTestFlight.production, true);
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(incompleteTestFlight),
     /Production configuration is invalid/
   );
 });
@@ -377,8 +410,13 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.testflight.distribution, 'store');
   assert.equal(eas.build.testflight.autoIncrement, true);
   assert.equal(eas.build.testflight.ios.simulator, false);
-  assert.equal(eas.build.testflight.env.VERYLOVING_BUILD_PROFILE, 'production');
+  assert.equal(eas.build.testflight.env.VERYLOVING_BUILD_PROFILE, 'testflight');
   assert.equal(eas.build.testflight.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build.testflight.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
+  assert.equal(eas.build['testflight-full-catalog'].extends, 'testflight');
+  assert.equal(eas.build['testflight-full-catalog'].env.VERYLOVING_BUILD_PROFILE, 'testflight');
+  assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
+  assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'true');
   assert.deepEqual(eas.submit.testflight, {});
+  assert.deepEqual(eas.submit['testflight-full-catalog'], {});
 });

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useI18n } from '../context/I18nContext';
 import { colors, fonts, spacing } from '../constants/theme';
+import { filterLanguageOptions } from '../i18n/core';
 
 export function LanguageSelector({ onError }) {
   const { isRTL, languageOptions, languagePreference, setLanguage, t } = useI18n();
@@ -15,16 +16,14 @@ export function LanguageSelector({ onError }) {
   const languageLabel = (language) => language.code === 'system'
     ? t(language.translationKey)
     : language.nativeName;
-  const filteredLanguages = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase();
-    if (!normalized) return languageOptions;
-    return languageOptions.filter((language) => [
-      language.code,
-      language.nativeName,
-      language.englishName,
-      language.code === 'system' ? t(language.translationKey) : ''
-    ].filter(Boolean).some((value) => String(value).toLocaleLowerCase().includes(normalized)));
-  }, [languageOptions, query, t]);
+  const languageCodeLabel = (language) => [
+    language.code.toUpperCase(),
+    language.usesEnglishReleaseCriticalFallback ? 'QA' : null
+  ].filter(Boolean).join(' · ');
+  const filteredLanguages = useMemo(
+    () => filterLanguageOptions(languageOptions, query, t('languages.system')),
+    [languageOptions, query, t]
+  );
 
   useEffect(() => {
     if (!visible) setQuery('');
@@ -57,7 +56,7 @@ export function LanguageSelector({ onError }) {
       >
         <View style={styles.triggerCopy}>
           <Text style={[styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(selectedLanguage)}</Text>
-          {selectedLanguage.code !== 'system' ? <Text style={[styles.code, isRTL && styles.rtlText]}>{selectedLanguage.code.toUpperCase()}</Text> : null}
+          {selectedLanguage.code !== 'system' ? <Text style={[styles.code, isRTL && styles.rtlText]}>{languageCodeLabel(selectedLanguage)}</Text> : null}
         </View>
         {savingLanguage
           ? <ActivityIndicator size="small" color={colors.orangeAccessible} />
@@ -111,7 +110,12 @@ export function LanguageSelector({ onError }) {
                   >
                     <View style={styles.languageCopy}>
                       <Text style={[styles.label, selected && styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(item)}</Text>
-                      {item.englishName && item.englishName !== item.nativeName ? <Text style={[styles.englishName, isRTL && styles.rtlText]}>{item.englishName}</Text> : null}
+                      {(item.englishName && item.englishName !== item.nativeName) || item.usesEnglishReleaseCriticalFallback ? (
+                        <View style={[styles.metadataRow, isRTL && styles.rtlRow]}>
+                          {item.englishName && item.englishName !== item.nativeName ? <Text style={[styles.englishName, isRTL && styles.rtlText]}>{item.englishName}</Text> : null}
+                          {item.usesEnglishReleaseCriticalFallback ? <Text style={styles.qaBadge}>QA</Text> : null}
+                        </View>
+                      ) : null}
                     </View>
                     {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.greenAccessible} /> : null}
                   </Pressable>
@@ -139,10 +143,12 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, minWidth: 0, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
   row: { minHeight: 56, paddingHorizontal: 20, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
   languageCopy: { flex: 1, minWidth: 0 },
+  metadataRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
   selected: { backgroundColor: '#F2F8F5' },
   label: { flex: 1, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
   selectedLabel: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 16 },
-  englishName: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12, marginTop: 2 },
+  englishName: { flexShrink: 1, fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12 },
+  qaBadge: { overflow: 'hidden', paddingHorizontal: 5, paddingVertical: 1, borderRadius: 4, backgroundColor: '#FFF1D6', fontFamily: fonts.semibold, color: colors.orangeAccessible, fontSize: 10 },
   empty: { padding: 32, fontFamily: fonts.regular, color: colors.inkSoft, textAlign: 'center' },
   pressed: { opacity: 0.65 }
 });

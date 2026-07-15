@@ -15,6 +15,7 @@ Current engineering handoff status: no physical iPhone is connected and the auth
 - Date/time and timezone:
 - Git commit SHA:
 - App version / TestFlight build number:
+- EAS language profile (`testflight` or `testflight-full-catalog`):
 - Backend deployment IDs:
 - Device model / iOS version:
 - Install type: clean / upgrade from build:
@@ -50,7 +51,7 @@ Test first on a clean install, then repeat the persistence steps after upgrading
 ### Availability and visual state
 
 - [ ] Open **Settings → Language**; the sheet opens without a blank frame, overlap, or clipped close button.
-- [ ] Confirm the TestFlight build offers exactly **System default, English, Spanish, French, Simplified Chinese, Arabic, and Hebrew**. Report any additional unreviewed locale as a release defect.
+- [ ] Confirm availability matches the recorded profile: base `testflight` has exactly **System default, English, Spanish, French, Simplified Chinese, Arabic, and Hebrew** (7 rows); `testflight-full-catalog` has System default plus all 155 catalogs (156 rows), with `QA` badges on the 149 fallback-affected rows. A mismatch is a profile/build defect.
 - [ ] The current preference has a visible green checkmark/selected row.
 - [ ] With VoiceOver, each language row is announced as a radio option and the current row is announced as checked.
 - [ ] Search finds a language by native name, English name, or code; a no-result query shows a localized empty state.
@@ -65,6 +66,16 @@ Test first on a clean install, then repeat the persistence steps after upgrading
 - [ ] Select **Simplified Chinese** and repeat immediate update, checked state, navigation, and force-quit persistence.
 - [ ] Set **System default**, change the iPhone preferred language to Spanish/French/Chinese, terminate and relaunch, and verify the matching maintained interface is selected.
 - [ ] With System default and an unsupported or Traditional Chinese device locale, verify the app explicitly uses English rather than claiming an unavailable translation.
+
+### Full-catalog signed layout audit
+
+Run this subsection only when the recorded profile is `testflight-full-catalog`:
+
+- [ ] Search by code, English name, and native name for German/`de`, Portuguese/`pt`, Russian/`ru`, and Urdu/`ur`; results appear promptly and list scrolling remains responsive.
+- [ ] Select German, Portuguese, and Russian. Base app-owned UI updates immediately, the selected/checkmark state follows, each choice persists after force-quit, and the selected-language trigger reads the code plus `QA`.
+- [ ] Select Urdu or another additional RTL catalog. The app performs at most the intended direction reload, mirrors the UI, keeps numeric content readable, persists after relaunch, and shows `QA` on the selected-language trigger after returning to Settings.
+- [ ] Exercise auth, map/share, SOS, BLE, voice, contacts, and Saved Places errors. The 34 newer critical strings may intentionally appear in English for the 149 additional catalogs; no raw missing-key diagnostic is acceptable. Return to Settings and confirm the selected language remains marked `QA`.
+- [ ] Record this artifact as layout/coverage audit only. All 155 JSON catalogs contain 319 base keys, but 149 still require 34 translated `releaseCritical` values each (5,066 values total) plus native-speaker review.
 
 ### RTL TestFlight QA
 
@@ -85,6 +96,7 @@ Required language evidence:
 - [ ] Screenshot pair: the same representative LTR and RTL screen.
 - [ ] Screen recording: English → Arabic reload → force-quit/relaunch → English.
 - [ ] Redacted device log excerpt for the same build showing no fatal/unhandled/reload loop; do not include tokens, phone numbers, or precise location.
+- [ ] For a full-catalog build: screenshots of the picker/trigger `QA` badge with one additional LTR locale and one additional RTL locale, plus the English critical-copy fallback where exercised.
 
 ## 2. Navigation and Routing
 
@@ -157,7 +169,7 @@ Required language evidence:
 - [ ] Every FAIL has a linked defect, owner, severity, target build, and retest result.
 - [ ] Every BLOCKED — EXTERNAL has a named owner, missing resource, due date, and exact closure evidence.
 - [ ] Language screenshots/video and native-speaker status are attached.
-- [ ] The exact TestFlight build passes clean install, previous-build upgrade, force-quit/relaunch, permission denial/recovery, two-account isolation, and the supported device matrix.
+- [ ] The exact TestFlight build and recorded language profile pass clean install, previous-build upgrade, force-quit/relaunch, permission denial/recovery, two-account isolation, and the supported device matrix; evidence from the other language profile is not substituted.
 - [ ] Backend, auth/SMS, Hume/audio, SOS delivery, APNs, Mapbox, privacy lifecycle, VL01, security, observability, rollback, legal/privacy, and store-review P1 gates in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) are closed.
 
 Final decision:

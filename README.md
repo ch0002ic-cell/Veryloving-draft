@@ -2,9 +2,9 @@
 
 VeryLoving is an Expo Router safety companion with onboarding, location and Mapbox safety views, NorthStar BLE jewelry, emergency contacts and SOS flows, a clearly labeled Friends empty/planned surface, and Hume EVI voice conversations with local history and offline fallback.
 
-The release interface exposes only reviewed English, Spanish, French, and Simplified Chinese catalogs. The dedicated TestFlight QA profile additionally exposes Arabic and Hebrew so signed-device RTL behavior can be reviewed before either locale is approved for a public release. The repository retains 155 structurally complete catalogs as translation work products; the other 149 are excluded from release builds but can be inspected with a fail-closed development-only flag. All 183 assigned ISO 639-1 codes remain represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for the quality gate and audit-mode command, [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md) for the engineering audit, [TESTFLIGHT_READINESS_REPORT.md](./TESTFLIGHT_READINESS_REPORT.md) for the final code/simulator decision, [TESTFLIGHT_LANGUAGE_SWITCHER.md](./TESTFLIGHT_LANGUAGE_SWITCHER.md) for Grace's priority language test, and [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md) for the full device acceptance script.
+The public production interface exposes reviewed English, Spanish, French, and Simplified Chinese. The base `testflight` profile additionally exposes Arabic and Hebrew for signed RTL QA. A separate signed `testflight-full-catalog` profile exposes all 155 JSON catalogs for layout, search, persistence, and RTL auditing without a code change. Every JSON contains the same 319 complete base keys, but the 149 additional catalogs do not yet have translated values for 34 newer `releaseCritical` strings (5,066 values total); full mode therefore uses an explicit English safety fallback and labels affected choices `QA` in the language picker/trigger, so it is not translation-complete acceptance. All 183 assigned ISO 639-1 codes remain represented, while 28 intentionally have no catalog. See [GLOBALIZATION.md](./GLOBALIZATION.md) for the quality gate and commands, [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md) for the engineering audit, [TESTFLIGHT_READINESS_REPORT.md](./TESTFLIGHT_READINESS_REPORT.md) for the final code/simulator decision, [TESTFLIGHT_LANGUAGE_SWITCHER.md](./TESTFLIGHT_LANGUAGE_SWITCHER.md) for Grace's priority language test, and [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md) for the full device acceptance script.
 
-Current handoff status (15 July 2026): the code/simulator baseline passes 339/339 tests, ESLint, `git diff --check`, Expo Doctor 20/20, and both iOS/Android exports. Spanish updates immediately and persists across a simulator cold restart; the current-language indicator, supported-locale gate, system fallback, RTL contracts, 155-catalog development audit mode, and release fail-closed behavior are covered. TestFlight remains **NO-GO / BLOCKED — EXTERNAL**: no physical iPhone is connected, this Expo account lacks access to the configured EAS project, and the locally readable production profile has nine validation errors for disabled auth/voice/safety/VL01 readiness and missing approved VL01 UUIDs. An authorized owner must configure and build the exact commit, then Grace must complete the signed-device procedures; simulator evidence is not presented as a substitute.
+Current handoff status (15 July 2026): 340/340 tests, ESLint, `git diff --check`, Expo Doctor 20/20, and release-optimized iOS/Android exports pass with the 155-catalog TestFlight QA policy enabled. This is source/bundle evidence, not a signed archive or device test. TestFlight remains **NO-GO / BLOCKED — EXTERNAL**: no physical iPhone is connected, this Expo account lacks access to the configured EAS project, and the locally readable production profile has nine validation errors for disabled auth/voice/safety/VL01 readiness and missing approved VL01 UUIDs. An authorized owner must configure and build the exact commit, then Grace must complete the profile-specific signed-device procedures; simulator or export evidence is not presented as a substitute.
 
 ## Getting Started
 
@@ -122,8 +122,8 @@ Mobile/public variables:
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Public identifier of the approved Hume voice. | Optional until a branded voice has been provisioned. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public Mapbox runtime token used to render maps. | Required; use a restricted public token, never a secret `sk.*` token. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for development and fault testing. | Keep `false` for production. Runtime outages can still offer the offline fallback. |
-| `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES` | Adds Arabic and Hebrew to the runtime/native locale list for signed RTL QA. | `true` only in the dedicated TestFlight QA profile; keep `false` for the public production profile until both locales have native-speaker approval. |
-| `EXPO_PUBLIC_SHOW_ALL_LANGUAGES` | Exposes all 155 complete catalogs for development translation audits. | Development only with `VERYLOVING_BUILD_PROFILE=development`; preview, TestFlight, and production reject or ignore `true` and pin the value to `false`. The extra catalogs are unreviewed and lack the six-locale release-critical overlay. |
+| `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES` | Adds Arabic and Hebrew to the restricted runtime/native locale list for signed RTL QA. | `true` in the TestFlight QA profiles; keep `false` for public production until both locales have native-speaker approval. Full-catalog mode independently includes all available RTL catalogs. |
+| `EXPO_PUBLIC_SHOW_ALL_LANGUAGES` | Exposes all 155 JSON catalogs for layout/coverage auditing. | `true` only with development metadata or the committed `testflight-full-catalog` profile; preview, base TestFlight, and production remain false. The 149 extra catalogs receive a `QA` picker/trigger badge and explicit English fallback for 34 newer critical strings. |
 | `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Enables backend contacts, safety-session persistence, and durable SOS acceptance. | Must be `true` for production; acceptance is not notification delivery. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct Hume key supported only by development builds. | Development only; it must be absent from production because public variables are bundled. |
 | `EXPO_PUBLIC_VL01_ENABLED` | Enables real VL01 discovery and GATT validation. | Enable only after the firmware owner approves the UUIDs and physical-device matrix. |
@@ -198,7 +198,7 @@ Build/config diagnostic variables are orchestration inputs, not product secrets:
 
 | Variable | Purpose |
 | --- | --- |
-| `VERYLOVING_BUILD_PROFILE` | Explicit local profile name (`development`, `preview`, or `production`) used by config validation. |
+| `VERYLOVING_BUILD_PROFILE` | Explicit local profile policy (`development`, `preview`, `production`, or production-like `testflight`) used by config validation. |
 | `VERYLOVING_CONFIG_DIAGNOSTICS` | Emits a redacted presence/scheme report when set to `1` or `true`; it never prints values. |
 | `EAS_BUILD_PROFILE` | EAS-provided profile fallback when `VERYLOVING_BUILD_PROFILE` is unset. |
 | `EAS_BUILD` | EAS-provided remote-build marker; enables checks that only make sense on the builder. |
@@ -303,7 +303,7 @@ The environment-setup follow-up on 14 July 2026 passed the new redacted developm
 
 The final UI/staging follow-up on 14 July 2026 passes ESLint, 241/241 tests, Expo Doctor 20/20, a native iOS Debug simulator build, and the 2,558-module/8.7 MB iOS plus 2,641-module/8.9 MB Android Hermes exports. The accessibility pass adds WCAG-AA semantic foregrounds, visible input treatment, 44-point minimums for compact buttons and new back/modal controls, localized RTL-aware back navigation, keyboard-safe forms, readable onboarding copy, and a 720-point tablet content cap. iPhone 17, compact iPhone 17e, and 11-inch iPad portrait onboarding layouts rendered without overlap; removing a shared entry-opacity gate fixed an iPad background-only render. Targeted simulator logs contain none of the historical animation or entitlement-warning signatures during the captured smoke-test windows. See [FINAL_VALIDATION_REPORT.md](./FINAL_VALIDATION_REPORT.md) for the exact staging pass/block matrix; these results do not substitute for real provider, SMS, signed-device PCM, Android, safety-backend, or VL01 evidence.
 
-The 15 July 2026 UI-framework hardening pass raises the deterministic suite to 339/339 and keeps ESLint, Expo Doctor 20/20, and both platform exports green. In addition to process-safe auth/onboarding, account-bound navigation/data, functional reminders/Saved Places/contacts, honest SOS/WebSocket recovery, release-locale gating, and bounded RTL transitions, the final pass preserves post-logout phone verification, bounds Google provider logout, keeps visible failures reactive across locale changes, prevents incomplete privacy exports, keeps the native SOS fallback independent of backend bookkeeping, adds typed BLE retry/reconnect UI, closes a late-frame voice cleanup race, and adds a development-only 155-catalog audit switch that cannot expand TestFlight or production. The exact final status is in [TESTFLIGHT_READINESS_REPORT.md](./TESTFLIGHT_READINESS_REPORT.md); the broader fixed/open matrix remains in [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md). Green source/export gates do not waive the failing production-environment gate or replace signed TestFlight evidence for Keychain, native permissions, RTL process reload, Mapbox, BLE, audio routes, and background lifecycle.
+The recorded 15 July 2026 UI-framework hardening pass raised the deterministic suite to 339/339 and established the initial local 155-catalog audit path. This follow-up raises it to 340/340, adds the separately named signed full-catalog TestFlight path while leaving base TestFlight and production restrictions intact, retains Expo Doctor 20/20, and passes both platform exports under the full-catalog TestFlight policy. The broader fixed/open matrix remains in [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md). Green source/export gates do not waive the failing production-environment gate or replace signed TestFlight evidence for Keychain, native permissions, RTL process reload, Mapbox, BLE, audio routes, and background lifecycle.
 
 For a faster development loop, run tests and lint separately:
 
@@ -312,7 +312,7 @@ npm test
 npm run lint
 ```
 
-The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 catalog work products, the release/TestFlight locale gate, RTL metadata and transition ordering, WCAG semantic contrast, accessibility labels and announcements, protected navigation, direct system-link sanitization and restoration, account/process-bound auth and onboarding, settings/reminder/Saved Places persistence, emergency-contact edit/conflict behavior, account-switch cleanup, partial privacy export, stale-location and idempotent SOS behavior, WebSocket queue races, provider-JWT verification, access/refresh renewal, first-frame WebSocket authentication, PCM lifecycle, Android BLE permissions, VL01 GATT validation/reconnect, Dynamo safety/privacy contracts, offline queues, CLM/Hume protocols, config plugins, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
+The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact 319-key and placeholder parity across 155 JSON catalog work products, profile-specific release/TestFlight locale gates, RTL metadata and transition ordering, WCAG semantic contrast, accessibility labels and announcements, protected navigation, direct system-link sanitization and restoration, account/process-bound auth and onboarding, settings/reminder/Saved Places persistence, emergency-contact edit/conflict behavior, account-switch cleanup, partial privacy export, stale-location and idempotent SOS behavior, WebSocket queue races, provider-JWT verification, access/refresh renewal, first-frame WebSocket authentication, PCM lifecycle, Android BLE permissions, VL01 GATT validation/reconnect, Dynamo safety/privacy contracts, offline queues, CLM/Hume protocols, config plugins, and user-facing error sanitization. The 34-key critical overlay remains translated only for six locales; an explicit English QA fallback is not linguistic coverage. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
 
 Validate both production JavaScript bundles:
 
@@ -357,13 +357,13 @@ The app is not yet production-ready. Current launch gates are:
 - an approved VL01 protocol and hardware evidence for battery semantics, decoded status/events, authorized command schemas, ownership challenge/secure pairing, and background behavior;
 - guardian/contact notification delivery and receipts after durable SOS acceptance, push delivery, live/revocable sharing, routes, avoidance zones, deletion tombstones/session revocation, vendor-wide privacy orchestration, and approved retention controls;
 - full Android emulator/device QA and signed iOS/Android physical-device testing;
-- native-speaker safety-copy review for Arabic and Hebrew before either TestFlight QA locale enters the public production profile; the other 149 unreviewed catalog work products remain nonselectable outside the explicit development catalog-audit mode.
+- native-speaker safety-copy review for Arabic and Hebrew before either base-TestFlight QA locale enters public production; the other 149 unreviewed catalog work products remain nonselectable outside development and the separately marked `testflight-full-catalog` layout-audit profile, and still require 5,066 translated critical-overlay values.
 
 Do not approve a store release until every P1 item has closure evidence in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). A successful EAS build, JavaScript export, or CLM health response is necessary but not sufficient.
 
 ## EAS Builds
 
-`eas.json` defines five explicit build paths:
+`eas.json` defines explicit build paths, including two distinct signed TestFlight language surfaces:
 
 | Profile | Purpose | Artifact |
 | --- | --- | --- |
@@ -371,9 +371,10 @@ Do not approve a store release until every P1 item has closure evidence in [LAUN
 | `development-simulator` | Development client for the iOS simulator | Simulator `.app` |
 | `preview` | Production-like stakeholder QA without developer tools | Internal iOS build and Android APK |
 | `testflight` | Primary signed iOS QA candidate with Arabic/Hebrew RTL review enabled | App Store/TestFlight archive |
+| `testflight-full-catalog` | Signed UI layout/coverage audit with all 155 catalogs and `QA` badges on affected picker/trigger choices | App Store/TestFlight archive; not a translation-approval candidate |
 | `production` | Store submission candidate | iOS archive and Android AAB |
 
-TestFlight is the primary iOS acceptance environment. The `testflight` profile extends the production store profile, uses the production EAS environment and auto-incremented build number, and changes only the explicit RTL QA locale flag. Use the public `production` profile only after Arabic/Hebrew approval or with that flag disabled. A cloud archive or successful upload is not acceptance evidence until the exact build number has passed the signed-device matrix in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
+TestFlight is the primary iOS acceptance environment. The base `testflight` profile uses the production-like environment and exposes `en/es/fr/zh/ar/he`. `testflight-full-catalog` is also production-like for credentials, secure transport, entitlements, and readiness checks, but explicitly enables all 155 catalogs for QA. Public `production` remains restricted to reviewed `en/es/fr/zh`. A cloud archive or successful upload is not acceptance evidence until the exact build number and language profile have passed their matrix in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
 
 Each profile selects its matching EAS environment and enables redacted app-config diagnostics. Production uses EAS remote build versions with `autoIncrement`; initialize existing store build numbers once with `eas build:version:set` before the first production build if remote version state has not already been established.
 
@@ -399,6 +400,7 @@ Build the intended artifacts explicitly:
 eas build --platform ios --profile development-simulator
 eas build --platform all --profile preview
 eas build --platform ios --profile testflight
+eas build --platform ios --profile testflight-full-catalog
 eas build --platform ios --profile production
 eas build --platform android --profile production
 ```

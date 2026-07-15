@@ -38,6 +38,7 @@ Empty values mean “not configured.” Boolean flags default to `false`; build 
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public runtime `pk.*` token used to load Mapbox maps, styles, fonts, and offline map packs. | Mapbox **Access tokens** page. Create a distinct least-privilege public mobile token. Mapbox URL restrictions do not support native Maps SDK traffic, so do not add a restriction that breaks the app. Default: empty. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for deliberate fault testing; it does not make backend SOS, live routes, or sharing available offline. | Local/release test decision. Default: `false`; keep it `false` in production. |
 | `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES` | Adds Arabic and Hebrew to the runtime/native locale list for signed RTL review. | Default: `false`. The committed TestFlight profile sets `true`; public production stays `false` until native-speaker approval. |
+| `EXPO_PUBLIC_SHOW_ALL_LANGUAGES` | Exposes all 155 JSON catalogs for layout/coverage audit. The 149 additional choices receive a `QA` picker/trigger badge and an explicit English fallback for 34 newer critical strings. | Default: `false`. Set `true` only with development metadata or use the committed `testflight-full-catalog` profile; base TestFlight, preview, and production keep it `false`. |
 | `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Enables account-backed emergency contacts, safety-session persistence, SOS acceptance, and backend privacy operations. | Release readiness flag after the API and DynamoDB paths pass tests. Default: `false`; production requires `true`. |
 | `EXPO_PUBLIC_VL01_ENABLED` | Enables real VL01 filtered scanning and GATT validation. | Release decision after firmware approval and physical-device validation. Default: `false`; production diagnostics require the approved protocol to be enabled. |
 | `EXPO_PUBLIC_VL01_SERVICE_UUID` | Primary VL01 GATT service used for scan filtering and service discovery. | Approved VL01 firmware/GATT specification from the firmware owner. Default: empty. |
@@ -46,7 +47,7 @@ Empty values mean “not configured.” Boolean flags default to `false`; build 
 | `EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID` | Notifiable wearable-event channel. | Approved UUID plus event semantics from the firmware and safety owners. Default: empty. |
 | `EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID` | Writable command channel. | Approved UUID, command schema, authorization, and secure-pairing policy from firmware/security owners. Default: empty. |
 | `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Secret `sk.*` token with `downloads:read`, used only while resolving native Mapbox SDK artifacts. It is not bundled because it lacks the public prefix. | Mapbox **Access tokens** page; create a secret token and save it at creation time. Default: empty. Store it as an EAS secret/build variable, never in a committed file. |
-| `VERYLOVING_BUILD_PROFILE` | Selects `development`, `preview`, or `production` validation rules during local config resolution. | Local command or the matching `eas.json` profile. Default in the template: `development`. |
+| `VERYLOVING_BUILD_PROFILE` | Selects the profile policy during config resolution. Only development and the named full-catalog TestFlight metadata may enable all catalogs; both TestFlight variants still receive production-like readiness validation. | Local command or the matching committed `eas.json` profile. Default in the template: `development`. |
 | `VERYLOVING_CONFIG_DIAGNOSTICS` | Emits a redacted presence/scheme report from `app.config.js`; values are never printed. | Local/EAS diagnostic choice. Default: `0`; EAS profiles set `1`. |
 
 Apple Sign-In intentionally has no root environment variable. Native Apple tokens use the iOS bundle identifier `com.veryloving.app` as their audience, and the backend accepts it through `APPLE_CLIENT_IDS`.
@@ -129,17 +130,30 @@ Validate against launch requirements before creating a production build:
 npm run validate-env -- --profile production
 ```
 
+Validate either signed TestFlight variant with the same production-like requirements by using the TestFlight policy. The full-catalog EAS profile supplies its committed public flag during the remote build:
+
+```bash
+npm run validate-env -- --profile testflight
+```
+
 The command exits nonzero for missing or invalid required production configuration. Optional omissions remain warnings. It reads `.env` first and lets explicitly supplied process variables override it; reports contain variable names and status only. Use concrete values rather than `$VAR`/`${VAR}` interpolation so the validator and Expo cannot resolve different effective configuration.
 
 For EAS, create separate `development`, `preview`, and `production` environments in **Project Settings > Environment variables** or with `eas env:create`. Expo's [EAS environment guide](https://docs.expo.dev/eas/environment-variables/manage/) explains scopes and visibility. Public mobile values can be plain/sensitive because the bundle exposes them; `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` must be a build secret. EAS secret values cannot be pulled locally, so a local production report warns rather than fails when that download token is absent; its presence becomes a blocking check when `EAS_BUILD=true` on the remote builder.
 
-TestFlight is the primary iOS acceptance environment. The `testflight` build profile extends the production store profile and uses the same production EAS environment, but explicitly sets `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=true` so Arabic/Hebrew can be reviewed without changing public production. Build the exact release commit with:
+TestFlight is the primary iOS acceptance environment. Choose the artifact by purpose:
+
+- `testflight` is the base candidate and exposes `en/es/fr/zh/ar/he` plus System default.
+- `testflight-full-catalog` is a separately identifiable signed layout/coverage audit and exposes all 155 JSON catalogs plus System default. It is production-like for credentials, transports, entitlements, and readiness checks, but its affected picker/trigger `QA` badges and English critical-copy fallback mean it is not translation-complete acceptance.
+- `production` remains restricted to reviewed `en/es/fr/zh`.
+
+Build the exact release commit without editing `.env` or source:
 
 ```bash
 eas build --platform ios --profile testflight
+eas build --platform ios --profile testflight-full-catalog
 ```
 
-Record the EAS build URL, build number, TestFlight processing state, tester group, and signed-device results in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). Run [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, followed by the full [TestFlight UI checklist](./TESTFLIGHT_UI_CHECKLIST.md). Do not treat archive success as device acceptance.
+Record the profile, EAS build URL, build number, TestFlight processing state, tester group, and signed-device results in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). Run [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, followed by the full [TestFlight UI checklist](./TESTFLIGHT_UI_CHECKLIST.md). Do not transfer a PASS between profiles or treat archive success as device acceptance.
 
 As of 15 July 2026, the locally authenticated Expo user cannot read the configured EAS project. An organization/project owner must grant access or run the command above for the exact committed SHA; do not relink the app or replace `extra.eas.projectId` to bypass ownership.
 

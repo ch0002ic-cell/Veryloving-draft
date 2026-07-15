@@ -1,7 +1,7 @@
-// Safety- and authentication-critical copy is deliberately limited to the
-// maintained release languages plus the two explicit RTL QA languages. The
-// broader generated catalog remains available for translation review, but is
-// not selectable in release builds until native-speaker review is complete.
+// Safety- and authentication-critical copy is localized for the maintained
+// release languages plus the two explicit RTL QA languages. The signed
+// full-catalog QA profile uses an explicit English fail-safe for the remaining
+// catalogs and marks those entries as QA; it is not linguistic acceptance.
 const releaseCriticalMessages = Object.freeze({
   en: {
     authUnavailable: 'This sign-in option is unavailable in this build.',

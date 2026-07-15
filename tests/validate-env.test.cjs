@@ -64,6 +64,7 @@ test('dotenv parser supports export, quotes, inline comments, and embedded hashe
 test('argument parser rejects missing option values', () => {
   assert.throws(() => parseArguments(['--file', '--no-color']), /--file requires a value/);
   assert.throws(() => parseArguments(['--profile']), /--profile requires a value/);
+  assert.equal(parseArguments(['--profile', 'testflight']).profile, 'testflight');
 });
 
 test('development endpoints allow only HTTP or WS on loopback, including IPv6', () => {
@@ -125,7 +126,7 @@ test('RTL QA locale flag must be an explicit boolean', () => {
   assert.match(issue?.message || '', /true or false/);
 });
 
-test('full language catalog flag is development-only and must be an explicit boolean', () => {
+test('full language catalog flag is limited to development or TestFlight QA and must be an explicit boolean', () => {
   const invalidBoolean = validateEnvironment(productionEnvironment({
     EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'yes'
   }), { profile: 'production' });
@@ -141,7 +142,7 @@ test('full language catalog flag is development-only and must be an explicit boo
     }), { profile });
     const issue = results.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES');
     assert.equal(issue?.level, 'error');
-    assert.match(issue?.message || '', /outside development/);
+    assert.match(issue?.message || '', /outside development or the dedicated TestFlight/);
   }
 
   const development = validateEnvironment(productionEnvironment({
@@ -152,6 +153,33 @@ test('full language catalog flag is development-only and must be an explicit boo
     development.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES')?.level,
     'ok'
   );
+
+  const testflightEnvironment = productionEnvironment({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'testflight'
+  });
+  const testflight = validateEnvironment(testflightEnvironment, {
+    profile: 'testflight',
+    fileEnvironment: testflightEnvironment
+  });
+  assert.equal(
+    testflight.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES')?.level,
+    'ok'
+  );
+  assert.equal(testflight.some((result) => result.level === 'error'), false);
+
+  const incompleteTestFlight = validateEnvironment({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'testflight'
+  }, { profile: 'testflight' });
+  const incompleteErrors = new Set(
+    incompleteTestFlight.filter((result) => result.level === 'error').map((result) => result.name)
+  );
+  assert.equal(incompleteErrors.has('EXPO_PUBLIC_SHOW_ALL_LANGUAGES'), false);
+  assert.equal(incompleteErrors.has('EXPO_PUBLIC_API_BASE_URL'), true);
+  assert.equal(incompleteErrors.has('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'), true);
+  assert.equal(incompleteErrors.has('EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID'), true);
 });
 
 test('Hume configuration and voice overrides must be canonical IDs', () => {
