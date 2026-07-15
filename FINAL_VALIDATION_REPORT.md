@@ -5,6 +5,8 @@ Release decision: **NO-GO until the P1 gates in `LAUNCH_CHECKLIST.md` are closed
 
 > Historical runtime evidence notice: the simulator observations and `118/118` validation result below describe the code exercised during that validation session. Later architecture changes are recorded separately in **Post-Validation Architecture Update — 13 July 2026** and are not retroactively marked as runtime passes.
 
+> **15 July 2026 superseding UI note:** the historical feature-matrix statements that emergency-contact editing is absent and camera/photo declarations remain are no longer current. The later UI-framework pass added accessible local/remote contact editing with optimistic conflict recovery, and removed the unused camera/photo permissions and image-picker dependency. See [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md) for current source status and [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md) for the still-required signed-device evidence; the original runtime rows below remain unchanged as a dated record.
+
 ## Status Legend
 
 - **PASS (runtime):** exercised in the iOS development build.

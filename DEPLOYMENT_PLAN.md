@@ -1,6 +1,6 @@
 # VeryLoving Deployment Action Plan
 
-Last reviewed: 14 July 2026. This runbook turns [SETUP.md](./SETUP.md) and [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) into an executable sequence. It distinguishes a deployed artifact from a launch-ready system: a successful build or `/health` response is necessary evidence, but it is not permission to ship a personal-safety product.
+Last reviewed: 15 July 2026. This runbook turns [SETUP.md](./SETUP.md) and [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) into an executable sequence. It distinguishes a deployed artifact from a launch-ready system: a successful build or `/health` response is necessary evidence, but it is not permission to ship a personal-safety product.
 
 ## Current Execution Record
 
@@ -30,7 +30,7 @@ The Railway staging deployment proves the Docker image builds and starts, public
 
 ## Launch Rule And Remaining Stop-Ship Work
 
-The deterministic baseline is currently 241/241 tests after the Railway, Hume voice-ID, and UI-accessibility regressions were added; the latest full pipeline also remains ESLint clean, Expo Doctor 20/20, with successful 2,558-module iOS and 2,641-module Android exports. The source-of-truth checklist still marks production **NO-GO** until its P1 gates have objective evidence. In particular, credentials alone do not complete:
+The deterministic baseline is currently 313/313 tests after the UI-foundation, direct deep-link, emergency-contact-edit, and RTL/reminder-transition regressions were added; the latest full pipeline remains ESLint clean, Expo Doctor 20/20, with successful iOS and Android production exports. The 2,558-module iOS and 2,641-module Android figures remain the dated 14 July snapshot rather than a claim about the current bundle graph. The source-of-truth checklist still marks production **NO-GO** until its P1 gates have objective evidence. In particular, credentials alone do not complete:
 
 - durable refresh-family reuse detection, revocation, deletion tombstones, provider credential-state checks, and distributed auth/SMS abuse controls;
 - verification/migration of the existing account-bound SecureStore contact cache plus encryption/account binding for remaining settings, locations, transcripts/history, queues, and resilience records;
@@ -87,7 +87,7 @@ Credentials do not close these code/security gaps. Complete them against isolate
 
 ## Prioritised Critical Path
 
-Estimates assume the relevant account owner is available and work streams run in parallel. A credible best-case launch path is roughly **3–6 weeks**, not the sum of the setup commands: vendor approval, security/privacy engineering, firmware, store review, and physical QA dominate. Human review of 151 non-source language catalogs can add **1–3+ weeks**; Product may instead constrain the initial launch to a smaller, explicitly approved language/market set while retaining the remaining catalogs as non-launch content.
+Estimates assume the relevant account owner is available and work streams run in parallel. A credible best-case launch path is roughly **3–6 weeks**, not the sum of the setup commands: vendor approval, security/privacy engineering, firmware, store review, and physical QA dominate. Public production is already constrained to reviewed `en/es/fr/zh`; the TestFlight QA profile adds only Arabic/Hebrew, which still need native-speaker review before public release. The other 149 catalog work products remain non-launch content.
 
 | # | Action | Owner | Expected elapsed time | Exit evidence |
 | --- | --- | --- | --- | --- |
@@ -97,7 +97,7 @@ Estimates assume the relevant account owner is available and work streams run in
 | 4 | Complete the integration-prerequisite P1 engineering packages above | Engineering/Security/Privacy | Roughly 2–4 calendar weeks in parallel | Merged SHAs, threat-model approval, migrations, rollback tests, and staging-ready acceptance criteria. |
 | 5 | Finish the isolated staging environment: the Railway container/TLS/liveness and fail-closed auth/WSS probes are complete; add isolated provider resources, a staging Hume configuration, security controls, dashboards, and rollback evidence | Backend/Voice/SRE | 1–3 days after remaining inputs exist | Committed artifact/deployment IDs, stable staging DNS, synthetic resources, valid auth/CLM/Hume WSS probes, dashboards and rollback ID. |
 | 6 | Populate staging EAS configuration and build signed development artifacts | Mobile/Release Engineering | 2–4 hours plus queues | Development build URLs, signing fingerprints, release SHA, and native smoke evidence. |
-| 7 | Build preview candidates and run provider, physical-device, BLE, push, safety, privacy, security and end-to-end QA | Mobile/Device QA/Product/Security | 5–10 business days including one retest cycle | Device/OS/build-labelled matrix; evidence-dependent P1s closed, not merely scheduled. |
+| 7 | Build the signed TestFlight candidate and run provider, physical-device, BLE, push, safety, privacy, RTL, security and end-to-end QA | Mobile/Device QA/Product/Security | 5–10 business days including one retest cycle | TestFlight build-number/device/OS-labelled matrix; evidence-dependent P1s closed, not merely scheduled. |
 | 8 | Install production resources/secrets, create stable production domains, and promote the reviewed immutable backend artifact | Backend/SRE/Security | 1–2 days | Production deployment/rollback IDs, DNS/TLS evidence, smoke tests and no test data. |
 | 9 | Build one approved production release candidate and complete compliance/localization/store checks | Release/Legal/Privacy/Localization | 2–5 days plus external review | Production validator, signed build IDs, approved markets/languages, store metadata and all P1 evidence. |
 | 10 | Record GO, submit, stage rollout and monitor | Grace + Release + SRE | Store review plus 3–7 days staged monitoring | Alerts/on-call live, rollback rehearsed, thresholds met, final decision recorded. |
@@ -372,6 +372,7 @@ EXPO_PUBLIC_HUME_BRANDED_VOICE_ID=<approved-public-id-or-empty>
 EXPO_PUBLIC_HUME_API_KEY=
 EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN=<public-pk-token>
 EXPO_PUBLIC_ENABLE_OFFLINE_MODE=false
+EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=false
 EXPO_PUBLIC_SAFETY_BACKEND_ENABLED=true
 EXPO_PUBLIC_VL01_ENABLED=true
 ```
@@ -397,7 +398,11 @@ eas build --platform ios --profile development
 eas build --platform all --profile preview
 # Close the staging/security/physical evidence matrix and record approval.
 
-# Gate C: one approved production release candidate from the reviewed SHA.
+# Gate C: primary signed iOS acceptance build from the reviewed SHA.
+eas build --platform ios --profile testflight
+# Upload to TestFlight and close the clean-install/upgrade/RTL/device matrix.
+
+# Gate D: public production artifacts only after TestFlight and localization approval.
 eas build --platform ios --profile production
 eas build --platform android --profile production
 ```
@@ -427,7 +432,7 @@ Use TestFlight and Play internal builds, not Expo Go. Before testing, activate s
 2. Apple Sign-In and Google Sign-In success/cancel, logout, process death/relaunch, access refresh, old-refresh reuse, provider revocation and account switch; then phone start/resend/expiry/wrong code/throttle and verification with approved test numbers.
 3. Complete onboarding and verify account-bound state does not leak after account switching.
 4. Load Mapbox with consented test and stale/mock location; render zones and route state; test denial/re-enable, offline cache, quick-share creation, expiry/revocation, recipient receipt and access after logout/deletion.
-5. Add/edit/delete emergency contacts and confirm backend persistence/account isolation.
+5. Add/edit/delete emergency contacts and confirm backend persistence, optimistic conflict recovery, and account isolation. Deploy the current safety backend with authenticated `PATCH` support before treating remote editing as testable.
 6. Transition Home → Guardian → Emergency; trigger SOS. Confirm the UI reports only durable acceptance/delivery states actually received—never implied dispatch.
 7. Start a Hume call through the production WSS gateway. Verify continuous PCM, assistant audio ordering, interruption, Bluetooth route, screen lock, background/foreground, reconnect, tool response, history, and resource cleanup.
 8. Disable network, use labeled offline fallback, queue a typed message, reconnect, and confirm exactly-once replay.

@@ -37,6 +37,7 @@ Empty values mean “not configured.” Boolean flags default to `false`; build 
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct client-to-Hume development credential supported only in development builds. | Hume Platform API Keys. Default: empty. Prefer the server-side `HUME_API_KEY`; this variable must remain empty in preview and production because it is bundled into the app. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public runtime `pk.*` token used to load Mapbox maps, styles, fonts, and offline map packs. | Mapbox **Access tokens** page. Create a distinct least-privilege public mobile token. Mapbox URL restrictions do not support native Maps SDK traffic, so do not add a restriction that breaks the app. Default: empty. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for deliberate fault testing; it does not make backend SOS, live routes, or sharing available offline. | Local/release test decision. Default: `false`; keep it `false` in production. |
+| `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES` | Adds Arabic and Hebrew to the runtime/native locale list for signed RTL review. | Default: `false`. The committed TestFlight profile sets `true`; public production stays `false` until native-speaker approval. |
 | `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Enables account-backed emergency contacts, safety-session persistence, SOS acceptance, and backend privacy operations. | Release readiness flag after the API and DynamoDB paths pass tests. Default: `false`; production requires `true`. |
 | `EXPO_PUBLIC_VL01_ENABLED` | Enables real VL01 filtered scanning and GATT validation. | Release decision after firmware approval and physical-device validation. Default: `false`; production diagnostics require the approved protocol to be enabled. |
 | `EXPO_PUBLIC_VL01_SERVICE_UUID` | Primary VL01 GATT service used for scan filtering and service discovery. | Approved VL01 firmware/GATT specification from the firmware owner. Default: empty. |
@@ -131,6 +132,16 @@ npm run validate-env -- --profile production
 The command exits nonzero for missing or invalid required production configuration. Optional omissions remain warnings. It reads `.env` first and lets explicitly supplied process variables override it; reports contain variable names and status only. Use concrete values rather than `$VAR`/`${VAR}` interpolation so the validator and Expo cannot resolve different effective configuration.
 
 For EAS, create separate `development`, `preview`, and `production` environments in **Project Settings > Environment variables** or with `eas env:create`. Expo's [EAS environment guide](https://docs.expo.dev/eas/environment-variables/manage/) explains scopes and visibility. Public mobile values can be plain/sensitive because the bundle exposes them; `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` must be a build secret. EAS secret values cannot be pulled locally, so a local production report warns rather than fails when that download token is absent; its presence becomes a blocking check when `EAS_BUILD=true` on the remote builder.
+
+TestFlight is the primary iOS acceptance environment. The `testflight` build profile extends the production store profile and uses the same production EAS environment, but explicitly sets `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES=true` so Arabic/Hebrew can be reviewed without changing public production. Build the exact release commit with:
+
+```bash
+eas build --platform ios --profile testflight
+```
+
+Record the EAS build URL, build number, TestFlight processing state, tester group, and signed-device results in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). Run [How to Test the Language Switcher on TestFlight](./TESTFLIGHT_LANGUAGE_SWITCHER.md) first, followed by the full [TestFlight UI checklist](./TESTFLIGHT_UI_CHECKLIST.md). Do not treat archive success as device acceptance.
+
+As of 15 July 2026, the locally authenticated Expo user cannot read the configured EAS project. An organization/project owner must grant access or run the command above for the exact committed SHA; do not relink the app or replace `extra.eas.projectId` to bypass ownership.
 
 Verify names without copying values into logs or release tickets:
 

@@ -1,8 +1,10 @@
 # VeryLoving Expo App
 
-VeryLoving is an Expo Router safety companion with onboarding, location and Mapbox safety views, NorthStar BLE jewelry, emergency contacts and SOS flows, social features, and Hume EVI voice conversations with local history and offline fallback.
+VeryLoving is an Expo Router safety companion with onboarding, location and Mapbox safety views, NorthStar BLE jewelry, emergency contacts and SOS flows, a clearly labeled Friends empty/planned surface, and Hume EVI voice conversations with local history and offline fallback.
 
-The interface offers 155 structurally complete ISO 639-1 catalogs through a searchable own-script language picker, with automatic RTL layout for eleven right-to-left catalogs. English, Spanish, French, and Simplified Chinese are maintained; the other 151 catalogs are machine-generated starting points that require native-speaker safety-copy review. All 183 assigned codes are represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for translation review status, unavailable provider languages, the phone data contract, and the steps to maintain a catalog.
+The release interface exposes only reviewed English, Spanish, French, and Simplified Chinese catalogs. The dedicated TestFlight QA profile additionally exposes Arabic and Hebrew so signed-device RTL behavior can be reviewed before either locale is approved for a public release. The repository retains 155 structurally complete catalogs as translation work products, but the other 149 are not selectable release languages. All 183 assigned ISO 639-1 codes remain represented in the registry, and phone entry covers the full libphonenumber E.164 country set. See [GLOBALIZATION.md](./GLOBALIZATION.md) for the quality gate, [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md) for the engineering report, [TESTFLIGHT_LANGUAGE_SWITCHER.md](./TESTFLIGHT_LANGUAGE_SWITCHER.md) for Grace's priority language test, and [TESTFLIGHT_UI_CHECKLIST.md](./TESTFLIGHT_UI_CHECKLIST.md) for the full device acceptance script.
+
+Current handoff status (15 July 2026): source validation is green, but the language switcher is **not yet marked PASS on a real device**. No physical iPhone is connected and the authenticated Expo user lacks access to the configured EAS project. An authorized project owner must build/upload the exact commit and Grace must complete the linked TestFlight language procedure; neither simulator nor automated evidence is presented as a substitute.
 
 ## Getting Started
 
@@ -62,17 +64,17 @@ npx expo prebuild --platform ios
 npx expo run:ios --device "<simulator>" --no-build-cache
 ```
 
-If Expo CLI/Xcode misclassifies that simulator and requests device signing, use the tested unsigned workspace fallback and then install the result on the booted simulator:
+If Expo CLI/Xcode misclassifies that simulator and requests physical-device signing, the following is a **simulator-only development workaround**. It selects the booted simulator UUID directly and lets Xcode apply its normal local ad-hoc signature. It must never be used as TestFlight, physical-device, Keychain, notification, provider-auth, or release evidence:
 
 ```bash
 xcodebuild -workspace ios/VeryLoving.xcworkspace -scheme VeryLoving \
   -configuration Debug -sdk iphonesimulator \
-  -destination 'platform=iOS Simulator,name=<simulator>' \
-  -derivedDataPath /tmp/veryloving-derived CODE_SIGNING_ALLOWED=NO build
+  -destination 'id=<simulator-udid>' \
+  -derivedDataPath /tmp/veryloving-derived build
 xcrun simctl install booted /tmp/veryloving-derived/Build/Products/Debug-iphonesimulator/VeryLoving.app
 ```
 
-An unsigned simulator artifact cannot use the application Keychain entitlement required by Apple and Google provider SDKs. VeryLoving detects that simulator runtime before either provider module is loaded and shows an actionable explanation instead of the native Keychain error. Only a non-Expo-Go development build on the iOS Simulator exposes **Continue as demo (development only)**. Demo mode creates a process-only `Demo User` identity with no JWT, never persists an auth session, never authenticates a backend request, forces voice offline, and disappears on reload. It is absent from production, Expo Go, and physical-device builds; use a properly signed physical development build for real provider validation.
+A locally signed simulator artifact still cannot prove the physical-device Keychain/provider contract. VeryLoving detects that simulator runtime before either provider module is loaded and shows an actionable explanation instead of allowing a native provider failure. Only a non-Expo-Go development build on the iOS Simulator exposes **Continue as demo (development only)**. Demo mode creates a process-only `Demo User` identity with no JWT, never persists an auth session, never authenticates a backend request, forces voice offline, and disappears on reload. It is absent from production, Expo Go, and physical-device builds; use a properly signed physical development build or TestFlight for real provider validation.
 
 The generated app declares background-audio and Bluetooth-central capabilities for active safety calls and NorthStar. The `expo-audio` PCM stream, audio-session restoration, background capture, microphone routing, BLE lifecycle, echo cancellation, and lock-screen behavior still require signed physical-device validation; a simulator or successful build cannot prove them.
 
@@ -120,6 +122,7 @@ Mobile/public variables:
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Public identifier of the approved Hume voice. | Optional until a branded voice has been provisioned. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public Mapbox runtime token used to render maps. | Required; use a restricted public token, never a secret `sk.*` token. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the offline voice path for development and fault testing. | Keep `false` for production. Runtime outages can still offer the offline fallback. |
+| `EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES` | Adds Arabic and Hebrew to the runtime/native locale list for signed RTL QA. | `true` only in the dedicated TestFlight QA profile; keep `false` for the public production profile until both locales have native-speaker approval. |
 | `EXPO_PUBLIC_SAFETY_BACKEND_ENABLED` | Enables backend contacts, safety-session persistence, and durable SOS acceptance. | Must be `true` for production; acceptance is not notification delivery. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct Hume key supported only by development builds. | Development only; it must be absent from production because public variables are bundled. |
 | `EXPO_PUBLIC_VL01_ENABLED` | Enables real VL01 discovery and GATT validation. | Enable only after the firmware owner approves the UUIDs and physical-device matrix. |
@@ -205,6 +208,23 @@ The exact production ownership and source for every credential is tracked in [LA
 
 Keep `HUME_ALLOW_CLIENT_RESUME=false` until resumed chat-group IDs and session-configuration requests are ownership-bound to the authenticated account. Access JWTs have rotating refresh JWTs, but the server does not yet persist refresh-family state for reuse detection/revocation, and an access JWT is not a single-use WebSocket ticket.
 
+## UI Framework Overview
+
+The root runtime is deliberately layered: an outer crash boundary protects startup and provider initialization; `AuthProvider` restores the atomic SecureStore session and account-bound onboarding state; `AppProvider` hydrates normalized settings, contacts, and paired-device state; `I18nProvider` resolves the selected locale and native layout direction; and a localized crash boundary contains render failures inside the app shell. Navigation is not rendered until auth and app state have completed their bounded restore operations.
+
+Expo Router owns the stack. Public auth routes and protected application routes are declared separately, and the root index deterministically resumes an expiring phone challenge, the next valid onboarding step, or a completed account. Completed accounts may restore only an allowlisted stable destination such as the current tab, Settings, or device management. Navigation records are versioned and account-bound; emergency modals and arbitrary screen history are never restored. The native system-intent boundary canonicalizes trusted `veryloving`/web links to query-free allowlisted destinations, ignores provider callbacks, and rejects malformed, foreign, unknown-scheme, auth/onboarding-bypass, and high-risk modal URLs before Expo Router resolves a file route. Protected destinations still wait for auth and onboarding.
+
+Persistence is split by sensitivity and lifecycle:
+
+| State | Store and behavior |
+| --- | --- |
+| Session, onboarding, contacts, saved places | Versioned, account-bound SecureStore records on signed builds; unsupported simulator/Expo Go hosts use explicit volatile adapters. |
+| Settings and stable navigation | Strict versioned records. Settings persist before publication; navigation stores only an account-bound safe destination. |
+| Conversations, queues, location/SOS resilience, device metadata | Serialized local records with cleanup locks, stale-data validation, and account-switch purging. These records are account-isolated but still require at-rest encryption before store release. |
+| Native artifacts | Scheduled reminders, voice cache, and Mapbox packs are cancelled/purged during sign-out, account switching, and privacy deletion; incomplete native cleanup is surfaced as a warning. |
+
+Settings changes propagate through context after durable persistence. Same-direction language changes update mounted strings immediately. A direction change persists the locale, finishes a bounded generation-safe reminder transition, and only then performs the native reload required by `I18nManager`; uncertain native cleanup safely defers automatic reload instead of risking an old-language notification schedule. Capybear reminders are real opt-in daily notifications, and Saved Places is an account-bound, bounded feature rather than placeholder UI. See [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md) for findings, regression coverage, TestFlight checks, and unresolved launch gates.
+
 ## Implemented Architecture And Deployment Boundaries
 
 The repository currently contains:
@@ -282,6 +302,8 @@ The environment-setup follow-up on 14 July 2026 passed the new redacted developm
 
 The final UI/staging follow-up on 14 July 2026 passes ESLint, 241/241 tests, Expo Doctor 20/20, a native iOS Debug simulator build, and the 2,558-module/8.7 MB iOS plus 2,641-module/8.9 MB Android Hermes exports. The accessibility pass adds WCAG-AA semantic foregrounds, visible input treatment, 44-point minimums for compact buttons and new back/modal controls, localized RTL-aware back navigation, keyboard-safe forms, readable onboarding copy, and a 720-point tablet content cap. iPhone 17, compact iPhone 17e, and 11-inch iPad portrait onboarding layouts rendered without overlap; removing a shared entry-opacity gate fixed an iPad background-only render. Targeted simulator logs contain none of the historical animation or entitlement-warning signatures during the captured smoke-test windows. See [FINAL_VALIDATION_REPORT.md](./FINAL_VALIDATION_REPORT.md) for the exact staging pass/block matrix; these results do not substitute for real provider, SMS, signed-device PCM, Android, safety-backend, or VL01 evidence.
 
+The 15 July 2026 UI-framework hardening pass raises the deterministic suite to 313/313 and keeps ESLint, Expo Doctor 20/20, and both production exports green. It adds process-safe auth/onboarding restoration, account-bound navigation restoration plus a direct system-link allowlist, account-switch isolation, functional reminders and Saved Places, editable emergency contacts with conflict recovery, partial remote-export handling, fail-closed account deletion, honest SOS/WebSocket recovery, release-locale gating, localized critical runtime errors, generation-safe RTL/reminder transitions, and TestFlight-specific native configuration. The exact fixed/open matrix is in [UI_FRAMEWORK_AUDIT.md](./UI_FRAMEWORK_AUDIT.md). A green validator proves the source/export layer; only a signed TestFlight install can prove Keychain persistence, native permissions, RTL process reload, Mapbox, BLE, audio routes, and background lifecycle.
+
 For a faster development loop, run tests and lint separately:
 
 ```bash
@@ -289,7 +311,7 @@ npm test
 npm run lint
 ```
 
-The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 selectable catalogs, RTL metadata, WCAG semantic contrast, placeholder visibility, protected-screen navigation, the shared-screen entrance-visibility regression, locale resolution, Google Sign-In response handling, provider-JWT verification, access/refresh issuance and renewal, local session-expiry/offline behavior, first-frame WebSocket authentication, PCM encoding and lifecycle, Android BLE permission splits, VL01 GATT validation/battery decoding/reconnect backoff, Dynamo safety/privacy validation and idempotency, CNG manifest normalization, conversation persistence, offline queue ordering and exponential backoff, manual retry, CLM authentication, OpenAI-compatible SSE, safety prompt injection, upstream timeout fallback, Hume protocol payloads, settings persistence, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
+The suite covers global E.164 formatting and validation, all 183 ISO language-registry entries, exact key and placeholder parity across 155 catalog work products, the release/TestFlight locale gate, RTL metadata and transition ordering, WCAG semantic contrast, accessibility labels and announcements, protected navigation, direct system-link sanitization and restoration, account/process-bound auth and onboarding, settings/reminder/Saved Places persistence, emergency-contact edit/conflict behavior, account-switch cleanup, partial privacy export, stale-location and idempotent SOS behavior, WebSocket queue races, provider-JWT verification, access/refresh renewal, first-frame WebSocket authentication, PCM lifecycle, Android BLE permissions, VL01 GATT validation/reconnect, Dynamo safety/privacy contracts, offline queues, CLM/Hume protocols, config plugins, and user-facing error sanitization. Automated coverage does not replace signed-device, provider, Hume, DynamoDB, or wearable evidence.
 
 Validate both production JavaScript bundles:
 
@@ -315,7 +337,7 @@ Before an Android release, verify on an API 36 emulator and a physical phone:
 2. Grant foreground location and confirm Mapbox renders and updates its camera; deny once and confirm Retry remains available.
 3. Start NorthStar scanning and confirm the Nearby Devices prompt appears on Android 12+; background the app and confirm scanning stops.
 4. Open a safety call with Hume unavailable, confirm the actionable error, activate the offline companion, then use hardware Back and confirm the session disconnects.
-5. Verify notification, microphone, and camera rationales before their native prompts.
+5. Verify notification and microphone rationales before their native prompts; confirm denied permissions expose an actionable Settings path.
 6. Test BLE discovery, production SMS, Google OAuth, background audio, and lock-screen behavior on physical hardware with release credentials.
 
 ## Known Issues / Release Blockers
@@ -327,27 +349,30 @@ On 13 July 2026, a post-validation architecture pass added provider-token exchan
 The app is not yet production-ready. Current launch gates are:
 
 - production hardening of implemented authentication: refresh-family persistence, old-token reuse detection, revocation, deletion tombstones, consistent authenticated-request 401 recovery, provider credential-state checks, and distributed exchange/SMS abuse controls;
-- encrypted, per-account settings, locations, queues, and conversation history, plus completion of account isolation/migration for every remaining sensitive store;
+- at-rest encryption for account-isolated AsyncStorage settings, locations, queues, conversation history, SOS/navigation resilience records, and wearable metadata;
 - production deployment and security testing of the first-frame authenticated Hume gateway, including ingress rate limits, session revocation, replay resistance, ownership-bound resume/session configuration, quotas, and redacted observability;
 - Product/Voice approval for the selector contract: the four bundled profile slugs are personas/previews, not Hume UUIDs, and are rejected as overrides; online calls use the configured/default approved voice until canonical IDs exist for every marketed acoustic choice or the UI is explicitly relabelled;
 - signed-device verification of continuous PCM capture/playback, full duplex, interruptions, echo, Bluetooth routing, background/foreground behavior, lock screen, and repeated cleanup;
 - an approved VL01 protocol and hardware evidence for battery semantics, decoded status/events, authorized command schemas, ownership challenge/secure pairing, and background behavior;
 - guardian/contact notification delivery and receipts after durable SOS acceptance, push delivery, live/revocable sharing, routes, avoidance zones, deletion tombstones/session revocation, vendor-wide privacy orchestration, and approved retention controls;
 - full Android emulator/device QA and signed iOS/Android physical-device testing;
-- native-speaker safety-copy review for the 151 machine-generated catalogs.
+- native-speaker safety-copy review for Arabic and Hebrew before either TestFlight QA locale enters the public production profile; the other 149 unreviewed catalog work products remain nonselectable.
 
 Do not approve a store release until every P1 item has closure evidence in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). A successful EAS build, JavaScript export, or CLM health response is necessary but not sufficient.
 
 ## EAS Builds
 
-`eas.json` defines four explicit build paths:
+`eas.json` defines five explicit build paths:
 
 | Profile | Purpose | Artifact |
 | --- | --- | --- |
 | `development` | Expo development client for registered physical devices and Android emulators | Internal distribution |
 | `development-simulator` | Development client for the iOS simulator | Simulator `.app` |
 | `preview` | Production-like stakeholder QA without developer tools | Internal iOS build and Android APK |
+| `testflight` | Primary signed iOS QA candidate with Arabic/Hebrew RTL review enabled | App Store/TestFlight archive |
 | `production` | Store submission candidate | iOS archive and Android AAB |
+
+TestFlight is the primary iOS acceptance environment. The `testflight` profile extends the production store profile, uses the production EAS environment and auto-incremented build number, and changes only the explicit RTL QA locale flag. Use the public `production` profile only after Arabic/Hebrew approval or with that flag disabled. A cloud archive or successful upload is not acceptance evidence until the exact build number has passed the signed-device matrix in [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md).
 
 Each profile selects its matching EAS environment and enables redacted app-config diagnostics. Production uses EAS remote build versions with `autoIncrement`; initialize existing store build numbers once with `eas build:version:set` before the first production build if remote version state has not already been established.
 
@@ -372,6 +397,7 @@ Build the intended artifacts explicitly:
 ```bash
 eas build --platform ios --profile development-simulator
 eas build --platform all --profile preview
+eas build --platform ios --profile testflight
 eas build --platform ios --profile production
 eas build --platform android --profile production
 ```
@@ -384,17 +410,17 @@ EAS Update is not configured (`expo-updates` is not installed and no build chann
 
 ## Privacy And Offline Behavior
 
-- Permission requests show contextual explanations before location, notification, microphone, Bluetooth, or camera prompts.
+- Permission requests show contextual explanations before location, notification, microphone, or Bluetooth prompts. Unused camera and photo-library declarations were removed from native configuration.
 - The last valid live location is cached for at most 24 hours. If a later location request fails, the map may use it as a fallback and labels the exact saved time; it is never presented as current location.
 - On native Mapbox builds, a successful live fix starts or resumes a bounded Streets map pack around that location (zoom 10–15, 3,000-tile cap). During replacement, the last complete pack remains active until the pending pack reaches 100%; failed native deletions are tracked for the next cleanup. This caches base map tiles only; it does not provide offline routes, live sharing, remote danger-zone updates, or SOS delivery.
 - Emergency contacts remain cached locally and, when the safety backend is enabled, are migrated/fetched/created/deleted through the account-authenticated DynamoDB API. Current safety state is idempotently persisted, and SOS can durably reuse an idempotency record with contact IDs and a recent location before opening the dialer. “Accepted” means stored, and “phone dialer opened” means only that the dialer opened; neither confirms notification delivery, call connection, or emergency dispatch.
 - Paired-device metadata persists without native BLE objects or stored battery values. When an approved protocol is enabled, connection discovers and validates GATT, bounds connection/read/write operations, reads and conditionally monitors the one-byte battery characteristic, surfaces configured raw status/event values, watches disconnects, provides bounded raw command writes, and retries with serialized exponential backoff. Firmware-specific decoding, command authorization, ownership/secure pairing, and signed physical-device behavior remain unimplemented or unverified.
-- Settings > Privacy & data supports JSON export, conversation history, the privacy policy, and deletion. When the safety backend is enabled, export combines the local snapshot with account-scoped DynamoDB contacts/safety/SOS data, and Delete My Data removes DynamoDB user items before clearing local data and credentials.
+- Settings > Privacy & data supports JSON export, conversation history, the privacy policy, and deletion. Export always preserves the assembled local snapshot and labels remote data as included, unavailable, or not configured. When the safety backend is enabled, Delete My Data requires authenticated DynamoDB deletion to succeed before it clears local data and credentials, leaving the session intact for a safe retry after remote failure.
 - Settings sign-out and Delete My Data first drain local settings/contact/device/history/queue/location/SOS/map-cache writes, then attempt to purge cached voice audio and every app-owned native Mapbox pack before sweeping all `veryloving.*` records. Delete My Data additionally removes the SecureStore token, user, and onboarding marker. Ancillary native-cache cleanup cannot block removal of app data or credentials, but an incomplete purge is surfaced to the user and leaves only opaque, non-location retry evidence outside the user-data namespace for a later verified cleanup attempt.
 - Typed AI companion messages are saved locally and replayed in order when online voice service returns.
 - When Hume is unavailable, the safety call offers bundled offline responses and clearly labels unsent messages.
 - Development routes and mock services remain gated from production builds.
 
-Emergency-contact cache PII is now account-bound in SecureStore and migrated away from its legacy AsyncStorage key. Settings, transcripts, locations, resilience records, account-bound wearable metadata, and queues still use plaintext AsyncStorage. Complete OS-protected per-account encryption plus account-switch/process-death coverage remain P1 release gates; account binding and purge reduce cross-session residue but do not replace encryption. Backend-enabled deletion removes DynamoDB items but does not revoke the current session first or create a deletion tombstone, and it does not delete Hume, identity-provider, Mapbox, or share-destination copies.
+Emergency contacts and Saved Places are account-bound in SecureStore. Settings, transcripts, locations, resilience records, account-bound wearable metadata, and queues still use plaintext AsyncStorage. A fail-closed owner boundary now purges all prior/unowned local surfaces before a different account is published, with regression coverage for account switching and process restoration, but this isolation does not replace OS-protected at-rest encryption. Backend-enabled deletion is now confirmed before local credentials are removed; the backend still does not revoke the session/create a durable deletion tombstone or orchestrate deletion across Hume, identity providers, Mapbox, backups/logs, and external share destinations.
 
 See [PRIVACY.md](./PRIVACY.md) for the data collection and privacy manifest summary.
