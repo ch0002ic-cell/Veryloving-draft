@@ -59,7 +59,8 @@ test('saved places reject invalid coordinates without modifying secure storage',
 test('saved places participate in privacy export, deletion, and account isolation', () => {
   const privacy = readFileSync(path.resolve('src/services/privacy.js'), 'utf8');
   const boundary = readFileSync(path.resolve('src/services/account-data-boundary.js'), 'utf8');
-  assert.match(privacy, /loadSavedPlaces\(account\.id\)/);
+  assert.match(privacy, /loadAccountBoundExportData\(account\?\.id/);
+  assert.match(privacy, /loadSavedPlaces/);
   assert.match(privacy, /savedPlaces,/);
   assert.match(privacy, /clearSavedPlaces\(\)/);
   assert.match(boundary, /clearSavedPlacesImpl/);

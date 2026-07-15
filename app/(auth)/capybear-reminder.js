@@ -13,19 +13,19 @@ export default function CapybearReminder() {
   const { updateSettings } = useAppState();
   const { advanceTo, advancing, navigationError } = useOnboardingNavigation();
   const [scheduling, setScheduling] = useState(false);
-  const [scheduleError, setScheduleError] = useState(null);
+  const [scheduleErrorKey, setScheduleErrorKey] = useState(null);
   const busy = scheduling || advancing;
 
   const finish = async (enableReminder) => {
     if (busy) return;
     setScheduling(true);
-    setScheduleError(null);
+    setScheduleErrorKey(null);
     let scheduled = false;
     try {
       const result = await setCapybearReminderEnabled(enableReminder);
       scheduled = result.enabled;
       if (enableReminder && !scheduled) {
-        setScheduleError(t('permissions.notificationsRationaleMessage'));
+        setScheduleErrorKey('permissions.notificationsRationaleMessage');
         return;
       }
       try {
@@ -36,7 +36,7 @@ export default function CapybearReminder() {
       }
       await advanceTo('/(auth)/completion', { replace: true });
     } catch {
-      setScheduleError(t('settings.updateFailedMessage'));
+      setScheduleErrorKey('settings.updateFailedMessage');
     } finally {
       setScheduling(false);
     }
@@ -45,7 +45,7 @@ export default function CapybearReminder() {
   return (
     <Screen>
       <Header title={t('auth.capybearReminder')} subtitle={t('permissions.notificationsBody')} />
-      <FeedbackBanner message={scheduleError || navigationError} />
+      <FeedbackBanner message={scheduleErrorKey ? t(scheduleErrorKey) : navigationError} />
       <Button
         title={t('permissions.enableNotifications')}
         loading={scheduling}

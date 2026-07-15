@@ -18,7 +18,7 @@ Automated evidence at this audit point:
 | Gate | Result |
 | --- | --- |
 | ESLint | Pass |
-| Deterministic tests | **313/313 pass; 0 skipped or failed** |
+| Deterministic tests | **339/339 pass; 0 skipped or failed** |
 | `git diff --check` | Pass |
 | Expo Doctor | **20/20** |
 | iOS JavaScript production export | Pass through `npm run validate` |
@@ -133,7 +133,7 @@ Conversation history is stored and retrievable, and contacts/safety settings res
 
 - Production runtime/native declarations expose only reviewed `en/es/fr/zh`.
 - The `testflight` profile explicitly adds only `ar/he` for signed RTL QA. Both remain `reviewRequired` until native-speaker approval.
-- All 155 catalog files remain for translation parity/review, but 149 unreviewed work products are nonselectable.
+- All 155 catalog files remain for translation parity/review. A fail-closed `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` switch adds the 149 catalogs beyond TestFlight's six only in a development runtime/profile; preview, TestFlight, and production keep them nonselectable.
 - Runtime per-string fallback remains disabled. A release-critical six-locale overlay covers auth, location/map/share, SOS, BLE, voice, and Saved Places. Reminder strings continue to come from the complete locale catalogs.
 - Same-direction language selection updates mounted UI after durable persistence. Direction changes create a generation token before settings publication, schedule target-locale reminder copy with bounded cleanup, and allow one native `I18nManager` reload only after the current transition is safe. Superseded or uncertain native work defers automatic reload instead of leaving a stale notification schedule or reload loop.
 - Traditional Chinese device tags do not silently receive Simplified Chinese; they resolve to explicit English until a reviewed Traditional catalog exists.

@@ -2,8 +2,24 @@ const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
 const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
 
+function isDevelopmentLanguageCatalogEnvironment(env = process.env) {
+  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
+  return typeof requestedProfile === 'string'
+    && requestedProfile.trim() === 'development';
+}
+
+function showAllCatalogLanguagesEnabled(env = process.env) {
+  return env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true'
+    && isDevelopmentLanguageCatalogEnvironment(env);
+}
+
 function selectSupportedLocales(env = process.env) {
   const enableRTLQA = env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES === 'true';
+  if (showAllCatalogLanguagesEnabled(env)) {
+    return languageCatalog
+      .filter((language) => language.messages)
+      .map((language) => language.code);
+  }
   return languageCatalog
     .filter((language) => language.messages && (
       language.reviewRequired === false
@@ -60,6 +76,8 @@ function createEnvironmentDiagnostics(env = {}) {
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
   const safetyBackendEnabled = env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
   const phoneAuthEnabled = env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
+  const showAllLanguagesRequested = env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
+  const showAllLanguagesEnabled = showAllCatalogLanguagesEnabled(env);
   const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
   const humeCustomizationURL = env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
   const humeWSProxyURL = env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
@@ -119,6 +137,9 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
   if (production && offlineModeEnabled) invalid.push('offline_mode_must_be_disabled');
+  if (showAllLanguagesRequested && !showAllLanguagesEnabled) {
+    invalid.push('all_languages_development_only');
+  }
   if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
     invalid.push('public_hume_api_key_must_not_be_set');
   }
@@ -179,7 +200,8 @@ function createEnvironmentDiagnostics(env = {}) {
       offlineModeEnabled,
       vl01Enabled,
       safetyBackendEnabled,
-      phoneAuthEnabled
+      phoneAuthEnabled,
+      showAllLanguagesEnabled
     }
   };
 }
@@ -567,3 +589,5 @@ module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;
 module.exports.assertEnvironmentReady = assertEnvironmentReady;
 module.exports.reversedGoogleClientId = reversedGoogleClientId;
 module.exports.selectSupportedLocales = selectSupportedLocales;
+module.exports.isDevelopmentLanguageCatalogEnvironment = isDevelopmentLanguageCatalogEnvironment;
+module.exports.showAllCatalogLanguagesEnabled = showAllCatalogLanguagesEnabled;

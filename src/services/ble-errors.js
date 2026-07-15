@@ -2,6 +2,7 @@ export const BLE_ERROR_CODES = Object.freeze({
   unavailable: 'BLE_UNAVAILABLE',
   notReady: 'BLE_NOT_READY',
   poweredOff: 'BLE_POWERED_OFF',
+  permissionNotRequested: 'BLE_PERMISSION_NOT_REQUESTED',
   permissionDenied: 'BLE_PERMISSION_DENIED',
   permissionRequestFailed: 'BLE_PERMISSION_REQUEST_FAILED',
   noDevices: 'BLE_NO_DEVICES',
@@ -63,6 +64,8 @@ export function classifyNativeBLEError(error, phase = 'scan') {
 
 export function bleErrorTranslationKey(error, phase = error?.phase) {
   switch (error?.code) {
+    case BLE_ERROR_CODES.permissionNotRequested:
+      return 'permissions.bluetoothRationaleMessage';
     case BLE_ERROR_CODES.permissionDenied:
     case BLE_ERROR_CODES.permissionRequestFailed:
       return 'releaseCritical.blePermission';

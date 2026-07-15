@@ -7,14 +7,14 @@ export function useOnboardingNavigation() {
   const { advanceOnboarding } = useAuth();
   const { t } = useI18n();
   const navigatingRef = useRef(false);
-  const [navigationError, setNavigationError] = useState(null);
+  const [navigationErrorKey, setNavigationErrorKey] = useState(null);
   const [advancing, setAdvancing] = useState(false);
 
   const advanceTo = useCallback(async (nextRoute, { replace = false } = {}) => {
     if (navigatingRef.current) return false;
     navigatingRef.current = true;
     setAdvancing(true);
-    setNavigationError(null);
+    setNavigationErrorKey(null);
     try {
       await advanceOnboarding(nextRoute);
       if (replace) router.replace(nextRoute);
@@ -22,17 +22,17 @@ export function useOnboardingNavigation() {
       return true;
     } catch {
       navigatingRef.current = false;
-      setNavigationError(t('settings.updateFailedMessage'));
+      setNavigationErrorKey('settings.updateFailedMessage');
       return false;
     } finally {
       setAdvancing(false);
     }
-  }, [advanceOnboarding, t]);
+  }, [advanceOnboarding]);
 
   return {
     advanceTo,
     advancing,
-    navigationError,
-    clearNavigationError: () => setNavigationError(null)
+    navigationError: navigationErrorKey ? t(navigationErrorKey) : null,
+    clearNavigationError: () => setNavigationErrorKey(null)
   };
 }

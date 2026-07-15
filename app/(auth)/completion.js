@@ -10,17 +10,17 @@ import { logger } from '../../src/utils/logger';
 export default function Completion() {
   const { completeOnboarding, onboardingComplete } = useAuth();
   const { t } = useI18n();
-  const [error, setError] = useState(null);
+  const [errorKey, setErrorKey] = useState(null);
 
   const finish = useCallback(async () => {
-    setError(null);
+    setErrorKey(null);
     try {
       await completeOnboarding();
     } catch (completionError) {
       logger.warn('[Auth] Could not persist onboarding completion', completionError);
-      setError(t('settings.updateFailedMessage'));
+      setErrorKey('settings.updateFailedMessage');
     }
-  }, [completeOnboarding, t]);
+  }, [completeOnboarding]);
 
   useEffect(() => {
     if (!onboardingComplete) void finish();
@@ -34,8 +34,8 @@ export default function Completion() {
 
   return (
     <Screen>
-      {error
-        ? <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={finish} />
+      {errorKey
+        ? <FeedbackBanner message={t(errorKey)} actionLabel={t('common.retry')} onAction={finish} />
         : <LoadingState message={t('common.loading')} />}
     </Screen>
   );

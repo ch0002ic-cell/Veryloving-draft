@@ -41,13 +41,13 @@ export default function JewelrySetup() {
         router.push('/(auth)/capybear-setup');
       } catch {
         finishingRef.current = false;
-        if (mountedRef.current) setError(t('settings.updateFailedMessage'));
+        if (mountedRef.current) setError({ translationKey: 'settings.updateFailedMessage' });
       }
       return;
     }
     if (router.canGoBack()) router.back();
     else router.replace('/device-management');
-  }, [advanceOnboarding, standalone, t]);
+  }, [advanceOnboarding, standalone]);
 
   const stopScan = useCallback(() => {
     stopScanRef.current?.();
@@ -100,7 +100,7 @@ export default function JewelrySetup() {
         });
       }
     }
-  }, [stopScan, t]);
+  }, [stopScan]);
 
   const connect = useCallback(async (candidate) => {
     stopScan();
@@ -128,7 +128,7 @@ export default function JewelrySetup() {
     } finally {
       if (mountedRef.current) setConnectingId(null);
     }
-  }, [finishSetup, setDevice, stopScan, t]);
+  }, [finishSetup, setDevice, stopScan]);
 
   return (
     <Screen scroll={false}>

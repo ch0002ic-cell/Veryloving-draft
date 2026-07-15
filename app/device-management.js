@@ -10,29 +10,45 @@ import { images } from '../src/constants/assets';
 import { useAppState } from '../src/context/AppContext';
 import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
+import { bleErrorTranslationKey } from '../src/services/ble-errors';
 
 export default function DeviceManagement() {
-  const { device, removePairedDevice } = useAppState();
+  const { device, reconnectPairedDevice, removePairedDevice } = useAppState();
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(null);
+  const [errorKey, setErrorKey] = useState(null);
   const reconnecting = device.connectionState === 'reconnecting';
   const status = device.connected
     ? (Number.isFinite(device.battery)
       ? t('device.connected', { battery: device.battery })
       : t('safetyCall.connected'))
     : (reconnecting ? t('common.connecting') : t('device.none'));
+  const connectionErrorKey = device.lastErrorCode
+    ? bleErrorTranslationKey({ code: device.lastErrorCode }, 'connect')
+    : null;
+
+  const reconnect = async () => {
+    setBusy(true);
+    setErrorKey(null);
+    try {
+      await reconnectPairedDevice();
+    } catch {
+      setErrorKey('settings.updateFailedMessage');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const remove = async () => {
     setBusy(true);
-    setError(null);
+    setErrorKey(null);
     try {
       const result = await removePairedDevice();
       if (!result.nativeDisconnected) {
-        setError(t('settings.updateFailedMessage'));
+        setErrorKey('settings.updateFailedMessage');
       }
     } catch {
-      setError(t('settings.updateFailedMessage'));
+      setErrorKey('settings.updateFailedMessage');
     } finally {
       setBusy(false);
     }
@@ -46,16 +62,26 @@ export default function DeviceManagement() {
         style={{ width: '100%', height: 220 }}
         resizeMode="contain"
       />
-      <FeedbackBanner message={error} />
+      <FeedbackBanner message={errorKey ? t(errorKey) : connectionErrorKey ? t(connectionErrorKey) : null} />
       <Card>
         <Text style={{ fontFamily: fonts.bold }}>{device.name}</Text>
         <Text>{status}</Text>
       </Card>
+      {device.id && !device.connected ? (
+        <Button
+          title={t('safetyCall.reconnect')}
+          icon="refresh-outline"
+          loading={reconnecting}
+          disabled={busy || reconnecting}
+          onPress={reconnect}
+        />
+      ) : null}
       <Button
         title={device.id ? t('common.remove') : t('device.connect')}
         accessibilityLabel={device.id ? `${t('common.remove')} ${device.name}` : t('device.connect')}
         variant={device.id ? 'danger' : 'primary'}
         loading={busy}
+        disabled={busy}
         onPress={() => device.id ? remove() : router.push('/jewelry-setup?mode=standalone')}
       />
     </Screen>

@@ -31,7 +31,7 @@ export default function EmergencySOS() {
   const { accessToken, user } = useAuth();
   const { locale, t } = useI18n();
   const [activating, setActivating] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+  const [feedbackKey, setFeedbackKey] = useState(null);
   const [lastSOSStatus, setLastSOSStatus] = useState(null);
   const callableContact = useMemo(() => contacts.find((contact) => contact?.phone), [contacts]);
 
@@ -53,19 +53,19 @@ export default function EmergencySOS() {
   const activate = async () => {
     if (activating) return;
     setActivating(true);
-    setFeedback(null);
+    setFeedbackKey(null);
     try {
       const location = await loadLastKnownLocation().catch(() => null);
       const result = await triggerSOS(contacts, { accessToken, accountId: user?.id, location });
       await refreshLastStatus();
       if (result.status === 'contact_required') {
-        setFeedback(t('emergency.addContact'));
+        setFeedbackKey('emergency.addContact');
       } else if (result.backendStatus === 'failed') {
-        setFeedback(t('settings.updateFailedMessage'));
+        setFeedbackKey('settings.updateFailedMessage');
       }
     } catch {
       await refreshLastStatus();
-      setFeedback(t('settings.linkFailed'));
+      setFeedbackKey('settings.linkFailed');
     } finally {
       setActivating(false);
     }
@@ -74,7 +74,7 @@ export default function EmergencySOS() {
   return (
     <Screen>
       <Header title={t('emergency.title')} subtitle={t('emergency.subtitle')} />
-      <FeedbackBanner message={feedback} />
+      <FeedbackBanner message={feedbackKey ? t(feedbackKey) : null} />
       <Image source={images.star} style={{ width: '100%', height: 160 }} resizeMode="contain" />
       <Card>
         <Text style={{ fontFamily: fonts.regular }}>
@@ -83,6 +83,14 @@ export default function EmergencySOS() {
             : t('emergency.addContact')}
         </Text>
       </Card>
+      {!callableContact ? (
+        <Button
+          title={t('contacts.addTitle')}
+          icon="person-add-outline"
+          disabled={activating}
+          onPress={() => router.push('/emergency-contacts')}
+        />
+      ) : null}
       {lastSOSStatus ? (
         <Card>
           <Text style={{ fontFamily: fonts.bold }}>{t('releaseCritical.lastSOSAttempt')}</Text>

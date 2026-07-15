@@ -4,9 +4,33 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const {
   attachRemoteDataToExport,
+  loadAccountBoundExportData,
   REMOTE_DATA_EXPORT_STATUS,
   remoteDataExportErrorCode
 } = require('../src/services/privacy-export');
+
+test('privacy export never silently omits protected account-bound stores', async () => {
+  const complete = await loadAccountBoundExportData('account-a', {
+    loadEmergencyContacts: async (accountId) => [{ id: `contact-${accountId}` }],
+    loadSavedPlaces: async (accountId) => [{ id: `place-${accountId}` }]
+  });
+  assert.deepEqual(complete, {
+    emergencyContacts: [{ id: 'contact-account-a' }],
+    savedPlaces: [{ id: 'place-account-a' }]
+  });
+
+  await assert.rejects(loadAccountBoundExportData('account-a', {
+    loadEmergencyContacts: async () => { throw new Error('Keychain unavailable'); },
+    loadSavedPlaces: async () => []
+  }), /Keychain unavailable/);
+
+  let loads = 0;
+  assert.deepEqual(await loadAccountBoundExportData(null, {
+    loadEmergencyContacts: async () => { loads += 1; },
+    loadSavedPlaces: async () => { loads += 1; }
+  }), { emergencyContacts: [], savedPlaces: [] });
+  assert.equal(loads, 0);
+});
 
 test('privacy export preserves local data when the remote export fails', async () => {
   const localSnapshot = {

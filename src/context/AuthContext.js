@@ -51,7 +51,8 @@ import {
 import { withTimeout } from '../utils/async';
 import {
   createPhoneVerificationState,
-  parsePhoneVerificationState
+  parsePhoneVerificationState,
+  restorePhoneVerificationState
 } from '../utils/phone-verification-state';
 import { ensureAccountDataOwner } from '../services/account-data-boundary';
 const AuthContext = createContext(null);
@@ -64,6 +65,7 @@ const ONBOARDING_KEY = 'veryloving.auth.onboarding';
 const ONBOARDING_PROGRESS_KEY = 'veryloving.auth.onboardingProgress.v1';
 const PHONE_VERIFICATION_KEY = 'veryloving.auth.phoneVerification.v1';
 const AUTH_RESTORE_TIMEOUT_MS = 12000;
+const PROVIDER_SIGN_OUT_TIMEOUT_MS = 5000;
 const LEGACY_SESSION_KEYS = [LEGACY_TOKEN_KEY, LEGACY_REFRESH_TOKEN_KEY, LEGACY_USER_KEY];
 const DEVELOPMENT_DEMO_USER = Object.freeze({
   id: 'demo:local',
@@ -247,6 +249,7 @@ export function AuthProvider({ children }) {
             setOnboardingComplete(false);
             onboardingProgressRef.current = null;
             setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
+            setAuthError('releaseCritical.authSessionExpired');
             setSessionStatus('reauthentication-required');
           });
         } else {
@@ -292,17 +295,23 @@ export function AuthProvider({ children }) {
     ]) => {
       if (!active || authGeneration !== authGenerationRef.current) return;
       if (signedOutMarker) {
+        const postSignOutPhoneVerification = restorePhoneVerificationState(
+          rawPhoneVerification,
+          { signedOutMarker }
+        );
         await runSessionMutation(() => Promise.allSettled([
           secureStorage.deleteItemAsync(SESSION_KEY),
           secureStorage.deleteItemAsync(ONBOARDING_KEY),
           secureStorage.deleteItemAsync(ONBOARDING_PROGRESS_KEY),
-          secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY),
+          ...(postSignOutPhoneVerification
+            ? []
+            : [secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY)]),
           ...LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key))
         ]));
         if (active && authGeneration === authGenerationRef.current) {
           onboardingProgressRef.current = null;
           setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
-          setPendingPhoneVerification(null);
+          setPendingPhoneVerification(postSignOutPhoneVerification);
           setSessionStatus('signed-out');
         }
         return;
@@ -376,6 +385,7 @@ export function AuthProvider({ children }) {
         if (active && authGeneration === authGenerationRef.current) {
           onboardingProgressRef.current = null;
           setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
+          setAuthError('releaseCritical.authSessionExpired');
           setSessionStatus('reauthentication-required');
         }
       } else {
@@ -770,12 +780,24 @@ export function AuthProvider({ children }) {
       setPendingPhoneVerification(null);
     }
     if (signedInProvider === 'google' && !isExpoGoRuntime()) {
-      import('@react-native-google-signin/google-signin').then((googleModule) => {
-        const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
-        return GoogleSignin?.signOut?.();
-      }).catch((error) => logger.info('[Auth] Google provider sign-out is pending', {
-        errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
-      }));
+      try {
+        await withTimeout(
+          import('@react-native-google-signin/google-signin').then((googleModule) => {
+            const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
+            return GoogleSignin?.signOut?.();
+          }),
+          PROVIDER_SIGN_OUT_TIMEOUT_MS,
+          'Google provider sign-out timed out.'
+        );
+      } catch (error) {
+        // Local credentials and account-bound data are already cleared. A
+        // native provider failure must not resurrect the app session, but
+        // awaiting it here prevents an immediate re-login from racing a late
+        // Google SDK sign-out.
+        logger.info('[Auth] Google provider sign-out could not be confirmed', {
+          errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
+        });
+      }
     }
     if (cleanup.residualFailures) {
       logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {

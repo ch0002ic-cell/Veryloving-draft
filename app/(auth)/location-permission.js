@@ -15,7 +15,7 @@ export default function LocationPermission() {
   const { t } = useI18n();
   const { advanceOnboarding } = useAuth();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(null);
+  const [errorKey, setErrorKey] = useState(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const requestingRef = useRef(false);
   const navigatingRef = useRef(false);
@@ -23,44 +23,44 @@ export default function LocationPermission() {
   const continueOnboarding = useCallback(async () => {
     if (navigatingRef.current) return;
     navigatingRef.current = true;
-    setError(null);
+    setErrorKey(null);
     try {
       await advanceOnboarding('/(auth)/notification-permission');
       router.push('/(auth)/notification-permission');
     } catch {
       navigatingRef.current = false;
-      setError(t('settings.updateFailedMessage'));
+      setErrorKey('settings.updateFailedMessage');
     }
-  }, [advanceOnboarding, t]);
+  }, [advanceOnboarding]);
 
   const requestPermission = useCallback(async () => {
     if (requestingRef.current || navigatingRef.current) return;
     requestingRef.current = true;
     setBusy(true);
-    setError(null);
+    setErrorKey(null);
     setPermissionDenied(false);
     try {
       await requestLocationPermission({ showRationale: false });
       await continueOnboarding();
     } catch (permissionError) {
       setPermissionDenied(permissionError?.code === 'LOCATION_PERMISSION_DENIED');
-      setError(permissionError?.code === 'LOCATION_NOT_REQUESTED'
-        ? t('map.notRequested')
+      setErrorKey(permissionError?.code === 'LOCATION_NOT_REQUESTED'
+        ? 'map.notRequested'
         : permissionError?.code === 'LOCATION_PERMISSION_DENIED'
-          ? t('map.permissionOff')
-          : t('map.updateFailed'));
+          ? 'map.permissionOff'
+          : 'map.updateFailed');
     } finally {
       requestingRef.current = false;
       setBusy(false);
     }
-  }, [continueOnboarding, t]);
+  }, [continueOnboarding]);
 
   return (
     <Screen>
       <Header title={t('permissions.locationTitle')} subtitle={t('permissions.locationSubtitle')} />
       <Card><Text style={{ fontFamily: fonts.regular }}>{t('permissions.locationBody')}</Text></Card>
       <FeedbackBanner
-        message={error}
+        message={errorKey ? t(errorKey) : null}
         actionLabel={permissionDenied ? t('common.settings') : undefined}
         onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
       />

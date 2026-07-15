@@ -9,7 +9,7 @@ The language-switching implementation, persistence contract, locale gate, select
 
 **Physical-device status for this change set: BLOCKED — EXTERNAL.** No physical iPhone is connected to the engineering environment, and the authenticated Expo account does not have read/build permission for the configured EAS project. Therefore this document does not claim that the current commit has passed on a real device. An EAS project owner must grant access or build the committed SHA, publish it to TestFlight, and complete the steps below.
 
-The dedicated `testflight` EAS profile is the required artifact for this test. It exposes the reviewed production set—English, Spanish, French, and Simplified Chinese—plus Arabic and Hebrew solely for signed RTL QA. A normal development or production profile may intentionally omit the two QA-only RTL locales.
+The dedicated `testflight` EAS profile is the required artifact for this test. It exposes the reviewed production set—English, Spanish, French, and Simplified Chinese—plus Arabic and Hebrew solely for signed RTL QA. It explicitly keeps `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false`; a build showing the other 149 unreviewed catalogs is a development audit artifact and must not be accepted as the TestFlight candidate.
 
 ## Test Record
 

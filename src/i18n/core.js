@@ -7,6 +7,10 @@ export const SYSTEM_LANGUAGE = 'system';
 export const TRANSLATION_FALLBACK_ENABLED = false;
 export const RTL_QA_LANGUAGE_CODES = Object.freeze(['ar', 'he']);
 export const RTL_QA_LANGUAGES_ENABLED = process.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES === 'true';
+export const ALL_CATALOG_LANGUAGES_REQUESTED = process.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
+export const ALL_CATALOG_LANGUAGES_ENABLED = ALL_CATALOG_LANGUAGES_REQUESTED
+  && typeof __DEV__ !== 'undefined'
+  && __DEV__ === true;
 export const catalogLanguages = languageCatalog
   .filter((language) => language.messages)
   .map((language) => language.code);
@@ -14,7 +18,14 @@ export const maintainedLanguages = languageCatalog
   .filter((language) => language.messages && language.reviewRequired === false)
   .map((language) => language.code);
 
-export function selectRuntimeLanguageCodes({ enableRTLQA = RTL_QA_LANGUAGES_ENABLED } = {}) {
+export function selectRuntimeLanguageCodes({
+  enableRTLQA = RTL_QA_LANGUAGES_ENABLED,
+  showAllCatalogs = ALL_CATALOG_LANGUAGES_ENABLED
+} = {}) {
+  // The full catalog is a development-only translation-audit surface. The
+  // default is guarded by __DEV__, so a mistakenly configured release bundle
+  // still exposes only reviewed or explicitly approved QA locales.
+  if (showAllCatalogs) return [...catalogLanguages];
   const allowed = new Set([
     ...maintainedLanguages,
     ...(enableRTLQA ? RTL_QA_LANGUAGE_CODES : [])

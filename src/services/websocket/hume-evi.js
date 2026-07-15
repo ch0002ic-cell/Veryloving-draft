@@ -651,16 +651,29 @@ export class HumeEVIService {
     this.clearReconnectTimer();
     this.cancelActiveToolCall();
     this.resetChatReadiness();
-    await this.stopMicrophone().catch(() => {});
-    if (this.socket) {
-      this.socket.onopen = null;
-      this.socket.onmessage = null;
-      this.socket.onerror = null;
-      this.socket.onclose = null;
-      this.socket.close(1000, 'Client disconnected');
-      this.socket = null;
+    // Detach the transport before awaiting native microphone cleanup. An iOS
+    // audio stop can take time during interruption/background transitions;
+    // no late assistant/tool frame should update or persist a call after the
+    // user has closed it.
+    const socket = this.socket;
+    this.socket = null;
+    if (socket) {
+      socket.onopen = null;
+      socket.onmessage = null;
+      socket.onerror = null;
+      socket.onclose = null;
+      try {
+        socket.close(1000, 'Client disconnected');
+      } catch (error) {
+        logger.warn('[HumeEVIService] Native WebSocket close failed during cleanup', {
+          name: error?.name || 'WebSocketCloseError'
+        });
+      }
     }
-    await audioService.cancelAndClearQueue().catch(() => {});
+    await Promise.all([
+      this.stopMicrophone().catch(() => {}),
+      audioService.cancelAndClearQueue().catch(() => {})
+    ]);
     this.setState('disconnected');
   }
 }

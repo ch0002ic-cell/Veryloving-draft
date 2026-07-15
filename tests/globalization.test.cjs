@@ -230,6 +230,12 @@ test('release language gating keeps generated catalogs out of production and add
     selectRuntimeLanguageCodes({ enableRTLQA: true }).sort(),
     ['ar', 'en', 'es', 'fr', 'he', 'zh']
   );
+  assert.deepEqual(
+    selectRuntimeLanguageCodes({ showAllCatalogs: true }),
+    catalogLanguages
+  );
+  assert.ok(selectRuntimeLanguageCodes({ showAllCatalogs: true }).includes('de'));
+  assert.ok(selectRuntimeLanguageCodes({ showAllCatalogs: true }).includes('ja'));
   const releaseKeys = Object.keys(releaseCriticalMessages.en).sort();
   for (const locale of ['en', 'es', 'fr', 'zh', 'ar', 'he']) {
     assert.deepEqual(Object.keys(releaseCriticalMessages[locale]).sort(), releaseKeys);
@@ -263,6 +269,33 @@ test('Expo config derives native locale declarations from the language catalog',
     appConfig.selectSupportedLocales({ EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true' }).sort(),
     ['ar', 'en', 'es', 'fr', 'he', 'zh']
   );
+  assert.equal(
+    appConfig.selectSupportedLocales({
+      EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+      VERYLOVING_BUILD_PROFILE: 'development'
+    }).length,
+    155
+  );
+  assert.deepEqual(
+    appConfig.selectSupportedLocales({
+      EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true',
+      EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+      VERYLOVING_BUILD_PROFILE: 'production'
+    }).sort(),
+    ['ar', 'en', 'es', 'fr', 'he', 'zh']
+  );
+  assert.deepEqual(
+    appConfig.selectSupportedLocales({ EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true' }).sort(),
+    ['en', 'es', 'fr', 'zh']
+  );
+  assert.equal(appConfig.showAllCatalogLanguagesEnabled({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'development'
+  }), true);
+  assert.equal(appConfig.showAllCatalogLanguagesEnabled({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'production'
+  }), false);
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
   assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
   assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);
@@ -319,4 +352,57 @@ test('TestFlight RTL runtime resolves Arabic and Hebrew with localized critical 
   assert.equal(result.hebrew, 'he');
   assert.equal(result.rtl, true);
   assert.match(result.copy, /[\u0600-\u06FF]/);
+});
+
+test('development catalog audit mode exposes all complete catalogs and switches a restored locale', () => {
+  const probe = spawnSync(process.execPath, [
+    '--require',
+    '@babel/register',
+    '-e',
+    `global.__DEV__ = true; const core = require('./src/i18n/core'); process.stdout.write(JSON.stringify({
+      count: core.supportedLanguages.length,
+      options: core.languageOptions.length,
+      firstOption: core.languageOptions[0]?.code,
+      german: core.resolveLanguage('de-DE'),
+      copy: core.translateForLocale('de', 'auth.createAccount')
+    }));`
+  ], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: { ...process.env, NODE_ENV: 'development', EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true' }
+  });
+  assert.equal(probe.status, 0, probe.stderr);
+  const result = JSON.parse(probe.stdout);
+  assert.equal(result.count, 155);
+  assert.equal(result.options, 156);
+  assert.equal(result.firstOption, 'system');
+  assert.equal(result.german, 'de');
+  assert.equal(result.copy, 'Konto erstellen');
+});
+
+test('release runtime ignores the full-catalog flag even when RTL QA remains enabled', () => {
+  const probe = spawnSync(process.execPath, [
+    '--require',
+    '@babel/register',
+    '-e',
+    `global.__DEV__ = false; const core = require('./src/i18n/core'); process.stdout.write(JSON.stringify({
+      supported: [...core.supportedLanguages].sort(),
+      german: core.resolveLanguage('de-DE'),
+      copy: core.translateForLocale('de', 'auth.createAccount')
+    }));`
+  ], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      NODE_ENV: 'production',
+      EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true',
+      EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
+    }
+  });
+  assert.equal(probe.status, 0, probe.stderr);
+  const result = JSON.parse(probe.stdout);
+  assert.deepEqual(result.supported, ['ar', 'en', 'es', 'fr', 'he', 'zh']);
+  assert.equal(result.german, 'en');
+  assert.equal(result.copy, 'Create account');
 });

@@ -41,6 +41,7 @@ const BLE_ERROR_MESSAGE_KEYS = {
   [BLE_ERROR_CODES.unavailable]: 'jewelry.scanAccessFailed',
   [BLE_ERROR_CODES.notReady]: 'jewelry.scanAccessFailed',
   [BLE_ERROR_CODES.poweredOff]: 'jewelry.scanFailed',
+  [BLE_ERROR_CODES.permissionNotRequested]: 'permissions.bluetoothRationaleMessage',
   [BLE_ERROR_CODES.permissionDenied]: 'jewelry.permissionDenied',
   [BLE_ERROR_CODES.permissionRequestFailed]: 'jewelry.scanAccessFailed',
   [BLE_ERROR_CODES.noDevices]: 'jewelry.noDevices',
@@ -199,8 +200,8 @@ export class BLEService {
       return () => {};
     }
     if (!await explainPermission('bluetooth')) {
-      onError?.(createBLEError(BLE_ERROR_CODES.permissionDenied, null, 'permission'));
-      onComplete?.('permission-declined');
+      onError?.(createBLEError(BLE_ERROR_CODES.permissionNotRequested, null, 'permission'));
+      onComplete?.('rationale-declined');
       return () => {};
     }
     try {

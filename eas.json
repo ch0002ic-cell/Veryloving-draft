@@ -25,7 +25,8 @@
       "environment": "preview",
       "env": {
         "VERYLOVING_BUILD_PROFILE": "preview",
-        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "false"
       },
       "android": {
         "buildType": "apk"
@@ -37,6 +38,7 @@
       "env": {
         "VERYLOVING_BUILD_PROFILE": "production",
         "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "false",
         "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "false"
       },
       "autoIncrement": true
@@ -48,6 +50,7 @@
       "env": {
         "VERYLOVING_BUILD_PROFILE": "production",
         "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "false",
         "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
       },
       "autoIncrement": true,

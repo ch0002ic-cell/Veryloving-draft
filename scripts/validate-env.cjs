@@ -11,6 +11,7 @@ const BOOLEAN_VARIABLES = new Set([
   'EXPO_PUBLIC_HUME_CLM_ENABLED',
   'EXPO_PUBLIC_ENABLE_OFFLINE_MODE',
   'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES',
+  'EXPO_PUBLIC_SHOW_ALL_LANGUAGES',
   'EXPO_PUBLIC_SAFETY_BACKEND_ENABLED',
   'EXPO_PUBLIC_VL01_ENABLED'
 ]);
@@ -28,6 +29,7 @@ const ROOT_VARIABLES = [
   'EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN',
   'EXPO_PUBLIC_ENABLE_OFFLINE_MODE',
   'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES',
+  'EXPO_PUBLIC_SHOW_ALL_LANGUAGES',
   'EXPO_PUBLIC_SAFETY_BACKEND_ENABLED',
   'EXPO_PUBLIC_VL01_ENABLED',
   'EXPO_PUBLIC_VL01_SERVICE_UUID',
@@ -256,6 +258,11 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
 
     if (name === 'EXPO_PUBLIC_ENABLE_OFFLINE_MODE' && production && enabled(env, name)) {
       results.push(makeResult(name, 'error', 'must be false for a production release'));
+      continue;
+    }
+
+    if (name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES' && (production || preview) && enabled(env, name)) {
+      results.push(makeResult(name, 'error', 'must be false outside development; unreviewed catalogs are audit-only'));
       continue;
     }
 

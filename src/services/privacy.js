@@ -26,6 +26,7 @@ import { clearSavedPlaces, loadSavedPlaces } from './saved-place-store';
 import { setCapybearReminderEnabled } from './capybear-reminder';
 import {
   attachRemoteDataToExport,
+  loadAccountBoundExportData,
   REMOTE_DATA_EXPORT_STATUS
 } from './privacy-export';
 
@@ -69,12 +70,13 @@ export async function buildUserDataExport({ accessToken } = {}) {
   // Legacy profile support exists only for exports made before AuthContext has
   // completed its one-time atomic-envelope migration.
   const account = session?.user || await readJSONSecureStore(AUTH_STORAGE_KEYS.user);
-  const emergencyContacts = account?.id
-    ? await loadEmergencyContactCache(account.id).catch(() => [])
-    : [];
-  const savedPlaces = account?.id
-    ? await loadSavedPlaces(account.id).catch(() => [])
-    : [];
+  // A privacy export must never report success after silently omitting a
+  // protected local store. Let either Keychain read failure reach Settings so
+  // the user can retry instead of receiving an incomplete archive.
+  const { emergencyContacts, savedPlaces } = await loadAccountBoundExportData(account?.id, {
+    loadEmergencyContacts: loadEmergencyContactCache,
+    loadSavedPlaces
+  });
   const localSnapshot = {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),

@@ -4,6 +4,18 @@ export const REMOTE_DATA_EXPORT_STATUS = Object.freeze({
   notConfigured: 'not-configured'
 });
 
+export async function loadAccountBoundExportData(accountId, {
+  loadEmergencyContacts,
+  loadSavedPlaces
+}) {
+  if (!accountId) return { emergencyContacts: [], savedPlaces: [] };
+  const [emergencyContacts, savedPlaces] = await Promise.all([
+    loadEmergencyContacts(accountId),
+    loadSavedPlaces(accountId)
+  ]);
+  return { emergencyContacts, savedPlaces };
+}
+
 export function remoteDataExportErrorCode(error) {
   const candidate = error?.code || error?.name;
   return typeof candidate === 'string' && /^[A-Z][A-Z0-9_]{1,79}$/.test(candidate)

@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
 const Module = require('node:module');
+const path = require('node:path');
 const { test } = require('node:test');
 const {
   BLE_ERROR_CODES,
@@ -70,6 +72,10 @@ test('BLE state and native failures map to stable actionable codes', () => {
   assert.equal(
     bleErrorTranslationKey({ code: BLE_ERROR_CODES.permissionDenied }),
     'releaseCritical.blePermission'
+  );
+  assert.equal(
+    bleErrorTranslationKey({ code: BLE_ERROR_CODES.permissionNotRequested }),
+    'permissions.bluetoothRationaleMessage'
   );
   assert.equal(
     bleErrorTranslationKey({ code: BLE_ERROR_CODES.poweredOff }),
@@ -220,7 +226,7 @@ test('scan reports Bluetooth off with a typed error', async () => {
   assert.equal(completion, 'bluetooth-unavailable');
 });
 
-test('declined Bluetooth permission reports a typed denial', async () => {
+test('declining the Bluetooth rationale stays retryable without claiming an OS denial', async () => {
   permissionGranted = false;
   const service = new BLEService();
   let receivedError;
@@ -229,8 +235,8 @@ test('declined Bluetooth permission reports a typed denial', async () => {
     onError: (error) => { receivedError = error; },
     onComplete: (reason) => { completion = reason; }
   });
-  assert.equal(receivedError.code, BLE_ERROR_CODES.permissionDenied);
-  assert.equal(completion, 'permission-declined');
+  assert.equal(receivedError.code, BLE_ERROR_CODES.permissionNotRequested);
+  assert.equal(completion, 'rationale-declined');
 });
 
 test('Expo Go BLE fails closed before requesting permissions or loading native code', async () => {
@@ -463,4 +469,16 @@ test('BLE reconnect uses bounded exponential attempts and stops on success', asy
   assert.equal(connected.connected, true);
   assert.equal(attempts, 3);
   assert.deepEqual(delays, [10, 20]);
+});
+
+test('device management exposes typed reconnect failure and an explicit retry path', () => {
+  const screen = readFileSync(path.resolve(process.cwd(), 'app/device-management.js'), 'utf8');
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+
+  assert.match(screen, /bleErrorTranslationKey\(\{ code: device\.lastErrorCode \}, 'connect'\)/);
+  assert.match(screen, /title=\{t\('safetyCall\.reconnect'\)\}/);
+  assert.match(screen, /await reconnectPairedDevice\(\)/);
+  assert.match(appContext, /const reconnectPairedDevice = useCallback/);
+  assert.match(appContext, /connectionState: 'reconnecting'/);
+  assert.match(appContext, /autoReconnect: true/);
 });

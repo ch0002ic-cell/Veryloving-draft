@@ -239,6 +239,7 @@ test('Expo environment diagnostics identify unsafe production configuration with
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://voice.example.test',
     EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
     EXPO_PUBLIC_ENABLE_OFFLINE_MODE: 'true',
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'sk.should-not-be-public',
     EXPO_PUBLIC_HUME_API_KEY: 'must-not-ship'
   });
@@ -249,6 +250,7 @@ test('Expo environment diagnostics identify unsafe production configuration with
   assert.ok(diagnostics.invalid.includes('mapbox_runtime_token_looks_secret'));
   assert.ok(diagnostics.invalid.includes('public_hume_api_key_must_not_be_set'));
   assert.ok(diagnostics.invalid.includes('offline_mode_must_be_disabled'));
+  assert.ok(diagnostics.invalid.includes('all_languages_development_only'));
 });
 
 test('remote production builds fail closed on missing or unsafe configuration', () => {
@@ -316,6 +318,16 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     () => createAppConfig.assertEnvironmentReady(forcedOffline),
     /Production configuration is invalid/
   );
+
+  const unreviewedLanguages = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
+  });
+  assert.ok(unreviewedLanguages.invalid.includes('all_languages_development_only'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(unreviewedLanguages),
+    /Production configuration is invalid/
+  );
 });
 
 test('Google iOS client IDs produce the native reversed URL scheme', () => {
@@ -354,10 +366,12 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build['development-simulator'].ios.simulator, true);
   assert.equal(eas.build.preview.environment, 'preview');
   assert.equal(eas.build.preview.android.buildType, 'apk');
+  assert.equal(eas.build.preview.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
   assert.equal(eas.build.production.environment, 'production');
   assert.equal(eas.build.production.distribution, 'store');
   assert.equal(eas.build.production.autoIncrement, true);
   assert.equal(eas.build.production.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'false');
+  assert.equal(eas.build.production.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
   assert.equal(eas.build.testflight.extends, 'production');
   assert.equal(eas.build.testflight.environment, 'production');
   assert.equal(eas.build.testflight.distribution, 'store');
@@ -365,5 +379,6 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.testflight.ios.simulator, false);
   assert.equal(eas.build.testflight.env.VERYLOVING_BUILD_PROFILE, 'production');
   assert.equal(eas.build.testflight.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
+  assert.equal(eas.build.testflight.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
   assert.deepEqual(eas.submit.testflight, {});
 });

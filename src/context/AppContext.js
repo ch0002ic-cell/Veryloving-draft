@@ -341,6 +341,20 @@ export function AppProvider({ children }) {
     return undefined;
   }, [device, isHydrated, setDevice]);
 
+  const reconnectPairedDevice = useCallback(async () => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
+    const current = deviceRef.current;
+    if (!current.id) throw new Error('No paired device is available to reconnect.');
+    if (current.connected || current.connectionState === 'reconnecting') return current;
+    return setDevice({
+      ...current,
+      connected: false,
+      connectionState: 'reconnecting',
+      autoReconnect: true,
+      lastErrorCode: null
+    });
+  }, [setDevice]);
+
   const removePairedDevice = useCallback(async () => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     const rememberedDevice = deviceRef.current;
@@ -534,7 +548,7 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

@@ -276,6 +276,20 @@ test('auth restore migrates only validated legacy sessions and refresh stays ato
   assert.match(auth, /storage\.setJSON\(SIGNED_OUT_KEY[\s\S]*invalidatePersistedSession/);
 });
 
+test('Google logout is bounded and completes after local session invalidation', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const signOut = auth.slice(
+    auth.indexOf('const signOut = useCallback'),
+    auth.indexOf('\n\n  const value = useMemo')
+  );
+  const invalidatesLocalSession = signOut.indexOf('await runSessionMutation(() => invalidatePersistedSession())');
+  const awaitsProvider = signOut.indexOf("import('@react-native-google-signin/google-signin')");
+
+  assert.ok(invalidatesLocalSession >= 0 && invalidatesLocalSession < awaitsProvider);
+  assert.match(signOut, /await withTimeout\([\s\S]*GoogleSignin\?\.signOut\?\.\(\)[\s\S]*PROVIDER_SIGN_OUT_TIMEOUT_MS/);
+  assert.match(signOut, /catch \(error\)[\s\S]*Google provider sign-out could not be confirmed/);
+});
+
 test('privacy deletion keeps sign-out progressing after protected Keychain cleanup failures', () => {
   const privacy = readFileSync(path.resolve(process.cwd(), 'src/services/privacy.js'), 'utf8');
   const deletion = privacy.slice(privacy.indexOf('export async function deleteAllUserData'));
@@ -318,6 +332,19 @@ test('cold-start routing prioritizes phone verification and persisted onboarding
   assert.ok(signedOutRoute < onboardingRoute);
   assert.ok(onboardingRoute < safeRestore);
   assert.match(index, /if \(!onboardingComplete\) return <Redirect href=\{onboardingRoute\} \/>/);
+});
+
+test('cold-start cleanup preserves only a phone challenge proven newer than logout', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const signedOutRestore = auth.slice(
+    auth.indexOf('if (signedOutMarker)'),
+    auth.indexOf('const restoredPhoneVerification')
+  );
+
+  assert.match(signedOutRestore, /restorePhoneVerificationState\([\s\S]*signedOutMarker/);
+  assert.match(signedOutRestore, /postSignOutPhoneVerification[\s\S]*\? \[\][\s\S]*deleteItemAsync\(PHONE_VERIFICATION_KEY\)/);
+  assert.match(signedOutRestore, /setPendingPhoneVerification\(postSignOutPhoneVerification\)/);
+  assert.doesNotMatch(signedOutRestore, /storage\.remove\(SIGNED_OUT_KEY\)/);
 });
 
 test('safe navigation restoration is tracked at the root without replacing initial links', () => {
@@ -375,6 +402,7 @@ test('visible authentication errors retain translation keys across language chan
 
   assert.match(auth, /setAuthError\('auth\.signInFailedMessage'\)/);
   assert.match(auth, /setAuthError\(authenticationErrorTranslationKey\(safeError\)\)/);
+  assert.match(auth, /setAuthError\('releaseCritical\.authSessionExpired'\)[\s\S]*setSessionStatus\('reauthentication-required'\)/);
   assert.doesNotMatch(auth, /setAuthError\(translate\(/);
   assert.match(createAccount, /authError \? t\(authError\) : null/);
   assert.match(verifyCode, /\(errorKey \|\| authError\) \? t\(errorKey \|\| authError\) : null/);

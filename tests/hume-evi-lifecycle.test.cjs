@@ -120,6 +120,55 @@ test('disconnect invalidates an in-flight microphone start and then stops native
   assert.equal(service.getState(), 'disconnected');
 });
 
+test('disconnect detaches the WebSocket before waiting for native microphone cleanup', async () => {
+  let resolveStop;
+  let closeCall;
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = () => new Promise((resolve) => { resolveStop = resolve; });
+  fakeAudioService.cancelAndClearQueue = async () => {};
+
+  const service = readyService();
+  const socket = service.socket;
+  socket.onopen = () => {};
+  socket.onmessage = () => {};
+  socket.onerror = () => {};
+  socket.onclose = () => {};
+  socket.close = (...args) => { closeCall = args; };
+  await service.startMicrophone();
+
+  const disconnecting = service.disconnect();
+  assert.equal(service.socket, null);
+  assert.equal(socket.onopen, null);
+  assert.equal(socket.onmessage, null);
+  assert.equal(socket.onerror, null);
+  assert.equal(socket.onclose, null);
+  assert.deepEqual(closeCall, [1000, 'Client disconnected']);
+
+  await Promise.resolve();
+  assert.equal(typeof resolveStop, 'function');
+  resolveStop();
+  await disconnecting;
+  assert.equal(service.getState(), 'disconnected');
+});
+
+test('a native WebSocket close exception cannot skip microphone and playback cleanup', async () => {
+  let stopCalls = 0;
+  let cancelCalls = 0;
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = async () => { stopCalls += 1; };
+  fakeAudioService.cancelAndClearQueue = async () => { cancelCalls += 1; };
+
+  const service = readyService();
+  service.socket.close = () => { throw new Error('native close failed'); };
+  await service.startMicrophone();
+  await service.disconnect();
+
+  assert.equal(stopCalls, 1);
+  assert.equal(cancelCalls, 1);
+  assert.equal(service.socket, null);
+  assert.equal(service.getState(), 'disconnected');
+});
+
 test('a native microphone stop error cannot poison subsequent starts', async () => {
   let startCalls = 0;
   fakeAudioService.callback = null;

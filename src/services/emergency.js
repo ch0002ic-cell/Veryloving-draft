@@ -50,16 +50,27 @@ async function finalizeAcceptedSOSAttempt(idempotencyKey) {
 
 export async function triggerSOS(contacts = [], { accessToken, accountId, location } = {}) {
   const backendEnabled = config.safetyBackendEnabled && Boolean(accessToken);
+  const synchronizedContactIds = contacts
+    .map((contact) => contact.id)
+    .filter((id) => /^contact_[A-Za-z0-9_-]{24}$/.test(id));
+  // A locally cached contact is still sufficient for the device-native call
+  // fallback. Connected delivery is optional until at least one contact has
+  // successfully synchronized with the backend.
+  const connectedDeliveryEnabled = backendEnabled && synchronizedContactIds.length > 0;
   let pendingAttempt = null;
-  if (backendEnabled) {
-    const synchronizedContactIds = contacts
-      .map((contact) => contact.id)
-      .filter((id) => /^contact_[A-Za-z0-9_-]{24}$/.test(id));
+  let pendingAttemptPromise = null;
+  if (connectedDeliveryEnabled) {
     const authenticatedAccountId = accountId || sessionTokenClaims(accessToken)?.sub;
-    pendingAttempt = await loadOrCreatePendingSOSAttempt({
-      accountId: authenticatedAccountId,
-      contactIds: synchronizedContactIds
-    }).catch(() => ({ idempotencyKey: createAuthenticationNonce() }));
+    // Do not await local idempotency bookkeeping before entering runSOSFlow.
+    // The native dialer must be able to open in parallel even when storage is
+    // slow or briefly unavailable. Promise.resolve also normalizes a
+    // synchronous storage/precondition failure into the safe fallback path.
+    pendingAttemptPromise = Promise.resolve()
+      .then(() => loadOrCreatePendingSOSAttempt({
+        accountId: authenticatedAccountId,
+        contactIds: synchronizedContactIds
+      }))
+      .catch(() => ({ idempotencyKey: createAuthenticationNonce() }));
   }
   let result;
   try {
@@ -67,13 +78,16 @@ export async function triggerSOS(contacts = [], { accessToken, accountId, locati
       contacts,
       confirmCall: confirmEmergencyCall,
       openDialer: callNumber,
-      dispatchSOS: backendEnabled
-        ? (allContacts) => dispatchBackendSOS({
-          accessToken,
-          idempotencyKey: pendingAttempt.idempotencyKey,
-          contactIds: allContacts.map((contact) => contact.id).filter(Boolean),
-          location
-        })
+      dispatchSOS: connectedDeliveryEnabled
+        ? async () => {
+          pendingAttempt = await pendingAttemptPromise;
+          return dispatchBackendSOS({
+            accessToken,
+            idempotencyKey: pendingAttempt.idempotencyKey,
+            contactIds: synchronizedContactIds,
+            location
+          });
+        }
         : undefined
     }));
   } catch (error) {

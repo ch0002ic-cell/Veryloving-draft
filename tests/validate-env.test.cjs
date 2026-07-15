@@ -29,6 +29,7 @@ function productionEnvironment(overrides = {}) {
     EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN: 'pk.public-placeholder',
     EXPO_PUBLIC_ENABLE_OFFLINE_MODE: 'false',
     EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'false',
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'false',
     EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
     EXPO_PUBLIC_VL01_ENABLED: 'true',
     EXPO_PUBLIC_VL01_SERVICE_UUID: '180f',
@@ -122,6 +123,35 @@ test('RTL QA locale flag must be an explicit boolean', () => {
   const issue = results.find((result) => result.name === 'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES');
   assert.equal(issue?.level, 'error');
   assert.match(issue?.message || '', /true or false/);
+});
+
+test('full language catalog flag is development-only and must be an explicit boolean', () => {
+  const invalidBoolean = validateEnvironment(productionEnvironment({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'yes'
+  }), { profile: 'production' });
+  assert.match(
+    invalidBoolean.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES')?.message || '',
+    /true or false/
+  );
+
+  for (const profile of ['preview', 'production']) {
+    const results = validateEnvironment(productionEnvironment({
+      EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+      VERYLOVING_BUILD_PROFILE: profile
+    }), { profile });
+    const issue = results.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES');
+    assert.equal(issue?.level, 'error');
+    assert.match(issue?.message || '', /outside development/);
+  }
+
+  const development = validateEnvironment(productionEnvironment({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'development'
+  }), { profile: 'development' });
+  assert.equal(
+    development.find((result) => result.name === 'EXPO_PUBLIC_SHOW_ALL_LANGUAGES')?.level,
+    'ok'
+  );
 });
 
 test('Hume configuration and voice overrides must be canonical IDs', () => {
