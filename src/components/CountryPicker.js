@@ -7,7 +7,7 @@ import { filterCountryOptions, getCountryOptions } from '../utils/phone';
 import { colors, fonts } from '../constants/theme';
 
 export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
-  const { locale, t } = useI18n();
+  const { isRTL, locale, t } = useI18n();
   const [query, setQuery] = useState('');
   const countries = useMemo(() => getCountryOptions(locale), [locale]);
   const filteredCountries = useMemo(
@@ -23,8 +23,8 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
     <Modal animationType="slide" visible={visible} onRequestClose={onClose}>
       <SafeAreaProvider>
         <SafeAreaView style={styles.safe}>
-          <View style={styles.header}>
-            <Text style={styles.title}>{t('phone.selectCountry')}</Text>
+          <View style={[styles.header, isRTL && styles.rtlRow]}>
+            <Text style={[styles.title, isRTL && styles.rtlText]}>{t('phone.selectCountry')}</Text>
             <Pressable
               accessibilityLabel={t('common.close')}
               accessibilityRole="button"
@@ -35,7 +35,7 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
               <Ionicons name="close" size={26} color={colors.ink} />
             </Pressable>
           </View>
-          <View style={styles.searchRow}>
+          <View style={[styles.searchRow, isRTL && styles.rtlRow]}>
             <Ionicons name="search" size={20} color={colors.inkSoft} />
             <TextInput
               accessibilityLabel={t('phone.searchCountry')}
@@ -46,7 +46,7 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
               placeholder={t('phone.searchCountry')}
               placeholderTextColor={colors.inkSoft}
               returnKeyType="search"
-              style={styles.searchInput}
+              style={[styles.searchInput, isRTL && styles.rtlText]}
               value={query}
             />
           </View>
@@ -65,12 +65,13 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
                   onPress={() => onSelect(item.code)}
                   style={({ pressed }) => [
                     styles.countryRow,
+                    isRTL && styles.rtlRow,
                     selected && styles.selectedRow,
                     pressed && styles.pressed
                   ]}
                 >
                   <Text style={styles.flag}>{item.flag}</Text>
-                  <Text style={styles.countryName}>{item.name}</Text>
+                  <Text style={[styles.countryName, isRTL && styles.rtlText]}>{item.name}</Text>
                   <Text style={styles.callingCode}>+{item.callingCode}</Text>
                   {selected ? <Ionicons name="checkmark" size={20} color={colors.greenAccessible} /> : null}
                 </Pressable>
@@ -85,6 +86,8 @@ export function CountryPicker({ selectedCountry, visible, onClose, onSelect }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.cream },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   header: { minHeight: 60, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { flex: 1, fontFamily: fonts.bold, color: colors.ink, fontSize: 22 },
   closeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
@@ -95,6 +98,6 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.62 },
   flag: { width: 34, fontSize: 25 },
   countryName: { flex: 1, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
-  callingCode: { fontFamily: fonts.semibold, color: colors.inkSoft, fontSize: 15 },
+  callingCode: { fontFamily: fonts.semibold, color: colors.inkSoft, fontSize: 15, writingDirection: 'ltr', textAlign: 'left' },
   empty: { padding: 32, fontFamily: fonts.regular, color: colors.inkSoft, textAlign: 'center' }
 });

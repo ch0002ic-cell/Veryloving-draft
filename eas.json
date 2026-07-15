@@ -10,7 +10,8 @@
       "environment": "development",
       "env": {
         "VERYLOVING_BUILD_PROFILE": "development",
-        "VERYLOVING_CONFIG_DIAGNOSTICS": "1"
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
       }
     },
     "development-simulator": {

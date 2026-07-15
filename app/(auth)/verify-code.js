@@ -22,7 +22,7 @@ export default function VerifyCode() {
   } = useAuth();
   const { t } = useI18n();
   const [code, setCode] = useState('');
-  const [error, setError] = useState(null);
+  const [errorKey, setErrorKey] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
     if (!user && !hasPendingPhoneVerification) {
@@ -33,10 +33,10 @@ export default function VerifyCode() {
     if (submitting) return;
     try {
       setSubmitting(true);
-      setError(null);
+      setErrorKey(null);
       await verifyCode(code);
     } catch (verificationError) {
-      setError(t(authenticationErrorTranslationKey(verificationError)));
+      setErrorKey(authenticationErrorTranslationKey(verificationError));
     } finally {
       setSubmitting(false);
     }
@@ -51,7 +51,7 @@ export default function VerifyCode() {
             : t('auth.yourPhone')
         })}
       />
-      <FeedbackBanner message={error || authError} />
+      <FeedbackBanner message={(errorKey || authError) ? t(errorKey || authError) : null} />
       <Text style={styles.label}>{t('auth.verificationCode')}</Text>
       <TextInput
         accessibilityLabel={t('auth.verificationCode')}
@@ -60,7 +60,7 @@ export default function VerifyCode() {
         maxLength={6}
         onChangeText={(value) => {
           setCode(value.replace(/\D/g, '').slice(0, 6));
-          setError(null);
+          setErrorKey(null);
           clearAuthError();
         }}
         placeholder={t('auth.verificationCode')}

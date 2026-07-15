@@ -18,7 +18,7 @@ import { config } from '../../src/utils/config';
 export default function Home() {
   const { settings, updateSettings, device, selectedVoice } = useAppState();
   const { accessToken } = useAuth();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const [changingMode, setChangingMode] = useState(null);
   const modeChangeRef = useRef(null);
   const modeReconciledRef = useRef(false);
@@ -70,12 +70,12 @@ export default function Home() {
   return (
     <Screen>
       <Header title={t('common.veryLoving')} subtitle={t('home.subtitle')} />
-      <Card style={styles.hero}>
+      <Card style={[styles.hero, isRTL && styles.rtlRow]}>
         <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
         <View style={{ flex: 1 }}>
           <StatusPill label={t('home.modeStatus', { mode: modeName })} tone="active" />
-          <Text style={styles.heroTitle}>{t('home.companionReady', { name: voiceName })}</Text>
-          <Text style={styles.muted}>{t('home.readyBody')}</Text>
+          <Text style={[styles.heroTitle, isRTL && styles.rtlText]}>{t('home.companionReady', { name: voiceName })}</Text>
+          <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('home.readyBody')}</Text>
         </View>
       </Card>
       <View style={styles.grid}>
@@ -87,12 +87,12 @@ export default function Home() {
         <Button title={t('common.settings')} icon="settings" variant="ghost" onPress={() => router.push('/settings')} />
       </View>
       <Card>
-        <Text style={styles.section}>{t('home.northStarDevice')}</Text>
-        <Text style={styles.muted}>{deviceStatus}</Text>
+        <Text style={[styles.section, isRTL && styles.rtlText]}>{t('home.northStarDevice')}</Text>
+        <Text style={[styles.muted, isRTL && styles.rtlText]}>{deviceStatus}</Text>
         <Button title={t('home.manageDevice')} variant="ghost" onPress={() => router.push('/device-management')} />
       </Card>
       <Card>
-        <Text style={styles.section}>{t('home.mode')}</Text>
+        <Text style={[styles.section, isRTL && styles.rtlText]}>{t('home.mode')}</Text>
         <View style={styles.modeRow}>
           {['home', 'guardian', 'emergency'].map((mode) => (
             <Button
@@ -112,6 +112,8 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   hero: { flexDirection: 'row', gap: 14, alignItems: 'center' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   avatar: { width: 96, height: 96 },
   heroTitle: { fontFamily: fonts.bold, color: colors.ink, fontSize: 22, marginTop: 10 },
   muted: { fontFamily: fonts.regular, color: colors.inkSoft, lineHeight: 20, marginVertical: 8 },

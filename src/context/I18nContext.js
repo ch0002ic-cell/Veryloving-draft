@@ -20,6 +20,13 @@ import {
   createLocaleTransitionCoordinator,
   localeTransitionAllowsDirectionReload
 } from '../services/locale-transition';
+import {
+  clearRecordedLocaleDirection,
+  loadRecordedLocaleDirection,
+  localeDirection,
+  persistRecordedLocaleDirection,
+  shouldReloadForLocaleDirection
+} from '../services/locale-direction';
 
 const I18nContext = createContext(null);
 const REMINDER_LOCALE_REFRESH_TIMEOUT_MS = 6000;
@@ -44,7 +51,11 @@ export function I18nProvider({ children }) {
     targetLocale,
     { enabled, isCurrent = () => true } = {}
   ) => {
-    if (!enabled || !isCurrent()) return { status: 'ready' };
+    if (!isCurrent()) return { status: 'superseded' };
+    // Keep imperative translation consumers (permissions, BLE, emergency
+    // prompts) in lockstep with the React context before any awaited work.
+    setI18nLocale(targetLocale);
+    if (!enabled) return { status: 'ready' };
 
     const disableReminderSafely = async (reason) => {
       const results = await Promise.allSettled([
@@ -81,7 +92,6 @@ export function I18nProvider({ children }) {
 
     // Pass the target locale explicitly so concurrent context renders cannot
     // change the copy used by the native scheduler.
-    setI18nLocale(targetLocale);
     try {
       const reminder = await withTimeout(
         setCapybearReminderEnabled(true, { locale: targetLocale }),
@@ -105,7 +115,7 @@ export function I18nProvider({ children }) {
 
   useEffect(() => {
     setI18nLocale(locale);
-    if (!isHydrated || Platform.OS === 'web' || I18nManager.isRTL === isRTL) return;
+    if (!isHydrated || Platform.OS === 'web') return;
     if (isExpoGoRuntime()) {
       logger.warn('[I18n] RTL direction changes require a development build or standalone app');
       return;
@@ -146,12 +156,45 @@ export function I18nProvider({ children }) {
         });
       }
       if (!localeTransitionAllowsDirectionReload(preparation)) return;
+      const desiredDirection = localeDirection(isRTL);
+      let recordedDirection;
+      try {
+        recordedDirection = await loadRecordedLocaleDirection();
+      } catch (error) {
+        logger.warn('[I18n] Could not read the last native interface direction', {
+          errorCode: error?.code || error?.name || 'RTL_DIRECTION_READ_FAILED',
+          locale
+        });
+        return;
+      }
+      if (!active || desiredLocaleRef.current !== locale) return;
+      const needsReload = shouldReloadForLocaleDirection({
+        desiredDirection,
+        nativeIsRTL: I18nManager.isRTL,
+        recordedDirection
+      });
+
+      // These writes are idempotent and must also run when the bridge's cached
+      // isRTL value already equals the target (notably when returning to LTR).
       I18nManager.allowRTL(true);
       I18nManager.swapLeftAndRightInRTL(true);
       I18nManager.forceRTL(isRTL);
+      if (recordedDirection !== desiredDirection) {
+        try {
+          await persistRecordedLocaleDirection(desiredDirection);
+        } catch (error) {
+          logger.warn('[I18n] Native direction changed but its reload guard could not be saved', {
+            errorCode: error?.code || error?.name || 'RTL_DIRECTION_WRITE_FAILED',
+            locale
+          });
+          return;
+        }
+      }
+      if (!active || desiredLocaleRef.current !== locale || !needsReload) return;
       try {
         await reloadAppAsync(`Interface direction changed to ${isRTL ? 'RTL' : 'LTR'}`);
       } catch (error) {
+        await clearRecordedLocaleDirection().catch(() => {});
         logger.warn('[I18n] Layout direction will update on the next app launch', {
           errorCode: error?.code || error?.name || 'RTL_RELOAD_FAILED',
           locale

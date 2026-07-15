@@ -30,7 +30,7 @@ function closeScreen() {
 
 export default function SafetyCall() {
   const { sessionId } = useLocalSearchParams();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const {
     status,
     messages,
@@ -91,11 +91,11 @@ export default function SafetyCall() {
 
   return (
     <Screen scroll={false}>
-      <View style={styles.header}>
+      <View style={[styles.header, isRTL && styles.rtlRow]}>
         <Button title={t('common.close')} variant="ghost" compact onPress={closeScreen} />
-        <View style={styles.connectionStatus}>
+        <View style={[styles.connectionStatus, isRTL && styles.rtlRow]}>
           {isConnecting ? <ActivityIndicator size="small" color={colors.orangeAccessible} /> : null}
-          <Text style={styles.status}>
+          <Text style={[styles.status, isRTL && styles.rtlText]}>
             {connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t })}
           </Text>
         </View>
@@ -150,7 +150,7 @@ export default function SafetyCall() {
         onContentSizeChange={() => messageListRef.current?.scrollToEnd({ animated: true })}
       />
 
-      <View style={styles.inputRow}>
+      <View style={[styles.inputRow, isRTL && styles.rtlRow]}>
         <TextInput
           accessibilityLabel={t('safetyCall.typePlaceholder')}
           value={text}
@@ -160,7 +160,7 @@ export default function SafetyCall() {
           returnKeyType="send"
           onSubmitEditing={submitText}
           submitBehavior="submit"
-          style={styles.input}
+          style={[styles.input, isRTL && styles.rtlInput]}
         />
         <Button title={t('common.send')} onPress={submitText} disabled={!text.trim()} />
       </View>
@@ -175,6 +175,8 @@ export default function SafetyCall() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   connectionStatus: { minHeight: 24, flexDirection: 'row', alignItems: 'center', gap: 7 },
   status: { fontFamily: fonts.semibold, color: colors.inkSoft },
   center: { alignItems: 'center', gap: 8 },
@@ -187,5 +189,6 @@ const styles = StyleSheet.create({
   messageContent: { flexGrow: 1, paddingVertical: 8 },
   inputRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
   input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink },
+  rtlInput: { textAlign: 'right', writingDirection: 'rtl' },
   actions: { gap: 8 }
 });

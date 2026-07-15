@@ -14,7 +14,7 @@ import { colors, fonts } from '../constants/theme';
 
 export function GlobalPhoneInput({ value, onChange, label, forceError = false }) {
   const locales = useLocales();
-  const { locale, t } = useI18n();
+  const { isRTL, locale, t } = useI18n();
   const [pickerVisible, setPickerVisible] = useState(false);
   const [touched, setTouched] = useState(false);
   const fallbackValue = useMemo(
@@ -47,8 +47,8 @@ export function GlobalPhoneInput({ value, onChange, label, forceError = false })
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.label}>{label || t('phone.label')}</Text>
-      <View style={[styles.inputRow, showValidation && !phone.isValid && styles.invalidInput]}>
+      <Text style={[styles.label, isRTL && styles.rtlText]}>{label || t('phone.label')}</Text>
+      <View style={[styles.inputRow, isRTL && styles.rtlInputRow, showValidation && !phone.isValid && styles.invalidInput]}>
         <Pressable
           accessibilityLabel={t('phone.countryButton', {
             callingCode: phone.callingCode,
@@ -56,7 +56,7 @@ export function GlobalPhoneInput({ value, onChange, label, forceError = false })
           })}
           accessibilityRole="button"
           onPress={() => setPickerVisible(true)}
-          style={({ pressed }) => [styles.countryButton, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.countryButton, isRTL && styles.rtlRow, pressed && styles.pressed]}
         >
           <Text style={styles.flag}>{country?.flag}</Text>
           <Text style={styles.prefix}>+{phone.callingCode}</Text>
@@ -82,6 +82,7 @@ export function GlobalPhoneInput({ value, onChange, label, forceError = false })
         accessibilityRole={!phone.isValid && showValidation ? 'alert' : undefined}
         style={[
           styles.validation,
+          isRTL && styles.rtlText,
           phone.isValid ? styles.valid : styles.invalid,
           !showValidation && styles.hiddenValidation
         ]}
@@ -102,6 +103,9 @@ const styles = StyleSheet.create({
   wrap: { gap: 7 },
   label: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
   inputRow: { minHeight: 52, paddingRight: 12, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
+  rtlInputRow: { flexDirection: 'row-reverse', paddingRight: 0, paddingLeft: 12 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   invalidInput: { borderColor: colors.redAccessible },
   countryButton: { width: 116, minHeight: 50, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
   flag: { fontSize: 22 },

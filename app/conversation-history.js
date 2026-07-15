@@ -17,20 +17,20 @@ import { images } from '../src/constants/assets';
 export default function ConversationHistory() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { locale, t } = useI18n();
+  const [errorKey, setErrorKey] = useState(null);
+  const { isRTL, locale, t } = useI18n();
 
   const refresh = useCallback(async () => {
     setLoading(true);
-    setError(null);
+    setErrorKey(null);
     try {
       setSessions(await loadConversationHistory());
     } catch {
-      setError(t('history.loadFailed'));
+      setErrorKey('history.loadFailed');
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     refresh();
@@ -47,7 +47,7 @@ export default function ConversationHistory() {
             await Promise.all([clearConversationHistory(), clearOfflineMessageQueue()]);
             await refresh();
           } catch {
-            setError(t('history.clearFailed'));
+            setErrorKey('history.clearFailed');
           }
         }
       }
@@ -65,7 +65,7 @@ export default function ConversationHistory() {
             await deleteQueuedMessagesForSession(sessionId);
             setSessions(await deleteConversationSession(sessionId));
           } catch {
-            setError(t('history.deleteFailed'));
+            setErrorKey('history.deleteFailed');
           }
         }
       }
@@ -75,13 +75,13 @@ export default function ConversationHistory() {
   return (
     <Screen scroll={false}>
       <Header title={t('history.title')} subtitle={t('history.subtitle')} showBack backLabel={t('common.back')} />
-      <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={refresh} />
+      <FeedbackBanner message={errorKey ? t(errorKey) : null} actionLabel={t('common.retry')} onAction={refresh} />
       <FlatList
         data={sessions}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={loading
           ? <LoadingState message={t('common.loading')} />
-          : error ? null : (
+          : errorKey ? null : (
             <EmptyState
               image={images.capybara}
               title={t('history.emptyTitle')}
@@ -93,19 +93,19 @@ export default function ConversationHistory() {
           const preview = item.messages?.slice(-2) || [];
           return (
             <Card style={styles.card}>
-              <View style={styles.row}>
+              <View style={[styles.row, isRTL && styles.rtlRow]}>
                 <View style={styles.titleGroup}>
-                  <Text style={styles.title}>{item.voiceId ? t(`voices.profiles.${item.voiceId}.name`) : item.voiceName || t('history.aiCompanion')}</Text>
-                  <Text style={styles.muted}>{new Date(item.updatedAt || item.startedAt).toLocaleString(locale)}</Text>
+                  <Text style={[styles.title, isRTL && styles.rtlText]}>{item.voiceId ? t(`voices.profiles.${item.voiceId}.name`) : item.voiceName || t('history.aiCompanion')}</Text>
+                  <Text style={[styles.muted, isRTL && styles.rtlText]}>{new Date(item.updatedAt || item.startedAt).toLocaleString(locale)}</Text>
                 </View>
-                <View style={styles.actions}>
+                <View style={[styles.actions, isRTL && styles.rtlActions]}>
                   <Button title={t('history.resume')} variant="ghost" onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
                   <Button title={t('common.delete')} variant="ghost" onPress={() => removeSession(item.id)} />
                 </View>
               </View>
               {preview.map((message) => (
-                <Text key={message.id} style={styles.message}>
-                  <Text style={styles.role}>{t(`history.roles.${message.role}`)}: </Text>{message.text}
+                <Text key={message.id} style={[styles.message, isRTL && styles.rtlText]}>
+                  <Text style={[styles.role, isRTL && styles.rtlText]}>{t(`history.roles.${message.role}`)}: </Text>{message.text}
                 </Text>
               ))}
             </Card>
@@ -121,8 +121,11 @@ const styles = StyleSheet.create({
   list: { flexGrow: 1, gap: 12, paddingBottom: 16 },
   card: { gap: 10, marginBottom: 12 },
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: 10, alignItems: 'center' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   titleGroup: { flex: 1 },
   actions: { gap: 4, alignItems: 'flex-end' },
+  rtlActions: { alignItems: 'flex-start' },
   title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
   muted: { fontFamily: fonts.regular, color: colors.inkSoft },
   message: { fontFamily: fonts.regular, color: colors.ink },

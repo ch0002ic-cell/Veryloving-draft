@@ -53,11 +53,11 @@ export function LanguageSelector({ onError }) {
         accessibilityRole="button"
         disabled={Boolean(savingLanguage)}
         onPress={() => setVisible(true)}
-        style={({ pressed }) => [styles.trigger, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.trigger, isRTL && styles.rtlRow, pressed && styles.pressed]}
       >
         <View style={styles.triggerCopy}>
-          <Text style={styles.selectedLabel}>{languageLabel(selectedLanguage)}</Text>
-          {selectedLanguage.code !== 'system' ? <Text style={styles.code}>{selectedLanguage.code.toUpperCase()}</Text> : null}
+          <Text style={[styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(selectedLanguage)}</Text>
+          {selectedLanguage.code !== 'system' ? <Text style={[styles.code, isRTL && styles.rtlText]}>{selectedLanguage.code.toUpperCase()}</Text> : null}
         </View>
         {savingLanguage
           ? <ActivityIndicator size="small" color={colors.orangeAccessible} />
@@ -66,8 +66,8 @@ export function LanguageSelector({ onError }) {
       <Modal animationType="slide" presentationStyle="pageSheet" visible={visible} onRequestClose={() => setVisible(false)}>
         <SafeAreaProvider>
           <SafeAreaView style={styles.safe}>
-            <View style={styles.header}>
-              <Text style={styles.title}>{t('languages.title')}</Text>
+            <View style={[styles.header, isRTL && styles.rtlRow]}>
+              <Text style={[styles.title, isRTL && styles.rtlText]}>{t('languages.title')}</Text>
               <Pressable
                 accessibilityLabel={t('common.close')}
                 accessibilityRole="button"
@@ -78,7 +78,7 @@ export function LanguageSelector({ onError }) {
                 <Ionicons name="close" size={26} color={colors.ink} />
               </Pressable>
             </View>
-            <View style={styles.searchRow}>
+            <View style={[styles.searchRow, isRTL && styles.rtlRow]}>
               <Ionicons name="search" size={20} color={colors.inkSoft} />
               <TextInput
                 accessibilityLabel={t('languages.search')}
@@ -89,7 +89,7 @@ export function LanguageSelector({ onError }) {
                 placeholder={t('languages.search')}
                 placeholderTextColor={colors.inkSoft}
                 returnKeyType="search"
-                style={styles.searchInput}
+                style={[styles.searchInput, isRTL && styles.rtlText]}
                 value={query}
               />
             </View>
@@ -107,11 +107,11 @@ export function LanguageSelector({ onError }) {
                     accessibilityState={{ checked: selected, disabled: Boolean(savingLanguage) }}
                     disabled={Boolean(savingLanguage)}
                     onPress={() => chooseLanguage(item.code)}
-                    style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
+                    style={({ pressed }) => [styles.row, isRTL && styles.rtlRow, selected && styles.selected, pressed && styles.pressed]}
                   >
                     <View style={styles.languageCopy}>
-                      <Text style={[styles.label, selected && styles.selectedLabel]}>{languageLabel(item)}</Text>
-                      {item.englishName && item.englishName !== item.nativeName ? <Text style={styles.englishName}>{item.englishName}</Text> : null}
+                      <Text style={[styles.label, selected && styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(item)}</Text>
+                      {item.englishName && item.englishName !== item.nativeName ? <Text style={[styles.englishName, isRTL && styles.rtlText]}>{item.englishName}</Text> : null}
                     </View>
                     {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.greenAccessible} /> : null}
                   </Pressable>
@@ -127,6 +127,8 @@ export function LanguageSelector({ onError }) {
 
 const styles = StyleSheet.create({
   trigger: { minHeight: 52, paddingHorizontal: spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   triggerCopy: { flex: 1, gap: 2 },
   code: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12 },
   safe: { flex: 1, backgroundColor: colors.cream },

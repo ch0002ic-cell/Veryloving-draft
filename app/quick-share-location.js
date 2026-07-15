@@ -14,11 +14,11 @@ export default function QuickShareLocation() {
   const mountedRef = useRef(true);
   const startedRef = useRef(false);
   const [busy, setBusy] = useState(true);
-  const [error, setError] = useState(null);
+  const [errorKey, setErrorKey] = useState(null);
 
   const shareLocation = useCallback(async () => {
     setBusy(true);
-    setError(null);
+    setErrorKey(null);
     try {
       const location = await requestCurrentLocation();
       await shareQuickLocation(location, { locale });
@@ -27,12 +27,12 @@ export default function QuickShareLocation() {
         errorCode: shareError?.code || shareError?.name || 'LOCATION_SHARE_FAILED'
       });
       if (mountedRef.current) {
-        setError(t('releaseCritical.locationShareFailed'));
+        setErrorKey('releaseCritical.locationShareFailed');
       }
     } finally {
       if (mountedRef.current) setBusy(false);
     }
-  }, [locale, t]);
+  }, [locale]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -49,7 +49,7 @@ export default function QuickShareLocation() {
     <Screen>
       <Header title={t('quickShare.title')} subtitle={t('quickShare.subtitle')} showBack backLabel={t('common.back')} />
       {busy ? <LoadingState message={t('map.finding')} /> : null}
-      {error ? <FeedbackBanner message={error} actionLabel={t('common.retry')} onAction={shareLocation} /> : null}
+      {errorKey ? <FeedbackBanner message={t(errorKey)} actionLabel={t('common.retry')} onAction={shareLocation} /> : null}
       {!busy ? (
         <Button
           title={t('quickShare.title')}

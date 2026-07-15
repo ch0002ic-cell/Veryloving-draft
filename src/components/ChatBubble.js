@@ -4,7 +4,7 @@ import { colors, fonts } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
 export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry, retrying = false }) {
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const user = role === 'user';
   const failed = user && deliveryStatus === 'failed';
   const queued = user && deliveryStatus === 'queued';
@@ -13,21 +13,26 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
     ? deliveryError
     : null;
   return (
-    <View style={[styles.group, user ? styles.userGroup : styles.assistantGroup]}>
+    <View style={[
+      styles.group,
+      user
+        ? (isRTL ? styles.userGroupRTL : styles.userGroup)
+        : (isRTL ? styles.assistantGroupRTL : styles.assistantGroup)
+    ]}>
       <View style={[styles.bubble, user ? styles.user : styles.assistant, failed && styles.failedBubble]}>
-        <Text style={[styles.text, user && styles.userText]}>{text}</Text>
+        <Text style={[styles.text, isRTL && styles.rtlText, user && styles.userText]}>{text}</Text>
       </View>
-      {queued ? <Text style={styles.delivery}>{t('chat.waiting')}</Text> : null}
+      {queued ? <Text style={[styles.delivery, isRTL && styles.rtlText]}>{t('chat.waiting')}</Text> : null}
       {failed ? (
-        <View style={styles.failureRow}>
-          <Text style={styles.failureText}>{deliveryErrorKey ? t(deliveryErrorKey) : t('chat.notSent')}</Text>
+        <View style={[styles.failureRow, isRTL && styles.rtlRow]}>
+          <Text style={[styles.failureText, isRTL && styles.rtlText]}>{deliveryErrorKey ? t(deliveryErrorKey) : t('chat.notSent')}</Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.retryAccessibility')}
             disabled={retrying}
             onPress={onRetry}
             hitSlop={8}
-            style={({ pressed }) => [styles.retry, pressed && styles.retryPressed]}
+            style={({ pressed }) => [styles.retry, isRTL && styles.rtlRow, pressed && styles.retryPressed]}
           >
             {retrying
               ? <ActivityIndicator size="small" color={colors.redAccessible} />
@@ -44,6 +49,8 @@ const styles = StyleSheet.create({
   group: { maxWidth: '90%', marginVertical: 4 },
   userGroup: { alignSelf: 'flex-end', alignItems: 'flex-end' },
   assistantGroup: { alignSelf: 'flex-start', alignItems: 'flex-start' },
+  userGroupRTL: { alignSelf: 'flex-start', alignItems: 'flex-start' },
+  assistantGroupRTL: { alignSelf: 'flex-end', alignItems: 'flex-end' },
   bubble: { maxWidth: '100%', padding: 12, borderRadius: 18 },
   user: { backgroundColor: colors.ink },
   assistant: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line },
@@ -52,6 +59,8 @@ const styles = StyleSheet.create({
   userText: { color: '#fff' },
   delivery: { marginTop: 4, fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft },
   failureRow: { maxWidth: 300, marginTop: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   failureText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.redAccessible, textAlign: 'auto' },
   retry: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8 },
   retryPressed: { opacity: 0.6 },

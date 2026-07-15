@@ -60,10 +60,10 @@ export default function EmergencyContacts() {
       else await addContact(nextContact);
       resetForm();
       if (editId) {
-        setFeedback({ message: t('releaseCritical.contactUpdated'), tone: 'success' });
+        setFeedback({ messageKey: 'releaseCritical.contactUpdated', tone: 'success' });
       }
     } catch {
-      setFeedback({ message: t('contacts.saveFailedMessage'), retry: 'save', tone: 'error' });
+      setFeedback({ messageKey: 'contacts.saveFailedMessage', retry: 'save', tone: 'error' });
     } finally {
       setSaving(false);
     }
@@ -91,7 +91,7 @@ export default function EmergencyContacts() {
       await removeContact(contact.id);
       if (editingId === contact.id) resetForm();
     } catch {
-      setFeedback({ message: t('contacts.removeFailedMessage'), retry: () => remove(contact) });
+      setFeedback({ messageKey: 'contacts.removeFailedMessage', retry: () => remove(contact) });
     } finally {
       setRemovingId(null);
     }
@@ -104,7 +104,7 @@ export default function EmergencyContacts() {
     try {
       await callNumber(contact.phone);
     } catch {
-      setFeedback({ message: t('settings.linkFailed'), retry: () => call(contact) });
+      setFeedback({ messageKey: 'settings.linkFailed', retry: () => call(contact) });
     } finally {
       setCallingId(null);
     }
@@ -129,7 +129,7 @@ export default function EmergencyContacts() {
     <Screen>
       <Header title={t('contacts.title')} subtitle={t('contacts.subtitle')} showBack backLabel={t('common.back')} />
       <FeedbackBanner
-        message={feedback?.message}
+        message={feedback?.messageKey ? t(feedback.messageKey) : null}
         tone={feedback?.tone}
         actionLabel={t('common.retry')}
         onAction={feedback?.retry === 'save' ? save : feedback?.retry}

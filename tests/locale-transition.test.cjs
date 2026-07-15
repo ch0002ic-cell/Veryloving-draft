@@ -102,9 +102,13 @@ test('I18nProvider wires persistence and reminder preparation ahead of native re
 
   const waitsForPreparation = directionEffect.indexOf('await localeTransitionRef.current.waitForCurrent(locale)');
   const forcesDirection = directionEffect.indexOf('I18nManager.forceRTL(isRTL)');
+  const persistsDirection = directionEffect.indexOf('await persistRecordedLocaleDirection(desiredDirection)');
   const reloads = directionEffect.indexOf('await reloadAppAsync');
   assert.ok(waitsForPreparation >= 0 && waitsForPreparation < forcesDirection);
-  assert.ok(forcesDirection < reloads);
+  assert.ok(forcesDirection < persistsDirection);
+  assert.ok(persistsDirection < reloads);
+  assert.match(directionEffect, /if \(!active \|\| desiredLocaleRef\.current !== locale \|\| !needsReload\) return/);
+  assert.match(directionEffect, /clearRecordedLocaleDirection\(\)/);
 
   const beginsGate = languageChange.indexOf('coordinator.begin(targetLocale)');
   const publishesLanguage = languageChange.indexOf('await updateSettings({ language })');
@@ -113,6 +117,10 @@ test('I18nProvider wires persistence and reminder preparation ahead of native re
   assert.ok(beginsGate >= 0 && beginsGate < publishesLanguage);
   assert.ok(publishesLanguage < refreshesReminder);
   assert.ok(refreshesReminder < completesGate);
+  assert.ok(
+    reminderPreparation.indexOf('setI18nLocale(targetLocale)')
+      < reminderPreparation.indexOf('if (!enabled) return')
+  );
   assert.match(reminderPreparation, /setCapybearReminderEnabled\(true, \{ locale: targetLocale \}\)/);
   assert.match(directionEffect, /if \(!preparation\.matched\)[\s\S]*await prepareLocalizedReminder\(locale/);
   assert.match(directionEffect, /if \(preparation\.pendingLocale\) return/);

@@ -391,7 +391,7 @@ export function AuthProvider({ children }) {
       }
       onboardingProgressRef.current = null;
       setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
-      setAuthError(translate('auth.signInFailedMessage'));
+      setAuthError('auth.signInFailedMessage');
       setSessionStatus('signed-out');
     }).finally(() => {
       if (active) setLoading(false);
@@ -556,7 +556,7 @@ export function AuthProvider({ children }) {
       return error;
     }
     const safeError = userFacingAuthenticationError(provider, error);
-    setAuthError(translate(authenticationErrorTranslationKey(safeError)));
+    setAuthError(authenticationErrorTranslationKey(safeError));
     if (safeError.code?.endsWith('_AUTH_SIMULATOR_UNAVAILABLE')) {
       logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
       return safeError;

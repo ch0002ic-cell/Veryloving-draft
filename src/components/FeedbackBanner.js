@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn, FadeOut, ReduceMotion } from 'react-native-reanimated';
 import { Button } from './Button';
 import { colors, fonts, radii, spacing } from '../constants/theme';
+import { useI18n } from '../context/I18nContext';
 
 const ENTERING = FadeIn.duration(180).reduceMotion(ReduceMotion.System);
 const EXITING = FadeOut.duration(140).reduceMotion(ReduceMotion.System);
@@ -13,6 +14,7 @@ const toneStyles = {
 };
 
 export function FeedbackBanner({ message, tone = 'error', actionLabel, onAction }) {
+  const { isRTL } = useI18n();
   if (!message) return null;
   const palette = toneStyles[tone] || toneStyles.info;
   return (
@@ -21,10 +23,10 @@ export function FeedbackBanner({ message, tone = 'error', actionLabel, onAction 
       accessibilityRole={tone === 'error' ? 'alert' : 'summary'}
       entering={ENTERING}
       exiting={EXITING}
-      style={[styles.wrap, { backgroundColor: palette.backgroundColor, borderColor: palette.borderColor }]}
+      style={[styles.wrap, isRTL && styles.rtlRow, { backgroundColor: palette.backgroundColor, borderColor: palette.borderColor }]}
     >
       <Ionicons name={palette.icon} size={21} color={palette.color} />
-      <Text style={[styles.message, { color: palette.color }]}>{message}</Text>
+      <Text style={[styles.message, isRTL && styles.rtlText, { color: palette.color }]}>{message}</Text>
       {actionLabel && onAction ? <Button title={actionLabel} variant="ghost" compact onPress={onAction} /> : null}
     </Animated.View>
   );
@@ -32,5 +34,7 @@ export function FeedbackBanner({ message, tone = 'error', actionLabel, onAction 
 
 const styles = StyleSheet.create({
   wrap: { padding: spacing.mdSm, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderWidth: 1, borderRadius: radii.md },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   message: { flex: 1, fontFamily: fonts.medium, fontSize: 14, lineHeight: 20 }
 });

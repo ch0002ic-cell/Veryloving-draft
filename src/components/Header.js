@@ -16,7 +16,7 @@ export function Header({ title = 'VeryLoving', subtitle, showBack = false, backL
     else router.replace('/(tabs)');
   };
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, isRTL && styles.rtlRow]}>
       {showBack ? (
         <Pressable
           accessibilityLabel={backLabel}
@@ -37,8 +37,8 @@ export function Header({ title = 'VeryLoving', subtitle, showBack = false, backL
         </View>
       )}
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <Text style={[styles.title, isRTL && styles.rtlText]}>{title}</Text>
+        {subtitle ? <Text style={[styles.subtitle, isRTL && styles.rtlText]}>{subtitle}</Text> : null}
       </View>
     </View>
   );
@@ -46,6 +46,8 @@ export function Header({ title = 'VeryLoving', subtitle, showBack = false, backL
 
 const styles = StyleSheet.create({
   wrap: { minHeight: 64, flexDirection: 'row', gap: 12, alignItems: 'center' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   logoBox: { width: 48, height: 48, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.ink },
   backButton: { width: 48, height: 48, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.controlBorder },
   pressed: { opacity: 0.62 },

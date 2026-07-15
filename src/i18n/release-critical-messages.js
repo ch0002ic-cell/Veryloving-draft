@@ -5,6 +5,8 @@
 const releaseCriticalMessages = Object.freeze({
   en: {
     authUnavailable: 'This sign-in option is unavailable in this build.',
+    continueAsDemo: 'Continue as demo (development only)',
+    demoModeNotice: 'Demo mode uses local fake data only. Connected services are not authenticated, and this session resets when the app reloads.',
     authCodeInvalid: 'The verification code is invalid or expired. Request a new code and try again.',
     authRateLimited: 'Too many sign-in attempts. Wait a moment, then try again.',
     authTimeout: 'Sign-in verification took too long. Check your connection and try again.',
@@ -38,6 +40,8 @@ const releaseCriticalMessages = Object.freeze({
   },
   es: {
     authUnavailable: 'Esta opción de inicio de sesión no está disponible en esta compilación.',
+    continueAsDemo: 'Continuar como demo (solo desarrollo)',
+    demoModeNotice: 'El modo demo usa únicamente datos locales ficticios. Los servicios conectados no están autenticados y la sesión se restablece al recargar la aplicación.',
     authCodeInvalid: 'El código de verificación no es válido o ha caducado. Solicita uno nuevo e inténtalo de nuevo.',
     authRateLimited: 'Demasiados intentos de inicio de sesión. Espera un momento y vuelve a intentarlo.',
     authTimeout: 'La verificación del inicio de sesión tardó demasiado. Comprueba tu conexión e inténtalo de nuevo.',
@@ -71,6 +75,8 @@ const releaseCriticalMessages = Object.freeze({
   },
   fr: {
     authUnavailable: 'Cette option de connexion n’est pas disponible dans cette version.',
+    continueAsDemo: 'Continuer en mode démo (développement uniquement)',
+    demoModeNotice: 'Le mode démo utilise uniquement de fausses données locales. Les services connectés ne sont pas authentifiés et la session est réinitialisée au rechargement de l’application.',
     authCodeInvalid: 'Le code de vérification est incorrect ou a expiré. Demandez un nouveau code, puis réessayez.',
     authRateLimited: 'Trop de tentatives de connexion. Patientez un instant, puis réessayez.',
     authTimeout: 'La vérification de connexion a pris trop de temps. Vérifiez votre connexion, puis réessayez.',
@@ -104,6 +110,8 @@ const releaseCriticalMessages = Object.freeze({
   },
   zh: {
     authUnavailable: '此版本中无法使用该登录方式。',
+    continueAsDemo: '以演示模式继续（仅限开发环境）',
+    demoModeNotice: '演示模式仅使用本地模拟数据。连接的服务未经身份验证，应用重新加载后此会话会重置。',
     authCodeInvalid: '验证码无效或已过期。请重新获取验证码后再试。',
     authRateLimited: '登录尝试次数过多。请稍后再试。',
     authTimeout: '登录验证用时过长。请检查网络连接后重试。',
@@ -137,6 +145,8 @@ const releaseCriticalMessages = Object.freeze({
   },
   ar: {
     authUnavailable: 'خيار تسجيل الدخول هذا غير متاح في هذا الإصدار.',
+    continueAsDemo: 'المتابعة في الوضع التجريبي (للتطوير فقط)',
+    demoModeNotice: 'يستخدم الوضع التجريبي بيانات محلية وهمية فقط. الخدمات المتصلة غير موثّقة، وتُعاد تهيئة الجلسة عند إعادة تحميل التطبيق.',
     authCodeInvalid: 'رمز التحقق غير صالح أو انتهت صلاحيته. اطلب رمزًا جديدًا ثم حاول مرة أخرى.',
     authRateLimited: 'عدد محاولات تسجيل الدخول كبير جدًا. انتظر قليلًا ثم حاول مرة أخرى.',
     authTimeout: 'استغرق التحقق من تسجيل الدخول وقتًا طويلًا. تحقق من اتصالك ثم حاول مرة أخرى.',
@@ -170,6 +180,8 @@ const releaseCriticalMessages = Object.freeze({
   },
   he: {
     authUnavailable: 'אפשרות ההתחברות הזו אינה זמינה בגרסה זו.',
+    continueAsDemo: 'המשך במצב הדגמה (לפיתוח בלבד)',
+    demoModeNotice: 'מצב ההדגמה משתמש רק בנתונים מקומיים מדומים. השירותים המחוברים אינם מאומתים, וההפעלה מתאפסת כשהיישום נטען מחדש.',
     authCodeInvalid: 'קוד האימות שגוי או פג תוקף. בקשו קוד חדש ונסו שוב.',
     authRateLimited: 'בוצעו יותר מדי ניסיונות התחברות. המתינו מעט ונסו שוב.',
     authTimeout: 'אימות ההתחברות ארך זמן רב מדי. בדקו את החיבור ונסו שוב.',

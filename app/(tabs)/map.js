@@ -24,6 +24,13 @@ import { useAuth } from '../../src/context/AuthContext';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
+function locationErrorTranslationKey(error) {
+  if (error?.code === 'LOCATION_PERMISSION_DENIED') return 'map.permissionOff';
+  if (error?.code === 'LOCATION_NOT_REQUESTED') return 'map.notRequested';
+  if (error?.code === 'TIMEOUT') return 'map.timeout';
+  return 'map.updateFailed';
+}
+
 const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onLoadError, onStyleLoaded, t }) {
   return (
     <Mapbox.MapView
@@ -80,11 +87,24 @@ export default function MapScreen() {
   const shareInProgressRef = useRef(false);
   const Mapbox = useMemo(() => getMapboxModule(), []);
   const insets = useSafeAreaInsets();
-  const { locale, t } = useI18n();
+  const { isRTL, locale, t } = useI18n();
   const { user } = useAuth();
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
+  const localizedFeedbackMessage = useCallback((feedback) => {
+    if (!feedback?.translationKey) return null;
+    const translationOptions = feedback.capturedAt
+      ? {
+          ...feedback.translationOptions,
+          capturedAt: new Date(feedback.capturedAt).toLocaleString(locale)
+        }
+      : feedback.translationOptions;
+    const message = t(feedback.translationKey, translationOptions);
+    return feedback.prefixTranslationKey
+      ? `${t(feedback.prefixTranslationKey)} ${message}`
+      : message;
+  }, [locale, t]);
 
   const handleMapLoadError = useCallback((mapError) => {
     logger.warn('[Mapbox] Native map style failed to load', {
@@ -92,9 +112,9 @@ export default function MapScreen() {
     });
     if (mountedRef.current && !mapStyleReadyRef.current) {
       setMapLoadFailed(true);
-      setError(t('releaseCritical.mapUnavailable'));
+      setError({ translationKey: 'releaseCritical.mapUnavailable' });
     }
-  }, [t]);
+  }, []);
 
   const handleMapStyleLoaded = useCallback(() => {
     mapStyleReadyRef.current = true;
@@ -103,17 +123,18 @@ export default function MapScreen() {
   const refreshLocation = useCallback(async () => {
     const requestId = ++requestIdRef.current;
     setLoading(true);
-    setError(Mapbox ? null : t('releaseCritical.mapUnavailable'));
+    setError(Mapbox ? null : { translationKey: 'releaseCritical.mapUnavailable' });
     try {
       const nextLocation = await requestCurrentLocation();
       if (mountedRef.current && requestId === requestIdRef.current) {
         setPermissionDenied(false);
         setLocation(nextLocation);
         if (nextLocation.isCached) {
-          const cachedMessage = t('releaseCritical.mapCachedLocation', {
-            capturedAt: new Date(nextLocation.cachedAt).toLocaleString(locale)
+          setError({
+            capturedAt: nextLocation.cachedAt,
+            prefixTranslationKey: Mapbox ? undefined : 'releaseCritical.mapUnavailable',
+            translationKey: 'releaseCritical.mapCachedLocation'
           });
-          setError(Mapbox ? cachedMessage : `${t('releaseCritical.mapUnavailable')} ${cachedMessage}`);
         } else if (Mapbox) {
           cacheMapRegion(nextLocation).catch(() => {});
         }
@@ -121,17 +142,15 @@ export default function MapScreen() {
     } catch (locationError) {
       if (mountedRef.current && requestId === requestIdRef.current) {
         setPermissionDenied(locationError?.code === 'LOCATION_PERMISSION_DENIED');
-        const locationMessage = locationError?.userFacing
-          ? locationError.message
-          : locationError?.code === 'TIMEOUT'
-            ? t('map.timeout')
-            : t('map.updateFailed');
-        setError(Mapbox ? locationMessage : `${t('releaseCritical.mapUnavailable')} ${locationMessage}`);
+        setError({
+          prefixTranslationKey: Mapbox ? undefined : 'releaseCritical.mapUnavailable',
+          translationKey: locationErrorTranslationKey(locationError)
+        });
       }
     } finally {
       if (mountedRef.current && requestId === requestIdRef.current) setLoading(false);
     }
-  }, [Mapbox, locale, t]);
+  }, [Mapbox]);
 
   const retryMapAndLocation = useCallback(() => {
     if (mapLoadFailed) {
@@ -157,13 +176,13 @@ export default function MapScreen() {
       });
       if (mountedRef.current) {
         setPermissionDenied(shareLocationError?.code === 'LOCATION_PERMISSION_DENIED');
-        setShareError(t('releaseCritical.locationShareFailed'));
+        setShareError({ translationKey: 'releaseCritical.locationShareFailed' });
       }
     } finally {
       shareInProgressRef.current = false;
       if (mountedRef.current) setSharing(false);
     }
-  }, [locale, location, t]);
+  }, [locale, location]);
 
   const savePlace = useCallback(async () => {
     if (!user?.id || savedPlaceAction) return;
@@ -176,17 +195,17 @@ export default function MapScreen() {
       if (mountedRef.current) {
         setPermissionDenied(false);
         setSavedPlaces(next);
-        setSavedPlaceFeedback({ tone: 'success', message: t('releaseCritical.placeSaved') });
+        setSavedPlaceFeedback({ tone: 'success', translationKey: 'releaseCritical.placeSaved' });
       }
     } catch (saveError) {
       if (mountedRef.current) {
         setPermissionDenied(saveError?.code === 'LOCATION_PERMISSION_DENIED');
-        setSavedPlaceFeedback({ tone: 'error', message: t('releaseCritical.savePlaceFailed') });
+        setSavedPlaceFeedback({ tone: 'error', translationKey: 'releaseCritical.savePlaceFailed' });
       }
     } finally {
       if (mountedRef.current) setSavedPlaceAction(null);
     }
-  }, [location, savedPlaceAction, t, user?.id]);
+  }, [location, savedPlaceAction, user?.id]);
 
   const removePlace = useCallback(async (placeId) => {
     if (!user?.id || savedPlaceAction) return;
@@ -197,12 +216,12 @@ export default function MapScreen() {
       if (mountedRef.current) setSavedPlaces(next);
     } catch {
       if (mountedRef.current) {
-        setSavedPlaceFeedback({ tone: 'error', message: t('releaseCritical.savePlaceFailed') });
+        setSavedPlaceFeedback({ tone: 'error', translationKey: 'releaseCritical.savePlaceFailed' });
       }
     } finally {
       if (mountedRef.current) setSavedPlaceAction(null);
     }
-  }, [savedPlaceAction, t, user?.id]);
+  }, [savedPlaceAction, user?.id]);
 
   const savedPlaceLabel = useCallback((place) => (
     `${t('releaseCritical.savedPlace')} · ${new Date(place.capturedAt).toLocaleString(locale)}`
@@ -231,10 +250,10 @@ export default function MapScreen() {
       .catch(() => {
         if (!active) return;
         setSavedPlaces([]);
-        setSavedPlaceFeedback({ tone: 'error', message: t('releaseCritical.savePlaceFailed') });
+        setSavedPlaceFeedback({ tone: 'error', translationKey: 'releaseCritical.savePlaceFailed' });
       });
     return () => { active = false; };
-  }, [t, user?.id]);
+  }, [user?.id]);
 
   if (Mapbox && !mapLoadFailed) {
     return (
@@ -254,7 +273,7 @@ export default function MapScreen() {
         {shareError || error ? (
           <View style={[styles.mapStatus, { top: insets.top + 12 }]}>
             <FeedbackBanner
-              message={shareError || error}
+              message={localizedFeedbackMessage(shareError || error)}
               actionLabel={permissionDenied ? t('common.settings') : t('common.retry')}
               onAction={permissionDenied
                 ? () => Linking.openSettings().catch(() => {})
@@ -263,13 +282,13 @@ export default function MapScreen() {
           </View>
         ) : null}
         <View style={[styles.savedOverlay, { bottom: insets.bottom + 16 }]}>
-          <Text style={styles.sectionTitle}>{t('map.savedTitle')}</Text>
+          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
           {savedPlaces === null ? <LoadingState compact message={t('common.loading')} /> : null}
           {savedPlaces?.length ? (
-            <View style={styles.savedPlaceRow}>
+            <View style={[styles.savedPlaceRow, isRTL && styles.rtlRow]}>
               <View style={styles.savedPlaceCopy}>
-                <Text style={styles.zone}>{savedPlaceLabel(savedPlaces[savedPlaces.length - 1])}</Text>
-                <Text style={styles.muted}>
+                <Text style={[styles.zone, isRTL && styles.rtlText]}>{savedPlaceLabel(savedPlaces[savedPlaces.length - 1])}</Text>
+                <Text style={[styles.muted, isRTL && styles.rtlText]}>
                   {savedPlaces[savedPlaces.length - 1].latitude.toFixed(5)}, {savedPlaces[savedPlaces.length - 1].longitude.toFixed(5)}
                 </Text>
               </View>
@@ -282,9 +301,9 @@ export default function MapScreen() {
                 onPress={() => removePlace(savedPlaces[savedPlaces.length - 1].id)}
               />
             </View>
-          ) : savedPlaces ? <Text style={styles.muted}>{t('map.savedEmptyTitle')}</Text> : null}
+          ) : savedPlaces ? <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('map.savedEmptyTitle')}</Text> : null}
           <FeedbackBanner
-            message={savedPlaceFeedback?.message}
+            message={localizedFeedbackMessage(savedPlaceFeedback)}
             tone={savedPlaceFeedback?.tone}
             actionLabel={permissionDenied ? t('common.settings') : undefined}
             onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
@@ -311,11 +330,11 @@ export default function MapScreen() {
     <Screen>
       <Header title={t('map.title')} subtitle={t('map.previewSubtitle')} />
       <View style={styles.mapFallback}>
-        {loading ? <LoadingState compact message={t('map.finding')} /> : <Text style={styles.mapText}>{t('map.preview')}</Text>}
+        {loading ? <LoadingState compact message={t('map.finding')} /> : <Text style={[styles.mapText, isRTL && styles.rtlText]}>{t('map.preview')}</Text>}
         <Text style={styles.coords}>{coordinates.join(', ')}</Text>
       </View>
       <FeedbackBanner
-        message={error}
+        message={localizedFeedbackMessage(error)}
         actionLabel={permissionDenied ? t('common.settings') : t('map.retry')}
         onAction={permissionDenied
           ? () => Linking.openSettings().catch(() => {})
@@ -323,16 +342,16 @@ export default function MapScreen() {
       />
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
-          <Text style={styles.zone}>{t(zone.nameKey)}</Text>
-          <Text style={styles.muted}>{t('map.risk', { risk: t(`map.risks.${zone.risk}`), radius: zone.radius })}</Text>
+          <Text style={[styles.zone, isRTL && styles.rtlText]}>{t(zone.nameKey)}</Text>
+          <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('map.risk', { risk: t(`map.risks.${zone.risk}`), radius: zone.radius })}</Text>
         </Card>
       ))}
-      <Text style={styles.sectionTitle}>{t('map.savedTitle')}</Text>
+      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
       {savedPlaces === null ? <LoadingState message={t('common.loading')} /> : null}
       {savedPlaces?.length ? savedPlaces.map((place) => (
         <Card key={place.id} style={styles.savedPlaceCard}>
-          <Text style={styles.zone}>{savedPlaceLabel(place)}</Text>
-          <Text style={styles.muted}>{place.latitude.toFixed(5)}, {place.longitude.toFixed(5)}</Text>
+          <Text style={[styles.zone, isRTL && styles.rtlText]}>{savedPlaceLabel(place)}</Text>
+          <Text style={styles.coords}>{place.latitude.toFixed(5)}, {place.longitude.toFixed(5)}</Text>
           <Button
             title={t('common.remove')}
             variant="ghost"
@@ -351,7 +370,7 @@ export default function MapScreen() {
         />
       ) : null}
       <FeedbackBanner
-        message={savedPlaceFeedback?.message}
+        message={localizedFeedbackMessage(savedPlaceFeedback)}
         tone={savedPlaceFeedback?.tone}
         actionLabel={permissionDenied ? t('common.settings') : undefined}
         onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
@@ -365,7 +384,7 @@ export default function MapScreen() {
       />
       {shareError ? (
         <FeedbackBanner
-          message={shareError}
+          message={localizedFeedbackMessage(shareError)}
           actionLabel={permissionDenied ? t('common.settings') : t('common.retry')}
           onAction={permissionDenied
             ? () => Linking.openSettings().catch(() => {})
@@ -396,6 +415,8 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
   muted: { fontFamily: fonts.regular, color: colors.inkSoft },
   savedPlaceRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   savedPlaceCopy: { flex: 1, minWidth: 0 },
   savedPlaceCard: { gap: 8 }
 });

@@ -12,14 +12,14 @@ import { colors, fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 
 const VoiceOption = memo(function VoiceOption({ voice, selected, previewing, onSelect, onPreview }) {
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   return (
     <Card style={[styles.card, selected && styles.selected]}>
       <Pressable
         accessibilityRole="radio"
         accessibilityState={{ checked: selected }}
         onPress={onSelect}
-        style={({ pressed }) => [styles.selectionArea, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.selectionArea, isRTL && styles.rtlRow, pressed && styles.pressed]}
       >
         <View style={styles.avatarFrame}>
           <Image source={voice.avatar} style={styles.avatar} resizeMode="contain" />
@@ -31,8 +31,8 @@ const VoiceOption = memo(function VoiceOption({ voice, selected, previewing, onS
           ) : null}
         </View>
         <View style={styles.copy}>
-          <Text style={styles.name}>{t(`voices.profiles.${voice.id}.name`)}</Text>
-          <Text style={styles.desc}>{t(`voices.profiles.${voice.id}.description`)}</Text>
+          <Text style={[styles.name, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.name`)}</Text>
+          <Text style={[styles.desc, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.description`)}</Text>
         </View>
       </Pressable>
       <Button
@@ -115,6 +115,8 @@ const styles = StyleSheet.create({
   card: { marginBottom: 12, gap: 12 },
   selected: { borderColor: colors.orangeAccessible, borderWidth: 2, backgroundColor: '#FFF9F5' },
   selectionArea: { minHeight: 124, flexDirection: 'row', alignItems: 'center', gap: 16 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   pressed: { opacity: 0.72 },
   avatarFrame: { width: 120, minHeight: 120, alignItems: 'center', justifyContent: 'center' },
   avatar: { width: 110, height: 110 },

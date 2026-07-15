@@ -227,8 +227,8 @@ test('development demo auth is volatile, internally guarded, and never creates a
   assert.match(auth, /signedInProvider === 'demo'[\s\S]*setSessionStatus\('signed-out'\)[\s\S]*return/);
 
   assert.match(createAccount, /demoModeAvailable \? \(/);
-  assert.match(createAccount, /Continue as demo \(development only\)/);
-  assert.match(createAccount, /Demo mode uses local fake data only/);
+  assert.match(createAccount, /t\('releaseCritical\.continueAsDemo'\)/);
+  assert.match(createAccount, /t\('releaseCritical\.demoModeNotice'\)/);
   const demoHandler = createAccount.slice(
     createAccount.indexOf('const startDemo'),
     createAccount.indexOf('\n\n  return (')
@@ -364,6 +364,18 @@ test('notification permission screen catches native errors and prevents duplicat
   assert.match(screen, /setPermissionDenied\(true\)/);
   assert.match(screen, /Linking\.openSettings\(\)/);
   assert.match(screen, /permissionDenied \? openNotificationSettings : requestPermission/);
-  assert.match(screen, /<FeedbackBanner[\s\S]*?message=\{error\}/);
+  assert.match(screen, /<FeedbackBanner[\s\S]*?message=\{errorKey \? t\(errorKey\) : null\}/);
   assert.match(screen, /disabled=\{busy \|\| notificationsAvailable === null\}/);
+});
+
+test('visible authentication errors retain translation keys across language changes', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const createAccount = readFileSync(path.resolve(process.cwd(), 'app/(auth)/create-account.js'), 'utf8');
+  const verifyCode = readFileSync(path.resolve(process.cwd(), 'app/(auth)/verify-code.js'), 'utf8');
+
+  assert.match(auth, /setAuthError\('auth\.signInFailedMessage'\)/);
+  assert.match(auth, /setAuthError\(authenticationErrorTranslationKey\(safeError\)\)/);
+  assert.doesNotMatch(auth, /setAuthError\(translate\(/);
+  assert.match(createAccount, /authError \? t\(authError\) : null/);
+  assert.match(verifyCode, /\(errorKey \|\| authError\) \? t\(errorKey \|\| authError\) : null/);
 });

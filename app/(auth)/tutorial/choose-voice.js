@@ -15,7 +15,7 @@ import { useOnboardingNavigation } from '../../../src/hooks/useOnboardingNavigat
 
 export default function ChooseVoiceTutorial() {
   const { settings, updateSettings } = useAppState();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const { advanceTo, advancing, navigationError } = useOnboardingNavigation();
   const [savingVoiceId, setSavingVoiceId] = useState(null);
 
@@ -41,11 +41,11 @@ export default function ChooseVoiceTutorial() {
       {voiceProfiles.map((voice) => {
         const selected = settings.selectedVoiceId === voice.id;
         return (
-          <Card key={voice.id} style={[styles.voiceCard, selected && styles.selectedCard]}>
+          <Card key={voice.id} style={[styles.voiceCard, isRTL && styles.rtlRow, selected && styles.selectedCard]}>
             <Image source={voice.avatar} style={styles.avatar} resizeMode="contain" />
             <View style={styles.voiceCopy}>
-              <Text style={styles.voiceName}>{t(`voices.profiles.${voice.id}.name`)}</Text>
-              <Text style={styles.voiceDescription}>{t(`voices.profiles.${voice.id}.description`)}</Text>
+              <Text style={[styles.voiceName, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.name`)}</Text>
+              <Text style={[styles.voiceDescription, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.description`)}</Text>
               {selected ? <StatusPill label={t('common.selected')} tone="active" /> : null}
               <Button
                 compact
@@ -78,6 +78,8 @@ export default function ChooseVoiceTutorial() {
 
 const styles = StyleSheet.create({
   voiceCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   selectedCard: { borderColor: colors.orangeAccessible, borderWidth: 2, backgroundColor: colors.orangeSoft },
   avatar: { width: 100, height: 100 },
   voiceCopy: { flex: 1, alignItems: 'stretch', gap: 7 },

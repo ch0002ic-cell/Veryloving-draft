@@ -17,9 +17,6 @@ import {
   isAuthenticationCancellation
 } from '../../src/utils/auth-configuration';
 
-const DEMO_BUTTON_TITLE = 'Continue as demo (development only)';
-const DEMO_MODE_NOTICE = 'Demo mode uses local fake data only. Connected services are not authenticated, and this session resets when the app reloads.';
-
 export default function CreateAccount() {
   const {
     authCapabilities,
@@ -88,7 +85,7 @@ export default function CreateAccount() {
   return (
     <Screen>
       <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} />
-      <FeedbackBanner message={authError} />
+      <FeedbackBanner message={authError ? t(authError) : null} />
       {configurationMessages.length ? (
         <FeedbackBanner message={configurationMessages.join('\n')} tone="info" />
       ) : null}
@@ -124,10 +121,10 @@ export default function CreateAccount() {
       </View>
       {demoModeAvailable ? (
         <View style={styles.demoCard}>
-          <FeedbackBanner message={DEMO_MODE_NOTICE} tone="info" />
+          <FeedbackBanner message={t('releaseCritical.demoModeNotice')} tone="info" />
           <Button
-            title={DEMO_BUTTON_TITLE}
-            accessibilityLabel={DEMO_BUTTON_TITLE}
+            title={t('releaseCritical.continueAsDemo')}
+            accessibilityLabel={t('releaseCritical.continueAsDemo')}
             variant="ghost"
             loading={busyAction === 'demo'}
             disabled={Boolean(busyAction)}

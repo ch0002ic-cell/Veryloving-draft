@@ -23,7 +23,7 @@ import { setCapybearReminderEnabled } from '../src/services/capybear-reminder';
 export default function Settings() {
   const { settings, updateSettings, selectedVoice, resetLocalState, lockAndFlushLocalMutations } = useAppState();
   const { accessToken, signOut, user } = useAuth();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const [busyAction, setBusyAction] = useState(null);
 
   const handleExport = async () => {
@@ -194,7 +194,7 @@ export default function Settings() {
         title={t('settings.sections.privacy')}
         subtitle={t('settings.sections.privacySubtitle')}
       >
-        <Text style={styles.body}>{t('settings.privacyBody')}</Text>
+        <Text style={[styles.body, isRTL && styles.rtlText]}>{t('settings.privacyBody')}</Text>
         <SettingLink icon="time-outline" title={t('history.title')} onPress={() => router.push('/conversation-history')} />
         <View style={styles.divider} />
         <SettingLink icon="document-text-outline" title={t('settings.privacyPolicy')} onPress={openPrivacyPolicy} />
@@ -207,8 +207,8 @@ export default function Settings() {
         title={t('settings.sections.account')}
         subtitle={t('settings.sections.accountSubtitle')}
       >
-        <Text style={styles.accountName}>{user?.name || t('common.user')}</Text>
-        {user?.email || user?.phone ? <Text style={styles.body}>{user.email || user.phone}</Text> : null}
+        <Text style={[styles.accountName, isRTL && styles.rtlText]}>{user?.name || t('common.user')}</Text>
+        {user?.email || user?.phone ? <Text style={[styles.body, isRTL && styles.rtlText]}>{user.email || user.phone}</Text> : null}
         <Button
           title={t('settings.signOut')}
           variant="danger"
@@ -228,12 +228,12 @@ function SettingLink({ icon, title, subtitle, onPress }) {
       accessibilityRole="button"
       android_ripple={{ color: colors.line }}
       onPress={onPress}
-      style={({ pressed }) => [styles.linkRow, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.linkRow, isRTL && styles.rtlRow, pressed && styles.pressed]}
     >
       <Ionicons name={icon} size={20} color={colors.inkSoft} />
       <View style={styles.linkCopy}>
-        <Text style={styles.linkTitle}>{title}</Text>
-        {subtitle ? <Text style={styles.muted}>{subtitle}</Text> : null}
+        <Text style={[styles.linkTitle, isRTL && styles.rtlText]}>{title}</Text>
+        {subtitle ? <Text style={[styles.muted, isRTL && styles.rtlText]}>{subtitle}</Text> : null}
       </View>
       <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={colors.inkSoft} />
     </Pressable>
@@ -241,11 +241,12 @@ function SettingLink({ icon, title, subtitle, onPress }) {
 }
 
 function SettingToggle({ title, subtitle, value, disabled = false, onValueChange }) {
+  const { isRTL } = useI18n();
   return (
-    <View style={styles.toggleRow}>
+    <View style={[styles.toggleRow, isRTL && styles.rtlRow]}>
       <View style={styles.toggleText}>
-        <Text style={styles.toggleTitle}>{title}</Text>
-        {subtitle ? <Text style={styles.muted}>{subtitle}</Text> : null}
+        <Text style={[styles.toggleTitle, isRTL && styles.rtlText]}>{title}</Text>
+        {subtitle ? <Text style={[styles.muted, isRTL && styles.rtlText]}>{subtitle}</Text> : null}
       </View>
       <Switch
         accessibilityLabel={title}
@@ -263,6 +264,8 @@ const styles = StyleSheet.create({
   accountName: { fontFamily: fonts.bold, color: colors.ink, fontSize: 17 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.line },
   linkRow: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm, overflow: 'hidden' },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' },
   linkCopy: { flex: 1 },
   linkTitle: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
   pressed: { opacity: 0.65 },

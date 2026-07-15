@@ -348,6 +348,7 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.development.developmentClient, true);
   assert.equal(eas.build.development.distribution, 'internal');
   assert.equal(eas.build.development.environment, 'development');
+  assert.equal(eas.build.development.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build.development.ios, undefined);
   assert.equal(eas.build['development-simulator'].extends, 'development');
   assert.equal(eas.build['development-simulator'].ios.simulator, true);
