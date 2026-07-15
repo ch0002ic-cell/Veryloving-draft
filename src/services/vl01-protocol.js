@@ -78,18 +78,21 @@ export function validateVL01GATT(services, characteristics, protocol) {
   if (!battery) {
     throw new Error('VL01 battery characteristic is unavailable.');
   }
-  if (battery.isReadable === false) throw new Error('VL01 battery characteristic is not readable.');
+  // react-native-ble-plx reports characteristic capabilities explicitly. Treat
+  // missing flags as an unverified GATT contract instead of assuming support;
+  // a safety wearable must fail closed before any read, subscription, or write.
+  if (battery.isReadable !== true) throw new Error('VL01 battery characteristic is not readable.');
   for (const optionalUUID of [protocol.statusCharacteristicUUID, protocol.eventCharacteristicUUID].filter(Boolean)) {
     const characteristic = characteristicsByUUID.get(canonicalVL01UUID(optionalUUID));
     if (!characteristic) throw new Error('VL01 required notification characteristic is unavailable.');
-    if (characteristic.isNotifiable === false && characteristic.isIndicatable === false) {
+    if (characteristic.isNotifiable !== true && characteristic.isIndicatable !== true) {
       throw new Error('VL01 required notification characteristic does not support notifications.');
     }
   }
   if (protocol.commandCharacteristicUUID) {
     const command = characteristicsByUUID.get(canonicalVL01UUID(protocol.commandCharacteristicUUID));
     if (!command) throw new Error('VL01 command characteristic is unavailable.');
-    if (command.isWritableWithResponse === false && command.isWritableWithoutResponse === false) {
+    if (command.isWritableWithResponse !== true && command.isWritableWithoutResponse !== true) {
       throw new Error('VL01 command characteristic is not writable.');
     }
   }

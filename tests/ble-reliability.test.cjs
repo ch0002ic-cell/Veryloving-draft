@@ -300,7 +300,7 @@ test('connect failures retain a typed code and never invent battery data', async
     name: 'NorthStar VL01',
     async discoverAllServicesAndCharacteristics() { return this; },
     async services() { return [{ uuid: 'fff0' }]; },
-    async characteristicsForService() { return [{ uuid: 'fff1' }]; },
+    async characteristicsForService() { return [{ uuid: 'fff1', isReadable: true }]; },
     async readCharacteristicForService() { return { value: 'Ug==' }; },
     monitorCharacteristicForService() { return { remove() {} }; }
   });
@@ -329,10 +329,35 @@ test('VL01 battery and GATT validation reject malformed or incompatible devices'
   assert.throws(() => decodeVL01Battery('/w=='), /out of range/);
   assert.equal(validateVL01GATT(
     [{ uuid: 'fff0' }],
-    [{ uuid: 'fff1' }],
+    [{ uuid: 'fff1', isReadable: true }],
     TEST_PROTOCOL
   ), true);
   assert.throws(() => validateVL01GATT([{ uuid: 'fff0' }], [], TEST_PROTOCOL), /battery characteristic/);
+  assert.throws(() => validateVL01GATT(
+    [{ uuid: 'fff0' }],
+    [{ uuid: 'fff1' }],
+    TEST_PROTOCOL
+  ), /not readable/);
+  assert.throws(() => validateVL01GATT(
+    [{ uuid: 'fff0' }],
+    [
+      { uuid: 'fff1', isReadable: true },
+      { uuid: 'fff2' },
+      { uuid: 'fff3', isNotifiable: true },
+      { uuid: 'fff4', isWritableWithResponse: true }
+    ],
+    TEST_FULL_PROTOCOL
+  ), /does not support notifications/);
+  assert.throws(() => validateVL01GATT(
+    [{ uuid: 'fff0' }],
+    [
+      { uuid: 'fff1', isReadable: true },
+      { uuid: 'fff2', isNotifiable: true },
+      { uuid: 'fff3', isIndicatable: true },
+      { uuid: 'fff4' }
+    ],
+    TEST_FULL_PROTOCOL
+  ), /not writable/);
   assert.equal(validateVL01GATT(
     [{ uuid: '0000fff0-0000-1000-8000-00805f9b34fb' }],
     [{ uuid: '0000fff1-0000-1000-8000-00805f9b34fb', isReadable: true }],
