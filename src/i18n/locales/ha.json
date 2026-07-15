@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Wannan zaɓin shiga ba ya samuwa a wannan sigar.",
+    "continueAsDemo": "Ci gaba a matsayin demo (don haɓakawa kawai)",
+    "demoModeNotice": "Yanayin demo yana amfani da bayanan bogi na cikin na'ura kawai. Ba a tabbatar da ayyukan da aka haɗa ba, kuma zaman nan zai sake farawa idan manhajar ta sake lodawa.",
+    "authCodeInvalid": "Lambar tabbatarwa ba daidai ba ce ko wa'adinta ya ƙare. Nemi sabuwar lamba sannan a sake gwadawa.",
+    "authRateLimited": "An yi ƙoƙarin shiga sau da yawa. Jira kaɗan, sannan a sake gwadawa.",
+    "authTimeout": "Tabbatar da shiga ya ɗauki lokaci mai tsawo. Duba haɗinka sannan a sake gwadawa.",
+    "authNetwork": "Ba mu iya isa ga sabis ɗin shiga ba. Duba haɗinka sannan a sake gwadawa.",
+    "authSessionExpired": "Zamanka ya ƙare. Sake shiga.",
+    "mapUnavailable": "Ba a iya loda taswirar tsaro ba. Duba haɗinka sannan a sake gwadawa.",
+    "mapCachedLocation": "Wurin kai tsaye ba ya samuwa. Ana nuna wurinka na ƙarshe da aka adana daga %{capturedAt}.",
+    "locationShareFailed": "Ba mu iya raba wurinka ba. Duba izinin samun wuri sannan a sake gwadawa.",
+    "locationShareCurrent": "Ga wurina da aka rubuta a %{capturedAt}:",
+    "locationShareCached": "Ga wurina na ƙarshe da aka adana a %{capturedAt}:",
+    "blePermission": "An kashe damar Bluetooth. Kunna ta a Saituna, sannan a sake gwadawa.",
+    "blePoweredOff": "An kashe Bluetooth. Kunna shi, sannan a sake gwadawa.",
+    "bleUnavailable": "Haɗa Bluetooth ba ya samuwa a wannan na'ura ko sigar.",
+    "bleScanFailed": "Ba mu iya gano NorthStar ba. Ajiye shi kusa, duba Bluetooth, sannan a sake gwadawa.",
+    "bleNoDevices": "Ba a sami na'urorin NorthStar a kusa ba. Ajiye shi kusa sannan a sake bincikawa.",
+    "bleConnectFailed": "Ba mu iya haɗawa da NorthStar ba. Tabbatar yana da caji kuma yana kusa, sannan a sake gwadawa.",
+    "saveCurrentPlace": "Adana wurin yanzu",
+    "placeSaved": "An adana wurin.",
+    "savedPlace": "Wurin da aka adana",
+    "savePlaceFailed": "Ba mu iya adana wannan wurin ba. Sake gwadawa.",
+    "lastSOSAttempt": "Ƙoƙarin SOS na ƙarshe",
+    "sosDialerOpened": "An buɗe manhajar kiran waya; ba a tabbatar da kira ba.",
+    "sosCancelled": "An soke; ba a yi kira ba.",
+    "sosContactRequired": "Babu lambar gaggawa da ake da ita; ba a yi kira ba.",
+    "sosDialerFailed": "Ba a iya buɗe manhajar kiran waya ba; ba a yi kira ba.",
+    "sosUnknown": "Ba a iya tabbatar da ƙoƙarin SOS na ƙarshe ba.",
+    "voiceConfiguration": "Abokin murya ba ya samuwa yanzu. Sake gwadawa daga baya ko ci gaba da abokin da ke aiki ba tare da intanet ba.",
+    "editContact": "Gyara",
+    "editContactTitle": "Gyara lambar gaggawa",
+    "editContactAccessibility": "Gyara %{name}",
+    "contactUpdated": "An sabunta lambar gaggawa."
   }
 }

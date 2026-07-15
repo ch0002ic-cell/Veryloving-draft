@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "אפשרות ההתחברות הזו אינה זמינה בגרסה זו.",
+    "continueAsDemo": "המשך במצב הדגמה (לפיתוח בלבד)",
+    "demoModeNotice": "מצב ההדגמה משתמש רק בנתונים מקומיים מדומים. השירותים המחוברים אינם מאומתים, וההפעלה מתאפסת כשהיישום נטען מחדש.",
+    "authCodeInvalid": "קוד האימות שגוי או פג תוקף. בקשו קוד חדש ונסו שוב.",
+    "authRateLimited": "בוצעו יותר מדי ניסיונות התחברות. המתינו מעט ונסו שוב.",
+    "authTimeout": "אימות ההתחברות ארך זמן רב מדי. בדקו את החיבור ונסו שוב.",
+    "authNetwork": "לא הצלחנו להתחבר לשירות ההתחברות. בדקו את החיבור ונסו שוב.",
+    "authSessionExpired": "תוקף ההפעלה פג. יש להתחבר שוב.",
+    "mapUnavailable": "לא ניתן לטעון את מפת הבטיחות. בדקו את החיבור ונסו שוב.",
+    "mapCachedLocation": "המיקום בזמן אמת אינו זמין. מוצג המיקום האחרון שנשמר ב-%{capturedAt}.",
+    "locationShareFailed": "לא הצלחנו לשתף את המיקום שלך. בדקו את הרשאת המיקום ונסו שוב.",
+    "locationShareCurrent": "זהו המיקום שלי שנרשם ב-%{capturedAt}:",
+    "locationShareCached": "זהו המיקום האחרון שלי שנשמר ב-%{capturedAt}:",
+    "blePermission": "הגישה ל-Bluetooth כבויה. הפעילו אותה בהגדרות ונסו שוב.",
+    "blePoweredOff": "Bluetooth כבוי. הפעילו אותו ונסו שוב.",
+    "bleUnavailable": "צימוד Bluetooth אינו זמין במכשיר או בגרסה הזו.",
+    "bleScanFailed": "לא הצלחנו למצוא את NorthStar. השאירו אותו קרוב, בדקו את Bluetooth ונסו שוב.",
+    "bleNoDevices": "לא נמצאו מכשירי NorthStar בקרבת מקום. השאירו אותו קרוב וסרקו שוב.",
+    "bleConnectFailed": "לא הצלחנו להתחבר ל-NorthStar. ודאו שהוא טעון וקרוב, ונסו שוב.",
+    "saveCurrentPlace": "שמירת המקום הנוכחי",
+    "placeSaved": "המקום נשמר.",
+    "savedPlace": "מקום שמור",
+    "savePlaceFailed": "לא הצלחנו לשמור את המקום הזה. נסו שוב.",
+    "lastSOSAttempt": "ניסיון ה-SOS האחרון",
+    "sosDialerOpened": "חייגן הטלפון נפתח; השיחה לא אושרה.",
+    "sosCancelled": "בוטל; לא בוצעה שיחה.",
+    "sosContactRequired": "לא היה איש קשר לשעת חירום זמין; לא בוצעה שיחה.",
+    "sosDialerFailed": "לא ניתן היה לפתוח את חייגן הטלפון; לא בוצעה שיחה.",
+    "sosUnknown": "לא ניתן היה לאשר את ניסיון ה-SOS האחרון.",
+    "voiceConfiguration": "המלווה הקולי אינו זמין כרגע. נסו שוב מאוחר יותר או המשיכו עם המלווה הלא מקוון.",
+    "editContact": "עריכה",
+    "editContactTitle": "עריכת איש קשר לשעת חירום",
+    "editContactAccessibility": "עריכת %{name}",
+    "contactUpdated": "איש הקשר לשעת חירום עודכן."
   }
 }

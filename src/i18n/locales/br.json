@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "N'eo ket hegerz an doare kevreañ-mañ er stumm-mañ.",
+    "continueAsDemo": "Kenderc'hel evel demo (diorren hepken)",
+    "demoModeNotice": "Ne ra ar mod demo nemet gant roadennoù faos lec'hel. N'eo ket dilesaet ar servijoù kevreet, hag adderaouekaet e vez an estez-mañ pa vez adkarget an arload.",
+    "authCodeInvalid": "Direizh pe diamzeret eo ar c'hod gwiriañ. Goulennit ur c'hod nevez ha klaskit en-dro.",
+    "authRateLimited": "Re a daolioù kevreañ. Gortozit un tamm, ha klaskit en-dro.",
+    "authTimeout": "Re bell eo bet ar gwiriañ kevreañ. Gwiriit ho kevreadenn ha klaskit en-dro.",
+    "authNetwork": "N'hon eus ket gallet tizhout ar servij kevreañ. Gwiriit ho kevreadenn ha klaskit en-dro.",
+    "authSessionExpired": "Diamzeret eo hoc'h estez. Kevreit en-dro.",
+    "mapUnavailable": "N'eus ket bet gallet kargañ ar gartenn surentez. Gwiriit ho kevreadenn ha klaskit en-dro.",
+    "mapCachedLocation": "N'eo ket hegerz al lec'hiadur war-eeun. Diskouez a reer ho lec'hiadur enrollet diwezhañ eus %{capturedAt}.",
+    "locationShareFailed": "N'hon eus ket gallet rannañ ho lec'hiadur. Gwiriit an aotre lec'hiadur ha klaskit en-dro.",
+    "locationShareCurrent": "Setu ma lec'hiadur enrollet da %{capturedAt}:",
+    "locationShareCached": "Setu ma lec'hiadur enrollet diwezhañ da %{capturedAt}:",
+    "blePermission": "Diweredekaet eo haeziñ Bluetooth. Gweredekait anezhañ en Arventennoù, ha klaskit en-dro.",
+    "blePoweredOff": "Lazhet eo Bluetooth. Enaouit anezhañ, ha klaskit en-dro.",
+    "bleUnavailable": "N'eo ket hegerz kouplañ Bluetooth war an trevnad-mañ pe er stumm-mañ.",
+    "bleScanFailed": "N'hon eus ket gallet kavout NorthStar. Dalc'hit anezhañ tost, gwiriit Bluetooth, ha klaskit en-dro.",
+    "bleNoDevices": "N'eus bet kavet trevnad NorthStar ebet en-dro. Dalc'hit anezhañ tost ha skanit en-dro.",
+    "bleConnectFailed": "N'hon eus ket gallet kevreañ ouzh NorthStar. Dalc'hit anezhañ karget ha tost, ha klaskit en-dro.",
+    "saveCurrentPlace": "Enrollañ al lec'h-mañ",
+    "placeSaved": "Lec'h enrollet.",
+    "savedPlace": "Lec'h enrollet",
+    "savePlaceFailed": "N'hon eus ket gallet enrollañ al lec'h-mañ. Klaskit en-dro.",
+    "lastSOSAttempt": "Taol SOS diwezhañ",
+    "sosDialerOpened": "Digeriet eo bet ar c'hompozer pellgomz; n'eo ket bet kadarnaet ar galv.",
+    "sosCancelled": "Nullet; galv ebet n'eo bet graet.",
+    "sosContactRequired": "Ne oa darempred trumm ebet hegerz; galv ebet n'eo bet graet.",
+    "sosDialerFailed": "N'eus ket bet gallet digeriñ ar c'hompozer pellgomz; galv ebet n'eo bet graet.",
+    "sosUnknown": "N'eus ket bet gallet kadarnaat an taol SOS diwezhañ.",
+    "voiceConfiguration": "N'eo ket hegerz ar c'hamarad dre vouezh evit poent. Klaskit diwezhatoc'h pe kendalc'hit gant ar c'hamarad ezlinenn.",
+    "editContact": "Kemmañ",
+    "editContactTitle": "Kemmañ an darempred trumm",
+    "editContactAccessibility": "Kemmañ %{name}",
+    "contactUpdated": "Darempred trumm hizivaet."
   }
 }

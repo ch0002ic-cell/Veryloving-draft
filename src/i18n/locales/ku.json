@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ev vebijarka têketinê di vê avahiyê de ne berdest e.",
+    "continueAsDemo": "Wekî demo bidomîne (tenê ji bo pêşdebirinê)",
+    "demoModeNotice": "Moda demo tenê daneyên çêkirî yên herêmî bi kar tîne. Xizmetên girêdayî nehatine piştrastkirin û dema sepan ji nû ve were barkirin ev danişîn vedigere destpêkê.",
+    "authCodeInvalid": "Koda piştrastkirinê nederbasdar e an dema wê qediya ye. Kodeke nû bixwaze û dîsa biceribîne.",
+    "authRateLimited": "Hewldanên têketinê pir in. Demekê bisekine, paşê dîsa biceribîne.",
+    "authTimeout": "Piştrastkirina têketinê pir dirêj ajot. Girêdana xwe kontrol bike û dîsa biceribîne.",
+    "authNetwork": "Me negihîşt xizmeta têketinê. Girêdana xwe kontrol bike û dîsa biceribîne.",
+    "authSessionExpired": "Dema danişîna te qediya. Dîsa têkeve.",
+    "mapUnavailable": "Nexşeya ewlehiyê nehat barkirin. Girêdana xwe kontrol bike û dîsa biceribîne.",
+    "mapCachedLocation": "Cihê zindî ne berdest e. Cihê te yê dawî ku di %{capturedAt} de hatibû tomarkirin tê nîşandan.",
+    "locationShareFailed": "Me nekarî cihê te parve bikin. Destûra cihê kontrol bike û dîsa biceribîne.",
+    "locationShareCurrent": "Ev cihê min e ku di %{capturedAt} de hat tomarkirin:",
+    "locationShareCached": "Ev cihê min ê dawî yê tomarkirî ye ku di %{capturedAt} de hat tomarkirin:",
+    "blePermission": "Destûra Bluetooth girtî ye. Di Mîhengan de wê çalak bike, paşê dîsa biceribîne.",
+    "blePoweredOff": "Bluetooth girtî ye. Wê veke, paşê dîsa biceribîne.",
+    "bleUnavailable": "Li ser vê amûrê an vê avahiyê cotkirina Bluetooth ne berdest e.",
+    "bleScanFailed": "Me NorthStar nedît. Wê nêzîk bihêle, Bluetooth kontrol bike û dîsa biceribîne.",
+    "bleNoDevices": "Li nêzîkê tu amûra NorthStar nehat dîtin. Wê nêzîk bihêle û dîsa bigere.",
+    "bleConnectFailed": "Me nekarî bi NorthStar ve girêbidin. Wê bi şarj û nêzîk bihêle, paşê dîsa biceribîne.",
+    "saveCurrentPlace": "Cihê niha tomar bike",
+    "placeSaved": "Cih hat tomarkirin.",
+    "savedPlace": "Cihê tomarkirî",
+    "savePlaceFailed": "Me nekarî vî cihî tomar bikin. Dîsa biceribîne.",
+    "lastSOSAttempt": "Hewldana SOS ya dawî",
+    "sosDialerOpened": "Pêveka hejmaran a telefonê vebû; bang nehat piştrastkirin.",
+    "sosCancelled": "Hat betalkirin; tu bang nehat kirin.",
+    "sosContactRequired": "Tu kesê têkiliyê yê acîl ne berdest bû; tu bang nehat kirin.",
+    "sosDialerFailed": "Pêveka hejmaran a telefonê venebû; tu bang nehat kirin.",
+    "sosUnknown": "Hewldana SOS ya dawî nehat piştrastkirin.",
+    "voiceConfiguration": "Hevkarê dengî niha ne berdest e. Paşê dîsa biceribîne an bi hevkarê negirêdayî bidomîne.",
+    "editContact": "Saz bike",
+    "editContactTitle": "Têkiliya acîl saz bike",
+    "editContactAccessibility": "%{name} saz bike",
+    "contactUpdated": "Têkiliya acîl hat nûkirin."
   }
 }

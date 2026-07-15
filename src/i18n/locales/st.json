@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Khetho ena ea ho kena ha e fumanehe mofuta ona oa app.",
+    "continueAsDemo": "Tsoela pele e le teko (bakeng sa nts'etsopele feela)",
+    "demoModeNotice": "Mokhoa oa teko o sebelisa feela data ea bohata e bolokiloeng sesebelisoeng. Litšebeletso tse hoketsoeng ha lia netefatsoa, 'me seshene ena e qala bocha ha app e bula bocha.",
+    "authCodeInvalid": "Khoutu ea netefatso ha e sebetse kapa e feletsoe ke nako. Kopa khoutu e ncha ebe u leka hape.",
+    "authRateLimited": "Boiteko ba ho kena bo bongata haholo. Ema hanyane, ebe u leka hape.",
+    "authTimeout": "Netefatso ea ho kena e nkile nako e telele haholo. Hlahloba khokelo ea hau ebe u leka hape.",
+    "authNetwork": "Ha rea khona ho fihlella tšebeletso ea ho kena. Hlahloba khokelo ea hau ebe u leka hape.",
+    "authSessionExpired": "Seshene ea hau e feletsoe ke nako. Kena hape.",
+    "mapUnavailable": "'Mapa oa polokeho ha oa khona ho bula. Hlahloba khokelo ea hau ebe u leka hape.",
+    "mapCachedLocation": "Sebaka sa hona joale ha se fumanehe. Ho bontšoa sebaka sa ho qetela se bolokiloeng ho tloha ka %{capturedAt}.",
+    "locationShareFailed": "Ha rea khona ho arolelana sebaka sa hau. Hlahloba tumello ea sebaka ebe u leka hape.",
+    "locationShareCurrent": "Sebaka sa ka se tlalehiloeng ka %{capturedAt} ke sena:",
+    "locationShareCached": "Sebaka sa ka sa ho qetela se bolokiloeng, se tlalehiloeng ka %{capturedAt}, ke sena:",
+    "blePermission": "Tumello ea Bluetooth e timme. E bulele ho Litlhophiso, ebe u leka hape.",
+    "blePoweredOff": "Bluetooth e timme. E bulele, ebe u leka hape.",
+    "bleUnavailable": "Ho hokahanya ka Bluetooth ha ho fumanehe sesebelisoeng sena kapa mofuteng ona oa app.",
+    "bleScanFailed": "Ha rea khona ho fumana NorthStar. E boloke e le haufi, hlahloba Bluetooth, ebe u leka hape.",
+    "bleNoDevices": "Ha ho lisebelisoa tsa NorthStar tse haufi tse fumanoeng. E boloke e le haufi ebe u batla hape.",
+    "bleConnectFailed": "Ha rea khona ho hokela NorthStar. E boloke e tjhajiloe ebile e le haufi, ebe u leka hape.",
+    "saveCurrentPlace": "Boloka sebaka sa hona joale",
+    "placeSaved": "Sebaka se bolokiloe.",
+    "savedPlace": "Sebaka se bolokiloeng",
+    "savePlaceFailed": "Ha rea khona ho boloka sebaka sena. Leka hape.",
+    "lastSOSAttempt": "Boiteko ba ho qetela ba SOS",
+    "sosDialerOpened": "Sekrineng sa ho letsa se butsoe; mohala ha oa netefatsoa.",
+    "sosCancelled": "E hlakotsoe; ha ho mohala o entsoeng.",
+    "sosContactRequired": "Ho ne ho se na motho oa tšohanyetso ea fumanehang; ha ho mohala o entsoeng.",
+    "sosDialerFailed": "Sekrineng sa ho letsa ha sea khona ho bula; ha ho mohala o entsoeng.",
+    "sosUnknown": "Boiteko ba ho qetela ba SOS ha boa khona ho netefatsoa.",
+    "voiceConfiguration": "Mothusi oa lentsoe ha a fumanehe hona joale. Leka hape hamorao kapa u tsoele pele ka mothusi ea sebetsang ntle le inthanete.",
+    "editContact": "Fetola",
+    "editContactTitle": "Fetola motho oa tšohanyetso",
+    "editContactAccessibility": "Fetola %{name}",
+    "contactUpdated": "Motho oa tšohanyetso o ntlafalitsoe."
   }
 }

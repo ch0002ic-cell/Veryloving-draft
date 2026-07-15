@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Tämä kirjautumisvaihtoehto ei ole käytettävissä tässä versiossa.",
+    "continueAsDemo": "Jatka demona (vain kehityskäyttöön)",
+    "demoModeNotice": "Demotila käyttää vain paikallisia testitietoja. Yhdistettyjä palveluita ei ole todennettu, ja istunto nollautuu, kun sovellus latautuu uudelleen.",
+    "authCodeInvalid": "Vahvistuskoodi on virheellinen tai vanhentunut. Pyydä uusi koodi ja yritä uudelleen.",
+    "authRateLimited": "Liian monta kirjautumisyritystä. Odota hetki ja yritä sitten uudelleen.",
+    "authTimeout": "Kirjautumisen vahvistaminen kesti liian kauan. Tarkista yhteys ja yritä uudelleen.",
+    "authNetwork": "Kirjautumispalveluun ei saatu yhteyttä. Tarkista yhteys ja yritä uudelleen.",
+    "authSessionExpired": "Istuntosi on vanhentunut. Kirjaudu uudelleen.",
+    "mapUnavailable": "Turvallisuuskarttaa ei voitu ladata. Tarkista yhteys ja yritä uudelleen.",
+    "mapCachedLocation": "Reaaliaikainen sijainti ei ole käytettävissä. Näytetään viimeksi tallennettu sijaintisi ajalta %{capturedAt}.",
+    "locationShareFailed": "Sijaintiasi ei voitu jakaa. Tarkista sijainnin käyttöoikeus ja yritä uudelleen.",
+    "locationShareCurrent": "Tässä on sijaintini, joka tallennettiin %{capturedAt}:",
+    "locationShareCached": "Tässä on viimeisin tallennettu sijaintini ajalta %{capturedAt}:",
+    "blePermission": "Bluetooth-käyttö on poistettu käytöstä. Ota se käyttöön Asetuksissa ja yritä uudelleen.",
+    "blePoweredOff": "Bluetooth on pois päältä. Kytke se päälle ja yritä uudelleen.",
+    "bleUnavailable": "Bluetooth-laiteparin muodostaminen ei ole käytettävissä tällä laitteella tai tässä versiossa.",
+    "bleScanFailed": "NorthStar-laitetta ei löytynyt. Pidä se lähellä, tarkista Bluetooth ja yritä uudelleen.",
+    "bleNoDevices": "Lähistöltä ei löytynyt NorthStar-laitteita. Pidä laite lähellä ja etsi uudelleen.",
+    "bleConnectFailed": "NorthStar-laitteeseen ei saatu yhteyttä. Pidä se ladattuna ja lähellä ja yritä uudelleen.",
+    "saveCurrentPlace": "Tallenna nykyinen paikka",
+    "placeSaved": "Paikka tallennettu.",
+    "savedPlace": "Tallennettu paikka",
+    "savePlaceFailed": "Tätä paikkaa ei voitu tallentaa. Yritä uudelleen.",
+    "lastSOSAttempt": "Viimeisin SOS-yritys",
+    "sosDialerOpened": "Puhelimen numerovalitsin avattiin; puhelua ei ole vahvistettu.",
+    "sosCancelled": "Peruutettu; puhelua ei soitettu.",
+    "sosContactRequired": "Hätäyhteyshenkilöä ei ollut saatavilla; puhelua ei soitettu.",
+    "sosDialerFailed": "Puhelimen numerovalitsinta ei voitu avata; puhelua ei soitettu.",
+    "sosUnknown": "Viimeisintä SOS-yritystä ei voitu vahvistaa.",
+    "voiceConfiguration": "Ääniavustaja ei ole juuri nyt käytettävissä. Yritä myöhemmin uudelleen tai jatka offline-avustajan kanssa.",
+    "editContact": "Muokkaa",
+    "editContactTitle": "Muokkaa hätäyhteyshenkilöä",
+    "editContactAccessibility": "Muokkaa yhteystietoa %{name}",
+    "contactUpdated": "Hätäyhteyshenkilö päivitetty."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "እዚ ናይ ምእታው ኣማራጺ ኣብዚ ህንጸት ኣይርከብን።",
+    "continueAsDemo": "ከም መርኣያ ቀጽል (ንልምዓት ጥራይ)",
+    "demoModeNotice": "ናይ መርኣያ ሁነታ ኣብቲ መሳርሒ ዘሎ ናይ ፈተነ ዳታ ጥራይ ይጥቀም። ዝተራኸቡ ኣገልግሎታት መንነቶም ኣይተረጋገጸን፣ እቲ መተግበሪ ዳግም ክጽዕን ከሎ ድማ እዚ ክፍለ ግዜ ዳግም ይጅምር።",
+    "authCodeInvalid": "እቲ ናይ ምርግጋጽ ኮድ ዘይቅቡል ወይ ግዜኡ ዝሓለፈ እዩ። ሓድሽ ኮድ ሕተት እሞ ደጊምካ ፈትን።",
+    "authRateLimited": "ብዙሕ ግዜ ንምእታው ተፈቲኑ። ቁሩብ ተጸበ እሞ ደጊምካ ፈትን።",
+    "authTimeout": "ምርግጋጽ ምእታው ነዊሕ ግዜ ወሲዱ። ርክብካ ፈትሽ እሞ ደጊምካ ፈትን።",
+    "authNetwork": "ናብቲ ናይ ምእታው ኣገልግሎት ክንበጽሕ ኣይከኣልናን። ርክብካ ፈትሽ እሞ ደጊምካ ፈትን።",
+    "authSessionExpired": "ክፍለ ግዜኻ ኣብቂዑ። ደጊምካ እቶ።",
+    "mapUnavailable": "እቲ ናይ ድሕነት ካርታ ክጽዕን ኣይከኣለን። ርክብካ ፈትሽ እሞ ደጊምካ ፈትን።",
+    "mapCachedLocation": "ቀጥታዊ ቦታ ኣይርከብን። ካብ %{capturedAt} ዝተቐመጠ ናይ መወዳእታ ቦታኻ ይረአ ኣሎ።",
+    "locationShareFailed": "ቦታኻ ክንካፈል ኣይከኣልናን። ፍቓድ ቦታ ፈትሽ እሞ ደጊምካ ፈትን።",
+    "locationShareCurrent": "እንሆ ኣብ %{capturedAt} ዝተመዝገበ ቦታይ፦",
+    "locationShareCached": "እንሆ ኣብ %{capturedAt} ዝተመዝገበ ናይ መወዳእታ ዝተቐመጠ ቦታይ፦",
+    "blePermission": "ፍቓድ Bluetooth ጠፊኡ ኣሎ። ኣብ ቅንብራት ኣብርሆ እሞ ደጊምካ ፈትን።",
+    "blePoweredOff": "Bluetooth ጠፊኡ ኣሎ። ኣብርሆ እሞ ደጊምካ ፈትን።",
+    "bleUnavailable": "ምጽማድ Bluetooth ኣብዚ መሳርሒ ወይ ህንጸት ኣይርከብን።",
+    "bleScanFailed": "NorthStar ክንረክብ ኣይከኣልናን። ኣብ ቀረባ ኣንብሮ፣ Bluetooth ፈትሽ እሞ ደጊምካ ፈትን።",
+    "bleNoDevices": "ኣብ ቀረባ ዝኾነ NorthStar መሳርሒ ኣይተረኽበን። ኣብ ቀረባ ኣንብሮ እሞ ደጊምካ ድለ።",
+    "bleConnectFailed": "ምስ NorthStar ክንራኸብ ኣይከኣልናን። ቻርጅ ከም ዘለዎን ኣብ ቀረባ ከም ዘሎን ኣረጋግጽ እሞ ደጊምካ ፈትን።",
+    "saveCurrentPlace": "ናይ ሕጂ ቦታ ኣቐምጥ",
+    "placeSaved": "ቦታ ተቐሚጡ።",
+    "savedPlace": "ዝተቐመጠ ቦታ",
+    "savePlaceFailed": "ነዚ ቦታ ከነቐምጦ ኣይከኣልናን። ደጊምካ ፈትን።",
+    "lastSOSAttempt": "ናይ መወዳእታ SOS ፈተነ",
+    "sosDialerOpened": "መደወሊ ስልኪ ተኸፊቱ፤ ጻውዒት ኣይተረጋገጸን።",
+    "sosCancelled": "ተሰሪዙ፤ ጻውዒት ኣይተገብረን።",
+    "sosContactRequired": "ናይ ህጹጽ እዋን ተራኻቢ ኣይነበረን፤ ጻውዒት ኣይተገብረን።",
+    "sosDialerFailed": "መደወሊ ስልኪ ክኽፈት ኣይከኣለን፤ ጻውዒት ኣይተገብረን።",
+    "sosUnknown": "እቲ ናይ መወዳእታ SOS ፈተነ ክረጋገጽ ኣይከኣለን።",
+    "voiceConfiguration": "እቲ ናይ ድምጺ መሓዛ ሕጂ ኣይርከብን። ጸኒሕካ ደጊምካ ፈትን ወይ ብዘይ ኢንተርነት ምስ ዝሰርሕ መሓዛ ቀጽል።",
+    "editContact": "ኣስተኻኽል",
+    "editContactTitle": "ናይ ህጹጽ እዋን ተራኻቢ ኣስተኻኽል",
+    "editContactAccessibility": "%{name} ኣስተኻኽል",
+    "contactUpdated": "ናይ ህጹጽ እዋን ተራኻቢ ተመሓይሹ።"
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "ይህ የመግቢያ አማራጭ በዚህ ስሪት አይገኝም።",
+    "continueAsDemo": "በማሳያ ሁነታ ቀጥል (ለልማት ብቻ)",
+    "demoModeNotice": "የማሳያ ሁነታ በመሣሪያው ላይ ያለ ሐሰተኛ ውሂብ ብቻ ይጠቀማል። የተገናኙ አገልግሎቶች ማንነት አልተረጋገጠም፤ መተግበሪያው ዳግም ሲጫንም ይህ ክፍለ ጊዜ ይጀመራል።",
+    "authCodeInvalid": "የማረጋገጫ ኮዱ ልክ አይደለም ወይም ጊዜው አልፏል። አዲስ ኮድ ጠይቀው እንደገና ይሞክሩ።",
+    "authRateLimited": "የመግቢያ ሙከራዎች በዝተዋል። ትንሽ ይጠብቁና እንደገና ይሞክሩ።",
+    "authTimeout": "የመግቢያ ማረጋገጫው በጣም ዘገየ። ግንኙነትዎን ያረጋግጡና እንደገና ይሞክሩ።",
+    "authNetwork": "የመግቢያ አገልግሎቱን ማግኘት አልቻልንም። ግንኙነትዎን ያረጋግጡና እንደገና ይሞክሩ።",
+    "authSessionExpired": "ክፍለ ጊዜዎ አልፏል። እንደገና ይግቡ።",
+    "mapUnavailable": "የደህንነት ካርታውን መጫን አልተቻለም። ግንኙነትዎን ያረጋግጡና እንደገና ይሞክሩ።",
+    "mapCachedLocation": "የቀጥታ አካባቢ አይገኝም። ከ%{capturedAt} የመጨረሻ የተቀመጠ አካባቢዎን በማሳየት ላይ።",
+    "locationShareFailed": "አካባቢዎን ማጋራት አልቻልንም። የአካባቢ ፍቃድን ያረጋግጡና እንደገና ይሞክሩ።",
+    "locationShareCurrent": "በ%{capturedAt} የተመዘገበው አካባቢዬ ይህ ነው፦",
+    "locationShareCached": "በ%{capturedAt} የተመዘገበው የመጨረሻ የተቀመጠ አካባቢዬ ይህ ነው፦",
+    "blePermission": "የBluetooth መዳረሻ ጠፍቷል። በቅንብሮች ውስጥ ያብሩትና እንደገና ይሞክሩ።",
+    "blePoweredOff": "Bluetooth ጠፍቷል። ያብሩትና እንደገና ይሞክሩ።",
+    "bleUnavailable": "በዚህ መሣሪያ ወይም ስሪት ላይ በBluetooth ማጣመር አይገኝም።",
+    "bleScanFailed": "NorthStarን ማግኘት አልቻልንም። በአቅራቢያ ያቆዩት፣ Bluetoothን ያረጋግጡና እንደገና ይሞክሩ።",
+    "bleNoDevices": "በአቅራቢያ ምንም የNorthStar መሣሪያ አልተገኘም። በአቅራቢያ ያቆዩትና እንደገና ይቃኙ።",
+    "bleConnectFailed": "ከNorthStar ጋር መገናኘት አልቻልንም። ኃይል እንዳለውና በአቅራቢያ እንደሆነ ያረጋግጡ፣ ከዚያ እንደገና ይሞክሩ።",
+    "saveCurrentPlace": "ያሉበትን ቦታ አስቀምጥ",
+    "placeSaved": "ቦታው ተቀምጧል።",
+    "savedPlace": "የተቀመጠ ቦታ",
+    "savePlaceFailed": "ይህን ቦታ ማስቀመጥ አልቻልንም። እንደገና ይሞክሩ።",
+    "lastSOSAttempt": "የመጨረሻው የSOS ሙከራ",
+    "sosDialerOpened": "የስልክ መደወያው ተከፍቷል፤ ጥሪው አልተረጋገጠም።",
+    "sosCancelled": "ተሰርዟል፤ ምንም ጥሪ አልተደረገም።",
+    "sosContactRequired": "የአደጋ ጊዜ ዕውቂያ አልነበረም፤ ምንም ጥሪ አልተደረገም።",
+    "sosDialerFailed": "የስልክ መደወያው መከፈት አልቻለም፤ ምንም ጥሪ አልተደረገም።",
+    "sosUnknown": "የመጨረሻውን የSOS ሙከራ ማረጋገጥ አልተቻለም።",
+    "voiceConfiguration": "የድምፅ አጋሩ አሁን አይገኝም። ቆይተው ይሞክሩ ወይም ከመስመር ውጭ በሚሰራው አጋር ይቀጥሉ።",
+    "editContact": "አርትዕ",
+    "editContactTitle": "የአደጋ ጊዜ ዕውቂያን አርትዕ",
+    "editContactAccessibility": "%{name}ን አርትዕ",
+    "contactUpdated": "የአደጋ ጊዜ ዕውቂያው ዘምኗል።"
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Donda ni ka don man bɛ build in na.",
+    "continueAsDemo": "Taga ɲɛ demo ye (development dɔrɔn)",
+    "demoModeNotice": "Demo mode bɛ baara kɛ ni local fake data dɔrɔn ye. Connected services ma ladon, wa app bɛ segin ka load tuma min na, session in bɛ daminɛ kokura.",
+    "authCodeInvalid": "Verification code tɛ tiɲɛ walima a waati banna. Code kura ɲini ka segin ka a lajɛ.",
+    "authRateLimited": "I ye donni lajɛ siɲɛ caman. I hakili sigi dɔɔni, ka segin ka a lajɛ.",
+    "authTimeout": "Donni sɛgɛsɛgɛli mɛnna kojugu. I ka connection lajɛ ka segin ka a lajɛ.",
+    "authNetwork": "An ma se ka donni service sɔrɔ. I ka connection lajɛ ka segin ka a lajɛ.",
+    "authSessionExpired": "I ka session waati banna. Don kokura.",
+    "mapUnavailable": "Lakanafɛ map ma se ka load. I ka connection lajɛ ka segin ka a lajɛ.",
+    "mapCachedLocation": "I ka live location tɛ yen. I ka location laban min tun mara, o bɛ jira kabini %{capturedAt}.",
+    "locationShareFailed": "An ma se ka i ka location tila. Location access lajɛ ka segin ka a lajɛ.",
+    "locationShareCurrent": "N ka location min sɛbɛnna %{capturedAt}, o filɛ:",
+    "locationShareCached": "N ka location laban min maralen don, min sɛbɛnna %{capturedAt}, o filɛ:",
+    "blePermission": "Bluetooth access datugulen don. A dayɛlɛ Settings kɔnɔ, ka segin ka a lajɛ.",
+    "blePoweredOff": "Bluetooth datugulen don. A dayɛlɛ, ka segin ka a lajɛ.",
+    "bleUnavailable": "Bluetooth pairing tɛ se ka kɛ appareil walima build in kan.",
+    "bleScanFailed": "An ma NorthStar ye. A to i la, Bluetooth lajɛ, ka segin ka a lajɛ.",
+    "bleNoDevices": "NorthStar appareil si ma sɔrɔ i kɛrɛfɛ. A to i la ka scan kokura.",
+    "bleConnectFailed": "An ma se ka NorthStar connect. A to ni charge ye i kɛrɛfɛ, ka segin ka a lajɛ.",
+    "saveCurrentPlace": "Bi yɔrɔ mara",
+    "placeSaved": "Yɔrɔ maralen don.",
+    "savedPlace": "Yɔrɔ maralen",
+    "savePlaceFailed": "An ma se ka yɔrɔ in mara. Segin ka a lajɛ.",
+    "lastSOSAttempt": "SOS lajɛli laban",
+    "sosDialerOpened": "Telefɔni dialer dayɛlɛla; weleli ma dafa.",
+    "sosCancelled": "A dabila; weleli si ma kɛ.",
+    "sosContactRequired": "Emergency contact si tun tɛ yen; weleli si ma kɛ.",
+    "sosDialerFailed": "Telefɔni dialer ma se ka dayɛlɛ; weleli si ma kɛ.",
+    "sosUnknown": "SOS lajɛli laban ma se ka dafa.",
+    "voiceConfiguration": "Kuma companion tɛ yen sisan. Segin ka a lajɛ kɔfɛ walima taga ɲɛ ni offline companion ye.",
+    "editContact": "Yɛlɛma",
+    "editContactTitle": "Emergency contact yɛlɛma",
+    "editContactAccessibility": "%{name} yɛlɛma",
+    "contactUpdated": "Emergency contact yɛlɛmana."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Cette option de connexion n’est pas disponible dans cette version.",
+    "continueAsDemo": "Continuer en mode démo (développement uniquement)",
+    "demoModeNotice": "Le mode démo utilise uniquement de fausses données locales. Les services connectés ne sont pas authentifiés et la session est réinitialisée au rechargement de l’application.",
+    "authCodeInvalid": "Le code de vérification est incorrect ou a expiré. Demandez un nouveau code, puis réessayez.",
+    "authRateLimited": "Trop de tentatives de connexion. Patientez un instant, puis réessayez.",
+    "authTimeout": "La vérification de connexion a pris trop de temps. Vérifiez votre connexion, puis réessayez.",
+    "authNetwork": "Impossible de joindre le service de connexion. Vérifiez votre connexion, puis réessayez.",
+    "authSessionExpired": "Votre session a expiré. Reconnectez-vous.",
+    "mapUnavailable": "Impossible de charger la carte de sécurité. Vérifiez votre connexion, puis réessayez.",
+    "mapCachedLocation": "La position en direct n’est pas disponible. Affichage de votre dernière position enregistrée le %{capturedAt}.",
+    "locationShareFailed": "Impossible de partager votre position. Vérifiez l’accès à la localisation, puis réessayez.",
+    "locationShareCurrent": "Voici ma position enregistrée le %{capturedAt} :",
+    "locationShareCached": "Voici ma dernière position enregistrée, relevée le %{capturedAt} :",
+    "blePermission": "L’accès Bluetooth est désactivé. Activez-le dans Réglages, puis réessayez.",
+    "blePoweredOff": "Le Bluetooth est désactivé. Activez-le, puis réessayez.",
+    "bleUnavailable": "L’association Bluetooth n’est pas disponible sur cet appareil ou dans cette version.",
+    "bleScanFailed": "Impossible de trouver NorthStar. Gardez-le à proximité, vérifiez le Bluetooth, puis réessayez.",
+    "bleNoDevices": "Aucun appareil NorthStar à proximité n’a été trouvé. Gardez-le près de vous et relancez la recherche.",
+    "bleConnectFailed": "Impossible de se connecter à NorthStar. Gardez-le chargé et à proximité, puis réessayez.",
+    "saveCurrentPlace": "Enregistrer le lieu actuel",
+    "placeSaved": "Lieu enregistré.",
+    "savedPlace": "Lieu enregistré",
+    "savePlaceFailed": "Impossible d’enregistrer ce lieu. Réessayez.",
+    "lastSOSAttempt": "Dernière tentative SOS",
+    "sosDialerOpened": "Le composeur téléphonique s’est ouvert ; l’appel n’est pas confirmé.",
+    "sosCancelled": "Annulé ; aucun appel n’a été passé.",
+    "sosContactRequired": "Aucun contact d’urgence n’était disponible ; aucun appel n’a été passé.",
+    "sosDialerFailed": "Impossible d’ouvrir le composeur téléphonique ; aucun appel n’a été passé.",
+    "sosUnknown": "La dernière tentative SOS n’a pas pu être confirmée.",
+    "voiceConfiguration": "Le compagnon vocal est indisponible pour le moment. Réessayez plus tard ou continuez avec le compagnon hors ligne.",
+    "editContact": "Modifier",
+    "editContactTitle": "Modifier le contact d’urgence",
+    "editContactAccessibility": "Modifier %{name}",
+    "contactUpdated": "Contact d’urgence mis à jour."
   }
 }

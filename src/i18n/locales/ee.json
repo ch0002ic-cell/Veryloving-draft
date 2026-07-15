@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Mawɔɖeɖe ƒe mɔnu sia mele app ƒe tata sia me o.",
+    "continueAsDemo": "Yi edzi abe demo ene (ŋgɔyiyi me dɔwɔwɔ ko)",
+    "demoModeNotice": "Demo mode zãa aʋatsodzedze ƒe nyatakakawo siwo le mɔ̃a dzi ko. Womeɖo kpe ɖe dɔ siwo le kadodo me ŋu be woawo ŋutɔwoe o, eye session sia agbugbɔ dze egɔme ne woɖo app la yeye.",
+    "authCodeInvalid": "Kpeɖodzi ƒe code la mesɔ o alo eƒe ɣeyiɣi va yi. Bia code yeye eye nàgbugbɔ agbadze ake.",
+    "authRateLimited": "Mawɔɖeɖe ƒe dodokpɔ geɖe akpa. Lala vie, eye nàgbugbɔ agbadze ake.",
+    "authTimeout": "Mawɔɖeɖe ƒe kpeɖodzi la xɔ ɣeyiɣi didi akpa. Kpɔ wò Internet kadodo dzi eye nàgbugbɔ agbadze ake.",
+    "authNetwork": "Míete ŋu te ɖe mawɔɖeɖe ƒe dɔ la ŋu o. Kpɔ wò Internet kadodo dzi eye nàgbugbɔ agbadze ake.",
+    "authSessionExpired": "Wò session ƒe ɣeyiɣi va yi. Wɔ ɖe eme ake.",
+    "mapUnavailable": "Womete ŋu ɖo dedinɔnɔ ƒe map la o. Kpɔ wò Internet kadodo dzi eye nàgbugbɔ agbadze ake.",
+    "mapCachedLocation": "Wò teƒe si nèle fifia mele eme o. Wò teƒe mamlɛtɔ si woɖo ɖi tso %{capturedAt} lae nye esi fia.",
+    "locationShareFailed": "Míete ŋu ma wò teƒe o. Kpɔ teƒe ŋu mɔɖeɖe dzi eye nàgbugbɔ agbadze ake.",
+    "locationShareCurrent": "Afimae mele esi woŋlɔ ɖi le %{capturedAt}:",
+    "locationShareCached": "Afimae nye nye teƒe mamlɛtɔ si woɖo ɖi eye woŋlɔ le %{capturedAt}:",
+    "blePermission": "Bluetooth ŋu mɔɖeɖe le tututu. Ɖe mɔ nɛ le Settings me, eye nàgbugbɔ agbadze ake.",
+    "blePoweredOff": "Wotso Bluetooth. Dae, eye nàgbugbɔ agbadze ake.",
+    "bleUnavailable": "Bluetooth pairing mele mɔ̃ sia alo app ƒe tata sia dzi o.",
+    "bleScanFailed": "Míete ŋu kpɔ NorthStar o. Kpɔ egbɔ, kpɔ Bluetooth dzi, eye nàgbugbɔ agbadze ake.",
+    "bleNoDevices": "Womekpɔ NorthStar mɔ̃ aɖeke le ŋgɔgbɔ o. Kpɔ egbɔ eye nàgbugbɔ di ake.",
+    "bleConnectFailed": "Míete ŋu bla ɖe NorthStar ŋu o. Na eƒe battery nayɔ eye wòakpɔ egbɔ, eye nàgbugbɔ agbadze ake.",
+    "saveCurrentPlace": "Ɖo teƒe sia ɖi",
+    "placeSaved": "Woɖo teƒe la ɖi.",
+    "savedPlace": "Teƒe si woɖo ɖi",
+    "savePlaceFailed": "Míete ŋu ɖo teƒe sia ɖi o. Gbugbɔ agbadze ake.",
+    "lastSOSAttempt": "SOS dodokpɔ mamlɛtɔ",
+    "sosDialerOpened": "Telefon ƒe xexlẽƒe ʋu; womete ŋu de kpe ɖe yɔyɔ la dzi o.",
+    "sosCancelled": "Wotsɔe ɖi; womeyɔ telefon o.",
+    "sosContactRequired": "Nuxaxa me kadodonyigba aɖeke meli o; womeyɔ telefon o.",
+    "sosDialerFailed": "Telefon ƒe xexlẽƒe mete ŋu ʋu o; womeyɔ telefon o.",
+    "sosUnknown": "Womete ŋu de kpe ɖe SOS dodokpɔ mamlɛtɔ la dzi o.",
+    "voiceConfiguration": "Gbegblɔla kpeɖeŋutɔ la mele eme fifia o. Gbugbɔ agbadze emegbe alo yi edzi kple kpeɖeŋutɔ si mezãa Internet o.",
+    "editContact": "Trɔ asi le eŋu",
+    "editContactTitle": "Trɔ asi le nuxaxa me kadodonyigba ŋu",
+    "editContactAccessibility": "Trɔ asi le %{name} ŋu",
+    "contactUpdated": "Wotrɔ asi le nuxaxa me kadodonyigba ŋu."
   }
 }

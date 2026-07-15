@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Esta opción de inicio de sesión non está dispoñible nesta versión.",
+    "continueAsDemo": "Continuar como demostración (só para desenvolvemento)",
+    "demoModeNotice": "O modo de demostración só usa datos de proba locais. Os servizos conectados non están autenticados e a sesión restablécese ao volver cargar a aplicación.",
+    "authCodeInvalid": "O código de verificación non é válido ou caducou. Solicita un novo código e téntao de novo.",
+    "authRateLimited": "Demasiados intentos de inicio de sesión. Agarda un momento e téntao de novo.",
+    "authTimeout": "A verificación do inicio de sesión tardou demasiado. Comproba a conexión e téntao de novo.",
+    "authNetwork": "Non puidemos contactar co servizo de inicio de sesión. Comproba a conexión e téntao de novo.",
+    "authSessionExpired": "A túa sesión caducou. Inicia sesión de novo.",
+    "mapUnavailable": "Non se puido cargar o mapa de seguridade. Comproba a conexión e téntao de novo.",
+    "mapCachedLocation": "A localización en directo non está dispoñible. Móstrase a túa última localización gardada de %{capturedAt}.",
+    "locationShareFailed": "Non puidemos compartir a túa localización. Comproba o acceso á localización e téntao de novo.",
+    "locationShareCurrent": "Esta é a miña localización rexistrada en %{capturedAt}:",
+    "locationShareCached": "Esta é a miña última localización gardada, rexistrada en %{capturedAt}:",
+    "blePermission": "O acceso a Bluetooth está desactivado. Actívao en Axustes e téntao de novo.",
+    "blePoweredOff": "Bluetooth está apagado. Acéndeo e téntao de novo.",
+    "bleUnavailable": "A vinculación por Bluetooth non está dispoñible neste dispositivo ou versión.",
+    "bleScanFailed": "Non puidemos atopar NorthStar. Manteno preto, comproba Bluetooth e téntao de novo.",
+    "bleNoDevices": "Non se atoparon dispositivos NorthStar próximos. Manteno preto e busca de novo.",
+    "bleConnectFailed": "Non puidemos conectar con NorthStar. Manteno cargado e preto e téntao de novo.",
+    "saveCurrentPlace": "Gardar o lugar actual",
+    "placeSaved": "Lugar gardado.",
+    "savedPlace": "Lugar gardado",
+    "savePlaceFailed": "Non puidemos gardar este lugar. Téntao de novo.",
+    "lastSOSAttempt": "Último intento de SOS",
+    "sosDialerOpened": "Abriuse o marcador do teléfono; chamada non confirmada.",
+    "sosCancelled": "Cancelado; non se realizou ningunha chamada.",
+    "sosContactRequired": "Non había ningún contacto de emerxencia dispoñible; non se realizou ningunha chamada.",
+    "sosDialerFailed": "Non se puido abrir o marcador do teléfono; non se realizou ningunha chamada.",
+    "sosUnknown": "Non se puido confirmar o último intento de SOS.",
+    "voiceConfiguration": "O asistente de voz non está dispoñible agora mesmo. Téntao de novo máis tarde ou continúa co asistente sen conexión.",
+    "editContact": "Editar",
+    "editContactTitle": "Editar o contacto de emerxencia",
+    "editContactAccessibility": "Editar %{name}",
+    "contactUpdated": "Contacto de emerxencia actualizado."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Níl an rogha sínithe isteach seo ar fáil sa leagan seo.",
+    "continueAsDemo": "Lean ar aghaidh mar thaispeántas (forbairt amháin)",
+    "demoModeNotice": "Ní úsáideann mód taispeána ach sonraí bréige áitiúla. Níl seirbhísí nasctha fíordheimhnithe, agus athshocraítear an seisiún seo nuair a athlódáiltear an aip.",
+    "authCodeInvalid": "Tá an cód fíorúcháin neamhbhailí nó imithe in éag. Iarr cód nua agus bain triail eile as.",
+    "authRateLimited": "An iomarca iarrachtaí sínithe isteach. Fan tamall agus bain triail eile as.",
+    "authTimeout": "Thóg fíorú an tsínithe isteach rófhada. Seiceáil do cheangal agus bain triail eile as.",
+    "authNetwork": "Níorbh fhéidir linn an tseirbhís sínithe isteach a bhaint amach. Seiceáil do cheangal agus bain triail eile as.",
+    "authSessionExpired": "Chuaigh do sheisiún in éag. Sínigh isteach arís.",
+    "mapUnavailable": "Níorbh fhéidir an léarscáil sábháilteachta a lódáil. Seiceáil do cheangal agus bain triail eile as.",
+    "mapCachedLocation": "Níl suíomh beo ar fáil. Tá do shuíomh deireanach sábháilte ó %{capturedAt} á thaispeáint.",
+    "locationShareFailed": "Níorbh fhéidir linn do shuíomh a chomhroinnt. Seiceáil rochtain suímh agus bain triail eile as.",
+    "locationShareCurrent": "Seo é mo shuíomh a taifeadadh ag %{capturedAt}:",
+    "locationShareCached": "Seo é mo shuíomh deireanach sábháilte a taifeadadh ag %{capturedAt}:",
+    "blePermission": "Tá rochtain Bluetooth múchta. Cumasaigh í sna Socruithe agus bain triail eile as.",
+    "blePoweredOff": "Tá Bluetooth múchta. Cuir ar siúl é agus bain triail eile as.",
+    "bleUnavailable": "Níl péireáil Bluetooth ar fáil ar an ngléas seo ná sa leagan seo.",
+    "bleScanFailed": "Níorbh fhéidir linn NorthStar a aimsiú. Coinnigh gar duit é, seiceáil Bluetooth agus bain triail eile as.",
+    "bleNoDevices": "Níor aimsíodh aon ghléas NorthStar in aice láimhe. Coinnigh gar duit é agus scan arís.",
+    "bleConnectFailed": "Níorbh fhéidir linn ceangal le NorthStar. Coinnigh luchtaithe agus in aice láimhe é, ansin bain triail eile as.",
+    "saveCurrentPlace": "Sábháil an áit reatha",
+    "placeSaved": "Sábháladh an áit.",
+    "savedPlace": "Áit shábháilte",
+    "savePlaceFailed": "Níorbh fhéidir linn an áit seo a shábháil. Bain triail eile as.",
+    "lastSOSAttempt": "An iarracht SOS is déanaí",
+    "sosDialerOpened": "Osclaíodh diaileoir an ghutháin; níl an glao deimhnithe.",
+    "sosCancelled": "Cealaithe; ní dhearnadh aon ghlao.",
+    "sosContactRequired": "Ní raibh aon teagmhálaí éigeandála ar fáil; ní dhearnadh aon ghlao.",
+    "sosDialerFailed": "Níorbh fhéidir diaileoir an ghutháin a oscailt; ní dhearnadh aon ghlao.",
+    "sosUnknown": "Níorbh fhéidir an iarracht SOS is déanaí a dheimhniú.",
+    "voiceConfiguration": "Níl an compánach gutha ar fáil faoi láthair. Bain triail eile as ar ball nó lean ar aghaidh leis an gcompánach as líne.",
+    "editContact": "Cuir in eagar",
+    "editContactTitle": "Cuir teagmhálaí éigeandála in eagar",
+    "editContactAccessibility": "Cuir %{name} in eagar",
+    "contactUpdated": "Nuashonraíodh an teagmhálaí éigeandála."
   }
 }

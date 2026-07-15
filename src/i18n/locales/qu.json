@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving nisqa."
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Kay ruraypi kay yaykuna akllana mana kanchu.",
+    "continueAsDemo": "Demo hina qatiy (rurachiyllapaq)",
+    "demoModeNotice": "Demo ñanqa kay dispositivopi llulla willakuykunallata llamk'achin. T'inkisqa yanapakuykuna mana chiqaqchasqachu, aplicación musuqmanta qallarichisqa kaptintaq kay sesión qallariyninman kutin.",
+    "authCodeInvalid": "Chiqaqchay código mana allinchu utaq pacha tukupunña. Musuq código mañakuspa yapamanta ruray.",
+    "authRateLimited": "Ancha kuti yaykuyta munarqanki. Aslla suyaspa yapamanta ruray.",
+    "authTimeout": "Yaykuy chiqaqchayqa ancha unay karqan. T'inkisqaykita qhawaspa yapamanta ruray.",
+    "authNetwork": "Yaykuy yanapakuywan mana t'inkiyta atirqaykuchu. T'inkisqaykita qhawaspa yapamanta ruray.",
+    "authSessionExpired": "Sesiónniyki tukupunña. Yapamanta yaykuy.",
+    "mapUnavailable": "Amachay mapaqa mana kicharikuyta atirqanchu. T'inkisqaykita qhawaspa yapamanta ruray.",
+    "mapCachedLocation": "Kunan pachapi maypi kasqayki mana rikuchikunchu. %{capturedAt} pachapi waqaychasqa qhipa maypi kasqaykita rikuchiyku.",
+    "locationShareFailed": "Maypi kasqaykita mana rakiyta atirqaykuchu. Maypi kasqaykiman yaykuyta qhawaspa yapamanta ruray.",
+    "locationShareCurrent": "Kaymi %{capturedAt} pachapi qillqasqa maypi kasqay:",
+    "locationShareCached": "Kaymi %{capturedAt} pachapi qillqasqa qhipa waqaychasqa maypi kasqay:",
+    "blePermission": "Bluetooth yaykuna wañuchisqa kachkan. Ajustes nisqapi hap'ichispa yapamanta ruray.",
+    "blePoweredOff": "Bluetooth wañuchisqa kachkan. Hap'ichispa yapamanta ruray.",
+    "bleUnavailable": "Kay dispositivopi utaq kay ruraypi Bluetooth tinkuchiy mana kanchu.",
+    "bleScanFailed": "NorthStar mana tarirqaykuchu. Qayllapi hap'iy, Bluetooth qhaway, hinaspa yapamanta ruray.",
+    "bleNoDevices": "Qayllapi mana ima NorthStar dispositivopas tarisqachu. Qayllapi hap'ispa yapamanta maskhay.",
+    "bleConnectFailed": "NorthStarwan mana t'inkiyta atirqaykuchu. Cargayuqta qayllapitaq hap'ispa yapamanta ruray.",
+    "saveCurrentPlace": "Kunan kiti waqaychay",
+    "placeSaved": "Kiti waqaychasqa.",
+    "savedPlace": "Waqaychasqa kiti",
+    "savePlaceFailed": "Kay kitita mana waqaychayta atirqaykuchu. Yapamanta ruray.",
+    "lastSOSAttempt": "Qhipa SOS kallpachakuy",
+    "sosDialerOpened": "Teléfono marcana kicharikurqan; waqyay mana chiqaqchasqachu.",
+    "sosCancelled": "Chinkachisqa; mana waqyay rurasqachu.",
+    "sosContactRequired": "Utqay yanapakuq runa mana karqanchu; mana waqyay rurasqachu.",
+    "sosDialerFailed": "Teléfono marcana mana kicharikuyta atirqanchu; mana waqyay rurasqachu.",
+    "sosUnknown": "Qhipa SOS kallpachakuy mana chiqaqchayta atikurqanchu.",
+    "voiceConfiguration": "Rimaywan yanapakuqqa kunan mana kanchu. Qhipaman yapamanta ruray utaq mana internetniyuq yanapakuqwan qatiy.",
+    "editContact": "Allichay",
+    "editContactTitle": "Utqay yanapakuq runata allichay",
+    "editContactAccessibility": "%{name} allichay",
+    "contactUpdated": "Utqay yanapakuq runa musuqchasqa."
   }
 }

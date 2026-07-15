@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Bu giriş seçimi bu versiyada əlçatan deyil.",
+    "continueAsDemo": "Demo kimi davam et (yalnız tərtibat üçün)",
+    "demoModeNotice": "Demo rejimi yalnız yerli saxta məlumatlardan istifadə edir. Qoşulmuş xidmətlər autentifikasiya edilməyib və tətbiq yenidən yüklənəndə bu sessiya sıfırlanır.",
+    "authCodeInvalid": "Doğrulama kodu yanlışdır və ya vaxtı bitib. Yeni kod istəyin və yenidən cəhd edin.",
+    "authRateLimited": "Həddindən çox giriş cəhdi edildi. Bir az gözləyib yenidən cəhd edin.",
+    "authTimeout": "Girişin doğrulanması çox uzun çəkdi. Bağlantınızı yoxlayıb yenidən cəhd edin.",
+    "authNetwork": "Giriş xidmətinə qoşula bilmədik. Bağlantınızı yoxlayıb yenidən cəhd edin.",
+    "authSessionExpired": "Sessiyanızın vaxtı bitdi. Yenidən daxil olun.",
+    "mapUnavailable": "Təhlükəsizlik xəritəsi yüklənmədi. Bağlantınızı yoxlayıb yenidən cəhd edin.",
+    "mapCachedLocation": "Canlı məkan əlçatan deyil. %{capturedAt} tarixində saxlanmış son məkanınız göstərilir.",
+    "locationShareFailed": "Məkanınızı paylaşa bilmədik. Məkan icazəsini yoxlayıb yenidən cəhd edin.",
+    "locationShareCurrent": "%{capturedAt} tarixində qeydə alınmış məkanım:",
+    "locationShareCached": "%{capturedAt} tarixində qeydə alınmış son saxlanmış məkanım:",
+    "blePermission": "Bluetooth girişi deaktivdir. Onu Ayarlarda aktiv edib yenidən cəhd edin.",
+    "blePoweredOff": "Bluetooth söndürülüb. Onu aktiv edib yenidən cəhd edin.",
+    "bleUnavailable": "Bu cihazda və ya versiyada Bluetooth qoşalaşdırması əlçatan deyil.",
+    "bleScanFailed": "NorthStar cihazını tapa bilmədik. Onu yaxınlıqda saxlayın, Bluetooth-u yoxlayın və yenidən cəhd edin.",
+    "bleNoDevices": "Yaxınlıqda NorthStar cihazı tapılmadı. Onu yaxınlıqda saxlayıb yenidən skan edin.",
+    "bleConnectFailed": "NorthStar cihazına qoşula bilmədik. Onu enerji ilə dolu və yaxınlıqda saxlayıb yenidən cəhd edin.",
+    "saveCurrentPlace": "Cari yeri saxla",
+    "placeSaved": "Yer saxlanıldı.",
+    "savedPlace": "Saxlanılmış yer",
+    "savePlaceFailed": "Bu yeri saxlaya bilmədik. Yenidən cəhd edin.",
+    "lastSOSAttempt": "Son SOS cəhdi",
+    "sosDialerOpened": "Telefon nömrəyığanı açıldı; zəng təsdiqlənməyib.",
+    "sosCancelled": "Ləğv edildi; zəng edilmədi.",
+    "sosContactRequired": "Təcili əlaqə şəxsi əlçatan deyildi; zəng edilmədi.",
+    "sosDialerFailed": "Telefon nömrəyığanı açıla bilmədi; zəng edilmədi.",
+    "sosUnknown": "Son SOS cəhdi təsdiqlənə bilmədi.",
+    "voiceConfiguration": "Səsli yoldaş hazırda əlçatan deyil. Daha sonra yenidən cəhd edin və ya oflayn yoldaşla davam edin.",
+    "editContact": "Redaktə et",
+    "editContactTitle": "Təcili əlaqə şəxsinə düzəliş et",
+    "editContactAccessibility": "%{name} adlı şəxsi redaktə et",
+    "contactUpdated": "Təcili əlaqə şəxsi yeniləndi."
   }
 }

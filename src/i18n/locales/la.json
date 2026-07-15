@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Haec optio ineundi in hac versione praesto non est.",
+    "continueAsDemo": "Perge ut demonstratio (ad evolutionem tantum)",
+    "demoModeNotice": "Modus demonstrationis solis fictis datis localibus utitur. Ministeria conexa non sunt authentica, et haec sessio reponitur cum applicatio denuo oneratur.",
+    "authCodeInvalid": "Codex verificationis invalidus est aut exspiravit. Novum codicem pete et iterum tenta.",
+    "authRateLimited": "Nimis multa temptamina ineundi facta sunt. Paulum exspecta, deinde iterum tenta.",
+    "authTimeout": "Verificatio ineundi nimis diu duravit. Conexum tuum inspice et iterum tenta.",
+    "authNetwork": "Ministerium ineundi attingere non potuimus. Conexum tuum inspice et iterum tenta.",
+    "authSessionExpired": "Sessio tua exspiravit. Iterum ini.",
+    "mapUnavailable": "Mappa salutis onerari non potuit. Conexum tuum inspice et iterum tenta.",
+    "mapCachedLocation": "Locus praesens praesto non est. Ultimus locus tuus servatus ex %{capturedAt} ostenditur.",
+    "locationShareFailed": "Locum tuum communicare non potuimus. Accessum ad locum inspice et iterum tenta.",
+    "locationShareCurrent": "Hic est locus meus tempore %{capturedAt} relatus:",
+    "locationShareCached": "Hic est ultimus locus meus servatus tempore %{capturedAt} relatus:",
+    "blePermission": "Accessus ad Bluetooth clausus est. Eum in Configurationibus activa, deinde iterum tenta.",
+    "blePoweredOff": "Bluetooth clausum est. Id activa, deinde iterum tenta.",
+    "bleUnavailable": "Copulatio Bluetooth in hoc apparatu aut hac versione praesto non est.",
+    "bleScanFailed": "NorthStar invenire non potuimus. Prope tene, Bluetooth inspice et iterum tenta.",
+    "bleNoDevices": "Nulla apparata NorthStar proxima inventa sunt. Prope tene et iterum quaere.",
+    "bleConnectFailed": "Ad NorthStar conectere non potuimus. Curare ut oneratum et prope sit, deinde iterum tenta.",
+    "saveCurrentPlace": "Locum praesentem serva",
+    "placeSaved": "Locus servatus est.",
+    "savedPlace": "Locus servatus",
+    "savePlaceFailed": "Hunc locum servare non potuimus. Iterum tenta.",
+    "lastSOSAttempt": "Ultimum temptamen SOS",
+    "sosDialerOpened": "Numerator telephonicus apertus est; vocatio non confirmata est.",
+    "sosCancelled": "Revocatum est; nulla vocatio facta est.",
+    "sosContactRequired": "Nullus contactus subitaneus praesto erat; nulla vocatio facta est.",
+    "sosDialerFailed": "Numerator telephonicus aperiri non potuit; nulla vocatio facta est.",
+    "sosUnknown": "Ultimum temptamen SOS confirmari non potuit.",
+    "voiceConfiguration": "Socius vocalis nunc praesto non est. Postea iterum tenta aut cum socio sine conexu perge.",
+    "editContact": "Recense",
+    "editContactTitle": "Contactum subitaneum recense",
+    "editContactAccessibility": "%{name} recense",
+    "contactUpdated": "Contactus subitaneus renovatus est."
   }
 }

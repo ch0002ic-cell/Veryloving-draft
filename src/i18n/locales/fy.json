@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Dizze oanmeldopsje is net beskikber yn dizze ferzje.",
+    "continueAsDemo": "Trochgean as demo (allinnich foar ûntwikkeling)",
+    "demoModeNotice": "De demomodus brûkt allinnich lokale testgegevens. Ferbûne tsjinsten binne net ferifiearre en dizze sesje wurdt weromset as de app opnij laden wurdt.",
+    "authCodeInvalid": "De ferifikaasjekoade is ûnjildich of ferrûn. Freegje in nije koade oan en besykje it opnij.",
+    "authRateLimited": "Tefolle oanmeldbesykjen. Wachtsje efkes en besykje it dan opnij.",
+    "authTimeout": "De ferifikaasje fan it oanmelden duorre te lang. Kontrolearje jo ferbining en besykje it opnij.",
+    "authNetwork": "Wy koene de oanmeldtsjinst net berikke. Kontrolearje jo ferbining en besykje it opnij.",
+    "authSessionExpired": "Jo sesje is ferrûn. Meld jo opnij oan.",
+    "mapUnavailable": "De feilichheidskaart koe net laden wurde. Kontrolearje jo ferbining en besykje it opnij.",
+    "mapCachedLocation": "De live lokaasje is net beskikber. Jo lêst bewarre lokaasje fan %{capturedAt} wurdt toand.",
+    "locationShareFailed": "Wy koene jo lokaasje net diele. Kontrolearje de tagong ta jo lokaasje en besykje it opnij.",
+    "locationShareCurrent": "Hjir is myn lokaasje, registrearre op %{capturedAt}:",
+    "locationShareCached": "Hjir is myn lêst bewarre lokaasje, registrearre op %{capturedAt}:",
+    "blePermission": "Tagong ta Bluetooth stiet út. Skeakelje dit yn by Ynstellingen en besykje it opnij.",
+    "blePoweredOff": "Bluetooth stiet út. Skeakelje it yn en besykje it opnij.",
+    "bleUnavailable": "Koppeljen fia Bluetooth is net beskikber op dit apparaat of yn dizze ferzje.",
+    "bleScanFailed": "Wy koene NorthStar net fine. Hâld it tichtby, kontrolearje Bluetooth en besykje it opnij.",
+    "bleNoDevices": "Der binne gjin NorthStar-apparaten yn de buert fûn. Hâld it tichtby en sykje opnij.",
+    "bleConnectFailed": "Wy koene gjin ferbining meitsje mei NorthStar. Hâld it opladen en tichtby en besykje it opnij.",
+    "saveCurrentPlace": "Hjoeddeistich plak bewarje",
+    "placeSaved": "Plak bewarre.",
+    "savedPlace": "Bewarre plak",
+    "savePlaceFailed": "Wy koene dit plak net bewarje. Besykje it opnij.",
+    "lastSOSAttempt": "Lêste SOS-besykjen",
+    "sosDialerOpened": "Tillefoankiezer iepene; oprop net befêstige.",
+    "sosCancelled": "Annulearre; der is net belle.",
+    "sosContactRequired": "Der wie gjin needkontakt beskikber; der is net belle.",
+    "sosDialerFailed": "De tillefoankiezer koe net iepene wurde; der is net belle.",
+    "sosUnknown": "It lêste SOS-besykjen koe net befêstige wurde.",
+    "voiceConfiguration": "De stimassistint is no net beskikber. Besykje it letter opnij of gean troch mei de offline-assistint.",
+    "editContact": "Bewurkje",
+    "editContactTitle": "Needkontakt bewurkje",
+    "editContactAccessibility": "%{name} bewurkje",
+    "contactUpdated": "Needkontakt bywurke."
   }
 }

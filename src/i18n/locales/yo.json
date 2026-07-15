@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ọ̀nà ìwọlé yìí kò sí nínú ẹ̀yà yìí.",
+    "continueAsDemo": "Tẹ̀síwájú gẹ́gẹ́ bí demo (fún ìdàgbàsókè nìkan)",
+    "demoModeNotice": "Ìpo demo ń lo dátà èké tó wà lórí ẹ̀rọ nìkan. A kò fìdí àwọn iṣẹ́ tó sopọ̀ múlẹ̀, a ó sì tún sáà yìí bẹ̀rẹ̀ nígbà tí app bá tún ṣiṣẹ́.",
+    "authCodeInvalid": "Kóòdù ìjẹ́rìísí kò tọ̀nà tàbí ó ti parí. Béèrè kóòdù tuntun kí o sì tún gbìyànjú.",
+    "authRateLimited": "Ìgbìyànjú láti wọlé ti pọ̀ jù. Dúró díẹ̀, kí o sì tún gbìyànjú.",
+    "authTimeout": "Ìjẹ́rìísí ìwọlé pẹ́ jù. Yẹ ìsopọ̀ rẹ wò kí o sì tún gbìyànjú.",
+    "authNetwork": "A kò lè dé ibi iṣẹ́ ìwọlé. Yẹ ìsopọ̀ rẹ wò kí o sì tún gbìyànjú.",
+    "authSessionExpired": "Sáà rẹ ti parí. Wọlé lẹ́ẹ̀kan sí i.",
+    "mapUnavailable": "Máàpù ààbò kò lè ṣí. Yẹ ìsopọ̀ rẹ wò kí o sì tún gbìyànjú.",
+    "mapCachedLocation": "Ibi tó o wà lọ́wọ́lọ́wọ́ kò sí. A ń fi ibi tí o fi pamọ́ kẹ́yìn ní %{capturedAt} hàn.",
+    "locationShareFailed": "A kò lè pín ibi tí o wà. Yẹ àṣẹ ìráyè sí ibi tí o wà wò kí o sì tún gbìyànjú.",
+    "locationShareCurrent": "Ibi tí mo wà tí a gbà sílẹ̀ ní %{capturedAt} nìyí:",
+    "locationShareCached": "Ibi tí mo fi pamọ́ kẹ́yìn tí a gbà sílẹ̀ ní %{capturedAt} nìyí:",
+    "blePermission": "Ìráyè sí Bluetooth ti wa ni pipa. Tan-an nínú Àwọn Ètò, kí o sì tún gbìyànjú.",
+    "blePoweredOff": "Bluetooth ti wa ni pipa. Tan-an, kí o sì tún gbìyànjú.",
+    "bleUnavailable": "Ìsopọ̀ Bluetooth kò sí lórí ẹ̀rọ tàbí ẹ̀yà yìí.",
+    "bleScanFailed": "A kò rí NorthStar. Jẹ́ kó wà nítòsí, yẹ Bluetooth wò, kí o sì tún gbìyànjú.",
+    "bleNoDevices": "A kò rí ẹ̀rọ NorthStar kankan nítòsí. Jẹ́ kó wà nítòsí kí o sì tún wá a.",
+    "bleConnectFailed": "A kò lè sopọ̀ mọ́ NorthStar. Jẹ́ kó ní agbára kí o sì jẹ́ kó wà nítòsí, lẹ́yìn náà tún gbìyànjú.",
+    "saveCurrentPlace": "Fi ibi yìí pamọ́",
+    "placeSaved": "A ti fi ibi pamọ́.",
+    "savedPlace": "Ibi tí a fi pamọ́",
+    "savePlaceFailed": "A kò lè fi ibi yìí pamọ́. Tún gbìyànjú.",
+    "lastSOSAttempt": "Ìgbìyànjú SOS tó kẹ́yìn",
+    "sosDialerOpened": "Ohun ìpè fóònù ṣí; a kò fìdí ìpè múlẹ̀.",
+    "sosCancelled": "A fagilé; kò sí ìpè tí a ṣe.",
+    "sosContactRequired": "Kò sí ẹni ìkànnì pàjáwìrì; kò sí ìpè tí a ṣe.",
+    "sosDialerFailed": "Ohun ìpè fóònù kò lè ṣí; kò sí ìpè tí a ṣe.",
+    "sosUnknown": "A kò lè fìdí ìgbìyànjú SOS tó kẹ́yìn múlẹ̀.",
+    "voiceConfiguration": "Alábàákẹ́gbẹ́ ohùn kò sí ní báyìí. Tún gbìyànjú nígbà míì tàbí tẹ̀síwájú pẹ̀lú alábàákẹ́gbẹ́ aisinipo.",
+    "editContact": "Ṣàtúnṣe",
+    "editContactTitle": "Ṣàtúnṣe ẹni ìkànnì pàjáwìrì",
+    "editContactAccessibility": "Ṣàtúnṣe %{name}",
+    "contactUpdated": "A ti ṣàfikún àtúnṣe sí ẹni ìkànnì pàjáwìrì."
   }
 }

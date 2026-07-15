@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Denne loginmulighed er ikke tilgængelig i denne version.",
+    "continueAsDemo": "Fortsæt som demo (kun udvikling)",
+    "demoModeNotice": "Demotilstand bruger kun lokale testdata. Forbundne tjenester er ikke godkendt, og sessionen nulstilles, når appen genindlæses.",
+    "authCodeInvalid": "Bekræftelseskoden er ugyldig eller udløbet. Anmod om en ny kode, og prøv igen.",
+    "authRateLimited": "For mange loginforsøg. Vent et øjeblik, og prøv igen.",
+    "authTimeout": "Bekræftelse af login tog for lang tid. Kontrollér forbindelsen, og prøv igen.",
+    "authNetwork": "Der kunne ikke oprettes forbindelse til logintjenesten. Kontrollér forbindelsen, og prøv igen.",
+    "authSessionExpired": "Din session er udløbet. Log ind igen.",
+    "mapUnavailable": "Sikkerhedskortet kunne ikke indlæses. Kontrollér forbindelsen, og prøv igen.",
+    "mapCachedLocation": "Liveplacering er ikke tilgængelig. Viser din senest gemte placering fra %{capturedAt}.",
+    "locationShareFailed": "Din placering kunne ikke deles. Kontrollér adgangen til placering, og prøv igen.",
+    "locationShareCurrent": "Her er min placering registreret %{capturedAt}:",
+    "locationShareCached": "Her er min senest gemte placering registreret %{capturedAt}:",
+    "blePermission": "Adgang til Bluetooth er slået fra. Slå den til i Indstillinger, og prøv igen.",
+    "blePoweredOff": "Bluetooth er slået fra. Slå det til, og prøv igen.",
+    "bleUnavailable": "Parring via Bluetooth er ikke tilgængelig på denne enhed eller i denne version.",
+    "bleScanFailed": "NorthStar blev ikke fundet. Hold den tæt på, kontrollér Bluetooth, og prøv igen.",
+    "bleNoDevices": "Der blev ikke fundet nogen NorthStar-enheder i nærheden. Hold enheden tæt på, og søg igen.",
+    "bleConnectFailed": "Der kunne ikke oprettes forbindelse til NorthStar. Hold den opladet og tæt på, og prøv igen.",
+    "saveCurrentPlace": "Gem nuværende sted",
+    "placeSaved": "Stedet er gemt.",
+    "savedPlace": "Gemt sted",
+    "savePlaceFailed": "Dette sted kunne ikke gemmes. Prøv igen.",
+    "lastSOSAttempt": "Seneste SOS-forsøg",
+    "sosDialerOpened": "Telefonens opkaldsfunktion blev åbnet; opkaldet er ikke bekræftet.",
+    "sosCancelled": "Annulleret; der blev ikke foretaget noget opkald.",
+    "sosContactRequired": "Ingen nødkontakt var tilgængelig; der blev ikke foretaget noget opkald.",
+    "sosDialerFailed": "Telefonens opkaldsfunktion kunne ikke åbnes; der blev ikke foretaget noget opkald.",
+    "sosUnknown": "Det seneste SOS-forsøg kunne ikke bekræftes.",
+    "voiceConfiguration": "Stemmeledsageren er ikke tilgængelig lige nu. Prøv igen senere, eller fortsæt med offlineledsageren.",
+    "editContact": "Rediger",
+    "editContactTitle": "Rediger nødkontakt",
+    "editContactAccessibility": "Rediger %{name}",
+    "contactUpdated": "Nødkontakten er opdateret."
   }
 }

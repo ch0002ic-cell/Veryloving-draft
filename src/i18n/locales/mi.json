@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Kāore tēnei putanga e wātea ana tēnei kōwhiringa takiuru.",
+    "continueAsDemo": "Haere tonu hei whakaaturanga (mō te whakawhanaketanga anake)",
+    "demoModeNotice": "Ka whakamahi te aratau whakaaturanga i ngā raraunga rūpahu paetata anake. Kāore ngā ratonga tūhono i whakamotuhēhēngia, ā, ka tautuhia anō tēnei wāhanga ina utaina anō te taupānga.",
+    "authCodeInvalid": "Kua muhu, kua mōnehu rānei te waehere manatoko. Tonoa he waehere hōu, ka ngana anō.",
+    "authRateLimited": "He nui rawa ngā nganatanga takiuru. Taihoa ake, kātahi ka ngana anō.",
+    "authTimeout": "He roa rawa te manatoko takiuru. Tirohia tō hononga, ka ngana anō.",
+    "authNetwork": "Kāore i taea te toro atu ki te ratonga takiuru. Tirohia tō hononga, ka ngana anō.",
+    "authSessionExpired": "Kua mōnehu tō wāhanga. Takiuru anō.",
+    "mapUnavailable": "Kāore i taea te uta te mahere haumaru. Tirohia tō hononga, ka ngana anō.",
+    "mapCachedLocation": "Kāore te tauwāhi mataora i te wātea. E whakaatu ana i tō tauwāhi whakamutunga i tiakina mai i %{capturedAt}.",
+    "locationShareFailed": "Kāore i taea te tiri i tō tauwāhi. Tirohia te āhei ki te tauwāhi, ka ngana anō.",
+    "locationShareCurrent": "Anei taku tauwāhi i tuhia i %{capturedAt}:",
+    "locationShareCached": "Anei taku tauwāhi whakamutunga i tiakina, i tuhia i %{capturedAt}:",
+    "blePermission": "Kua weto te āhei ki Bluetooth. Whakakāngia ki Ngā Tautuhinga, ka ngana anō.",
+    "blePoweredOff": "Kua whakawetohia a Bluetooth. Whakakāngia, ka ngana anō.",
+    "bleUnavailable": "Kāore te whakahono Bluetooth i te wātea ki tēnei pūrere, ki tēnei putanga rānei.",
+    "bleScanFailed": "Kāore i kitea a NorthStar. Puritia kia tata, tirohia a Bluetooth, ka ngana anō.",
+    "bleNoDevices": "Kāore he pūrere NorthStar tata i kitea. Puritia kia tata, ka matawai anō.",
+    "bleConnectFailed": "Kāore i taea te tūhono ki NorthStar. Kia whai pūhiko, kia tata hoki, kātahi ka ngana anō.",
+    "saveCurrentPlace": "Tiakina te wāhi o nāianei",
+    "placeSaved": "Kua tiakina te wāhi.",
+    "savedPlace": "Wāhi kua tiakina",
+    "savePlaceFailed": "Kāore i taea te tiaki i tēnei wāhi. Ngana anō.",
+    "lastSOSAttempt": "Nganatanga SOS whakamutunga",
+    "sosDialerOpened": "Kua huakina te waea tau; kāore te waea i whakaūngia.",
+    "sosCancelled": "Kua whakakorea; kāore he waea i tukuna.",
+    "sosContactRequired": "Kāore he hoapā ohotata i te wātea; kāore he waea i tukuna.",
+    "sosDialerFailed": "Kāore i taea te huaki te waea tau; kāore he waea i tukuna.",
+    "sosUnknown": "Kāore i taea te whakaū i te nganatanga SOS whakamutunga.",
+    "voiceConfiguration": "Kāore te hoa ā-reo i te wātea i tēnei wā. Ngana anō ā muri ake, haere tonu rānei me te hoa tuimotu.",
+    "editContact": "Whakatika",
+    "editContactTitle": "Whakatika hoapā ohotata",
+    "editContactAccessibility": "Whakatika %{name}",
+    "contactUpdated": "Kua whakahōutia te hoapā ohotata."
   }
 }

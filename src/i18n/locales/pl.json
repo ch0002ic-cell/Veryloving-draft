@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ta opcja logowania jest niedostępna w tej wersji.",
+    "continueAsDemo": "Kontynuuj w trybie demonstracyjnym (tylko do celów deweloperskich)",
+    "demoModeNotice": "Tryb demonstracyjny korzysta wyłącznie z lokalnych fikcyjnych danych. Połączone usługi nie są uwierzytelnione, a sesja jest resetowana po ponownym wczytaniu aplikacji.",
+    "authCodeInvalid": "Kod weryfikacyjny jest nieprawidłowy lub wygasł. Poproś o nowy kod i spróbuj ponownie.",
+    "authRateLimited": "Zbyt wiele prób logowania. Poczekaj chwilę i spróbuj ponownie.",
+    "authTimeout": "Weryfikacja logowania trwała zbyt długo. Sprawdź połączenie i spróbuj ponownie.",
+    "authNetwork": "Nie udało się połączyć z usługą logowania. Sprawdź połączenie i spróbuj ponownie.",
+    "authSessionExpired": "Twoja sesja wygasła. Zaloguj się ponownie.",
+    "mapUnavailable": "Nie udało się wczytać mapy bezpieczeństwa. Sprawdź połączenie i spróbuj ponownie.",
+    "mapCachedLocation": "Lokalizacja na żywo jest niedostępna. Wyświetlamy ostatnią lokalizację zapisaną: %{capturedAt}.",
+    "locationShareFailed": "Nie udało się udostępnić Twojej lokalizacji. Sprawdź dostęp do lokalizacji i spróbuj ponownie.",
+    "locationShareCurrent": "Oto moja lokalizacja zarejestrowana: %{capturedAt}:",
+    "locationShareCached": "Oto moja ostatnia zapisana lokalizacja, zarejestrowana: %{capturedAt}:",
+    "blePermission": "Dostęp do Bluetooth jest wyłączony. Włącz go w Ustawieniach i spróbuj ponownie.",
+    "blePoweredOff": "Bluetooth jest wyłączony. Włącz go i spróbuj ponownie.",
+    "bleUnavailable": "Parowanie przez Bluetooth jest niedostępne na tym urządzeniu lub w tej wersji.",
+    "bleScanFailed": "Nie udało się znaleźć NorthStar. Trzymaj urządzenie blisko, sprawdź Bluetooth i spróbuj ponownie.",
+    "bleNoDevices": "Nie znaleziono w pobliżu żadnych urządzeń NorthStar. Trzymaj urządzenie blisko i wyszukaj ponownie.",
+    "bleConnectFailed": "Nie udało się połączyć z NorthStar. Upewnij się, że urządzenie jest naładowane i znajduje się w pobliżu, a następnie spróbuj ponownie.",
+    "saveCurrentPlace": "Zapisz bieżące miejsce",
+    "placeSaved": "Miejsce zapisane.",
+    "savedPlace": "Zapisane miejsce",
+    "savePlaceFailed": "Nie udało się zapisać tego miejsca. Spróbuj ponownie.",
+    "lastSOSAttempt": "Ostatnia próba SOS",
+    "sosDialerOpened": "Klawiatura telefonu została otwarta; połączenie nie zostało potwierdzone.",
+    "sosCancelled": "Anulowano; połączenie nie zostało wykonane.",
+    "sosContactRequired": "Kontakt alarmowy był niedostępny; połączenie nie zostało wykonane.",
+    "sosDialerFailed": "Nie udało się otworzyć klawiatury telefonu; połączenie nie zostało wykonane.",
+    "sosUnknown": "Nie udało się potwierdzić ostatniej próby SOS.",
+    "voiceConfiguration": "Asystent głosowy jest teraz niedostępny. Spróbuj ponownie później lub kontynuuj z asystentem offline.",
+    "editContact": "Edytuj",
+    "editContactTitle": "Edytuj kontakt alarmowy",
+    "editContactAccessibility": "Edytuj %{name}",
+    "contactUpdated": "Kontakt alarmowy został zaktualizowany."
   }
 }

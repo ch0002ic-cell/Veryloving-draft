@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Dës Umeldungsoptioun ass an dëser Versioun net verfügbar.",
+    "continueAsDemo": "Als Demo weiderfueren (nëmme fir d'Entwécklung)",
+    "demoModeNotice": "Den Demo-Modus benotzt nëmme lokal Testdaten. Verbonne Servicer sinn net authentifizéiert, an dës Sessioun gëtt zeréckgesat, wann d'App nei geluede gëtt.",
+    "authCodeInvalid": "De Verifikatiounscode ass ongëlteg oder ofgelaf. Frot en neie Code un a probéiert nach eng Kéier.",
+    "authRateLimited": "Ze vill Umeldungsversich. Waart ee Moment a probéiert dann nach eng Kéier.",
+    "authTimeout": "D'Umeldungsverifikatioun huet ze laang gedauert. Kontrolléiert Är Verbindung a probéiert nach eng Kéier.",
+    "authNetwork": "Mir konnten den Umeldungsservice net erreechen. Kontrolléiert Är Verbindung a probéiert nach eng Kéier.",
+    "authSessionExpired": "Är Sessioun ass ofgelaf. Mellt Iech nach eng Kéier un.",
+    "mapUnavailable": "D'Sécherheetskaart konnt net geluede ginn. Kontrolléiert Är Verbindung a probéiert nach eng Kéier.",
+    "mapCachedLocation": "De Live-Standuert ass net verfügbar. Äre lescht gespäicherte Standuert vu(n) %{capturedAt} gëtt gewisen.",
+    "locationShareFailed": "Mir konnten Äre Standuert net deelen. Kontrolléiert den Zougrëff op de Standuert a probéiert nach eng Kéier.",
+    "locationShareCurrent": "Hei ass mäi Standuert, opgeholl um %{capturedAt}:",
+    "locationShareCached": "Hei ass mäi lescht gespäicherte Standuert, opgeholl um %{capturedAt}:",
+    "blePermission": "Den Zougrëff op Bluetooth ass ausgeschalt. Aktivéiert en an den Astellungen a probéiert nach eng Kéier.",
+    "blePoweredOff": "Bluetooth ass ausgeschalt. Schalt et an a probéiert nach eng Kéier.",
+    "bleUnavailable": "D'Kopplung iwwer Bluetooth ass op dësem Apparat oder an dëser Versioun net verfügbar.",
+    "bleScanFailed": "Mir konnten NorthStar net fannen. Halt et an der Géigend, kontrolléiert Bluetooth a probéiert nach eng Kéier.",
+    "bleNoDevices": "Keng NorthStar-Apparater an der Géigend fonnt. Halt et an der Géigend a sicht nach eng Kéier.",
+    "bleConnectFailed": "Mir konnten net mat NorthStar verbannen. Halt et gelueden an an der Géigend a probéiert nach eng Kéier.",
+    "saveCurrentPlace": "Aktuelle Standuert späicheren",
+    "placeSaved": "Standuert gespäichert.",
+    "savedPlace": "Gespäicherte Standuert",
+    "savePlaceFailed": "Mir konnten dëse Standuert net späicheren. Probéiert nach eng Kéier.",
+    "lastSOSAttempt": "Leschte SOS-Versuch",
+    "sosDialerOpened": "D'Telefonswiel ass op; den Uruff ass net confirméiert.",
+    "sosCancelled": "Ofgebrach; keen Uruff gouf gemaach.",
+    "sosContactRequired": "Keen Noutkontakt war verfügbar; keen Uruff gouf gemaach.",
+    "sosDialerFailed": "D'Telefonswiel konnt net opgemaach ginn; keen Uruff gouf gemaach.",
+    "sosUnknown": "De leschte SOS-Versuch konnt net confirméiert ginn.",
+    "voiceConfiguration": "De Stëmmbegleeder ass de Moment net verfügbar. Probéiert méi spéit nach eng Kéier oder fuert mam Offline-Begleeder weider.",
+    "editContact": "Änneren",
+    "editContactTitle": "Noutkontakt änneren",
+    "editContactAccessibility": "%{name} änneren",
+    "contactUpdated": "Noutkontakt aktualiséiert."
   }
 }

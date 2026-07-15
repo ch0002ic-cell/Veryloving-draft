@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Questa opzione di accesso non è disponibile in questa versione.",
+    "continueAsDemo": "Continua come demo (solo per lo sviluppo)",
+    "demoModeNotice": "La modalità demo usa solo dati locali fittizi. I servizi connessi non sono autenticati e la sessione viene reimpostata quando l'app si ricarica.",
+    "authCodeInvalid": "Il codice di verifica non è valido o è scaduto. Richiedi un nuovo codice e riprova.",
+    "authRateLimited": "Troppi tentativi di accesso. Attendi un momento, poi riprova.",
+    "authTimeout": "La verifica dell'accesso ha richiesto troppo tempo. Controlla la connessione e riprova.",
+    "authNetwork": "Impossibile raggiungere il servizio di accesso. Controlla la connessione e riprova.",
+    "authSessionExpired": "La sessione è scaduta. Accedi di nuovo.",
+    "mapUnavailable": "Impossibile caricare la mappa di sicurezza. Controlla la connessione e riprova.",
+    "mapCachedLocation": "La posizione in tempo reale non è disponibile. Viene mostrata l'ultima posizione salvata alle %{capturedAt}.",
+    "locationShareFailed": "Impossibile condividere la tua posizione. Controlla l'accesso alla posizione e riprova.",
+    "locationShareCurrent": "Ecco la mia posizione registrata alle %{capturedAt}:",
+    "locationShareCached": "Ecco la mia ultima posizione salvata, registrata alle %{capturedAt}:",
+    "blePermission": "L'accesso a Bluetooth è disattivato. Attivalo nelle Impostazioni, poi riprova.",
+    "blePoweredOff": "Bluetooth è disattivato. Attivalo, poi riprova.",
+    "bleUnavailable": "L'abbinamento Bluetooth non è disponibile su questo dispositivo o in questa versione.",
+    "bleScanFailed": "Impossibile trovare NorthStar. Tienilo vicino, controlla Bluetooth e riprova.",
+    "bleNoDevices": "Non è stato trovato alcun dispositivo NorthStar nelle vicinanze. Tienilo vicino ed esegui una nuova scansione.",
+    "bleConnectFailed": "Impossibile connettersi a NorthStar. Assicurati che sia carico e nelle vicinanze, poi riprova.",
+    "saveCurrentPlace": "Salva luogo attuale",
+    "placeSaved": "Luogo salvato.",
+    "savedPlace": "Luogo salvato",
+    "savePlaceFailed": "Impossibile salvare questo luogo. Riprova.",
+    "lastSOSAttempt": "Ultimo tentativo SOS",
+    "sosDialerOpened": "Il tastierino telefonico è stato aperto; chiamata non confermata.",
+    "sosCancelled": "Operazione annullata; non è stata effettuata alcuna chiamata.",
+    "sosContactRequired": "Nessun contatto di emergenza disponibile; non è stata effettuata alcuna chiamata.",
+    "sosDialerFailed": "Impossibile aprire il tastierino telefonico; non è stata effettuata alcuna chiamata.",
+    "sosUnknown": "Impossibile confermare l'ultimo tentativo SOS.",
+    "voiceConfiguration": "L'assistente vocale non è disponibile al momento. Riprova più tardi o continua con l'assistente offline.",
+    "editContact": "Modifica",
+    "editContactTitle": "Modifica contatto di emergenza",
+    "editContactAccessibility": "Modifica %{name}",
+    "contactUpdated": "Contatto di emergenza aggiornato."
   }
 }

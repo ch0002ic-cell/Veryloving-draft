@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ez a bejelentkezési lehetőség ebben a verzióban nem érhető el.",
+    "continueAsDemo": "Folytatás demóként (csak fejlesztéshez)",
+    "demoModeNotice": "A demó mód kizárólag helyi tesztadatokat használ. A kapcsolódó szolgáltatások nincsenek hitelesítve, és a munkamenet az alkalmazás újratöltésekor alaphelyzetbe áll.",
+    "authCodeInvalid": "Az ellenőrző kód érvénytelen vagy lejárt. Kérjen új kódot, majd próbálja újra.",
+    "authRateLimited": "Túl sok bejelentkezési kísérlet történt. Várjon egy kicsit, majd próbálja újra.",
+    "authTimeout": "A bejelentkezés ellenőrzése túl sokáig tartott. Ellenőrizze a kapcsolatot, majd próbálja újra.",
+    "authNetwork": "Nem sikerült elérni a bejelentkezési szolgáltatást. Ellenőrizze a kapcsolatot, majd próbálja újra.",
+    "authSessionExpired": "A munkamenet lejárt. Jelentkezzen be újra.",
+    "mapUnavailable": "A biztonsági térkép nem töltődött be. Ellenőrizze a kapcsolatot, majd próbálja újra.",
+    "mapCachedLocation": "Az élő helyzet nem érhető el. A(z) %{capturedAt} időpontban legutóbb mentett helyzet látható.",
+    "locationShareFailed": "Nem sikerült megosztani a helyzetét. Ellenőrizze a helyhozzáférést, majd próbálja újra.",
+    "locationShareCurrent": "Itt található a(z) %{capturedAt} időpontban rögzített helyzetem:",
+    "locationShareCached": "Itt található a(z) %{capturedAt} időpontban legutóbb mentett helyzetem:",
+    "blePermission": "A Bluetooth-hozzáférés ki van kapcsolva. Engedélyezze a Beállításokban, majd próbálja újra.",
+    "blePoweredOff": "A Bluetooth ki van kapcsolva. Kapcsolja be, majd próbálja újra.",
+    "bleUnavailable": "A Bluetooth-párosítás ezen az eszközön vagy ebben a verzióban nem érhető el.",
+    "bleScanFailed": "Nem sikerült megtalálni a NorthStar eszközt. Tartsa közel, ellenőrizze a Bluetooth-kapcsolatot, majd próbálja újra.",
+    "bleNoDevices": "Nem található NorthStar eszköz a közelben. Tartsa közel, majd indítsa újra a keresést.",
+    "bleConnectFailed": "Nem sikerült kapcsolódni a NorthStar eszközhöz. Tartsa feltöltve és a közelben, majd próbálja újra.",
+    "saveCurrentPlace": "Jelenlegi hely mentése",
+    "placeSaved": "Hely mentve.",
+    "savedPlace": "Mentett hely",
+    "savePlaceFailed": "Nem sikerült menteni ezt a helyet. Próbálja újra.",
+    "lastSOSAttempt": "Legutóbbi SOS-kísérlet",
+    "sosDialerOpened": "A telefontárcsázó megnyílt; a hívás nincs megerősítve.",
+    "sosCancelled": "Megszakítva; nem történt hívás.",
+    "sosContactRequired": "Nem volt elérhető vészhelyzeti kapcsolattartó; nem történt hívás.",
+    "sosDialerFailed": "A telefontárcsázó nem nyílt meg; nem történt hívás.",
+    "sosUnknown": "A legutóbbi SOS-kísérletet nem sikerült megerősíteni.",
+    "voiceConfiguration": "A hangalapú társ jelenleg nem érhető el. Próbálja újra később, vagy folytassa az offline társsal.",
+    "editContact": "Szerkesztés",
+    "editContactTitle": "Vészhelyzeti kapcsolattartó szerkesztése",
+    "editContactAccessibility": "%{name} szerkesztése",
+    "contactUpdated": "Vészhelyzeti kapcsolattartó frissítve."
   }
 }

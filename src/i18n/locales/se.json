@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Dát sisaloggenvuohki ii leat olámuttus dán veršuvnnas.",
+    "continueAsDemo": "Joatkke demo-hámis (dušše ovddideapmái)",
+    "demoModeNotice": "Demo-doaibmanvuohki geavaha dušše báikkálaš rehálaš dieđuid. Čatnon bálvalusat eai leat duođaštuvvon, ja dát bargovuorru máhcahuvvo go prográmma fas láddejuvvo.",
+    "authCodeInvalid": "Duođaštankoda ii gusto dahje lea boarásmuvvan. Bivdde ođđa koda ja geahččal fas.",
+    "authRateLimited": "Beare ollu sisaloggengeahččaleamit. Vuordde botta ja geahččal fas.",
+    "authTimeout": "Sisaloggema duođašteapmi ádjánii beare guhká. Dárkkis oktavuođa ja geahččal fas.",
+    "authNetwork": "Eat beassan oktavuođas sisaloggenbálvalussii. Dárkkis oktavuođa ja geahččal fas.",
+    "authSessionExpired": "Bargovuorru lea boarásmuvvan. Logge fas sisa.",
+    "mapUnavailable": "Sihkkarvuohtakárta ii sáhttán láddejuvvot. Dárkkis oktavuođa ja geahččal fas.",
+    "mapCachedLocation": "Njuolga báikediehtu ii leat olámuttus. Čájehit maŋimuš vurkejuvvon báikki áiggi %{capturedAt} rájes.",
+    "locationShareFailed": "Eat sáhttán juogadit báikedieđuid. Dárkkis báikedieđuid geavahanlobi ja geahččal fas.",
+    "locationShareCurrent": "Dás lea mu báiki registrerejuvvon áigge %{capturedAt}:",
+    "locationShareCached": "Dás lea mu maŋimuš vurkejuvvon báiki, registrerejuvvon áigge %{capturedAt}:",
+    "blePermission": "Bluetooth-geavahanlohpi lea eret. Bija dan ala Ásahusain ja geahččal fas.",
+    "blePoweredOff": "Bluetooth lea jáddaduvvon. Bija dan ala ja geahččal fas.",
+    "bleUnavailable": "Bluetooth-bárrenvuohki ii leat olámuttus dán ovttadagas dahje veršuvnnas.",
+    "bleScanFailed": "Eat gávdnan NorthStar. Doala dan lahka, dárkkis Bluetooth ja geahččal fas.",
+    "bleNoDevices": "Eai gávdnon lahka NorthStar-ovttadagat. Doala dan lahka ja ohca fas.",
+    "bleConnectFailed": "Eat sáhttán čatnat oktavuođa NorthStar:ii. Doala dan láddejuvvon ja lahka, ja geahččal fas.",
+    "saveCurrentPlace": "Vurke dálá báikki",
+    "placeSaved": "Báiki vurkejuvvui.",
+    "savedPlace": "Vurkejuvvon báiki",
+    "savePlaceFailed": "Eat sáhttán vurket dán báikki. Geahččal fas.",
+    "lastSOSAttempt": "Maŋimuš SOS-geahččaleapmi",
+    "sosDialerOpened": "Telefovnna čállinláse rahppui; riŋgen ii leat duođaštuvvon.",
+    "sosCancelled": "Gaskkalduvvon; ii riŋgejuvvon.",
+    "sosContactRequired": "Heahteveahkkekontákta ii lean olámuttus; ii riŋgejuvvon.",
+    "sosDialerFailed": "Telefovnna čállinláse ii sáhttán rahppot; ii riŋgejuvvon.",
+    "sosUnknown": "Maŋimuš SOS-geahččaleami ii sáhttán duođaštit.",
+    "voiceConfiguration": "Jietnaveahkki ii leat dál olámuttus. Geahččal maŋŋelis fas dahje joatkke neahttahis veahkkiin.",
+    "editContact": "Doaimmat",
+    "editContactTitle": "Doaimmat heahteveahkkekontávtta",
+    "editContactAccessibility": "Doaimmat %{name}",
+    "contactUpdated": "Heahteveahkkekontákta ođasmahttojuvvui."
   }
 }

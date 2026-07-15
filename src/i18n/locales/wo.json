@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Mënuñu jëfandikoo tànneefu dugg bii ci sumb bii.",
+    "continueAsDemo": "Wéyal ci anamu demo (ngir yokkute rekk)",
+    "demoModeNotice": "Anamu demo dafay jëfandikoo rekk ay done yu dul dëgg te nekk ci jumtukaay bi. Serwiis yiñ jokkoo ak ñoom kenn du leen dëggal, te sesiyoŋ bi dina tambaliwaat bu app bi yebuwaatee.",
+    "authCodeInvalid": "Kodu dëggal bi baaxul walla jot na ci àppam. Laaj ab kod bu bees te jéemaat.",
+    "authRateLimited": "Jéem yu bari ngir dugg. Xaar tuuti, ba noppi jéemaat.",
+    "authTimeout": "Dëggal dugg bi yàgg na lool. Seetal sa jokkoo te jéemaat.",
+    "authNetwork": "Mënuñu jot ci serwiisu dugg bi. Seetal sa jokkoo te jéemaat.",
+    "authSessionExpired": "Sa sesiyoŋ jeex na. Duggaat.",
+    "mapUnavailable": "Màppu kaaraange bi mënu yebuwu. Seetal sa jokkoo te jéemaat.",
+    "mapCachedLocation": "Bërebu jamono jii féexul. Ñu ngi wane sa bërab bu mujj a denc bu %{capturedAt}.",
+    "locationShareFailed": "Mënuñu séddoo sa bërab. Seetal ndax app bi am na ndigal ci bërab te jéemaat.",
+    "locationShareCurrent": "Lii mooy sama bërab biñ bind ci %{capturedAt}:",
+    "locationShareCached": "Lii mooy sama bërab bu mujj a denc biñ bind ci %{capturedAt}:",
+    "blePermission": "Ndigalu Bluetooth bi tëju na. Ubbil ko ci Parametër yi, ba noppi jéemaat.",
+    "blePoweredOff": "Bluetooth bi fay na. Tàkkal ko, ba noppi jéemaat.",
+    "bleUnavailable": "Mënuñu boole Bluetooth ci jumtukaay bii walla sumb bii.",
+    "bleScanFailed": "Mënuñu gis NorthStar. Teg ko ci sa wet, seetal Bluetooth, te jéemaat.",
+    "bleNoDevices": "Gisuñu benn jumtukaayu NorthStar ci wet gi. Teg ko ci sa wet te wutaat.",
+    "bleConnectFailed": "Mënuñu jokkoo ak NorthStar. Fexeel mu am kuraŋ te nekk ci sa wet, ba noppi jéemaat.",
+    "saveCurrentPlace": "Denc bërab bii",
+    "placeSaved": "Bërab bi denc na.",
+    "savedPlace": "Bërab bu denc",
+    "savePlaceFailed": "Mënuñu denc bërab bii. Jéemaat.",
+    "lastSOSAttempt": "Jéemub SOS bu mujj",
+    "sosDialerOpened": "Dugalkatu nimero telefon bi ubbeeku na; wóote bi wóorul.",
+    "sosCancelled": "Neenal nañu ko; amul wóote bu am.",
+    "sosContactRequired": "Amul kuñu mëna jokkoo ak moom ci lu gaaw; amul wóote bu am.",
+    "sosDialerFailed": "Dugalkatu nimero telefon bi mënu ubbeeku; amul wóote bu am.",
+    "sosUnknown": "Mënuñu dëggal jéemub SOS bu mujj.",
+    "voiceConfiguration": "Àndandoo bi di wax féexul léegi. Jéemaat ci kanam walla wéyal ak àndandoo bi dul soxla internet.",
+    "editContact": "Soppi",
+    "editContactTitle": "Soppi kiñuy jokkoo ak moom ci lu gaaw",
+    "editContactAccessibility": "Soppi %{name}",
+    "contactUpdated": "Kiñuy jokkoo ak moom ci lu gaaw yeesal na."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Kgetho eno ya go tsena ga e yo mo tokololong eno.",
+    "continueAsDemo": "Tswelela jaaka pontsho (ya tlhabololo fela)",
+    "demoModeNotice": "Mokgwa wa pontsho o dirisa fela tshedimosetso ya teko e e mo sedirisiweng. Ditirelo tse di golagantsweng ga di a netefadiwa, mme nako eno e simolola sesha fa porokeramo e laisiwa gape.",
+    "authCodeInvalid": "Khoutu ya netefatso ga e a siama kgotsa e feletswe ke nako. Kopa khoutu e ntšha mme o leke gape.",
+    "authRateLimited": "Go lekilwe go tsena makgetlo a le mantsi. Leta nakwana, mme o leke gape.",
+    "authTimeout": "Netefatso ya go tsena e tsere nako e telele thata. Tlhola kgolagano ya gago mme o leke gape.",
+    "authNetwork": "Ga re a kgona go fitlhelela tirelo ya go tsena. Tlhola kgolagano ya gago mme o leke gape.",
+    "authSessionExpired": "Nako ya gago e fedile. Tsena gape.",
+    "mapUnavailable": "Mmapa wa pabalesego ga o a kgona go laisiwa. Tlhola kgolagano ya gago mme o leke gape.",
+    "mapCachedLocation": "Lefelo la gago la jaanong ga le yo. Go bontshiwa lefelo la gago la bofelo le le bolokilweng go tswa ka %{capturedAt}.",
+    "locationShareFailed": "Ga re a kgona go abelana lefelo la gago. Tlhola tetla ya lefelo mme o leke gape.",
+    "locationShareCurrent": "Lefelo la me le le rekotilweng ka %{capturedAt} ke leno:",
+    "locationShareCached": "Lefelo la me la bofelo le le bolokilweng, le le rekotilweng ka %{capturedAt}, ke leno:",
+    "blePermission": "Tetla ya Bluetooth e timilwe. E bulele mo Ditlhophong, mme o leke gape.",
+    "blePoweredOff": "Bluetooth e timilwe. E bulele, mme o leke gape.",
+    "bleUnavailable": "Go kopanya ka Bluetooth ga go yo mo sedirisiweng kgotsa mo tokololong eno.",
+    "bleScanFailed": "Ga re a kgona go bona NorthStar. E boloke e le gaufi, tlhola Bluetooth, mme o leke gape.",
+    "bleNoDevices": "Ga go na didirisiwa tsa NorthStar tse di bonweng gaufi. E boloke e le gaufi mme o batle gape.",
+    "bleConnectFailed": "Ga re a kgona go golagana le NorthStar. Netefatsa gore e na le motlakase e bile e gaufi, mme o leke gape.",
+    "saveCurrentPlace": "Boloka lefelo la jaanong",
+    "placeSaved": "Lefelo le bolokilwe.",
+    "savedPlace": "Lefelo le le bolokilweng",
+    "savePlaceFailed": "Ga re a kgona go boloka lefelo leno. Leka gape.",
+    "lastSOSAttempt": "Teko ya bofelo ya SOS",
+    "sosDialerOpened": "Sedirisiwa sa go letsa se butswe; mogala ga o a netefadiwa.",
+    "sosCancelled": "Go khansetswe; ga go na mogala o o dirilweng.",
+    "sosContactRequired": "Go ne go se na mogolagani wa tshoganyetso; ga go na mogala o o dirilweng.",
+    "sosDialerFailed": "Sedirisiwa sa go letsa ga se a kgona go bulega; ga go na mogala o o dirilweng.",
+    "sosUnknown": "Teko ya bofelo ya SOS ga e a kgona go netefadiwa.",
+    "voiceConfiguration": "Mothusi wa lentswe ga a yo jaanong. Leka gape moragonyana kgotsa tswelela ka mothusi yo o sa tlhokeng inthanete.",
+    "editContact": "Fetola",
+    "editContactTitle": "Fetola mogolagani wa tshoganyetso",
+    "editContactAccessibility": "Fetola %{name}",
+    "contactUpdated": "Mogolagani wa tshoganyetso o ntšhafaditswe."
   }
 }

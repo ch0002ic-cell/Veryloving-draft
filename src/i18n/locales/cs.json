@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Tento způsob přihlášení není v této verzi dostupný.",
+    "continueAsDemo": "Pokračovat jako demo (pouze pro vývoj)",
+    "demoModeNotice": "Demo režim používá pouze místní fiktivní data. Připojené služby nejsou ověřeny a relace se při opětovném načtení aplikace resetuje.",
+    "authCodeInvalid": "Ověřovací kód je neplatný nebo vypršel. Vyžádejte si nový kód a zkuste to znovu.",
+    "authRateLimited": "Příliš mnoho pokusů o přihlášení. Chvíli počkejte a zkuste to znovu.",
+    "authTimeout": "Ověření přihlášení trvalo příliš dlouho. Zkontrolujte připojení a zkuste to znovu.",
+    "authNetwork": "Ke službě přihlášení se nepodařilo připojit. Zkontrolujte připojení a zkuste to znovu.",
+    "authSessionExpired": "Platnost relace vypršela. Přihlaste se znovu.",
+    "mapUnavailable": "Bezpečnostní mapu se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu.",
+    "mapCachedLocation": "Aktuální poloha není dostupná. Zobrazuje se poslední uložená poloha z %{capturedAt}.",
+    "locationShareFailed": "Polohu se nepodařilo sdílet. Zkontrolujte přístup k poloze a zkuste to znovu.",
+    "locationShareCurrent": "Zde je moje poloha zaznamenaná v %{capturedAt}:",
+    "locationShareCached": "Zde je moje poslední uložená poloha zaznamenaná v %{capturedAt}:",
+    "blePermission": "Přístup k Bluetooth je vypnutý. Zapněte ho v Nastavení a zkuste to znovu.",
+    "blePoweredOff": "Bluetooth je vypnutý. Zapněte ho a zkuste to znovu.",
+    "bleUnavailable": "Párování přes Bluetooth není na tomto zařízení nebo v této verzi dostupné.",
+    "bleScanFailed": "NorthStar se nepodařilo najít. Mějte ho poblíž, zkontrolujte Bluetooth a zkuste to znovu.",
+    "bleNoDevices": "V okolí nebyla nalezena žádná zařízení NorthStar. Mějte zařízení poblíž a spusťte vyhledávání znovu.",
+    "bleConnectFailed": "K zařízení NorthStar se nepodařilo připojit. Mějte ho nabité a poblíž a zkuste to znovu.",
+    "saveCurrentPlace": "Uložit aktuální místo",
+    "placeSaved": "Místo uloženo.",
+    "savedPlace": "Uložené místo",
+    "savePlaceFailed": "Toto místo se nepodařilo uložit. Zkuste to znovu.",
+    "lastSOSAttempt": "Poslední pokus o SOS",
+    "sosDialerOpened": "Telefonní číselník se otevřel; hovor nebyl potvrzen.",
+    "sosCancelled": "Zrušeno; žádný hovor nebyl uskutečněn.",
+    "sosContactRequired": "Nebyl dostupný žádný nouzový kontakt; žádný hovor nebyl uskutečněn.",
+    "sosDialerFailed": "Telefonní číselník se nepodařilo otevřít; žádný hovor nebyl uskutečněn.",
+    "sosUnknown": "Poslední pokus o SOS se nepodařilo potvrdit.",
+    "voiceConfiguration": "Hlasový společník teď není dostupný. Zkuste to později nebo pokračujte s offline společníkem.",
+    "editContact": "Upravit",
+    "editContactTitle": "Upravit nouzový kontakt",
+    "editContactAccessibility": "Upravit %{name}",
+    "contactUpdated": "Nouzový kontakt byl aktualizován."
   }
 }

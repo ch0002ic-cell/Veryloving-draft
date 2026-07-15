@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "このビルドでは、このサインイン方法は利用できません。",
+    "continueAsDemo": "デモとして続行（開発用のみ）",
+    "demoModeNotice": "デモモードでは、端末内のダミーデータのみを使用します。接続サービスでは認証されません。また、アプリを再読み込みすると、このセッションはリセットされます。",
+    "authCodeInvalid": "確認コードが無効か、有効期限が切れています。新しいコードをリクエストして、もう一度お試しください。",
+    "authRateLimited": "サインインの試行回数が多すぎます。しばらく待ってから、もう一度お試しください。",
+    "authTimeout": "サインインの確認がタイムアウトしました。接続を確認して、もう一度お試しください。",
+    "authNetwork": "サインインサービスに接続できませんでした。接続を確認して、もう一度お試しください。",
+    "authSessionExpired": "セッションの有効期限が切れました。もう一度サインインしてください。",
+    "mapUnavailable": "安全マップを読み込めませんでした。接続を確認して、もう一度お試しください。",
+    "mapCachedLocation": "現在地をリアルタイムで取得できません。%{capturedAt} に保存された最後の位置を表示しています。",
+    "locationShareFailed": "位置情報を共有できませんでした。位置情報へのアクセスを確認して、もう一度お試しください。",
+    "locationShareCurrent": "%{capturedAt} に記録された私の現在地です：",
+    "locationShareCached": "%{capturedAt} に記録された、最後に保存した私の位置です：",
+    "blePermission": "Bluetoothへのアクセスがオフです。設定で有効にしてから、もう一度お試しください。",
+    "blePoweredOff": "Bluetoothがオフです。オンにしてから、もう一度お試しください。",
+    "bleUnavailable": "この端末またはビルドでは、Bluetoothペアリングを利用できません。",
+    "bleScanFailed": "NorthStarが見つかりませんでした。近くに置き、Bluetoothを確認して、もう一度お試しください。",
+    "bleNoDevices": "近くにNorthStarデバイスが見つかりませんでした。近くに置いて、もう一度スキャンしてください。",
+    "bleConnectFailed": "NorthStarに接続できませんでした。充電した状態で近くに置き、もう一度お試しください。",
+    "saveCurrentPlace": "現在の場所を保存",
+    "placeSaved": "場所を保存しました。",
+    "savedPlace": "保存した場所",
+    "savePlaceFailed": "この場所を保存できませんでした。もう一度お試しください。",
+    "lastSOSAttempt": "前回のSOS試行",
+    "sosDialerOpened": "電話のダイヤル画面を開きました。発信は確認されていません。",
+    "sosCancelled": "キャンセルされました。発信は行われていません。",
+    "sosContactRequired": "緊急連絡先を利用できなかったため、発信は行われていません。",
+    "sosDialerFailed": "電話のダイヤル画面を開けなかったため、発信は行われていません。",
+    "sosUnknown": "前回のSOS試行を確認できませんでした。",
+    "voiceConfiguration": "音声コンパニオンは現在利用できません。後でもう一度試すか、オフラインコンパニオンを引き続きご利用ください。",
+    "editContact": "編集",
+    "editContactTitle": "緊急連絡先を編集",
+    "editContactAccessibility": "%{name}を編集",
+    "contactUpdated": "緊急連絡先を更新しました。"
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Nḓila iyi ya u dzhena a i wanali kha ino build.",
+    "continueAsDemo": "Bvelani phanḓa sa demo (ya mveledziso fhedzi)",
+    "demoModeNotice": "Demo mode i shumisa data ya mazwifhi ya henefhano fhedzi. Tshumelo dzo ṱumanywaho a dzi athu khwaṱhisedzwa, nahone session iyi i a thomiwa hafhu musi app i tshi dzheniswa hafhu.",
+    "authCodeInvalid": "Khoudu ya u khwaṱhisedza a i shumi kana yo fhelelwa nga tshifhinga. Humbelani khoudu ntswa ni lingedze hafhu.",
+    "authRateLimited": "No lingedza u dzhena lunzhi nga maanḓa. Lindelani nyana, ni lingedze hafhu.",
+    "authTimeout": "U khwaṱhisedza u dzhena zwo dzhia tshifhinga tshilapfu. Sedzani ṱhumanyo yaṋu ni lingedze hafhu.",
+    "authNetwork": "A ro ngo kona u swikelela tshumelo ya u dzhena. Sedzani ṱhumanyo yaṋu ni lingedze hafhu.",
+    "authSessionExpired": "Session yaṋu yo fhelelwa nga tshifhinga. Dzhena hafhu.",
+    "mapUnavailable": "Mapa wa tsireledzo a wo ngo kona u dzheniswa. Sedzani ṱhumanyo yaṋu ni lingedze hafhu.",
+    "mapCachedLocation": "Vhupo ha zwino a vhu wanali. Hu khou sumbedzwa vhupo haṋu ha u fhedzisela ho vhulungwaho u bva kha %{capturedAt}.",
+    "locationShareFailed": "A ro ngo kona u kovhana vhupo haṋu. Sedzani thendelo ya vhupo ni lingedze hafhu.",
+    "locationShareCurrent": "Vhupo hanga ho rekhodiwaho nga %{capturedAt} ndi hovhu:",
+    "locationShareCached": "Vhupo hanga ha u fhedzisela ho vhulungwaho, ho rekhodiwaho nga %{capturedAt}, ndi hovhu:",
+    "blePermission": "U swikelela Bluetooth ho tsimiwa. Hu tendeleni kha Settings, ni lingedze hafhu.",
+    "blePoweredOff": "Bluetooth yo tsimiwa. I funguleni, ni lingedze hafhu.",
+    "bleUnavailable": "U ṱumanya Bluetooth a hu wanali kha tshishumiswa kana build iyi.",
+    "bleScanFailed": "A ro ngo kona u wana NorthStar. I vheeni tsini, ni sedze Bluetooth, ni lingedze hafhu.",
+    "bleNoDevices": "A hu ngo wanala zwishumiswa zwa NorthStar tsini. I vheeni tsini ni ṱoḓe hafhu.",
+    "bleConnectFailed": "A ro ngo kona u ṱumana na NorthStar. I dzule yo tshadzhiwa nahone i tsini, ni lingedze hafhu.",
+    "saveCurrentPlace": "Vhulungani fhethu hune na vha hone",
+    "placeSaved": "Fhethu ho vhulungwa.",
+    "savedPlace": "Fhethu ho vhulungwaho",
+    "savePlaceFailed": "A ro ngo kona u vhulunga fhethu afha. Lingedzani hafhu.",
+    "lastSOSAttempt": "U lingedza SOS ha u fhedzisela",
+    "sosDialerOpened": "Tshidaela tsha luṱingo tsho vulea; luṱingo a lu ngo khwaṱhisedzwa.",
+    "sosCancelled": "Zwo fheliswa; a hu ngo itwa luṱingo.",
+    "sosContactRequired": "Ho vha hu si na muthu wa vhuṱumani ha shishi; a hu ngo itwa luṱingo.",
+    "sosDialerFailed": "Tshidaela tsha luṱingo a tsho ngo kona u vulea; a hu ngo itwa luṱingo.",
+    "sosUnknown": "U lingedza SOS ha u fhedzisela a ho ngo kona u khwaṱhisedzwa.",
+    "voiceConfiguration": "Muthusi wa ipfi ha wanali zwino. Lingedzani hafhu nga murahu kana ni bvele phanḓa na muthusi a sa shumisi inthanethe.",
+    "editContact": "Lulamisani",
+    "editContactTitle": "Lulamisani muthu wa vhuṱumani ha shishi",
+    "editContactAccessibility": "Lulamisani %{name}",
+    "contactUpdated": "Muthu wa vhuṱumani ha shishi o khwinifhadzwa."
   }
 }

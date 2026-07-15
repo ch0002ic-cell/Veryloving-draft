@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ĉi tiu ensaluta opcio ne disponeblas en ĉi tiu versio.",
+    "continueAsDemo": "Daŭrigi kiel demonstraĵo (nur por programado)",
+    "demoModeNotice": "Demonstra reĝimo uzas nur lokajn falsajn datumojn. Konektitaj servoj ne estas aŭtentikigitaj, kaj ĉi tiu seanco rekomenciĝas kiam la aplikaĵo reŝargiĝas.",
+    "authCodeInvalid": "La kontrolkodo estas nevalida aŭ eksvalidiĝis. Petu novan kodon kaj reprovu.",
+    "authRateLimited": "Tro multaj ensalutprovoj. Atendu momenton, poste reprovu.",
+    "authTimeout": "La ensaluta kontrolo daŭris tro longe. Kontrolu vian konekton kaj reprovu.",
+    "authNetwork": "Ni ne povis atingi la ensalutan servon. Kontrolu vian konekton kaj reprovu.",
+    "authSessionExpired": "Via seanco eksvalidiĝis. Ensalutu denove.",
+    "mapUnavailable": "La sekureca mapo ne povis ŝargiĝi. Kontrolu vian konekton kaj reprovu.",
+    "mapCachedLocation": "La aktuala loko ne disponeblas. Montriĝas via lasta konservita loko de %{capturedAt}.",
+    "locationShareFailed": "Ni ne povis dividi vian lokon. Kontrolu la aliron al loko kaj reprovu.",
+    "locationShareCurrent": "Jen mia loko registrita je %{capturedAt}:",
+    "locationShareCached": "Jen mia lasta konservita loko registrita je %{capturedAt}:",
+    "blePermission": "Aliro al Bluetooth estas malŝaltita. Ŝaltu ĝin en Agordoj, poste reprovu.",
+    "blePoweredOff": "Bluetooth estas malŝaltita. Ŝaltu ĝin, poste reprovu.",
+    "bleUnavailable": "Parigo per Bluetooth ne disponeblas en ĉi tiu aparato aŭ versio.",
+    "bleScanFailed": "Ni ne povis trovi NorthStar. Tenu ĝin proksime, kontrolu Bluetooth kaj reprovu.",
+    "bleNoDevices": "Neniu proksima aparato NorthStar estis trovita. Tenu ĝin proksime kaj denove serĉu.",
+    "bleConnectFailed": "Ni ne povis konekti al NorthStar. Tenu ĝin ŝargita kaj proksime, poste reprovu.",
+    "saveCurrentPlace": "Konservi nunan lokon",
+    "placeSaved": "Loko konservita.",
+    "savedPlace": "Konservita loko",
+    "savePlaceFailed": "Ni ne povis konservi ĉi tiun lokon. Reprovu.",
+    "lastSOSAttempt": "Lasta provo de SOS",
+    "sosDialerOpened": "Telefona numerumilo malfermiĝis; voko ne estas konfirmita.",
+    "sosCancelled": "Nuligita; neniu voko estis farita.",
+    "sosContactRequired": "Neniu krizkontakto disponeblis; neniu voko estis farita.",
+    "sosDialerFailed": "La telefona numerumilo ne povis malfermiĝi; neniu voko estis farita.",
+    "sosUnknown": "La lasta provo de SOS ne povis esti konfirmita.",
+    "voiceConfiguration": "La voĉa asistanto nun ne disponeblas. Reprovu poste aŭ daŭrigu kun la eksterreta asistanto.",
+    "editContact": "Redakti",
+    "editContactTitle": "Redakti krizkontakton",
+    "editContactAccessibility": "Redakti %{name}",
+    "contactUpdated": "Krizkontakto ĝisdatigita."
   }
 }

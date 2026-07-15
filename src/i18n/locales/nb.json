@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Dette påloggingsalternativet er ikke tilgjengelig i denne versjonen.",
+    "continueAsDemo": "Fortsett som demo (kun for utvikling)",
+    "demoModeNotice": "Demomodus bruker bare lokale testdata. Tilkoblede tjenester er ikke autentisert, og denne økten tilbakestilles når appen lastes inn på nytt.",
+    "authCodeInvalid": "Bekreftelseskoden er ugyldig eller utløpt. Be om en ny kode og prøv igjen.",
+    "authRateLimited": "For mange påloggingsforsøk. Vent litt, og prøv deretter på nytt.",
+    "authTimeout": "Påloggingsbekreftelsen tok for lang tid. Kontroller tilkoblingen og prøv igjen.",
+    "authNetwork": "Vi kunne ikke nå påloggingstjenesten. Kontroller tilkoblingen og prøv igjen.",
+    "authSessionExpired": "Økten din har utløpt. Logg på igjen.",
+    "mapUnavailable": "Sikkerhetskartet kunne ikke lastes inn. Kontroller tilkoblingen og prøv igjen.",
+    "mapCachedLocation": "Posisjon i sanntid er utilgjengelig. Viser den sist lagrede posisjonen din fra %{capturedAt}.",
+    "locationShareFailed": "Vi kunne ikke dele posisjonen din. Kontroller posisjonstilgangen og prøv igjen.",
+    "locationShareCurrent": "Her er posisjonen min registrert %{capturedAt}:",
+    "locationShareCached": "Her er den sist lagrede posisjonen min, registrert %{capturedAt}:",
+    "blePermission": "Bluetooth-tilgang er slått av. Aktiver den i Innstillinger, og prøv deretter på nytt.",
+    "blePoweredOff": "Bluetooth er slått av. Slå det på, og prøv deretter på nytt.",
+    "bleUnavailable": "Bluetooth-sammenkobling er ikke tilgjengelig på denne enheten eller i denne versjonen.",
+    "bleScanFailed": "Vi fant ikke NorthStar. Hold den i nærheten, kontroller Bluetooth og prøv igjen.",
+    "bleNoDevices": "Ingen NorthStar-enheter ble funnet i nærheten. Hold den i nærheten og søk på nytt.",
+    "bleConnectFailed": "Vi kunne ikke koble til NorthStar. Sørg for at den er ladet og i nærheten, og prøv deretter på nytt.",
+    "saveCurrentPlace": "Lagre nåværende sted",
+    "placeSaved": "Stedet er lagret.",
+    "savedPlace": "Lagret sted",
+    "savePlaceFailed": "Vi kunne ikke lagre dette stedet. Prøv igjen.",
+    "lastSOSAttempt": "Siste SOS-forsøk",
+    "sosDialerOpened": "Telefonoppringeren ble åpnet, men anropet er ikke bekreftet.",
+    "sosCancelled": "Avbrutt. Ingen anrop ble utført.",
+    "sosContactRequired": "Ingen nødkontakt var tilgjengelig. Ingen anrop ble utført.",
+    "sosDialerFailed": "Telefonoppringeren kunne ikke åpnes. Ingen anrop ble utført.",
+    "sosUnknown": "Det siste SOS-forsøket kunne ikke bekreftes.",
+    "voiceConfiguration": "Talefølgesvennen er ikke tilgjengelig akkurat nå. Prøv igjen senere, eller fortsett med følgesvennen uten nett.",
+    "editContact": "Rediger",
+    "editContactTitle": "Rediger nødkontakt",
+    "editContactAccessibility": "Rediger %{name}",
+    "contactUpdated": "Nødkontakten er oppdatert."
   }
 }

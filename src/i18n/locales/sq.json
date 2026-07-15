@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ky opsion identifikimi nuk ofrohet në këtë version.",
+    "continueAsDemo": "Vazhdo si demonstrim (vetëm për zhvillim)",
+    "demoModeNotice": "Modaliteti demonstrues përdor vetëm të dhëna të rreme lokale. Shërbimet e lidhura nuk janë autentikuar dhe ky sesion rivendoset kur aplikacioni ringarkohet.",
+    "authCodeInvalid": "Kodi i verifikimit është i pavlefshëm ose ka skaduar. Kërko një kod të ri dhe provo përsëri.",
+    "authRateLimited": "Shumë përpjekje për identifikim. Prit pak dhe provo përsëri.",
+    "authTimeout": "Verifikimi i identifikimit zgjati shumë. Kontrollo lidhjen dhe provo përsëri.",
+    "authNetwork": "Nuk mundëm të lidheshim me shërbimin e identifikimit. Kontrollo lidhjen dhe provo përsëri.",
+    "authSessionExpired": "Sesioni yt ka skaduar. Identifikohu përsëri.",
+    "mapUnavailable": "Harta e sigurisë nuk mund të ngarkohej. Kontrollo lidhjen dhe provo përsëri.",
+    "mapCachedLocation": "Vendndodhja në kohë reale nuk ofrohet. Po shfaqet vendndodhja jote e fundit e ruajtur nga %{capturedAt}.",
+    "locationShareFailed": "Nuk mundëm ta ndanim vendndodhjen tënde. Kontrollo qasjen te vendndodhja dhe provo përsëri.",
+    "locationShareCurrent": "Kjo është vendndodhja ime e regjistruar në %{capturedAt}:",
+    "locationShareCached": "Kjo është vendndodhja ime e fundit e ruajtur, e regjistruar në %{capturedAt}:",
+    "blePermission": "Qasja në Bluetooth është çaktivizuar. Aktivizoje te Cilësimet dhe provo përsëri.",
+    "blePoweredOff": "Bluetooth është i fikur. Ndize dhe provo përsëri.",
+    "bleUnavailable": "Çiftimi me Bluetooth nuk ofrohet në këtë pajisje ose version.",
+    "bleScanFailed": "Nuk mundëm ta gjenim NorthStar. Mbaje pranë, kontrollo Bluetooth dhe provo përsëri.",
+    "bleNoDevices": "Nuk u gjet asnjë pajisje NorthStar aty pranë. Mbaje pranë dhe skano përsëri.",
+    "bleConnectFailed": "Nuk mundëm të lidheshim me NorthStar. Mbaje të karikuar dhe pranë, pastaj provo përsëri.",
+    "saveCurrentPlace": "Ruaj vendin aktual",
+    "placeSaved": "Vendi u ruajt.",
+    "savedPlace": "Vendi i ruajtur",
+    "savePlaceFailed": "Nuk mundëm ta ruanim këtë vend. Provo përsëri.",
+    "lastSOSAttempt": "Përpjekja e fundit SOS",
+    "sosDialerOpened": "U hap tastiera e telefonit; telefonata nuk u konfirmua.",
+    "sosCancelled": "U anulua; nuk u krye asnjë telefonatë.",
+    "sosContactRequired": "Nuk kishte asnjë kontakt emergjence; nuk u krye asnjë telefonatë.",
+    "sosDialerFailed": "Tastiera e telefonit nuk mund të hapej; nuk u krye asnjë telefonatë.",
+    "sosUnknown": "Përpjekja e fundit SOS nuk mund të konfirmohej.",
+    "voiceConfiguration": "Shoqëruesi zanor nuk ofrohet tani. Provo përsëri më vonë ose vazhdo me shoqëruesin jashtë linje.",
+    "editContact": "Modifiko",
+    "editContactTitle": "Modifiko kontaktin e emergjencës",
+    "editContactAccessibility": "Modifiko %{name}",
+    "contactUpdated": "Kontakti i emergjencës u përditësua."
   }
 }

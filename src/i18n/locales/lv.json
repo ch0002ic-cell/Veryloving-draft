@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Šī pierakstīšanās iespēja šajā versijā nav pieejama.",
+    "continueAsDemo": "Turpināt demonstrācijas režīmā (tikai izstrādei)",
+    "demoModeNotice": "Demonstrācijas režīms izmanto tikai lokālus testa datus. Savienotie pakalpojumi nav autentificēti, un šī sesija tiek atiestatīta, kad lietotne tiek atkārtoti ielādēta.",
+    "authCodeInvalid": "Verifikācijas kods nav derīgs vai tam ir beidzies derīguma termiņš. Pieprasiet jaunu kodu un mēģiniet vēlreiz.",
+    "authRateLimited": "Pārāk daudz pierakstīšanās mēģinājumu. Nedaudz uzgaidiet un mēģiniet vēlreiz.",
+    "authTimeout": "Pierakstīšanās pārbaude aizņēma pārāk ilgu laiku. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+    "authNetwork": "Neizdevās sasniegt pierakstīšanās pakalpojumu. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+    "authSessionExpired": "Jūsu sesija ir beigusies. Pierakstieties vēlreiz.",
+    "mapUnavailable": "Drošības karti neizdevās ielādēt. Pārbaudiet savienojumu un mēģiniet vēlreiz.",
+    "mapCachedLocation": "Atrašanās vieta reāllaikā nav pieejama. Tiek rādīta pēdējā saglabātā atrašanās vieta no %{capturedAt}.",
+    "locationShareFailed": "Neizdevās kopīgot jūsu atrašanās vietu. Pārbaudiet piekļuvi atrašanās vietai un mēģiniet vēlreiz.",
+    "locationShareCurrent": "Šeit ir mana atrašanās vieta, kas reģistrēta %{capturedAt}:",
+    "locationShareCached": "Šeit ir mana pēdējā saglabātā atrašanās vieta, kas reģistrēta %{capturedAt}:",
+    "blePermission": "Piekļuve Bluetooth ir izslēgta. Iespējojiet to iestatījumos un mēģiniet vēlreiz.",
+    "blePoweredOff": "Bluetooth ir izslēgts. Ieslēdziet to un mēģiniet vēlreiz.",
+    "bleUnavailable": "Bluetooth savienošana pārī šajā ierīcē vai versijā nav pieejama.",
+    "bleScanFailed": "Neizdevās atrast NorthStar. Turiet to tuvumā, pārbaudiet Bluetooth un mēģiniet vēlreiz.",
+    "bleNoDevices": "Tuvumā netika atrasta neviena NorthStar ierīce. Turiet to tuvumā un meklējiet vēlreiz.",
+    "bleConnectFailed": "Neizdevās izveidot savienojumu ar NorthStar. Gādājiet, lai tas būtu uzlādēts un atrastos tuvumā, pēc tam mēģiniet vēlreiz.",
+    "saveCurrentPlace": "Saglabāt pašreizējo vietu",
+    "placeSaved": "Vieta saglabāta.",
+    "savedPlace": "Saglabātā vieta",
+    "savePlaceFailed": "Neizdevās saglabāt šo vietu. Mēģiniet vēlreiz.",
+    "lastSOSAttempt": "Pēdējais SOS mēģinājums",
+    "sosDialerOpened": "Tālruņa numuru sastādītājs tika atvērts; zvans nav apstiprināts.",
+    "sosCancelled": "Atcelts; zvans netika veikts.",
+    "sosContactRequired": "Ārkārtas kontaktpersona nebija pieejama; zvans netika veikts.",
+    "sosDialerFailed": "Tālruņa numuru sastādītāju neizdevās atvērt; zvans netika veikts.",
+    "sosUnknown": "Pēdējo SOS mēģinājumu neizdevās apstiprināt.",
+    "voiceConfiguration": "Balss pavadonis pašlaik nav pieejams. Mēģiniet vēlreiz vēlāk vai turpiniet ar bezsaistes pavadoni.",
+    "editContact": "Rediģēt",
+    "editContactTitle": "Rediģēt ārkārtas kontaktpersonu",
+    "editContactAccessibility": "Rediģēt %{name}",
+    "contactUpdated": "Ārkārtas kontaktpersona atjaunināta."
   }
 }

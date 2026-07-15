@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Bu giriş usuly şu wersiýada elýeterli däl.",
+    "continueAsDemo": "Demo hökmünde dowam et (diňe işläp taýýarlamak üçin)",
+    "demoModeNotice": "Demo tertibi diňe ýerli galp maglumatlary ulanýar. Birikdirilen hyzmatlarda şahsyýet tassyklanmady we programma täzeden ýüklenende bu sessiýa täzeden başlanýar.",
+    "authCodeInvalid": "Tassyklama kody nädogry ýa-da möhleti gutardy. Täze kod soraň we gaýtadan synanyşyň.",
+    "authRateLimited": "Giriş synanyşyklary çakdan aşa köp. Biraz garaşyň, soňra gaýtadan synanyşyň.",
+    "authTimeout": "Girişi tassyklamak çakdan aşa uzaga çekdi. Birikmäňizi barlaň we gaýtadan synanyşyň.",
+    "authNetwork": "Giriş hyzmatyna ýetip bilmedik. Birikmäňizi barlaň we gaýtadan synanyşyň.",
+    "authSessionExpired": "Sessiýaňyzyň möhleti gutardy. Gaýtadan giriň.",
+    "mapUnavailable": "Howpsuzlyk kartasy ýükläp bolmady. Birikmäňizi barlaň we gaýtadan synanyşyň.",
+    "mapCachedLocation": "Häzirki ýerleşýän ýeriňiz elýeterli däl. %{capturedAt} wagtyndan soňky gezek ýazdyrylan ýeriňiz görkezilýär.",
+    "locationShareFailed": "Ýerleşýän ýeriňizi paýlaşyp bilmedik. Ýerleşýän ýere giriş rugsadyny barlaň we gaýtadan synanyşyň.",
+    "locationShareCurrent": "Meniň %{capturedAt} wagtynda ýazga alnan ýerim:",
+    "locationShareCached": "Meniň %{capturedAt} wagtynda ýazga alnan soňky ýazdyrylan ýerim:",
+    "blePermission": "Bluetooth giriş rugsady öçürilen. Ony Sazlamalarda açyň we gaýtadan synanyşyň.",
+    "blePoweredOff": "Bluetooth öçürilen. Ony açyň we gaýtadan synanyşyň.",
+    "bleUnavailable": "Bu enjamda ýa-da wersiýada Bluetooth arkaly jübütlemek elýeterli däl.",
+    "bleScanFailed": "NorthStar tapylmady. Ony golaýda saklaň, Bluetooth-y barlaň we gaýtadan synanyşyň.",
+    "bleNoDevices": "Golaýda NorthStar enjamlary tapylmady. Ony golaýda saklaň we gaýtadan gözläň.",
+    "bleConnectFailed": "NorthStar-a birigip bilmedik. Ony zarýadly we golaýda saklaň, soňra gaýtadan synanyşyň.",
+    "saveCurrentPlace": "Häzirki ýeri ýazdyr",
+    "placeSaved": "Ýer ýazdyryldy.",
+    "savedPlace": "Ýazdyrylan ýer",
+    "savePlaceFailed": "Bu ýeri ýazdyryp bilmedik. Gaýtadan synanyşyň.",
+    "lastSOSAttempt": "Soňky SOS synanyşygy",
+    "sosDialerOpened": "Telefon aýlaýjysy açyldy; jaň tassyklandy däl.",
+    "sosCancelled": "Ýatyryldy; jaň edilmedi.",
+    "sosContactRequired": "Gyssagly ýagdaý üçin aragatnaşyk tapylmady; jaň edilmedi.",
+    "sosDialerFailed": "Telefon aýlaýjysy açylmady; jaň edilmedi.",
+    "sosUnknown": "Soňky SOS synanyşygyny tassyklap bolmady.",
+    "voiceConfiguration": "Sesli ýoldaş häzir elýeterli däl. Soňra gaýtadan synanyşyň ýa-da oflaýn ýoldaş bilen dowam ediň.",
+    "editContact": "Üýtget",
+    "editContactTitle": "Gyssagly ýagdaý üçin aragatnaşygy üýtget",
+    "editContactAccessibility": "%{name} üçin maglumatlary üýtget",
+    "contactUpdated": "Gyssagly ýagdaý üçin aragatnaşyk täzelendi."
   }
 }

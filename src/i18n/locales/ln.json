@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Lolenge oyo ya kokɔta ezali te na ebimeli oyo.",
+    "continueAsDemo": "Koba lokola ndakisa (mpo na bokeli kaka)",
+    "demoModeNotice": "Lolenge ya ndakisa esalelaka kaka ba données ya lokuta oyo ezali na telefone. Misala oyo ekangami endimisami te, mpe session oyo ekozongisama na ebandeli ntango appli ekofungwama lisusu.",
+    "authCodeInvalid": "Code ya bondimisi ezali malamu te to esilá. Sɛngá code ya sika mpe meká lisusu.",
+    "authRateLimited": "Omeki kokɔta mbala mingi koleka. Zelá mwa moke, mpe meká lisusu.",
+    "authTimeout": "Bondimisi ya kokɔta ezwaki ntango mingi. Talá connexion na yo mpe meká lisusu.",
+    "authNetwork": "Tokokaki te kozwa service ya kokɔta. Talá connexion na yo mpe meká lisusu.",
+    "authSessionExpired": "Session na yo esilá. Kɔtá lisusu.",
+    "mapUnavailable": "Carte ya bokengi ekokaki te kofungwama. Talá connexion na yo mpe meká lisusu.",
+    "mapCachedLocation": "Esika ozali sikoyo ezali te. Tozali kolakisa esika na yo ya nsuka oyo ebombamaki na %{capturedAt}.",
+    "locationShareFailed": "Tokokaki te kokabola esika ozali. Talá ndingisa ya esika mpe meká lisusu.",
+    "locationShareCurrent": "Talá esika nazalaki ntango ekomamaki na %{capturedAt}:",
+    "locationShareCached": "Talá esika na ngai ya nsuka oyo ebombamaki mpe ekomamaki na %{capturedAt}:",
+    "blePermission": "Ndingisa ya Bluetooth ekangami. Fungolá yango na Paramètres, mpe meká lisusu.",
+    "blePoweredOff": "Bluetooth ekangami. Fungolá yango, mpe meká lisusu.",
+    "bleUnavailable": "Kosangisa na Bluetooth ezali te na aparɛyi to ebimeli oyo.",
+    "bleScanFailed": "Tokokaki te komona NorthStar. Batelá yango pene, talá Bluetooth mpe meká lisusu.",
+    "bleNoDevices": "Aparɛyi NorthStar moko te emonani pene. Batelá yango pene mpe luká lisusu.",
+    "bleConnectFailed": "Tokokaki te kosangana na NorthStar. Batelá yango na charge mpe pene, mpe meká lisusu.",
+    "saveCurrentPlace": "Bomba esika ya sikoyo",
+    "placeSaved": "Esika ebombami.",
+    "savedPlace": "Esika ebombami",
+    "savePlaceFailed": "Tokokaki te kobomba esika oyo. Meká lisusu.",
+    "lastSOSAttempt": "Mekano ya nsuka ya SOS",
+    "sosDialerOpened": "Esika ya kobɛta nimero efungwami; libenga endimisami te.",
+    "sosCancelled": "Elongolami; libenga moko te esalemaki.",
+    "sosContactRequired": "Moto ya urgence azalaki te; libenga moko te esalemaki.",
+    "sosDialerFailed": "Esika ya kobɛta nimero ekokaki te kofungwama; libenga moko te esalemaki.",
+    "sosUnknown": "Mekano ya nsuka ya SOS ekokaki te kondimisama.",
+    "voiceConfiguration": "Mosungi ya mongongo azali te sikoyo. Meká lisusu na nsima to kobá na mosungi oyo asalaka kozanga connexion.",
+    "editContact": "Bongisa",
+    "editContactTitle": "Bongisa moto ya urgence",
+    "editContactAccessibility": "Bongisa %{name}",
+    "contactUpdated": "Moto ya urgence abongisami."
   }
 }

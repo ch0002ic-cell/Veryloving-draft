@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Hesin innritimøguleiki er ikki tøkur í hesari útgávuni.",
+    "continueAsDemo": "Halt fram sum demo (bert til menning)",
+    "demoModeNotice": "Demostøða brúkar bert lokal royndardátur. Sambundnar tænastur eru ikki samleikaváttaðar, og henda setan verður nullstillað, tá ið appin verður endurlisin.",
+    "authCodeInvalid": "Váttanarkotan er skeiv ella farin úr gildi. Bið um eina nýggja kotu og royn aftur.",
+    "authRateLimited": "Ov nógvar innritingarroyndir. Bíða eina løtu og royn aftur.",
+    "authTimeout": "Váttan av innriting tók ov langa tíð. Kanna sambandið og royn aftur.",
+    "authNetwork": "Vit fingu ikki samband við innritingartænastuna. Kanna sambandið og royn aftur.",
+    "authSessionExpired": "Setan tín er farin úr gildi. Rita inn aftur.",
+    "mapUnavailable": "Trygdarkortið kundi ikki lesast. Kanna sambandið og royn aftur.",
+    "mapCachedLocation": "Beinleiðis staðseting er ikki tøk. Vísir tína seinast goymdu staðseting frá %{capturedAt}.",
+    "locationShareFailed": "Vit kundu ikki deila staðseting tína. Kanna atgongd til staðseting og royn aftur.",
+    "locationShareCurrent": "Her er staðseting mín, skrásett %{capturedAt}:",
+    "locationShareCached": "Her er mín seinast goymda staðseting, skrásett %{capturedAt}:",
+    "blePermission": "Atgongd til Bluetooth er sløkt. Kveik hana í Stillingum og royn aftur.",
+    "blePoweredOff": "Bluetooth er sløkt. Kveik tað og royn aftur.",
+    "bleUnavailable": "Bluetooth-pøring er ikki tøk á hesi eindini ella í hesari útgávuni.",
+    "bleScanFailed": "Vit funnu ikki NorthStar. Hav tað nærhendis, kanna Bluetooth og royn aftur.",
+    "bleNoDevices": "Eingar NorthStar-eindir vóru funnar nærhendis. Hav tað nærhendis og leita aftur.",
+    "bleConnectFailed": "Vit fingu ikki samband við NorthStar. Hav tað løtt og nærhendis og royn aftur.",
+    "saveCurrentPlace": "Goym núverandi stað",
+    "placeSaved": "Staðið er goymt.",
+    "savedPlace": "Goymt stað",
+    "savePlaceFailed": "Vit kundu ikki goyma hetta staðið. Royn aftur.",
+    "lastSOSAttempt": "Seinasta SOS-roynd",
+    "sosDialerOpened": "Telefonveljarin varð latin upp; uppkallið er ikki váttað.",
+    "sosCancelled": "Avlýst; einki uppkall varð gjørt.",
+    "sosContactRequired": "Eingin neyðkontakt var tøk; einki uppkall varð gjørt.",
+    "sosDialerFailed": "Telefonveljarin kundi ikki latast upp; einki uppkall varð gjørt.",
+    "sosUnknown": "Seinasta SOS-royndin kundi ikki váttast.",
+    "voiceConfiguration": "Raddarfylgisveinurin er ikki tøkur í løtuni. Royn aftur seinni ella halt fram við fylgisveininum uttan net.",
+    "editContact": "Broyt",
+    "editContactTitle": "Broyt neyðkontakt",
+    "editContactAccessibility": "Broyt %{name}",
+    "contactUpdated": "Neyðkontaktin er dagførd."
   }
 }

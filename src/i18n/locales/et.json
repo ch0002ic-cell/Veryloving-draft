@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "See sisselogimisviis pole selles järgus saadaval.",
+    "continueAsDemo": "Jätka demona (ainult arenduseks)",
+    "demoModeNotice": "Demorežiim kasutab ainult kohalikke näidisandmeid. Ühendatud teenustes pole autentimist tehtud ja rakenduse uuesti laadimisel see seanss lähtestatakse.",
+    "authCodeInvalid": "Kinnituskood on vale või aegunud. Taotle uus kood ja proovi uuesti.",
+    "authRateLimited": "Liiga palju sisselogimiskatseid. Oota veidi ja proovi uuesti.",
+    "authTimeout": "Sisselogimise kinnitamine võttis liiga kaua aega. Kontrolli ühendust ja proovi uuesti.",
+    "authNetwork": "Sisselogimisteenusega ei õnnestunud ühendust saada. Kontrolli ühendust ja proovi uuesti.",
+    "authSessionExpired": "Sinu seanss aegus. Logi uuesti sisse.",
+    "mapUnavailable": "Turvakaarti ei õnnestunud laadida. Kontrolli ühendust ja proovi uuesti.",
+    "mapCachedLocation": "Reaalajas asukoht pole saadaval. Kuvatakse sinu viimane salvestatud asukoht ajast %{capturedAt}.",
+    "locationShareFailed": "Sinu asukohta ei õnnestunud jagada. Kontrolli asukohale juurdepääsu ja proovi uuesti.",
+    "locationShareCurrent": "Siin on minu asukoht, mis salvestati ajal %{capturedAt}:",
+    "locationShareCached": "Siin on minu viimane salvestatud asukoht, mis salvestati ajal %{capturedAt}:",
+    "blePermission": "Bluetoothi juurdepääs on välja lülitatud. Luba see seadetes ja proovi uuesti.",
+    "blePoweredOff": "Bluetooth on välja lülitatud. Lülita see sisse ja proovi uuesti.",
+    "bleUnavailable": "Bluetoothi sidumine pole selles seadmes või järgus saadaval.",
+    "bleScanFailed": "NorthStari ei leitud. Hoia seda lähedal, kontrolli Bluetoothi ja proovi uuesti.",
+    "bleNoDevices": "Läheduses ei leitud ühtegi NorthStari seadet. Hoia seda lähedal ja otsi uuesti.",
+    "bleConnectFailed": "NorthStariga ei õnnestunud ühendust luua. Hoia see laetuna ja lähedal ning proovi uuesti.",
+    "saveCurrentPlace": "Salvesta praegune koht",
+    "placeSaved": "Koht on salvestatud.",
+    "savedPlace": "Salvestatud koht",
+    "savePlaceFailed": "Seda kohta ei õnnestunud salvestada. Proovi uuesti.",
+    "lastSOSAttempt": "Viimane SOS-katse",
+    "sosDialerOpened": "Telefoni valija avati; kõne pole kinnitatud.",
+    "sosCancelled": "Tühistatud; kõnet ei tehtud.",
+    "sosContactRequired": "Hädaabikontakt polnud saadaval; kõnet ei tehtud.",
+    "sosDialerFailed": "Telefoni valijat ei õnnestunud avada; kõnet ei tehtud.",
+    "sosUnknown": "Viimast SOS-katset ei õnnestunud kinnitada.",
+    "voiceConfiguration": "Häälkaaslane pole praegu saadaval. Proovi hiljem uuesti või jätka võrguühenduseta kaaslasega.",
+    "editContact": "Muuda",
+    "editContactTitle": "Muuda hädaabikontakti",
+    "editContactAccessibility": "Muuda kontakti %{name}",
+    "contactUpdated": "Hädaabikontakt on uuendatud."
   }
 }

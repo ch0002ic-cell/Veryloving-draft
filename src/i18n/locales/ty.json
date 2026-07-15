@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Aita teie rāveʻa tomoraʻa e vai nei i roto i teie hamaniraʻa.",
+    "continueAsDemo": "Haere noa mai te demo (no te faahoturaa anaʻe)",
+    "demoModeNotice": "E faaohipa te huru demo i te mau haamaramaramaraa haavarevare o te matini anaʻe. Aita te mau taviniraa tuihia i haapapuhia, e e haamata faahou teie tuhaa ia uta-faahou-hia te faanahoraa.",
+    "authCodeInvalid": "Aita te numera haapapuraa i tano aore ra ua pau. A ani i te hoê numera apî e a tamata faahou.",
+    "authRateLimited": "Ua rahi roa te mau tamataraa tomoraʻa. A tiai maa taime, e a tamata faahou.",
+    "authTimeout": "Ua maoro roa te haapapuraa tomoraʻa. A hiʻopoa i ta oe natiraa e a tamata faahou.",
+    "authNetwork": "Aita i nehenehe ia matou ia farerei i te taviniraa tomoraʻa. A hiʻopoa i ta oe natiraa e a tamata faahou.",
+    "authSessionExpired": "Ua pau ta oe tuhaa. A tomo faahou.",
+    "mapUnavailable": "Aita te hohoʻa fenua parururaa i nehenehe e uta. A hiʻopoa i ta oe natiraa e a tamata faahou.",
+    "mapCachedLocation": "Aita te vairaa ora e vai nei. Te faaitehia nei to oe vairaa hopea i haaputuhia mai %{capturedAt}.",
+    "locationShareFailed": "Aita i nehenehe ia matou ia faaite i to oe vairaa. A hiʻopoa i te faatiaraa vairaa e a tamata faahou.",
+    "locationShareCurrent": "Teie toʻu vairaa i tapaohia i %{capturedAt}:",
+    "locationShareCached": "Teie toʻu vairaa hopea i haaputuhia, i tapaohia i %{capturedAt}:",
+    "blePermission": "Ua tupohehia te tomoraa Bluetooth. A faatupu i te reira i roto i te Mau faanahoraa, e a tamata faahou.",
+    "blePoweredOff": "Ua tupohehia Bluetooth. A faatupu i te reira, e a tamata faahou.",
+    "bleUnavailable": "Aita te taairaa Bluetooth e vai nei i nia i teie matini aore ra teie hamaniraʻa.",
+    "bleScanFailed": "Aita i nehenehe ia matou ia ite ia NorthStar. A vaiiho piri noa, a hiʻopoa i te Bluetooth, e a tamata faahou.",
+    "bleNoDevices": "Aita e matini NorthStar piri i itehia. A vaiiho piri noa e a imi faahou.",
+    "bleConnectFailed": "Aita i nehenehe ia matou ia taai atu ia NorthStar. A tapea ia na te uira e te piri, e a tamata faahou.",
+    "saveCurrentPlace": "Haaputu i teie vairaa",
+    "placeSaved": "Ua haaputuhia te vairaa.",
+    "savedPlace": "Vairaa i haaputuhia",
+    "savePlaceFailed": "Aita i nehenehe ia matou ia haaputu i teie vairaa. A tamata faahou.",
+    "lastSOSAttempt": "Tamataraa SOS hopea",
+    "sosDialerOpened": "Ua matara te niuniu; aita te piiraa i haapapuhia.",
+    "sosCancelled": "Ua faaorehia; aita e piiraa i ravehia.",
+    "sosContactRequired": "Aita e taata farereiraa rū i vai; aita e piiraa i ravehia.",
+    "sosDialerFailed": "Aita te niuniu i nehenehe e matara; aita e piiraa i ravehia.",
+    "sosUnknown": "Aita te tamataraa SOS hopea i nehenehe e haapapuhia.",
+    "voiceConfiguration": "Aita te hoa reo e vai nei i teie taime. A tamata faahou a muri aʻe aore ra a haere noa e te hoa tuimotu.",
+    "editContact": "Faahuru ê",
+    "editContactTitle": "Faahuru ê i te taata farereiraa rū",
+    "editContactAccessibility": "Faahuru ê ia %{name}",
+    "contactUpdated": "Ua faatitiaifarohia te taata farereiraa rū."
   }
 }

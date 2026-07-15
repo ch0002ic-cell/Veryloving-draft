@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Pilihan mlebu iki ora kasedhiya ing versi iki.",
+    "continueAsDemo": "Terusake minangka demo (mung kanggo pangembangan)",
+    "demoModeNotice": "Mode demo mung nggunakake data palsu lokal. Layanan sing disambungake ora diautentikasi, lan sesi iki bakal direset nalika aplikasi dimuat maneh.",
+    "authCodeInvalid": "Kode verifikasi ora sah utawa wis kedaluwarsa. Nyuwuna kode anyar banjur coba maneh.",
+    "authRateLimited": "Kakehan nyoba mlebu. Enteni sedhela, banjur coba maneh.",
+    "authTimeout": "Verifikasi mlebu suwe banget. Priksa sambungan sampeyan banjur coba maneh.",
+    "authNetwork": "Kita ora bisa nggayuh layanan mlebu. Priksa sambungan sampeyan banjur coba maneh.",
+    "authSessionExpired": "Sesi sampeyan wis kedaluwarsa. Mlebu maneh.",
+    "mapUnavailable": "Peta keamanan ora bisa dimuat. Priksa sambungan sampeyan banjur coba maneh.",
+    "mapCachedLocation": "Lokasi langsung ora kasedhiya. Nampilake lokasi pungkasan sing disimpen saka %{capturedAt}.",
+    "locationShareFailed": "Kita ora bisa nuduhake lokasi sampeyan. Priksa akses lokasi banjur coba maneh.",
+    "locationShareCurrent": "Iki lokasiku sing direkam ing %{capturedAt}:",
+    "locationShareCached": "Iki lokasi pungkasan sing tak simpen lan direkam ing %{capturedAt}:",
+    "blePermission": "Akses Bluetooth dipateni. Aktifake ing Setelan, banjur coba maneh.",
+    "blePoweredOff": "Bluetooth dipateni. Uripake, banjur coba maneh.",
+    "bleUnavailable": "Pamasangan Bluetooth ora kasedhiya ing piranti utawa versi iki.",
+    "bleScanFailed": "Kita ora bisa nemokake NorthStar. Cedhakake, priksa Bluetooth, banjur coba maneh.",
+    "bleNoDevices": "Ora ana piranti NorthStar ing sacedhake sing ditemokake. Cedhakake banjur pindai maneh.",
+    "bleConnectFailed": "Kita ora bisa nyambung menyang NorthStar. Priksa manawa dayane kebak lan cedhak, banjur coba maneh.",
+    "saveCurrentPlace": "Simpen panggonan saiki",
+    "placeSaved": "Panggonan disimpen.",
+    "savedPlace": "Panggonan sing disimpen",
+    "savePlaceFailed": "Kita ora bisa nyimpen panggonan iki. Coba maneh.",
+    "lastSOSAttempt": "Upaya SOS pungkasan",
+    "sosDialerOpened": "Panel telpon dibukak; telpon durung dikonfirmasi.",
+    "sosCancelled": "Dibatalake; ora ana telpon sing ditindakake.",
+    "sosContactRequired": "Ora ana kontak darurat sing kasedhiya; ora ana telpon sing ditindakake.",
+    "sosDialerFailed": "Panel telpon ora bisa dibukak; ora ana telpon sing ditindakake.",
+    "sosUnknown": "Upaya SOS pungkasan ora bisa dikonfirmasi.",
+    "voiceConfiguration": "Asisten swara saiki ora kasedhiya. Coba maneh mengko utawa terusake nganggo asisten offline.",
+    "editContact": "Owahi",
+    "editContactTitle": "Owahi kontak darurat",
+    "editContactAccessibility": "Owahi %{name}",
+    "contactUpdated": "Kontak darurat dianyari."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Det här inloggningsalternativet är inte tillgängligt i den här versionen.",
+    "continueAsDemo": "Fortsätt som demo (endast för utveckling)",
+    "demoModeNotice": "Demoläget använder endast lokala testdata. Anslutna tjänster är inte autentiserade och sessionen återställs när appen läses in på nytt.",
+    "authCodeInvalid": "Verifieringskoden är ogiltig eller har gått ut. Begär en ny kod och försök igen.",
+    "authRateLimited": "För många inloggningsförsök. Vänta en stund och försök igen.",
+    "authTimeout": "Inloggningsverifieringen tog för lång tid. Kontrollera anslutningen och försök igen.",
+    "authNetwork": "Det gick inte att nå inloggningstjänsten. Kontrollera anslutningen och försök igen.",
+    "authSessionExpired": "Din session har gått ut. Logga in igen.",
+    "mapUnavailable": "Säkerhetskartan kunde inte läsas in. Kontrollera anslutningen och försök igen.",
+    "mapCachedLocation": "Livepositionen är inte tillgänglig. Visar din senast sparade position från %{capturedAt}.",
+    "locationShareFailed": "Det gick inte att dela din position. Kontrollera platsåtkomsten och försök igen.",
+    "locationShareCurrent": "Här är min position registrerad %{capturedAt}:",
+    "locationShareCached": "Här är min senast sparade position, registrerad %{capturedAt}:",
+    "blePermission": "Åtkomst till Bluetooth är avstängd. Aktivera den i Inställningar och försök igen.",
+    "blePoweredOff": "Bluetooth är avstängt. Slå på det och försök igen.",
+    "bleUnavailable": "Bluetooth-parkoppling är inte tillgänglig på den här enheten eller i den här versionen.",
+    "bleScanFailed": "Det gick inte att hitta NorthStar. Håll den nära, kontrollera Bluetooth och försök igen.",
+    "bleNoDevices": "Inga NorthStar-enheter hittades i närheten. Håll den nära och sök igen.",
+    "bleConnectFailed": "Det gick inte att ansluta till NorthStar. Se till att den är laddad och i närheten och försök igen.",
+    "saveCurrentPlace": "Spara aktuell plats",
+    "placeSaved": "Platsen har sparats.",
+    "savedPlace": "Sparad plats",
+    "savePlaceFailed": "Det gick inte att spara den här platsen. Försök igen.",
+    "lastSOSAttempt": "Senaste SOS-försöket",
+    "sosDialerOpened": "Telefonens knappsats öppnades; samtalet är inte bekräftat.",
+    "sosCancelled": "Avbrutet; inget samtal ringdes.",
+    "sosContactRequired": "Ingen nödkontakt var tillgänglig; inget samtal ringdes.",
+    "sosDialerFailed": "Telefonens knappsats kunde inte öppnas; inget samtal ringdes.",
+    "sosUnknown": "Det senaste SOS-försöket kunde inte bekräftas.",
+    "voiceConfiguration": "Röstassistenten är inte tillgänglig just nu. Försök igen senare eller fortsätt med offlineassistenten.",
+    "editContact": "Redigera",
+    "editContactTitle": "Redigera nödkontakt",
+    "editContactAccessibility": "Redigera %{name}",
+    "contactUpdated": "Nödkontakten har uppdaterats."
   }
 }

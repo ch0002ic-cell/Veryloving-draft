@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "ʻOku ʻikai lava ke ngāueʻaki ʻa e founga hū ko ʻení ʻi he faʻunga ko ʻení.",
+    "continueAsDemo": "Hokohoko ko ha sīpinga (ki he fakatupulaki pē)",
+    "demoModeNotice": "ʻOku ngāueʻaki ʻe he tuʻunga sīpingá ʻa e fakamatala loi fakalotofonua pē. Kuo teʻeki fakapapauʻi ʻa e ngaahi ngāue fehokotakí, pea ʻe kamata foʻou ʻa e taimi ngāue ko ʻení ʻi he toe fakaava ʻa e polokalamá.",
+    "authCodeInvalid": "ʻOku hala pe ʻosi ʻa e taimi ʻo e fika fakapapaú. Kole ha fika foʻou pea toe feinga.",
+    "authRateLimited": "Kuo fuʻu lahi ʻa e ngaahi feinga ke hū. Tatali siʻi, pea toe feinga.",
+    "authTimeout": "Naʻe fuʻu fuoloa ʻa hono fakapapauʻi ʻo e hū. Vakaiʻi hoʻo fehokotakí pea toe feinga.",
+    "authNetwork": "Naʻe ʻikai lava ke mau aʻu ki he ngāue hū. Vakaiʻi hoʻo fehokotakí pea toe feinga.",
+    "authSessionExpired": "Kuo ʻosi hoʻo taimi ngāué. Toe hū.",
+    "mapUnavailable": "Naʻe ʻikai lava ke fakaava ʻa e mape maluʻí. Vakaiʻi hoʻo fehokotakí pea toe feinga.",
+    "mapCachedLocation": "ʻOku ʻikai maʻu ho feituʻu lolotongá. ʻOku fakaʻaliʻali ho feituʻu fakamuimui naʻe tauhi mei he %{capturedAt}.",
+    "locationShareFailed": "Naʻe ʻikai lava ke mau vahevahe ho feituʻú. Vakaiʻi ʻa e ngofua ke hū ki he feituʻú pea toe feinga.",
+    "locationShareCurrent": "Ko hoku feituʻu naʻe lekooti ʻi he %{capturedAt}:",
+    "locationShareCached": "Ko hoku feituʻu fakamuimui naʻe tauhi mo lekooti ʻi he %{capturedAt}:",
+    "blePermission": "ʻOku tāpuni ʻa e ngofua ki he Bluetooth. Fakaʻatā ia ʻi he Ngaahi Tuʻutuʻuní, pea toe feinga.",
+    "blePoweredOff": "Kuo tāpuni ʻa e Bluetooth. Fakaava ia, pea toe feinga.",
+    "bleUnavailable": "ʻOku ʻikai lava ke fakahoa Bluetooth ʻi he meʻangāue pe faʻunga ko ʻení.",
+    "bleScanFailed": "Naʻe ʻikai lava ke mau maʻu ʻa e NorthStar. Tauhi ia ke ofi, vakaiʻi ʻa e Bluetooth, pea toe feinga.",
+    "bleNoDevices": "Naʻe ʻikai maʻu ha meʻangāue NorthStar ofi mai. Tauhi ia ke ofi pea toe kumi.",
+    "bleConnectFailed": "Naʻe ʻikai lava ke mau fehokotaki ki he NorthStar. Tauhi ia ke ʻi ai hono maʻuʻanga ʻuhila pea ofi mai, pea toe feinga.",
+    "saveCurrentPlace": "Tauhi ʻa e feituʻu lolotongá",
+    "placeSaved": "Kuo tauhi ʻa e feituʻú.",
+    "savedPlace": "Feituʻu kuo tauhi",
+    "savePlaceFailed": "Naʻe ʻikai lava ke mau tauhi ʻa e feituʻu ko ʻení. Toe feinga.",
+    "lastSOSAttempt": "Feinga SOS fakamuimui",
+    "sosDialerOpened": "Kuo fakaava ʻa e tā fika telefoní; naʻe ʻikai fakapapauʻi ʻa e tā telefoní.",
+    "sosCancelled": "Kuo kaniseli; naʻe ʻikai fai ha tā telefoni.",
+    "sosContactRequired": "Naʻe ʻikai maʻu ha tokotaha fetuʻutaki ki he meʻa fakavavevavé; naʻe ʻikai fai ha tā telefoni.",
+    "sosDialerFailed": "Naʻe ʻikai lava ke fakaava ʻa e tā fika telefoní; naʻe ʻikai fai ha tā telefoni.",
+    "sosUnknown": "Naʻe ʻikai lava ke fakapapauʻi ʻa e feinga SOS fakamuimuí.",
+    "voiceConfiguration": "ʻOku ʻikai maʻu ʻa e hoa leʻó he taimí ni. Toe feinga ʻamui ange pe hokohoko mo e hoa ʻoku ngāue taʻekinitanetí.",
+    "editContact": "Fakatonutonu",
+    "editContactTitle": "Fakatonutonu ʻa e tokotaha fetuʻutaki ki he meʻa fakavavevavé",
+    "editContactAccessibility": "Fakatonutonu ʻa %{name}",
+    "contactUpdated": "Kuo fakatonutonu ʻa e tokotaha fetuʻutaki ki he meʻa fakavavevavé."
   }
 }

@@ -18,7 +18,7 @@ export function LanguageSelector({ onError }) {
     : language.nativeName;
   const languageCodeLabel = (language) => [
     language.code.toUpperCase(),
-    language.usesEnglishReleaseCriticalFallback ? 'QA' : null
+    language.reviewRequired ? 'QA' : null
   ].filter(Boolean).join(' · ');
   const filteredLanguages = useMemo(
     () => filterLanguageOptions(languageOptions, query, t('languages.system')),
@@ -110,10 +110,10 @@ export function LanguageSelector({ onError }) {
                   >
                     <View style={styles.languageCopy}>
                       <Text style={[styles.label, selected && styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(item)}</Text>
-                      {(item.englishName && item.englishName !== item.nativeName) || item.usesEnglishReleaseCriticalFallback ? (
+                      {(item.englishName && item.englishName !== item.nativeName) || item.reviewRequired ? (
                         <View style={[styles.metadataRow, isRTL && styles.rtlRow]}>
                           {item.englishName && item.englishName !== item.nativeName ? <Text style={[styles.englishName, isRTL && styles.rtlText]}>{item.englishName}</Text> : null}
-                          {item.usesEnglishReleaseCriticalFallback ? <Text style={styles.qaBadge}>QA</Text> : null}
+                          {item.reviewRequired ? <Text style={styles.qaBadge}>QA</Text> : null}
                         </View>
                       ) : null}
                     </View>

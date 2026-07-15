@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Opsi masuk ini tidak tersedia dalam versi aplikasi ini.",
+    "continueAsDemo": "Lanjutkan sebagai demo (khusus pengembangan)",
+    "demoModeNotice": "Mode demo hanya menggunakan data palsu lokal. Layanan yang terhubung tidak diautentikasi, dan sesi ini akan diatur ulang saat aplikasi dimuat ulang.",
+    "authCodeInvalid": "Kode verifikasi tidak valid atau sudah kedaluwarsa. Minta kode baru dan coba lagi.",
+    "authRateLimited": "Terlalu banyak percobaan masuk. Tunggu sebentar, lalu coba lagi.",
+    "authTimeout": "Verifikasi masuk memakan waktu terlalu lama. Periksa koneksi Anda dan coba lagi.",
+    "authNetwork": "Kami tidak dapat menjangkau layanan masuk. Periksa koneksi Anda dan coba lagi.",
+    "authSessionExpired": "Sesi Anda telah berakhir. Masuk kembali.",
+    "mapUnavailable": "Peta keselamatan tidak dapat dimuat. Periksa koneksi Anda dan coba lagi.",
+    "mapCachedLocation": "Lokasi langsung tidak tersedia. Menampilkan lokasi terakhir yang Anda simpan pada %{capturedAt}.",
+    "locationShareFailed": "Kami tidak dapat membagikan lokasi Anda. Periksa akses lokasi dan coba lagi.",
+    "locationShareCurrent": "Berikut lokasi saya yang direkam pada %{capturedAt}:",
+    "locationShareCached": "Berikut lokasi terakhir saya yang disimpan pada %{capturedAt}:",
+    "blePermission": "Akses Bluetooth dinonaktifkan. Aktifkan di Pengaturan, lalu coba lagi.",
+    "blePoweredOff": "Bluetooth dimatikan. Nyalakan, lalu coba lagi.",
+    "bleUnavailable": "Penyandingan Bluetooth tidak tersedia di perangkat atau versi aplikasi ini.",
+    "bleScanFailed": "Kami tidak dapat menemukan NorthStar. Letakkan di dekat Anda, periksa Bluetooth, lalu coba lagi.",
+    "bleNoDevices": "Tidak ada perangkat NorthStar di sekitar yang ditemukan. Letakkan di dekat Anda dan pindai lagi.",
+    "bleConnectFailed": "Kami tidak dapat terhubung ke NorthStar. Pastikan dayanya terisi dan berada di dekat Anda, lalu coba lagi.",
+    "saveCurrentPlace": "Simpan tempat saat ini",
+    "placeSaved": "Tempat disimpan.",
+    "savedPlace": "Tempat tersimpan",
+    "savePlaceFailed": "Kami tidak dapat menyimpan tempat ini. Coba lagi.",
+    "lastSOSAttempt": "Percobaan SOS terakhir",
+    "sosDialerOpened": "Pemanggil telepon dibuka; panggilan belum dikonfirmasi.",
+    "sosCancelled": "Dibatalkan; tidak ada panggilan yang dilakukan.",
+    "sosContactRequired": "Tidak ada kontak darurat yang tersedia; tidak ada panggilan yang dilakukan.",
+    "sosDialerFailed": "Pemanggil telepon tidak dapat dibuka; tidak ada panggilan yang dilakukan.",
+    "sosUnknown": "Percobaan SOS terakhir tidak dapat dikonfirmasi.",
+    "voiceConfiguration": "Pendamping suara sedang tidak tersedia. Coba lagi nanti atau lanjutkan dengan pendamping offline.",
+    "editContact": "Edit",
+    "editContactTitle": "Edit kontak darurat",
+    "editContactAccessibility": "Edit %{name}",
+    "contactUpdated": "Kontak darurat diperbarui."
   }
 }

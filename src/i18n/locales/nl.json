@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Deze aanmeldoptie is niet beschikbaar in deze versie.",
+    "continueAsDemo": "Doorgaan als demo (alleen voor ontwikkeling)",
+    "demoModeNotice": "De demomodus gebruikt alleen lokale nepgegevens. Verbonden services zijn niet geverifieerd en deze sessie wordt gereset wanneer de app opnieuw wordt geladen.",
+    "authCodeInvalid": "De verificatiecode is ongeldig of verlopen. Vraag een nieuwe code aan en probeer het opnieuw.",
+    "authRateLimited": "Te veel aanmeldpogingen. Wacht even en probeer het opnieuw.",
+    "authTimeout": "De aanmeldverificatie duurde te lang. Controleer je verbinding en probeer het opnieuw.",
+    "authNetwork": "We konden de aanmeldservice niet bereiken. Controleer je verbinding en probeer het opnieuw.",
+    "authSessionExpired": "Je sessie is verlopen. Meld je opnieuw aan.",
+    "mapUnavailable": "De veiligheidskaart kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
+    "mapCachedLocation": "Live locatie is niet beschikbaar. Je laatst opgeslagen locatie van %{capturedAt} wordt getoond.",
+    "locationShareFailed": "We konden je locatie niet delen. Controleer de locatietoegang en probeer het opnieuw.",
+    "locationShareCurrent": "Hier is mijn locatie, vastgelegd om %{capturedAt}:",
+    "locationShareCached": "Hier is mijn laatst opgeslagen locatie, vastgelegd om %{capturedAt}:",
+    "blePermission": "Bluetooth-toegang is uitgeschakeld. Schakel deze in via Instellingen en probeer het opnieuw.",
+    "blePoweredOff": "Bluetooth is uitgeschakeld. Schakel het in en probeer het opnieuw.",
+    "bleUnavailable": "Bluetooth-koppeling is niet beschikbaar op dit apparaat of in deze versie.",
+    "bleScanFailed": "We konden NorthStar niet vinden. Houd het dichtbij, controleer Bluetooth en probeer het opnieuw.",
+    "bleNoDevices": "Er zijn geen NorthStar-apparaten in de buurt gevonden. Houd het dichtbij en scan opnieuw.",
+    "bleConnectFailed": "We konden geen verbinding maken met NorthStar. Zorg dat het is opgeladen en dichtbij is en probeer het opnieuw.",
+    "saveCurrentPlace": "Huidige plek opslaan",
+    "placeSaved": "Plek opgeslagen.",
+    "savedPlace": "Opgeslagen plek",
+    "savePlaceFailed": "We konden deze plek niet opslaan. Probeer het opnieuw.",
+    "lastSOSAttempt": "Laatste SOS-poging",
+    "sosDialerOpened": "Telefoonkiezer geopend; oproep niet bevestigd.",
+    "sosCancelled": "Geannuleerd; er is niet gebeld.",
+    "sosContactRequired": "Er was geen contactpersoon voor noodgevallen beschikbaar; er is niet gebeld.",
+    "sosDialerFailed": "De telefoonkiezer kon niet worden geopend; er is niet gebeld.",
+    "sosUnknown": "De laatste SOS-poging kon niet worden bevestigd.",
+    "voiceConfiguration": "De spraakassistent is momenteel niet beschikbaar. Probeer het later opnieuw of ga verder met de offline assistent.",
+    "editContact": "Bewerken",
+    "editContactTitle": "Contactpersoon voor noodgevallen bewerken",
+    "editContactAccessibility": "%{name} bewerken",
+    "contactUpdated": "Contactpersoon voor noodgevallen bijgewerkt."
   }
 }

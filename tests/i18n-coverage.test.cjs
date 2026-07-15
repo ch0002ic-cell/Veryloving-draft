@@ -1,16 +1,53 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const languageCatalog = require('../src/i18n/languages');
 const english = require('../src/i18n/locales/en.json');
-const releaseCriticalMessages = require('../src/i18n/release-critical-messages').default;
+const translationReview = require('../src/i18n/translation-review.json');
 
 const localeDirectory = path.resolve('src/i18n/locales');
 const assignedLanguages = languageCatalog.filter((language) => language.code !== 'system');
 const availableLanguages = assignedLanguages.filter((language) => language.messages);
+const expectedReleaseCriticalKeys = [
+  'authCodeInvalid',
+  'authNetwork',
+  'authRateLimited',
+  'authSessionExpired',
+  'authTimeout',
+  'authUnavailable',
+  'bleConnectFailed',
+  'bleNoDevices',
+  'blePermission',
+  'blePoweredOff',
+  'bleScanFailed',
+  'bleUnavailable',
+  'contactUpdated',
+  'continueAsDemo',
+  'demoModeNotice',
+  'editContact',
+  'editContactAccessibility',
+  'editContactTitle',
+  'lastSOSAttempt',
+  'locationShareCached',
+  'locationShareCurrent',
+  'locationShareFailed',
+  'mapCachedLocation',
+  'mapUnavailable',
+  'placeSaved',
+  'saveCurrentPlace',
+  'savePlaceFailed',
+  'savedPlace',
+  'sosCancelled',
+  'sosContactRequired',
+  'sosDialerFailed',
+  'sosDialerOpened',
+  'sosUnknown',
+  'voiceConfiguration'
+];
 const protectedTerms = [
   'VeryLoving',
   'NorthStar',
@@ -67,7 +104,7 @@ test('language registry represents every assigned ISO 639-1 code once', () => {
 });
 
 test('reviewed safety catalogs do not silently reuse English source copy', () => {
-  const safetyPrefixes = ['emergency.', 'permissions.', 'privacy.', 'safetyCall.', 'home.mode', 'home.sos', 'onboarding.'];
+  const safetyPrefixes = ['emergency.', 'permissions.', 'privacy.', 'releaseCritical.', 'safetyCall.', 'home.mode', 'home.sos', 'onboarding.'];
   const languageNeutralValues = new Set(['home.mode']);
   const reviewed = availableLanguages.filter((language) => language.reviewRequired === false);
 
@@ -85,8 +122,9 @@ test('reviewed safety catalogs do not silently reuse English source copy', () =>
   }
 });
 
-test('every selectable catalog exactly covers English with non-empty strings', () => {
+test('every selectable catalog exactly covers all 353 English keys with non-empty strings', () => {
   assert.equal(availableLanguages.length, 155);
+  assert.equal(referenceKeys.length, 353);
   for (const language of availableLanguages) {
     const translated = flattenCatalog(language.messages);
     let englishIdenticalValues = 0;
@@ -110,29 +148,53 @@ test('every selectable catalog exactly covers English with non-empty strings', (
   }
 });
 
-test('effective critical-copy coverage is explicit for full-catalog QA', () => {
-  const criticalKeys = Object.keys(releaseCriticalMessages.en).sort();
-  const translatedCodes = Object.keys(releaseCriticalMessages).sort();
-  const fallbackCodes = availableLanguages
-    .map((language) => language.code)
-    .filter((code) => !translatedCodes.includes(code))
-    .sort();
-
-  assert.equal(criticalKeys.length, 34);
-  assert.deepEqual(translatedCodes, ['ar', 'en', 'es', 'fr', 'he', 'zh']);
-  assert.equal(fallbackCodes.length, 149);
-  for (const code of translatedCodes) {
-    assert.deepEqual(Object.keys(releaseCriticalMessages[code]).sort(), criticalKeys);
-    for (const key of criticalKeys) {
-      assert.equal(typeof releaseCriticalMessages[code][key], 'string');
-      assert.ok(releaseCriticalMessages[code][key].trim());
+test('every catalog embeds the complete 34-key release-critical schema without English fallback', () => {
+  assert.deepEqual(Object.keys(english.releaseCritical || {}).sort(), expectedReleaseCriticalKeys);
+  for (const language of availableLanguages) {
+    const critical = language.messages.releaseCritical;
+    assert.ok(critical && typeof critical === 'object' && !Array.isArray(critical), `${language.code}.releaseCritical must be an object`);
+    assert.deepEqual(Object.keys(critical).sort(), expectedReleaseCriticalKeys, `${language.code}.releaseCritical keys differ from English`);
+    let englishIdenticalValues = 0;
+    for (const key of expectedReleaseCriticalKeys) {
+      assert.equal(typeof critical[key], 'string', `${language.code}.releaseCritical.${key} must be a string`);
+      assert.ok(critical[key].trim(), `${language.code}.releaseCritical.${key} must not be empty`);
       assert.deepEqual(
-        interpolationTokens(releaseCriticalMessages[code][key]),
-        interpolationTokens(releaseCriticalMessages.en[key]),
-        `${code}.releaseCritical.${key} must preserve placeholders`
+        interpolationTokens(critical[key]),
+        interpolationTokens(english.releaseCritical[key]),
+        `${language.code}.releaseCritical.${key} must preserve placeholders`
+      );
+      if (critical[key] === english.releaseCritical[key]) englishIdenticalValues += 1;
+    }
+    if (language.code !== 'en') {
+      assert.ok(
+        englishIdenticalValues < expectedReleaseCriticalKeys.length / 2,
+        `${language.code}.releaseCritical appears to be an English fallback`
       );
     }
   }
+});
+
+test('release-critical machine translations have exhaustive review provenance', () => {
+  const metadata = translationReview.releaseCritical;
+  const availableCodes = availableLanguages.map((language) => language.code).sort();
+  const preexistingLocales = ['ar', 'en', 'es', 'fr', 'he', 'zh'];
+  const generatedLocales = availableCodes.filter((code) => !preexistingLocales.includes(code));
+  const canonicalSource = JSON.stringify(english.releaseCritical, Object.keys(english.releaseCritical).sort());
+
+  assert.equal(translationReview.schemaVersion, 1);
+  assert.equal(metadata.sourceLocale, 'en');
+  assert.equal(metadata.sourceKeyCount, 34);
+  assert.equal(metadata.sourceSha256, crypto.createHash('sha256').update(canonicalSource).digest('hex'));
+  assert.equal(metadata.provider, 'OpenAI Codex');
+  assert.equal(metadata.model, 'gpt-5.6-sol');
+  assert.equal(metadata.method, 'schema-constrained machine translation');
+  assert.equal(metadata.reviewRequired, true);
+  assert.equal(metadata.reviewStatus, 'pending-native-speaker-review');
+  assert.ok(Number.isFinite(Date.parse(metadata.generatedAt)));
+  assert.deepEqual(metadata.preexistingLocales, preexistingLocales);
+  assert.deepEqual(metadata.machineTranslatedLocales, generatedLocales);
+  assert.equal(metadata.machineTranslatedLocales.length, 149);
+  assert.deepEqual([...metadata.preexistingLocales, ...metadata.machineTranslatedLocales].sort(), availableCodes);
 });
 
 test('catalog files and selectable language metadata stay in sync', () => {

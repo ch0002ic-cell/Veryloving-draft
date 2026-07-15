@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Mayele yayi ya kukota kele ve na version yayi.",
+    "continueAsDemo": "Kwenda na demo (sambu na développement kaka)",
+    "demoModeNotice": "Mode demo kesadilaka kaka ba-donnée ya luvunu yina kele na appareil. Ba-service ya kukangama me authentifier ve, mpi session yayi kevutuka na luyantiku ntangu application kecharge diaka.",
+    "authCodeInvalid": "Code ya vérification kele mbi to ntangu na yo mefwa. Lomba code ya mpa mpi meka diaka.",
+    "authRateLimited": "Kukota memekama mbala mingi. Vingila mwa ntangu, na nima meka diaka.",
+    "authTimeout": "Vérification ya kukota mebakaka ntangu mingi. Tala connexion na nge mpi meka diaka.",
+    "authNetwork": "Beto mekokaka ve kukuma na service ya kukota. Tala connexion na nge mpi meka diaka.",
+    "authSessionExpired": "Ntangu ya session na nge mefwa. Kota diaka.",
+    "mapUnavailable": "Carte ya lutaninu mekokaka ve kucharge. Tala connexion na nge mpi meka diaka.",
+    "mapCachedLocation": "Kisika ya ntangu yayi kele ve. Beto kesonga kisika na nge ya nsuka yina bo bumbaka na %{capturedAt}.",
+    "locationShareFailed": "Beto mekokaka ve kukabula kisika na nge. Tala nswa ya kisika mpi meka diaka.",
+    "locationShareCurrent": "Tala kisika na mono yina bo sonikaka na %{capturedAt}:",
+    "locationShareCached": "Tala kisika na mono ya nsuka yina bo bumbaka mpi sonikaka na %{capturedAt}:",
+    "blePermission": "Nswa ya Bluetooth kele ya kukanga. Kangula yo na Settings, na nima meka diaka.",
+    "blePoweredOff": "Bluetooth kele ya kukanga. Kangula yo, na nima meka diaka.",
+    "bleUnavailable": "Kukangisa na Bluetooth kele ve na appareil to version yayi.",
+    "bleScanFailed": "Beto mekokaka ve kumona NorthStar. Bika yo pene, tala Bluetooth, mpi meka diaka.",
+    "bleNoDevices": "Appareil ya NorthStar mosi ve memonana pene. Bika yo pene mpi sosa diaka.",
+    "bleConnectFailed": "Beto mekokaka ve kukangama na NorthStar. Bika yo na charge mpi pene, na nima meka diaka.",
+    "saveCurrentPlace": "Bumba kisika ya ntangu yayi",
+    "placeSaved": "Kisika mebumbama.",
+    "savedPlace": "Kisika ya kubumbama",
+    "savePlaceFailed": "Beto mekokaka ve kubumba kisika yayi. Meka diaka.",
+    "lastSOSAttempt": "Kumeka SOS ya nsuka",
+    "sosDialerOpened": "Clavier ya téléphone mekangukaka; appel mendimama ve.",
+    "sosCancelled": "Mekatulama; appel mosi ve mesalamaka.",
+    "sosContactRequired": "Contact ya urgence vandaka ve; appel mosi ve mesalamaka.",
+    "sosDialerFailed": "Clavier ya téléphone mekokaka ve kukanguka; appel mosi ve mesalamaka.",
+    "sosUnknown": "Bo mekokaka ve kundima kumeka SOS ya nsuka.",
+    "voiceConfiguration": "Compagnon ya ndinga kele ve ntangu yayi. Meka diaka na nima to landa na compagnon yina kesalaka offline.",
+    "editContact": "Sobula",
+    "editContactTitle": "Sobula contact ya urgence",
+    "editContactAccessibility": "Sobula %{name}",
+    "contactUpdated": "Contact ya urgence mesobulama."
   }
 }

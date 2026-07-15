@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Deze aanmeldoptie is in deze build neet besjikbaar.",
+    "continueAsDemo": "Doorgoon es demo (allein veur ontwikkeling)",
+    "demoModeNotice": "De demomodus gebroek allein lokale nepdata. Verbónje deensj zien neet geverifieerd en deze sessie weurt gereset es de app obbenuuts laadt.",
+    "authCodeInvalid": "De verificatiecode is óngeljig of verlaope. Vraog eine nuuje code aan en probeer ’t obbenuuts.",
+    "authRateLimited": "Te väöl aanmeldpoginge. Wach efkes en probeer ’t daona obbenuuts.",
+    "authTimeout": "De verificatie veur ’t aanmelje doerde te lank. Controleer dien verbinding en probeer ’t obbenuuts.",
+    "authNetwork": "Veer kóste de aanmelddeens neet bereike. Controleer dien verbinding en probeer ’t obbenuuts.",
+    "authSessionExpired": "Dien sessie is verlaope. Meld dich obbenuuts aan.",
+    "mapUnavailable": "De veiligheidskaart kós neet gelaje waere. Controleer dien verbinding en probeer ’t obbenuuts.",
+    "mapCachedLocation": "De actuele locatie is neet besjikbaar. Dien lèste opgeslage locatie van %{capturedAt} weurt getuind.",
+    "locationShareFailed": "Veer kóste dien locatie neet dele. Controleer de locatietoegank en probeer ’t obbenuuts.",
+    "locationShareCurrent": "Hei is mien locatie, vasgelag op %{capturedAt}:",
+    "locationShareCached": "Hei is mien lèste opgeslage locatie, vasgelag op %{capturedAt}:",
+    "blePermission": "Toegank tot Bluetooth steit oet. Sjakeleer dit in bie Instèllinge en probeer ’t daona obbenuuts.",
+    "blePoweredOff": "Bluetooth steit oet. Sjakeleer ’t aan en probeer ’t daona obbenuuts.",
+    "bleUnavailable": "Bluetooth-koppeling is op dit toestel of in deze build neet besjikbaar.",
+    "bleScanFailed": "Veer kóste NorthStar neet vènje. Haw ’t kortbie, controleer Bluetooth en probeer ’t obbenuuts.",
+    "bleNoDevices": "Gein NorthStar-apparate kortbie gevónje. Haw ’t kortbie en zeuk obbenuuts.",
+    "bleConnectFailed": "Veer kóste gein verbinding make mit NorthStar. Zörg det ’t opgelaje en kortbie is en probeer ’t daona obbenuuts.",
+    "saveCurrentPlace": "Hujige plaats opsjlaon",
+    "placeSaved": "Plaats opgeslage.",
+    "savedPlace": "Opgeslage plaats",
+    "savePlaceFailed": "Veer kóste deze plaats neet opsjlaon. Probeer ’t obbenuuts.",
+    "lastSOSAttempt": "Lèste SOS-poging",
+    "sosDialerOpened": "De telefoonkiezer is geäöpend; ’t gesprek is neet bevestigd.",
+    "sosCancelled": "Geannuleerd; d’r is neet gebeld.",
+    "sosContactRequired": "D’r waor gein naodcontact besjikbaar; d’r is neet gebeld.",
+    "sosDialerFailed": "De telefoonkiezer kós neet waere geäöpend; d’r is neet gebeld.",
+    "sosUnknown": "De lèste SOS-poging kós neet waere bevestigd.",
+    "voiceConfiguration": "De sjtömpartner is noe neet besjikbaar. Probeer ’t later obbenuuts of goon door mit de offline partner.",
+    "editContact": "Bewirke",
+    "editContactTitle": "Naodcontact bewirke",
+    "editContactAccessibility": "%{name} bewirke",
+    "contactUpdated": "Naodcontact bijgewaerk."
   }
 }

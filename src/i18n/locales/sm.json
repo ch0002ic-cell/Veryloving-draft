@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "E lē maua lenei filifiliga e saini ai i lenei fausia.",
+    "continueAsDemo": "Fa‘aauau o se fa‘ata‘ita‘iga (mo le atina‘eina na‘o ia)",
+    "demoModeNotice": "E fa‘aaogā e le faiga fa‘ata‘ita‘i na‘o fa‘amaumauga pepelo i le masini. E le‘i fa‘amaonia auaunaga feso‘ota‘i, ma e toe seti lenei sauniga pe a toe uta le polokalame.",
+    "authCodeInvalid": "E lē sa‘o pe ua uma le aogā o le numera fa‘amaonia. Talosaga se numera fou ma toe taumafai.",
+    "authRateLimited": "Ua tele naua taumafaiga e saini ai. Faatali mo sina taimi, ona toe taumafai lea.",
+    "authTimeout": "Ua umi tele le fa‘amaoniaina o le saini. Siaki lau feso‘ota‘iga ma toe taumafai.",
+    "authNetwork": "E le‘i mafai ona matou o‘o atu i le auaunaga e saini ai. Siaki lau feso‘ota‘iga ma toe taumafai.",
+    "authSessionExpired": "Ua uma le aogā o lau sauniga. Toe saini.",
+    "mapUnavailable": "E le‘i mafai ona uta le fa‘afanua o le saogalemu. Siaki lau feso‘ota‘iga ma toe taumafai.",
+    "mapCachedLocation": "E lē maua lou nofoaga i le taimi nei. O lo‘o fa‘aalia lou nofoaga mulimuli na sefe mai le %{capturedAt}.",
+    "locationShareFailed": "E le‘i mafai ona matou fa‘asoa lou nofoaga. Siaki le avanoa i le nofoaga ma toe taumafai.",
+    "locationShareCurrent": "O lo‘u nofoaga lenei na fa‘amauina i le %{capturedAt}:",
+    "locationShareCached": "O lo‘u nofoaga mulimuli lenei na sefe ma fa‘amauina i le %{capturedAt}:",
+    "blePermission": "Ua tapē le avanoa i le Bluetooth. Fa‘agaoioi i le Fa‘atulagaga, ona toe taumafai lea.",
+    "blePoweredOff": "Ua tapē le Bluetooth. Ki, ona toe taumafai lea.",
+    "bleUnavailable": "E lē maua le fa‘apā‘aga Bluetooth i lenei masini po o lenei fausia.",
+    "bleScanFailed": "E le‘i mafai ona matou maua NorthStar. Tuu latalata, siaki le Bluetooth, ma toe taumafai.",
+    "bleNoDevices": "E leai ni masini NorthStar lata ane na maua. Tuu latalata ma toe su‘e.",
+    "bleConnectFailed": "E le‘i mafai ona matou feso‘ota‘i i le NorthStar. Ia tumau ona iai le maa ma latalata mai, ona toe taumafai lea.",
+    "saveCurrentPlace": "Sefe le nofoaga nei",
+    "placeSaved": "Ua sefe le nofoaga.",
+    "savedPlace": "Nofoaga ua sefe",
+    "savePlaceFailed": "E le‘i mafai ona matou sefe lenei nofoaga. Toe taumafai.",
+    "lastSOSAttempt": "Taumafaiga SOS mulimuli",
+    "sosDialerOpened": "Ua tatala le telefoni e vili ai; e le‘i fa‘amaonia le vala‘au.",
+    "sosCancelled": "Ua fa‘aleaogāina; e leai se vala‘au na faia.",
+    "sosContactRequired": "E leai se tagata fa‘afeso‘ota‘i mo fa‘alavelave fa‘afuase‘i na maua; e leai se vala‘au na faia.",
+    "sosDialerFailed": "E le‘i mafai ona tatala le telefoni e vili ai; e leai se vala‘au na faia.",
+    "sosUnknown": "E le‘i mafai ona fa‘amaonia le taumafaiga SOS mulimuli.",
+    "voiceConfiguration": "E lē maua le soa leo i le taimi nei. Toe taumafai mulimuli ane pe fa‘aauau ma le soa e lē mana‘omia se feso‘ota‘iga.",
+    "editContact": "Fa‘asa‘o",
+    "editContactTitle": "Fa‘asa‘o le tagata fa‘afeso‘ota‘i mo fa‘alavelave fa‘afuase‘i",
+    "editContactAccessibility": "Fa‘asa‘o %{name}",
+    "contactUpdated": "Ua fa‘afou le tagata fa‘afeso‘ota‘i mo fa‘alavelave fa‘afuase‘i."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Pilihan asup ieu teu sadia dina build ieu.",
+    "continueAsDemo": "Teruskeun salaku demo (pikeun pamekaran wungkul)",
+    "demoModeNotice": "Mode demo ngan ngagunakeun data palsu lokal. Ladenan nu disambungkeun teu diauténtikasi, sarta sési ieu direset nalika aplikasi dimuat deui.",
+    "authCodeInvalid": "Kode vérifikasi teu valid atawa geus kadaluwarsa. Pénta kode anyar teras cobian deui.",
+    "authRateLimited": "Loba teuing usaha asup. Antosan sakeudeung, teras cobian deui.",
+    "authTimeout": "Vérifikasi asup lila teuing. Pariksa konéksi anjeun teras cobian deui.",
+    "authNetwork": "Kami teu tiasa ngahubungi ladenan asup. Pariksa konéksi anjeun teras cobian deui.",
+    "authSessionExpired": "Sési anjeun geus kadaluwarsa. Asup deui.",
+    "mapUnavailable": "Peta kaamanan teu tiasa dimuat. Pariksa konéksi anjeun teras cobian deui.",
+    "mapCachedLocation": "Lokasi langsung teu sadia. Mintonkeun lokasi nu panungtungan disimpen ti %{capturedAt}.",
+    "locationShareFailed": "Kami teu tiasa ngabagikeun lokasi anjeun. Pariksa aksés lokasi teras cobian deui.",
+    "locationShareCurrent": "Ieu lokasi abdi nu dirékam dina %{capturedAt}:",
+    "locationShareCached": "Ieu lokasi abdi nu panungtungan disimpen, dirékam dina %{capturedAt}:",
+    "blePermission": "Aksés Bluetooth dipareuman. Aktipkeun dina Setélan, teras cobian deui.",
+    "blePoweredOff": "Bluetooth dipareuman. Hurungkeun, teras cobian deui.",
+    "bleUnavailable": "Pamasangan Bluetooth teu sadia dina alat atawa build ieu.",
+    "bleScanFailed": "Kami teu tiasa mendakan NorthStar. Simpen di deukeut anjeun, pariksa Bluetooth, teras cobian deui.",
+    "bleNoDevices": "Teu aya alat NorthStar di deukeut nu kapanggih. Simpen di deukeut anjeun teras scan deui.",
+    "bleConnectFailed": "Kami teu tiasa nyambung ka NorthStar. Pastikeun dicas jeung aya di deukeut, teras cobian deui.",
+    "saveCurrentPlace": "Simpen tempat ayeuna",
+    "placeSaved": "Tempat disimpen.",
+    "savedPlace": "Tempat nu disimpen",
+    "savePlaceFailed": "Kami teu tiasa nyimpen tempat ieu. Cobian deui.",
+    "lastSOSAttempt": "Usaha SOS panungtungan",
+    "sosDialerOpened": "Panyambung telepon dibuka; telepon teu dikonfirmasi.",
+    "sosCancelled": "Dibatalkeun; teu aya telepon nu dilakukeun.",
+    "sosContactRequired": "Teu aya kontak darurat nu sadia; teu aya telepon nu dilakukeun.",
+    "sosDialerFailed": "Panyambung telepon teu tiasa dibuka; teu aya telepon nu dilakukeun.",
+    "sosUnknown": "Usaha SOS panungtungan teu tiasa dikonfirmasi.",
+    "voiceConfiguration": "Pendamping sora teu sadia ayeuna. Cobian deui engké atawa teruskeun jeung pendamping offline.",
+    "editContact": "Édit",
+    "editContactTitle": "Édit kontak darurat",
+    "editContactAccessibility": "Édit %{name}",
+    "contactUpdated": "Kontak darurat diropéa."
   }
 }

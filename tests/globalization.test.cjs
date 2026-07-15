@@ -11,8 +11,6 @@ const {
   isRTLLanguage,
   maintainedLanguages,
   normalizeLanguageCode,
-  releaseCriticalFallbackLanguages,
-  releaseCriticalMessagesForLanguage,
   resolveLanguage,
   RTL_QA_LANGUAGE_CODES,
   selectRuntimeLanguageCodes,
@@ -32,7 +30,7 @@ const {
 } = require('../src/utils/phone');
 const { ENGLISH_COUNTRY_NAMES } = require('../src/data/country-names-en');
 const { DEFAULT_SETTINGS, mergeSettings } = require('../src/services/settings-store');
-const releaseCriticalMessages = require('../src/i18n/release-critical-messages').default;
+const languageCatalog = require('../src/i18n/languages');
 
 function valueAtPath(value, path) {
   return path.split('.').reduce((current, key) => current?.[key], value);
@@ -205,7 +203,6 @@ test('language resolution supports regional tags, system preference, and fallbac
 
 test('selectable catalogs never use a hidden English per-string fallback', () => {
   assert.equal(TRANSLATION_FALLBACK_ENABLED, false);
-  assert.deepEqual(releaseCriticalFallbackLanguages, []);
   assert.equal(translateForLocale('en', 'settings.showCompanion'), 'Show companion button');
   assert.equal(translateForLocale('es', 'settings.showCompanion'), 'Mostrar el botón del compañero');
   assert.equal(translateForLocale('fr', 'settings.showCompanion'), 'Afficher le bouton du compagnon');
@@ -222,7 +219,6 @@ test('selectable catalogs never use a hidden English per-string fallback', () =>
   assert.match(translateForLocale('es', 'releaseCritical.sosDialerOpened'), /llamada no está confirmada/i);
   assert.match(translateForLocale('fr', 'releaseCritical.locationShareFailed'), /partager votre position/i);
   assert.match(translateForLocale('zh', 'releaseCritical.authCodeInvalid'), /验证码/);
-  assert.equal(releaseCriticalMessagesForLanguage('de'), releaseCriticalMessages.en);
 });
 
 test('release language gating keeps generated catalogs out of production and adds only RTL QA targets', () => {
@@ -240,13 +236,17 @@ test('release language gating keeps generated catalogs out of production and add
   );
   assert.ok(selectRuntimeLanguageCodes({ showAllCatalogs: true }).includes('de'));
   assert.ok(selectRuntimeLanguageCodes({ showAllCatalogs: true }).includes('ja'));
-  const releaseKeys = Object.keys(releaseCriticalMessages.en).sort();
+  const catalogMessages = Object.fromEntries(
+    languageCatalog.filter((language) => language.messages).map((language) => [language.code, language.messages])
+  );
+  const releaseKeys = Object.keys(catalogMessages.en.releaseCritical).sort();
+  assert.equal(releaseKeys.length, 34);
   for (const locale of ['en', 'es', 'fr', 'zh', 'ar', 'he']) {
-    assert.deepEqual(Object.keys(releaseCriticalMessages[locale]).sort(), releaseKeys);
+    assert.deepEqual(Object.keys(catalogMessages[locale].releaseCritical).sort(), releaseKeys);
     for (const key of releaseKeys) {
       assert.deepEqual(
-        interpolationTokens(releaseCriticalMessages[locale][key]),
-        interpolationTokens(releaseCriticalMessages.en[key]),
+        interpolationTokens(catalogMessages[locale].releaseCritical[key]),
+        interpolationTokens(catalogMessages.en.releaseCritical[key]),
         `${locale}.releaseCritical.${key} must preserve placeholders`
       );
     }
@@ -327,7 +327,7 @@ test('language selector persists before publishing and visibly marks the current
   assert.match(selector, /<FlatList/);
   assert.match(selector, /initialNumToRender=\{24\}/);
   assert.match(selector, /filterLanguageOptions/);
-  assert.match(selector, /usesEnglishReleaseCriticalFallback/);
+  assert.match(selector, /reviewRequired/);
   assert.match(i18nContext, /const locale = resolveLanguage\(languagePreference, locales\)/);
   assert.match(i18nContext, /await updateSettings\(\{ language \}\)/);
 
@@ -409,8 +409,7 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
       germanCopy: core.translateForLocale('de', 'auth.createAccount'),
       criticalCopy: core.translateForLocale('de', 'releaseCritical.authNetwork'),
       englishCriticalCopy: core.translateForLocale('en', 'releaseCritical.authNetwork'),
-      fallbackCount: core.releaseCriticalFallbackLanguages.length,
-      qaMarkers: core.languageOptions.filter((option) => option.usesEnglishReleaseCriticalFallback).length,
+      qaMarkers: core.languageOptions.filter((option) => option.reviewRequired).length,
       emptySearchCount: core.filterLanguageOptions(core.languageOptions, '').length,
       searchMatches: Object.fromEntries(['German', 'Portuguese', 'Russian', 'اردو'].map((query) => [query, core.filterLanguageOptions(core.languageOptions, query).map((option) => option.code)])),
       exactEffectiveSchema: core.supportedLanguages.every((code) => JSON.stringify(core.getTranslationKeys(core.translations[code])) === JSON.stringify(referenceKeys)),
@@ -437,10 +436,9 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
   assert.equal(result.urduRTL, true);
   assert.equal(result.unsupported, 'en');
   assert.equal(result.germanCopy, 'Konto erstellen');
-  assert.equal(result.criticalCopy, result.englishCriticalCopy);
+  assert.notEqual(result.criticalCopy, result.englishCriticalCopy);
   assert.doesNotMatch(result.criticalCopy, /\[missing .* translation\]/);
-  assert.equal(result.fallbackCount, 149);
-  assert.equal(result.qaMarkers, 149);
+  assert.equal(result.qaMarkers, 151);
   assert.equal(result.emptySearchCount, 156);
   assert.ok(result.searchMatches.German.includes('de'));
   assert.ok(result.searchMatches.Portuguese.includes('pt'));

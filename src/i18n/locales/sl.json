@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ta možnost prijave v tej različici ni na voljo.",
+    "continueAsDemo": "Nadaljuj v predstavitvenem načinu (samo za razvoj)",
+    "demoModeNotice": "Predstavitveni način uporablja samo lokalne lažne podatke. Povezane storitve niso preverjene, seja pa se ponastavi ob ponovnem nalaganju aplikacije.",
+    "authCodeInvalid": "Koda za preverjanje ni veljavna ali je potekla. Zahtevajte novo kodo in poskusite znova.",
+    "authRateLimited": "Preveč poskusov prijave. Počakajte trenutek in poskusite znova.",
+    "authTimeout": "Preverjanje prijave je trajalo predolgo. Preverite povezavo in poskusite znova.",
+    "authNetwork": "Storitve za prijavo ni bilo mogoče doseči. Preverite povezavo in poskusite znova.",
+    "authSessionExpired": "Vaša seja je potekla. Znova se prijavite.",
+    "mapUnavailable": "Varnostnega zemljevida ni bilo mogoče naložiti. Preverite povezavo in poskusite znova.",
+    "mapCachedLocation": "Lokacija v živo ni na voljo. Prikazana je vaša zadnja shranjena lokacija iz %{capturedAt}.",
+    "locationShareFailed": "Vaše lokacije ni bilo mogoče deliti. Preverite dostop do lokacije in poskusite znova.",
+    "locationShareCurrent": "Tukaj je moja lokacija, zabeležena ob %{capturedAt}:",
+    "locationShareCached": "Tukaj je moja zadnja shranjena lokacija, zabeležena ob %{capturedAt}:",
+    "blePermission": "Dostop do Bluetooth je izklopljen. Omogočite ga v nastavitvah in poskusite znova.",
+    "blePoweredOff": "Bluetooth je izklopljen. Vklopite ga in poskusite znova.",
+    "bleUnavailable": "Seznanjanje prek Bluetooth v tej napravi ali različici ni na voljo.",
+    "bleScanFailed": "Naprave NorthStar ni bilo mogoče najti. Imejte jo v bližini, preverite Bluetooth in poskusite znova.",
+    "bleNoDevices": "V bližini ni bilo najdenih naprav NorthStar. Imejte jo v bližini in znova zaženite iskanje.",
+    "bleConnectFailed": "Z napravo NorthStar se ni bilo mogoče povezati. Poskrbite, da je napolnjena in v bližini, nato poskusite znova.",
+    "saveCurrentPlace": "Shrani trenutno mesto",
+    "placeSaved": "Mesto je shranjeno.",
+    "savedPlace": "Shranjeno mesto",
+    "savePlaceFailed": "Tega mesta ni bilo mogoče shraniti. Poskusite znova.",
+    "lastSOSAttempt": "Zadnji poskus SOS",
+    "sosDialerOpened": "Telefonska številčnica je odprta; klic ni potrjen.",
+    "sosCancelled": "Preklicano; klic ni bil opravljen.",
+    "sosContactRequired": "Stik za nujne primere ni bil na voljo; klic ni bil opravljen.",
+    "sosDialerFailed": "Telefonske številčnice ni bilo mogoče odpreti; klic ni bil opravljen.",
+    "sosUnknown": "Zadnjega poskusa SOS ni bilo mogoče potrditi.",
+    "voiceConfiguration": "Glasovni spremljevalec trenutno ni na voljo. Poskusite znova pozneje ali nadaljujte s spremljevalcem brez povezave.",
+    "editContact": "Uredi",
+    "editContactTitle": "Uredi stik za nujne primere",
+    "editContactAccessibility": "Uredi %{name}",
+    "contactUpdated": "Stik za nujne primere je posodobljen."
   }
 }

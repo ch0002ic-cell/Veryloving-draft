@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Nduro kasattəwurambe adə gina adəlan mbejiwawo.",
+    "continueAsDemo": "Misalnin jande (majalisa ci duwon)",
+    "demoModeNotice": "Misal ngal adə bayin karya na adəbe duwon faidatə. Jaman haɗamtə mbejiwawo, sa app-a yade session adə təmmaro fattəna.",
+    "authCodeInvalid": "Lambar tabbatəram adə jussuwawo wala waatə kəɗi. Lambar bərniro roji, yade fadi.",
+    "authRateLimited": "Nduro kəltəram ngəwuje. Kəla cin nəm, yade fadi.",
+    "authTimeout": "Tabbatəram ndurobe waati ngəwu cije. Hade nəm fakkaji, yade fadi.",
+    "authNetwork": "Jaman ndurobe rokko ngəltəwawo. Hade nəm fakkaji, yade fadi.",
+    "authSessionExpired": "Session nəm waatə kəɗi. Bərniro nduro kasatti.",
+    "mapUnavailable": "Taswir amannabe yaktəwawo. Hade nəm fakkaji, yade fadi.",
+    "mapCachedLocation": "Na kərma mbejiwawo. Na nəm suro %{capturedAt}lan saptəna cikka.",
+    "locationShareFailed": "Na nəm samatəwawo. Izinin na fakkaji, yade fadi.",
+    "locationShareCurrent": "Na ani suro %{capturedAt}lan ruwotəna adə:",
+    "locationShareCached": "Na ani saptəna cikka suro %{capturedAt}lan ruwotəna adə:",
+    "blePermission": "Izinin Bluetooth dəptəna. Suro Settings lan kaji, yade fadi.",
+    "blePoweredOff": "Bluetooth dəptəna. Kaji, yade fadi.",
+    "bleUnavailable": "Haɗaptə Bluetooth masin adəlan wala gina adəlan mbejiwawo.",
+    "bleScanFailed": "NorthStar fandəwawo. Kəla nəm kəleji, Bluetooth fakkaji, yade fadi.",
+    "bleNoDevices": "Masin NorthStar kəla nəmba fandəwawo. Kəla nəm kəleji, yade ceji.",
+    "bleConnectFailed": "NorthStar ro haɗaptəwawo. Caji, kəla nəm kəleji, yade fadi.",
+    "saveCurrentPlace": "Na kərma sapti",
+    "placeSaved": "Na saptəna.",
+    "savedPlace": "Na saptəna",
+    "savePlaceFailed": "Na adə saptəwawo. Yade fadi.",
+    "lastSOSAttempt": "Kəltəram SOS cikka",
+    "sosDialerOpened": "Dialer talfonbe kajəna; boworam tabbatəwawo.",
+    "sosCancelled": "Dəptəna; boworam gənatəwawo.",
+    "sosContactRequired": "Am huwəram gaggawube mbejiwawo; boworam gənatəwawo.",
+    "sosDialerFailed": "Dialer talfonbe kaltəwawo; boworam gənatəwawo.",
+    "sosUnknown": "Kəltəram SOS cikka tabbatəwawo.",
+    "voiceConfiguration": "Abal sawube kərma mbejiwawo. Gade yade fadi wala abal offline be faidaji.",
+    "editContact": "Təddə",
+    "editContactTitle": "Am huwəram gaggawube təddə",
+    "editContactAccessibility": "%{name} təddə",
+    "contactUpdated": "Am huwəram gaggawube təddətəna."
   }
 }

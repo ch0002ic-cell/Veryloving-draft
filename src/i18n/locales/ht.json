@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Opsyon koneksyon sa a pa disponib nan vèsyon sa a.",
+    "continueAsDemo": "Kontinye kòm demonstrasyon (devlopman sèlman)",
+    "demoModeNotice": "Mòd demonstrasyon an itilize sèlman fo done lokal. Sèvis ki konekte yo pa otantifye, epi sesyon sa a rekòmanse lè aplikasyon an rechaje.",
+    "authCodeInvalid": "Kòd verifikasyon an pa valab oswa li ekspire. Mande yon nouvo kòd epi eseye ankò.",
+    "authRateLimited": "Twòp tantativ koneksyon. Tann yon ti moman, epi eseye ankò.",
+    "authTimeout": "Verifikasyon koneksyon an te pran twòp tan. Tcheke koneksyon ou epi eseye ankò.",
+    "authNetwork": "Nou pa t kapab jwenn sèvis koneksyon an. Tcheke koneksyon ou epi eseye ankò.",
+    "authSessionExpired": "Sesyon ou ekspire. Konekte ankò.",
+    "mapUnavailable": "Kat sekirite a pa t kapab chaje. Tcheke koneksyon ou epi eseye ankò.",
+    "mapCachedLocation": "Pozisyon an dirèk pa disponib. N ap montre dènye pozisyon ou te anrejistre nan %{capturedAt}.",
+    "locationShareFailed": "Nou pa t kapab pataje pozisyon ou. Tcheke aksè a pozisyon epi eseye ankò.",
+    "locationShareCurrent": "Men pozisyon mwen ki te anrejistre nan %{capturedAt}:",
+    "locationShareCached": "Men dènye pozisyon mwen te anrejistre nan %{capturedAt}:",
+    "blePermission": "Aksè Bluetooth dezaktive. Aktive li nan Paramèt, epi eseye ankò.",
+    "blePoweredOff": "Bluetooth etenn. Limen li, epi eseye ankò.",
+    "bleUnavailable": "Asosyasyon Bluetooth pa disponib sou aparèy oswa vèsyon sa a.",
+    "bleScanFailed": "Nou pa t kapab jwenn NorthStar. Kenbe li toupre, tcheke Bluetooth, epi eseye ankò.",
+    "bleNoDevices": "Nou pa jwenn okenn aparèy NorthStar toupre. Kenbe li toupre epi eskane ankò.",
+    "bleConnectFailed": "Nou pa t kapab konekte ak NorthStar. Kenbe li chaje epi toupre, epi eseye ankò.",
+    "saveCurrentPlace": "Anrejistre kote aktyèl la",
+    "placeSaved": "Kote a anrejistre.",
+    "savedPlace": "Kote ki anrejistre",
+    "savePlaceFailed": "Nou pa t kapab anrejistre kote sa a. Eseye ankò.",
+    "lastSOSAttempt": "Dènye tantativ SOS",
+    "sosDialerOpened": "Konpozitè telefòn lan louvri; apèl la pa konfime.",
+    "sosCancelled": "Anile; pa gen okenn apèl ki te fèt.",
+    "sosContactRequired": "Pa t gen okenn kontak ijans disponib; pa gen okenn apèl ki te fèt.",
+    "sosDialerFailed": "Konpozitè telefòn lan pa t kapab louvri; pa gen okenn apèl ki te fèt.",
+    "sosUnknown": "Nou pa t kapab konfime dènye tantativ SOS la.",
+    "voiceConfiguration": "Konpayon vwa a pa disponib kounye a. Eseye ankò pita oswa kontinye ak konpayon san koneksyon an.",
+    "editContact": "Modifye",
+    "editContactTitle": "Modifye kontak ijans lan",
+    "editContactAccessibility": "Modifye %{name}",
+    "contactUpdated": "Kontak ijans lan mete ajou."
   }
 }

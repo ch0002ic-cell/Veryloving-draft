@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Aka versión ukan aka mantañ thakhi janiw utjkiti.",
+    "continueAsDemo": "Yant'a uñacht'äwjam sarantaña (lurawi pachatakiki)",
+    "demoModeNotice": "Yant'a uñacht'äwix uka aparaton k'ari yatiyawinakak apnaqi. Conectat servicios ukanakax janiw chiqanchatäkiti, ukat app ukax wasitat qalltki ukhax aka sesión ukax wasitat qalltani.",
+    "authCodeInvalid": "Chiqanchawi código ukax janiw walïkiti jan ukax pachapax tukusxiwa. Machaq código mayisin wasitat yant'am.",
+    "authRateLimited": "Mantañ yant'awinakax sinti waljaniwa. Mä juk'a suyt'asin wasitat yant'am.",
+    "authTimeout": "Mantañ chiqanchawix sinti jayaruw saräna. Conexión uñakipasin wasitat yant'am.",
+    "authNetwork": "Mantañ servicio ukar janiw puriñjamäkänti. Conexión uñakipasin wasitat yant'am.",
+    "authSessionExpired": "Sesión ukamax tukusxiwa. Wasitat mantam.",
+    "mapUnavailable": "Jark'aqasiñ mapa ukax janiw cargaskänti. Conexión uñakipasin wasitat yant'am.",
+    "mapCachedLocation": "Jichha chiqax janiw utjkiti. %{capturedAt} uka pachat qhipa imat chiqam uñacht'ayasiski.",
+    "locationShareFailed": "Chiqam apayañax janiw phuqaskänti. Chiqankañ permiso uñakipasin wasitat yant'am.",
+    "locationShareCurrent": "Akax %{capturedAt} uka pachan qillqantat chiqajawa:",
+    "locationShareCached": "Akax %{capturedAt} uka pachan qillqantat qhipa imat chiqajawa:",
+    "blePermission": "Bluetooth ukar mantañax jist'antatawa. Configuración ukan jist'arasin wasitat yant'am.",
+    "blePoweredOff": "Bluetooth ukax jiwt'atawa. Naktayasin wasitat yant'am.",
+    "bleUnavailable": "Aka aparato jan ukax aka versión ukan Bluetooth ukamp chikt'ayañax janiw utjkiti.",
+    "bleScanFailed": "NorthStar janiw jikxatapkayätti. Jak'ankayäpan, Bluetooth uñakipasin wasitat yant'am.",
+    "bleNoDevices": "Jak'an janiw kuna NorthStar aparatonakas jikxataskiti. Jak'ankayäpan ukat wasitat thaqtam.",
+    "bleConnectFailed": "NorthStar ukamp janiw chikt'asipkayätti. Cargat ukat jak'ankañap uñjasin wasitat yant'am.",
+    "saveCurrentPlace": "Jichha chiq imaña",
+    "placeSaved": "Chiqax imatawa.",
+    "savedPlace": "Imat chiqa",
+    "savePlaceFailed": "Aka chiq imañax janiw phuqaskänti. Wasitat yant'am.",
+    "lastSOSAttempt": "Qhipa SOS yant'awi",
+    "sosDialerOpened": "Teléfono marcadora ukax jist'aratawa; jawst'awix janiw chiqanchatäkiti.",
+    "sosCancelled": "Chhaqtayatawa; janiw jawst'awix luraskänti.",
+    "sosContactRequired": "Janiw jank'aki yanapt'añ contacto utjkänti; janiw jawst'awix luraskänti.",
+    "sosDialerFailed": "Teléfono marcadora ukax janiw jist'araskänti; janiw jawst'awix luraskänti.",
+    "sosUnknown": "Qhipa SOS yant'awix janiw chiqanchaskänti.",
+    "voiceConfiguration": "Aru yanapirix jichhax janiw utjkiti. Qhiphar wasitat yant'am jan ukax internet jan munir yanapirimp sarantam.",
+    "editContact": "Mayjt'ayaña",
+    "editContactTitle": "Jank'aki yanapt'añ contacto mayjt'ayaña",
+    "editContactAccessibility": "%{name} mayjt'ayaña",
+    "contactUpdated": "Jank'aki yanapt'añ contacto ukax machaqt'ayatawa."
   }
 }

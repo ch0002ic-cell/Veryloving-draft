@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Olu khetho lokungena alufumaneki kolu guqulelo.",
+    "continueAsDemo": "Qhubeka njengedemo (yophuhliso kuphela)",
+    "demoModeNotice": "Imo yedemo isebenzisa idatha yobuxoki yasekuhlaleni kuphela. Iinkonzo eziqhagamshelweyo aziqinisekiswanga, kwaye le seshoni iyasetwa ngokutsha xa i-app iphinda ilayishwa.",
+    "authCodeInvalid": "Ikhowudi yokuqinisekisa ayisebenzi okanye iphelelwe lixesha. Cela ikhowudi entsha uze uzame kwakhona.",
+    "authRateLimited": "Zininzi kakhulu iinzame zokungena. Linda umzuzwana, uze uzame kwakhona.",
+    "authTimeout": "Ukuqinisekisa ukungena kuthathe ixesha elide kakhulu. Jonga uqhagamshelo lwakho uze uzame kwakhona.",
+    "authNetwork": "Asikwazanga ukufikelela kwinkonzo yokungena. Jonga uqhagamshelo lwakho uze uzame kwakhona.",
+    "authSessionExpired": "Iseshoni yakho iphelelwe lixesha. Ngena kwakhona.",
+    "mapUnavailable": "Imephu yokhuseleko ayikwazanga ukulayisha. Jonga uqhagamshelo lwakho uze uzame kwakhona.",
+    "mapCachedLocation": "Indawo ephilayo ayifumaneki. Kuboniswa indawo yakho yokugqibela egciniweyo ukusuka %{capturedAt}.",
+    "locationShareFailed": "Asikwazanga ukwabelana ngendawo yakho. Jonga imvume yendawo uze uzame kwakhona.",
+    "locationShareCurrent": "Nantsi indawo yam erekhodwe ngo-%{capturedAt}:",
+    "locationShareCached": "Nantsi indawo yam yokugqibela egciniweyo, erekhodwe ngo-%{capturedAt}:",
+    "blePermission": "Ufikelelo lwe-Bluetooth lucinyiwe. Luvule kwiiSetingi, uze uzame kwakhona.",
+    "blePoweredOff": "I-Bluetooth icinyiwe. Yivule, uze uzame kwakhona.",
+    "bleUnavailable": "Ukubhangqa nge-Bluetooth akufumaneki kwesi sixhobo okanye kolu guqulelo.",
+    "bleScanFailed": "Asikwazanga ukufumana i-NorthStar. Yigcine ikufutshane, jonga i-Bluetooth, uze uzame kwakhona.",
+    "bleNoDevices": "Akukho zixhobo ze-NorthStar zikufutshane zifunyenweyo. Yigcine ikufutshane uze ukhangele kwakhona.",
+    "bleConnectFailed": "Asikwazanga ukuqhagamshela kwi-NorthStar. Yigcine itshajiwe kwaye ikufutshane, uze uzame kwakhona.",
+    "saveCurrentPlace": "Gcina indawo yangoku",
+    "placeSaved": "Indawo igciniwe.",
+    "savedPlace": "Indawo egciniweyo",
+    "savePlaceFailed": "Asikwazanga ukugcina le ndawo. Zama kwakhona.",
+    "lastSOSAttempt": "Inzame yokugqibela ye-SOS",
+    "sosDialerOpened": "Isixhobo sokucofa inombolo sivuliwe; umnxeba awuqinisekiswanga.",
+    "sosCancelled": "Kurhoxisiwe; akukho mnxeba wenziweyo.",
+    "sosContactRequired": "Akukho mntu woqhagamshelwano olungxamisekileyo ubekhona; akukho mnxeba wenziweyo.",
+    "sosDialerFailed": "Isixhobo sokucofa inombolo asikwazanga ukuvuleka; akukho mnxeba wenziweyo.",
+    "sosUnknown": "Inzame yokugqibela ye-SOS ayikwazanga ukuqinisekiswa.",
+    "voiceConfiguration": "Umncedisi welizwi akafumaneki ngoku. Zama kwakhona kamva okanye uqhubeke nomncedisi ongaxhunyiwe kwi-intanethi.",
+    "editContact": "Hlela",
+    "editContactTitle": "Hlela umntu woqhagamshelwano olungxamisekileyo",
+    "editContactAccessibility": "Hlela %{name}",
+    "contactUpdated": "Umntu woqhagamshelwano olungxamisekileyo uhlaziyiwe."
   }
 }

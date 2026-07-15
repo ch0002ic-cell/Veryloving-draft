@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Hindi available ang opsyong ito sa pag-sign in sa build na ito.",
+    "continueAsDemo": "Magpatuloy bilang demo (para sa development lang)",
+    "demoModeNotice": "Lokal na pekeng data lang ang ginagamit ng demo mode. Hindi authenticated ang mga nakakonektang serbisyo, at mare-reset ang session na ito kapag ni-reload ang app.",
+    "authCodeInvalid": "Hindi wasto o nag-expire na ang verification code. Humiling ng bagong code at subukang muli.",
+    "authRateLimited": "Masyadong maraming pagsubok na mag-sign in. Maghintay sandali, pagkatapos ay subukang muli.",
+    "authTimeout": "Masyadong natagalan ang pag-verify sa pag-sign in. Tingnan ang iyong koneksyon at subukang muli.",
+    "authNetwork": "Hindi namin maabot ang serbisyo sa pag-sign in. Tingnan ang iyong koneksyon at subukang muli.",
+    "authSessionExpired": "Nag-expire na ang iyong session. Mag-sign in muli.",
+    "mapUnavailable": "Hindi ma-load ang mapa para sa kaligtasan. Tingnan ang iyong koneksyon at subukang muli.",
+    "mapCachedLocation": "Hindi available ang live na lokasyon. Ipinapakita ang iyong huling naka-save na lokasyon mula %{capturedAt}.",
+    "locationShareFailed": "Hindi namin maibahagi ang iyong lokasyon. Tingnan ang access sa lokasyon at subukang muli.",
+    "locationShareCurrent": "Narito ang lokasyon ko na naitala noong %{capturedAt}:",
+    "locationShareCached": "Narito ang huli kong naka-save na lokasyon na naitala noong %{capturedAt}:",
+    "blePermission": "Naka-off ang access sa Bluetooth. I-enable ito sa Mga Setting, pagkatapos ay subukang muli.",
+    "blePoweredOff": "Naka-off ang Bluetooth. I-on ito, pagkatapos ay subukang muli.",
+    "bleUnavailable": "Hindi available ang pagpapares sa Bluetooth sa device o build na ito.",
+    "bleScanFailed": "Hindi namin mahanap ang NorthStar. Ilapit ito, tingnan ang Bluetooth, at subukang muli.",
+    "bleNoDevices": "Walang nakitang kalapit na NorthStar device. Ilapit ito at mag-scan muli.",
+    "bleConnectFailed": "Hindi kami makakonekta sa NorthStar. Panatilihin itong may charge at malapit, pagkatapos ay subukang muli.",
+    "saveCurrentPlace": "I-save ang kasalukuyang lugar",
+    "placeSaved": "Na-save ang lugar.",
+    "savedPlace": "Naka-save na lugar",
+    "savePlaceFailed": "Hindi namin ma-save ang lugar na ito. Subukang muli.",
+    "lastSOSAttempt": "Huling pagsubok sa SOS",
+    "sosDialerOpened": "Nabuksan ang dialer ng telepono; hindi nakumpirma ang tawag.",
+    "sosCancelled": "Kinansela; walang tawag na ginawa.",
+    "sosContactRequired": "Walang available na emergency contact; walang tawag na ginawa.",
+    "sosDialerFailed": "Hindi mabuksan ang dialer ng telepono; walang tawag na ginawa.",
+    "sosUnknown": "Hindi makumpirma ang huling pagsubok sa SOS.",
+    "voiceConfiguration": "Hindi available ngayon ang voice companion. Subukang muli sa ibang pagkakataon o magpatuloy gamit ang offline companion.",
+    "editContact": "I-edit",
+    "editContactTitle": "I-edit ang emergency contact",
+    "editContactAccessibility": "I-edit si %{name}",
+    "contactUpdated": "Na-update ang emergency contact."
   }
 }

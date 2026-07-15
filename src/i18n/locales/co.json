@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Questa opzione di cunnessione ùn hè micca dispunibule in sta versione.",
+    "continueAsDemo": "Cuntinuà cum'è demo (solu per u sviluppu)",
+    "demoModeNotice": "U modu demo adopra solu dati lucali finti. I servizii cunnessi ùn sò micca autenticati, è sta sessione si reinizialiseghja quandu l'app si ricarica.",
+    "authCodeInvalid": "U codice di verificazione ùn hè micca validu o hè scadutu. Dumandate un codice novu è ripruvate.",
+    "authRateLimited": "Troppu prove di cunnessione. Aspettate un mumentu, dopu ripruvate.",
+    "authTimeout": "A verificazione di a cunnessione hà pigliatu troppu tempu. Verificate a vostra cunnessione è ripruvate.",
+    "authNetwork": "Ùn avemu pussutu ghjunghje à u serviziu di cunnessione. Verificate a vostra cunnessione è ripruvate.",
+    "authSessionExpired": "A vostra sessione hè scaduta. Cunnettitevi torna.",
+    "mapUnavailable": "A carta di sicurità ùn hà pussutu caricassi. Verificate a vostra cunnessione è ripruvate.",
+    "mapCachedLocation": "A pusizione in diretta ùn hè micca dispunibule. Si mostra l'ultima pusizione salvata da %{capturedAt}.",
+    "locationShareFailed": "Ùn avemu pussutu sparte a vostra pusizione. Verificate l'accessu à a pusizione è ripruvate.",
+    "locationShareCurrent": "Eccu a mo pusizione arregistrata à %{capturedAt}:",
+    "locationShareCached": "Eccu a mo ultima pusizione salvata, arregistrata à %{capturedAt}:",
+    "blePermission": "L'accessu à Bluetooth hè disattivatu. Attivatelu in i Paràmetri, dopu ripruvate.",
+    "blePoweredOff": "Bluetooth hè spentu. Accenditelu, dopu ripruvate.",
+    "bleUnavailable": "L'accoppiamentu Bluetooth ùn hè micca dispunibule nant'à stu dispusitivu o sta versione.",
+    "bleScanFailed": "Ùn avemu pussutu truvà NorthStar. Tenitelu vicinu, verificate Bluetooth è ripruvate.",
+    "bleNoDevices": "Nisun dispusitivu NorthStar vicinu hè statu trovu. Tenitelu vicinu è cercate torna.",
+    "bleConnectFailed": "Ùn avemu pussutu cunnetteci à NorthStar. Tenitelu carcu è vicinu, dopu ripruvate.",
+    "saveCurrentPlace": "Salvà u locu attuale",
+    "placeSaved": "Locu salvatu.",
+    "savedPlace": "Locu salvatu",
+    "savePlaceFailed": "Ùn avemu pussutu salvà stu locu. Ripruvate.",
+    "lastSOSAttempt": "Ultima prova di SOS",
+    "sosDialerOpened": "U cumpunidore telefunicu hè apertu; chjama micca cunfirmata.",
+    "sosCancelled": "Annullatu; nisuna chjama hè stata fatta.",
+    "sosContactRequired": "Nisun cuntattu d'emergenza era dispunibule; nisuna chjama hè stata fatta.",
+    "sosDialerFailed": "U cumpunidore telefunicu ùn hà pussutu apre si; nisuna chjama hè stata fatta.",
+    "sosUnknown": "L'ultima prova di SOS ùn hà pussutu esse cunfirmata.",
+    "voiceConfiguration": "L'accumpagnatore vocale ùn hè micca dispunibule avà. Ripruvate più tardi o cuntinuate cù l'accumpagnatore fora di linea.",
+    "editContact": "Mudificà",
+    "editContactTitle": "Mudificà u cuntattu d'emergenza",
+    "editContactAccessibility": "Mudificà %{name}",
+    "contactUpdated": "Cuntattu d'emergenza aghjurnatu."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ova opcija prijave nije dostupna u ovoj verziji.",
+    "continueAsDemo": "Nastavi kao demo (samo za razvoj)",
+    "demoModeNotice": "Demo način rada koristi samo lokalne lažne podatke. Povezane usluge nisu autentificirane, a ova sesija se poništava kada se aplikacija ponovo učita.",
+    "authCodeInvalid": "Verifikacijski kod je nevažeći ili je istekao. Zatražite novi kod i pokušajte ponovo.",
+    "authRateLimited": "Previše pokušaja prijave. Pričekajte trenutak, pa pokušajte ponovo.",
+    "authTimeout": "Provjera prijave je trajala predugo. Provjerite vezu i pokušajte ponovo.",
+    "authNetwork": "Nismo mogli pristupiti usluzi za prijavu. Provjerite vezu i pokušajte ponovo.",
+    "authSessionExpired": "Vaša sesija je istekla. Prijavite se ponovo.",
+    "mapUnavailable": "Sigurnosna karta se nije mogla učitati. Provjerite vezu i pokušajte ponovo.",
+    "mapCachedLocation": "Lokacija uživo nije dostupna. Prikazuje se vaša posljednja sačuvana lokacija od %{capturedAt}.",
+    "locationShareFailed": "Nismo mogli podijeliti vašu lokaciju. Provjerite pristup lokaciji i pokušajte ponovo.",
+    "locationShareCurrent": "Ovo je moja lokacija zabilježena u %{capturedAt}:",
+    "locationShareCached": "Ovo je moja posljednja sačuvana lokacija zabilježena u %{capturedAt}:",
+    "blePermission": "Pristup za Bluetooth je isključen. Omogućite ga u Postavkama, pa pokušajte ponovo.",
+    "blePoweredOff": "Bluetooth je isključen. Uključite ga, pa pokušajte ponovo.",
+    "bleUnavailable": "Uparivanje putem Bluetooth nije dostupno na ovom uređaju ili u ovoj verziji.",
+    "bleScanFailed": "Nismo mogli pronaći NorthStar. Držite ga blizu, provjerite Bluetooth i pokušajte ponovo.",
+    "bleNoDevices": "U blizini nisu pronađeni uređaji NorthStar. Držite ga blizu i ponovo pretražite.",
+    "bleConnectFailed": "Nismo se mogli povezati s uređajem NorthStar. Držite ga napunjenim i u blizini, pa pokušajte ponovo.",
+    "saveCurrentPlace": "Sačuvaj trenutno mjesto",
+    "placeSaved": "Mjesto je sačuvano.",
+    "savedPlace": "Sačuvano mjesto",
+    "savePlaceFailed": "Nismo mogli sačuvati ovo mjesto. Pokušajte ponovo.",
+    "lastSOSAttempt": "Posljednji pokušaj SOS",
+    "sosDialerOpened": "Otvoren je birač broja; poziv nije potvrđen.",
+    "sosCancelled": "Otkazano; poziv nije upućen.",
+    "sosContactRequired": "Kontakt za hitne slučajeve nije bio dostupan; poziv nije upućen.",
+    "sosDialerFailed": "Birač broja se nije mogao otvoriti; poziv nije upućen.",
+    "sosUnknown": "Posljednji pokušaj SOS nije se mogao potvrditi.",
+    "voiceConfiguration": "Glasovni pratilac trenutno nije dostupan. Pokušajte ponovo kasnije ili nastavite s pratilacem van mreže.",
+    "editContact": "Uredi",
+    "editContactTitle": "Uredi kontakt za hitne slučajeve",
+    "editContactAccessibility": "Uredi %{name}",
+    "contactUpdated": "Kontakt za hitne slučajeve je ažuriran."
   }
 }

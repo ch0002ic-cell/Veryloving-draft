@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ko jeike hag̃ua jeporavo ndojeporukuaái ko app rembiapópe.",
+    "continueAsDemo": "Econtinua jehechaukarãicha (ñemoakãrapu'ãrã añoite)",
+    "demoModeNotice": "Jehechaukarã reko oiporu marandu gua'u oñeñongatúva ko tembiporúpe añoite. Umi tembiapo joajuha ndojehechaukái mávapa oiporu, ha ko sesión oñepyrũ jeýta oñemyenyhẽ jeývo pe app.",
+    "authCodeInvalid": "Pe código jehechajeyrã ndoikói térã hi'ára opáma. Ejerure código pyahu ha eñeha'ã jey.",
+    "authRateLimited": "Hetaiterei reñeha'ã reike. Eha'arõ sapy'ami, upéi eñeha'ã jey.",
+    "authTimeout": "Jeike jehechajey ipukueterei. Ehecha ne conexión ha eñeha'ã jey.",
+    "authNetwork": "Ndaikatúi rohupyty jeike rembiapo. Ehecha ne conexión ha eñeha'ã jey.",
+    "authSessionExpired": "Ne sesión ára opáma. Eike jey.",
+    "mapUnavailable": "Ndaikatúi oñemyenyhẽ pe mapa tekorosãrã. Ehecha ne conexión ha eñeha'ã jey.",
+    "mapCachedLocation": "Ndojeporukuaái ne renda ko'ag̃agua. Ojehechauka ne renda ipahaitéva oñeñongatúva %{capturedAt} guive.",
+    "locationShareFailed": "Ndaikatúi romboja'o ne renda. Ehecha pe jeheja renda rehegua ha eñeha'ã jey.",
+    "locationShareCurrent": "Kóva che renda ojehaiva'ekue %{capturedAt}-pe:",
+    "locationShareCached": "Kóva che renda ipahaitéva oñeñongatúva, ojehaiva'ekue %{capturedAt}-pe:",
+    "blePermission": "Bluetooth jeike oñembogue. Emboguejy Settings-pe, upéi eñeha'ã jey.",
+    "blePoweredOff": "Bluetooth oñembogue. Emboguejy, upéi eñeha'ã jey.",
+    "bleUnavailable": "Bluetooth ñembojoaju ndojeporukuaái ko tembiporu térã app rembiapópe.",
+    "bleScanFailed": "Ndaikatúi rojuhu NorthStar. Ereko ag̃ui, ehecha Bluetooth ha eñeha'ã jey.",
+    "bleNoDevices": "Ndojejuhúi mba'eveichagua NorthStar tembiporu ag̃ui. Ereko ag̃ui ha ehekapyahu jey.",
+    "bleConnectFailed": "Ndaikatúi rombojoaju NorthStar ndive. Ereko henyhẽ ha ag̃ui, upéi eñeha'ã jey.",
+    "saveCurrentPlace": "Eñongatu ko renda",
+    "placeSaved": "Renda oñeñongatúma.",
+    "savedPlace": "Renda oñeñongatúva",
+    "savePlaceFailed": "Ndaikatúi roñongatu ko renda. Eñeha'ã jey.",
+    "lastSOSAttempt": "SOS ñeha'ã ipahaitéva",
+    "sosDialerOpened": "Teléfono ñehenóiha ojepe'a; ñehenói noñemoneĩri.",
+    "sosCancelled": "Oñemboyke; noñehenóiri.",
+    "sosContactRequired": "Ndojeporukuaái avave oñehenói hag̃ua jekupytýpe; noñehenóiri.",
+    "sosDialerFailed": "Teléfono ñehenóiha ndaikatúi ojepe'a; noñehenóiri.",
+    "sosUnknown": "Ndaikatúi oñemoneĩ SOS ñeha'ã ipahaitéva.",
+    "voiceConfiguration": "Ñe'ẽ rupive ne irũ ndojeporukuaái ko'ág̃a. Eñeha'ã jey ag̃ave térã econtinua ne irũ oñeikotevẽ'ỹva conexión ndive.",
+    "editContact": "Emohenda",
+    "editContactTitle": "Emohenda jekupytyrã ñehenóiha",
+    "editContactAccessibility": "Emohenda %{name}",
+    "contactUpdated": "Jekupytyrã ñehenóiha oñembopyahúma."
   }
 }

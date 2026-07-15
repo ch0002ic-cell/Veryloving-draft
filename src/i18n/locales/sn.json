@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Nzira iyi yekupinda nayo haisi kuwanikwa mushanduro iyi.",
+    "continueAsDemo": "Enderera sedemo (yekugadzira chete)",
+    "demoModeNotice": "Demo mode inoshandisa mashoko ekunyepedzera akachengetwa pamudziyo chete. Masevhisi akabatana haana kusimbiswa, uye chikamu chino chinotangazve kana app yavhurwazve.",
+    "authCodeInvalid": "Kodhi yekusimbisa haisi kushanda kana kuti yapera nguva. Kumbira kodhi itsva woedzazve.",
+    "authRateLimited": "Waedza kupinda kakawanda. Mira kwechinguva, woedzazve.",
+    "authTimeout": "Kusimbisa kupinda kwatora nguva yakareba. Tarisa kubatana kwako woedzazve.",
+    "authNetwork": "Hatina kukwanisa kubatana nesevhisi yekupinda. Tarisa kubatana kwako woedzazve.",
+    "authSessionExpired": "Chikamu chako chapera nguva. Pinda zvakare.",
+    "mapUnavailable": "Mepu yekuchengeteka haina kukwanisa kuvhurwa. Tarisa kubatana kwako woedzazve.",
+    "mapCachedLocation": "Nzvimbo yauri parizvino haisi kuwanikwa. Tiri kuratidza nzvimbo yako yekupedzisira yakachengetwa kubva pa %{capturedAt}.",
+    "locationShareFailed": "Hatina kukwanisa kugovera nzvimbo yako. Tarisa mvumo yekuwana nzvimbo woedzazve.",
+    "locationShareCurrent": "Iyi ndiyo nzvimbo yangu yakanyorwa pa %{capturedAt}:",
+    "locationShareCached": "Iyi ndiyo nzvimbo yangu yekupedzisira yakachengetwa, yakanyorwa pa %{capturedAt}:",
+    "blePermission": "Mvumo yeBluetooth yakadzimwa. Ibatidze muSettings, woedzazve.",
+    "blePoweredOff": "Bluetooth yakadzimwa. Ibatidze, woedzazve.",
+    "bleUnavailable": "Kubatanidza neBluetooth hakusi kuwanikwa pamudziyo uyu kana mushanduro iyi.",
+    "bleScanFailed": "Hatina kukwanisa kuwana NorthStar. Ichengete iri pedyo, tarisa Bluetooth, woedzazve.",
+    "bleNoDevices": "Hapana midziyo yeNorthStar iri pedyo yawanikwa. Ichengete iri pedyo wotsvagazve.",
+    "bleConnectFailed": "Hatina kukwanisa kubatana neNorthStar. Ichengete iine chaji uye iri pedyo, woedzazve.",
+    "saveCurrentPlace": "Chengetedza nzvimbo yazvino",
+    "placeSaved": "Nzvimbo yachengetedzwa.",
+    "savedPlace": "Nzvimbo yakachengetedzwa",
+    "savePlaceFailed": "Hatina kukwanisa kuchengetedza nzvimbo iyi. Edzazve.",
+    "lastSOSAttempt": "Kuedza kwekupedzisira kweSOS",
+    "sosDialerOpened": "Pekufonera pavhurwa; kufona hakuna kusimbiswa.",
+    "sosCancelled": "Zvakanzurwa; hapana kufona kwakaitwa.",
+    "sosContactRequired": "Hapana munhu wekufonera panjodzi aivapo; hapana kufona kwakaitwa.",
+    "sosDialerFailed": "Pekufonera parunhare hapana kukwanisa kuvhurwa; hapana kufona kwakaitwa.",
+    "sosUnknown": "Kuedza kwekupedzisira kweSOS hakuna kukwanisa kusimbiswa.",
+    "voiceConfiguration": "Mubatsiri wezwi haasi kuwanikwa parizvino. Edzazve gare gare kana kuti enderera nemubatsiri anoshanda pasina internet.",
+    "editContact": "Gadzirisa",
+    "editContactTitle": "Gadzirisa munhu wekufonera panjodzi",
+    "editContactAccessibility": "Gadzirisa %{name}",
+    "contactUpdated": "Munhu wekufonera panjodzi agadziridzwa."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Chan eil an roghainn clàraidh a-steach seo ri fhaighinn san togail seo.",
+    "continueAsDemo": "Lean air adhart mar dheuchainn (leasachadh a-mhàin)",
+    "demoModeNotice": "Chan eil am modh deuchainn a’ cleachdadh ach dàta fuadain ionadail. Chan eil na seirbheisean ceangailte air an dearbhadh, agus thèid an seisean seo ath-shuidheachadh nuair a thèid an aplacaid ath-luchdachadh.",
+    "authCodeInvalid": "Tha an còd dearbhaidh mì-dhligheach no air tighinn gu crìch. Iarr còd ùr agus feuch ris a-rithist.",
+    "authRateLimited": "Chaidh cus oidhirpean clàraidh a-steach a dhèanamh. Fuirich greis agus feuch ris a-rithist.",
+    "authTimeout": "Thug dearbhadh a’ chlàraidh a-steach ro fhada. Thoir sùil air a’ cheangal agad agus feuch ris a-rithist.",
+    "authNetwork": "Cha b’ urrainn dhuinn an t-seirbheis clàraidh a-steach a ruigsinn. Thoir sùil air a’ cheangal agad agus feuch ris a-rithist.",
+    "authSessionExpired": "Thàinig an seisean agad gu crìch. Clàraich a-steach a-rithist.",
+    "mapUnavailable": "Cha b’ urrainn dhuinn am mapa sàbhailteachd a luchdadh. Thoir sùil air a’ cheangal agad agus feuch ris a-rithist.",
+    "mapCachedLocation": "Chan eil an t-àite beò ri fhaighinn. A’ sealltainn an àite mu dheireadh a shàbhail thu bho %{capturedAt}.",
+    "locationShareFailed": "Cha b’ urrainn dhuinn d’ àite a cho-roinn. Thoir sùil air cead an àite agus feuch ris a-rithist.",
+    "locationShareCurrent": "Seo an t-àite agam a chaidh a chlàradh aig %{capturedAt}:",
+    "locationShareCached": "Seo an t-àite mu dheireadh a shàbhail mi, air a chlàradh aig %{capturedAt}:",
+    "blePermission": "Tha inntrigeadh Bluetooth dheth. Cuir air e sna Roghainnean agus feuch ris a-rithist.",
+    "blePoweredOff": "Tha Bluetooth dheth. Cuir air e agus feuch ris a-rithist.",
+    "bleUnavailable": "Chan eil paidhreachadh Bluetooth ri fhaighinn air an inneal no san togail seo.",
+    "bleScanFailed": "Cha b’ urrainn dhuinn NorthStar a lorg. Cùm faisg e, thoir sùil air Bluetooth agus feuch ris a-rithist.",
+    "bleNoDevices": "Cha deach inneal NorthStar sam bith a lorg faisg ort. Cùm faisg e agus sganaich a-rithist.",
+    "bleConnectFailed": "Cha b’ urrainn dhuinn ceangal ri NorthStar. Cùm làn-luchdaichte agus faisg e, agus feuch ris a-rithist.",
+    "saveCurrentPlace": "Sàbhail an t-àite làithreach",
+    "placeSaved": "Chaidh an t-àite a shàbhaladh.",
+    "savedPlace": "Àite sàbhailte",
+    "savePlaceFailed": "Cha b’ urrainn dhuinn an t-àite seo a shàbhaladh. Feuch ris a-rithist.",
+    "lastSOSAttempt": "An oidhirp SOS mu dheireadh",
+    "sosDialerOpened": "Dh’fhosgail dialair an fhòn; cha deach a’ ghairm a dhearbhadh.",
+    "sosCancelled": "Air a chur dheth; cha deach gairm a dhèanamh.",
+    "sosContactRequired": "Cha robh neach-conaltraidh èiginn ri fhaighinn; cha deach gairm a dhèanamh.",
+    "sosDialerFailed": "Cha b’ urrainn dialair an fhòn fosgladh; cha deach gairm a dhèanamh.",
+    "sosUnknown": "Cha b’ urrainn dhuinn an oidhirp SOS mu dheireadh a dhearbhadh.",
+    "voiceConfiguration": "Chan eil an companach gutha ri fhaighinn an-dràsta. Feuch ris a-rithist nas anmoiche no lean air adhart leis a’ chompanaich far loidhne.",
+    "editContact": "Deasaich",
+    "editContactTitle": "Deasaich neach-conaltraidh èiginn",
+    "editContactAccessibility": "Deasaich %{name}",
+    "contactUpdated": "Chaidh an neach-conaltraidh èiginn ùrachadh."
   }
 }

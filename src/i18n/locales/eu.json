@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Saioa hasteko aukera hau ez dago erabilgarri bertsio honetan.",
+    "continueAsDemo": "Jarraitu demo gisa (garapenerako soilik)",
+    "demoModeNotice": "Demo moduak tokiko datu faltsuak soilik erabiltzen ditu. Konektatutako zerbitzuak ez daude autentifikatuta, eta saio hau berrezarri egiten da aplikazioa berriro kargatzean.",
+    "authCodeInvalid": "Egiaztapen-kodea baliogabea da edo iraungi egin da. Eskatu kode berria eta saiatu berriro.",
+    "authRateLimited": "Saioa hasteko saiakera gehiegi. Itxaron pixka bat eta saiatu berriro.",
+    "authTimeout": "Saioa hasteko egiaztapenak denbora gehiegi behar izan du. Egiaztatu konexioa eta saiatu berriro.",
+    "authNetwork": "Ezin izan dugu saioa hasteko zerbitzuarekin konektatu. Egiaztatu konexioa eta saiatu berriro.",
+    "authSessionExpired": "Saioa iraungi da. Hasi saioa berriro.",
+    "mapUnavailable": "Ezin izan da segurtasun-mapa kargatu. Egiaztatu konexioa eta saiatu berriro.",
+    "mapCachedLocation": "Zuzeneko kokapena ez dago erabilgarri. %{capturedAt} unean gordetako azken kokapena erakusten.",
+    "locationShareFailed": "Ezin izan dugu zure kokapena partekatu. Egiaztatu kokapenerako sarbidea eta saiatu berriro.",
+    "locationShareCurrent": "Hona hemen %{capturedAt} unean erregistratutako nire kokapena:",
+    "locationShareCached": "Hona hemen %{capturedAt} unean erregistratutako nire azken kokapen gordea:",
+    "blePermission": "Bluetooth sarbidea desaktibatuta dago. Aktibatu Ezarpenetan eta saiatu berriro.",
+    "blePoweredOff": "Bluetooth desaktibatuta dago. Aktibatu eta saiatu berriro.",
+    "bleUnavailable": "Bluetooth parekatzea ez dago erabilgarri gailu edo bertsio honetan.",
+    "bleScanFailed": "Ezin izan dugu NorthStar aurkitu. Eduki hurbil, egiaztatu Bluetooth eta saiatu berriro.",
+    "bleNoDevices": "Ez da inguruko NorthStar gailurik aurkitu. Eduki hurbil eta bilatu berriro.",
+    "bleConnectFailed": "Ezin izan gara NorthStar gailuarekin konektatu. Eduki kargatuta eta hurbil, eta saiatu berriro.",
+    "saveCurrentPlace": "Gorde uneko tokia",
+    "placeSaved": "Tokia gorde da.",
+    "savedPlace": "Gordetako tokia",
+    "savePlaceFailed": "Ezin izan dugu toki hau gorde. Saiatu berriro.",
+    "lastSOSAttempt": "Azken SOS saiakera",
+    "sosDialerOpened": "Telefonoaren markagailua ireki da; deia ez da baieztatu.",
+    "sosCancelled": "Bertan behera utzi da; ez da deirik egin.",
+    "sosContactRequired": "Ez zegoen larrialdietako kontakturik erabilgarri; ez da deirik egin.",
+    "sosDialerFailed": "Ezin izan da telefonoaren markagailua ireki; ez da deirik egin.",
+    "sosUnknown": "Ezin izan da azken SOS saiakera baieztatu.",
+    "voiceConfiguration": "Ahots-laguntzailea ez dago erabilgarri une honetan. Saiatu geroago edo jarraitu lineaz kanpoko laguntzailearekin.",
+    "editContact": "Editatu",
+    "editContactTitle": "Editatu larrialdietako kontaktua",
+    "editContactAccessibility": "Editatu %{name}",
+    "contactUpdated": "Larrialdietako kontaktua eguneratu da."
   }
 }

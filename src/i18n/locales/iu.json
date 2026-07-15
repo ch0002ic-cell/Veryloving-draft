@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "ᐃᓯᕈᑎᒃᓴᖅ ᑖᓐᓇ ᐊᑐᐃᓐᓇᐅᙱᓚᖅ ᐆᒥᖓ ᓴᓇᓯᒪᓂᖓᓂ.",
+    "continueAsDemo": "ᑕᑯᔭᒃᓴᐅᑎᑐᑦ ᑲᔪᓯᓗᑎᑦ (ᓴᓇᓂᕐᒧᑦ ᑭᓯᐊᓂ)",
+    "demoModeNotice": "ᑕᑯᔭᒃᓴᐅᑎᒥ ᖃᕆᑕᐅᔭᕐᒥᐅᑕᐅᑐᐃᓐᓇᖅᑐᓂᒃ ᓱᓕᙱᑦᑐᓂᒃ ᑐᓴᒐᒃᓴᓂᒃ ᐊᑐᖅᐳᖅ. ᑲᓲᑎᓯᒪᔪᑦ ᐱᔨᑦᑎᕋᐅᑏᑦ ᓇᓗᓇᐃᖅᑕᐅᓯᒪᙱᑦᑐᑦ, ᐊᒻᒪ ᐆᒃᑐᕋᕐᓂᖅ ᐱᒋᐊᓕᕐᒥᔪᖅ ᐊᑐᕈᑎ ᐱᒋᐊᓕᕐᒥᑉᐸᑦ.",
+    "authCodeInvalid": "ᓇᓗᓇᐃᖅᓯᔾᔪᑎ ᓱᓕᙱᑦᑐᖅ ᐅᕝᕙᓘᓐᓃᑦ ᐃᓱᓕᓯᒪᔪᖅ. ᓄᑖᒥᒃ ᑐᒃᓯᕋᕐᓗᑎᑦ ᐆᒃᑐᕆᑦ.",
+    "authRateLimited": "ᐃᓯᕋᓱᐊᕐᓃᑦ ᐊᒥᓱᐊᓘᓕᖅᑐᑦ. ᐅᑕᖅᑭᑲᐃᓐᓇᕐᓗᑎᑦ, ᐆᒃᑐᕆᑦ.",
+    "authTimeout": "ᐃᓯᕐᓂᕐᒥᒃ ᓇᓗᓇᐃᖅᓯᓂᖅ ᐊᑯᓂᐅᓗᐊᖅᑐᖅ. ᑲᓲᑎᓂᖅ ᖃᐅᔨᓴᕐᓗᒍ ᐆᒃᑐᕆᑦ.",
+    "authNetwork": "ᐃᓯᕐᓂᕐᒧᑦ ᐱᔨᑦᑎᕋᐅᑎᒧᑦ ᑎᑭᐅᑎᔪᓐᓇᙱᓐᓇᑦᑕ. ᑲᓲᑎᓂᖅ ᖃᐅᔨᓴᕐᓗᒍ ᐆᒃᑐᕆᑦ.",
+    "authSessionExpired": "ᐊᑐᕐᓂᕆᔭᐃᑦ ᐃᓱᓕᔪᖅ. ᐃᓯᕆᑦ ᐊᒻᒪᓗ.",
+    "mapUnavailable": "ᐊᑦᑕᕐᓇᙱᓐᓂᕐᒧᑦ ᓄᓇᙳᐊᖅ ᓴᖅᑭᔮᙱᑦᑐᖅ. ᑲᓲᑎᓂᖅ ᖃᐅᔨᓴᕐᓗᒍ ᐆᒃᑐᕆᑦ.",
+    "mapCachedLocation": "ᒫᓐᓇ ᓇᒦᓐᓂᖅ ᐊᑐᐃᓐᓇᐅᙱᑦᑐᖅ. ᑭᖑᓪᓕᖅᐹᒥ ᑐᖅᑯᖅᑕᖅ ᓇᒦᓐᓂᖅ %{capturedAt}-ᒥᙶᖅᑐᖅ ᑕᑯᑎᑕᐅᔪᖅ.",
+    "locationShareFailed": "ᓇᒦᓐᓂᕐᓂᒃ ᐊᒥᖅᑳᖃᑎᖃᕈᓐᓇᙱᓐᓇᑦᑕ. ᓇᒦᓐᓂᕐᒧᑦ ᐊᑐᕈᓐᓇᕐᓂᖅ ᖃᐅᔨᓴᕐᓗᒍ ᐆᒃᑐᕆᑦ.",
+    "locationShareCurrent": "ᐅᓇ ᓇᒦᓐᓂᕋ %{capturedAt}-ᒥ ᑎᑎᕋᖅᑕᐅᔪᖅ:",
+    "locationShareCached": "ᐅᓇ ᑭᖑᓪᓕᖅᐹᖅ ᑐᖅᑯᖅᑕᕋ ᓇᒦᓐᓂᖅ %{capturedAt}-ᒥ ᑎᑎᕋᖅᑕᐅᔪᖅ:",
+    "blePermission": "Bluetooth-ᒥᒃ ᐊᑐᕈᓐᓇᕐᓂᖅ ᖃᒥᑕᐅᓯᒪᔪᖅ. ᐋᖅᑭᒃᓱᐃᕝᕕᒻᒥ ᐃᑯᒻᒪᖅᓯᓗᒍ, ᐆᒃᑐᕆᑦ.",
+    "blePoweredOff": "Bluetooth ᖃᒥᑕᐅᓯᒪᔪᖅ. ᐃᑯᒻᒪᖅᓯᓗᒍ, ᐆᒃᑐᕆᑦ.",
+    "bleUnavailable": "Bluetooth-ᒥᒃ ᑲᓲᑎᑎᑦᑎᓂᖅ ᐊᑐᐃᓐᓇᐅᙱᑦᑐᖅ ᐆᒥᖓ ᐊᑐᕈᑎᒥ ᐅᕝᕙᓘᓐᓃᑦ ᓴᓇᓯᒪᓂᖓᓂ.",
+    "bleScanFailed": "NorthStar ᓇᓂᔪᓐᓇᙱᑕᕗᑦ. ᖃᓂᒋᔭᖓᓃᑎᓪᓗᒍ, Bluetooth ᖃᐅᔨᓴᕐᓗᒍ, ᐆᒃᑐᕆᑦ.",
+    "bleNoDevices": "NorthStar-ᓂᒃ ᖃᓂᒋᔭᒥ ᓇᓂᓯᙱᑦᑐᖅ. ᖃᓂᒋᔭᖓᓃᑎᓪᓗᒍ ᕿᓂᕐᒥᓗᑎᑦ.",
+    "bleConnectFailed": "NorthStar-ᒧᑦ ᑲᓲᑎᔪᓐᓇᙱᓐᓇᑦᑕ. ᐆᒻᒪᖅᑯᑎᖃᖅᑎᓪᓗᒍ ᖃᓂᒋᔭᖓᓃᑎᓪᓗᒍ, ᐆᒃᑐᕆᑦ.",
+    "saveCurrentPlace": "ᒫᓐᓇ ᓇᒦᓐᓂᖅ ᑐᖅᑯᕐᓗᒍ",
+    "placeSaved": "ᓇᒦᓐᓂᖅ ᑐᖅᑯᖅᑕᐅᔪᖅ.",
+    "savedPlace": "ᑐᖅᑯᖅᑕᖅ ᓇᒦᓐᓂᖅ",
+    "savePlaceFailed": "ᐅᓇ ᓇᒦᓐᓂᖅ ᑐᖅᑯᕈᓐᓇᙱᑕᕗᑦ. ᐆᒃᑐᕆᑦ.",
+    "lastSOSAttempt": "ᑭᖑᓪᓕᖅᐹᖅ SOS-ᒥᒃ ᐆᒃᑐᕋᕐᓂᖅ",
+    "sosDialerOpened": "ᐅᖄᓚᐅᑎᐅᑉ ᓈᓴᐅᑎᓕᐅᕈᑖ ᒪᑐᐃᖅᑐᖅ; ᐅᖄᓚᓂᖅ ᓇᓗᓇᐃᖅᑕᐅᙱᑦᑐᖅ.",
+    "sosCancelled": "ᖁᔭᓈᖅᑕᐅᔪᖅ; ᐅᖄᓚᓂᖃᙱᑦᑐᖅ.",
+    "sosContactRequired": "ᑐᐊᕕᕐᓇᖅᑐᒥ ᖃᐅᔨᒋᐊᕐᕕᒃᓴᖃᙱᑦᑐᖅ; ᐅᖄᓚᓂᖃᙱᑦᑐᖅ.",
+    "sosDialerFailed": "ᐅᖄᓚᐅᑎᐅᑉ ᓈᓴᐅᑎᓕᐅᕈᑖ ᒪᑐᐃᕈᓐᓇᙱᑦᑐᖅ; ᐅᖄᓚᓂᖃᙱᑦᑐᖅ.",
+    "sosUnknown": "ᑭᖑᓪᓕᖅᐹᖅ SOS-ᒥᒃ ᐆᒃᑐᕋᕐᓂᖅ ᓇᓗᓇᐃᖅᑕᐅᔪᓐᓇᙱᑦᑐᖅ.",
+    "voiceConfiguration": "ᓂᐱᒃᑯᑦ ᐃᑲᔪᖅᑎ ᒫᓐᓇ ᐊᑐᐃᓐᓇᐅᙱᑦᑐᖅ. ᑭᖑᓂᐊᒍᑦ ᐆᒃᑐᕆᑦ ᐅᕝᕙᓘᓐᓃᑦ ᑲᓲᑎᓯᒪᙱᑦᑐᒥᒃ ᐃᑲᔪᖅᑎᒥᒃ ᑲᔪᓯᓗᑎᑦ.",
+    "editContact": "ᐋᖅᑭᒋᐊᕐᓗᒍ",
+    "editContactTitle": "ᑐᐊᕕᕐᓇᖅᑐᒥ ᖃᐅᔨᒋᐊᕐᕕᒃ ᐋᖅᑭᒋᐊᕐᓗᒍ",
+    "editContactAccessibility": "%{name} ᐋᖅᑭᒋᐊᕐᓗᒍ",
+    "contactUpdated": "ᑐᐊᕕᕐᓇᖅᑐᒥ ᖃᐅᔨᒋᐊᕐᕕᒃ ᓄᑖᙳᖅᑎᑕᐅᔪᖅ."
   }
 }

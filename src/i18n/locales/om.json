@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Filannoon seensaa kun ijaarsa kana keessatti hin jiru.",
+    "continueAsDemo": "Akka agarsiisaatti itti fufi (misoomaaf qofa)",
+    "demoModeNotice": "Haalli agarsiisaa daataa sobaa naannoo qofa fayyadama. Tajaajiloonni walqabatan eenyummeeffamanii hin jiran; yeroo appichi irra deebi'ee fe'amu turtiin kun ni haaromfama.",
+    "authCodeInvalid": "Koodiin mirkaneessaa sirrii miti ykn yeroon isaa darbeera. Koodii haaraa gaafadhuutii irra deebi'ii yaali.",
+    "authRateLimited": "Yaaliin seensaa baay'ateera. Xiqqoo eegi, sana booda irra deebi'ii yaali.",
+    "authTimeout": "Mirkaneessuun seensaa yeroo dheeraa fudhate. Walqunnamtii kee ilaaliitii irra deebi'ii yaali.",
+    "authNetwork": "Tajaajila seensaa bira ga'uu hin dandeenye. Walqunnamtii kee ilaaliitii irra deebi'ii yaali.",
+    "authSessionExpired": "Turtiin kee xumurameera. Irra deebi'ii seeni.",
+    "mapUnavailable": "Kaartaan nageenyaa fe'amuu hin dandeenye. Walqunnamtii kee ilaaliitii irra deebi'ii yaali.",
+    "mapCachedLocation": "Bakki yeroo ammaa hin jiru. Bakka kee dhumaa %{capturedAt} irratti kuufame agarsiisaa jira.",
+    "locationShareFailed": "Bakka kee qooduu hin dandeenye. Hayyama bakka ilaaliitii irra deebi'ii yaali.",
+    "locationShareCurrent": "Bakki koo %{capturedAt} irratti galmaa'e kunooti:",
+    "locationShareCached": "Bakki koo dhumaa kuufame, %{capturedAt} irratti galmaa'e kunooti:",
+    "blePermission": "Hayyamni Bluetooth cufameera. Qindaa'inoota keessatti baniitii irra deebi'ii yaali.",
+    "blePoweredOff": "Bluetooth dhaameera. Baniitii irra deebi'ii yaali.",
+    "bleUnavailable": "Walitti hidhuun Bluetooth meeshaa ykn ijaarsa kana irratti hin jiru.",
+    "bleScanFailed": "NorthStar argachuu hin dandeenye. Dhiheenyatti qabi, Bluetooth ilaaliitii irra deebi'ii yaali.",
+    "bleNoDevices": "Meeshaaleen NorthStar dhihoo jiran hin argamne. Dhiheenyatti qabiitii irra deebi'ii barbaadi.",
+    "bleConnectFailed": "NorthStar waliin walqunnamsiisuu hin dandeenye. Chaarjii qabaatee dhihoo akka turu godhi, sana booda irra deebi'ii yaali.",
+    "saveCurrentPlace": "Bakka ammaa kuusi",
+    "placeSaved": "Bakki kuufameera.",
+    "savedPlace": "Bakka kuufame",
+    "savePlaceFailed": "Bakka kana kuusuu hin dandeenye. Irra deebi'ii yaali.",
+    "lastSOSAttempt": "Yaalii SOS isa dhumaa",
+    "sosDialerOpened": "Bilbila lakkoofsa galchu banameera; bilbiluun hin mirkanoofne.",
+    "sosCancelled": "Haqameera; bilbilli hin godhamne.",
+    "sosContactRequired": "Namni yeroo muddamaa quunnamamu hin jirre; bilbilli hin godhamne.",
+    "sosDialerFailed": "Bilbila lakkoofsa galchu banuu hin dandeenye; bilbilli hin godhamne.",
+    "sosUnknown": "Yaaliin SOS inni dhumaa mirkanaa'uu hin dandeenye.",
+    "voiceConfiguration": "Hiriyyaan sagalee amma hin jiru. Booda irra deebi'ii yaali ykn hiriyyaa sarara alaatiin itti fufi.",
+    "editContact": "Gulaali",
+    "editContactTitle": "Nama yeroo muddamaa quunnamamu gulaali",
+    "editContactAccessibility": "%{name} gulaali",
+    "contactUpdated": "Namni yeroo muddamaa quunnamamu haaromfameera."
   }
 }

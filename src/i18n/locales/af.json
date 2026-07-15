@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Hierdie aanmeldopsie is nie in hierdie weergawe beskikbaar nie.",
+    "continueAsDemo": "Gaan voort as demonstrasie (slegs ontwikkeling)",
+    "demoModeNotice": "Demonstrasiemodus gebruik slegs plaaslike toetsdata. Gekoppelde dienste is nie geverifieer nie, en hierdie sessie word teruggestel wanneer die toepassing herlaai.",
+    "authCodeInvalid": "Die verifikasiekode is ongeldig of het verval. Versoek ’n nuwe kode en probeer weer.",
+    "authRateLimited": "Te veel aanmeldpogings. Wag ’n oomblik en probeer dan weer.",
+    "authTimeout": "Aanmeldverifikasie het te lank geneem. Gaan jou verbinding na en probeer weer.",
+    "authNetwork": "Ons kon nie die aanmelddiens bereik nie. Gaan jou verbinding na en probeer weer.",
+    "authSessionExpired": "Jou sessie het verval. Meld weer aan.",
+    "mapUnavailable": "Die veiligheidskaart kon nie laai nie. Gaan jou verbinding na en probeer weer.",
+    "mapCachedLocation": "Regstreekse ligging is nie beskikbaar nie. Jou laaste gestoorde ligging van %{capturedAt} word gewys.",
+    "locationShareFailed": "Ons kon nie jou ligging deel nie. Gaan liggingtoegang na en probeer weer.",
+    "locationShareCurrent": "Hier is my ligging wat om %{capturedAt} aangeteken is:",
+    "locationShareCached": "Hier is my laaste gestoorde ligging wat om %{capturedAt} aangeteken is:",
+    "blePermission": "Bluetooth-toegang is af. Aktiveer dit in Instellings en probeer dan weer.",
+    "blePoweredOff": "Bluetooth is afgeskakel. Skakel dit aan en probeer dan weer.",
+    "bleUnavailable": "Bluetooth-paring is nie op hierdie toestel of in hierdie weergawe beskikbaar nie.",
+    "bleScanFailed": "Ons kon nie NorthStar vind nie. Hou dit naby, gaan Bluetooth na en probeer weer.",
+    "bleNoDevices": "Geen nabygeleë NorthStar-toestelle is gevind nie. Hou dit naby en skandeer weer.",
+    "bleConnectFailed": "Ons kon nie aan NorthStar koppel nie. Hou dit gelaai en naby en probeer dan weer.",
+    "saveCurrentPlace": "Stoor huidige plek",
+    "placeSaved": "Plek gestoor.",
+    "savedPlace": "Gestoorde plek",
+    "savePlaceFailed": "Ons kon nie hierdie plek stoor nie. Probeer weer.",
+    "lastSOSAttempt": "Laaste SOS-poging",
+    "sosDialerOpened": "Foonskakelaar oopgemaak; oproep nie bevestig nie.",
+    "sosCancelled": "Gekanselleer; geen oproep is gemaak nie.",
+    "sosContactRequired": "Geen noodkontak was beskikbaar nie; geen oproep is gemaak nie.",
+    "sosDialerFailed": "Die foonskakelaar kon nie oopmaak nie; geen oproep is gemaak nie.",
+    "sosUnknown": "Die laaste SOS-poging kon nie bevestig word nie.",
+    "voiceConfiguration": "Die stemmetgesel is tans nie beskikbaar nie. Probeer later weer of gaan voort met die vanlyn metgesel.",
+    "editContact": "Wysig",
+    "editContactTitle": "Wysig noodkontak",
+    "editContactAccessibility": "Wysig %{name}",
+    "contactUpdated": "Noodkontak opgedateer."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Nhọrọ nbanye a adịghị na ụdị a.",
+    "continueAsDemo": "Gaa n'ihu dịka demo (maka mmepe naanị)",
+    "demoModeNotice": "Ọnọdụ demo na-eji naanị data adịgboroja echekwara n'ime ngwaọrụ. Ekwenyebeghị ọrụ ndị ejikọrọ, a ga-emegharịkwa nnọkọ a mgbe ngwa ahụ bugharịrị.",
+    "authCodeInvalid": "Koodu nkwenye ahụ ezighi ezi ma ọ bụ kubie ume. Rịọ koodu ọhụrụ wee nwaa ọzọ.",
+    "authRateLimited": "Mgbalị nbanye karịrị akarị. Chere obere oge, wee nwaa ọzọ.",
+    "authTimeout": "Nkwenye nbanye were ogologo oge. Lelee njikọ gị wee nwaa ọzọ.",
+    "authNetwork": "Anyị enweghị ike iru ọrụ nbanye. Lelee njikọ gị wee nwaa ọzọ.",
+    "authSessionExpired": "Oge nnọkọ gị agwụla. Banye ọzọ.",
+    "mapUnavailable": "Maapụ nchekwa enweghị ike ibugo. Lelee njikọ gị wee nwaa ọzọ.",
+    "mapCachedLocation": "Ebe ị nọ ugbu a adịghị. A na-egosi ebe ikpeazụ echekwara na %{capturedAt}.",
+    "locationShareFailed": "Anyị enweghị ike ịkekọrịta ebe ị nọ. Lelee ikike ebe wee nwaa ọzọ.",
+    "locationShareCurrent": "Nke a bụ ebe m nọ e dekọrọ na %{capturedAt}:",
+    "locationShareCached": "Nke a bụ ebe ikpeazụ m chekwara e dekọrọ na %{capturedAt}:",
+    "blePermission": "Agbanyụrụ ikike Bluetooth. Gbanwuo ya na Ntọala, wee nwaa ọzọ.",
+    "blePoweredOff": "Agbanyụrụ Bluetooth. Gbanwuo ya, wee nwaa ọzọ.",
+    "bleUnavailable": "Njikọ Bluetooth adịghị na ngwaọrụ ma ọ bụ ụdị a.",
+    "bleScanFailed": "Anyị ahụghị NorthStar. Debe ya nso, lelee Bluetooth, wee nwaa ọzọ.",
+    "bleNoDevices": "Ahụghị ngwaọrụ NorthStar ọ bụla dị nso. Debe ya nso wee nyochaa ọzọ.",
+    "bleConnectFailed": "Anyị enweghị ike ijikọ na NorthStar. Debe ya ka o nwee chajị ma nọrọ nso, wee nwaa ọzọ.",
+    "saveCurrentPlace": "Chekwaa ebe dị ugbu a",
+    "placeSaved": "Echekwara ebe.",
+    "savedPlace": "Ebe echekwara",
+    "savePlaceFailed": "Anyị enweghị ike ichekwa ebe a. Nwaa ọzọ.",
+    "lastSOSAttempt": "Mgbalị SOS ikpeazụ",
+    "sosDialerOpened": "Ihe ịkpọ ekwentị meghere; ekwenyeghị na a kpọrọ oku.",
+    "sosCancelled": "A kagbuola; a kpọghị oku ọ bụla.",
+    "sosContactRequired": "Ọ nweghị onye kọntaktị mberede dị; a kpọghị oku ọ bụla.",
+    "sosDialerFailed": "Ihe ịkpọ ekwentị enweghị ike imeghe; a kpọghị oku ọ bụla.",
+    "sosUnknown": "Enweghị ike ikwenye mgbalị SOS ikpeazụ.",
+    "voiceConfiguration": "Onye enyemaka olu adịghị ugbu a. Nwaa ọzọ ma emechaa ma ọ bụ jiri onye enyemaka na-anọghị n'ịntanetị gaa n'ihu.",
+    "editContact": "Dezie",
+    "editContactTitle": "Dezie kọntaktị mberede",
+    "editContactAccessibility": "Dezie %{name}",
+    "contactUpdated": "Emelitere kọntaktị mberede."
   }
 }

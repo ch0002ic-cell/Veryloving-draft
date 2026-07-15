@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Cuɓirgal ngal naatirde heɓotaako e mahngo ngoo.",
+    "continueAsDemo": "Jokku no demo (ngam topayɓe tan)",
+    "demoModeNotice": "Mbaydi demo huutortoo ko keɓe ɗemngal ɗe puuyɗe tan. Carwe ceŋiiɗe ɗee ƴeewtinaaka, tee jooɗnde ndee fuɗɗitoto so jaaɓnirgal ngal loowtaama kadi.",
+    "authCodeInvalid": "Kod ƴeewtagol oo moƴƴaani walla hiiɗii. Ɗaɓɓit kod keso, eto kadi.",
+    "authRateLimited": "Etagol naatde ɓurii heewde. Faddu seeɗa, eto kadi.",
+    "authTimeout": "Ƴeewtagol naatde ɓurii juutde. Ƴeewto ceŋol maa, eto kadi.",
+    "authNetwork": "Min mbaawaa heɓde carwol naatirde. Ƴeewto ceŋol maa, eto kadi.",
+    "authSessionExpired": "Jooɗnde maa hiiɗii. Naat kadi.",
+    "mapUnavailable": "Karte kisal oo loowaaki. Ƴeewto ceŋol maa, eto kadi.",
+    "mapCachedLocation": "Nokku gonɗo jooni heɓotaako. Hollude nokku maa cakkitiiɗo mooftaaɗo iwde %{capturedAt}.",
+    "locationShareFailed": "Min mbaawaa lollinde nokku maa. Ƴeewto yamiroore nokku, eto kadi.",
+    "locationShareCurrent": "Ɗoo woni nokku am mooftaaɗo e %{capturedAt}:",
+    "locationShareCached": "Ɗoo woni nokku am cakkitiiɗo mooftaaɗo e %{capturedAt}:",
+    "blePermission": "Jeyaaɗe Bluetooth koko ndaaƴaa. Hurmin ɗum e Teelte, eto kadi.",
+    "blePoweredOff": "Bluetooth koko ñifaa. Hurmin ɗum, eto kadi.",
+    "bleUnavailable": "Jokkondiral Bluetooth heɓotaako e kaɓirgol ngal walla mahngo ngoo.",
+    "bleScanFailed": "Min ndaawaaki yiyde NorthStar. Haɓɓu ɗum ɓadii, ƴeewto Bluetooth, eto kadi.",
+    "bleNoDevices": "Alaa kaɓirɗe NorthStar ɓadiiɗe njiytaaɗe. Haɓɓu ɗum ɓadii, yiylo kadi.",
+    "bleConnectFailed": "Min mbaawaa seŋaade e NorthStar. Haɓɓu ɗum jogii doole tee ɓadii, eto kadi.",
+    "saveCurrentPlace": "Mooftu nokku gonɗo",
+    "placeSaved": "Nokku oo mooftaama.",
+    "savedPlace": "Nokku mooftaaɗo",
+    "savePlaceFailed": "Min mbaawaa mooftude nokku oo. Eto kadi.",
+    "lastSOSAttempt": "Etagol SOS cakkitiiɗo",
+    "sosDialerOpened": "Noddirgal telefon udditaama; noddaango tabitinaaka.",
+    "sosCancelled": "Haaytinaama; noddaango waɗaaka.",
+    "sosContactRequired": "Jokkondiral ballal heɓaaka; noddaango waɗaaka.",
+    "sosDialerFailed": "Noddirgal telefon udditaaki; noddaango waɗaaka.",
+    "sosUnknown": "Etagol SOS cakkitiiɗo tabitinaaki.",
+    "voiceConfiguration": "Ballondiral sawto heɓotaako jooni. Eto kadi caggal walla jokku e ballondiral moƴƴo tawa alaa ceŋol.",
+    "editContact": "Taƴto",
+    "editContactTitle": "Taƴto jokkondiral ballal",
+    "editContactAccessibility": "Taƴto %{name}",
+    "contactUpdated": "Jokkondiral ballal hesɗitinaama."
   }
 }

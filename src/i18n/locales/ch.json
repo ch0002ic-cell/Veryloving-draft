@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ti siña ma'usa este na opsión para humålom gi este na bersión.",
+    "continueAsDemo": "Kontinua komu demo (para dinibiu ha')",
+    "demoModeNotice": "I demo mode ha usa ha' lokal na datos ni ti magahet. I konektådu na setbisiu siha ti autentikådu, yan para u ma-reset este na sesión anggen ma-load ta'lo i app.",
+    "authCodeInvalid": "Ti bålidu pat måkpo' tiempon-ña i verification code. Faisen nuebu na code ya chagi ta'lo.",
+    "authRateLimited": "Gof meggai na chagi para humålom. Nangga didide', ya chagi ta'lo.",
+    "authTimeout": "Gof åpmam i verification para humålom. Cheke i koneksión-mu ya chagi ta'lo.",
+    "authNetwork": "Ti in siña manhånao para i setbisiun humålom. Cheke i koneksión-mu ya chagi ta'lo.",
+    "authSessionExpired": "Måkpo' i sesión-mu. Hålom ta'lo.",
+    "mapUnavailable": "Ti siña ma-load i safety map. Cheke i koneksión-mu ya chagi ta'lo.",
+    "mapCachedLocation": "Ti guaha live location. Mapopokkat i uttimon na lokasión-mu ni masåtba gi %{capturedAt}.",
+    "locationShareFailed": "Ti in siña man-share i lokasión-mu. Cheke i location access ya chagi ta'lo.",
+    "locationShareCurrent": "Este i lokasión-hu ni marekot gi %{capturedAt}:",
+    "locationShareCached": "Este i uttimon na lokasión-hu ni masåtba yan marekot gi %{capturedAt}:",
+    "blePermission": "Matå'chong i aksesu para Bluetooth. Na'påra gi Settings, ya chagi ta'lo.",
+    "blePoweredOff": "Matå'chong i Bluetooth. Na'påra, ya chagi ta'lo.",
+    "bleUnavailable": "Ti guaha Bluetooth pairing gi este na device pat bersión.",
+    "bleScanFailed": "Ti in siña sodda' i NorthStar. Po'lo gi hihot, cheke i Bluetooth, ya chagi ta'lo.",
+    "bleNoDevices": "Ti masodda' NorthStar devices gi hihot. Po'lo gi hihot ya scan ta'lo.",
+    "bleConnectFailed": "Ti in siña man-connect gi NorthStar. Na'siguru na guaha batirihan-ña yan gaige gi hihot, ya chagi ta'lo.",
+    "saveCurrentPlace": "Satba i prisente na lugåt",
+    "placeSaved": "Masåtba i lugåt.",
+    "savedPlace": "Masåtba na lugåt",
+    "savePlaceFailed": "Ti in siña satba este na lugåt. Chagi ta'lo.",
+    "lastSOSAttempt": "Uttimon na chagi SOS",
+    "sosDialerOpened": "Mababa i phone dialer; ti makonfetma i ågang.",
+    "sosCancelled": "Makansela; tåya' ågang ni macho'gue.",
+    "sosContactRequired": "Tåya' emergency contact ni guaha; tåya' ågang ni macho'gue.",
+    "sosDialerFailed": "Ti siña mababa i phone dialer; tåya' ågang ni macho'gue.",
+    "sosUnknown": "Ti siña makonfetma i uttimon na chagi SOS.",
+    "voiceConfiguration": "Ti guaha i voice companion på'go. Chagi ta'lo dispues pat kontinua yan i offline companion.",
+    "editContact": "Tulaika",
+    "editContactTitle": "Tulaika i emergency contact",
+    "editContactAccessibility": "Tulaika si %{name}",
+    "contactUpdated": "Matulaika i emergency contact."
   }
 }

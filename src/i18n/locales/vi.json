@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Tùy chọn đăng nhập này không khả dụng trong bản dựng này.",
+    "continueAsDemo": "Tiếp tục ở chế độ demo (chỉ dành cho phát triển)",
+    "demoModeNotice": "Chế độ demo chỉ sử dụng dữ liệu giả cục bộ. Các dịch vụ được kết nối chưa được xác thực và phiên này sẽ đặt lại khi ứng dụng tải lại.",
+    "authCodeInvalid": "Mã xác minh không hợp lệ hoặc đã hết hạn. Hãy yêu cầu mã mới rồi thử lại.",
+    "authRateLimited": "Bạn đã thử đăng nhập quá nhiều lần. Hãy đợi một lát rồi thử lại.",
+    "authTimeout": "Quá trình xác minh đăng nhập mất quá nhiều thời gian. Hãy kiểm tra kết nối rồi thử lại.",
+    "authNetwork": "Không thể kết nối với dịch vụ đăng nhập. Hãy kiểm tra kết nối rồi thử lại.",
+    "authSessionExpired": "Phiên của bạn đã hết hạn. Hãy đăng nhập lại.",
+    "mapUnavailable": "Không thể tải bản đồ an toàn. Hãy kiểm tra kết nối rồi thử lại.",
+    "mapCachedLocation": "Vị trí trực tiếp không khả dụng. Đang hiển thị vị trí lưu gần nhất từ %{capturedAt}.",
+    "locationShareFailed": "Không thể chia sẻ vị trí của bạn. Hãy kiểm tra quyền truy cập vị trí rồi thử lại.",
+    "locationShareCurrent": "Đây là vị trí của tôi được ghi nhận lúc %{capturedAt}:",
+    "locationShareCached": "Đây là vị trí lưu gần nhất của tôi, được ghi nhận lúc %{capturedAt}:",
+    "blePermission": "Quyền truy cập Bluetooth đang tắt. Hãy bật quyền này trong phần Cài đặt rồi thử lại.",
+    "blePoweredOff": "Bluetooth đang tắt. Hãy bật lên rồi thử lại.",
+    "bleUnavailable": "Tính năng ghép nối Bluetooth không khả dụng trên thiết bị hoặc bản dựng này.",
+    "bleScanFailed": "Không thể tìm thấy NorthStar. Hãy để thiết bị ở gần, kiểm tra Bluetooth rồi thử lại.",
+    "bleNoDevices": "Không tìm thấy thiết bị NorthStar nào ở gần. Hãy để thiết bị ở gần và quét lại.",
+    "bleConnectFailed": "Không thể kết nối với NorthStar. Hãy đảm bảo thiết bị còn pin và ở gần rồi thử lại.",
+    "saveCurrentPlace": "Lưu địa điểm hiện tại",
+    "placeSaved": "Đã lưu địa điểm.",
+    "savedPlace": "Địa điểm đã lưu",
+    "savePlaceFailed": "Không thể lưu địa điểm này. Hãy thử lại.",
+    "lastSOSAttempt": "Lần thử SOS gần nhất",
+    "sosDialerOpened": "Đã mở trình quay số; chưa xác nhận cuộc gọi.",
+    "sosCancelled": "Đã hủy; không có cuộc gọi nào được thực hiện.",
+    "sosContactRequired": "Không có liên hệ khẩn cấp; không có cuộc gọi nào được thực hiện.",
+    "sosDialerFailed": "Không thể mở trình quay số; không có cuộc gọi nào được thực hiện.",
+    "sosUnknown": "Không thể xác nhận lần thử SOS gần nhất.",
+    "voiceConfiguration": "Trợ lý giọng nói hiện không khả dụng. Hãy thử lại sau hoặc tiếp tục với trợ lý ngoại tuyến.",
+    "editContact": "Chỉnh sửa",
+    "editContactTitle": "Chỉnh sửa liên hệ khẩn cấp",
+    "editContactAccessibility": "Chỉnh sửa %{name}",
+    "contactUpdated": "Đã cập nhật liên hệ khẩn cấp."
   }
 }

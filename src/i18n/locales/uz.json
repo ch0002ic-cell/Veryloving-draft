@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Bu versiyada ushbu kirish usuli mavjud emas.",
+    "continueAsDemo": "Demo sifatida davom etish (faqat ishlab chiqish uchun)",
+    "demoModeNotice": "Demo rejimi faqat mahalliy soxta maʼlumotlardan foydalanadi. Ulangan xizmatlarda autentifikatsiya qilinmaydi va ilova qayta yuklanganda bu seans asliga qaytadi.",
+    "authCodeInvalid": "Tasdiqlash kodi notoʻgʻri yoki eskirgan. Yangi kod soʻrang va qayta urinib koʻring.",
+    "authRateLimited": "Kirishga urinishlar juda koʻp. Biroz kutib, qayta urinib koʻring.",
+    "authTimeout": "Kirishni tasdiqlash juda uzoq davom etdi. Ulanishni tekshirib, qayta urinib koʻring.",
+    "authNetwork": "Kirish xizmatiga ulanib boʻlmadi. Ulanishni tekshirib, qayta urinib koʻring.",
+    "authSessionExpired": "Seansingiz muddati tugadi. Qayta kiring.",
+    "mapUnavailable": "Xavfsizlik xaritasini yuklab boʻlmadi. Ulanishni tekshirib, qayta urinib koʻring.",
+    "mapCachedLocation": "Jonli joylashuv mavjud emas. %{capturedAt} da saqlangan oxirgi joylashuvingiz koʻrsatilmoqda.",
+    "locationShareFailed": "Joylashuvingizni ulashib boʻlmadi. Joylashuvga kirish ruxsatini tekshirib, qayta urinib koʻring.",
+    "locationShareCurrent": "Bu mening %{capturedAt} da qayd etilgan joylashuvim:",
+    "locationShareCached": "Bu mening %{capturedAt} da qayd etilgan oxirgi saqlangan joylashuvim:",
+    "blePermission": "Bluetooth ruxsati oʻchirilgan. Uni Sozlamalarda yoqing va qayta urinib koʻring.",
+    "blePoweredOff": "Bluetooth oʻchirilgan. Uni yoqing va qayta urinib koʻring.",
+    "bleUnavailable": "Bu qurilma yoki versiyada Bluetooth orqali juftlash mavjud emas.",
+    "bleScanFailed": "NorthStar topilmadi. Uni yaqin tuting, Bluetoothni tekshiring va qayta urinib koʻring.",
+    "bleNoDevices": "Yaqin atrofda NorthStar qurilmalari topilmadi. Uni yaqin tuting va qayta qidiring.",
+    "bleConnectFailed": "NorthStarga ulanib boʻlmadi. Uni quvvatlangan holda yaqin tuting va qayta urinib koʻring.",
+    "saveCurrentPlace": "Joriy joyni saqlash",
+    "placeSaved": "Joy saqlandi.",
+    "savedPlace": "Saqlangan joy",
+    "savePlaceFailed": "Bu joyni saqlab boʻlmadi. Qayta urinib koʻring.",
+    "lastSOSAttempt": "Oxirgi SOS urinishi",
+    "sosDialerOpened": "Telefon raqam tergichi ochildi; qoʻngʻiroq tasdiqlanmadi.",
+    "sosCancelled": "Bekor qilindi; qoʻngʻiroq qilinmadi.",
+    "sosContactRequired": "Favqulodda aloqa kontakti mavjud emas edi; qoʻngʻiroq qilinmadi.",
+    "sosDialerFailed": "Telefon raqam tergichini ochib boʻlmadi; qoʻngʻiroq qilinmadi.",
+    "sosUnknown": "Oxirgi SOS urinishini tasdiqlab boʻlmadi.",
+    "voiceConfiguration": "Ovozli hamroh hozir mavjud emas. Keyinroq qayta urinib koʻring yoki oflayn hamroh bilan davom eting.",
+    "editContact": "Tahrirlash",
+    "editContactTitle": "Favqulodda aloqa kontaktini tahrirlash",
+    "editContactAccessibility": "%{name}ni tahrirlash",
+    "contactUpdated": "Favqulodda aloqa kontakti yangilandi."
   }
 }

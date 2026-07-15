@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Pilihan log masuk ini tidak tersedia dalam binaan ini.",
+    "continueAsDemo": "Teruskan sebagai demo (pembangunan sahaja)",
+    "demoModeNotice": "Mod demo hanya menggunakan data palsu setempat. Perkhidmatan yang disambungkan tidak disahkan dan sesi ini akan ditetapkan semula apabila aplikasi dimuatkan semula.",
+    "authCodeInvalid": "Kod pengesahan tidak sah atau telah tamat tempoh. Minta kod baharu dan cuba lagi.",
+    "authRateLimited": "Terlalu banyak percubaan log masuk. Tunggu sebentar, kemudian cuba lagi.",
+    "authTimeout": "Pengesahan log masuk mengambil masa terlalu lama. Semak sambungan anda dan cuba lagi.",
+    "authNetwork": "Kami tidak dapat menghubungi perkhidmatan log masuk. Semak sambungan anda dan cuba lagi.",
+    "authSessionExpired": "Sesi anda telah tamat tempoh. Log masuk semula.",
+    "mapUnavailable": "Peta keselamatan tidak dapat dimuatkan. Semak sambungan anda dan cuba lagi.",
+    "mapCachedLocation": "Lokasi langsung tidak tersedia. Menunjukkan lokasi terakhir anda yang disimpan dari %{capturedAt}.",
+    "locationShareFailed": "Kami tidak dapat berkongsi lokasi anda. Semak akses lokasi dan cuba lagi.",
+    "locationShareCurrent": "Ini lokasi saya yang direkodkan pada %{capturedAt}:",
+    "locationShareCached": "Ini lokasi terakhir saya yang disimpan dan direkodkan pada %{capturedAt}:",
+    "blePermission": "Akses Bluetooth dimatikan. Dayakannya dalam Tetapan, kemudian cuba lagi.",
+    "blePoweredOff": "Bluetooth dimatikan. Hidupkannya, kemudian cuba lagi.",
+    "bleUnavailable": "Pemasangan Bluetooth tidak tersedia pada peranti atau binaan ini.",
+    "bleScanFailed": "Kami tidak dapat menemukan NorthStar. Pastikan ia berdekatan, semak Bluetooth dan cuba lagi.",
+    "bleNoDevices": "Tiada peranti NorthStar berdekatan ditemukan. Pastikan ia berdekatan dan imbas lagi.",
+    "bleConnectFailed": "Kami tidak dapat menyambung kepada NorthStar. Pastikan ia dicas dan berdekatan, kemudian cuba lagi.",
+    "saveCurrentPlace": "Simpan tempat semasa",
+    "placeSaved": "Tempat disimpan.",
+    "savedPlace": "Tempat disimpan",
+    "savePlaceFailed": "Kami tidak dapat menyimpan tempat ini. Cuba lagi.",
+    "lastSOSAttempt": "Percubaan SOS terakhir",
+    "sosDialerOpened": "Pendail telefon dibuka; panggilan tidak disahkan.",
+    "sosCancelled": "Dibatalkan; tiada panggilan dibuat.",
+    "sosContactRequired": "Tiada kenalan kecemasan tersedia; tiada panggilan dibuat.",
+    "sosDialerFailed": "Pendail telefon tidak dapat dibuka; tiada panggilan dibuat.",
+    "sosUnknown": "Percubaan SOS terakhir tidak dapat disahkan.",
+    "voiceConfiguration": "Pembantu suara tidak tersedia buat masa ini. Cuba lagi kemudian atau teruskan dengan pembantu luar talian.",
+    "editContact": "Edit",
+    "editContactTitle": "Edit kenalan kecemasan",
+    "editContactAccessibility": "Edit %{name}",
+    "contactUpdated": "Kenalan kecemasan dikemas kini."
   }
 }

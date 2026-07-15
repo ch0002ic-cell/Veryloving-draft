@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Enkola eno ey’okuyingira teri mu nkyusa eno.",
+    "continueAsDemo": "Weyongere ng’okozesa demo (ya kukulaakulanya yokka)",
+    "demoModeNotice": "Enkola ya demo ekozesa data ey’obulimba eterekeddwa ku kyuma kyokka. Empeereza eziyungiddwa tezinnakakasibwa, era olutuula luno lutandikibwa bupya app bw’eddamu okutikkibwa.",
+    "authCodeInvalid": "Koodi y’okukakasa si ntuufu oba eggwaako. Saba koodi empya oddemu ogezeeko.",
+    "authRateLimited": "Ogezezzaako okuyingira emirundi mingi. Lindako katono, olyoke oddemu ogezeeko.",
+    "authTimeout": "Okukakasa okuyingira kututte ekiseera kiwanvu nnyo. Kebera omukutu gwo oddemu ogezeeko.",
+    "authNetwork": "Tetusoose kutuuka ku mpeereza y’okuyingira. Kebera omukutu gwo oddemu ogezeeko.",
+    "authSessionExpired": "Olutuula lwo luweddeko. Ddamu oyingire.",
+    "mapUnavailable": "Maapu y’obukuumi tesobodde kutikkibwa. Kebera omukutu gwo oddemu ogezeeko.",
+    "mapCachedLocation": "Ekifo ky’oli kati tekirabika. Tukulaga ekifo kyo ekyasembayo okuterekebwa ku %{capturedAt}.",
+    "locationShareFailed": "Tetusoose kugabana kifo kyo. Kebera olukusa lw’ekifo oddemu ogezeeko.",
+    "locationShareCurrent": "Kino kye kifo kyange ekyawandiikiddwa ku %{capturedAt}:",
+    "locationShareCached": "Kino kye kifo kyange ekyasembayo okuterekebwa, ekyawandiikiddwa ku %{capturedAt}:",
+    "blePermission": "Olukusa lwa Bluetooth luggaddwa. Luggule mu Nteekateeka, oddemu ogezeeko.",
+    "blePoweredOff": "Bluetooth eggaddwa. Giggule, oddemu ogezeeko.",
+    "bleUnavailable": "Okuyunga ku Bluetooth tekuli ku kyuma kino oba mu nkyusa eno.",
+    "bleScanFailed": "Tetusoose kuzuula NorthStar. Gikuumire kumpi, kebera Bluetooth, oddemu ogezeeko.",
+    "bleNoDevices": "Tewali byuma bya NorthStar bizuuliddwa kumpi. Gikuumire kumpi oddemu okunoonya.",
+    "bleConnectFailed": "Tetusoose kuyunga ku NorthStar. Gikuumire ng’erimu omuliro era nga eri kumpi, oddemu ogezeeko.",
+    "saveCurrentPlace": "Tereka ekifo ky’oli kati",
+    "placeSaved": "Ekifo kiterekeddwa.",
+    "savedPlace": "Ekifo ekiterekeddwa",
+    "savePlaceFailed": "Tetusoose kutereka kifo kino. Ddamu ogezeeko.",
+    "lastSOSAttempt": "Okugezaako kwa SOS okwasembayo",
+    "sosDialerOpened": "Eky’okukubirako essimu kigguddwa; okukuba essimu tekukakasiddwa.",
+    "sosCancelled": "Kisaziddwamu; tewali ssimu yakubiddwa.",
+    "sosContactRequired": "Tewali muntu wa mbeera ya mangu abaddewo; tewali ssimu yakubiddwa.",
+    "sosDialerFailed": "Eky’okukubirako essimu tekisobodde kugguka; tewali ssimu yakubiddwa.",
+    "sosUnknown": "Okugezaako kwa SOS okwasembayo tekusobodde kukakasibwa.",
+    "voiceConfiguration": "Omuyambi ow’eddoboozi taliwo kati. Ddamu ogezeeko oluvannyuma oba weeyongere n’omuyambi atalina mukutu.",
+    "editContact": "Kyusa",
+    "editContactTitle": "Kyusa omuntu ow’omu mbeera ya mangu",
+    "editContactAccessibility": "Kyusa %{name}",
+    "contactUpdated": "Omuntu ow’omu mbeera ya mangu akyusiddwa."
   }
 }

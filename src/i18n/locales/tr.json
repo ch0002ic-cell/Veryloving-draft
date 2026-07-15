@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Bu oturum açma seçeneği bu derlemede kullanılamıyor.",
+    "continueAsDemo": "Demo olarak devam et (yalnızca geliştirme)",
+    "demoModeNotice": "Demo modu yalnızca yerel sahte verileri kullanır. Bağlı hizmetlerde kimlik doğrulanmaz ve uygulama yeniden yüklendiğinde bu oturum sıfırlanır.",
+    "authCodeInvalid": "Doğrulama kodu geçersiz veya süresi dolmuş. Yeni bir kod isteyip tekrar deneyin.",
+    "authRateLimited": "Çok fazla oturum açma denemesi yapıldı. Biraz bekleyip tekrar deneyin.",
+    "authTimeout": "Oturum açma doğrulaması çok uzun sürdü. Bağlantınızı kontrol edip tekrar deneyin.",
+    "authNetwork": "Oturum açma hizmetine ulaşılamadı. Bağlantınızı kontrol edip tekrar deneyin.",
+    "authSessionExpired": "Oturumunuzun süresi doldu. Tekrar oturum açın.",
+    "mapUnavailable": "Güvenlik haritası yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+    "mapCachedLocation": "Canlı konum kullanılamıyor. %{capturedAt} tarihindeki son kayıtlı konumunuz gösteriliyor.",
+    "locationShareFailed": "Konumunuz paylaşılamadı. Konum erişimini kontrol edip tekrar deneyin.",
+    "locationShareCurrent": "%{capturedAt} tarihinde kaydedilen konumum:",
+    "locationShareCached": "%{capturedAt} tarihinde kaydedilen son konumum:",
+    "blePermission": "Bluetooth erişimi kapalı. Ayarlar'dan etkinleştirip tekrar deneyin.",
+    "blePoweredOff": "Bluetooth kapalı. Açıp tekrar deneyin.",
+    "bleUnavailable": "Bluetooth eşleştirmesi bu cihazda veya derlemede kullanılamıyor.",
+    "bleScanFailed": "NorthStar bulunamadı. Yakınınızda tutun, Bluetooth bağlantısını kontrol edin ve tekrar deneyin.",
+    "bleNoDevices": "Yakında NorthStar cihazı bulunamadı. Cihazı yakınınızda tutup tekrar tarayın.",
+    "bleConnectFailed": "NorthStar cihazına bağlanılamadı. Şarj edilmiş hâlde yakınınızda tutup tekrar deneyin.",
+    "saveCurrentPlace": "Mevcut yeri kaydet",
+    "placeSaved": "Yer kaydedildi.",
+    "savedPlace": "Kayıtlı yer",
+    "savePlaceFailed": "Bu yer kaydedilemedi. Tekrar deneyin.",
+    "lastSOSAttempt": "Son SOS denemesi",
+    "sosDialerOpened": "Telefon tuş takımı açıldı; arama onaylanmadı.",
+    "sosCancelled": "İptal edildi; arama yapılmadı.",
+    "sosContactRequired": "Kullanılabilir acil durum kişisi yoktu; arama yapılmadı.",
+    "sosDialerFailed": "Telefon tuş takımı açılamadı; arama yapılmadı.",
+    "sosUnknown": "Son SOS denemesi doğrulanamadı.",
+    "voiceConfiguration": "Sesli yardımcı şu anda kullanılamıyor. Daha sonra tekrar deneyin veya çevrimdışı yardımcıyla devam edin.",
+    "editContact": "Düzenle",
+    "editContactTitle": "Acil durum kişisini düzenle",
+    "editContactAccessibility": "%{name} adlı kişiyi düzenle",
+    "contactUpdated": "Acil durum kişisi güncellendi."
   }
 }

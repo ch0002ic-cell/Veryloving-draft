@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Lendlela yekungena ayitfolakali kuloluhlobo.",
+    "continueAsDemo": "Chubeka ngemodi yekuhlola (yekutfutfukisa kuphela)",
+    "demoModeNotice": "Imodi yekuhlola isebentisa idatha yemanga yasendzaweni kuphela. Tinsita letichunyiwe atikacinisekiswa, futsi leseshini icala kabusha uma i-app ilayishwa kabusha.",
+    "authCodeInvalid": "Ikhodi yekucinisekisa ayikalungi noma isiphelelwe sikhatsi. Cela ikhodi lensha bese uyetama futsi.",
+    "authRateLimited": "Imitamo yekungena miningana kakhulu. Linda sikhashana, bese uyetama futsi.",
+    "authTimeout": "Kucinisekisa kungena kutsatse sikhatsi lesidze kakhulu. Hlola kuchumana kwakho bese uyetama futsi.",
+    "authNetwork": "Asikhonanga kufinyelela insita yekungena. Hlola kuchumana kwakho bese uyetama futsi.",
+    "authSessionExpired": "Iseshini yakho isiphelelwe sikhatsi. Ngena futsi.",
+    "mapUnavailable": "Libalave lekuphepha alikhonanga kulayisha. Hlola kuchumana kwakho bese uyetama futsi.",
+    "mapCachedLocation": "Indzawo lebukhoma ayitfolakali. Kuboniswa indzawo yakho yekugcina leyagcinwa nga-%{capturedAt}.",
+    "locationShareFailed": "Asikhonanga kwabelana ngendzawo yakho. Hlola imvume yendzawo bese uyetama futsi.",
+    "locationShareCurrent": "Nayi indzawo yami leyarekhodwa nga-%{capturedAt}:",
+    "locationShareCached": "Nayi indzawo yami yekugcina leyagcinwa, yarekhodwa nga-%{capturedAt}:",
+    "blePermission": "Kufinyelela ku-Bluetooth kuvaliwe. Kuvule ku-Settings, bese uyetama futsi.",
+    "blePoweredOff": "Bluetooth icishiwe. Yivule, bese uyetama futsi.",
+    "bleUnavailable": "Kubhanqa nge-Bluetooth akutfolakali kulolucingo noma kuloluhlobo.",
+    "bleScanFailed": "Asikhonanga kutfola NorthStar. Yigcine isedvute, hlola Bluetooth, bese uyetama futsi.",
+    "bleNoDevices": "Kute emadivayisi e-NorthStar lasedvute latfolakele. Yigcine isedvute bese usesha futsi.",
+    "bleConnectFailed": "Asikhonanga kuchumana ne-NorthStar. Yigcine ishajiwe futsi isedvute, bese uyetama futsi.",
+    "saveCurrentPlace": "Gcina indzawo yamanje",
+    "placeSaved": "Indzawo igciniwe.",
+    "savedPlace": "Indzawo legciniwe",
+    "savePlaceFailed": "Asikhonanga kugcina lendzawo. Yetama futsi.",
+    "lastSOSAttempt": "Umetamo wekugcina we-SOS",
+    "sosDialerOpened": "Sidayeli selucingo sivulekile; lucingo alukacinisekiswa.",
+    "sosCancelled": "Kukhanseliwe; kute lucingo lolushayiwe.",
+    "sosContactRequired": "Bekute umuntfu wekutfintsana naye esimeni lesiphutfumako; kute lucingo lolushayiwe.",
+    "sosDialerFailed": "Sidayeli selucingo asikhonanga kuvuleka; kute lucingo lolushayiwe.",
+    "sosUnknown": "Umetamo wekugcina we-SOS awukhonanga kucinisekiswa.",
+    "voiceConfiguration": "Umsiti welivi akatfolakali nyalo. Yetama futsi ngekuhamba kwesikhatsi noma uchubeke nemsiti longasebentisi i-inthanethi.",
+    "editContact": "Hlela",
+    "editContactTitle": "Hlela umuntfu wekutfintsana naye esimeni lesiphutfumako",
+    "editContactAccessibility": "Hlela %{name}",
+    "contactUpdated": "Umuntfu wekutfintsana naye esimeni lesiphutfumako ubuyeketiwe."
   }
 }

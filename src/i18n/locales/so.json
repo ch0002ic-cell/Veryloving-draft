@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Habkan gelitaanka lagama heli karo noocan.",
+    "continueAsDemo": "Ku sii wad habka tijaabada (horumarinta oo keliya)",
+    "demoModeNotice": "Habka tijaabadu wuxuu isticmaalaa oo keliya xog been-abuur ah oo gudaha ah. Adeegyada ku xiran lama xaqiijin, fadhiganna dib ayuu u bilaabmaa marka abka dib loo raro.",
+    "authCodeInvalid": "Koodhka xaqiijintu waa khaldan yahay ama wuu dhacay. Codso koodh cusub oo mar kale isku day.",
+    "authRateLimited": "Isku-dayo gelitaan oo aad u badan. Wax yar sug, dabadeed mar kale isku day.",
+    "authTimeout": "Xaqiijinta gelitaanku waqti dheer ayay qaadatay. Hubi isku-xirkaaga oo mar kale isku day.",
+    "authNetwork": "Ma aannu gaari karin adeegga gelitaanka. Hubi isku-xirkaaga oo mar kale isku day.",
+    "authSessionExpired": "Fadhigaagu wuu dhacay. Mar kale gal.",
+    "mapUnavailable": "Khariidadda badbaadada lama soo rari karin. Hubi isku-xirkaaga oo mar kale isku day.",
+    "mapCachedLocation": "Goobta tooska ah lama heli karo. Waxaa la muujinayaa goobtaadii ugu dambaysay ee la kaydiyey %{capturedAt}.",
+    "locationShareFailed": "Ma aannu wadaagi karin goobtaada. Hubi oggolaanshaha goobta oo mar kale isku day.",
+    "locationShareCurrent": "Waa tan goobtayda la diiwaangeliyey %{capturedAt}:",
+    "locationShareCached": "Waa tan goobtaydii ugu dambaysay ee la kaydiyey, lana diiwaangeliyey %{capturedAt}:",
+    "blePermission": "Gelitaanka Bluetooth waa dansan yahay. Ka daar Dejimaha, dabadeed mar kale isku day.",
+    "blePoweredOff": "Bluetooth waa dansan yahay. Daar, dabadeed mar kale isku day.",
+    "bleUnavailable": "Isku-xidhka Bluetooth lagama heli karo qalabkan ama noocan.",
+    "bleScanFailed": "Ma aannu heli karin NorthStar. Ku hay meel dhow, hubi Bluetooth, oo mar kale isku day.",
+    "bleNoDevices": "Wax qalab NorthStar ah oo dhow lama helin. Ku hay meel dhow oo mar kale raadi.",
+    "bleConnectFailed": "Ma aannu ku xirmi karin NorthStar. Hubi inuu dallacan yahay oo kuu dhow yahay, dabadeed mar kale isku day.",
+    "saveCurrentPlace": "Kaydi goobta hadda",
+    "placeSaved": "Goobta waa la kaydiyey.",
+    "savedPlace": "Goob la kaydiyey",
+    "savePlaceFailed": "Ma aannu kaydin karin goobtan. Mar kale isku day.",
+    "lastSOSAttempt": "Isku-daygii SOS ee ugu dambeeyey",
+    "sosDialerOpened": "Lambargeliyaha taleefanka waa furmay; wicitaanka lama xaqiijin.",
+    "sosCancelled": "Waa la joojiyey; wax wicitaan ah lama samayn.",
+    "sosContactRequired": "Xiriir degdeg ah lama helin; wax wicitaan ah lama samayn.",
+    "sosDialerFailed": "Lambargeliyaha taleefanka lama furi karin; wax wicitaan ah lama samayn.",
+    "sosUnknown": "Isku-daygii SOS ee ugu dambeeyey lama xaqiijin karin.",
+    "voiceConfiguration": "Wehelka codka hadda lama heli karo. Mar kale isku day goor dambe ama ku sii wad wehelka aan internetka u baahnayn.",
+    "editContact": "Wax ka beddel",
+    "editContactTitle": "Wax ka beddel xiriirka degdegga ah",
+    "editContactAccessibility": "Wax ka beddel %{name}",
+    "contactUpdated": "Xiriirka degdegga ah waa la cusboonaysiiyey."
   }
 }

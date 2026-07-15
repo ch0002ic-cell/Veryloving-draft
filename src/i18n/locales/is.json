@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Þessi innskráningarleið er ekki í boði í þessari útgáfu.",
+    "continueAsDemo": "Halda áfram í kynningarham (aðeins fyrir þróun)",
+    "demoModeNotice": "Kynningarhamur notar eingöngu staðbundin sýndargögn. Tengdar þjónustur eru ekki auðkenndar og lotan endurstillist þegar forritið er endurhlaðið.",
+    "authCodeInvalid": "Staðfestingarkóðinn er ógildur eða útrunninn. Biddu um nýjan kóða og reyndu aftur.",
+    "authRateLimited": "Of margar innskráningartilraunir. Bíddu aðeins og reyndu svo aftur.",
+    "authTimeout": "Staðfesting innskráningar tók of langan tíma. Athugaðu tenginguna og reyndu aftur.",
+    "authNetwork": "Ekki tókst að tengjast innskráningarþjónustunni. Athugaðu tenginguna og reyndu aftur.",
+    "authSessionExpired": "Lotan þín er útrunnin. Skráðu þig inn aftur.",
+    "mapUnavailable": "Ekki tókst að hlaða öryggiskortinu. Athugaðu tenginguna og reyndu aftur.",
+    "mapCachedLocation": "Rauntímastaðsetning er ekki tiltæk. Sýni síðustu vistuðu staðsetningu þína frá %{capturedAt}.",
+    "locationShareFailed": "Ekki tókst að deila staðsetningunni þinni. Athugaðu staðsetningarheimild og reyndu aftur.",
+    "locationShareCurrent": "Hér er staðsetning mín, skráð %{capturedAt}:",
+    "locationShareCached": "Hér er síðasta vistaða staðsetning mín, skráð %{capturedAt}:",
+    "blePermission": "Slökkt er á aðgangi að Bluetooth. Kveiktu á honum í Stillingum og reyndu aftur.",
+    "blePoweredOff": "Slökkt er á Bluetooth. Kveiktu á því og reyndu aftur.",
+    "bleUnavailable": "Pörun með Bluetooth er ekki í boði í þessu tæki eða þessari útgáfu.",
+    "bleScanFailed": "Ekki tókst að finna NorthStar. Hafðu það nálægt, athugaðu Bluetooth og reyndu aftur.",
+    "bleNoDevices": "Engin NorthStar-tæki fundust í nágrenninu. Hafðu það nálægt og leitaðu aftur.",
+    "bleConnectFailed": "Ekki tókst að tengjast NorthStar. Hafðu það hlaðið og nálægt og reyndu aftur.",
+    "saveCurrentPlace": "Vista núverandi stað",
+    "placeSaved": "Staður vistaður.",
+    "savedPlace": "Vistaður staður",
+    "savePlaceFailed": "Ekki tókst að vista þennan stað. Reyndu aftur.",
+    "lastSOSAttempt": "Síðasta SOS-tilraun",
+    "sosDialerOpened": "Símaforritið opnaðist; símtal er ekki staðfest.",
+    "sosCancelled": "Hætt við; ekkert símtal var hringt.",
+    "sosContactRequired": "Enginn neyðartengiliður var tiltækur; ekkert símtal var hringt.",
+    "sosDialerFailed": "Ekki tókst að opna símaforritið; ekkert símtal var hringt.",
+    "sosUnknown": "Ekki tókst að staðfesta síðustu SOS-tilraun.",
+    "voiceConfiguration": "Raddaðstoð er ekki tiltæk núna. Reyndu aftur síðar eða haltu áfram með aðstoð án nettengingar.",
+    "editContact": "Breyta",
+    "editContactTitle": "Breyta neyðartengilið",
+    "editContactAccessibility": "Breyta %{name}",
+    "contactUpdated": "Neyðartengiliður uppfærður."
   }
 }

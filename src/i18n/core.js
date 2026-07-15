@@ -1,6 +1,5 @@
 import { I18n } from 'i18n-js';
 import languageCatalog from './languages';
-import releaseCriticalMessages from './release-critical-messages';
 
 export const DEFAULT_LANGUAGE = 'en';
 export const SYSTEM_LANGUAGE = 'system';
@@ -38,36 +37,14 @@ export function selectRuntimeLanguageCodes({
 }
 
 export const supportedLanguages = selectRuntimeLanguageCodes();
-export const releaseCriticalTranslatedLanguages = Object.freeze(Object.keys(releaseCriticalMessages));
-const releaseCriticalTranslatedLanguageSet = new Set(releaseCriticalTranslatedLanguages);
-export const releaseCriticalFallbackLanguages = Object.freeze(
-  supportedLanguages.filter((code) => !releaseCriticalTranslatedLanguageSet.has(code))
-);
-
-export function releaseCriticalMessagesForLanguage(languageCode) {
-  // The full-catalog QA profile must never expose raw i18n missing-key text in
-  // authentication or safety flows. Until the newer critical overlay is
-  // translated for a catalog, use the complete English fail-safe explicitly
-  // and surface that status in the language picker. i18n's implicit fallback
-  // remains disabled, so this cannot conceal arbitrary catalog drift.
-  return releaseCriticalMessages[languageCode] || releaseCriticalMessages[DEFAULT_LANGUAGE];
-}
-
 export const translations = Object.fromEntries(
   languageCatalog
     .filter((language) => supportedLanguages.includes(language.code))
-    .map((language) => [language.code, {
-      ...language.messages,
-      releaseCritical: releaseCriticalMessagesForLanguage(language.code)
-    }])
+    .map((language) => [language.code, language.messages])
 );
 export const languageOptions = languageCatalog
   .filter((language) => language.code === SYSTEM_LANGUAGE || supportedLanguages.includes(language.code))
-  .map(({ messages, ...language }) => ({
-    ...language,
-    usesEnglishReleaseCriticalFallback: language.code !== SYSTEM_LANGUAGE
-      && !releaseCriticalTranslatedLanguageSet.has(language.code)
-  }));
+  .map(({ messages, ...language }) => language);
 
 function normalizeLanguageSearchValue(value) {
   return String(value || '')

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Aquesta opció d'inici de sessió no està disponible en aquesta versió.",
+    "continueAsDemo": "Continua com a demostració (només per a desenvolupament)",
+    "demoModeNotice": "El mode de demostració només utilitza dades locals fictícies. Els serveis connectats no estan autenticats i la sessió es reinicia quan l'aplicació es torna a carregar.",
+    "authCodeInvalid": "El codi de verificació no és vàlid o ha caducat. Sol·licita'n un de nou i torna-ho a provar.",
+    "authRateLimited": "Massa intents d'inici de sessió. Espera un moment i torna-ho a provar.",
+    "authTimeout": "La verificació de l'inici de sessió ha trigat massa. Comprova la connexió i torna-ho a provar.",
+    "authNetwork": "No hem pogut accedir al servei d'inici de sessió. Comprova la connexió i torna-ho a provar.",
+    "authSessionExpired": "La sessió ha caducat. Torna a iniciar la sessió.",
+    "mapUnavailable": "No s'ha pogut carregar el mapa de seguretat. Comprova la connexió i torna-ho a provar.",
+    "mapCachedLocation": "La ubicació en directe no està disponible. Es mostra l'última ubicació desada de %{capturedAt}.",
+    "locationShareFailed": "No hem pogut compartir la teva ubicació. Comprova l'accés a la ubicació i torna-ho a provar.",
+    "locationShareCurrent": "Aquesta és la meva ubicació registrada a les %{capturedAt}:",
+    "locationShareCached": "Aquesta és la meva última ubicació desada, registrada a les %{capturedAt}:",
+    "blePermission": "L'accés a Bluetooth està desactivat. Activa'l a Configuració i torna-ho a provar.",
+    "blePoweredOff": "Bluetooth està desactivat. Activa'l i torna-ho a provar.",
+    "bleUnavailable": "L'aparellament per Bluetooth no està disponible en aquest dispositiu o versió.",
+    "bleScanFailed": "No hem pogut trobar NorthStar. Mantén-lo a prop, comprova Bluetooth i torna-ho a provar.",
+    "bleNoDevices": "No s'ha trobat cap dispositiu NorthStar proper. Mantén-lo a prop i torna a cercar.",
+    "bleConnectFailed": "No hem pogut connectar-nos a NorthStar. Mantén-lo carregat i a prop i torna-ho a provar.",
+    "saveCurrentPlace": "Desa el lloc actual",
+    "placeSaved": "Lloc desat.",
+    "savedPlace": "Lloc desat",
+    "savePlaceFailed": "No hem pogut desar aquest lloc. Torna-ho a provar.",
+    "lastSOSAttempt": "Últim intent de SOS",
+    "sosDialerOpened": "S'ha obert el marcador del telèfon; la trucada no està confirmada.",
+    "sosCancelled": "Cancel·lat; no s'ha fet cap trucada.",
+    "sosContactRequired": "No hi havia cap contacte d'emergència disponible; no s'ha fet cap trucada.",
+    "sosDialerFailed": "No s'ha pogut obrir el marcador del telèfon; no s'ha fet cap trucada.",
+    "sosUnknown": "No s'ha pogut confirmar l'últim intent de SOS.",
+    "voiceConfiguration": "L'acompanyant de veu no està disponible ara mateix. Torna-ho a provar més tard o continua amb l'acompanyant sense connexió.",
+    "editContact": "Edita",
+    "editContactTitle": "Edita el contacte d'emergència",
+    "editContactAccessibility": "Edita %{name}",
+    "contactUpdated": "Contacte d'emergència actualitzat."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Isernissamut periarfissaq una build-imi matumani atorneqarsinnaanngilaq.",
+    "continueAsDemo": "Demo-tut ingerlaqqigit (ineriartortitsinermi בלבד)",
+    "demoModeNotice": "Demo-mode-mi taamaallaat sumiiffimmi paasissutissat salluliat atorneqartarput. Kiffartuussissutit attavillit kinaassusersiorneqanngillat, app-ilu reload-erpat session una nuleriissaaq.",
+    "authCodeInvalid": "Uppernarsaanermut kode atuutinngilaq imaluunniit pisoqaavoq. Kode nutaaq qinnutigပြီးeqqillutillu.",
+    "authRateLimited": "Iserniarnerit amerlavallaarput. Utaqqilaariarlutit misileqqigit.",
+    "authTimeout": "Isernissamut uppernarsaanneq sivisuallaarpoq. Att اتصالissutit misissoriarlugu misileqqigit.",
+    "authNetwork": "Isernissamut kiffartuussissut attavigisinnaanngilarput. Att اتصالissutit misissoriarlugu misileqqigit.",
+    "authSessionExpired": "Sessionit pisoqaavoq. Iseqqigit.",
+    "mapUnavailable": "Isumannaallisaanermut nun карта загрузкаarsinnaanngilaq. Att اتصالissutit misissoriarlugu misileqqigit.",
+    "mapCachedLocation": "Maannakkut sumiiffik उपलब्धanngilaq. Sumiiffik kingullermik %{capturedAt}-imi toqqorneqartoq көрсетneqarpoq.",
+    "locationShareFailed": "Sumiiffiit avinneqarsinnaanngilaq. Sumiiffimmut access misissoriarlugu misileqqigit.",
+    "locationShareCurrent": "Sumiiffiga %{capturedAt}-imi nalunaarsorneqartoq unaavoq:",
+    "locationShareCached": "Sumiiffiga kingullermik %{capturedAt}-imi toqqorneqarlunilu nalunaarsorneqartoq unaavoq:",
+    "blePermission": "Bluetooth-imut access выключено. Settings-imi фаъолериarlugu misileqqigit.",
+    "blePoweredOff": "Bluetooth выключено. Активерeriarlugu misileqqigit.",
+    "bleUnavailable": "Bluetooth pairing устройство imaluunniit build una atorlugu periarfissaanngilaq.",
+    "bleScanFailed": "NorthStar nassaarisinnaanngilarput. Qanitsillugu, Bluetooth misissoriarlugu misileqqigit.",
+    "bleNoDevices": "NorthStar-it qanittut nassaarineqanngillat. Qanitsillugu scan-eqqigit.",
+    "bleConnectFailed": "NorthStar-imut att连接arsinnaanngilarput. Charge-qarnera qan proximity-qarneralu qulakkeeriarlugit misileqqigit.",
+    "saveCurrentPlace": "Sumiiffik maanna toqqoruk",
+    "placeSaved": "Sumiiffik toqqorneqarpoq.",
+    "savedPlace": "Sumiiffik toqqorneqartoq",
+    "savePlaceFailed": "Sumiiffik una toqqarsinnaanngilarput. Misileqqigit.",
+    "lastSOSAttempt": "SOS kingullermik misilinneqarnera",
+    "sosDialerOpened": "Oqarasuaatip normunut ikkussivia ammarpoq; sianerneq uppernarsarneqanngilaq.",
+    "sosCancelled": "Unitsinneqarpoq; sianertoqanngilaq.",
+    "sosContactRequired": "Ajornartoornermi attaveqarfissaq उपलब्धanngilaq; sianertoqanngilaq.",
+    "sosDialerFailed": "Oqarasuaatip normunut ikkussivia ammarsinnaanngilaq; sianertoqanngilaq.",
+    "sosUnknown": "SOS kingullermik misilinneqarnera uppernarsarneqarsinnaanngilaq.",
+    "voiceConfiguration": "Nipimik ikinngut maanna atorneqarsinnaanngilaq. Kingusinnerusukkut misileqqigit imaluunniit offline companion atorlugu ingerlaqqigit.",
+    "editContact": "Aaqqissugassaq",
+    "editContactTitle": "Ajornartoornermi attaveqarfissaq aaqqissugassaq",
+    "editContactAccessibility": "%{name} aaqqissugassaq",
+    "contactUpdated": "Ajornartoornermi attaveqarfissaq nutarterneqarpoq."
   }
 }

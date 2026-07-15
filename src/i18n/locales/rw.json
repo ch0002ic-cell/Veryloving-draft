@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ubu buryo bwo kwinjira ntibuboneka muri iyi verisiyo.",
+    "continueAsDemo": "Komeza nk'igerageza (mu iterambere gusa)",
+    "demoModeNotice": "Uburyo bw'igerageza bukoresha gusa amakuru y'impimbano abitswe kuri iki gikoresho. Serivisi zihujwe ntizemejwe, kandi iyi sesiyo isubirwamo iyo porogaramu yongeye gufungurwa.",
+    "authCodeInvalid": "Kode yo kwemeza ntiyemewe cyangwa yararengeje igihe. Saba kode nshya, wongere ugerageze.",
+    "authRateLimited": "Wagerageje kwinjira inshuro nyinshi cyane. Tegereza gato, wongere ugerageze.",
+    "authTimeout": "Kwemeza kwinjira byatinze cyane. Reba interineti yawe, wongere ugerageze.",
+    "authNetwork": "Ntitwashoboye kugera kuri serivisi yo kwinjira. Reba interineti yawe, wongere ugerageze.",
+    "authSessionExpired": "Sesiyo yawe yarangiye. Ongera winjire.",
+    "mapUnavailable": "Ikarita y'umutekano ntiyashoboye gufunguka. Reba interineti yawe, wongere ugerageze.",
+    "mapCachedLocation": "Aho uri ubu ntihaboneka. Harerekanwa aho uheruka kubika kuva %{capturedAt}.",
+    "locationShareFailed": "Ntitwashoboye gusangiza aho uri. Reba uburenganzira bwo kubona aho uri, wongere ugerageze.",
+    "locationShareCurrent": "Dore aho nari ndi igihe cyanditswe kuri %{capturedAt}:",
+    "locationShareCached": "Dore aho mperuka kubika, handitswe kuri %{capturedAt}:",
+    "blePermission": "Uburenganzira bwa Bluetooth burazimye. Bwemere muri Igenamiterere, wongere ugerageze.",
+    "blePoweredOff": "Bluetooth irazimye. Yicane, wongere ugerageze.",
+    "bleUnavailable": "Guhuza na Bluetooth ntibiboneka kuri iki gikoresho cyangwa iyi verisiyo.",
+    "bleScanFailed": "Ntitwashoboye kubona NorthStar. Yigumize hafi, reba Bluetooth, wongere ugerageze.",
+    "bleNoDevices": "Nta bikoresho bya NorthStar biri hafi byabonetse. Yigumize hafi, wongere ushakishe.",
+    "bleConnectFailed": "Ntitwashoboye guhuza na NorthStar. Menya ko ifite umuriro kandi iri hafi, wongere ugerageze.",
+    "saveCurrentPlace": "Bika aho uri ubu",
+    "placeSaved": "Ahantu habitswe.",
+    "savedPlace": "Ahantu habitswe",
+    "savePlaceFailed": "Ntitwashoboye kubika aha hantu. Ongera ugerageze.",
+    "lastSOSAttempt": "Igerageza rya SOS riheruka",
+    "sosDialerOpened": "Aho guhamagarira kuri telefoni harafungutse; guhamagara ntikwemejwe.",
+    "sosCancelled": "Byahagaritswe; nta guhamagara kwabaye.",
+    "sosContactRequired": "Nta muntu wo gutabaza wabonetse; nta guhamagara kwabaye.",
+    "sosDialerFailed": "Aho guhamagarira kuri telefoni ntihashoboye gufunguka; nta guhamagara kwabaye.",
+    "sosUnknown": "Igerageza rya SOS riheruka ntiryashoboye kwemezwa.",
+    "voiceConfiguration": "Mugenzi w'ijwi ntaboneka ubu. Ongera ugerageze nyuma cyangwa ukomeze ukoreshe mugenzi udakenera interineti.",
+    "editContact": "Hindura",
+    "editContactTitle": "Hindura umuntu wo gutabaza",
+    "editContactAccessibility": "Hindura %{name}",
+    "contactUpdated": "Umuntu wo gutabaza yavuguruwe."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Jekjek in etal ñan sign-in ejjab maroñ jerbal ilo build in.",
+    "continueAsDemo": "Wōnmaanlok āinwōt demo (ñan development wōt)",
+    "demoModeNotice": "Demo mode ej kōjerbal local fake data wōt. Connected services rejjab authenticated, im session in enaaj bar jino ñe app eo ej bar load.",
+    "authCodeInvalid": "Verification code eo ejjab jimwe ak emōj an expired. Kajjitōk code eo ekāāl im bar kajjioñ.",
+    "authRateLimited": "Elōñ an kar kajjioñ sign-in. Kottar jidik, innem bar kajjioñ.",
+    "authTimeout": "Sign-in verification eo eaitokļọk. Etale connection eo am im bar kajjioñ.",
+    "authNetwork": "Kōmijjab maroñ tōpar sign-in service eo. Etale connection eo am im bar kajjioñ.",
+    "authSessionExpired": "Session eo am emōj an expired. Bar sign in.",
+    "mapUnavailable": "Safety map eo ejjab maroñ load. Etale connection eo am im bar kajjioñ.",
+    "mapCachedLocation": "Live location ejjab bellọk. Ej kwalok location eo am āliktata kar save ilo %{capturedAt}.",
+    "locationShareFailed": "Kōmijjab maroñ share location eo am. Etale location access im bar kajjioñ.",
+    "locationShareCurrent": "Ijin ej location eo aō kar record ilo %{capturedAt}:",
+    "locationShareCached": "Ijin ej location eo aō āliktata kar save im record ilo %{capturedAt}:",
+    "blePermission": "Bluetooth access ej off. Kōjerbale ilo Settings, innem bar kajjioñ.",
+    "blePoweredOff": "Bluetooth ej off. Kōjerbale, innem bar kajjioñ.",
+    "bleUnavailable": "Bluetooth pairing ejjab bellọk ilo device ak build in.",
+    "bleScanFailed": "Kōmijjab maroñ lo NorthStar. Kōjparok bwe en pād turim, etale Bluetooth, im bar kajjioñ.",
+    "bleNoDevices": "Ejelọk NorthStar device iturin kar loe. Kōjparok bwe en pād turim im bar scan.",
+    "bleConnectFailed": "Kōmijjab maroñ connect ñan NorthStar. Kōjparok bwe en charged im pād turim, innem bar kajjioñ.",
+    "saveCurrentPlace": "Save location in",
+    "placeSaved": "Emōj save location eo.",
+    "savedPlace": "Location eo emōj save",
+    "savePlaceFailed": "Kōmijjab maroñ save location in. Bar kajjioñ.",
+    "lastSOSAttempt": "Kajjioñ SOS eo āliktata",
+    "sosDialerOpened": "Phone dialer eo emōj an bellọk; ejjab confirmed call eo.",
+    "sosCancelled": "Emōj cancel; ejelọk call kar kōmmani.",
+    "sosContactRequired": "Ejelọk emergency contact kar bellọk; ejelọk call kar kōmmani.",
+    "sosDialerFailed": "Phone dialer eo ejjab maroñ bellọk; ejelọk call kar kōmmani.",
+    "sosUnknown": "Kajjioñ SOS eo āliktata ejjab maroñ confirmed.",
+    "voiceConfiguration": "Voice companion eo ejjab bellọk kiiō. Bar kajjioñ tokālik ak wōnmaanlok ippān offline companion eo.",
+    "editContact": "Ukōt",
+    "editContactTitle": "Ukōt emergency contact",
+    "editContactAccessibility": "Ukōt %{name}",
+    "contactUpdated": "Emōj ukōt emergency contact eo."
   }
 }

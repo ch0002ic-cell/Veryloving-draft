@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "이 빌드에서는 이 로그인 옵션을 사용할 수 없습니다.",
+    "continueAsDemo": "데모로 계속하기(개발 전용)",
+    "demoModeNotice": "데모 모드는 로컬의 가상 데이터만 사용합니다. 연결된 서비스는 인증되지 않으며 앱을 다시 불러오면 이 세션이 초기화됩니다.",
+    "authCodeInvalid": "인증 코드가 잘못되었거나 만료되었습니다. 새 코드를 요청한 후 다시 시도하세요.",
+    "authRateLimited": "로그인 시도가 너무 많습니다. 잠시 기다린 후 다시 시도하세요.",
+    "authTimeout": "로그인 인증 시간이 초과되었습니다. 연결 상태를 확인하고 다시 시도하세요.",
+    "authNetwork": "로그인 서비스에 연결할 수 없습니다. 연결 상태를 확인하고 다시 시도하세요.",
+    "authSessionExpired": "세션이 만료되었습니다. 다시 로그인하세요.",
+    "mapUnavailable": "안전 지도를 불러올 수 없습니다. 연결 상태를 확인하고 다시 시도하세요.",
+    "mapCachedLocation": "실시간 위치를 사용할 수 없습니다. %{capturedAt}에 마지막으로 저장된 위치를 표시합니다.",
+    "locationShareFailed": "위치를 공유할 수 없습니다. 위치 접근 권한을 확인하고 다시 시도하세요.",
+    "locationShareCurrent": "%{capturedAt}에 기록된 내 위치입니다:",
+    "locationShareCached": "%{capturedAt}에 기록된 내 마지막 저장 위치입니다:",
+    "blePermission": "Bluetooth 접근이 꺼져 있습니다. 설정에서 활성화한 후 다시 시도하세요.",
+    "blePoweredOff": "Bluetooth가 꺼져 있습니다. 켠 후 다시 시도하세요.",
+    "bleUnavailable": "이 기기 또는 빌드에서는 Bluetooth 페어링을 사용할 수 없습니다.",
+    "bleScanFailed": "NorthStar를 찾을 수 없습니다. 가까이 두고 Bluetooth를 확인한 후 다시 시도하세요.",
+    "bleNoDevices": "근처에서 NorthStar 기기를 찾지 못했습니다. 가까이 두고 다시 검색하세요.",
+    "bleConnectFailed": "NorthStar에 연결할 수 없습니다. 충전된 상태로 가까이 둔 후 다시 시도하세요.",
+    "saveCurrentPlace": "현재 장소 저장",
+    "placeSaved": "장소가 저장되었습니다.",
+    "savedPlace": "저장된 장소",
+    "savePlaceFailed": "이 장소를 저장할 수 없습니다. 다시 시도하세요.",
+    "lastSOSAttempt": "마지막 SOS 시도",
+    "sosDialerOpened": "전화 다이얼러가 열렸습니다. 통화 여부는 확인되지 않았습니다.",
+    "sosCancelled": "취소되었습니다. 전화가 걸리지 않았습니다.",
+    "sosContactRequired": "사용 가능한 비상 연락처가 없어 전화가 걸리지 않았습니다.",
+    "sosDialerFailed": "전화 다이얼러를 열 수 없어 전화가 걸리지 않았습니다.",
+    "sosUnknown": "마지막 SOS 시도를 확인할 수 없습니다.",
+    "voiceConfiguration": "현재 음성 동반자를 사용할 수 없습니다. 나중에 다시 시도하거나 오프라인 동반자로 계속하세요.",
+    "editContact": "편집",
+    "editContactTitle": "비상 연락처 편집",
+    "editContactAccessibility": "%{name} 편집",
+    "contactUpdated": "비상 연락처가 업데이트되었습니다."
   }
 }

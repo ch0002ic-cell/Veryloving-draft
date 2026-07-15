@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Façon ti tene na ni ayeke pëpe na version so.",
+    "continueAsDemo": "Lï na mode démo (na développement pëpe)",
+    "demoModeNotice": "Mode démo a yü dônë ti wataka ti téléphone pëpe. A authentifier services ti connexion pëpe, na session so ayeke banda fini tongana application a zia fini.",
+    "authCodeInvalid": "Code ti vérification ayeke nzoni pëpe wala ngoi ti lo ahon. Hunda code fini, na mo me pëpe.",
+    "authRateLimited": "Mo me ti tene mingi ahon. Gi kete, na mo me pëpe.",
+    "authTimeout": "Vérification ti tene amû ngoi mingi. Tala connexion ti mo, na mo me pëpe.",
+    "authNetwork": "A lingbi ti wara service ti tene pëpe. Tala connexion ti mo, na mo me pëpe.",
+    "authSessionExpired": "Session ti mo ahon awe. Tene pëpe.",
+    "mapUnavailable": "Carte ti sécurité a lingbi ti zia pëpe. Tala connexion ti mo, na mo me pëpe.",
+    "mapCachedLocation": "Place ti fadeso ayeke pëpe. A fa place ti mo ti laso, so a bata na %{capturedAt}.",
+    "locationShareFailed": "A lingbi ti mû place ti mo pëpe. Tala permission ti place, na mo me pëpe.",
+    "locationShareCurrent": "Place ti mbi so a bâ na %{capturedAt}:",
+    "locationShareCached": "Place ti mbi ti laso so a bata na %{capturedAt}:",
+    "blePermission": "Permission ti Bluetooth ayeke zingo. Zingo ni na Settings, na mo me pëpe.",
+    "blePoweredOff": "Bluetooth ayeke zingo. Zingo ni, na mo me pëpe.",
+    "bleUnavailable": "Connexion ti Bluetooth ayeke pëpe na appareil wala version so.",
+    "bleScanFailed": "A lingbi ti wara NorthStar pëpe. Zia lo nduru, tala Bluetooth, na mo me pëpe.",
+    "bleNoDevices": "A wara appareil NorthStar pëpe na nduru. Zia lo nduru na mo gi pëpe.",
+    "bleConnectFailed": "A lingbi ti joindre NorthStar pëpe. Zia batterie ti lo oko na lo nduru, na mo me pëpe.",
+    "saveCurrentPlace": "Bata place ti fadeso",
+    "placeSaved": "Place a bata awe.",
+    "savedPlace": "Place so a bata",
+    "savePlaceFailed": "A lingbi ti bata place so pëpe. Mo me pëpe.",
+    "lastSOSAttempt": "Me ti SOS ti laso",
+    "sosDialerOpened": "Clavier ti téléphone a zingo; appel a confirmer pëpe.",
+    "sosCancelled": "A mû pëpe; appel oko a sara pëpe.",
+    "sosContactRequired": "Contact ti urgence ayeke pëpe; appel oko a sara pëpe.",
+    "sosDialerFailed": "Clavier ti téléphone a lingbi ti zingo pëpe; appel oko a sara pëpe.",
+    "sosUnknown": "A lingbi ti confirmer me ti SOS ti laso pëpe.",
+    "voiceConfiguration": "Compagnon ti mê ayeke pëpe fadeso. Mo me na pekô wala mo yü compagnon hors connexion.",
+    "editContact": "Changé",
+    "editContactTitle": "Changé contact ti urgence",
+    "editContactAccessibility": "Changé %{name}",
+    "contactUpdated": "Contact ti urgence a changé awe."
   }
 }

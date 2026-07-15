@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Din l-għażla tad-dħul mhix disponibbli f’din il-verżjoni.",
+    "continueAsDemo": "Kompli bħala demo (għall-iżvilupp biss)",
+    "demoModeNotice": "Il-modalità demo tuża biss data fittizja lokali. Is-servizzi konnessi mhumiex awtentikati, u din is-sessjoni terġa’ tiġi ssettjata meta l-app terġa’ titgħabba.",
+    "authCodeInvalid": "Il-kodiċi ta’ verifika mhuwiex validu jew skada. Itlob kodiċi ġdid u erġa’ pprova.",
+    "authRateLimited": "Saru wisq tentattivi ta’ dħul. Stenna ftit, imbagħad erġa’ pprova.",
+    "authTimeout": "Il-verifika tad-dħul damet wisq. Iċċekkja l-konnessjoni tiegħek u erġa’ pprova.",
+    "authNetwork": "Ma stajniex nilħqu s-servizz tad-dħul. Iċċekkja l-konnessjoni tiegħek u erġa’ pprova.",
+    "authSessionExpired": "Is-sessjoni tiegħek skadiet. Erġa’ idħol.",
+    "mapUnavailable": "Il-mappa tas-sigurtà ma setgħetx titgħabba. Iċċekkja l-konnessjoni tiegħek u erġa’ pprova.",
+    "mapCachedLocation": "Il-post dirett mhuwiex disponibbli. Qed jintwera l-aħħar post issejvjat tiegħek minn %{capturedAt}.",
+    "locationShareFailed": "Ma stajniex naqsmu l-post tiegħek. Iċċekkja l-aċċess għall-post u erġa’ pprova.",
+    "locationShareCurrent": "Hawn il-post tiegħi rreġistrat fi %{capturedAt}:",
+    "locationShareCached": "Hawn l-aħħar post issejvjat tiegħi, irreġistrat fi %{capturedAt}:",
+    "blePermission": "L-aċċess għal Bluetooth huwa mitfi. Attivah fis-Settings, imbagħad erġa’ pprova.",
+    "blePoweredOff": "Bluetooth huwa mitfi. Ixgħelu, imbagħad erġa’ pprova.",
+    "bleUnavailable": "It-tqabbil permezz ta’ Bluetooth mhuwiex disponibbli fuq dan l-apparat jew f’din il-verżjoni.",
+    "bleScanFailed": "Ma stajniex insibu NorthStar. Żommu viċin, iċċekkja Bluetooth, u erġa’ pprova.",
+    "bleNoDevices": "Ma nstab l-ebda apparat NorthStar fil-qrib. Żommu viċin u erġa’ fittex.",
+    "bleConnectFailed": "Ma stajniex nikkonnettjaw ma’ NorthStar. Żommu ċċarġjat u fil-qrib, imbagħad erġa’ pprova.",
+    "saveCurrentPlace": "Issejvja l-post attwali",
+    "placeSaved": "Il-post ġie ssejvjat.",
+    "savedPlace": "Post issejvjat",
+    "savePlaceFailed": "Ma stajniex insalvaw dan il-post. Erġa’ pprova.",
+    "lastSOSAttempt": "L-aħħar tentattiv SOS",
+    "sosDialerOpened": "Infetaħ id-dialer tat-telefon; it-telefonata mhix ikkonfermata.",
+    "sosCancelled": "Ikkanċellat; ma saret l-ebda telefonata.",
+    "sosContactRequired": "Ma kien disponibbli l-ebda kuntatt ta’ emerġenza; ma saret l-ebda telefonata.",
+    "sosDialerFailed": "Id-dialer tat-telefon ma setax jinfetaħ; ma saret l-ebda telefonata.",
+    "sosUnknown": "L-aħħar tentattiv SOS ma setax jiġi kkonfermat.",
+    "voiceConfiguration": "Il-kumpann bil-vuċi mhuwiex disponibbli bħalissa. Erġa’ pprova aktar tard jew kompli bil-kumpann offline.",
+    "editContact": "Editja",
+    "editContactTitle": "Editja l-kuntatt ta’ emerġenza",
+    "editContactAccessibility": "Editja %{name}",
+    "contactUpdated": "Il-kuntatt ta’ emerġenza ġie aġġornat."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "E sega ni vakarautaki na digidigi ni curu oqo ena ilavelave ni app oqo.",
+    "continueAsDemo": "Tomana ena ivakaraitaki (me baleta ga na vakatorocaketaki)",
+    "demoModeNotice": "Na ivakarau ni ivakaraitaki e vakayagataka ga na itukutuku lasu e maroroi ena misini. Era sega ni vakadeitaki na veiqaravi semati, ka na tekivu tale na sesi oqo ni vakavoui na app.",
+    "authCodeInvalid": "E sega ni donu se sa oti na gauna ni kena vakayagataki na nabavuni ni veivakadeitaki. Kerea e dua na nabavuni vou qai tovolea tale.",
+    "authRateLimited": "Sa rui levu na sasaga ni curu. Wawa vakalailai, qai tovolea tale.",
+    "authTimeout": "Sa rui balavu na veivakadeitaki ni curu. Raica na nomu isema qai tovolea tale.",
+    "authNetwork": "Keitou sega ni rawa ni yacova na veiqaravi ni curu. Raica na nomu isema qai tovolea tale.",
+    "authSessionExpired": "Sa oti na gauna ni nomu sesi. Curu tale.",
+    "mapUnavailable": "E sega ni rawa ni dolavi na mape ni veitaqomaki. Raica na nomu isema qai tovolea tale.",
+    "mapCachedLocation": "E sega ni vakarautaki na vanua o tiko kina ena gauna oqo. Sa vakaraitaki na iotioti ni vanua a maroroi mai na %{capturedAt}.",
+    "locationShareFailed": "Keitou sega ni rawa ni wasea na vanua o tiko kina. Raica na veivakadonui ni vanua qai tovolea tale.",
+    "locationShareCurrent": "Oqo na vanua au tiko kina a volai ena %{capturedAt}:",
+    "locationShareCached": "Oqo na iotioti ni vanua au maroroya a volai ena %{capturedAt}:",
+    "blePermission": "Sa bokoci na veivakadonui ni Bluetooth. Vakasobura ena Settings, qai tovolea tale.",
+    "blePoweredOff": "Sa bokoci na Bluetooth. Vakasobura, qai tovolea tale.",
+    "bleUnavailable": "E sega ni vakarautaki na veisemati ni Bluetooth ena misini se ilavelave ni app oqo.",
+    "bleScanFailed": "Keitou sega ni kunea na NorthStar. Maroroya me voleka, raica na Bluetooth, qai tovolea tale.",
+    "bleNoDevices": "E sega ni kune e dua na misini NorthStar e voleka. Maroroya me voleka qai vakasaqara tale.",
+    "bleConnectFailed": "Keitou sega ni rawa ni sema ina NorthStar. Me saumi tiko na kena batiri, maroroya me voleka, qai tovolea tale.",
+    "saveCurrentPlace": "Maroroya na vanua oqo",
+    "placeSaved": "Sa maroroi na vanua.",
+    "savedPlace": "Vanua maroroi",
+    "savePlaceFailed": "Keitou sega ni rawa ni maroroya na vanua oqo. Tovolea tale.",
+    "lastSOSAttempt": "Iotioti ni sasaga ni SOS",
+    "sosDialerOpened": "Sa dola na qiri ni talevoni; e sega ni vakadeitaki na qiri.",
+    "sosCancelled": "Sa bokoci; e sega ni dua na qiri a caka.",
+    "sosContactRequired": "E sega ni vakarautaki e dua na tamata ni veitaratara vakatotolo; e sega ni dua na qiri a caka.",
+    "sosDialerFailed": "E sega ni rawa ni dola na qiri ni talevoni; e sega ni dua na qiri a caka.",
+    "sosUnknown": "E sega ni rawa ni vakadeitaki na iotioti ni sasaga ni SOS.",
+    "voiceConfiguration": "E sega ni vakarautaki ena gauna oqo na nomu itokani vakadomo. Tovolea tale emuri se tomana kei na itokani sega ni semati ina initaneti.",
+    "editContact": "Veisautaka",
+    "editContactTitle": "Veisautaka na tamata ni veitaratara vakatotolo",
+    "editContactAccessibility": "Veisautaka %{name}",
+    "contactUpdated": "Sa vakavoui na tamata ni veitaratara vakatotolo."
   }
 }

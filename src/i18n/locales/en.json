@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "This sign-in option is unavailable in this build.",
+    "continueAsDemo": "Continue as demo (development only)",
+    "demoModeNotice": "Demo mode uses local fake data only. Connected services are not authenticated, and this session resets when the app reloads.",
+    "authCodeInvalid": "The verification code is invalid or expired. Request a new code and try again.",
+    "authRateLimited": "Too many sign-in attempts. Wait a moment, then try again.",
+    "authTimeout": "Sign-in verification took too long. Check your connection and try again.",
+    "authNetwork": "We could not reach the sign-in service. Check your connection and try again.",
+    "authSessionExpired": "Your session expired. Sign in again.",
+    "mapUnavailable": "The safety map could not load. Check your connection and try again.",
+    "mapCachedLocation": "Live location is unavailable. Showing your last saved location from %{capturedAt}.",
+    "locationShareFailed": "We could not share your location. Check location access and try again.",
+    "locationShareCurrent": "Here is my location recorded at %{capturedAt}:",
+    "locationShareCached": "Here is my last saved location recorded at %{capturedAt}:",
+    "blePermission": "Bluetooth access is off. Enable it in Settings, then try again.",
+    "blePoweredOff": "Bluetooth is turned off. Turn it on, then try again.",
+    "bleUnavailable": "Bluetooth pairing is unavailable on this device or build.",
+    "bleScanFailed": "We could not find NorthStar. Keep it close, check Bluetooth, and try again.",
+    "bleNoDevices": "No nearby NorthStar devices were found. Keep it close and scan again.",
+    "bleConnectFailed": "We could not connect to NorthStar. Keep it charged and nearby, then try again.",
+    "saveCurrentPlace": "Save current place",
+    "placeSaved": "Place saved.",
+    "savedPlace": "Saved place",
+    "savePlaceFailed": "We could not save this place. Try again.",
+    "lastSOSAttempt": "Last SOS attempt",
+    "sosDialerOpened": "Phone dialer opened; call not confirmed.",
+    "sosCancelled": "Cancelled; no call was placed.",
+    "sosContactRequired": "No emergency contact was available; no call was placed.",
+    "sosDialerFailed": "The phone dialer could not open; no call was placed.",
+    "sosUnknown": "The last SOS attempt could not be confirmed.",
+    "voiceConfiguration": "The voice companion is unavailable right now. Try again later or continue with the offline companion.",
+    "editContact": "Edit",
+    "editContactTitle": "Edit emergency contact",
+    "editContactAccessibility": "Edit %{name}",
+    "contactUpdated": "Emergency contact updated."
   }
 }

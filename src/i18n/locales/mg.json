@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Tsy misy amin'ity kinova ity ity safidy fidirana ity.",
+    "continueAsDemo": "Tohizo amin'ny fomba andrana (fampivoarana ihany)",
+    "demoModeNotice": "Angona sandoka eo an-toerana ihany no ampiasain'ny fomba andrana. Tsy voamarina ireo tolotra mifandray, ary miverina amin'ny voalohany ity fotoam-pampiasana ity rehefa averina alefa ny app.",
+    "authCodeInvalid": "Tsy mety na lany daty ny kaody fanamarinana. Mangataha kaody vaovao dia andramo indray.",
+    "authRateLimited": "Be loatra ny fanandramana hiditra. Miandrasa kely dia andramo indray.",
+    "authTimeout": "Ela loatra ny fanamarinana fidirana. Hamarino ny fifandraisanao dia andramo indray.",
+    "authNetwork": "Tsy afaka nifandray tamin'ny tolotra fidirana izahay. Hamarino ny fifandraisanao dia andramo indray.",
+    "authSessionExpired": "Lany daty ny fotoam-pampiasanao. Midira indray.",
+    "mapUnavailable": "Tsy afaka nampiditra ny sarintany fiarovana. Hamarino ny fifandraisanao dia andramo indray.",
+    "mapCachedLocation": "Tsy misy ny toerana mivantana. Aseho ny toerana voatahiry farany tamin'ny %{capturedAt}.",
+    "locationShareFailed": "Tsy afaka nizara ny toerana misy anao izahay. Hamarino ny fahazoan-dalana amin'ny toerana dia andramo indray.",
+    "locationShareCurrent": "Ity ny toerana nisy ahy voarakitra tamin'ny %{capturedAt}:",
+    "locationShareCached": "Ity ny toerana nisy ahy voatahiry farany, voarakitra tamin'ny %{capturedAt}:",
+    "blePermission": "Tsy mandeha ny fahazoan-dalana Bluetooth. Alefaso ao amin'ny Fikirana izany dia andramo indray.",
+    "blePoweredOff": "Maty ny Bluetooth. Alefaso izany dia andramo indray.",
+    "bleUnavailable": "Tsy azo atao amin'ity fitaovana na kinova ity ny fampiarahana Bluetooth.",
+    "bleScanFailed": "Tsy hitanay ny NorthStar. Ataovy akaiky, hamarino ny Bluetooth, dia andramo indray.",
+    "bleNoDevices": "Tsy nahitana fitaovana NorthStar teo akaiky teo. Ataovy akaiky dia tadiavo indray.",
+    "bleConnectFailed": "Tsy afaka nifandray tamin'ny NorthStar izahay. Ataovy voaisy herinaratra sy akaiky izany, dia andramo indray.",
+    "saveCurrentPlace": "Tehirizo ny toerana ankehitriny",
+    "placeSaved": "Voatahiry ny toerana.",
+    "savedPlace": "Toerana voatahiry",
+    "savePlaceFailed": "Tsy afaka nitahiry ity toerana ity izahay. Andramo indray.",
+    "lastSOSAttempt": "Fanandramana SOS farany",
+    "sosDialerOpened": "Nisokatra ny fitendry antso; tsy voamarina ny antso.",
+    "sosCancelled": "Nofoanana; tsy nisy antso natao.",
+    "sosContactRequired": "Tsy nisy olona ifandraisana vonjy taitra; tsy nisy antso natao.",
+    "sosDialerFailed": "Tsy afaka nisokatra ny fitendry antso; tsy nisy antso natao.",
+    "sosUnknown": "Tsy azo nohamarinina ny fanandramana SOS farany.",
+    "voiceConfiguration": "Tsy misy amin'izao fotoana izao ny mpanampy amin'ny feo. Andramo indray any aoriana na tohizo amin'ny mpanampy ivelan'ny tambajotra.",
+    "editContact": "Hanova",
+    "editContactTitle": "Hanova ny olona ifandraisana vonjy taitra",
+    "editContactAccessibility": "Hanova an'i %{name}",
+    "contactUpdated": "Nohavaozina ny olona ifandraisana vonjy taitra."
   }
 }

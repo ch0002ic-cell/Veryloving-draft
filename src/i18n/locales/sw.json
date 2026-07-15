@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Chaguo hili la kuingia halipatikani katika toleo hili.",
+    "continueAsDemo": "Endelea kama onyesho (kwa usanidi pekee)",
+    "demoModeNotice": "Hali ya onyesho hutumia data bandia ya ndani pekee. Huduma zilizounganishwa hazijathibitishwa, na kipindi hiki huwekwa upya programu inapopakiwa upya.",
+    "authCodeInvalid": "Msimbo wa uthibitishaji si sahihi au muda wake umeisha. Omba msimbo mpya kisha ujaribu tena.",
+    "authRateLimited": "Majaribio ya kuingia ni mengi sana. Subiri kidogo, kisha ujaribu tena.",
+    "authTimeout": "Uthibitishaji wa kuingia ulichukua muda mrefu sana. Angalia muunganisho wako kisha ujaribu tena.",
+    "authNetwork": "Hatukuweza kufikia huduma ya kuingia. Angalia muunganisho wako kisha ujaribu tena.",
+    "authSessionExpired": "Kipindi chako kimeisha. Ingia tena.",
+    "mapUnavailable": "Ramani ya usalama haikuweza kupakiwa. Angalia muunganisho wako kisha ujaribu tena.",
+    "mapCachedLocation": "Mahali ulipo sasa hapapatikani. Inaonyesha mahali pako pa mwisho palipohifadhiwa kutoka %{capturedAt}.",
+    "locationShareFailed": "Hatukuweza kushiriki mahali ulipo. Angalia ruhusa ya kufikia mahali ulipo kisha ujaribu tena.",
+    "locationShareCurrent": "Hapa ndipo nilipokuwa iliporekodiwa saa %{capturedAt}:",
+    "locationShareCached": "Hapa ndipo mahali pangu pa mwisho palipohifadhiwa na kurekodiwa saa %{capturedAt}:",
+    "blePermission": "Ufikiaji wa Bluetooth umezimwa. Uwashe katika Mipangilio, kisha ujaribu tena.",
+    "blePoweredOff": "Bluetooth imezimwa. Iwashe, kisha ujaribu tena.",
+    "bleUnavailable": "Uoanishaji wa Bluetooth haupatikani kwenye kifaa au toleo hili.",
+    "bleScanFailed": "Hatukuweza kupata NorthStar. Iweke karibu, angalia Bluetooth, kisha ujaribu tena.",
+    "bleNoDevices": "Hakuna vifaa vya NorthStar vilivyopatikana karibu. Iweke karibu kisha uchanganue tena.",
+    "bleConnectFailed": "Hatukuweza kuunganisha kwenye NorthStar. Hakikisha ina chaji na iko karibu, kisha ujaribu tena.",
+    "saveCurrentPlace": "Hifadhi mahali pa sasa",
+    "placeSaved": "Mahali pamehifadhiwa.",
+    "savedPlace": "Mahali palipohifadhiwa",
+    "savePlaceFailed": "Hatukuweza kuhifadhi mahali hapa. Jaribu tena.",
+    "lastSOSAttempt": "Jaribio la mwisho la SOS",
+    "sosDialerOpened": "Kipiga simu kimefunguliwa; simu haijathibitishwa.",
+    "sosCancelled": "Imeghairiwa; hakuna simu iliyopigwa.",
+    "sosContactRequired": "Hakuna mtu wa mawasiliano ya dharura aliyepatikana; hakuna simu iliyopigwa.",
+    "sosDialerFailed": "Kipiga simu hakikuweza kufunguka; hakuna simu iliyopigwa.",
+    "sosUnknown": "Jaribio la mwisho la SOS halikuweza kuthibitishwa.",
+    "voiceConfiguration": "Msaidizi wa sauti hapatikani kwa sasa. Jaribu tena baadaye au uendelee na msaidizi wa nje ya mtandao.",
+    "editContact": "Hariri",
+    "editContactTitle": "Hariri mtu wa mawasiliano ya dharura",
+    "editContactAccessibility": "Hariri %{name}",
+    "contactUpdated": "Mtu wa mawasiliano ya dharura amesasishwa."
   }
 }

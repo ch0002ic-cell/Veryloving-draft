@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Nid yw'r opsiwn mewngofnodi hwn ar gael yn yr adeiladwaith hwn.",
+    "continueAsDemo": "Parhau fel demo (datblygu yn unig)",
+    "demoModeNotice": "Dim ond data ffug lleol y mae'r modd demo yn ei ddefnyddio. Nid yw gwasanaethau cysylltiedig wedi'u dilysu, ac mae'r sesiwn hon yn ailosod pan fydd yr ap yn ail-lwytho.",
+    "authCodeInvalid": "Mae'r cod dilysu yn annilys neu wedi dod i ben. Gofynnwch am god newydd a rhowch gynnig arall arni.",
+    "authRateLimited": "Gormod o geisiadau mewngofnodi. Arhoswch ennyd, yna rhowch gynnig arall arni.",
+    "authTimeout": "Cymerodd y dilysiad mewngofnodi yn rhy hir. Gwiriwch eich cysylltiad a rhowch gynnig arall arni.",
+    "authNetwork": "Ni allem gyrraedd y gwasanaeth mewngofnodi. Gwiriwch eich cysylltiad a rhowch gynnig arall arni.",
+    "authSessionExpired": "Mae eich sesiwn wedi dod i ben. Mewngofnodwch eto.",
+    "mapUnavailable": "Ni fu modd llwytho'r map diogelwch. Gwiriwch eich cysylltiad a rhowch gynnig arall arni.",
+    "mapCachedLocation": "Nid yw lleoliad byw ar gael. Yn dangos eich lleoliad diwethaf a gadwyd o %{capturedAt}.",
+    "locationShareFailed": "Ni allem rannu eich lleoliad. Gwiriwch fynediad at leoliad a rhowch gynnig arall arni.",
+    "locationShareCurrent": "Dyma fy lleoliad a gofnodwyd am %{capturedAt}:",
+    "locationShareCached": "Dyma fy lleoliad diwethaf a gadwyd, a gofnodwyd am %{capturedAt}:",
+    "blePermission": "Mae mynediad Bluetooth wedi'i ddiffodd. Galluogwch ef yn y Gosodiadau, yna rhowch gynnig arall arni.",
+    "blePoweredOff": "Mae Bluetooth wedi'i ddiffodd. Trowch ef ymlaen, yna rhowch gynnig arall arni.",
+    "bleUnavailable": "Nid yw paru Bluetooth ar gael ar y ddyfais neu'r adeiladwaith hwn.",
+    "bleScanFailed": "Ni allem ddod o hyd i NorthStar. Cadwch ef gerllaw, gwiriwch Bluetooth a rhowch gynnig arall arni.",
+    "bleNoDevices": "Ni ddaethpwyd o hyd i unrhyw ddyfeisiau NorthStar gerllaw. Cadwch ef gerllaw a sganiwch eto.",
+    "bleConnectFailed": "Ni allem gysylltu â NorthStar. Cadwch ef wedi'i wefru a gerllaw, yna rhowch gynnig arall arni.",
+    "saveCurrentPlace": "Cadw'r lle presennol",
+    "placeSaved": "Lle wedi'i gadw.",
+    "savedPlace": "Lle wedi'i gadw",
+    "savePlaceFailed": "Ni allem gadw'r lle hwn. Rhowch gynnig arall arni.",
+    "lastSOSAttempt": "Ymgais SOS ddiwethaf",
+    "sosDialerOpened": "Agorwyd deialydd y ffôn; nid yw'r alwad wedi'i chadarnhau.",
+    "sosCancelled": "Wedi canslo; ni wnaed galwad.",
+    "sosContactRequired": "Nid oedd cyswllt brys ar gael; ni wnaed galwad.",
+    "sosDialerFailed": "Ni fu modd agor deialydd y ffôn; ni wnaed galwad.",
+    "sosUnknown": "Ni fu modd cadarnhau'r ymgais SOS ddiwethaf.",
+    "voiceConfiguration": "Nid yw'r cydymaith llais ar gael ar hyn o bryd. Rhowch gynnig arall arni'n ddiweddarach neu parhewch gyda'r cydymaith all-lein.",
+    "editContact": "Golygu",
+    "editContactTitle": "Golygu cyswllt brys",
+    "editContactAccessibility": "Golygu %{name}",
+    "contactUpdated": "Cyswllt brys wedi'i ddiweddaru."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Šiame programos variante ši prisijungimo parinktis nepasiekiama.",
+    "continueAsDemo": "Tęsti demonstracinį režimą (tik kūrimui)",
+    "demoModeNotice": "Demonstraciniame režime naudojami tik vietiniai netikri duomenys. Susietų paslaugų tapatybė nepatvirtinta, o programa įkelta iš naujo šį seansą nustato iš naujo.",
+    "authCodeInvalid": "Patvirtinimo kodas neteisingas arba nebegalioja. Paprašykite naujo kodo ir bandykite dar kartą.",
+    "authRateLimited": "Per daug bandymų prisijungti. Šiek tiek palaukite ir bandykite dar kartą.",
+    "authTimeout": "Prisijungimo patvirtinimas užtruko per ilgai. Patikrinkite ryšį ir bandykite dar kartą.",
+    "authNetwork": "Nepavyko pasiekti prisijungimo paslaugos. Patikrinkite ryšį ir bandykite dar kartą.",
+    "authSessionExpired": "Jūsų seansas baigėsi. Prisijunkite iš naujo.",
+    "mapUnavailable": "Nepavyko įkelti saugos žemėlapio. Patikrinkite ryšį ir bandykite dar kartą.",
+    "mapCachedLocation": "Dabartinė vieta nepasiekiama. Rodoma paskutinė išsaugota vieta, užfiksuota %{capturedAt}.",
+    "locationShareFailed": "Nepavyko bendrinti jūsų vietos. Patikrinkite vietos prieigos leidimą ir bandykite dar kartą.",
+    "locationShareCurrent": "Štai mano vieta, užfiksuota %{capturedAt}:",
+    "locationShareCached": "Štai mano paskutinė išsaugota vieta, užfiksuota %{capturedAt}:",
+    "blePermission": "Bluetooth prieiga išjungta. Įjunkite ją nustatymuose ir bandykite dar kartą.",
+    "blePoweredOff": "Bluetooth išjungtas. Įjunkite jį ir bandykite dar kartą.",
+    "bleUnavailable": "Šiame įrenginyje arba programos variante Bluetooth susiejimas nepasiekiamas.",
+    "bleScanFailed": "Nepavyko rasti NorthStar. Laikykite jį netoliese, patikrinkite Bluetooth ir bandykite dar kartą.",
+    "bleNoDevices": "Netoliese nerasta NorthStar įrenginių. Laikykite jį netoliese ir ieškokite dar kartą.",
+    "bleConnectFailed": "Nepavyko prisijungti prie NorthStar. Laikykite jį įkrautą ir netoliese, tada bandykite dar kartą.",
+    "saveCurrentPlace": "Išsaugoti dabartinę vietą",
+    "placeSaved": "Vieta išsaugota.",
+    "savedPlace": "Išsaugota vieta",
+    "savePlaceFailed": "Nepavyko išsaugoti šios vietos. Bandykite dar kartą.",
+    "lastSOSAttempt": "Paskutinis SOS bandymas",
+    "sosDialerOpened": "Atidaryta telefono numerio rinkimo programa; skambutis nepatvirtintas.",
+    "sosCancelled": "Atšaukta; skambutis nebuvo atliktas.",
+    "sosContactRequired": "Nebuvo pasiekiamo skubiosios pagalbos kontakto; skambutis nebuvo atliktas.",
+    "sosDialerFailed": "Nepavyko atidaryti telefono numerio rinkimo programos; skambutis nebuvo atliktas.",
+    "sosUnknown": "Nepavyko patvirtinti paskutinio SOS bandymo.",
+    "voiceConfiguration": "Balso asistentas šiuo metu nepasiekiamas. Bandykite vėliau arba tęskite naudodami neprisijungus veikiantį asistentą.",
+    "editContact": "Redaguoti",
+    "editContactTitle": "Redaguoti skubiosios pagalbos kontaktą",
+    "editContactAccessibility": "Redaguoti %{name}",
+    "contactUpdated": "Skubiosios pagalbos kontaktas atnaujintas."
   }
 }

@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Această opțiune de autentificare nu este disponibilă în această versiune.",
+    "continueAsDemo": "Continuă în modul demonstrativ (doar pentru dezvoltare)",
+    "demoModeNotice": "Modul demonstrativ folosește doar date locale fictive. Serviciile conectate nu sunt autentificate, iar această sesiune se resetează când aplicația se reîncarcă.",
+    "authCodeInvalid": "Codul de verificare este nevalid sau a expirat. Solicită un cod nou și încearcă din nou.",
+    "authRateLimited": "Prea multe încercări de autentificare. Așteaptă puțin, apoi încearcă din nou.",
+    "authTimeout": "Verificarea autentificării a durat prea mult. Verifică-ți conexiunea și încearcă din nou.",
+    "authNetwork": "Nu am putut contacta serviciul de autentificare. Verifică-ți conexiunea și încearcă din nou.",
+    "authSessionExpired": "Sesiunea ta a expirat. Autentifică-te din nou.",
+    "mapUnavailable": "Harta de siguranță nu s-a putut încărca. Verifică-ți conexiunea și încearcă din nou.",
+    "mapCachedLocation": "Locația în timp real nu este disponibilă. Se afișează ultima locație salvată din %{capturedAt}.",
+    "locationShareFailed": "Nu am putut distribui locația ta. Verifică accesul la locație și încearcă din nou.",
+    "locationShareCurrent": "Iată locația mea înregistrată la %{capturedAt}:",
+    "locationShareCached": "Iată ultima mea locație salvată, înregistrată la %{capturedAt}:",
+    "blePermission": "Accesul la Bluetooth este dezactivat. Activează-l în Setări, apoi încearcă din nou.",
+    "blePoweredOff": "Bluetooth este oprit. Pornește-l, apoi încearcă din nou.",
+    "bleUnavailable": "Asocierea prin Bluetooth nu este disponibilă pe acest dispozitiv sau în această versiune.",
+    "bleScanFailed": "Nu am putut găsi NorthStar. Ține-l aproape, verifică Bluetooth și încearcă din nou.",
+    "bleNoDevices": "Nu s-au găsit dispozitive NorthStar în apropiere. Ține-l aproape și scanează din nou.",
+    "bleConnectFailed": "Nu ne-am putut conecta la NorthStar. Ține-l încărcat și în apropiere, apoi încearcă din nou.",
+    "saveCurrentPlace": "Salvează locul actual",
+    "placeSaved": "Loc salvat.",
+    "savedPlace": "Loc salvat",
+    "savePlaceFailed": "Nu am putut salva acest loc. Încearcă din nou.",
+    "lastSOSAttempt": "Ultima încercare SOS",
+    "sosDialerOpened": "Aplicația de apelare s-a deschis; apelul nu a fost confirmat.",
+    "sosCancelled": "Anulat; nu s-a efectuat niciun apel.",
+    "sosContactRequired": "Nu era disponibil niciun contact de urgență; nu s-a efectuat niciun apel.",
+    "sosDialerFailed": "Aplicația de apelare nu s-a putut deschide; nu s-a efectuat niciun apel.",
+    "sosUnknown": "Ultima încercare SOS nu a putut fi confirmată.",
+    "voiceConfiguration": "Asistentul vocal nu este disponibil momentan. Încearcă din nou mai târziu sau continuă cu asistentul offline.",
+    "editContact": "Editează",
+    "editContactTitle": "Editează contactul de urgență",
+    "editContactAccessibility": "Editează %{name}",
+    "contactUpdated": "Contact de urgență actualizat."
   }
 }

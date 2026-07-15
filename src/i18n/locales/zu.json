@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Le nketho yokungena ayitholakali kule nguqulo.",
+    "continueAsDemo": "Qhubeka njengedemo (ukuthuthukisa kuphela)",
+    "demoModeNotice": "Imodi yedemo isebenzisa idatha mbumbulu yasendaweni kuphela. Amasevisi axhunyiwe awaqinisekisiwe, futhi le seshini isethwa kabusha lapho i-app ilayishwa kabusha.",
+    "authCodeInvalid": "Ikhodi yokuqinisekisa ayivumelekile noma isiphelelwe isikhathi. Cela ikhodi entsha bese uzama futhi.",
+    "authRateLimited": "Miningi kakhulu imizamo yokungena. Linda kancane, bese uzama futhi.",
+    "authTimeout": "Ukuqinisekisa ukungena kuthathe isikhathi eside kakhulu. Hlola ukuxhumeka kwakho bese uzama futhi.",
+    "authNetwork": "Asikwazanga ukufinyelela isevisi yokungena. Hlola ukuxhumeka kwakho bese uzama futhi.",
+    "authSessionExpired": "Iseshini yakho isiphelelwe isikhathi. Ngena futhi.",
+    "mapUnavailable": "Imephu yokuphepha ayikwazanga ukulayisha. Hlola ukuxhumeka kwakho bese uzama futhi.",
+    "mapCachedLocation": "Indawo ebukhoma ayitholakali. Kuboniswa indawo yakho yokugcina elondoloziwe kusukela %{capturedAt}.",
+    "locationShareFailed": "Asikwazanga ukwabelana ngendawo yakho. Hlola imvume yendawo bese uzama futhi.",
+    "locationShareCurrent": "Nansi indawo yami erekhodwe ngo-%{capturedAt}:",
+    "locationShareCached": "Nansi indawo yami yokugcina elondoloziwe, erekhodwe ngo-%{capturedAt}:",
+    "blePermission": "Ukufinyelela kwe-Bluetooth kuvaliwe. Kuvule kokuthi Izilungiselelo, bese uzama futhi.",
+    "blePoweredOff": "I-Bluetooth icishiwe. Yivule, bese uzama futhi.",
+    "bleUnavailable": "Ukumatanisa nge-Bluetooth akutholakali kule divayisi noma kule nguqulo.",
+    "bleScanFailed": "Asikwazanga ukuthola i-NorthStar. Yigcine iseduze, hlola i-Bluetooth, bese uzama futhi.",
+    "bleNoDevices": "Awekho amadivayisi e-NorthStar aseduze atholakele. Yigcine iseduze bese usesha futhi.",
+    "bleConnectFailed": "Asikwazanga ukuxhuma ku-NorthStar. Yigcine ishajiwe futhi iseduze, bese uzama futhi.",
+    "saveCurrentPlace": "Londoloza indawo yamanje",
+    "placeSaved": "Indawo ilondoloziwe.",
+    "savedPlace": "Indawo elondoloziwe",
+    "savePlaceFailed": "Asikwazanga ukulondoloza le ndawo. Zama futhi.",
+    "lastSOSAttempt": "Umzamo wokugcina we-SOS",
+    "sosDialerOpened": "Isidayeli sefoni sivuliwe; ucingo aluqinisekisiwe.",
+    "sosCancelled": "Kukhanseliwe; alukho ucingo olushayiwe.",
+    "sosContactRequired": "Akekho oxhumana naye wesimo esiphuthumayo obetholakala; alukho ucingo olushayiwe.",
+    "sosDialerFailed": "Isidayeli sefoni asikwazanga ukuvuleka; alukho ucingo olushayiwe.",
+    "sosUnknown": "Umzamo wokugcina we-SOS awukwazanga ukuqinisekiswa.",
+    "voiceConfiguration": "Umsizi wezwi akatholakali okwamanje. Zama futhi kamuva noma uqhubeke nomsizi ongaxhunyiwe ku-inthanethi.",
+    "editContact": "Hlela",
+    "editContactTitle": "Hlela oxhumana naye wesimo esiphuthumayo",
+    "editContactAccessibility": "Hlela %{name}",
+    "contactUpdated": "Oxhumana naye wesimo esiphuthumayo ubuyekeziwe."
   }
 }

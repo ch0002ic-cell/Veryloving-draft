@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Aquesta opcion de connexion es pas disponibla dins aquesta version.",
+    "continueAsDemo": "Contunhar en mòde demonstracion (desvolopament solament)",
+    "demoModeNotice": "Lo mòde demonstracion utiliza sonque de donadas falsas localas. Los servicis connectats son pas autentificats e aquesta session es reïnicializada quand l’aplicacion se recarga.",
+    "authCodeInvalid": "Lo còdi de verificacion es invalid o expirat. Demandatz un còdi novèl e tornatz ensajar.",
+    "authRateLimited": "Tròp de temptativas de connexion. Esperatz un moment, puèi tornatz ensajar.",
+    "authTimeout": "La verificacion de la connexion a pres tròp de temps. Verificatz vòstra connexion e tornatz ensajar.",
+    "authNetwork": "Avèm pas pogut contactar lo servici de connexion. Verificatz vòstra connexion e tornatz ensajar.",
+    "authSessionExpired": "Vòstra session a expirat. Connectatz-vos tornamai.",
+    "mapUnavailable": "La mapa de seguretat s’es pas poguda cargar. Verificatz vòstra connexion e tornatz ensajar.",
+    "mapCachedLocation": "La posicion en dirècte es pas disponibla. Afichatge de vòstra darrièra posicion enregistrada de %{capturedAt}.",
+    "locationShareFailed": "Avèm pas pogut partejar vòstra posicion. Verificatz l’accès a la posicion e tornatz ensajar.",
+    "locationShareCurrent": "Vaquí ma posicion enregistrada a %{capturedAt}:",
+    "locationShareCached": "Vaquí ma darrièra posicion enregistrada a %{capturedAt}:",
+    "blePermission": "L’accès a Bluetooth es desactivat. Activatz-lo dins los Paramètres, puèi tornatz ensajar.",
+    "blePoweredOff": "Bluetooth es desactivat. Activatz-lo, puèi tornatz ensajar.",
+    "bleUnavailable": "L’apariament Bluetooth es pas disponible sus aqueste aparelh o dins aquesta version.",
+    "bleScanFailed": "Avèm pas pogut trobar NorthStar. Gardatz-lo a proximitat, verificatz Bluetooth e tornatz ensajar.",
+    "bleNoDevices": "Cap d’aparelh NorthStar es pas estat trobat a proximitat. Gardatz-lo a proximitat e recercatz tornamai.",
+    "bleConnectFailed": "Avèm pas pogut nos connectar a NorthStar. Gardatz-lo cargat e a proximitat, puèi tornatz ensajar.",
+    "saveCurrentPlace": "Enregistrar lo luòc actual",
+    "placeSaved": "Luòc enregistrat.",
+    "savedPlace": "Luòc enregistrat",
+    "savePlaceFailed": "Avèm pas pogut enregistrar aqueste luòc. Tornatz ensajar.",
+    "lastSOSAttempt": "Darrièra temptativa SOS",
+    "sosDialerOpened": "Lo marcador telefonic es dobèrt; apèl pas confirmat.",
+    "sosCancelled": "Anullat; cap d’apèl es pas estat efectuat.",
+    "sosContactRequired": "Cap de contacte d’urgéncia èra disponible; cap d’apèl es pas estat efectuat.",
+    "sosDialerFailed": "Lo marcador telefonic s’es pas pogut dobrir; cap d’apèl es pas estat efectuat.",
+    "sosUnknown": "La darrièra temptativa SOS s’es pas poguda confirmar.",
+    "voiceConfiguration": "Lo companh vocal es pas disponible ara. Tornatz ensajar mai tard o contunhatz amb lo companh fòra linha.",
+    "editContact": "Modificar",
+    "editContactTitle": "Modificar lo contacte d’urgéncia",
+    "editContactAccessibility": "Modificar %{name}",
+    "contactUpdated": "Contacte d’urgéncia actualizat."
   }
 }

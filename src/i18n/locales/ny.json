@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Njira yolowera imeneyi sikupezeka mu mtundu uwu.",
+    "continueAsDemo": "Pitirizani ngati demo (pa chitukuko chokha)",
+    "demoModeNotice": "Demo imagwiritsa ntchito deta yabodza yosungidwa pa chipangizochi yokha. Ntchito zolumikizidwa sizinatsimikizidwe, ndipo gawoli limayambiranso pulogalamuyi ikatsegulidwanso.",
+    "authCodeInvalid": "Khodi yotsimikizira ndi yolakwika kapena yatha ntchito. Pemphani khodi yatsopano ndipo yesaninso.",
+    "authRateLimited": "Mwayesa kulowa kambirimbiri. Dikirani pang'ono, kenako yesaninso.",
+    "authTimeout": "Kutsimikizira kulowa kwatenga nthawi yaitali. Onani intaneti yanu ndipo yesaninso.",
+    "authNetwork": "Sitinathe kufikira ntchito yolowera. Onani intaneti yanu ndipo yesaninso.",
+    "authSessionExpired": "Gawo lanu latha. Lowaninso.",
+    "mapUnavailable": "Mapu achitetezo sanathe kutseguka. Onani intaneti yanu ndipo yesaninso.",
+    "mapCachedLocation": "Malo apompopompo sakupezeka. Tikuwonetsa malo anu omaliza kusungidwa a pa %{capturedAt}.",
+    "locationShareFailed": "Sitinathe kugawana malo anu. Onani chilolezo cha malo ndipo yesaninso.",
+    "locationShareCurrent": "Awa ndi malo anga ojambulidwa pa %{capturedAt}:",
+    "locationShareCached": "Awa ndi malo anga omaliza kusungidwa, ojambulidwa pa %{capturedAt}:",
+    "blePermission": "Chilolezo cha Bluetooth chatsekedwa. Chitseguleni mu Zokonda, kenako yesaninso.",
+    "blePoweredOff": "Bluetooth yazimitsidwa. Yatseni, kenako yesaninso.",
+    "bleUnavailable": "Kulumikiza ndi Bluetooth sikupezeka pa chipangizochi kapena mu mtundu uwu.",
+    "bleScanFailed": "Sitinathe kupeza NorthStar. Isungeni pafupi, onani Bluetooth, ndipo yesaninso.",
+    "bleNoDevices": "Palibe zida za NorthStar zomwe zapezeka pafupi. Isungeni pafupi ndipo fufuzaninso.",
+    "bleConnectFailed": "Sitinathe kulumikizana ndi NorthStar. Onetsetsani kuti ili ndi chaji komanso ili pafupi, kenako yesaninso.",
+    "saveCurrentPlace": "Sungani malo apano",
+    "placeSaved": "Malo asungidwa.",
+    "savedPlace": "Malo osungidwa",
+    "savePlaceFailed": "Sitinathe kusunga malowa. Yesaninso.",
+    "lastSOSAttempt": "Kuyesa komaliza kwa SOS",
+    "sosDialerOpened": "Poyimbira pa foni patseguka; kuyimba sikunatsimikizidwe.",
+    "sosCancelled": "Zaletsedwa; palibe foni yomwe inayimbidwa.",
+    "sosContactRequired": "Panalibe munthu wolumikizana naye pa ngozi; palibe foni yomwe inayimbidwa.",
+    "sosDialerFailed": "Poyimbira pa foni sinathe kutseguka; palibe foni yomwe inayimbidwa.",
+    "sosUnknown": "Kuyesa komaliza kwa SOS sikunathe kutsimikizidwa.",
+    "voiceConfiguration": "Wothandizira wamawu sakupezeka panopa. Yesaninso nthawi ina kapena pitirizani ndi wothandizira wopanda intaneti.",
+    "editContact": "Sinthani",
+    "editContactTitle": "Sinthani munthu wolumikizana naye pa ngozi",
+    "editContactAccessibility": "Sinthani %{name}",
+    "contactUpdated": "Munthu wolumikizana naye pa ngozi wasinthidwa."
   }
 }

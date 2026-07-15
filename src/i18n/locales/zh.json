@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "此版本中无法使用该登录方式。",
+    "continueAsDemo": "以演示模式继续（仅限开发环境）",
+    "demoModeNotice": "演示模式仅使用本地模拟数据。连接的服务未经身份验证，应用重新加载后此会话会重置。",
+    "authCodeInvalid": "验证码无效或已过期。请重新获取验证码后再试。",
+    "authRateLimited": "登录尝试次数过多。请稍后再试。",
+    "authTimeout": "登录验证用时过长。请检查网络连接后重试。",
+    "authNetwork": "无法连接登录服务。请检查网络连接后重试。",
+    "authSessionExpired": "登录会话已过期。请重新登录。",
+    "mapUnavailable": "无法加载安全地图。请检查网络连接后重试。",
+    "mapCachedLocation": "无法获取实时位置。正在显示 %{capturedAt} 保存的最近位置。",
+    "locationShareFailed": "无法分享你的位置。请检查位置权限后重试。",
+    "locationShareCurrent": "这是我在 %{capturedAt} 记录的位置：",
+    "locationShareCached": "这是我在 %{capturedAt} 记录的最近保存位置：",
+    "blePermission": "蓝牙权限已关闭。请在“设置”中启用后重试。",
+    "blePoweredOff": "蓝牙已关闭。请开启蓝牙后重试。",
+    "bleUnavailable": "此设备或版本无法使用蓝牙配对。",
+    "bleScanFailed": "找不到 NorthStar。请将其放在附近、检查蓝牙后重试。",
+    "bleNoDevices": "附近没有找到 NorthStar 设备。请将其放在附近并重新扫描。",
+    "bleConnectFailed": "无法连接 NorthStar。请确保设备有电且在附近，然后重试。",
+    "saveCurrentPlace": "保存当前位置",
+    "placeSaved": "位置已保存。",
+    "savedPlace": "已保存的位置",
+    "savePlaceFailed": "无法保存此位置。请重试。",
+    "lastSOSAttempt": "最近一次 SOS 尝试",
+    "sosDialerOpened": "电话拨号器已打开；通话尚未确认。",
+    "sosCancelled": "已取消；未拨打电话。",
+    "sosContactRequired": "没有可用的紧急联系人；未拨打电话。",
+    "sosDialerFailed": "无法打开电话拨号器；未拨打电话。",
+    "sosUnknown": "无法确认最近一次 SOS 尝试。",
+    "voiceConfiguration": "语音伙伴目前不可用。请稍后重试，或继续使用离线伙伴。",
+    "editContact": "编辑",
+    "editContactTitle": "编辑紧急联系人",
+    "editContactAccessibility": "编辑%{name}",
+    "contactUpdated": "紧急联系人已更新。"
   }
 }

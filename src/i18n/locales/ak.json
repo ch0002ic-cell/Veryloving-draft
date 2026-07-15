@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Saa ɔkwan yi nni adwuma wɔ build yi mu.",
+    "continueAsDemo": "Kɔ so sɛ demo (development nkutoo)",
+    "demoModeNotice": "Demo mode de local fake data nkutoo na edi dwuma. Wɔnnkyerɛɛ sɛ connected services no yɛ nokware, na sɛ app no san load a, session yi san hyɛ ase.",
+    "authCodeInvalid": "Verification code no nyɛ nokware anaa ne bere atwam. Bisa code foforo na san sɔ hwɛ.",
+    "authRateLimited": "Woabɔ mmɔden sɛ wobɛkɔ mu mpɛn pii dodo. Twɛn kakra, na san sɔ hwɛ.",
+    "authTimeout": "Sign-in verification no akyɛ dodo. Hwɛ wo connection na san sɔ hwɛ.",
+    "authNetwork": "Yɛantumi annya sign-in service no. Hwɛ wo connection na san sɔ hwɛ.",
+    "authSessionExpired": "Wo session no bere atwam. San kɔ mu.",
+    "mapUnavailable": "Safety map no antumi anload. Hwɛ wo connection na san sɔ hwɛ.",
+    "mapCachedLocation": "Live location nni hɔ. Yɛrekyerɛ wo location a etwa to a wɔde siei fii %{capturedAt}.",
+    "locationShareFailed": "Yɛantumi ankyɛ wo location. Hwɛ location access na san sɔ hwɛ.",
+    "locationShareCurrent": "Me location a wɔkyeree no %{capturedAt} ni:",
+    "locationShareCached": "Me location a etwa to a wɔde siei na wɔkyeree no %{capturedAt} ni:",
+    "blePermission": "Wɔadum Bluetooth access. Sɔ wɔ Settings mu, na san sɔ hwɛ.",
+    "blePoweredOff": "Wɔadum Bluetooth. Sɔ, na san sɔ hwɛ.",
+    "bleUnavailable": "Bluetooth pairing nni device anaa build yi so.",
+    "bleScanFailed": "Yɛantumi anhu NorthStar. Fa bɛn, hwɛ Bluetooth, na san sɔ hwɛ.",
+    "bleNoDevices": "Yɛanhu NorthStar device biara wɔ baabi a ɛbɛn. Fa bɛn na san scan.",
+    "bleConnectFailed": "Yɛantumi amfa NorthStar ankɔ connection. Hwɛ sɛ charge wɔ mu na ɛbɛn, na san sɔ hwɛ.",
+    "saveCurrentPlace": "Sie baabi a wowɔ seesei",
+    "placeSaved": "Wɔde baabi no asie.",
+    "savedPlace": "Baabi a wɔde asie",
+    "savePlaceFailed": "Yɛantumi amfa baabi yi ansie. San sɔ hwɛ.",
+    "lastSOSAttempt": "SOS mmɔdenbɔ a etwa to",
+    "sosDialerOpened": "Phone dialer no abue; wɔnnkyerɛɛ sɛ wɔfrɛe.",
+    "sosCancelled": "Wɔatwa mu; wɔamfrɛ obiara.",
+    "sosContactRequired": "Emergency contact biara nni hɔ; wɔamfrɛ obiara.",
+    "sosDialerFailed": "Phone dialer no antumi ammue; wɔamfrɛ obiara.",
+    "sosUnknown": "Wɔantumi ankyerɛ SOS mmɔdenbɔ a etwa to no ase.",
+    "voiceConfiguration": "Voice companion no nni hɔ seesei. San sɔ hwɛ akyiri yi anaa kɔ so ne offline companion no.",
+    "editContact": "Sesa",
+    "editContactTitle": "Sesa emergency contact",
+    "editContactAccessibility": "Sesa %{name}",
+    "contactUpdated": "Wɔasesa emergency contact no."
   }
 }

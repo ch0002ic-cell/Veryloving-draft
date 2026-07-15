@@ -4,7 +4,7 @@ VeryLoving stores phone numbers in canonical E.164 form and keeps interface lang
 
 ## Supported interface languages
 
-The language registry represents all 183 assigned ISO 639-1 codes. There are 155 JSON catalogs, each with the same 319 non-empty base keys and placeholder structure as English. Runtime availability is quality-gated:
+The language registry represents all 183 assigned ISO 639-1 codes. There are 155 JSON catalogs, each with the same 353 non-empty keys and placeholder structure as English: 319 established interface keys plus 34 `releaseCritical` safety/authentication keys. Runtime availability is quality-gated:
 
 - public production builds expose reviewed English (`en`), Spanish (`es`), French (`fr`), and Simplified Chinese (`zh`);
 - the base `testflight` profile additionally exposes Arabic (`ar`) and Hebrew (`he`) for signed RTL QA, for six selectable catalogs in total;
@@ -22,7 +22,9 @@ Users can choose an available catalog in Settings or leave the preference on Sys
 
 ## Translation accuracy gate
 
-General runtime per-string fallback is disabled. Each JSON catalog covers all 319 base keys, but 34 newer `releaseCritical` strings live in a separate overlay. Only `en/es/fr/zh/ar/he` currently have translated overlay values. The other 149 full-catalog QA locales therefore represent **5,066 translation values still outstanding** (`149 × 34`). In full-catalog mode, code deliberately supplies the English safety overlay and marks affected choices `QA` in the language picker/trigger instead of exposing a missing-key diagnostic or implying that the fallback is translated. This narrow, explicit fallback does not make those catalogs translation-complete or release-approved. Raw native/provider errors are mapped to stable translation keys at render boundaries.
+General runtime per-string fallback is disabled. The pre-existing `releaseCritical` translations for `en/es/fr/zh/ar/he` were preserved unchanged. On 15 July 2026, Codex `gpt-5.6-sol` generated the 34-key `releaseCritical` blocks for the other 149 catalogs as a machine-translated first pass. Every catalog now embeds all 353 keys, and runtime critical copy comes from the selected catalog rather than an English overlay fallback.
+
+Structural completeness is not linguistic or safety approval. All 149 newly generated blocks remain explicitly machine-generated and require native-speaker safety review before public release. Generation provenance and pending review status are recorded separately in `src/i18n/translation-review.json` because JSON catalog comments are invalid. Automated coverage verifies key presence, non-empty values, and placeholder parity; it cannot establish accuracy, cultural suitability, emergency clarity, or legal acceptance. Raw native/provider errors are still mapped to stable translation keys at render boundaries.
 
 Do not copy English text into a non-English catalog to satisfy coverage. New or changed safety, emergency, consent, authentication, permission, map, voice, privacy, or notification copy must be translated and reviewed for every locale intended for that release. A locale marked `reviewRequired` is not launch-certified, regardless of whether its automated checks pass; clear that flag only after a recorded native-speaker review.
 
@@ -46,7 +48,7 @@ eas build --platform ios --profile testflight-full-catalog
 
 `testflight-full-catalog` is still production-like for credentials, secure transports, entitlements, and readiness validation; its only language-policy expansion is the explicit full-catalog metadata. The base `testflight` profile keeps `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=false` and exposes only `en/es/fr/zh/ar/he`. Public `production` keeps the flag false and exposes only `en/es/fr/zh`.
 
-The full-catalog artifact is layout/coverage audit evidence only. Its 149 additional catalogs are machine-generated and unreviewed, its 34 critical strings use the explicit English safety fallback, and affected choices must retain their `QA` picker/trigger badge. It cannot establish translation completeness, native-speaker approval, stakeholder language acceptance, or public-release readiness.
+The full-catalog artifact is layout/coverage audit evidence only. The 149 newly added `releaseCritical` blocks are machine-generated and unreviewed; any `QA` picker/trigger indicator denotes outstanding human review, not an English fallback. The artifact can establish structural key coverage, but it cannot establish native-speaker approval, stakeholder language acceptance, or public-release readiness.
 
 ## Right-to-left layouts
 

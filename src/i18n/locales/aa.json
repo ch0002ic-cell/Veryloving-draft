@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ta culma buxâ fanah culuh geytimta.",
+    "continueAsDemo": "Demo innah wad (ceelalloh hinnay)",
+    "demoModeNotice": "Demo innal baaxô addal tan deedal data dibuk xoqoysimta. Angaaraw le ayfaafitte sumaq sinni, app qagitak culte wak ta session qagitak qimbissa.",
+    "authCodeInvalid": "Asmattô koodi maqbul hinnay wakti elle cabem. Qusba koodi esser kaadu qagitak gabbata.",
+    "authRateLimited": "Culma gabbatu mango. Dagom suga, tohuk lakal qagitak gabbata.",
+    "authTimeout": "Culma asmattô wakti mango raagise. Angaaraw ku leela, tohuk lakal qagitak gabbata.",
+    "authNetwork": "Culma ayfaafay fanah geyne wayne. Angaaraw ku leela, tohuk lakal qagitak gabbata.",
+    "authSessionExpired": "Ku session wakti gaba kalte. Qagitak cul.",
+    "mapUnavailable": "Qaafiyat karti qari wayte. Angaaraw ku leela, tohuk lakal qagitak gabbata.",
+    "mapCachedLocation": "Away tan arac geytimmaytu. %{capturedAt} wakti dacarsimte ellec ku ellec elle tan arac göstara.",
+    "locationShareFailed": "Ku arac baxsaanam dudne wayne. Arac geytu migda leela, tohuk lakal qagitak gabbata.",
+    "locationShareCurrent": "Tama %{capturedAt} wakti galme arac kiyya:",
+    "locationShareCached": "Tama %{capturedAt} wakti galme, dacarsimeh suge arac kiyya:",
+    "blePermission": "Bluetooth fanah culma alifne. Settings addal kicissa, tohuk lakal qagitak gabbata.",
+    "blePoweredOff": "Bluetooth alifne. Kicissa, tohuk lakal qagitak gabbata.",
+    "bleUnavailable": "Ta mashiin hinnay ta buxâ fanah Bluetooth yangoorow geytimta.",
+    "bleScanFailed": "NorthStar geyne wayne. Xayih hay, Bluetooth leela, tohuk lakal qagitak gabbata.",
+    "bleNoDevices": "Xayih tan NorthStar mashiina geytimte wayte. Xayih hay kaadu qagitak gurrusa.",
+    "bleConnectFailed": "NorthStar luk yangoorowne wayne. Quuka leeh xayih hay, tohuk lakal qagitak gabbata.",
+    "saveCurrentPlace": "Away tan arac dacar",
+    "placeSaved": "Arac dacarsime.",
+    "savedPlace": "Dacarsime arac",
+    "savePlaceFailed": "Ta arac dacarnam dudne wayne. Qagitak gabbata.",
+    "lastSOSAttempt": "Ellecabô SOS gabbata",
+    "sosDialerOpened": "Telefoonô numbari culusso faktime; seeco asmatisime wayte.",
+    "sosCancelled": "Baytime; seeco akke wayte.",
+    "sosContactRequired": "Qaraarâ angaaraw geytimam mali; seeco akke wayte.",
+    "sosDialerFailed": "Telefoonô numbari culusso fakti wayte; seeco akke wayte.",
+    "sosUnknown": "Ellecabô SOS gabbata asmatu dudne wayne.",
+    "voiceConfiguration": "Qangara kataysi away geytimta. Lakal qagitak gabbata hinnay internet sinni kataysa luk wad.",
+    "editContact": "Milaag",
+    "editContactTitle": "Qaraarâ angaaraw milaag",
+    "editContactAccessibility": "%{name} milaag",
+    "contactUpdated": "Qaraarâ angaaraw qagitak yasmite."
   }
 }

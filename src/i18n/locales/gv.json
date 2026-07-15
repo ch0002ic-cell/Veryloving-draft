@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Cha nel yn reih shoh son loggal stiagh ry-gheddyn ayns y lhieggan shoh.",
+    "continueAsDemo": "Goll er adhart myr demo (son lhiasaghey ny-lomarcan)",
+    "demoModeNotice": "Cha nel demo mode jannoo ymmyd agh jeh fysseree foalsey ynnydagh. Cha nel ny shirveishyn kianglt firrinaghit, as bee yn çhoie shoh aahoiaghey tra vees yn app laadit reesht.",
+    "authCodeInvalid": "Ta'n code firrinaghey neu-chiart ny er jeet gys jerrey. Shir code noa as prowal reesht.",
+    "authRateLimited": "Ro ymmodee prowalyn dy loggal stiagh. Fuirree tammylt as eisht prowal reesht.",
+    "authTimeout": "Ren firrinaghey y loggal stiagh goaill ro foddey. Jean shickyr jeh dty cheangal as prowal reesht.",
+    "authNetwork": "Cha dod shin roshtyn yn çhirveish loggal stiagh. Jean shickyr jeh dty cheangal as prowal reesht.",
+    "authSessionExpired": "Ta dty çhoie er jeet gys jerrey. Log stiagh reesht.",
+    "mapUnavailable": "Cha dod yn kaart sauçhys laadey. Jean shickyr jeh dty cheangal as prowal reesht.",
+    "mapCachedLocation": "Cha nel ynnyd bio ry-gheddyn. Ta dty ynnyd s'jerree sauailt veih %{capturedAt} ry-akin.",
+    "locationShareFailed": "Cha dod shin dty ynnyd y rheynn. Jean shickyr jeh'n chied son ynnyd as prowal reesht.",
+    "locationShareCurrent": "Shoh my ynnyd, recortit ec %{capturedAt}:",
+    "locationShareCached": "Shoh my ynnyd s'jerree sauailt, recortit ec %{capturedAt}:",
+    "blePermission": "Ta entreilys Bluetooth jeant magh. Cur er ayns Soiaghyn eh, as eisht prowal reesht.",
+    "blePoweredOff": "Ta Bluetooth jeant magh. Cur er eh, as eisht prowal reesht.",
+    "bleUnavailable": "Cha nel paidjey Bluetooth ry-gheddyn er yn saase ny lhieggan shoh.",
+    "bleScanFailed": "Cha dod shin NorthStar y gheddyn. Freill eh er-gerrey, jean shickyr jeh Bluetooth, as prowal reesht.",
+    "bleNoDevices": "Cha row saaseyn NorthStar er-gerrey er nyn gheddyn. Freill eh er-gerrey as scan reesht.",
+    "bleConnectFailed": "Cha dod shin ceangal rish NorthStar. Freill eh currit lesh bree as er-gerrey, as eisht prowal reesht.",
+    "saveCurrentPlace": "Sauail ynnyd roie",
+    "placeSaved": "Ynnyd sauailt.",
+    "savedPlace": "Ynnyd sauailt",
+    "savePlaceFailed": "Cha dod shin yn ynnyd shoh y hauail. Prowal reesht.",
+    "lastSOSAttempt": "Prowal SOS s'jerree",
+    "sosDialerOpened": "Foshilt yn dialleyder çhellvane; cha row yn eam firrinaghit.",
+    "sosCancelled": "Dolley magh; cha row eam er ny yannoo.",
+    "sosContactRequired": "Cha row çhellvane cooney ry-gheddyn; cha row eam er ny yannoo.",
+    "sosDialerFailed": "Cha dod yn dialleyder çhellvane fosley; cha row eam er ny yannoo.",
+    "sosUnknown": "Cha dod yn prowal SOS s'jerree ve firrinaghit.",
+    "voiceConfiguration": "Cha nel yn sheshey coraa ry-gheddyn ec y traa shoh. Prowal reesht ny s'anmey ny gow er adhart lesh yn sheshey ass-line.",
+    "editContact": "Reagh",
+    "editContactTitle": "Reagh çhellvane cooney",
+    "editContactAccessibility": "Reagh %{name}",
+    "contactUpdated": "Çhellvane cooney noaït."
   }
 }

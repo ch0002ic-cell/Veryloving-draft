@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Diese Anmeldeoption ist in dieser Version nicht verfügbar.",
+    "continueAsDemo": "Als Demo fortfahren (nur Entwicklung)",
+    "demoModeNotice": "Der Demomodus verwendet ausschließlich lokale Testdaten. Verbundene Dienste sind nicht authentifiziert und diese Sitzung wird beim Neuladen der App zurückgesetzt.",
+    "authCodeInvalid": "Der Bestätigungscode ist ungültig oder abgelaufen. Fordern Sie einen neuen Code an und versuchen Sie es erneut.",
+    "authRateLimited": "Zu viele Anmeldeversuche. Warten Sie einen Moment und versuchen Sie es dann erneut.",
+    "authTimeout": "Die Anmeldebestätigung hat zu lange gedauert. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "authNetwork": "Der Anmeldedienst war nicht erreichbar. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "authSessionExpired": "Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an.",
+    "mapUnavailable": "Die Sicherheitskarte konnte nicht geladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "mapCachedLocation": "Der Live-Standort ist nicht verfügbar. Ihr zuletzt gespeicherter Standort von %{capturedAt} wird angezeigt.",
+    "locationShareFailed": "Ihr Standort konnte nicht geteilt werden. Prüfen Sie den Standortzugriff und versuchen Sie es erneut.",
+    "locationShareCurrent": "Hier ist mein um %{capturedAt} erfasster Standort:",
+    "locationShareCached": "Hier ist mein zuletzt gespeicherter, um %{capturedAt} erfasster Standort:",
+    "blePermission": "Der Zugriff auf Bluetooth ist deaktiviert. Aktivieren Sie ihn in den Einstellungen und versuchen Sie es erneut.",
+    "blePoweredOff": "Bluetooth ist ausgeschaltet. Schalten Sie es ein und versuchen Sie es erneut.",
+    "bleUnavailable": "Die Kopplung über Bluetooth ist auf diesem Gerät oder in dieser Version nicht verfügbar.",
+    "bleScanFailed": "NorthStar wurde nicht gefunden. Halten Sie es in der Nähe, prüfen Sie Bluetooth und versuchen Sie es erneut.",
+    "bleNoDevices": "Keine NorthStar-Geräte in der Nähe gefunden. Halten Sie es in der Nähe und suchen Sie erneut.",
+    "bleConnectFailed": "Die Verbindung zu NorthStar konnte nicht hergestellt werden. Sorgen Sie dafür, dass es geladen und in der Nähe ist, und versuchen Sie es erneut.",
+    "saveCurrentPlace": "Aktuellen Ort speichern",
+    "placeSaved": "Ort gespeichert.",
+    "savedPlace": "Gespeicherter Ort",
+    "savePlaceFailed": "Dieser Ort konnte nicht gespeichert werden. Versuchen Sie es erneut.",
+    "lastSOSAttempt": "Letzter SOS-Versuch",
+    "sosDialerOpened": "Telefon-Wählfeld geöffnet; Anruf nicht bestätigt.",
+    "sosCancelled": "Abgebrochen; es wurde kein Anruf getätigt.",
+    "sosContactRequired": "Kein Notfallkontakt verfügbar; es wurde kein Anruf getätigt.",
+    "sosDialerFailed": "Das Telefon-Wählfeld konnte nicht geöffnet werden; es wurde kein Anruf getätigt.",
+    "sosUnknown": "Der letzte SOS-Versuch konnte nicht bestätigt werden.",
+    "voiceConfiguration": "Der Sprachbegleiter ist derzeit nicht verfügbar. Versuchen Sie es später erneut oder fahren Sie mit dem Offline-Begleiter fort.",
+    "editContact": "Bearbeiten",
+    "editContactTitle": "Notfallkontakt bearbeiten",
+    "editContactAccessibility": "%{name} bearbeiten",
+    "contactUpdated": "Notfallkontakt aktualisiert."
   }
 }

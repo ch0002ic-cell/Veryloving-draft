@@ -395,5 +395,41 @@
     "android": {
       "app_name": "VeryLoving"
     }
+  },
+  "releaseCritical": {
+    "authUnavailable": "Ndlela leyi yo nghena a yi kumeki eka vuhundzuluxeri bya app leyi.",
+    "continueAsDemo": "Yana emhlweni hi nkombiso (ku hluvukisa ntsena)",
+    "demoModeNotice": "Mokgwa wa nkombiso wu tirhisa ntsena data ya vuxisi leyi nga eka xitirhisiwa. Vukorhokeri leswi hlanganisiweke a byi tiyisisiwanga, naswona sexini leyi yi sungula nakambe loko app yi layichiwa nakambe.",
+    "authCodeInvalid": "Khodi yo tiyisisa a yi tirhi kumbe yi hundzeriwile hi nkarhi. Kombela khodi leyintshwa kutani u ringeta nakambe.",
+    "authRateLimited": "Ku ringetiwe ku nghena ko tala ngopfu. Yimanyana, kutani u ringeta nakambe.",
+    "authTimeout": "Ku tiyisisa ku nghena swi teke nkarhi wo leha ngopfu. Kambela vuhlanganisi bya wena kutani u ringeta nakambe.",
+    "authNetwork": "A hi swi kotanga ku fikelela vukorhokeri byo nghena. Kambela vuhlanganisi bya wena kutani u ringeta nakambe.",
+    "authSessionExpired": "Sexini ya wena yi hundzeriwile hi nkarhi. Nghena nakambe.",
+    "mapUnavailable": "Mepe wa vuhlayiseki a wu layichiwanga. Kambela vuhlanganisi bya wena kutani u ringeta nakambe.",
+    "mapCachedLocation": "Ndhawu ya nkarhi wa sweswi a yi kumeki. Ku kombisiwa ndhawu ya wena yo hetelela leyi hlayisiweke ku suka eka %{capturedAt}.",
+    "locationShareFailed": "A hi swi kotanga ku avelana ndhawu ya wena. Kambela mpfumelelo wa ndhawu kutani u ringeta nakambe.",
+    "locationShareCurrent": "Hi leyi ndhawu ya mina leyi rhekhodiweke hi %{capturedAt}:",
+    "locationShareCached": "Hi leyi ndhawu ya mina yo hetelela leyi hlayisiweke, leyi rhekhodiweke hi %{capturedAt}:",
+    "blePermission": "Mpfumelelo wa Bluetooth wu timiwile. Wu pfule eka Switirhisiwa, kutani u ringeta nakambe.",
+    "blePoweredOff": "Bluetooth yi timiwile. Yi pfule, kutani u ringeta nakambe.",
+    "bleUnavailable": "Ku hlanganisa hi Bluetooth a ku kumeki eka xitirhisiwa kumbe vuhundzuluxeri bya app leyi.",
+    "bleScanFailed": "A hi swi kotanga ku kuma NorthStar. Yi hlayise yi ri ekusuhi, kambela Bluetooth, kutani u ringeta nakambe.",
+    "bleNoDevices": "A ku kumekanga switirhisiwa swa NorthStar ekusuhi. Yi hlayise yi ri ekusuhi kutani u skena nakambe.",
+    "bleConnectFailed": "A hi swi kotanga ku hlanganisa na NorthStar. Tiyisisa leswaku yi chajiwile naswona yi le kusuhi, kutani u ringeta nakambe.",
+    "saveCurrentPlace": "Hlayisa ndhawu ya sweswi",
+    "placeSaved": "Ndhawu yi hlayisiwile.",
+    "savedPlace": "Ndhawu leyi hlayisiweke",
+    "savePlaceFailed": "A hi swi kotanga ku hlayisa ndhawu leyi. Ringeta nakambe.",
+    "lastSOSAttempt": "Ku ringeta ka SOS ko hetelela",
+    "sosDialerOpened": "Xichayachaya xa riqingho xi pfulekile; riqingho a ri tiyisisiwanga.",
+    "sosCancelled": "Swi khanseriwile; a ku foneriwanga.",
+    "sosContactRequired": "A ku nga ri na munhu wa vutihlanganisi bya xihatla; a ku foneriwanga.",
+    "sosDialerFailed": "Xichayachaya xa riqingho a xi pfulekanga; a ku foneriwanga.",
+    "sosUnknown": "Ku ringeta ka SOS ko hetelela a ku tiyisisiwanga.",
+    "voiceConfiguration": "Mupfuni wa rito a nga kumeki sweswi. Ringeta nakambe endzhaku kumbe u ya emhlweni hi mupfuni loyi a tirhaka handle ka inthanete.",
+    "editContact": "Hlela",
+    "editContactTitle": "Hlela munhu wa vutihlanganisi bya xihatla",
+    "editContactAccessibility": "Hlela %{name}",
+    "contactUpdated": "Munhu wa vutihlanganisi bya xihatla u pfuxetiwile."
   }
 }
