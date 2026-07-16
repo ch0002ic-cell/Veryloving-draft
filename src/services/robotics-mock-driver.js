@@ -242,7 +242,11 @@ export class RoboticsMockDriver {
     const id = `mock-${++this.nextRequestId}`;
     const message = JSON.stringify({ id, type, ...payload });
     if (fireAndForget) {
-      socket.send(message);
+      try {
+        socket.send(message);
+      } catch (error) {
+        throw mockError('Simulator connection was lost while sending', 'BLE_CONNECT_FAILED');
+      }
       return true;
     }
     return new Promise((resolve, reject) => {
@@ -251,7 +255,13 @@ export class RoboticsMockDriver {
         reject(mockError('Simulator request timed out', 'BLE_CONNECT_TIMEOUT'));
       }, this.requestTimeoutMs);
       this.pending.set(id, { resolve, reject, timer });
-      socket.send(message);
+      try {
+        socket.send(message);
+      } catch (error) {
+        clearTimeout(timer);
+        this.pending.delete(id);
+        reject(mockError('Simulator connection was lost while sending', 'BLE_CONNECT_FAILED'));
+      }
     });
   }
 
@@ -322,8 +332,8 @@ export class RoboticsMockDriver {
   writeCommand(deviceId, base64Value, { withResponse = true } = {}) {
     return this.writeCharacteristic(
       deviceId,
-      process.env.EXPO_PUBLIC_VL01_SERVICE_UUID,
-      process.env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID,
+      MOCK_UUIDS.service,
+      MOCK_UUIDS.command,
       base64Value,
       { withoutResponse: !withResponse }
     ).then(() => true);
@@ -392,6 +402,9 @@ export class RoboticsMockDriver {
   }
 
   async disconnect(deviceId) {
+    if (this.socket?.readyState === 1) {
+      await this.request('disconnect', { deviceId }, { fireAndForget: true }).catch(() => {});
+    }
     this.connectedDevices.delete(deviceId);
     for (const key of this.notificationHandlers.keys()) {
       if (!key.startsWith(`${deviceId}:`)) continue;

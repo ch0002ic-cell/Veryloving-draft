@@ -96,3 +96,42 @@ test('only the explicit robotics WebSocket simulation is reconnectable after hyd
   assert.equal(robotics.connectionState, 'reconnecting');
   assert.equal(robotics.autoReconnect, true);
 });
+
+test('writeCommand uses the default VL01 UUID registry when Expo overrides are absent', async () => {
+  const writes = [];
+  const driver = new RoboticsMockDriver();
+  driver.request = async (type, payload, options) => {
+    writes.push({ type, payload, options });
+    return { complete: true };
+  };
+
+  await driver.writeCommand('robot-1', 'AQID', { withResponse: true });
+
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0].type, 'writeCharacteristic');
+  assert.equal(writes[0].payload.serviceUUID, 'f0001100-0451-4000-b000-000000000000');
+  assert.equal(writes[0].payload.characteristicUUID, 'f0001104-0451-4000-b000-000000000000');
+});
+
+test('a synchronous WebSocket send failure rejects immediately and clears pending requests', async () => {
+  class ThrowingWebSocket {
+    constructor() {
+      this.readyState = 0;
+      globalThis.queueMicrotask(() => {
+        this.readyState = 1;
+        this.onopen?.();
+      });
+    }
+    close() { this.readyState = 3; }
+    send() { throw new Error('socket closed'); }
+  }
+  const driver = new RoboticsMockDriver({
+    WebSocketImpl: ThrowingWebSocket,
+    requestTimeoutMs: 1000,
+    resolveURLs: async () => ['ws://127.0.0.1:9090']
+  });
+
+  await assert.rejects(driver.scan(), (error) => error.code === 'BLE_CONNECT_FAILED');
+  assert.equal(driver.pending.size, 0);
+  driver.dispose();
+});

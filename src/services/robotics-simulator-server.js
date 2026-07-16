@@ -321,6 +321,10 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
         if (Math.random() < robot.errorMode.timeoutRate) return undefined;
         if (Math.random() < robot.errorMode.busyRate) throw Object.assign(new Error('Device busy'), { code: 'DEVICE_BUSY' });
         if (request.type === 'connect') return respond(robot.definition());
+        if (request.type === 'disconnect') {
+          robot.cleanupClient(client);
+          return respond({ disconnected: true });
+        }
         if (request.type === 'discoverServices') return respond({ services: [UUIDS.service, UUIDS.roboticsService], characteristics: robot.characteristicDefinitions() });
         if (request.type === 'readCharacteristic') {
           const definition = robot.characteristicDefinitions().find((item) => item.uuid === request.characteristicUUID);
