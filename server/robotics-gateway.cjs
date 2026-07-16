@@ -56,6 +56,39 @@ function signRobotAction(action, claims, config, now = Date.now()) {
   return `${signingInput}.${signature}`;
 }
 
+function verifyRobotActionToken(token, claims, config, now = Date.now()) {
+  if (typeof token !== 'string' || token.length > 20000) return null;
+  const segments = token.split('.');
+  if (segments.length !== 3) return null;
+  const [encodedHeader, encodedPayload, signature] = segments;
+  const expected = crypto.createHmac('sha256', config.sessionJWTSecret || '')
+    .update(`${encodedHeader}.${encodedPayload}`)
+    .digest('base64url');
+  const left = Buffer.from(signature);
+  const right = Buffer.from(expected);
+  if (left.length !== right.length || !crypto.timingSafeEqual(left, right)) return null;
+  let header;
+  let payload;
+  try {
+    header = JSON.parse(Buffer.from(encodedHeader, 'base64url'));
+    payload = JSON.parse(Buffer.from(encodedPayload, 'base64url'));
+  } catch { return null; }
+  const nowSeconds = Math.floor(now / 1000);
+  if (
+    header?.alg !== 'HS256'
+    || header.typ !== 'robot-action+jwt'
+    || payload?.iss !== ROBOT_ACTION_ISSUER
+    || payload?.aud !== ROBOT_ACTION_AUDIENCE
+    || payload?.sub !== claims?.sub
+    || payload?.sid !== claims?.sid
+    || !Number.isSafeInteger(payload?.exp)
+    || payload.exp <= nowSeconds
+    || payload.exp > nowSeconds + ROBOT_ACTION_TTL_SECONDS
+    || !payload.action
+  ) return null;
+  return payload;
+}
+
 function createRobotActionEnvelope(message, claims, config, now) {
   const action = normalizeToolCall(message);
   if (!action) return null;
@@ -84,5 +117,6 @@ module.exports = {
   createRobotActionEnvelope,
   inspectRoboticsToolFrame,
   normalizeToolCall,
-  signRobotAction
+  signRobotAction,
+  verifyRobotActionToken
 };

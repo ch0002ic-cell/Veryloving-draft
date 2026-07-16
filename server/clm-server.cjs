@@ -19,6 +19,7 @@ const {
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
+const { verifyRobotActionToken } = require('./robotics-gateway.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
   createLocalCompanionResponse,
@@ -179,6 +180,14 @@ function safeEqual(left, right) {
 function bearerToken(req) {
   const match = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || '');
   return match?.[1] || '';
+}
+
+async function sessionClaims(req, config) {
+  const token = bearerToken(req);
+  if (!token) return null;
+  return typeof config.verifyVoiceToken === 'function'
+    ? config.verifyVoiceToken(token)
+    : verifySessionJWT(token, config);
 }
 
 async function readJson(req) {
@@ -675,6 +684,22 @@ function createHandler(overrides = {}) {
         }
         const body = await readJson(req);
         json(res, 200, getSafetyTips(body.scenario));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/robotics/actions/verify') {
+        const claims = await sessionClaims(req, config);
+        if (!claims) {
+          json(res, 401, { valid: false });
+          return;
+        }
+        const body = await readJson(req);
+        const verified = verifyRobotActionToken(body.token, claims, config);
+        if (!verified) {
+          json(res, 401, { valid: false });
+          return;
+        }
+        json(res, 200, { valid: true, action: verified.action, expiresAt: verified.exp * 1000 });
         return;
       }
 

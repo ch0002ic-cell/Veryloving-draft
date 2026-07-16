@@ -351,6 +351,9 @@ export class HumeEVIService {
       case 'tool_call':
         await this.handleToolCall(message, sourceSocket);
         break;
+      case 'ROBOT_ACTION':
+        this.messageHandler.onRobotAction?.(message);
+        break;
       case 'tool_response':
         this.messageHandler.onToolResponse?.(message);
         break;

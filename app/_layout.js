@@ -15,6 +15,7 @@ import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
 import { NavigationPersistenceTracker } from '../src/components/NavigationPersistenceTracker';
 import { initializeNotifications } from '../src/services/notifications';
 import { logger } from '../src/utils/logger';
+import { useRoboticsOrchestrator } from '../src/hooks/useRoboticsOrchestrator';
 
 const OUTER_ERROR_COPY = Object.freeze({
   title: 'VeryLoving encountered a problem',
@@ -79,6 +80,11 @@ function LocalizedErrorBoundary({ children }) {
   );
 }
 
+function RoboticsOrchestratorBridge() {
+  useRoboticsOrchestrator();
+  return null;
+}
+
 function RootRuntime() {
   const fontsReady = useAppFonts();
   useEffect(() => {
@@ -94,6 +100,7 @@ function RootRuntime() {
       <AudioStreamBridge />
       <AuthProvider>
         <AppProvider>
+          <RoboticsOrchestratorBridge />
           <I18nProvider>
             <LocalizedErrorBoundary>
               <LocalizedNavigation />

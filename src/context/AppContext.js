@@ -47,6 +47,7 @@ export function AppProvider({ children }) {
   const deviceAccountIdRef = useRef(null);
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
+  const [robotActionEnvelope, setRobotActionEnvelope] = useState(null);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
   const [settingsAccountId, setSettingsAccountId] = useState(undefined);
   const [contactsAccountId, setContactsAccountId] = useState(null);
@@ -548,7 +549,10 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const clearRobotActionEnvelope = useCallback((handled) => {
+    setRobotActionEnvelope((current) => current === handled ? null : current);
+  }, []);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelope, publishRobotActionEnvelope: setRobotActionEnvelope, clearRobotActionEnvelope }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelope, clearRobotActionEnvelope]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
