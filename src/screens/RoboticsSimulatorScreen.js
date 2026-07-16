@@ -22,6 +22,7 @@ export function RoboticsSimulatorScreen() {
   const [selectedId, setSelectedId] = useState(null);
   const [telemetry, setTelemetry] = useState(null);
   const [obstacle, setObstacle] = useState(false);
+  const [lostRobotId, setLostRobotId] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [simulatorURL, setSimulatorURL] = useState(config.roboticsSimulatorURL || DEFAULT_ROBOTICS_SIMULATOR_URL);
@@ -84,7 +85,14 @@ export function RoboticsSimulatorScreen() {
     setObstacle(next);
   });
   const loseConnection = () => run(async () => {
-    await roboticsMockDriver.controlRobot(selectedId, { disconnect: true });
+    const robotId = selectedId;
+    setLostRobotId(robotId);
+    await roboticsMockDriver.controlRobot(robotId, { disconnect: true });
+    await refresh();
+  });
+  const restoreConnection = () => run(async () => {
+    await roboticsMockDriver.controlRobot(lostRobotId, { disconnect: false });
+    setLostRobotId(null);
     await refresh();
   });
   const saveSimulatorURL = () => run(async () => {
@@ -138,6 +146,7 @@ export function RoboticsSimulatorScreen() {
         <Text style={styles.title}>Safety edge cases</Text>
         <Button title={obstacle ? 'Clear obstacle' : 'Set obstacle (STOP)'} disabled={!selectedId || busy} onPress={toggleObstacle} />
         <Button title="Simulate lost connection" variant="danger" disabled={!selectedId || busy} onPress={loseConnection} />
+        {lostRobotId ? <Button title="Restore simulated connection" variant="ghost" disabled={busy} onPress={restoreConnection} /> : null}
       </Card>
       <Card style={styles.card}>
         <Text style={styles.title}>Live telemetry (100 ms)</Text>

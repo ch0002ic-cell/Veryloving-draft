@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 const {
   ROBOTICS_SIMULATOR_URL_KEY,
@@ -133,5 +135,31 @@ test('a synchronous WebSocket send failure rejects immediately and clears pendin
 
   await assert.rejects(driver.scan(), (error) => error.code === 'BLE_CONNECT_FAILED');
   assert.equal(driver.pending.size, 0);
+  driver.dispose();
+});
+
+test('the QA dashboard can restore a robot after injecting a lost connection', () => {
+  const dashboard = readFileSync(path.resolve('src/screens/RoboticsSimulatorScreen.js'), 'utf8');
+  assert.match(dashboard, /controlRobot\(robotId, \{ disconnect: true \}\)/);
+  assert.match(dashboard, /controlRobot\(lostRobotId, \{ disconnect: false \}\)/);
+  assert.match(dashboard, /Restore simulated connection/);
+});
+
+test('a simulator lost-connection event pauses the mock connection immediately', () => {
+  const driver = new RoboticsMockDriver();
+  const states = [];
+  driver.connectedDevices.set('robot-1', { id: 'robot-1' });
+  driver.connectionState = 'connected';
+  driver.addConnectionStateListener((state) => states.push(state));
+
+  driver.handleMessage(JSON.stringify({
+    type: 'disconnected',
+    deviceId: 'robot-1',
+    reason: 'simulated_lost_connection'
+  }));
+
+  assert.equal(driver.connectedDevices.has('robot-1'), false);
+  assert.equal(driver.connectionState, 'disconnected');
+  assert.deepEqual(states, ['connected', 'disconnected']);
   driver.dispose();
 });

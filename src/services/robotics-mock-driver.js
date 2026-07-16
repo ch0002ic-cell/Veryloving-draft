@@ -225,6 +225,9 @@ export class RoboticsMockDriver {
     }
     if (message.type === 'disconnected') {
       this.connectedDevices.delete(message.deviceId);
+      if (!this.connectedDevices.size) {
+        this.setConnectionState('disconnected', { deviceId: message.deviceId, reason: message.reason });
+      }
       this.eventHandler.onDisconnected?.(message.deviceId, mockError(message.reason, 'BLE_CONNECT_FAILED'));
       return;
     }

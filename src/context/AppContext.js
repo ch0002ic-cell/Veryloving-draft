@@ -27,6 +27,11 @@ import {
   enqueueRobotActionEnvelope,
   removeRobotActionEnvelope
 } from '../services/robotics-action-inbox';
+import {
+  normalizeRobotEntity,
+  removeRobotEntity as removeRobotEntityFromList,
+  upsertRobotEntity
+} from '../services/robotics-telemetry';
 
 const AppContext = createContext(null);
 const DEFAULT_CONTACTS = [];
@@ -51,6 +56,7 @@ export function AppProvider({ children }) {
   const deviceAccountIdRef = useRef(null);
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
+  const [robotEntities, setRobotEntities] = useState([]);
   const [robotActionEnvelopes, setRobotActionEnvelopes] = useState([]);
   const [roboticsError, setRoboticsError] = useState(null);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
@@ -61,6 +67,17 @@ export function AppProvider({ children }) {
     && !authLoading
     && settingsAccountId === expectedSettingsAccountId
     && (!user?.id || contactsAccountId === user.id);
+
+  const updateRobotEntity = useCallback((deviceId, telemetry, receivedAt = Date.now()) => {
+    const entity = normalizeRobotEntity(deviceId, telemetry, receivedAt);
+    if (!entity) return false;
+    setRobotEntities((current) => upsertRobotEntity(current, entity));
+    return true;
+  }, []);
+  const removeRobotEntity = useCallback((deviceId) => {
+    setRobotEntities((current) => removeRobotEntityFromList(current, deviceId));
+  }, []);
+  const clearRobotEntities = useCallback(() => setRobotEntities([]), []);
 
   useEffect(() => {
     if (authLoading) return undefined;
@@ -102,6 +119,7 @@ export function AppProvider({ children }) {
       setDeviceState(DEFAULT_DEVICE);
       setDeviceTelemetry({ status: null, event: null });
       setFriends(DEFAULT_FRIENDS);
+      setRobotEntities([]);
       setContactsAccountId(null);
       if (pairedDeviceId) bleService.disconnect(pairedDeviceId).catch(() => {});
       return () => { active = false; };
@@ -116,6 +134,7 @@ export function AppProvider({ children }) {
       deviceRef.current = DEFAULT_DEVICE;
       setDeviceState(DEFAULT_DEVICE);
       setDeviceTelemetry({ status: null, event: null });
+      setRobotEntities([]);
       if (previousDeviceId) bleService.disconnect(previousDeviceId).catch(() => {});
       withTimeout(loadPairedDevice(accountId), 8000, 'Paired-device restoration timed out.').then((savedDevice) => {
         if (
@@ -518,6 +537,7 @@ export function AppProvider({ children }) {
     setDeviceState(DEFAULT_DEVICE);
     setDeviceTelemetry({ status: null, event: null });
     setFriends(DEFAULT_FRIENDS);
+    setRobotEntities([]);
     setRobotActionEnvelopes([]);
     setRoboticsError(null);
     if (pairedDeviceId) {
@@ -563,7 +583,7 @@ export function AppProvider({ children }) {
   const clearRobotActionEnvelope = useCallback((handled) => {
     setRobotActionEnvelopes((current) => removeRobotActionEnvelope(current, handled));
   }, []);
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelopes, robotActionEnvelope: robotActionEnvelopes[0] || null, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError, setRoboticsError }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelopes, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotEntities, updateRobotEntity, removeRobotEntity, clearRobotEntities, robotActionEnvelopes, robotActionEnvelope: robotActionEnvelopes[0] || null, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError, setRoboticsError }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotEntities, updateRobotEntity, removeRobotEntity, clearRobotEntities, robotActionEnvelopes, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

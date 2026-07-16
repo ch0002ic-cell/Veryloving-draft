@@ -21,6 +21,11 @@ import { logger } from '../../src/utils/logger';
 import { shareQuickLocation } from '../../src/services/emergency';
 import { loadSavedPlaces, removeSavedPlace, saveCurrentPlace } from '../../src/services/saved-place-store';
 import { useAuth } from '../../src/context/AuthContext';
+import { useAppState } from '../../src/context/AppContext';
+import {
+  createRobotFeatureCollection,
+  selectMapCameraCoordinates
+} from '../../src/services/robotics-telemetry';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -31,7 +36,7 @@ function locationErrorTranslationKey(error) {
   return 'map.updateFailed';
 }
 
-const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onLoadError, onStyleLoaded, t }) {
+const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onLoadError, onStyleLoaded, robotFeatureCollection, t }) {
   return (
     <Mapbox.MapView
       onDidFinishLoadingStyle={onStyleLoaded}
@@ -41,6 +46,42 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onL
     >
       <Mapbox.Camera zoomLevel={13} centerCoordinate={coordinates} animationMode="easeTo" />
       {Mapbox.LocationPuck ? <Mapbox.LocationPuck puckBearingEnabled /> : null}
+      {robotFeatureCollection.features.length ? (
+        <Mapbox.ShapeSource id="robot-entities" shape={robotFeatureCollection}>
+          <Mapbox.CircleLayer
+            id="robot-entities-dot"
+            style={{
+              circleColor: colors.orange,
+              circleRadius: 9,
+              circleStrokeColor: colors.paper,
+              circleStrokeWidth: 3
+            }}
+          />
+          <Mapbox.SymbolLayer
+            id="robot-entities-heading"
+            style={{
+              textAllowOverlap: true,
+              textColor: colors.ink,
+              textField: '▲',
+              textRotate: ['get', 'heading'],
+              textRotationAlignment: 'map',
+              textSize: 12
+            }}
+          />
+          <Mapbox.SymbolLayer
+            id="robot-entities-label"
+            style={{
+              textAllowOverlap: true,
+              textColor: colors.ink,
+              textField: ['get', 'label'],
+              textHaloColor: colors.paper,
+              textHaloWidth: 2,
+              textOffset: [0, 1.5],
+              textSize: 12
+            }}
+          />
+        </Mapbox.ShapeSource>
+      ) : null}
       {dangerZones.map((zone) => {
         const zoneTitle = t(zone.nameKey);
         const zoneDescription = t('map.risk', {
@@ -89,9 +130,18 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const { isRTL, locale, t } = useI18n();
   const { user } = useAuth();
-  const coordinates = useMemo(() => location
+  const { robotEntities, roboticsError, setRoboticsError } = useAppState();
+  const userCoordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
+  const robotFeatureCollection = useMemo(
+    () => createRobotFeatureCollection(robotEntities),
+    [robotEntities]
+  );
+  const coordinates = useMemo(
+    () => selectMapCameraCoordinates(userCoordinates, robotEntities, DEFAULT_COORDINATES),
+    [robotEntities, userCoordinates]
+  );
   const localizedFeedbackMessage = useCallback((feedback) => {
     if (!feedback?.translationKey) return null;
     const translationOptions = feedback.capturedAt
@@ -263,6 +313,7 @@ export default function MapScreen() {
           coordinates={coordinates}
           onLoadError={handleMapLoadError}
           onStyleLoaded={handleMapStyleLoaded}
+          robotFeatureCollection={robotFeatureCollection}
           t={t}
         />
         {loading ? (
@@ -278,6 +329,15 @@ export default function MapScreen() {
               onAction={permissionDenied
                 ? () => Linking.openSettings().catch(() => {})
                 : shareError ? handleQuickShare : refreshLocation}
+            />
+          </View>
+        ) : null}
+        {roboticsError ? (
+          <View style={[styles.mapStatus, { top: insets.top + 84 }]}>
+            <FeedbackBanner
+              message={roboticsError.message}
+              actionLabel={t('common.close')}
+              onAction={() => setRoboticsError(null)}
             />
           </View>
         ) : null}
@@ -340,6 +400,13 @@ export default function MapScreen() {
           ? () => Linking.openSettings().catch(() => {})
           : retryMapAndLocation}
       />
+      {roboticsError ? (
+        <FeedbackBanner
+          message={roboticsError.message}
+          actionLabel={t('common.close')}
+          onAction={() => setRoboticsError(null)}
+        />
+      ) : null}
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
           <Text style={[styles.zone, isRTL && styles.rtlText]}>{t(zone.nameKey)}</Text>
