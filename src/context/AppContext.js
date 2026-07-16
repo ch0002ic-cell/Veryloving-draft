@@ -23,6 +23,10 @@ import { createAuthenticationNonce } from '../utils/session-token';
 import { loadEmergencyContactCache, persistEmergencyContactCache } from '../services/emergency-contact-store';
 import { editEmergencyContact } from '../services/emergency-contact-edit';
 import { withTimeout } from '../utils/async';
+import {
+  enqueueRobotActionEnvelope,
+  removeRobotActionEnvelope
+} from '../services/robotics-action-inbox';
 
 const AppContext = createContext(null);
 const DEFAULT_CONTACTS = [];
@@ -47,7 +51,8 @@ export function AppProvider({ children }) {
   const deviceAccountIdRef = useRef(null);
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
-  const [robotActionEnvelope, setRobotActionEnvelope] = useState(null);
+  const [robotActionEnvelopes, setRobotActionEnvelopes] = useState([]);
+  const [roboticsError, setRoboticsError] = useState(null);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
   const [settingsAccountId, setSettingsAccountId] = useState(undefined);
   const [contactsAccountId, setContactsAccountId] = useState(null);
@@ -513,6 +518,8 @@ export function AppProvider({ children }) {
     setDeviceState(DEFAULT_DEVICE);
     setDeviceTelemetry({ status: null, event: null });
     setFriends(DEFAULT_FRIENDS);
+    setRobotActionEnvelopes([]);
+    setRoboticsError(null);
     if (pairedDeviceId) {
       bleService.disconnect(pairedDeviceId).catch((error) => logger.warn('[AppState] Device cleanup failed', {
         errorCode: error?.code || 'BLE_DISCONNECT_FAILED',
@@ -549,10 +556,14 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const clearRobotActionEnvelope = useCallback((handled) => {
-    setRobotActionEnvelope((current) => current === handled ? null : current);
+  const publishRobotActionEnvelope = useCallback((envelope) => {
+    if (!envelope?.token) return;
+    setRobotActionEnvelopes((current) => enqueueRobotActionEnvelope(current, envelope));
   }, []);
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelope, publishRobotActionEnvelope: setRobotActionEnvelope, clearRobotActionEnvelope }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelope, clearRobotActionEnvelope]);
+  const clearRobotActionEnvelope = useCallback((handled) => {
+    setRobotActionEnvelopes((current) => removeRobotActionEnvelope(current, handled));
+  }, []);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelopes, robotActionEnvelope: robotActionEnvelopes[0] || null, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError, setRoboticsError }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated, robotActionEnvelopes, publishRobotActionEnvelope, clearRobotActionEnvelope, roboticsError]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
