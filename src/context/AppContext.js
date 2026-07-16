@@ -3,7 +3,7 @@ import { AppState } from 'react-native';
 import { voiceProfiles } from '../mocks/voiceProfiles';
 import { DEFAULT_SETTINGS, loadSettings, mergeSettings, persistSettings } from '../services/settings-store';
 import { logger } from '../utils/logger';
-import { bleService } from '../services/ble';
+import { bleService } from '../services/ble-runtime';
 import {
   DEFAULT_DEVICE,
   loadPairedDevice,
