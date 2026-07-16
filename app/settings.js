@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Alert, Linking, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import * as Application from 'expo-application';
 import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
@@ -25,6 +26,16 @@ export default function Settings() {
   const { accessToken, signOut, user } = useAuth();
   const { isRTL, t } = useI18n();
   const [busyAction, setBusyAction] = useState(null);
+  const lastVersionTapRef = useRef(0);
+
+  const handleBuildVersionTap = () => {
+    const now = Date.now();
+    if (
+      process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE === 'true'
+      && now - lastVersionTapRef.current < 450
+    ) router.push('/robotics-simulator');
+    lastVersionTapRef.current = now;
+  };
 
   const handleExport = async () => {
     try {
@@ -217,6 +228,9 @@ export default function Settings() {
           onPress={handleSignOut}
         />
       </SettingsSection>
+      <Pressable accessibilityRole="button" accessibilityLabel="Build version" onPress={handleBuildVersionTap}>
+        <Text style={styles.buildVersion}>VeryLoving {Application.nativeApplicationVersion || '1.0.0'} ({Application.nativeBuildVersion || 'local'})</Text>
+      </Pressable>
     </Screen>
   );
 }
@@ -272,5 +286,6 @@ const styles = StyleSheet.create({
   toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
   toggleText: { flex: 1 },
   toggleTitle: { fontFamily: fonts.bold, color: colors.ink },
-  muted: { fontFamily: fonts.regular, color: colors.inkSoft, marginTop: 4 }
+  muted: { fontFamily: fonts.regular, color: colors.inkSoft, marginTop: 4 },
+  buildVersion: { fontFamily: fonts.regular, color: colors.inkSoft, textAlign: 'center', fontSize: 12, padding: spacing.md }
 });

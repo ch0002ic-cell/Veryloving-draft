@@ -32,5 +32,6 @@ export const PROTECTED_ROOT_ROUTES = Object.freeze([
   'quick-share-location',
   'ai-companion',
   'capybear-tap',
-  'debug'
+  'debug',
+  'robotics-simulator'
 ]);

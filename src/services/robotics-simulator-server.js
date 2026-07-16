@@ -1,4 +1,5 @@
 'use strict';
+/* global Buffer */
 
 const { WebSocketServer, WebSocket } = require('ws');
 
@@ -232,6 +233,19 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
         const respond = (result) => send(client, { id: request.id, ok: true, result });
         if (request.type === 'scan') return respond([...robots.values()].filter((robot) => !robot.disconnected).map((robot) => robot.definition()));
         if (request.type === 'spawn') return respond(spawn().definition());
+        if (request.type === 'setRobotCount') {
+          const count = Math.max(1, Math.min(3, Math.round(Number(request.count))));
+          if (!Number.isFinite(count)) throw new Error('Robot count is invalid');
+          while (robots.size < count) spawn();
+          while (robots.size > count) {
+            const robot = [...robots.values()].pop();
+            for (const clientSocket of robot.subscriptions.keys()) {
+              send(clientSocket, { type: 'disconnected', deviceId: robot.id, reason: 'farm_resized' });
+            }
+            robots.delete(robot.id);
+          }
+          return respond([...robots.values()].map((robot) => robot.definition()));
+        }
         const robot = robots.get(request.deviceId);
         if (!robot) throw new Error('Robot not found');
         if (request.type === 'control') {

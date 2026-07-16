@@ -23,7 +23,7 @@ function bytesToBase64(bytes) {
 }
 
 function utf8Bytes(value) {
-  if (typeof TextEncoder !== 'undefined') return new TextEncoder().encode(value);
+  if (typeof globalThis.TextEncoder !== 'undefined') return new globalThis.TextEncoder().encode(value);
   const escaped = unescape(encodeURIComponent(value));
   return Uint8Array.from(escaped, (character) => character.charCodeAt(0));
 }
@@ -228,6 +228,7 @@ export class RoboticsMockDriver {
   }
 
   spawnRobot() { return this.request('spawn'); }
+  setRobotCount(count) { return this.request('setRobotCount', { count }); }
   controlRobot(deviceId, control) { return this.request('control', { deviceId, control }); }
 
   async disconnect(deviceId) {
