@@ -2,6 +2,7 @@
 
 const { WebSocket, WebSocketServer } = require('ws');
 const { verifySessionJWT } = require('./auth-session.cjs');
+const { inspectRoboticsToolFrame } = require('./robotics-gateway.cjs');
 
 const GATEWAY_PATH = '/api/voice/hume-ws';
 const HUME_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
@@ -126,6 +127,7 @@ function attachVoiceGateway(server, config) {
   gateway.on('connection', (client) => {
     let upstream = null;
     let authenticated = false;
+    let authenticatedClaims = null;
     let authenticating = false;
     let closed = false;
     let sessionExpiryTimer = null;
@@ -176,6 +178,7 @@ function attachVoiceGateway(server, config) {
           upstream.on('open', () => {
             if (client.readyState !== WebSocket.OPEN) return cleanup();
             authenticated = true;
+            authenticatedClaims = claims;
             authenticating = false;
             clearTimeout(authTimer);
             client.send(JSON.stringify({ type: 'auth_ok' }));
@@ -186,6 +189,8 @@ function attachVoiceGateway(server, config) {
               closeSocket(client, 4000, 'client backpressure limit');
               return;
             }
+            const robotAction = inspectRoboticsToolFrame(payload, upstreamBinary, authenticatedClaims, config);
+            if (robotAction) client.send(JSON.stringify(robotAction));
             client.send(payload, { binary: upstreamBinary });
           });
           upstream.on('error', () => closeSocket(client, 1011, 'voice upstream unavailable'));
