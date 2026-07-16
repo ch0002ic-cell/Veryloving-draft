@@ -42,7 +42,7 @@ function voiceOverride(selectedVoice) {
 
 export function useHumeVoiceCall({ initialSessionId } = {}) {
   const { accessToken, isDemoMode } = useAuth();
-  const { selectedVoice, settings } = useAppState();
+  const { selectedVoice, settings, publishRobotActionEnvelope } = useAppState();
   const networkState = useNetworkState();
   const isOnline = networkState.isConnected !== false && networkState.isInternetReachable !== false;
   const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
@@ -180,6 +180,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
         appendMessage('user', text, { source: service === offlineEVIService ? 'offline' : 'hume' });
       },
       onAssistantMessage: (text) => appendMessage('assistant', text, { source: service === offlineEVIService ? 'offline' : 'hume' }),
+      onRobotAction: publishRobotActionEnvelope,
       onChatMetadata: async (metadata) => {
         await updateConversationSessionMetadata(sessionIdRef.current, {
           ...metadata,
@@ -200,7 +201,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
         if (service !== offlineEVIService) setFallbackAvailable(true);
       }
     });
-  }, [accessToken, appendMessage, consumeSuppressedEcho, flushPendingMessages, presentError, selectedVoice.displayName, selectedVoice.id]);
+  }, [accessToken, appendMessage, consumeSuppressedEcho, flushPendingMessages, presentError, publishRobotActionEnvelope, selectedVoice.displayName, selectedVoice.id]);
 
   useEffect(() => {
     bindServiceHandlers(serviceRef.current);

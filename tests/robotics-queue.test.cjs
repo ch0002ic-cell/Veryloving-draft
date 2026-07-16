@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { RoboticsCommandQueue, ROBOTICS_PRIORITY } = require('../src/services/robotics-command-queue');
 
-const flush = () => new Promise((resolve) => setImmediate(resolve));
+const flush = () => new Promise((resolve) => globalThis.setImmediate(resolve));
 
 test('Critical commands bypass the queue and execute immediately without response', async () => {
   const calls = [];
