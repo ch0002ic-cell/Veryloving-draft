@@ -2,7 +2,7 @@ const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
 const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
 const FULL_CATALOG_LANGUAGE_PROFILES = new Set(['development', 'testflight']);
-const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight']);
+const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight', 'testflight-robotics-sim']);
 
 function isFullCatalogLanguageEnvironment(env = process.env) {
   const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
@@ -79,6 +79,7 @@ function createEnvironmentDiagnostics(env = {}) {
   const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
+  const roboticsMockMode = env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE === 'true';
   const safetyBackendEnabled = env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
   const phoneAuthEnabled = env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
   const showAllLanguagesRequested = env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
@@ -204,6 +205,7 @@ function createEnvironmentDiagnostics(env = {}) {
       humeCLMEnabled,
       offlineModeEnabled,
       vl01Enabled,
+      roboticsMockMode,
       safetyBackendEnabled,
       phoneAuthEnabled,
       showAllLanguagesEnabled
@@ -547,6 +549,8 @@ function createAppConfig() {
   const vl01StatusCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID || '';
   const vl01EventCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID || '';
   const vl01CommandCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID || '';
+  const roboticsMockMode = process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE === 'true';
+  const roboticsSimulatorURL = process.env.EXPO_PUBLIC_ROBOTICS_SIMULATOR_URL || 'ws://127.0.0.1:9090';
   const environmentDiagnostics = createEnvironmentDiagnostics(process.env);
   reportEnvironmentDiagnostics(environmentDiagnostics, process.env);
   assertEnvironmentReady(environmentDiagnostics);
@@ -588,6 +592,8 @@ function createAppConfig() {
       vl01StatusCharacteristicUUID,
       vl01EventCharacteristicUUID,
       vl01CommandCharacteristicUUID,
+      roboticsMockMode,
+      roboticsSimulatorURL,
       environmentDiagnostics
     }
   };

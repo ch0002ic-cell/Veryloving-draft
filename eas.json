@@ -66,11 +66,22 @@
         "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "true",
         "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
       }
+    },
+    "testflight-robotics-sim": {
+      "extends": "testflight",
+      "env": {
+        "VERYLOVING_BUILD_PROFILE": "testflight-robotics-sim",
+        "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "false",
+        "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true",
+        "EXPO_PUBLIC_ROBOTICS_MOCK_MODE": "true"
+      }
     }
   },
   "submit": {
     "production": {},
     "testflight": {},
-    "testflight-full-catalog": {}
+    "testflight-full-catalog": {},
+    "testflight-robotics-sim": {}
   }
 }

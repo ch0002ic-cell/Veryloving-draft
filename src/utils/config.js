@@ -22,6 +22,8 @@ export const config = {
   mapboxAccessToken: process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || extra.mapboxAccessToken || '',
   safetyBackendEnabled: process.env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true' || extra.safetyBackendEnabled === true,
   enableOfflineMode: process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true' || extra.enableOfflineMode === true,
+  roboticsMockMode: process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE === 'true' || extra.roboticsMockMode === true,
+  roboticsSimulatorURL: process.env.EXPO_PUBLIC_ROBOTICS_SIMULATOR_URL || extra.roboticsSimulatorURL || 'ws://127.0.0.1:9090',
   vl01Protocol: createVL01Protocol({
     enabled: process.env.EXPO_PUBLIC_VL01_ENABLED === 'true' || extra.vl01Enabled === true,
     serviceUUID: process.env.EXPO_PUBLIC_VL01_SERVICE_UUID || extra.vl01ServiceUUID,
