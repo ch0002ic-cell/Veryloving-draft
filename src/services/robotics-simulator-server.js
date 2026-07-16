@@ -7,6 +7,9 @@ const DEFAULT_PORT = 9090;
 const DEFAULT_HOST = '127.0.0.1';
 const TELEMETRY_INTERVAL_MS = 100;
 const HEARTBEAT_INTERVAL_MS = 10000;
+const METERS_PER_LATITUDE_DEGREE = 111320;
+const MIN_SPEED_METERS_PER_SECOND = 0.1;
+const MAX_SPEED_METERS_PER_SECOND = 2;
 const ROBOTICS_SERVICE_UUID = process.env.EXPO_PUBLIC_ROBOTICS_SERVICE_UUID
   || process.env.ROBOTICS_SERVICE_UUID
   || 'f000aa00-0451-4000-b000-000000000000';
@@ -72,6 +75,7 @@ class SimulatedRobot {
     this.subscriptions = new Map();
     this.fragments = new Map();
     this.telemetry = { latitude: 1.3521, longitude: 103.8198, battery: 100, heading: 0, speed: 0 };
+    this.commandedSpeed = 0.8;
     this.target = null;
     this.obstacle = false;
     this.disconnected = false;
@@ -187,13 +191,30 @@ class SimulatedRobot {
       const latitude = Number(action.latitude);
       const longitude = Number(action.longitude);
       if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error('Navigation coordinates are invalid');
+      if (action.speed !== undefined) this.setCommandedSpeed(action.speed, { emitEvent: false });
       this.target = { latitude, longitude };
       this.emit(UUIDS.event, { type: 'NAVIGATION_STARTED' });
       redactedLog(this.logger, 'navigation accepted', { robotId: this.id, latitude, longitude });
+    } else if (type === 'SET_ROBOT_SPEED' || type === 'SET_SPEED') {
+      this.setCommandedSpeed(action.speed);
     } else if (type.includes('FIND')) {
       this.emit(UUIDS.event, { type: 'ROBOT_FOUND', audible: true });
     }
     this.emit(UUIDS.status, this.status());
+  }
+
+  setCommandedSpeed(value, { emitEvent = true } = {}) {
+    const speed = Number(value);
+    if (
+      !Number.isFinite(speed)
+      || speed < MIN_SPEED_METERS_PER_SECOND
+      || speed > MAX_SPEED_METERS_PER_SECOND
+    ) {
+      throw new Error(`Robot speed must be between ${MIN_SPEED_METERS_PER_SECOND} and ${MAX_SPEED_METERS_PER_SECOND} m/s`);
+    }
+    this.commandedSpeed = speed;
+    if (this.target && !this.obstacle) this.telemetry.speed = speed;
+    if (emitEvent) this.emit(UUIDS.event, { type: 'SPEED_CHANGED', speed });
   }
 
   control(control = {}) {
@@ -223,19 +244,24 @@ class SimulatedRobot {
     if (this.target && !this.obstacle) {
       const latDelta = this.target.latitude - this.telemetry.latitude;
       const lngDelta = this.target.longitude - this.telemetry.longitude;
-      const distance = Math.hypot(latDelta, lngDelta);
-      if (distance < 0.000002) {
+      const longitudeScale = METERS_PER_LATITUDE_DEGREE
+        * Math.max(0.01, Math.cos(this.telemetry.latitude * Math.PI / 180));
+      const latMeters = latDelta * METERS_PER_LATITUDE_DEGREE;
+      const lngMeters = lngDelta * longitudeScale;
+      const distanceMeters = Math.hypot(latMeters, lngMeters);
+      const stepMeters = this.commandedSpeed * TELEMETRY_INTERVAL_MS / 1000;
+      if (distanceMeters <= stepMeters) {
         this.telemetry.latitude = this.target.latitude;
         this.telemetry.longitude = this.target.longitude;
         this.telemetry.speed = 0;
         this.target = null;
         this.emit(UUIDS.event, { type: 'NAVIGATION_COMPLETE' });
       } else {
-        const ratio = Math.min(0.08, 0.00002 / distance);
+        const ratio = stepMeters / distanceMeters;
         this.telemetry.latitude += latDelta * ratio;
         this.telemetry.longitude += lngDelta * ratio;
-        this.telemetry.heading = (Math.atan2(lngDelta, latDelta) * 180 / Math.PI + 360) % 360;
-        this.telemetry.speed = 0.8;
+        this.telemetry.heading = (Math.atan2(lngMeters, latMeters) * 180 / Math.PI + 360) % 360;
+        this.telemetry.speed = this.commandedSpeed;
       }
     }
     if (emitTelemetry) this.emit(UUIDS.telemetry, this.telemetry);
@@ -317,7 +343,9 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
           }
           return respond(robot.definition());
         }
-        if (robot.disconnected) throw new Error('Robot is disconnected');
+        if (robot.disconnected) {
+          throw Object.assign(new Error('Robot is disconnected'), { code: 'BLE_CONNECT_FAILED' });
+        }
         if (Math.random() < robot.errorMode.timeoutRate) return undefined;
         if (Math.random() < robot.errorMode.busyRate) throw Object.assign(new Error('Device busy'), { code: 'DEVICE_BUSY' });
         if (request.type === 'connect') return respond(robot.definition());

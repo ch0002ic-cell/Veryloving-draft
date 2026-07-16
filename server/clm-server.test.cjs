@@ -6,6 +6,11 @@ const { test } = require('node:test');
 const { createHandler, validateServerConfig } = require('./clm-server.cjs');
 const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety-companion.cjs');
 const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
+const {
+  createRobotActionEnvelope,
+  signRobotAction,
+  verifyRobotActionToken
+} = require('./robotics-gateway.cjs');
 
 const silentLogger = { info() {}, warn() {}, error() {} };
 const VALID_HUME_CONFIG_ID = '11111111-1111-4111-8111-111111111111';
@@ -83,6 +88,75 @@ test('health endpoint reports the CLM service', async () => {
   const response = await invoke({}, { url: '/health' });
   assert.equal(response.status, 200);
   assert.deepEqual(response.json, { status: 'ok', service: 'veryloving-hume-clm' });
+});
+
+test('robot action routes verify and refresh only session-bound signed envelopes', async () => {
+  const sessionJWTSecret = 'robotics-route-secret-that-is-at-least-32-characters';
+  const claims = { sub: 'user-robotics', sid: 'session-robotics' };
+  const config = {
+    sessionJWTSecret,
+    verifyVoiceToken: () => claims,
+    logger: silentLogger
+  };
+  const envelope = createRobotActionEnvelope({
+    type: 'tool_call',
+    tool_call_id: 'route-call-1',
+    name: 'robot_stop',
+    parameters: {}
+  }, claims, config);
+  const headers = { authorization: 'Bearer app-session' };
+
+  const verified = await invoke(config, {
+    method: 'POST',
+    url: '/v1/robotics/actions/verify',
+    headers,
+    body: { token: envelope.token }
+  });
+  assert.equal(verified.status, 200);
+  assert.equal(verified.json.valid, true);
+  assert.equal(Object.hasOwn(verified.json, 'action'), false);
+
+  const recentlyExpired = signRobotAction({
+    id: 'route-call-expired',
+    name: 'robot_stop',
+    parameters: {}
+  }, claims, config, Date.now() - 89_000);
+  const refreshed = await invoke(config, {
+    method: 'POST',
+    url: '/v1/robotics/actions/refresh',
+    headers,
+    body: { token: recentlyExpired }
+  });
+  assert.equal(refreshed.status, 200);
+  assert.equal(refreshed.json.type, 'ROBOT_ACTION');
+  assert.equal(verifyRobotActionToken(refreshed.json.token, claims, config).action.id, 'route-call-expired');
+});
+
+test('robot action refresh route rejects tampering, wrong sessions, and stale actions', async () => {
+  const sessionJWTSecret = 'robotics-route-secret-that-is-at-least-32-characters';
+  const signedClaims = { sub: 'user-robotics', sid: 'signed-session' };
+  const requestClaims = { sub: 'user-robotics', sid: 'request-session' };
+  const config = {
+    sessionJWTSecret,
+    verifyVoiceToken: () => requestClaims,
+    logger: silentLogger
+  };
+  const action = { id: 'stale-call', name: 'robot_stop', parameters: {} };
+  const wrongSession = signRobotAction(action, signedClaims, config, Date.now() - 40_000);
+  const tooOld = signRobotAction(action, requestClaims, config, Date.now() - 91_000);
+  const tampered = `${tooOld.slice(0, -1)}${tooOld.endsWith('a') ? 'b' : 'a'}`;
+  const headers = { authorization: 'Bearer app-session' };
+
+  for (const token of [wrongSession, tooOld, tampered]) {
+    const response = await invoke(config, {
+      method: 'POST',
+      url: '/v1/robotics/actions/refresh',
+      headers,
+      body: { token }
+    });
+    assert.equal(response.status, 401);
+    assert.deepEqual(response.json, { valid: false, code: 'ROBOT_ACTION_INVALID' });
+  }
 });
 
 test('production server rejects insecure credential-bearing outbound URLs', () => {

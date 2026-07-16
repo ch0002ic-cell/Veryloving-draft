@@ -19,7 +19,10 @@ const {
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
-const { verifyRobotActionToken } = require('./robotics-gateway.cjs');
+const {
+  refreshRobotActionEnvelope,
+  verifyRobotActionToken
+} = require('./robotics-gateway.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
   createLocalCompanionResponse,
@@ -690,16 +693,32 @@ function createHandler(overrides = {}) {
       if (req.method === 'POST' && url.pathname === '/v1/robotics/actions/verify') {
         const claims = await sessionClaims(req, config);
         if (!claims) {
-          json(res, 401, { valid: false });
+          json(res, 401, { valid: false, code: 'ROBOT_ACTION_INVALID' });
           return;
         }
         const body = await readJson(req);
         const verified = verifyRobotActionToken(body.token, claims, config);
         if (!verified) {
-          json(res, 401, { valid: false });
+          json(res, 401, { valid: false, code: 'ROBOT_ACTION_INVALID' });
           return;
         }
-        json(res, 200, { valid: true, action: verified.action, expiresAt: verified.exp * 1000 });
+        json(res, 200, { valid: true, expiresAt: verified.exp * 1000 });
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/robotics/actions/refresh') {
+        const claims = await sessionClaims(req, config);
+        if (!claims) {
+          json(res, 401, { valid: false, code: 'ROBOT_ACTION_INVALID' });
+          return;
+        }
+        const body = await readJson(req);
+        const envelope = refreshRobotActionEnvelope(body.token, claims, config);
+        if (!envelope) {
+          json(res, 401, { valid: false, code: 'ROBOT_ACTION_INVALID' });
+          return;
+        }
+        json(res, 200, envelope);
         return;
       }
 

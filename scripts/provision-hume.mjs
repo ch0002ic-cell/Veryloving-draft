@@ -1,25 +1,6 @@
+import { HUME_TOOL_SPECS, VERYLOVING_PROMPT } from './hume-tool-definitions.mjs';
+
 const HUME_API_BASE_URL = 'https://api.hume.ai';
-
-const SAFETY_PROMPT = `You are VeryLoving, a warm personal-safety companion. Be calm, concise, emotionally attuned, and practical. Never claim an emergency action occurred unless a tool result confirms it. Encourage local emergency services when danger is immediate. Use get_safety_tips for non-urgent practical safety guidance.`;
-
-const safetyTool = {
-  name: 'get_safety_tips',
-  description: 'Returns practical safety tips for the user current situation.',
-  fallback_content: 'Safety tips are temporarily unavailable. Offer calm, general safety guidance instead.',
-  version_description: 'Initial VeryLoving safety guidance tool.',
-  parameters: JSON.stringify({
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      scenario: {
-        type: 'string',
-        enum: ['general', 'walking_alone', 'being_followed', 'rideshare', 'meeting_someone'],
-        description: 'The safety scenario that best matches the user request.'
-      }
-    },
-    required: ['scenario']
-  })
-};
 
 function required(name) {
   const value = process.env[name];
@@ -50,29 +31,37 @@ function voiceSpec() {
   return { provider: 'HUME_AI', name: process.env.HUME_VOICE_NAME || 'Serene Assistant' };
 }
 
-async function provisionTool() {
-  const existingId = process.env.HUME_TOOL_ID;
+async function provisionTool(spec) {
+  const existingId = process.env[spec.environmentVariable]
+    || (spec.legacyEnvironmentVariable ? process.env[spec.legacyEnvironmentVariable] : undefined);
   const path = existingId ? `/v0/evi/tools/${existingId}` : '/v0/evi/tools';
-  return humeRequest(path, { body: existingId ? { ...safetyTool, name: undefined } : safetyTool });
+  const definition = spec.definition;
+  return humeRequest(path, { body: existingId ? { ...definition, name: undefined } : definition });
 }
 
-async function provisionConfig(tool) {
+async function provisionTools() {
+  const tools = [];
+  for (const spec of HUME_TOOL_SPECS) tools.push(await provisionTool(spec));
+  return tools;
+}
+
+async function provisionConfig(tools) {
   const clmURL = new URL(required('HUME_CLM_URL'));
   if (clmURL.protocol !== 'https:' || !clmURL.pathname.endsWith('/chat/completions')) {
     throw new Error('HUME_CLM_URL must be HTTPS and end with /chat/completions');
   }
   const body = {
     evi_version: '3',
-    name: 'VeryLoving Safety Companion',
-    version_description: 'Safety-focused CLM, custom safety tips tool, and branded voice.',
+    name: 'VeryLoving Robotics Safety Companion',
+    version_description: 'Safety-focused CLM, signed robotics tools, safety tips, and branded voice.',
     language_model: {
       model_provider: 'CUSTOM_LANGUAGE_MODEL',
       model_resource: clmURL.toString(),
       temperature: 0.35
     },
-    prompt: { text: SAFETY_PROMPT },
+    prompt: { text: VERYLOVING_PROMPT },
     voice: voiceSpec(),
-    tools: [{ id: tool.id, version: tool.version }],
+    tools: tools.map((tool) => ({ id: tool.id, version: tool.version })),
     ellm_model: { allow_short_responses: false },
     event_messages: { on_new_chat: { enabled: false } },
     timeouts: {
@@ -85,6 +74,10 @@ async function provisionConfig(tool) {
   return humeRequest(existingId ? `/v0/evi/configs/${existingId}` : '/v0/evi/configs', { body });
 }
 
-const tool = await provisionTool();
-const config = await provisionConfig(tool);
-console.log(JSON.stringify({ toolId: tool.id, toolVersion: tool.version, configId: config.id, configVersion: config.version }, null, 2));
+const tools = await provisionTools();
+const config = await provisionConfig(tools);
+console.log(JSON.stringify({
+  tools: tools.map((tool) => ({ name: tool.name, id: tool.id, version: tool.version })),
+  configId: config.id,
+  configVersion: config.version
+}, null, 2));

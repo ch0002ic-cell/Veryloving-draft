@@ -419,6 +419,53 @@ export class HumeEVIService {
     return true;
   }
 
+  sendRobotActionResult(action, outcome = {}) {
+    if (typeof action?.id !== 'string' || !action.id || typeof action?.name !== 'string' || !action.name) {
+      logger.warn('[HumeEVIService] Cannot correlate robot action result', { hasToolCallId: Boolean(action?.id) });
+      return false;
+    }
+    if (action.responseRequired === false) return true;
+    const status = outcome?.superseded === true ? 'superseded' : 'completed';
+    try {
+      return this.sendToolResponse(action.id, {
+        status,
+        action: action.name
+      }, {
+        name: action.name,
+        tool_type: 'function'
+      });
+    } catch (error) {
+      logger.warn('[HumeEVIService] Robot action result send failed', {
+        errorCode: error?.code || error?.name || 'ROBOT_ACTION_RESULT_SEND_FAILED'
+      });
+      return false;
+    }
+  }
+
+  sendRobotActionFailure(action, error) {
+    if (typeof action?.id !== 'string' || !action.id) {
+      logger.warn('[HumeEVIService] Cannot correlate robot action failure', { hasToolCallId: false });
+      return false;
+    }
+    if (action.responseRequired === false) return true;
+    logger.warn('[HumeEVIService] Robot action failed', {
+      action: typeof action.name === 'string' ? action.name : 'unknown',
+      errorCode: error?.code || error?.name || 'ROBOT_ACTION_FAILED'
+    });
+    try {
+      return this.sendToolError(
+        action.id,
+        'Robot action execution failed.',
+        'I could not complete that robot action safely. Please try again.'
+      );
+    } catch (sendError) {
+      logger.warn('[HumeEVIService] Robot action failure send failed', {
+        errorCode: sendError?.code || sendError?.name || 'ROBOT_ACTION_FAILURE_SEND_FAILED'
+      });
+      return false;
+    }
+  }
+
   handleError(event, sourceSocket = this.socket) {
     if (sourceSocket !== this.socket || (event?.target && event.target !== sourceSocket)) {
       logger.warn('[HumeEVIService] Ignoring stale WebSocket error from an old socket');

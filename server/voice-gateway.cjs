@@ -2,13 +2,40 @@
 
 const { WebSocket, WebSocketServer } = require('ws');
 const { verifySessionJWT } = require('./auth-session.cjs');
-const { inspectRoboticsToolFrame } = require('./robotics-gateway.cjs');
+const { inspectRoboticsToolFrame, ROBOTICS_TOOL_NAMES } = require('./robotics-gateway.cjs');
 
 const GATEWAY_PATH = '/api/voice/hume-ws';
 const HUME_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
 const AUTH_TIMEOUT_MS = 10000;
 const MAX_CLIENT_PAYLOAD_BYTES = 1024 * 1024;
 const MAX_BUFFERED_BYTES = 512 * 1024;
+
+function roboticsToolMetadata(payload, isBinary) {
+  if (isBinary) return null;
+  let message;
+  try {
+    message = JSON.parse(typeof payload === 'string' ? payload : payload.toString('utf8'));
+  } catch {
+    return null;
+  }
+  const name = message?.name || message?.tool_name || message?.function?.name;
+  if (message?.type !== 'tool_call' || !ROBOTICS_TOOL_NAMES.has(name)) return null;
+  const toolCallId = message.tool_call_id || message.toolCallId;
+  return {
+    toolCallId: typeof toolCallId === 'string' && toolCallId ? toolCallId : null,
+    responseRequired: message.response_required !== false
+  };
+}
+
+function createRoboticsDispatchError(toolCallId) {
+  return {
+    type: 'tool_error',
+    tool_call_id: toolCallId,
+    error: 'Robot action authorization failed.',
+    fallback_content: 'I could not safely authorize that robot action. Please try again.',
+    level: 'warn'
+  };
+}
 
 function boundedString(value, maxLength) {
   if (value === undefined || value === null || value === '') return undefined;
@@ -189,8 +216,42 @@ function attachVoiceGateway(server, config) {
               closeSocket(client, 4000, 'client backpressure limit');
               return;
             }
-            const robotAction = inspectRoboticsToolFrame(payload, upstreamBinary, authenticatedClaims, config);
-            if (robotAction) client.send(JSON.stringify(robotAction));
+            const roboticsMetadata = roboticsToolMetadata(payload, upstreamBinary);
+            let robotAction;
+            try {
+              robotAction = inspectRoboticsToolFrame(payload, upstreamBinary, authenticatedClaims, config);
+            } catch (error) {
+              // Never forward an unsigned robotics call to the generic mobile
+              // tool handler. Doing so would both bypass the signed envelope
+              // path and generate a second, contradictory tool result.
+              config.logger?.warn?.('[VoiceGateway] Robotics tool dispatch rejected', {
+                errorCode: error?.code || error?.name || 'ROBOTICS_SIGNING_FAILED'
+              });
+              if (roboticsMetadata?.responseRequired && roboticsMetadata.toolCallId && upstream?.readyState === WebSocket.OPEN) {
+                upstream.send(JSON.stringify(createRoboticsDispatchError(roboticsMetadata.toolCallId)));
+              } else if (!roboticsMetadata || roboticsMetadata.responseRequired) {
+                closeSocket(client, 1011, 'robotics dispatch failed');
+              }
+              return;
+            }
+            if (robotAction) {
+              // The signed envelope replaces the raw Hume tool_call on the
+              // mobile leg. The orchestrator sends the single correlated
+              // tool_response/tool_error after the command queue settles.
+              client.send(JSON.stringify(robotAction));
+              return;
+            }
+            if (roboticsMetadata) {
+              config.logger?.warn?.('[VoiceGateway] Robotics tool dispatch rejected', {
+                errorCode: 'ROBOTICS_ACTION_INVALID'
+              });
+              if (roboticsMetadata.responseRequired && roboticsMetadata.toolCallId && upstream?.readyState === WebSocket.OPEN) {
+                upstream.send(JSON.stringify(createRoboticsDispatchError(roboticsMetadata.toolCallId)));
+              } else if (roboticsMetadata.responseRequired) {
+                closeSocket(client, 1011, 'robotics dispatch failed');
+              }
+              return;
+            }
             client.send(payload, { binary: upstreamBinary });
           });
           upstream.on('error', () => closeSocket(client, 1011, 'voice upstream unavailable'));
