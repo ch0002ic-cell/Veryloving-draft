@@ -506,6 +506,8 @@ The configuration groups above and the committed example files are the canonical
 | `EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID` | Status read/notification UUID. | Required by production diagnostics and firmware approval. |
 | `EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID` | Wearable-event notification UUID. | Required by production diagnostics and event approval. |
 | `EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID` | Authorized command-write UUID. | Required by production diagnostics plus command/security approval. |
+| `EXPO_PUBLIC_ROBOTICS_MOCK_MODE` | Selects the JavaScript/WebSocket robotics transport instead of native BLE. | `true` only for the dedicated robotics QA profile. |
+| `EXPO_PUBLIC_ROBOTICS_SIMULATOR_URL` | Build-time simulator WebSocket default. | Use private-LAN `ws://` or a reviewed `wss://` tunnel; QA can override it at runtime. |
 | `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` | Secret `sk.*` token used while resolving native Mapbox artifacts. | Build secret only; never public or committed. |
 | `VERYLOVING_BUILD_PROFILE` | Selects committed development/preview/TestFlight/production policy. | Must match the actual EAS profile. |
 | `VERYLOVING_CONFIG_DIAGNOSTICS` | Emits redacted presence/scheme diagnostics. | EAS profiles use it without printing values. |
@@ -549,6 +551,34 @@ npx expo run:ios --device "<simulator-or-device>"
 
 Expo Go is a UI/foreground preview only. The simulator uses volatile/unavailable fallbacks for entitlement-sensitive storage and notifications and cannot close Apple/Google provider, Keychain, APNs, telephony, BLE, or audio-route gates.
 
+### Robotics simulator runtime workflow
+
+The simulator is a separate Node.js process. The Expo app does **not** and must not spawn it: mobile/TestFlight JavaScript cannot launch a process on the bench computer, and coupling Metro to the farm would make TestFlight and remote QA impossible.
+
+For local Expo Go or a development client, use two terminals:
+
+```bash
+# Terminal A — binds the simulator on all bench-machine interfaces
+npm run robotics:sim
+
+# Terminal B — choose one Expo workflow
+npx expo start
+# or, for an already-installed development client:
+npx expo start --dev-client --lan
+```
+
+Expo Go can exercise the pure JavaScript WebSocket scan/connect/discover/read/write/notification and 20-byte fragmentation paths. It does not validate native BLE permissions, background behavior, native Mapbox, production entitlements, or TestFlight lifecycle behavior. Install/rebuild a development client with `npx expo run:ios --device` after native configuration changes; it is not required for every Metro restart.
+
+Connection choices:
+
+- iOS Simulator on the same Mac: `ws://127.0.0.1:9090`.
+- Physical phone on the same trusted Wi-Fi: `ws://<bench-machine-LAN-IP>:9090`.
+- Remote physical phone: a reviewed, access-controlled `wss://` tunnel that forwards to port 9090.
+
+The driver tries the saved QA override first, then the build-time URL, the Expo/Metro host on port 9090, Android emulator host `10.0.2.2`, and finally loopback. It does not scan arbitrary LAN address ranges. Blind subnet scans are slow, trigger local-network privacy prompts, and contact unrelated hosts. `.env.local` can change the default for a new Metro bundle, but an installed TestFlight app cannot read files on the bench machine.
+
+For an installed `testflight-robotics-sim` build, **do not run `npx expo start`**. Run only `npm run robotics:sim` (or the tunnel), open the installed app, double-tap the build version in Settings, and set the runtime WebSocket URL in Robotics Simulator Dashboard. The URL is validated, stored under `@veryloving/simulator_url`, applied without rebuilding, and contains no credentials.
+
 Android runtime work requires JDK 17 and API 36 tooling:
 
 ```bash
@@ -573,6 +603,7 @@ npm run validate-env -- --profile production
 | `preview` | Production-like internal stakeholder QA | Reviewed release locales |
 | `testflight` | Primary signed iOS acceptance candidate | `en/es/fr/zh/ar/he` |
 | `testflight-full-catalog` | Separate signed layout/coverage audit | All 155, with `QA` review indicators |
+| `testflight-robotics-sim` | Signed virtual-robot bench QA with WebSocket mock transport | Base TestFlight locales |
 | `production` | Store submission candidate after GO | Reviewed `en/es/fr/zh` |
 
 The full-catalog profile is production-like for credentials, transport, entitlements, and validation, but it is not a translation-approval or public-release artifact.

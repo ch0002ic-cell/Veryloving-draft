@@ -97,6 +97,17 @@ test('complete production configuration passes without exposing values', () => {
   assert.doesNotMatch(report, /pk\.public-placeholder|sk\.download-placeholder|api\.example\.test/);
 });
 
+test('testflight robotics simulator profile retains every production readiness gate', () => {
+  const incomplete = validateEnvironment({
+    VERYLOVING_BUILD_PROFILE: 'testflight-robotics-sim',
+    EXPO_PUBLIC_ROBOTICS_MOCK_MODE: 'true'
+  }, { profile: 'testflight-robotics-sim' });
+  const errors = new Set(incomplete.filter((result) => result.level === 'error').map((result) => result.name));
+  assert.equal(errors.has('EXPO_PUBLIC_API_BASE_URL'), true);
+  assert.equal(errors.has('EXPO_PUBLIC_HUME_WS_PROXY_URL'), true);
+  assert.equal(errors.has('EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID'), true);
+});
+
 test('production reports missing requirements and rejects public secrets', () => {
   const environment = productionEnvironment({
     EXPO_PUBLIC_API_BASE_URL: '',

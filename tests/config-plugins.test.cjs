@@ -200,6 +200,24 @@ test('Expo config minimizes native permissions and owns launch appearance', () =
   assert.deepEqual(plugins.get('react-native-ble-plx').modes, ['central']);
 });
 
+test('local-network access is scoped to robotics mock artifacts', () => {
+  const previous = process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE;
+  try {
+    delete process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE;
+    const ordinary = createAppConfig();
+    assert.equal(Object.hasOwn(ordinary.ios.infoPlist, 'NSLocalNetworkUsageDescription'), false);
+    assert.equal(Object.hasOwn(ordinary.ios.infoPlist, 'NSAppTransportSecurity'), false);
+
+    process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE = 'true';
+    const robotics = createAppConfig();
+    assert.match(robotics.ios.infoPlist.NSLocalNetworkUsageDescription, /robotics simulator/i);
+    assert.equal(robotics.ios.infoPlist.NSAppTransportSecurity.NSAllowsLocalNetworking, true);
+  } finally {
+    if (previous === undefined) delete process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE;
+    else process.env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE = previous;
+  }
+});
+
 test('Expo environment diagnostics are production-aware and never contain configuration values', () => {
   const diagnostics = createAppConfig.createEnvironmentDiagnostics({
     VERYLOVING_BUILD_PROFILE: 'production',
@@ -417,6 +435,9 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build['testflight-full-catalog'].env.VERYLOVING_BUILD_PROFILE, 'testflight');
   assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'true');
+  assert.equal(eas.build['testflight-robotics-sim'].extends, 'testflight');
+  assert.equal(eas.build['testflight-robotics-sim'].env.EXPO_PUBLIC_ROBOTICS_MOCK_MODE, 'true');
+  assert.equal(eas.build['testflight-robotics-sim'].env.VERYLOVING_BUILD_PROFILE, 'testflight-robotics-sim');
   assert.deepEqual(eas.submit.testflight, {});
   assert.deepEqual(eas.submit['testflight-full-catalog'], {});
 });

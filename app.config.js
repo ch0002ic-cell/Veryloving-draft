@@ -568,6 +568,16 @@ function createAppConfig() {
 
   return {
     ...config,
+    ios: {
+      ...config.ios,
+      infoPlist: {
+        ...config.ios.infoPlist,
+        ...(roboticsMockMode ? {
+          NSLocalNetworkUsageDescription: 'VeryLoving connects to a QA robotics simulator on your local network.',
+          NSAppTransportSecurity: { NSAllowsLocalNetworking: true }
+        } : {})
+      }
+    },
     plugins,
     extra: {
       ...config.extra,

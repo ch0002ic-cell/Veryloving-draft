@@ -149,7 +149,7 @@ function makeResult(name, level, message) {
 
 function validateEnvironment(env, { profile = 'development', fileEnvironment = {} } = {}) {
   const results = [];
-  const production = profile === 'production' || profile === 'testflight';
+  const production = ['production', 'testflight', 'testflight-robotics-sim'].includes(profile);
   const preview = profile === 'preview';
   const fullCatalogLanguagesAllowed = profile === 'development' || profile === 'testflight';
   const remoteEASBuild = env.EAS_BUILD === '1' || env.EAS_BUILD === 'true';
@@ -345,7 +345,7 @@ function parseArguments(argv) {
   }
   if (!options.file) throw new Error('--file requires a path');
   if (options.profile && !VALID_PROFILES.has(options.profile)) {
-    throw new Error('--profile must be development, preview, production, or testflight');
+    throw new Error('--profile must be development, preview, production, testflight, or testflight-robotics-sim');
   }
   return options;
 }
@@ -391,7 +391,7 @@ function renderReport({ results, profile, filePath, fileFound, color = true }) {
 
 function usage() {
   return [
-    'Usage: npm run validate-env -- [--file <path>] [--profile development|preview|production|testflight] [--no-color]',
+    'Usage: npm run validate-env -- [--file <path>] [--profile development|preview|production|testflight|testflight-robotics-sim] [--no-color]',
     '',
     'The environment file is loaded first and explicit process variables override it.',
     'Only variable names and validation states are printed; values are never printed.'
@@ -417,7 +417,7 @@ function run(argv = process.argv.slice(2), processEnvironment = process.env) {
   const environment = { ...fileEnvironment, ...processEnvironment };
   const profile = options.profile || environment.VERYLOVING_BUILD_PROFILE || 'development';
   if (!VALID_PROFILES.has(profile)) {
-    process.stderr.write('Effective profile must be development, preview, production, or testflight.\n');
+    process.stderr.write('Effective profile must be development, preview, production, testflight, or testflight-robotics-sim.\n');
     return 2;
   }
   environment.VERYLOVING_BUILD_PROFILE = profile;

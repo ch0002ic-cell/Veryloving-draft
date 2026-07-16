@@ -11,6 +11,7 @@ export const DEFAULT_DEVICE = Object.freeze({
   connectionState: 'disconnected',
   autoReconnect: false,
   simulated: false,
+  roboticsMock: false,
   lastErrorCode: null
 });
 
@@ -27,7 +28,8 @@ export function normalizePairedDevice(value, { forHydration = false } = {}) {
   if (!id) return { ...DEFAULT_DEVICE };
 
   const simulated = value?.simulated === true;
-  const autoReconnect = !simulated && value?.autoReconnect !== false;
+  const roboticsMock = simulated && value?.roboticsMock === true;
+  const autoReconnect = (!simulated || roboticsMock) && value?.autoReconnect !== false;
   const requestedState = CONNECTION_STATES.has(value?.connectionState)
     ? value.connectionState
     : (value?.connected ? 'connected' : 'disconnected');
@@ -48,6 +50,7 @@ export function normalizePairedDevice(value, { forHydration = false } = {}) {
     connectionState,
     autoReconnect,
     simulated,
+    roboticsMock,
     lastErrorCode: cleanString(value?.lastErrorCode)
   };
 }

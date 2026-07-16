@@ -6,7 +6,10 @@ const { WebSocketServer, WebSocket } = require('ws');
 const DEFAULT_PORT = 9090;
 const DEFAULT_HOST = '127.0.0.1';
 const TELEMETRY_INTERVAL_MS = 100;
-const ROBOTICS_SERVICE_UUID = process.env.ROBOTICS_SERVICE_UUID || 'f000aa00-0451-4000-b000-000000000000';
+const HEARTBEAT_INTERVAL_MS = 10000;
+const ROBOTICS_SERVICE_UUID = process.env.EXPO_PUBLIC_ROBOTICS_SERVICE_UUID
+  || process.env.ROBOTICS_SERVICE_UUID
+  || 'f000aa00-0451-4000-b000-000000000000';
 const UUIDS = Object.freeze({
   service: process.env.EXPO_PUBLIC_VL01_SERVICE_UUID || 'f0001100-0451-4000-b000-000000000000',
   battery: process.env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID || 'f0001101-0451-4000-b000-000000000000',
@@ -14,7 +17,9 @@ const UUIDS = Object.freeze({
   event: process.env.EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID || 'f0001103-0451-4000-b000-000000000000',
   command: process.env.EXPO_PUBLIC_VL01_COMMAND_CHARACTERISTIC_UUID || 'f0001104-0451-4000-b000-000000000000',
   roboticsService: ROBOTICS_SERVICE_UUID,
-  telemetry: process.env.ROBOTICS_TELEMETRY_CHARACTERISTIC_UUID || 'f000aa01-0451-4000-b000-000000000000'
+  telemetry: process.env.EXPO_PUBLIC_ROBOTICS_TELEMETRY_CHARACTERISTIC_UUID
+    || process.env.ROBOTICS_TELEMETRY_CHARACTERISTIC_UUID
+    || 'f000aa01-0451-4000-b000-000000000000'
 });
 
 function crc16(bytes) {
@@ -71,6 +76,7 @@ class SimulatedRobot {
     this.obstacle = false;
     this.disconnected = false;
     this.errorMode = { timeoutRate: 0, invalidCRCRate: 0, busyRate: 0 };
+    this.safetyEpoch = 0;
   }
 
   definition() {
@@ -109,6 +115,12 @@ class SimulatedRobot {
     this.subscriptions.get(client).add(characteristicUUID);
   }
 
+  unsubscribe(client, characteristicUUID) {
+    const subscriptions = this.subscriptions.get(client);
+    subscriptions?.delete(characteristicUUID);
+    if (subscriptions?.size === 0) this.subscriptions.delete(client);
+  }
+
   emit(characteristicUUID, value) {
     for (const [client, subscriptions] of this.subscriptions) {
       if (client.readyState === WebSocket.OPEN && subscriptions.has(characteristicUUID)) {
@@ -122,6 +134,24 @@ class SimulatedRobot {
     }
   }
 
+  emitTo(client, characteristicUUID, value) {
+    if (this.disconnected) return;
+    const subscriptions = this.subscriptions.get(client);
+    if (client.readyState !== WebSocket.OPEN || !subscriptions?.has(characteristicUUID)) return;
+    this.notify(client, {
+      type: 'notification',
+      deviceId: this.id,
+      characteristicUUID,
+      value: encodeValue(value)
+    });
+  }
+
+  cleanupClient(client) {
+    this.subscriptions.delete(client);
+    const suffix = `:${client._roboticsClientId}`;
+    for (const key of this.fragments.keys()) if (key.endsWith(suffix)) this.fragments.delete(key);
+  }
+
   acceptFragment(client, frame) {
     const bytes = Buffer.from(frame.value || '', 'base64');
     if (bytes.length > 20 || bytes.length < 2) throw new Error('Invalid 20-byte MTU fragment');
@@ -130,7 +160,7 @@ class SimulatedRobot {
     if (!total || index >= total) throw new Error('Invalid fragment header');
     const key = `${frame.commandId || 'default'}:${client._roboticsClientId}`;
     let assembly = this.fragments.get(key);
-    if (!assembly || assembly.total !== total) assembly = { total, chunks: new Array(total), received: 0 };
+    if (!assembly || assembly.total !== total) assembly = { total, chunks: new Array(total), received: 0, safetyEpoch: this.safetyEpoch };
     if (!assembly.chunks[index]) assembly.received += 1;
     assembly.chunks[index] = bytes.subarray(2);
     this.fragments.set(key, assembly);
@@ -138,6 +168,10 @@ class SimulatedRobot {
     this.fragments.delete(key);
     const payload = Buffer.concat(assembly.chunks);
     const action = parseCommandPacket(payload);
+    const actionType = String(action.type || action.name || '').toUpperCase();
+    if (actionType.includes('NAVIGATE') && assembly.safetyEpoch !== this.safetyEpoch) {
+      throw Object.assign(new Error('Navigation command was superseded by a safety stop'), { code: 'COMMAND_SUPERSEDED' });
+    }
     this.execute(action);
     return { complete: true, action: action.type || action.name || 'command' };
   }
@@ -145,6 +179,7 @@ class SimulatedRobot {
   execute(action) {
     const type = String(action.type || action.name || '').toUpperCase();
     if (type.includes('STOP')) {
+      this.safetyEpoch += 1;
       this.target = null;
       this.telemetry.speed = 0;
       this.emit(UUIDS.event, { type: 'STOPPED', reason: action.reason || 'command' });
@@ -182,7 +217,7 @@ class SimulatedRobot {
     this.emit(UUIDS.status, this.status());
   }
 
-  tick() {
+  tick({ emitTelemetry = true } = {}) {
     if (this.disconnected) return;
     if (this.telemetry.battery > 0) this.telemetry.battery = Math.max(0, this.telemetry.battery - 0.002);
     if (this.target && !this.obstacle) {
@@ -203,7 +238,7 @@ class SimulatedRobot {
         this.telemetry.speed = 0.8;
       }
     }
-    this.emit(UUIDS.telemetry, this.telemetry);
+    if (emitTelemetry) this.emit(UUIDS.telemetry, this.telemetry);
   }
 }
 
@@ -222,10 +257,34 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
     return robot;
   };
   for (let index = 0; index < Math.max(0, Math.min(3, initialRobots)); index += 1) spawn();
-  const timer = setInterval(() => robots.forEach((robot) => robot.tick()), TELEMETRY_INTERVAL_MS);
+  const physicsTimer = setInterval(() => robots.forEach((robot) => robot.tick({ emitTelemetry: false })), TELEMETRY_INTERVAL_MS);
 
   server.on('connection', (client) => {
     client._roboticsClientId = Math.random().toString(36).slice(2);
+    client._roboticsAlive = true;
+    client._roboticsTimers = new Set();
+    const telemetryTimer = setInterval(() => {
+      robots.forEach((robot) => robot.emitTo(client, UUIDS.telemetry, robot.telemetry));
+    }, TELEMETRY_INTERVAL_MS);
+    const heartbeatTimer = setInterval(() => {
+      if (client._roboticsAlive === false) {
+        client.terminate();
+        return;
+      }
+      client._roboticsAlive = false;
+      try { client.ping(); } catch { client.terminate(); }
+    }, HEARTBEAT_INTERVAL_MS);
+    client._roboticsTimers.add(telemetryTimer);
+    client._roboticsTimers.add(heartbeatTimer);
+    client.on('pong', () => { client._roboticsAlive = true; });
+    let cleanedUp = false;
+    const cleanupClient = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      for (const timer of client._roboticsTimers) clearInterval(timer);
+      client._roboticsTimers.clear();
+      robots.forEach((robot) => robot.cleanupClient(client));
+    };
     client.on('message', (raw) => {
       let request;
       try {
@@ -251,7 +310,10 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
         if (request.type === 'control') {
           robot.control(request.control);
           if (request.control?.disconnect) {
-            send(client, { type: 'disconnected', deviceId: robot.id, reason: 'simulated_lost_connection' });
+            const affectedClients = new Set([client, ...robot.subscriptions.keys()]);
+            for (const affectedClient of affectedClients) {
+              send(affectedClient, { type: 'disconnected', deviceId: robot.id, reason: 'simulated_lost_connection' });
+            }
           }
           return respond(robot.definition());
         }
@@ -260,12 +322,29 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
         if (Math.random() < robot.errorMode.busyRate) throw Object.assign(new Error('Device busy'), { code: 'DEVICE_BUSY' });
         if (request.type === 'connect') return respond(robot.definition());
         if (request.type === 'discoverServices') return respond({ services: [UUIDS.service, UUIDS.roboticsService], characteristics: robot.characteristicDefinitions() });
-        if (request.type === 'readCharacteristic') return respond({ value: encodeValue(robot.read(request.characteristicUUID)) });
+        if (request.type === 'readCharacteristic') {
+          const definition = robot.characteristicDefinitions().find((item) => item.uuid === request.characteristicUUID);
+          if (!definition || definition.serviceUUID !== request.serviceUUID || definition.isReadable !== true) {
+            throw new Error('Characteristic is not readable for this service');
+          }
+          return respond({ value: encodeValue(robot.read(request.characteristicUUID)) });
+        }
         if (request.type === 'subscribe') {
+          const definition = robot.characteristicDefinitions().find((item) => item.uuid === request.characteristicUUID);
+          if (!definition || definition.serviceUUID !== request.serviceUUID || definition.isNotifiable !== true) {
+            throw new Error('Characteristic does not support notifications');
+          }
           robot.subscribe(client, request.characteristicUUID);
           return respond({ subscribed: true });
         }
+        if (request.type === 'unsubscribe') {
+          robot.unsubscribe(client, request.characteristicUUID);
+          return respond({ subscribed: false });
+        }
         if (request.type === 'writeCharacteristic') {
+          if (request.serviceUUID !== UUIDS.service || request.characteristicUUID !== UUIDS.command) {
+            throw new Error('Command characteristic is invalid');
+          }
           if (Math.random() < robot.errorMode.invalidCRCRate) throw new Error('Command checksum is invalid');
           return respond(robot.acceptFragment(client, request));
         }
@@ -274,12 +353,17 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
         send(client, { id: request?.id, ok: false, error: { code: error.code || 'SIMULATOR_ERROR', message: error.message } });
       }
     });
-    client.on('close', () => robots.forEach((robot) => robot.subscriptions.delete(client)));
+    client.on('close', cleanupClient);
+    client.on('error', cleanupClient);
   });
 
   server.on('listening', () => logger.info?.(`[RoboticsSim] listening on ws://${host}:${server.address().port}`));
   const close = () => new Promise((resolve, reject) => {
-    clearInterval(timer);
+    clearInterval(physicsTimer);
+    for (const client of server.clients) {
+      for (const timer of client._roboticsTimers || []) clearInterval(timer);
+      client._roboticsTimers?.clear?.();
+    }
     for (const client of server.clients) client.terminate();
     server.close((error) => error ? reject(error) : resolve());
   });
@@ -287,7 +371,10 @@ function createRoboticsSimulator({ port = DEFAULT_PORT, host = DEFAULT_HOST, log
 }
 
 if (require.main === module) {
-  createRoboticsSimulator({ port: Number(process.env.ROBOTICS_SIM_PORT || DEFAULT_PORT) });
+  createRoboticsSimulator({
+    host: process.env.ROBOTICS_SIM_HOST || '0.0.0.0',
+    port: Number(process.env.ROBOTICS_SIM_PORT || DEFAULT_PORT)
+  });
 }
 
 module.exports = { UUIDS, SimulatedRobot, crc16, createCommandPacket, createRoboticsSimulator, parseCommandPacket };
