@@ -555,19 +555,28 @@ Expo Go is a UI/foreground preview only. The simulator uses volatile/unavailable
 
 The simulator is a separate Node.js process. The Expo app does **not** and must not spawn it: mobile/TestFlight JavaScript cannot launch a process on the bench computer, and coupling Metro to the farm would make TestFlight and remote QA impossible.
 
-For local Expo Go or a development client, use two terminals:
+For local Expo Go or a development client, use two terminals. The explicit
+environment flag matters: the normal development environment keeps the real
+BLE transport enabled.
 
 ```bash
 # Terminal A — binds the simulator on all bench-machine interfaces
 npm run robotics:sim
 
-# Terminal B — choose one Expo workflow
-npx expo start
-# or, for an already-installed development client:
-npx expo start --dev-client --lan
+# Terminal B — Expo Go on the same LAN
+EXPO_PUBLIC_ROBOTICS_MOCK_MODE=true npx expo start --lan
+
+# Or, for an already-installed development client on the same LAN
+EXPO_PUBLIC_ROBOTICS_MOCK_MODE=true npx expo start --dev-client --lan
 ```
 
-Expo Go can exercise the pure JavaScript WebSocket scan/connect/discover/read/write/notification and 20-byte fragmentation paths. It does not validate native BLE permissions, background behavior, native Mapbox, production entitlements, or TestFlight lifecycle behavior. Install/rebuild a development client with `npx expo run:ios --device` after native configuration changes; it is not required for every Metro restart.
+Expo Go can exercise the pure JavaScript WebSocket scan/connect/discover/read/write/notification and 20-byte fragmentation paths. It does not validate native BLE permissions, background behavior, native Mapbox, production entitlements, or TestFlight lifecycle behavior. Install/rebuild a development client after native configuration changes with:
+
+```bash
+EXPO_PUBLIC_ROBOTICS_MOCK_MODE=true npx expo run:ios --device
+```
+
+That rebuild is not required for every Metro restart.
 
 Connection choices:
 
@@ -577,7 +586,7 @@ Connection choices:
 
 The driver tries the saved QA override first, then the build-time URL, the Expo/Metro host on port 9090, Android emulator host `10.0.2.2`, and finally loopback. It does not scan arbitrary LAN address ranges. Blind subnet scans are slow, trigger local-network privacy prompts, and contact unrelated hosts. `.env.local` can change the default for a new Metro bundle, but an installed TestFlight app cannot read files on the bench machine.
 
-For an installed `testflight-robotics-sim` build, **do not run `npx expo start`**. Run only `npm run robotics:sim` (or the tunnel), open the installed app, double-tap the build version in Settings, and set the runtime WebSocket URL in Robotics Simulator Dashboard. The URL is validated, stored under `@veryloving/simulator_url`, applied without rebuilding, and contains no credentials.
+Create the signed simulator artifact with `eas build --platform ios --profile testflight-robotics-sim`; that profile injects mock mode at build time. For the installed build, **do not run `npx expo start`**. Run only `npm run robotics:sim` (or the tunnel), open the installed app, double-tap the build version in Settings, and set the runtime WebSocket URL in Robotics Simulator Dashboard. The URL is validated, stored under `@veryloving/simulator_url`, applied without rebuilding, and contains no credentials.
 
 Android runtime work requires JDK 17 and API 36 tooling:
 
