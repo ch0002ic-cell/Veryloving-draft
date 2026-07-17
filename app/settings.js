@@ -178,6 +178,14 @@ export default function Settings() {
       </SettingsSection>
 
       <SettingsSection
+        icon="hardware-chip-outline"
+        title="My Devices"
+        subtitle="Wearables and home robots paired to your account"
+      >
+        <SettingLink icon="watch-outline" title="Manage paired devices" onPress={() => router.push('/device-management')} />
+      </SettingsSection>
+
+      <SettingsSection
         icon="shield-checkmark-outline"
         title={t('settings.sections.deviceSafety')}
         subtitle={t('settings.sections.deviceSafetySubtitle')}

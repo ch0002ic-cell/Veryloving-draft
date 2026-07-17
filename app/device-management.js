@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Text } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
@@ -13,7 +13,7 @@ import { useI18n } from '../src/context/I18nContext';
 import { bleErrorTranslationKey } from '../src/services/ble-errors';
 
 export default function DeviceManagement() {
-  const { device, reconnectPairedDevice, removePairedDevice } = useAppState();
+  const { device, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, robotEntities, setRobotEntities } = useAppState();
   const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
@@ -54,6 +54,15 @@ export default function DeviceManagement() {
     }
   };
 
+  const rename = async (entity, name) => {
+    const nextName = name.trim().slice(0, 80);
+    if (!nextName) return;
+    if (entity.deviceType === 'wearable') await setDevice({ ...device, name: nextName });
+    else setRobotEntities((current) => current.map((robot) => robot.deviceId === entity.deviceId ? { ...robot, name: nextName } : robot));
+  };
+
+  const entities = [...wearableEntities, ...robotEntities];
+
   return (
     <Screen>
       <Header title={t('device.title')} subtitle={t('device.subtitle')} showBack backLabel={t('common.back')} />
@@ -63,6 +72,25 @@ export default function DeviceManagement() {
         resizeMode="contain"
       />
       <FeedbackBanner message={errorKey ? t(errorKey) : connectionErrorKey ? t(connectionErrorKey) : null} />
+      <Text style={styles.sectionTitle}>My Devices</Text>
+      {entities.map((entity) => (
+        <Card key={`${entity.deviceType}:${entity.deviceId}`}>
+          <View style={styles.deviceRow}>
+            <View style={styles.deviceCopy}>
+              <Text style={styles.deviceType}>{entity.deviceType === 'wearable' ? 'Wearable' : 'Home robot'}</Text>
+              <TextInput
+                accessibilityLabel={`Name ${entity.name}`}
+                defaultValue={entity.name}
+                maxLength={80}
+                onEndEditing={(event) => rename(entity, event.nativeEvent.text).catch(() => setErrorKey('settings.updateFailedMessage'))}
+                style={styles.nameInput}
+              />
+            </View>
+            <Text style={entity.online ? styles.online : styles.offline}>{entity.online ? 'Online' : 'Offline'}</Text>
+          </View>
+        </Card>
+      ))}
+      {!entities.length ? <Text>No devices paired.</Text> : null}
       <Card>
         <Text style={{ fontFamily: fonts.bold }}>{device.name}</Text>
         <Text>{status}</Text>
@@ -87,3 +115,13 @@ export default function DeviceManagement() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  sectionTitle: { fontFamily: fonts.bold, fontSize: 20 },
+  deviceRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  deviceCopy: { flex: 1 },
+  deviceType: { fontFamily: fonts.regular, opacity: 0.7 },
+  nameInput: { fontFamily: fonts.bold, fontSize: 16, paddingVertical: 8 },
+  online: { color: '#257A43', fontFamily: fonts.bold },
+  offline: { color: '#7A3340', fontFamily: fonts.bold }
+});
