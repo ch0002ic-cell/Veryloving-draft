@@ -26,16 +26,18 @@ export class WearableDevice extends BaseDevice {
     return this.setStatus({ online: false, connected: false, connectionState: 'disconnected' });
   }
 
-  async sendCommand(command) {
+  sendCommand(command) {
     const payload = typeof command === 'string' ? command : command?.payload;
-    await this.bleClient.writeCommand(this.deviceId, payload, { withResponse: command?.withResponse !== false });
-    return { accepted: true, deviceId: this.deviceId };
+    return this.enqueueCommand(async () => {
+      await this.bleClient.writeCommand(this.deviceId, payload, { withResponse: command?.withResponse !== false });
+      return { accepted: true, deviceId: this.deviceId };
+    });
   }
 
   onTelemetry(callback) {
     const unsubscribe = super.onTelemetry(callback);
     this.removeBLEHandler?.();
-    this.removeBLEHandler = this.bleClient.setEventHandler({
+    this.removeBLEHandler = (this.bleClient.addEventHandler || this.bleClient.setEventHandler).call(this.bleClient, {
       onBattery: (deviceId, battery) => deviceId === this.deviceId && this.emitTelemetry({ type: 'battery', battery }),
       onStatus: (deviceId, value) => deviceId === this.deviceId && this.emitTelemetry({ type: 'status', value }),
       onEvent: (deviceId, value) => deviceId === this.deviceId && this.emitTelemetry({ type: 'event', value }),
@@ -46,6 +48,14 @@ export class WearableDevice extends BaseDevice {
       }
     });
     return () => { unsubscribe(); this.removeBLEHandler?.(); this.removeBLEHandler = null; };
+  }
+
+  dispose() {
+    if (this.disposed) return;
+    super.dispose();
+    this.removeBLEHandler?.();
+    this.removeBLEHandler = null;
+    this.bleClient.disconnect?.(this.deviceId).catch?.(() => {});
   }
 
   static scan(onDevice, options) { return bleService.scanForDevices(onDevice, options); }
@@ -59,5 +69,6 @@ export const wearableBLE = Object.freeze({
   reconnect: (device, options) => bleService.reconnectWithBackoff(device, options),
   disconnect: (deviceId) => bleService.disconnect(deviceId),
   setEventHandler: (handler) => bleService.setEventHandler(handler),
+  addEventHandler: (handler) => bleService.addEventHandler(handler),
   sendCommand: (deviceId, payload, options) => bleService.writeCommand(deviceId, payload, options)
 });

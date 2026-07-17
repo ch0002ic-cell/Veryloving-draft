@@ -260,3 +260,94 @@ test('reconnect scheduling remains capped across one connection episode', () => 
   assert.equal(service.reconnectAttempts, 2);
   assert.equal(service.reconnectTimer, null);
 });
+
+test('parallel tool calls retain independent abort controllers and both respond', async () => {
+  const service = readyService();
+  const resolvers = new Map();
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  service.setMessageHandler({
+    onToolCall: (message) => new Promise((resolve) => resolvers.set(message.tool_call_id, resolve))
+  });
+  const first = service.handleToolCall({ type: 'tool_call', tool_call_id: 'call-1', name: 'emit_alarm', response_required: true }, service.socket);
+  const second = service.handleToolCall({ type: 'tool_call', tool_call_id: 'call-2', name: 'check_medication', response_required: true }, service.socket);
+  resolvers.get('call-2')('robot accepted');
+  resolvers.get('call-1')('wearable accepted');
+  await Promise.all([first, second]);
+  assert.deepEqual(sent.map((message) => message.tool_call_id).sort(), ['call-1', 'call-2']);
+  assert.equal(service.activeToolAbortControllers.size, 0);
+});
+
+test('device tool actions round-trip on the authenticated voice socket', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  const resultPromise = service.requestDeviceAction({
+    tool_call_id: 'call-robot',
+    name: 'check_medication',
+    parameters: { device_type: 'home_robot', device_id: 'robot-1' }
+  });
+  const request = sent[0];
+  assert.equal(request.type, 'action_request');
+  assert.equal(request.device_id, 'robot-1');
+  service.handleActionResponse({
+    type: 'action_response',
+    request_id: request.request_id,
+    ok: true,
+    result: { status: 'accepted', action_id: 'action-1' }
+  });
+  assert.deepEqual(JSON.parse(await resultPromise), { status: 'accepted', action_id: 'action-1' });
+  assert.equal(service.pendingActionRequests.size, 0);
+});
+
+test('device action request identity is stable and duplicate in-flight tool calls are coalesced', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  service.sessionConfig = { customSessionId: 'stable-voice-session' };
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  const toolCall = {
+    tool_call_id: 'call-robot-stable',
+    name: 'check_medication',
+    parameters: { device_type: 'home_robot', device_id: 'robot-1' }
+  };
+  const first = service.requestDeviceAction(toolCall);
+  const duplicate = service.requestDeviceAction(toolCall);
+  assert.equal(first, duplicate);
+  assert.equal(sent.length, 1);
+  const firstRequestId = sent[0].request_id;
+  service.handleActionResponse({ type: 'action_response', request_id: firstRequestId, ok: true, result: { status: 'accepted' } });
+  await Promise.all([first, duplicate]);
+
+  const retry = service.requestDeviceAction(toolCall);
+  assert.equal(sent[1].request_id, firstRequestId);
+  service.handleActionResponse({ type: 'action_response', request_id: firstRequestId, ok: true, result: { status: 'accepted', duplicate: true } });
+  await retry;
+});
+
+test('wearable action NACKs a transient failure and ACKs a successful redelivery', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  const sent = [];
+  let attempts = 0;
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  service.setMessageHandler({
+    onDeviceAction: async () => {
+      attempts += 1;
+      if (attempts === 1) throw new Error('BLE busy');
+    },
+    onError() {}
+  });
+  const frame = { data: JSON.stringify({ type: 'device_action', envelope: { id: 'signed-action-1' } }) };
+  await service.handleMessage(frame, service.socket);
+  await service.handleMessage(frame, service.socket);
+  assert.deepEqual(sent.map(({ type, action_id, ok }) => ({ type, action_id, ok })), [
+    { type: 'device_action_ack', action_id: 'signed-action-1', ok: false },
+    { type: 'device_action_ack', action_id: 'signed-action-1', ok: true }
+  ]);
+  assert.equal(attempts, 2);
+});

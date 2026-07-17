@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const { Readable } = require('node:stream');
 const { test } = require('node:test');
 const { createHandler, validateServerConfig } = require('./clm-server.cjs');
@@ -10,6 +11,9 @@ const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
 const silentLogger = { info() {}, warn() {}, error() {} };
 const VALID_HUME_CONFIG_ID = '11111111-1111-4111-8111-111111111111';
 const VALID_HUME_VOICE_ID = '22222222-2222-4222-8222-222222222222';
+const ACTION_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
+const ACTION_SIGNING_PRIVATE_KEY = ACTION_KEY_PAIR.privateKey.export({ format: 'pem', type: 'pkcs8' });
+const ACTION_SIGNING_PUBLIC_KEY = ACTION_KEY_PAIR.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64url');
 
 function productionHTTPConfig(overrides = {}) {
   return {
@@ -113,7 +117,15 @@ test('production server rejects insecure credential-bearing outbound URLs', () =
     humeApiKey: 'server-only-hume-key',
     humeConfigId: VALID_HUME_CONFIG_ID,
     humeAllowedVoiceIds: VALID_HUME_VOICE_ID,
-    clmBearerToken: 'server-only-clm-key'
+    clmBearerToken: 'server-only-clm-key',
+    actionSigningPrivateKey: ACTION_SIGNING_PRIVATE_KEY,
+    actionSigningPublicKey: ACTION_SIGNING_PUBLIC_KEY,
+    wearableCommandPayloads: JSON.stringify({ deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==' }),
+    manufacturerWebhookURL: 'https://manufacturer.example.test/v1/commands',
+    manufacturerPairingVerifyURL: 'https://manufacturer.example.test/v1/pairing/verify',
+    manufacturerStatusURL: 'https://manufacturer.example.test/v1/status',
+    manufacturerApiKey: 'manufacturer-server-key',
+    deviceTableName: 'veryloving-devices'
   });
   assert.doesNotThrow(() => validateServerConfig(voiceGateway));
   assert.throws(
@@ -709,4 +721,68 @@ test('safety classification selects conservative scenarios', () => {
   assert.equal(inferScenario('I think someone is following me'), 'being_followed');
   assert.equal(inferScenario('I am waiting for my rideshare'), 'rideshare');
   assert.equal(getSafetyTips('unknown').scenario, 'general');
+});
+
+test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust boundaries', async () => {
+  const verifyAppToken = async () => ({ sub: 'google:user-1' });
+  const listed = await invoke({
+    verifyAppToken,
+    robotRepository: {
+      async list(userId) {
+        assert.equal(userId, 'google:user-1');
+        return [{ robot_id: 'robot-1', device_type: 'home_robot' }];
+      }
+    }
+  }, {
+    method: 'GET',
+    url: '/v1/devices/home-robots',
+    headers: { Authorization: 'Bearer app-session' }
+  });
+  assert.equal(listed.status, 200);
+  assert.deepEqual(listed.json.devices, [{ robot_id: 'robot-1', device_type: 'home_robot' }]);
+
+  const telemetry = await invoke({
+    verifyAppToken,
+    robotRepository: {
+      async resolveManufacturerDeviceId(userId, robotId) {
+        return userId === 'google:user-1' && robotId === 'robot:1' ? 'manufacturer:1' : null;
+      }
+    },
+    getManufacturerRobotStatus: async (robotId) => ({ online: robotId === 'manufacturer:1', hardware_status: 'online' })
+  }, {
+    method: 'GET',
+    url: '/v1/devices/robot%3A1/telemetry',
+    headers: { Authorization: 'Bearer app-session' }
+  });
+  assert.equal(telemetry.status, 200);
+  assert.equal(telemetry.json.online, true);
+
+  const acknowledgements = [];
+  const acknowledged = await invoke({
+    manufacturerApiKey: 'manufacturer-secret',
+    actionGateway: {
+      async acknowledgeRobot(actionId, ack) { acknowledgements.push({ actionId, ack }); return true; }
+    }
+  }, {
+    method: 'POST',
+    url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Manufacturer-Api-Key': 'manufacturer-secret' },
+    body: { action_id: '11111111-1111-4111-8111-111111111111', ok: true }
+  });
+  assert.equal(acknowledged.status, 204);
+  assert.equal(acknowledgements[0].actionId, '11111111-1111-4111-8111-111111111111');
+
+  let routed = false;
+  const splitProcessAction = await invoke({
+    httpOnlyDeployment: true,
+    verifyAppToken,
+    actionGateway: { async route() { routed = true; } }
+  }, {
+    method: 'POST',
+    url: '/v1/device-actions',
+    headers: { Authorization: 'Bearer app-session' },
+    body: { action: 'check_medication', device_type: 'home_robot', device_id: 'robot-1' }
+  });
+  assert.equal(splitProcessAction.status, 503);
+  assert.equal(routed, false);
 });

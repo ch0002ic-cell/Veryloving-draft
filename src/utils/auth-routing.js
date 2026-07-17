@@ -25,6 +25,7 @@ export const PROTECTED_ROOT_ROUTES = Object.freeze([
   'settings',
   'voices',
   'device-management',
+  'robot-pairing',
   'jewelry-setup',
   'emergency-contacts',
   'friends',

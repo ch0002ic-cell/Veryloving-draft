@@ -57,11 +57,18 @@ test('gateway owns CLM credentials and strips production prompt overrides', () =
     audio: { format: 'linear16', sample_rate: 48000, channels: 1 }
   })), false, {
     nodeEnv: 'production',
-    clmBearerToken: 'server-only-clm-secret'
+    clmBearerToken: 'server-only-clm-secret',
+    actionGateway: {}
   });
   const payload = JSON.parse(prepared.payload);
   assert.equal(payload.language_model_api_key, 'server-only-clm-secret');
   assert.equal(payload.system_prompt, undefined);
+  assert.deepEqual(payload.tools.map((tool) => tool.function.name), [
+    'deploy_barrier',
+    'emit_alarm',
+    'check_medication'
+  ]);
+  assert.deepEqual(payload.tools[2].function.parameters.properties.device_type.enum, ['home_robot']);
   assert.equal(payload.custom_session_id, 'opaque-session');
   assert.deepEqual(payload.audio, { format: 'linear16', sample_rate: 48000, channels: 1 });
 });
@@ -112,4 +119,83 @@ test('duplicate pre-auth frames close once and cannot create an upstream after c
   });
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(upstreamCreations, 0);
+});
+
+test('authenticated action and presence frames stay on the long-lived voice gateway', async () => {
+  const server = new EventEmitter();
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  const upstreamMessages = [];
+  upstream.send = (payload) => upstreamMessages.push(JSON.parse(payload));
+  upstream.close = () => {};
+  const routed = [];
+  const presence = [];
+  const actionGateway = {
+    registerSession() { return () => {}; },
+    updateSessionDevices(userId, _channel, devices) { presence.push({ userId, devices }); },
+    async route(userId, action) {
+      routed.push({ userId, action });
+      return { status: 'accepted', action_id: 'action-1' };
+    }
+  };
+  const gateway = attachVoiceGateway(server, {
+    verifyVoiceToken: async () => ({
+      sub: 'google:user-1',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    actionGateway,
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+      this.sent = [];
+    }
+    send(payload) { this.sent.push(JSON.parse(payload)); }
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-token',
+    connection: { devices: [{ device_id: 'wearable-1', device_type: 'wearable', online: true }] }
+  })), false);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  upstream.emit('open');
+
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'devices_update',
+    devices: [{ device_id: 'robot-1', device_type: 'home_robot', online: false }]
+  })), false);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'action_request',
+    request_id: 'tool-call-1',
+    action: 'check_medication',
+    device_type: 'home_robot',
+    device_id: 'robot-1'
+  })), false);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+
+  assert.deepEqual(presence, [{
+    userId: 'google:user-1',
+    devices: [{ device_id: 'robot-1', device_type: 'home_robot', online: false }]
+  }]);
+  assert.equal(routed[0].userId, 'google:user-1');
+  assert.equal(routed[0].action.device_id, 'robot-1');
+  assert.equal(upstreamMessages.length, 0);
+  assert.deepEqual(client.sent.at(-1), {
+    type: 'action_response',
+    request_id: 'tool-call-1',
+    ok: true,
+    result: { status: 'accepted', action_id: 'action-1' }
+  });
+  client.emit('close');
 });

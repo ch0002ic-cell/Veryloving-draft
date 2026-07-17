@@ -19,8 +19,16 @@ const {
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
-const { ActionGateway } = require('./action-gateway.cjs');
+const {
+  ActionGateway,
+  createDynamoActionOutboxRepository,
+  deriveEd25519PublicKey,
+  parseWearableCommandPayloads
+} = require('./action-gateway.cjs');
 const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
+const { createManufacturerPairingVerifier, createManufacturerRobotStatusClient } = require('./manufacturer-client.cjs');
+const { createDynamoPushRepository, createExpoPushNotifier, validatePushToken } = require('./push-notifications.cjs');
+const { ACTION_TOOL_SCHEMAS } = require('./device-action-tools.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
   createLocalCompanionResponse,
@@ -37,22 +45,6 @@ const MAX_BODY_BYTES = 256 * 1024;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const ACTION_TOOL_SCHEMAS = Object.freeze(['deploy_barrier', 'check_medication'].map((name) => ({
-  type: 'function',
-  function: {
-    name,
-    parameters: {
-      type: 'object',
-      additionalProperties: false,
-      required: ['device_type', 'device_id'],
-      properties: {
-        device_type: { type: 'string', enum: name === 'deploy_barrier' ? ['wearable'] : ['home_robot'] },
-        device_id: { type: 'string', minLength: 1, maxLength: 128 },
-        parameters: { type: 'object' }
-      }
-    }
-  }
-})));
 
 function positiveNumber(value, fallback) {
   const parsed = Number(value);
@@ -93,9 +85,16 @@ function envConfig(overrides = {}) {
     safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
     awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
     deviceTableName: process.env.DEVICE_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
-    actionSigningSecret: process.env.ACTION_SIGNING_SECRET || '',
+    actionSigningPrivateKey: process.env.ACTION_SIGNING_PRIVATE_KEY || '',
+    actionSigningPublicKey: process.env.ACTION_SIGNING_PUBLIC_KEY || '',
+    wearableCommandPayloads: process.env.WEARABLE_COMMAND_PAYLOADS_JSON || '',
     manufacturerWebhookURL: process.env.MANUFACTURER_WEBHOOK_URL || '',
+    manufacturerPairingVerifyURL: process.env.MANUFACTURER_PAIRING_VERIFY_URL || '',
+    manufacturerStatusURL: process.env.MANUFACTURER_STATUS_URL || '',
     manufacturerApiKey: process.env.MANUFACTURER_API_KEY || '',
+    actionRequestTimeoutMs: positiveNumber(process.env.ACTION_REQUEST_TIMEOUT_MS, 5000),
+    robotAckTimeoutMs: positiveNumber(process.env.ROBOT_ACK_TIMEOUT_MS, 30000),
+    wearableAckTimeoutMs: positiveNumber(process.env.WEARABLE_ACK_TIMEOUT_MS, 5000),
     upstreamURL: process.env.CLM_UPSTREAM_URL || '',
     upstreamApiKey: process.env.CLM_UPSTREAM_API_KEY || '',
     upstreamModel: process.env.CLM_UPSTREAM_MODEL || '',
@@ -128,6 +127,8 @@ function validateServerConfig(config) {
   validateServerURL(config.appAuthVerifyURL, 'APP_AUTH_VERIFY_URL', { production });
   validateServerURL(config.upstreamURL, 'CLM_UPSTREAM_URL', { production });
   validateServerURL(config.manufacturerWebhookURL, 'MANUFACTURER_WEBHOOK_URL', { production });
+  validateServerURL(config.manufacturerPairingVerifyURL, 'MANUFACTURER_PAIRING_VERIFY_URL', { production });
+  validateServerURL(config.manufacturerStatusURL, 'MANUFACTURER_STATUS_URL', { production });
   if (production) {
     if (!config.authExchangeEnabled) throw new Error('AUTH_EXCHANGE_ENABLED must be true in production');
     if (!config.phoneAuthEnabled) throw new Error('PHONE_AUTH_ENABLED must be true in production');
@@ -180,12 +181,25 @@ function validateServerConfig(config) {
       throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
     }
   }
-  const actionRoutingConfigured = Boolean(config.actionSigningSecret || config.manufacturerWebhookURL || config.manufacturerApiKey);
-  if (actionRoutingConfigured && (!config.actionSigningSecret || config.actionSigningSecret.length < 32)) {
-    throw new Error('ACTION_SIGNING_SECRET must contain at least 32 characters when action routing is configured');
+  const actionRoutingConfigured = Boolean(config.actionSigningPrivateKey || config.actionSigningPublicKey || config.manufacturerWebhookURL || config.wearableCommandPayloads);
+  if (actionRoutingConfigured) {
+    let derivedPublicKey;
+    try { derivedPublicKey = deriveEd25519PublicKey(config.actionSigningPrivateKey); } catch (error) {
+      throw new Error(error.message);
+    }
+    if (!/^[A-Za-z0-9_-]{43}$/.test(config.actionSigningPublicKey || '') || !safeEqual(derivedPublicKey, config.actionSigningPublicKey)) {
+      throw new Error('ACTION_SIGNING_PUBLIC_KEY must match ACTION_SIGNING_PRIVATE_KEY');
+    }
+    const payloads = parseWearableCommandPayloads(config.wearableCommandPayloads);
+    if (!['deploy_barrier', 'emit_alarm', 'trigger_sos'].every((action) => payloads[action])) {
+      throw new Error('WEARABLE_COMMAND_PAYLOADS_JSON must configure every wearable action');
+    }
   }
-  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerApiKey)) {
-    throw new Error('MANUFACTURER_WEBHOOK_URL and MANUFACTURER_API_KEY are required for production action routing');
+  if (production && voiceGatewayRequired && !actionRoutingConfigured) {
+    throw new Error('Production voice gateway requires dual-device action routing');
+  }
+  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerPairingVerifyURL || !config.manufacturerStatusURL || !config.manufacturerApiKey || !config.deviceTableName)) {
+    throw new Error('MANUFACTURER_WEBHOOK_URL, MANUFACTURER_PAIRING_VERIFY_URL, MANUFACTURER_STATUS_URL, MANUFACTURER_API_KEY, and DEVICE_TABLE_NAME are required for production action routing');
   }
   return config;
 }
@@ -383,7 +397,7 @@ async function callUpstream(body, config, res, sessionId) {
     messages,
     stream: true,
     temperature: 0.35,
-    parallel_tool_calls: false
+    parallel_tool_calls: true
   };
   if (Array.isArray(body.tools)) requestBody.tools = body.tools;
   if (body.tool_choice) requestBody.tool_choice = body.tool_choice;
@@ -418,7 +432,11 @@ async function authenticateApp(req, config) {
   if (!token) return false;
   const session = verifySessionJWT(token, config);
   if (session) return session;
-  if (typeof config.verifyAppToken === 'function') return Boolean(await config.verifyAppToken(token));
+  if (typeof config.verifyAppToken === 'function') {
+    const verified = await config.verifyAppToken(token);
+    if (!verified) return false;
+    return typeof verified === 'object' ? verified : { sub: null, externallyVerified: true };
+  }
   if (config.appAuthVerifyURL) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
@@ -427,7 +445,9 @@ async function authenticateApp(req, config) {
         headers: { Authorization: `Bearer ${token}` },
         signal: controller.signal
       });
-      return response.ok;
+      if (!response.ok || typeof response.json !== 'function') return false;
+      const claims = await response.json();
+      return claims && typeof claims.sub === 'string' && claims.sub ? claims : false;
     } finally {
       clearTimeout(timeout);
     }
@@ -558,25 +578,76 @@ async function configureHumeSession(chatId, config) {
   }
 }
 
+function prepareDeviceServices(config) {
+  if (!config.robotRepository && config.deviceTableName) {
+    config.robotRepository = createDynamoRobotRepository({ tableName: config.deviceTableName, region: config.awsRegion });
+  }
+  if (!config.pushRepository && config.deviceTableName) {
+    config.pushRepository = createDynamoPushRepository({ tableName: config.deviceTableName, region: config.awsRegion });
+  }
+  if (!config.verifyRobotPairingCode && config.manufacturerPairingVerifyURL && config.manufacturerApiKey) {
+    config.verifyRobotPairingCode = createManufacturerPairingVerifier({
+      url: config.manufacturerPairingVerifyURL,
+      apiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    });
+  }
+  if (!config.getManufacturerRobotStatus && config.manufacturerStatusURL && config.manufacturerApiKey) {
+    config.getManufacturerRobotStatus = createManufacturerRobotStatusClient({
+      url: config.manufacturerStatusURL,
+      apiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    });
+  }
+  if (!config.notifyUser && config.pushRepository) {
+    config.notifyUser = createExpoPushNotifier({
+      repository: config.pushRepository,
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    });
+  }
+  if (!config.actionOutboxRepository && config.deviceTableName && config.actionSigningPrivateKey) {
+    config.actionOutboxRepository = createDynamoActionOutboxRepository({
+      tableName: config.deviceTableName,
+      region: config.awsRegion
+    });
+  }
+  if (!config.actionGateway && config.actionSigningPrivateKey) {
+    config.actionGateway = new ActionGateway({
+      signingPrivateKey: config.actionSigningPrivateKey,
+      wearableCommandPayloads: config.wearableCommandPayloads,
+      manufacturerWebhookURL: config.manufacturerWebhookURL,
+      manufacturerApiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      requestTimeoutMs: config.actionRequestTimeoutMs,
+      robotAckTimeoutMs: config.robotAckTimeoutMs,
+      wearableAckTimeoutMs: config.wearableAckTimeoutMs,
+      notifyUser: config.notifyUser,
+      authorizeDevice: config.robotRepository?.owns ? (userId, deviceId) => config.robotRepository.owns(userId, deviceId) : undefined,
+      resolveManufacturerDeviceId: config.robotRepository?.resolveManufacturerDeviceId
+        ? (userId, deviceId) => config.robotRepository.resolveManufacturerDeviceId(userId, deviceId)
+        : undefined,
+      getDeviceStatus: config.getManufacturerRobotStatus,
+      outboxRepository: config.actionOutboxRepository,
+      logger: config.logger
+    });
+  }
+  if (config.actionGateway?.recoverPendingCommands && !config.actionRecoveryPromise) {
+    config.actionRecoveryPromise = config.actionGateway.recoverPendingCommands();
+    config.actionRecoveryPromise.catch(() => {});
+  }
+  return config;
+}
+
 function createHandler(overrides = {}) {
-  const config = validateServerConfig(envConfig(overrides));
+  const config = prepareDeviceServices(validateServerConfig(envConfig(overrides)));
   if (config.safetyApiEnabled && !config.safetyRepository) {
     config.safetyRepository = createDynamoSafetyRepository({
       tableName: config.safetyTableName,
       region: config.awsRegion
     });
-  }
-  if (!config.actionGateway && config.actionSigningSecret) {
-    config.actionGateway = new ActionGateway({
-      signingSecret: config.actionSigningSecret,
-      manufacturerWebhookURL: config.manufacturerWebhookURL,
-      manufacturerApiKey: config.manufacturerApiKey,
-      fetchImpl: config.fetchImpl,
-      logger: config.logger
-    });
-  }
-  if (!config.robotRepository && config.deviceTableName && config.safetyApiEnabled) {
-    config.robotRepository = createDynamoRobotRepository({ tableName: config.deviceTableName, region: config.awsRegion });
   }
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
@@ -683,20 +754,76 @@ function createHandler(overrides = {}) {
 
       if (req.method === 'POST' && url.pathname === '/v1/device-actions') {
         const principal = await authenticateApp(req, config);
-        if (!principal) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (config.httpOnlyDeployment === true) { json(res, 503, { error: 'Device actions require the authenticated voice gateway' }); return; }
         if (!config.actionGateway) { json(res, 503, { error: 'Action gateway is not configured' }); return; }
         json(res, 202, await config.actionGateway.route(principal.sub, await readJson(req)));
         return;
       }
 
+      if (req.method === 'POST' && url.pathname === '/v1/manufacturer/robot/ack') {
+        if (!config.actionGateway || !config.manufacturerApiKey || !safeEqual(req.headers['x-manufacturer-api-key'] || '', config.manufacturerApiKey)) {
+          json(res, 401, { error: 'Unauthorized' }); return;
+        }
+        const body = await readJson(req);
+        const accepted = await config.actionGateway.acknowledgeRobot(body.action_id, {
+          ok: body.ok,
+          error_code: body.error_code
+        });
+        if (!accepted) { json(res, 404, { error: 'Action acknowledgement was not found' }); return; }
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === '/v1/devices/home-robots') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.robotRepository?.list) { json(res, 503, { error: 'Robot registry is not configured' }); return; }
+        json(res, 200, { devices: await config.robotRepository.list(principal.sub) });
+        return;
+      }
+
+      const robotTelemetryMatch = /^\/v1\/devices\/([^/]{1,384})\/telemetry$/.exec(url.pathname);
+      if (req.method === 'GET' && robotTelemetryMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        let robotId;
+        try { robotId = decodeURIComponent(robotTelemetryMatch[1]); } catch { robotId = ''; }
+        if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) { json(res, 400, { error: 'Robot identifier is invalid' }); return; }
+        let manufacturerDeviceId = robotId;
+        if (config.robotRepository?.resolveManufacturerDeviceId) {
+          manufacturerDeviceId = await config.robotRepository.resolveManufacturerDeviceId(principal.sub, robotId);
+          if (!/^[A-Za-z0-9._:-]{1,128}$/.test(manufacturerDeviceId || '')) {
+            json(res, 404, { error: 'Robot was not found' }); return;
+          }
+        } else if (!config.robotRepository?.owns || !await config.robotRepository.owns(principal.sub, robotId)) {
+          json(res, 404, { error: 'Robot was not found' }); return;
+        }
+        if (!config.getManufacturerRobotStatus) { json(res, 503, { error: 'Robot telemetry is not configured' }); return; }
+        json(res, 200, await config.getManufacturerRobotStatus(manufacturerDeviceId));
+        return;
+      }
+
       if (req.method === 'POST' && url.pathname === '/v1/devices/home-robots/pair') {
         const principal = await authenticateApp(req, config);
-        if (!principal) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
         if (!config.robotRepository || typeof config.verifyRobotPairingCode !== 'function') {
           json(res, 503, { error: 'Robot pairing is not configured' }); return;
         }
         const body = await readJson(req);
         json(res, 201, await pairRobot({ userId: principal.sub, qrCode: body.qr_code, verifier: config.verifyRobotPairingCode, repository: config.robotRepository, logger: config.logger }));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/devices/push-token') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.pushRepository) { json(res, 503, { error: 'Push registration is not configured' }); return; }
+        const body = await readJson(req);
+        await config.pushRepository.register(principal.sub, validatePushToken(body.token));
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
         return;
       }
 
@@ -788,16 +915,7 @@ function createHandler(overrides = {}) {
 
 function createVeryLovingCLMServer(options = {}) {
   const { attachVoiceGateway } = require('./voice-gateway.cjs');
-  const config = validateServerConfig(envConfig(options));
-  if (!config.actionGateway && config.actionSigningSecret) {
-    config.actionGateway = new ActionGateway({
-      signingSecret: config.actionSigningSecret,
-      manufacturerWebhookURL: config.manufacturerWebhookURL,
-      manufacturerApiKey: config.manufacturerApiKey,
-      fetchImpl: config.fetchImpl,
-      logger: config.logger
-    });
-  }
+  const config = prepareDeviceServices(validateServerConfig(envConfig(options)));
   const server = http.createServer(createHandler(config));
   attachVoiceGateway(server, config);
   server.requestTimeout = 35000;

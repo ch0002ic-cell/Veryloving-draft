@@ -84,17 +84,21 @@ function createEnvironmentDiagnostics(env = {}) {
   const showAllLanguagesRequested = env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
   const showAllLanguagesEnabled = showAllCatalogLanguagesEnabled(env);
   const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
+  const actionGatewayURL = env.EXPO_PUBLIC_ACTION_GATEWAY_URL || '';
   const humeCustomizationURL = env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
   const humeWSProxyURL = env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
+  const actionSigningPublicKey = env.EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY || '';
   const mapboxAccessToken = env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const googleWebClientId = env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
   const googleIOSClientId = env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
 
   const configured = {
     apiBaseUrl: hasConfiguredValue(apiBaseUrl),
+    actionGatewayUrl: hasConfiguredValue(actionGatewayURL),
     googleWebClientId: hasConfiguredValue(googleWebClientId),
     googleIOSClientId: hasConfiguredValue(googleIOSClientId),
     humeWebSocketProxy: hasConfiguredValue(humeWSProxyURL),
+    actionSigningPublicKey: hasConfiguredValue(actionSigningPublicKey),
     humeCustomizationUrl: hasConfiguredValue(humeCustomizationURL),
     humeConfigId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_CONFIG_ID || ''),
     humeBrandedVoiceId: hasConfiguredValue(env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || ''),
@@ -110,6 +114,7 @@ function createEnvironmentDiagnostics(env = {}) {
   const required = new Set();
   if (production) {
     required.add('apiBaseUrl');
+    required.add('actionGatewayUrl');
     required.add('googleWebClientId');
     required.add('googleIOSClientId');
     required.add('humeWebSocketProxy');
@@ -127,6 +132,7 @@ function createEnvironmentDiagnostics(env = {}) {
   if (vl01Enabled) {
     required.add('vl01ServiceUUID');
     required.add('vl01BatteryCharacteristicUUID');
+    required.add('actionSigningPublicKey');
     if (production) {
       // Shipping builds must be tied to the complete, firmware-approved
       // registry. Omitting event or command channels would silently reduce a
@@ -137,6 +143,9 @@ function createEnvironmentDiagnostics(env = {}) {
     }
   }
   const invalid = [];
+  if (configured.actionSigningPublicKey && !/^[A-Za-z0-9_-]{43}$/.test(actionSigningPublicKey.trim())) {
+    invalid.push('action_signing_public_key_invalid');
+  }
   if (production && !safetyBackendEnabled) invalid.push('safety_backend_must_be_enabled');
   if (production && !phoneAuthEnabled) invalid.push('phone_auth_must_be_enabled');
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
@@ -168,6 +177,15 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && configured.apiBaseUrl) {
     const issue = endpointIssue(apiBaseUrl, 'https:');
     if (issue) invalid.push(issue === 'transport' ? 'api_base_url_must_use_https' : `api_base_url_${issue}`);
+  }
+  if (production && configured.actionGatewayUrl) {
+    const issue = endpointIssue(actionGatewayURL, 'https:');
+    if (issue) invalid.push(issue === 'transport' ? 'action_gateway_url_must_use_https' : `action_gateway_url_${issue}`);
+  }
+  if (production && configured.actionGatewayUrl && configured.humeWebSocketProxy) {
+    try {
+      if (new URL(actionGatewayURL).host !== new URL(humeWSProxyURL).host) invalid.push('action_gateway_must_share_voice_host');
+    } catch {}
   }
   if (production && configured.humeWebSocketProxy) {
     const issue = endpointIssue(humeWSProxyURL, 'wss:');
@@ -430,6 +448,15 @@ const config = {
   "plugins": [
     "expo-router",
     "expo-asset",
+    "expo-secure-store",
+    [
+      "expo-camera",
+      {
+        "cameraPermission": "Allow VeryLoving to scan your home robot's one-time pairing QR code.",
+        "recordAudioAndroid": false,
+        "barcodeScannerEnabled": true
+      }
+    ],
     [
       "expo-location",
       {
@@ -531,9 +558,11 @@ const config = {
 function createAppConfig() {
   const mapboxAccessToken = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || '';
   const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
+  const actionGatewayURL = process.env.EXPO_PUBLIC_ACTION_GATEWAY_URL || '';
   const googleWebClientId = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || '';
   const googleIOSClientId = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || '';
   const humeWSProxyURL = process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '';
+  const actionSigningPublicKey = process.env.EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY || '';
   const humeConfigId = process.env.EXPO_PUBLIC_HUME_CONFIG_ID || '';
   const humeCustomizationURL = process.env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || apiBaseUrl;
   const humeBrandedVoiceId = process.env.EXPO_PUBLIC_HUME_BRANDED_VOICE_ID || '';
@@ -568,12 +597,14 @@ function createAppConfig() {
     extra: {
       ...config.extra,
       apiBaseUrl,
+      actionGatewayURL,
       // Native Apple identity tokens use the bundle identifier as their
       // audience. This is public application metadata, not a secret.
       appleClientId: config.ios.bundleIdentifier,
       googleWebClientId,
       googleIOSClientId,
       humeWSProxyURL,
+      actionSigningPublicKey,
       humeConfigId,
       humeCustomizationURL,
       humeBrandedVoiceId,

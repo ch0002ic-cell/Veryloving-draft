@@ -17,6 +17,8 @@ const {
 function productionEnvironment(overrides = {}) {
   return {
     EXPO_PUBLIC_API_BASE_URL: 'https://api.example.test',
+    EXPO_PUBLIC_ACTION_GATEWAY_URL: 'https://voice.example.test/v1/actions',
+    EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
     EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'web.apps.googleusercontent.com',
     EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: 'ios.apps.googleusercontent.com',
     EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',

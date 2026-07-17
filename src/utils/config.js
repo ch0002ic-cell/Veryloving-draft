@@ -6,6 +6,7 @@ const configuredString = (...values) => values.find((value) => typeof value === 
 
 export const config = {
   apiBaseUrl: configuredString(process.env.EXPO_PUBLIC_API_BASE_URL, extra.apiBaseUrl),
+  actionGatewayURL: configuredString(process.env.EXPO_PUBLIC_ACTION_GATEWAY_URL, extra.actionGatewayURL),
   // Native Sign in with Apple uses the iOS bundle identifier as the token
   // audience. It is public app metadata, not a client secret or a separate
   // mobile environment credential.
@@ -14,6 +15,7 @@ export const config = {
   googleIOSClientId: configuredString(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID, extra.googleIOSClientId),
   phoneAuthEnabled: process.env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true' || extra.phoneAuthEnabled === true,
   humeWSProxyURL: process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '', // Only use env; no fallback to extra
+  actionSigningPublicKey: configuredString(process.env.EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY, extra.actionSigningPublicKey),
   humeConfigId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID || extra.humeConfigId || '',
   humeApiKey: __DEV__ ? process.env.EXPO_PUBLIC_HUME_API_KEY || '' : '',
   humeCustomizationURL: process.env.EXPO_PUBLIC_HUME_CUSTOMIZATION_URL || extra.humeCustomizationURL || process.env.EXPO_PUBLIC_API_BASE_URL || extra.apiBaseUrl || '',

@@ -10,3 +10,13 @@ export async function pairHomeRobot(qrCode, accessToken, options = {}) {
     body: { qr_code: qrCode }
   });
 }
+
+export async function listHomeRobots(accessToken, options = {}) {
+  if (!accessToken) throw new Error('Authentication is required');
+  const result = await safetyRequest('/v1/devices/home-robots', {
+    ...options,
+    accessToken,
+    method: 'GET'
+  });
+  return Array.isArray(result?.devices) ? result.devices : [];
+}

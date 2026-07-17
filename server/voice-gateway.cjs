@@ -2,6 +2,7 @@
 
 const { WebSocket, WebSocketServer } = require('ws');
 const { verifySessionJWT } = require('./auth-session.cjs');
+const { ACTION_TOOL_SCHEMAS } = require('./device-action-tools.cjs');
 
 const GATEWAY_PATH = '/api/voice/hume-ws';
 const HUME_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
@@ -33,11 +34,7 @@ function parseVoiceAuthenticationMessage(raw) {
   const configId = boundedString(connection.config_id, 200);
   const voiceId = boundedString(connection.voice_id, 200);
   const resumedChatGroupId = boundedString(connection.resumed_chat_group_id, 200);
-  const devices = Array.isArray(connection.devices) ? connection.devices.slice(0, 20).flatMap((device) => {
-    const deviceId = boundedString(device?.device_id, 128);
-    if (!deviceId || !['wearable', 'home_robot'].includes(device?.device_type)) return [];
-    return [{ device_id: deviceId, device_type: device.device_type, online: device.online === true }];
-  }) : [];
+  const devices = normalizeDevices(connection.devices);
   if (configId === null || voiceId === null || resumedChatGroupId === null) {
     throw new Error('Voice connection parameters are invalid');
   }
@@ -53,6 +50,14 @@ function parseVoiceAuthenticationMessage(raw) {
 function hasScope(claims, required) {
   const scopes = new Set(String(claims?.scope || '').split(/\s+/).filter(Boolean));
   return scopes.has(required);
+}
+
+function normalizeDevices(devices) {
+  return Array.isArray(devices) ? devices.slice(0, 20).flatMap((device) => {
+    const deviceId = boundedString(device?.device_id, 128);
+    if (!deviceId || !['wearable', 'home_robot'].includes(device?.device_type)) return [];
+    return [{ device_id: deviceId, device_type: device.device_type, online: device.online === true }];
+  }) : [];
 }
 
 function prepareUpstreamMessage(data, isBinary, config) {
@@ -78,6 +83,9 @@ function prepareUpstreamMessage(data, isBinary, config) {
     delete sanitized.tools;
     delete sanitized.builtin_tools;
   }
+  // Device actions are always server-owned. This makes the deployed runtime
+  // independent of a mutable, out-of-band Hume dashboard configuration.
+  if (config.actionGateway) sanitized.tools = ACTION_TOOL_SCHEMAS;
   return { payload: JSON.stringify(sanitized), binary: false };
 }
 
@@ -136,6 +144,7 @@ function attachVoiceGateway(server, config) {
     let closed = false;
     let sessionExpiryTimer = null;
     let unregisterActionSession = null;
+    let principal = null;
     const authTimer = setTimeout(() => closeSocket(client, 4001, 'authentication timeout'), AUTH_TIMEOUT_MS);
 
     const cleanup = () => {
@@ -186,6 +195,7 @@ function attachVoiceGateway(server, config) {
             if (client.readyState !== WebSocket.OPEN) return cleanup();
             authenticated = true;
             authenticating = false;
+            principal = claims;
             clearTimeout(authTimer);
             unregisterActionSession = config.actionGateway?.registerSession(claims.sub, client, auth.devices);
             client.send(JSON.stringify({ type: 'auth_ok' }));
@@ -212,6 +222,47 @@ function attachVoiceGateway(server, config) {
           closeSocket(client, 4001, 'voice authentication failed');
         });
         return;
+      }
+
+      if (!isBinary) {
+        let message;
+        try { message = JSON.parse(typeof data === 'string' ? data : data.toString('utf8')); } catch {}
+        if (message?.type === 'devices_update') {
+          const devices = normalizeDevices(message.devices);
+          config.actionGateway?.updateSessionDevices?.(principal?.sub, client, devices);
+          client.send(JSON.stringify({ type: 'devices_updated', count: devices.length }));
+          return;
+        }
+        if (message?.type === 'device_action_ack') {
+          config.actionGateway?.acknowledgeWearable?.(principal?.sub, client, message);
+          return;
+        }
+        if (message?.type === 'action_request') {
+          const requestId = boundedString(message.request_id, 128);
+          if (!requestId || !/^[A-Za-z0-9._:-]+$/.test(requestId) || !config.actionGateway) {
+            client.send(JSON.stringify({ type: 'action_response', request_id: requestId || 'invalid', ok: false, status: config.actionGateway ? 400 : 503 }));
+            return;
+          }
+          Promise.resolve(config.actionGateway.route(principal.sub, {
+            ...message,
+            idempotency_key: requestId
+          })).then((result) => {
+            if (!closed && client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify({ type: 'action_response', request_id: requestId, ok: true, result }));
+            }
+          }).catch((error) => {
+            if (!closed && client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify({
+                type: 'action_response',
+                request_id: requestId,
+                ok: false,
+                status: Number(error?.statusCode) || 500,
+                error_code: error?.code || 'DEVICE_ACTION_FAILED'
+              }));
+            }
+          });
+          return;
+        }
       }
 
       if (!upstream || upstream.readyState !== WebSocket.OPEN) return;

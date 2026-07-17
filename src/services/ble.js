@@ -131,6 +131,7 @@ export class BLEService {
   activeScan = null;
   sessions = new Map();
   eventHandler = {};
+  eventHandlers = new Set();
   restoredDevices = [];
 
   constructor({
@@ -149,6 +150,22 @@ export class BLEService {
     return () => {
       if (this.eventHandler === handler) this.eventHandler = {};
     };
+  }
+
+  addEventHandler(handler) {
+    if (!handler || typeof handler !== 'object') throw new TypeError('BLE event handler is required');
+    this.eventHandlers.add(handler);
+    if (this.restoredDevices.length) handler.onRestored?.([...this.restoredDevices]);
+    return () => this.eventHandlers.delete(handler);
+  }
+
+  emitEvent(name, ...args) {
+    this.eventHandler[name]?.(...args);
+    for (const handler of this.eventHandlers) {
+      try { handler[name]?.(...args); } catch (error) {
+        logBLEFailure('[BLE] Event listener failed', error, { eventName: name });
+      }
+    }
   }
 
   requireProtocol() {
@@ -180,7 +197,7 @@ export class BLEService {
           this.restoredDevices = Array.isArray(state?.connectedPeripherals)
             ? state.connectedPeripherals.filter((device) => device?.id)
             : [];
-          if (this.restoredDevices.length) this.eventHandler.onRestored?.([...this.restoredDevices]);
+          if (this.restoredDevices.length) this.emitEvent('onRestored', [...this.restoredDevices]);
         }
       });
     } catch {
@@ -404,7 +421,7 @@ export class BLEService {
         session.failure = monitorError || new Error(`VL01 ${eventName} channel disconnected.`);
         logBLEFailure(`[BLE] ${eventName} monitor failed`, session.failure, { hasDeviceId: true });
         this.cleanupSession(connected.id);
-        this.eventHandler.onConnectionDegraded?.(connected.id, session.failure, eventName);
+        this.emitEvent('onConnectionDegraded', connected.id, session.failure, eventName);
         Promise.resolve(manager.cancelDeviceConnection?.(connected.id)).catch(() => {});
       };
       const monitor = (characteristicUUID, eventName) => {
@@ -417,7 +434,7 @@ export class BLEService {
               degrade(monitorError, eventName);
               return;
             }
-            this.eventHandler[eventName]?.(connected.id, characteristic?.value || null);
+            this.emitEvent(eventName, connected.id, characteristic?.value || null);
           }
         ));
       };
@@ -436,7 +453,7 @@ export class BLEService {
               return;
             }
             try {
-              this.eventHandler.onBattery?.(connected.id, decodeVL01Battery(characteristic?.value));
+              this.emitEvent('onBattery', connected.id, decodeVL01Battery(characteristic?.value));
             } catch (error) {
               logBLEFailure('[BLE] Ignored invalid battery notification', error, { hasDeviceId: true });
             }
@@ -456,7 +473,7 @@ export class BLEService {
             this.gattOperationTimeoutMs,
             translate('jewelry.connectTimeout')
           );
-          this.eventHandler.onStatus?.(connected.id, status?.value || null);
+          this.emitEvent('onStatus', connected.id, status?.value || null);
         } catch (statusError) {
           logBLEFailure('[BLE] Initial status read failed', statusError, { hasDeviceId: true });
         }
@@ -466,7 +483,7 @@ export class BLEService {
           session.failed = true;
           session.failure = disconnectError || new Error('VL01 disconnected.');
           this.cleanupSession(connected.id);
-          this.eventHandler.onDisconnected?.(connected.id, disconnectError || null);
+          this.emitEvent('onDisconnected', connected.id, disconnectError || null);
         }));
       }
       if (session.failed || this.sessions.get(connected.id) !== session) {

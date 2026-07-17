@@ -17,6 +17,7 @@ const BOOLEAN_VARIABLES = new Set([
 ]);
 const ROOT_VARIABLES = [
   'EXPO_PUBLIC_API_BASE_URL',
+  'EXPO_PUBLIC_ACTION_GATEWAY_URL',
   'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
   'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID',
   'EXPO_PUBLIC_PHONE_AUTH_ENABLED',
@@ -26,6 +27,7 @@ const ROOT_VARIABLES = [
   'EXPO_PUBLIC_HUME_CLM_ENABLED',
   'EXPO_PUBLIC_HUME_BRANDED_VOICE_ID',
   'EXPO_PUBLIC_HUME_API_KEY',
+  'EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY',
   'EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN',
   'EXPO_PUBLIC_ENABLE_OFFLINE_MODE',
   'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES',
@@ -52,7 +54,9 @@ const SERVER_SECRET_NAMES = new Set([
   'CLM_UPSTREAM_API_KEY',
   'AWS_ACCESS_KEY_ID',
   'AWS_SECRET_ACCESS_KEY',
-  'AWS_SESSION_TOKEN'
+  'AWS_SESSION_TOKEN',
+  'ACTION_SIGNING_PRIVATE_KEY',
+  'MANUFACTURER_API_KEY'
 ]);
 const CANONICAL_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
@@ -156,6 +160,7 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
   if (production) {
     for (const [name, reason] of [
       ['EXPO_PUBLIC_API_BASE_URL', 'required by production auth, safety, and privacy flows'],
+      ['EXPO_PUBLIC_ACTION_GATEWAY_URL', 'required for production robot action delivery'],
       ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', 'required for production Google token validation'],
       ['EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', 'required for production iOS Google Sign-In'],
       ['EXPO_PUBLIC_HUME_WS_PROXY_URL', 'required for production live voice'],
@@ -183,6 +188,7 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
   if (production || enabled(env, 'EXPO_PUBLIC_VL01_ENABLED')) {
     required.set('EXPO_PUBLIC_VL01_SERVICE_UUID', 'required when the VL01 protocol is enabled');
     required.set('EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID', 'required when the VL01 protocol is enabled');
+    required.set('EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY', 'required to verify wearable command signatures');
     if (production) {
       required.set('EXPO_PUBLIC_VL01_STATUS_CHARACTERISTIC_UUID', 'required by the production VL01 registry');
       required.set('EXPO_PUBLIC_VL01_EVENT_CHARACTERISTIC_UUID', 'required by the production VL01 registry');
@@ -289,13 +295,18 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
       continue;
     }
 
+    if (name === 'EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY' && !/^[A-Za-z0-9_-]{43}$/.test(value)) {
+      results.push(makeResult(name, 'error', 'must be a base64url-encoded 32-byte Ed25519 public key'));
+      continue;
+    }
+
     if (name.startsWith('EXPO_PUBLIC_VL01_') && name.endsWith('_UUID') && !UUID_PATTERN.test(value)) {
       results.push(makeResult(name, 'error', 'must be a 4-, 8-, or canonical 128-bit hexadecimal UUID'));
       continue;
     }
 
     let problem = null;
-    if (name === 'EXPO_PUBLIC_API_BASE_URL' || name === 'EXPO_PUBLIC_HUME_CUSTOMIZATION_URL') {
+    if (name === 'EXPO_PUBLIC_API_BASE_URL' || name === 'EXPO_PUBLIC_ACTION_GATEWAY_URL' || name === 'EXPO_PUBLIC_HUME_CUSTOMIZATION_URL') {
       problem = endpointProblem(value, 'https:', { allowLocalDevelopment: !strictTransport });
     } else if (name === 'EXPO_PUBLIC_HUME_WS_PROXY_URL') {
       problem = endpointProblem(value, 'wss:', { allowLocalDevelopment: !strictTransport });
@@ -306,6 +317,14 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
     }
 
     results.push(makeResult(name, 'ok', 'configured'));
+  }
+
+  if (strictTransport && isConfigured(env.EXPO_PUBLIC_ACTION_GATEWAY_URL) && isConfigured(env.EXPO_PUBLIC_HUME_WS_PROXY_URL)) {
+    try {
+      if (new URL(env.EXPO_PUBLIC_ACTION_GATEWAY_URL).host !== new URL(env.EXPO_PUBLIC_HUME_WS_PROXY_URL).host) {
+        results.push(makeResult('EXPO_PUBLIC_ACTION_GATEWAY_URL', 'error', 'must share the long-lived voice gateway host'));
+      }
+    } catch {}
   }
 
   for (const name of SERVER_SECRET_NAMES) {

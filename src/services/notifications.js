@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { explainPermission } from './permissions';
 import { translate } from '../i18n/core';
 import { logger } from '../utils/logger';
@@ -8,6 +9,7 @@ import {
   detectNotificationsUnavailableReason,
   NOTIFICATIONS_UNAVAILABLE
 } from './notifications-runtime';
+import { safetyRequest } from './safety-api';
 
 const notificationsRuntime = createNotificationsRuntime({
   getUnavailableReason: () => detectNotificationsUnavailableReason({
@@ -67,4 +69,22 @@ export async function scheduleLocalSafetyNotification(title, body) {
   const Notifications = await notificationsRuntime.getModule();
   if (!Notifications) return null;
   return Notifications.scheduleNotificationAsync({ content: { title, body }, trigger: null });
+}
+
+export async function registerDevicePushToken(accessToken, options = {}) {
+  const Notifications = await notificationsRuntime.getModule();
+  if (!Notifications || !accessToken) return false;
+  const permissions = await Notifications.getPermissionsAsync();
+  if (permissions.status !== 'granted') return false;
+  const projectId = Constants.easConfig?.projectId || Constants.expoConfig?.extra?.eas?.projectId;
+  if (!projectId) return false;
+  const result = await Notifications.getExpoPushTokenAsync({ projectId });
+  if (!result?.data) return false;
+  await safetyRequest('/v1/devices/push-token', {
+    ...options,
+    accessToken,
+    method: 'POST',
+    body: { token: result.data }
+  });
+  return true;
 }

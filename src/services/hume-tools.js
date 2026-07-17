@@ -15,7 +15,23 @@ function linkAbortSignal(controller, signal) {
   return () => signal.removeEventListener?.('abort', abort);
 }
 
-export async function executeHumeTool(toolCall, { accessToken, signal } = {}) {
+export async function executeHumeTool(toolCall, { accessToken, signal, requestDeviceAction } = {}) {
+  if (['deploy_barrier', 'emit_alarm', 'check_medication'].includes(toolCall?.name)) {
+    let parameters;
+    try { parameters = typeof toolCall.parameters === 'string' ? JSON.parse(toolCall.parameters) : toolCall.parameters; } catch { throw new Error('Device action parameters were invalid.'); }
+    if (typeof requestDeviceAction === 'function') {
+      return requestDeviceAction({ ...toolCall, parameters }, { signal });
+    }
+    if (!accessToken || !config.apiBaseUrl) throw new Error('Connected device actions are unavailable.');
+    const response = await fetch(`${config.apiBaseUrl.replace(/\/$/, '')}/v1/device-actions`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: toolCall.name, ...parameters }),
+      signal
+    });
+    if (!response.ok) throw new Error(`Device action service returned ${response.status}.`);
+    return JSON.stringify(await response.json());
+  }
   if (toolCall?.name !== SAFETY_TIPS_TOOL_NAME) throw new Error(`Unsupported Hume tool: ${toolCall?.name || 'unknown'}`);
   const { scenario } = parseSafetyToolParameters(toolCall.parameters);
   const controller = new AbortController();

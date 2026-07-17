@@ -27,6 +27,7 @@ import {
   voiceCallCopyKeys
 } from '../utils/user-facing-error';
 import { humeVoiceOverride } from '../utils/hume-voice';
+import { dispatchWearableAction } from '../services/device-actions';
 
 function normalizeSessionId(value) {
   if (Array.isArray(value)) return value[0];
@@ -42,7 +43,7 @@ function voiceOverride(selectedVoice) {
 
 export function useHumeVoiceCall({ initialSessionId } = {}) {
   const { accessToken, isDemoMode } = useAuth();
-  const { selectedVoice, settings } = useAppState();
+  const { selectedVoice, settings, wearableEntities, robotEntities } = useAppState();
   const networkState = useNetworkState();
   const isOnline = networkState.isConnected !== false && networkState.isInternetReachable !== false;
   const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
@@ -193,7 +194,14 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
           accessToken
         });
       },
-      onToolCall: (toolCall, { signal }) => executeHumeTool(toolCall, { accessToken, signal }),
+      onToolCall: (toolCall, { signal }) => executeHumeTool(toolCall, {
+        accessToken,
+        signal,
+        requestDeviceAction: service === humeEVIService && config.humeWSProxyURL
+          ? (request, options) => humeEVIService.requestDeviceAction(request, options)
+          : undefined
+      }),
+      onDeviceAction: (message) => dispatchWearableAction(message, { publicKey: config.actionSigningPublicKey }),
       onError: (nextError) => {
         if (!mountedRef.current) return;
         presentError(nextError);
@@ -205,6 +213,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   useEffect(() => {
     bindServiceHandlers(serviceRef.current);
   }, [bindServiceHandlers]);
+
+  useEffect(() => {
+    humeEVIService.updateDevices([...wearableEntities, ...robotEntities]);
+  }, [robotEntities, wearableEntities]);
 
   useEffect(() => {
     if (!isOnline) {
@@ -254,9 +266,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       voiceId: voiceOverride(selectedVoice),
       customSessionId: sessionIdRef.current,
       resumedChatGroupId: session?.chatGroupId,
-      systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Be concise, emotionally attuned, honest about actions, and practical.`
+      systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Be concise, emotionally attuned, honest about actions, and practical.`,
+      devices: [...wearableEntities, ...robotEntities]
     });
-  }, [accessToken, bindServiceHandlers, selectedVoice.displayName, selectedVoice.humeVoiceID]);
+  }, [accessToken, bindServiceHandlers, robotEntities, selectedVoice.displayName, selectedVoice.humeVoiceID, wearableEntities]);
 
   const start = useCallback(async () => {
     if (startInFlightRef.current) return false;

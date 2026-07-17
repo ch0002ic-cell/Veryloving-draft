@@ -10,6 +10,7 @@ const { createOpaqueSessionId } = require('../src/utils/session-id');
 const {
   buildHumeWebSocketURL,
   classifyHumeClose,
+  createDeviceUpdatePayload,
   createProxyAuthenticationPayload,
   createSessionSettingsPayload,
   createToolErrorPayload,
@@ -97,6 +98,31 @@ test('proxy WebSocket URL never contains the app session token', () => {
       voice_id: undefined,
       resumed_chat_group_id: undefined
     }
+  });
+  assert.deepEqual(createProxyAuthenticationPayload({
+    accessToken: 'session',
+    devices: [
+      { deviceId: 'w1', deviceType: 'wearable', online: true },
+      { deviceId: 'r1', deviceType: 'home_robot', online: false }
+    ]
+  }).connection.devices, [
+    { device_id: 'w1', device_type: 'wearable', online: true },
+    { device_id: 'r1', device_type: 'home_robot', online: false }
+  ]);
+});
+
+test('proxy presence updates sanitize and bound dual-device snapshots', () => {
+  const payload = createDeviceUpdatePayload([
+    { deviceId: 'wearable-1', deviceType: 'wearable', online: true },
+    { deviceId: 'robot-1', deviceType: 'home_robot', online: false },
+    { deviceId: 'ignored', deviceType: 'unknown', online: true }
+  ]);
+  assert.deepEqual(payload, {
+    type: 'devices_update',
+    devices: [
+      { device_id: 'wearable-1', device_type: 'wearable', online: true },
+      { device_id: 'robot-1', device_type: 'home_robot', online: false }
+    ]
   });
 });
 

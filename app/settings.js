@@ -183,6 +183,8 @@ export default function Settings() {
         subtitle="Wearables and home robots paired to your account"
       >
         <SettingLink icon="watch-outline" title="Manage paired devices" onPress={() => router.push('/device-management')} />
+        <View style={styles.divider} />
+        <SettingLink icon="qr-code-outline" title="Pair a home robot" onPress={() => router.push('/robot-pairing')} />
       </SettingsSection>
 
       <SettingsSection

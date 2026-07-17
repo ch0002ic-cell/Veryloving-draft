@@ -44,16 +44,31 @@ export function buildHumeWebSocketURL({ proxyURL, humeAccessToken, apiKey, confi
   });
 }
 
-export function createProxyAuthenticationPayload({ accessToken, configId, voiceId, resumedChatGroupId }) {
+export function normalizeProxyDevices(devices = []) {
+  return devices.slice(0, 20).flatMap((device) => {
+    const deviceId = typeof device?.deviceId === 'string' ? device.deviceId.slice(0, 128) : '';
+    return deviceId && ['wearable', 'home_robot'].includes(device?.deviceType)
+      ? [{ device_id: deviceId, device_type: device.deviceType, online: device.online === true }]
+      : [];
+  });
+}
+
+export function createProxyAuthenticationPayload({ accessToken, configId, voiceId, resumedChatGroupId, devices = [] }) {
+  const normalizedDevices = normalizeProxyDevices(devices);
   return {
     type: 'authenticate',
     access_token: accessToken,
     connection: {
       config_id: normalizeHumeConfigId(configId),
       voice_id: voiceId || undefined,
-      resumed_chat_group_id: resumedChatGroupId || undefined
+      resumed_chat_group_id: resumedChatGroupId || undefined,
+      ...(normalizedDevices.length ? { devices: normalizedDevices } : {})
     }
   };
+}
+
+export function createDeviceUpdatePayload(devices = []) {
+  return { type: 'devices_update', devices: normalizeProxyDevices(devices) };
 }
 
 export function createSessionSettingsPayload(sessionConfig = {}) {

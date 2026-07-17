@@ -8,6 +8,7 @@ import {
 import {
   buildHumeWebSocketURL,
   classifyHumeClose,
+  createDeviceUpdatePayload,
   createProxyAuthenticationPayload,
   createSessionSettingsPayload,
   createToolErrorPayload,
@@ -19,7 +20,18 @@ import {
 const SOCKET_OPEN = 1;
 const CHAT_METADATA_TIMEOUT_MS = 10000;
 const MAX_AUDIO_BUFFERED_BYTES = 256 * 1024;
+const DEVICE_ACTION_REQUEST_TIMEOUT_MS = 20000;
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
+
+function stableActionRequestId(scope, toolCallId) {
+  const hash = (value) => {
+    let result = 2166136261;
+    for (const character of String(value)) result = Math.imul(result ^ character.charCodeAt(0), 16777619);
+    return (result >>> 0).toString(36);
+  };
+  const suffix = String(toolCallId).replace(/[^A-Za-z0-9._:-]/g, '_').slice(0, 80);
+  return `action-${hash(scope)}-${hash(toolCallId)}-${suffix}`;
+}
 
 export class HumeEVIService {
   constructor() {
@@ -44,8 +56,10 @@ export class HumeEVIService {
     this.pendingMicrophoneStart = false;
     this.chatId = null;
     this.chatGroupId = null;
-    this.toolCallGeneration = 0;
-    this.activeToolAbortController = null;
+    this.activeToolAbortControllers = new Map();
+    this.pendingActionRequests = new Map();
+    this.inFlightDeviceActionIds = new Set();
+    this.processedDeviceActionIds = new Set();
     this.lastServerErrorCode = null;
     this.usesProxy = false;
     this.proxyAuthenticated = false;
@@ -102,9 +116,18 @@ export class HumeEVIService {
   }
 
   cancelActiveToolCall() {
-    this.toolCallGeneration += 1;
-    this.activeToolAbortController?.abort();
-    this.activeToolAbortController = null;
+    for (const controller of this.activeToolAbortControllers.values()) controller.abort();
+    this.activeToolAbortControllers.clear();
+  }
+
+  cancelPendingActionRequests(error = new Error('The device action connection closed.')) {
+    for (const pending of this.pendingActionRequests.values()) {
+      clearTimeout(pending.timeout);
+      pending.unlinkAbort?.();
+      pending.reject(error);
+    }
+    this.pendingActionRequests.clear();
+    this.inFlightDeviceActionIds.clear();
   }
 
   buildWebSocketURL({ humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
@@ -230,7 +253,8 @@ export class HumeEVIService {
         accessToken: this.sessionConfig?.accessToken,
         configId: this.sessionConfig?.configId || config.humeConfigId,
         voiceId: this.sessionConfig?.voiceId,
-        resumedChatGroupId: this.sessionConfig?.resumedChatGroupId
+        resumedChatGroupId: this.sessionConfig?.resumedChatGroupId,
+        devices: this.sessionConfig?.devices
       })));
       this.startReadinessTimeout('gateway authentication');
       return;
@@ -358,6 +382,35 @@ export class HumeEVIService {
         logger.warn('[HumeEVIService] Tool error received:', { code: message.code, level: message.level, hasToolCallId: Boolean(message.tool_call_id) });
         this.messageHandler.onToolError?.(message);
         break;
+      case 'action_response':
+        this.handleActionResponse(message);
+        break;
+      case 'devices_updated':
+        break;
+      case 'device_action': {
+        if (!this.usesProxy || !this.proxyAuthenticated) throw new Error('Device actions require an authenticated gateway.');
+        const actionId = message.envelope?.id;
+        if (!actionId) return;
+        if (this.processedDeviceActionIds.has(actionId)) {
+          this.sendDeviceActionAcknowledgement(actionId, true, sourceSocket);
+          return;
+        }
+        if (this.inFlightDeviceActionIds.has(actionId)) return;
+        this.inFlightDeviceActionIds.add(actionId);
+        try {
+          await this.messageHandler.onDeviceAction?.(message);
+          this.processedDeviceActionIds.add(actionId);
+          if (this.processedDeviceActionIds.size > 200) this.processedDeviceActionIds.delete(this.processedDeviceActionIds.values().next().value);
+          this.sendDeviceActionAcknowledgement(actionId, true, sourceSocket);
+        } catch (error) {
+          logger.error('[HumeEVIService] Wearable action failed:', { actionId, name: error?.name || 'WearableActionError' });
+          this.sendDeviceActionAcknowledgement(actionId, false, sourceSocket, error?.code || 'WEARABLE_ACTION_FAILED');
+          this.messageHandler.onError?.(new Error('The wearable action failed. Please check the wearable connection.'));
+        } finally {
+          this.inFlightDeviceActionIds.delete(actionId);
+        }
+        break;
+      }
       case 'error':
         this.handleServerError(message);
         break;
@@ -377,22 +430,120 @@ export class HumeEVIService {
       return;
     }
 
-    this.cancelActiveToolCall();
-    const generation = this.toolCallGeneration;
     const controller = new AbortController();
-    this.activeToolAbortController = controller;
+    this.activeToolAbortControllers.get(toolCallId)?.abort();
+    this.activeToolAbortControllers.set(toolCallId, controller);
     try {
       const content = await this.messageHandler.onToolCall(message, { signal: controller.signal });
-      if (generation !== this.toolCallGeneration || sourceSocket !== this.socket || controller.signal.aborted) return;
+      if (this.activeToolAbortControllers.get(toolCallId) !== controller || sourceSocket !== this.socket || controller.signal.aborted) return;
       if (content === undefined || content === null) throw new Error('Tool returned no content.');
       this.sendToolResponse(toolCallId, content, message, sourceSocket);
     } catch (error) {
-      if (generation !== this.toolCallGeneration || sourceSocket !== this.socket || controller.signal.aborted) return;
+      if (this.activeToolAbortControllers.get(toolCallId) !== controller || sourceSocket !== this.socket || controller.signal.aborted) return;
       logger.error('[HumeEVIService] Tool execution failed:', { name: message.name, error: error.message });
       this.sendToolError(toolCallId, error.message || 'Tool execution failed.', 'That safety resource is temporarily unavailable.', sourceSocket);
     } finally {
-      if (generation === this.toolCallGeneration) this.activeToolAbortController = null;
+      if (this.activeToolAbortControllers.get(toolCallId) === controller) this.activeToolAbortControllers.delete(toolCallId);
     }
+  }
+
+  requestDeviceAction(toolCall, { signal, timeoutMs = DEVICE_ACTION_REQUEST_TIMEOUT_MS } = {}) {
+    if (!this.usesProxy || !this.proxyAuthenticated || this.socket?.readyState !== SOCKET_OPEN) {
+      return Promise.reject(new Error('The authenticated device action gateway is unavailable.'));
+    }
+    let toolParameters;
+    try {
+      toolParameters = typeof toolCall?.parameters === 'string'
+        ? JSON.parse(toolCall.parameters)
+        : toolCall?.parameters;
+    } catch {
+      return Promise.reject(new Error('Device action parameters were invalid.'));
+    }
+    const toolCallId = toolCall?.tool_call_id || toolCall?.toolCallId;
+    if (typeof toolCallId !== 'string' || !toolCallId) {
+      return Promise.reject(new Error('Device action tool call identity was invalid.'));
+    }
+    const requestScope = this.sessionConfig?.customSessionId
+      || this.sessionConfig?.resumedChatGroupId
+      || this.chatGroupId
+      || 'voice';
+    const requestId = stableActionRequestId(requestScope, toolCallId);
+    const existing = this.pendingActionRequests.get(requestId);
+    if (existing) return existing.promise;
+    const socket = this.socket;
+    let pendingRecord;
+    const actionPromise = new Promise((resolve, reject) => {
+      let abortHandler;
+      const finish = (callback, value) => {
+        const pending = this.pendingActionRequests.get(requestId);
+        if (!pending) return;
+        this.pendingActionRequests.delete(requestId);
+        clearTimeout(pending.timeout);
+        pending.unlinkAbort?.();
+        callback(value);
+      };
+      const timeout = setTimeout(() => finish(reject, new Error('The device action gateway timed out.')), timeoutMs);
+      if (signal) {
+        abortHandler = () => {
+          const error = new Error('The device action was cancelled.');
+          error.name = 'AbortError';
+          finish(reject, error);
+        };
+        signal.addEventListener?.('abort', abortHandler, { once: true });
+      }
+      pendingRecord = {
+        resolve: (value) => finish(resolve, value),
+        reject: (error) => finish(reject, error),
+        timeout,
+        unlinkAbort: () => signal?.removeEventListener?.('abort', abortHandler)
+      };
+      this.pendingActionRequests.set(requestId, pendingRecord);
+      if (signal?.aborted) {
+        abortHandler?.();
+        return;
+      }
+      try {
+        socket.send(JSON.stringify({
+          type: 'action_request',
+          request_id: requestId,
+          action: toolCall?.name,
+          ...(toolParameters && typeof toolParameters === 'object' ? toolParameters : {})
+        }));
+      } catch {
+        finish(reject, new Error('The device action request could not be sent.'));
+      }
+    });
+    pendingRecord.promise = actionPromise;
+    return actionPromise;
+  }
+
+  handleActionResponse(message) {
+    const pending = this.pendingActionRequests.get(message?.request_id);
+    if (!pending) return;
+    if (message.ok === true) pending.resolve(JSON.stringify(message.result || { status: 'accepted' }));
+    else {
+      const error = new Error(`Device action service returned ${Number(message.status) || 500}.`);
+      error.code = message.error_code || 'DEVICE_ACTION_FAILED';
+      pending.reject(error);
+    }
+  }
+
+  sendDeviceActionAcknowledgement(actionId, ok, targetSocket = this.socket, errorCode) {
+    if (!actionId || targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
+    targetSocket.send(JSON.stringify({
+      type: 'device_action_ack',
+      action_id: actionId,
+      ok,
+      ...(errorCode ? { error_code: errorCode } : {})
+    }));
+    return true;
+  }
+
+  updateDevices(devices = []) {
+    this.sessionConfig = { ...(this.sessionConfig || {}), devices };
+    if (!this.usesProxy || !this.proxyAuthenticated || this.socket?.readyState !== SOCKET_OPEN) return false;
+    this.socket.send(JSON.stringify(createDeviceUpdatePayload(devices)));
+    return true;
   }
 
   sendToolResponse(toolCallId, content, toolCall = {}, targetSocket = this.socket) {
@@ -472,6 +623,7 @@ export class HumeEVIService {
     this.socket = null;
     this.clearChatMetadataTimeout();
     this.cancelActiveToolCall();
+    this.cancelPendingActionRequests();
     this.chatMetadataReceived = false;
     this.stopMicrophone().catch((error) => logger.warn('[HumeEVIService] Microphone cleanup after close failed:', error));
 
@@ -650,6 +802,7 @@ export class HumeEVIService {
     this.intentionallyConnected = false;
     this.clearReconnectTimer();
     this.cancelActiveToolCall();
+    this.cancelPendingActionRequests();
     this.resetChatReadiness();
     // Detach the transport before awaiting native microphone cleanup. An iOS
     // audio stop can take time during interruption/background transitions;

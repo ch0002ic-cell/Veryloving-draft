@@ -58,7 +58,7 @@ export default function DeviceManagement() {
     const nextName = name.trim().slice(0, 80);
     if (!nextName) return;
     if (entity.deviceType === 'wearable') await setDevice({ ...device, name: nextName });
-    else setRobotEntities((current) => current.map((robot) => robot.deviceId === entity.deviceId ? { ...robot, name: nextName } : robot));
+    else await setRobotEntities((current) => current.map((robot) => robot.deviceId === entity.deviceId ? { ...robot, name: nextName } : robot));
   };
 
   const entities = [...wearableEntities, ...robotEntities];
@@ -91,6 +91,7 @@ export default function DeviceManagement() {
         </Card>
       ))}
       {!entities.length ? <Text>No devices paired.</Text> : null}
+      <Button title="Pair home robot" icon="qr-code-outline" variant="ghost" onPress={() => router.push('/robot-pairing')} />
       <Card>
         <Text style={{ fontFamily: fonts.bold }}>{device.name}</Text>
         <Text>{status}</Text>
