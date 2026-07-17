@@ -47,6 +47,8 @@ export function AppProvider({ children }) {
   const deviceAccountIdRef = useRef(null);
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
+  const [wearableEntities, setWearableEntities] = useState([]);
+  const [robotEntities, setRobotEntities] = useState([]);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
   const [settingsAccountId, setSettingsAccountId] = useState(undefined);
   const [contactsAccountId, setContactsAccountId] = useState(null);
@@ -548,7 +550,11 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  useEffect(() => {
+    setWearableEntities(device.id ? [{ ...device, deviceId: device.id, deviceType: 'wearable', online: device.connected === true }] : []);
+  }, [device]);
+
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, robotEntities, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

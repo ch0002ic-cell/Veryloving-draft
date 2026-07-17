@@ -21,6 +21,7 @@ import { logger } from '../../src/utils/logger';
 import { shareQuickLocation } from '../../src/services/emergency';
 import { loadSavedPlaces, removeSavedPlace, saveCurrentPlace } from '../../src/services/saved-place-store';
 import { useAuth } from '../../src/context/AuthContext';
+import { useAppState } from '../../src/context/AppContext';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -31,7 +32,7 @@ function locationErrorTranslationKey(error) {
   return 'map.updateFailed';
 }
 
-const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onLoadError, onStyleLoaded, t }) {
+const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, deviceEntities, onLoadError, onStyleLoaded, t }) {
   return (
     <Mapbox.MapView
       onDidFinishLoadingStyle={onStyleLoaded}
@@ -66,6 +67,18 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, onL
           </Mapbox.PointAnnotation>
         );
       })}
+      {deviceEntities.map((entity) => (
+        <Mapbox.PointAnnotation
+          key={`${entity.deviceType}:${entity.deviceId}`}
+          id={`${entity.deviceType}-${entity.deviceId}`}
+          coordinate={entity.coordinate}
+          title={entity.name}
+        >
+          <View collapsable={false} style={[styles.deviceMarker, entity.deviceType === 'home_robot' && styles.robotMarker]}>
+            <Text style={styles.deviceMarkerIcon}>{entity.deviceType === 'wearable' ? '●' : '⌂'}</Text>
+          </View>
+        </Mapbox.PointAnnotation>
+      ))}
     </Mapbox.MapView>
   );
 });
@@ -89,6 +102,14 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const { isRTL, locale, t } = useI18n();
   const { user } = useAuth();
+  const { wearableEntities, robotEntities } = useAppState();
+  const deviceEntities = useMemo(() => [...wearableEntities, ...robotEntities].flatMap((entity) => {
+    const longitude = Number(entity?.location?.longitude ?? entity?.longitude);
+    const latitude = Number(entity?.location?.latitude ?? entity?.latitude);
+    return Number.isFinite(longitude) && Number.isFinite(latitude)
+      ? [{ ...entity, coordinate: [longitude, latitude] }]
+      : [];
+  }), [robotEntities, wearableEntities]);
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
@@ -260,6 +281,7 @@ export default function MapScreen() {
       <View style={styles.fullScreen}>
         <NativeSafetyMap
           Mapbox={Mapbox}
+          deviceEntities={deviceEntities}
           coordinates={coordinates}
           onLoadError={handleMapLoadError}
           onStyleLoaded={handleMapStyleLoaded}
@@ -407,6 +429,9 @@ const styles = StyleSheet.create({
   nativeMap: { flex: 1 },
   mapStatus: { position: 'absolute', left: 16, right: 16, backgroundColor: colors.paper, borderRadius: 8, overflow: 'hidden' },
   dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.paper, backgroundColor: colors.red },
+  deviceMarker: { width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.paper, backgroundColor: colors.ink },
+  robotMarker: { borderRadius: 6, backgroundColor: colors.inkSoft },
+  deviceMarkerIcon: { color: colors.paper, fontSize: 16, fontFamily: fonts.bold },
   savedOverlay: { position: 'absolute', left: 16, right: 16, paddingHorizontal: 8, paddingBottom: 8, gap: 8, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, borderRadius: 8, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
   mapFallback: { height: 320, borderRadius: 8, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: 8 },
   mapText: { fontFamily: fonts.bold, color: colors.ink, fontSize: 28 },
