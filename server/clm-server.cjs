@@ -180,8 +180,12 @@ function validateServerConfig(config) {
       throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
     }
   }
-  if (production && (!config.actionSigningSecret || config.actionSigningSecret.length < 32)) {
-    throw new Error('ACTION_SIGNING_SECRET must contain at least 32 characters in production');
+  const actionRoutingConfigured = Boolean(config.actionSigningSecret || config.manufacturerWebhookURL || config.manufacturerApiKey);
+  if (actionRoutingConfigured && (!config.actionSigningSecret || config.actionSigningSecret.length < 32)) {
+    throw new Error('ACTION_SIGNING_SECRET must contain at least 32 characters when action routing is configured');
+  }
+  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerApiKey)) {
+    throw new Error('MANUFACTURER_WEBHOOK_URL and MANUFACTURER_API_KEY are required for production action routing');
   }
   return config;
 }
