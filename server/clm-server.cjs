@@ -19,6 +19,8 @@ const {
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
+const { ActionGateway } = require('./action-gateway.cjs');
+const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
   createLocalCompanionResponse,
@@ -35,6 +37,22 @@ const MAX_BODY_BYTES = 256 * 1024;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const ACTION_TOOL_SCHEMAS = Object.freeze(['deploy_barrier', 'check_medication'].map((name) => ({
+  type: 'function',
+  function: {
+    name,
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      required: ['device_type', 'device_id'],
+      properties: {
+        device_type: { type: 'string', enum: name === 'deploy_barrier' ? ['wearable'] : ['home_robot'] },
+        device_id: { type: 'string', minLength: 1, maxLength: 128 },
+        parameters: { type: 'object' }
+      }
+    }
+  }
+})));
 
 function positiveNumber(value, fallback) {
   const parsed = Number(value);
@@ -74,6 +92,10 @@ function envConfig(overrides = {}) {
     safetyTableName: process.env.SAFETY_TABLE_NAME || '',
     safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
     awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
+    deviceTableName: process.env.DEVICE_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
+    actionSigningSecret: process.env.ACTION_SIGNING_SECRET || '',
+    manufacturerWebhookURL: process.env.MANUFACTURER_WEBHOOK_URL || '',
+    manufacturerApiKey: process.env.MANUFACTURER_API_KEY || '',
     upstreamURL: process.env.CLM_UPSTREAM_URL || '',
     upstreamApiKey: process.env.CLM_UPSTREAM_API_KEY || '',
     upstreamModel: process.env.CLM_UPSTREAM_MODEL || '',
@@ -105,6 +127,7 @@ function validateServerConfig(config) {
   const voiceGatewayRequired = config.httpOnlyDeployment !== true;
   validateServerURL(config.appAuthVerifyURL, 'APP_AUTH_VERIFY_URL', { production });
   validateServerURL(config.upstreamURL, 'CLM_UPSTREAM_URL', { production });
+  validateServerURL(config.manufacturerWebhookURL, 'MANUFACTURER_WEBHOOK_URL', { production });
   if (production) {
     if (!config.authExchangeEnabled) throw new Error('AUTH_EXCHANGE_ENABLED must be true in production');
     if (!config.phoneAuthEnabled) throw new Error('PHONE_AUTH_ENABLED must be true in production');
@@ -156,6 +179,9 @@ function validateServerConfig(config) {
     if (typeof config.sessionJWTSecret !== 'string' || config.sessionJWTSecret.length < 32) {
       throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
     }
+  }
+  if (production && (!config.actionSigningSecret || config.actionSigningSecret.length < 32)) {
+    throw new Error('ACTION_SIGNING_SECRET must contain at least 32 characters in production');
   }
   return config;
 }
@@ -536,6 +562,18 @@ function createHandler(overrides = {}) {
       region: config.awsRegion
     });
   }
+  if (!config.actionGateway && config.actionSigningSecret) {
+    config.actionGateway = new ActionGateway({
+      signingSecret: config.actionSigningSecret,
+      manufacturerWebhookURL: config.manufacturerWebhookURL,
+      manufacturerApiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      logger: config.logger
+    });
+  }
+  if (!config.robotRepository && config.deviceTableName && config.safetyApiEnabled) {
+    config.robotRepository = createDynamoRobotRepository({ tableName: config.deviceTableName, region: config.awsRegion });
+  }
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
     try {
@@ -639,6 +677,25 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      if (req.method === 'POST' && url.pathname === '/v1/device-actions') {
+        const principal = await authenticateApp(req, config);
+        if (!principal) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.actionGateway) { json(res, 503, { error: 'Action gateway is not configured' }); return; }
+        json(res, 202, await config.actionGateway.route(principal.sub, await readJson(req)));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/devices/home-robots/pair') {
+        const principal = await authenticateApp(req, config);
+        if (!principal) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.robotRepository || typeof config.verifyRobotPairingCode !== 'function') {
+          json(res, 503, { error: 'Robot pairing is not configured' }); return;
+        }
+        const body = await readJson(req);
+        json(res, 201, await pairRobot({ userId: principal.sub, qrCode: body.qr_code, verifier: config.verifyRobotPairingCode, repository: config.robotRepository, logger: config.logger }));
+        return;
+      }
+
       if (
         url.pathname === '/v1/emergency-contacts'
         || url.pathname.startsWith('/v1/emergency-contacts/')
@@ -728,6 +785,15 @@ function createHandler(overrides = {}) {
 function createVeryLovingCLMServer(options = {}) {
   const { attachVoiceGateway } = require('./voice-gateway.cjs');
   const config = validateServerConfig(envConfig(options));
+  if (!config.actionGateway && config.actionSigningSecret) {
+    config.actionGateway = new ActionGateway({
+      signingSecret: config.actionSigningSecret,
+      manufacturerWebhookURL: config.manufacturerWebhookURL,
+      manufacturerApiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      logger: config.logger
+    });
+  }
   const server = http.createServer(createHandler(config));
   attachVoiceGateway(server, config);
   server.requestTimeout = 35000;
@@ -742,6 +808,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  ACTION_TOOL_SCHEMAS,
   createHandler,
   createVeryLovingCLMServer,
   envConfig,

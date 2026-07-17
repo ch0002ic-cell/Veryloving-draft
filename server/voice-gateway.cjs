@@ -33,6 +33,11 @@ function parseVoiceAuthenticationMessage(raw) {
   const configId = boundedString(connection.config_id, 200);
   const voiceId = boundedString(connection.voice_id, 200);
   const resumedChatGroupId = boundedString(connection.resumed_chat_group_id, 200);
+  const devices = Array.isArray(connection.devices) ? connection.devices.slice(0, 20).flatMap((device) => {
+    const deviceId = boundedString(device?.device_id, 128);
+    if (!deviceId || !['wearable', 'home_robot'].includes(device?.device_type)) return [];
+    return [{ device_id: deviceId, device_type: device.device_type, online: device.online === true }];
+  }) : [];
   if (configId === null || voiceId === null || resumedChatGroupId === null) {
     throw new Error('Voice connection parameters are invalid');
   }
@@ -40,7 +45,8 @@ function parseVoiceAuthenticationMessage(raw) {
     accessToken: message.access_token,
     configId,
     voiceId,
-    resumedChatGroupId
+    resumedChatGroupId,
+    devices
   };
 }
 
@@ -129,6 +135,7 @@ function attachVoiceGateway(server, config) {
     let authenticating = false;
     let closed = false;
     let sessionExpiryTimer = null;
+    let unregisterActionSession = null;
     const authTimer = setTimeout(() => closeSocket(client, 4001, 'authentication timeout'), AUTH_TIMEOUT_MS);
 
     const cleanup = () => {
@@ -137,6 +144,8 @@ function attachVoiceGateway(server, config) {
         clearTimeout(authTimer);
         clearTimeout(sessionExpiryTimer);
       }
+      unregisterActionSession?.();
+      unregisterActionSession = null;
       if (upstream) {
         const socketToClose = upstream;
         upstream = null;
@@ -178,6 +187,7 @@ function attachVoiceGateway(server, config) {
             authenticated = true;
             authenticating = false;
             clearTimeout(authTimer);
+            unregisterActionSession = config.actionGateway?.registerSession(claims.sub, client, auth.devices);
             client.send(JSON.stringify({ type: 'auth_ok' }));
           });
           upstream.on('message', (payload, upstreamBinary) => {
