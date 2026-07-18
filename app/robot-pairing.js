@@ -16,6 +16,7 @@ export default function RobotPairingScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
+  const [robotVendor, setRobotVendor] = useState('yongyida');
   const { accessToken, user } = useAuth();
   const { setRobotEntities } = useAppState();
   const { t } = useI18n();
@@ -25,7 +26,7 @@ export default function RobotPairingScreen() {
     setBusy(true);
     setErrorKey(null);
     try {
-      const paired = await pairHomeRobot(data, accessToken, { accountId: user?.id });
+      const paired = await pairHomeRobot(data, accessToken, { accountId: user?.id, vendor: robotVendor });
       await setRobotEntities((current) => current.some((robot) => robot.deviceId === paired.robot_id)
         ? current
         : [...current, {
@@ -40,7 +41,7 @@ export default function RobotPairingScreen() {
       setErrorKey('settings.updateFailedMessage');
       setBusy(false);
     }
-  }, [accessToken, busy, setRobotEntities, user?.id]);
+  }, [accessToken, busy, robotVendor, setRobotEntities, user?.id]);
 
   if (!permission) return <Screen><Header title={t('settings.deviceManagement')} showBack /><Text>{t('common.loading')}</Text></Screen>;
   if (!permission.granted) {
@@ -55,6 +56,22 @@ export default function RobotPairingScreen() {
   return (
     <Screen>
       <Header title={t('settings.deviceManagement')} subtitle={t('jewelry.scan')} showBack />
+      <View style={styles.vendorButtons}>
+        <Button
+          title="Yongyida"
+          selected={robotVendor === 'yongyida'}
+          variant={robotVendor === 'yongyida' ? 'primary' : 'ghost'}
+          onPress={() => setRobotVendor('yongyida')}
+          disabled={busy}
+        />
+        <Button
+          title="Jiangzhi"
+          selected={robotVendor === 'jiangzhi'}
+          variant={robotVendor === 'jiangzhi' ? 'primary' : 'ghost'}
+          onPress={() => setRobotVendor('jiangzhi')}
+          disabled={busy}
+        />
+      </View>
       <View style={styles.cameraFrame}>
         <CameraView
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
@@ -70,5 +87,6 @@ export default function RobotPairingScreen() {
 
 const styles = StyleSheet.create({
   cameraFrame: { height: 360, overflow: 'hidden', borderRadius: 12, backgroundColor: colors.ink },
+  vendorButtons: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   copy: { fontFamily: fonts.regular, color: colors.ink }
 });

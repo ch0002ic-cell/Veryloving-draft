@@ -64,15 +64,18 @@ test('DeviceRegistry forwards typed telemetry with its bound device identity', (
 
 test('HomeRobotDevice serializes commands through the backend relay', async () => {
   const bodies = [];
+  const redirects = [];
   const robot = new HomeRobotDevice({
     deviceId: 'robot-1', gatewayURL: 'https://api.example.test', accessToken: 'session',
     fetchImpl: async (_url, options) => {
       bodies.push(JSON.parse(options.body));
-      return { ok: true, status: 202, json: async () => ({ accepted: true }) };
+      redirects.push(options.redirect);
+      return { ok: true, status: 202, text: async () => JSON.stringify({ accepted: true }) };
     }
   });
   await Promise.all([robot.sendCommand({ type: 'first' }), robot.sendCommand({ type: 'second' })]);
   assert.deepEqual(bodies.map((body) => body.type), ['first', 'second']);
+  assert.deepEqual(redirects, ['error', 'error']);
 });
 
 test('process death rebuilds wearable and robot registry from account-bound descriptors', async () => {
@@ -286,7 +289,8 @@ test('generic relay health never labels manufacturer hardware online', async () 
   assert.equal(status.relayOnline, true);
   assert.equal(status.online, false);
   assert.equal(status.hardwareStatus, 'unknown');
-  assert.equal(status.connectionState, 'unknown');
+  assert.equal(status.connectionState, 'disconnected');
+  assert.equal(status.lastErrorCode, 'ROBOT_TELEMETRY_TIMESTAMP_INVALID');
 });
 
 test('successful telemetry persists robot location without cancelling a failed command retry', async () => {
@@ -341,7 +345,8 @@ test('home robot polls telemetry, validates navigation paths, and cleans up the 
         text: async () => JSON.stringify({
           online: true,
           reported_at: 50_000,
-          indoor_position: { room_id: 'living-room', floor_id: 'floor-1', map_id: 'home-map', x_m: 3.5, y_m: 4.25, confidence: 0.96 },
+          battery: { percentage: 81, charging: true, observed_at: 50_000 },
+          indoor_position: { room_id: 'living-room', floor_id: 'floor-1', map_id: 'home-map', x_m: 3.5, y_m: 4.25, confidence: 0.96, captured_at: 50_000 },
           navigation_path: [[103.8, 1.3], { longitude: 103.81, latitude: 1.31 }, [999, 999]]
         })
       };
@@ -350,9 +355,11 @@ test('home robot polls telemetry, validates navigation paths, and cleans up the 
   const status = await robot.connect();
   assert.deepEqual(status.navigationPath, [[103.8, 1.3], [103.81, 1.31]]);
   assert.deepEqual(status.indoorPosition, {
-    roomId: 'living-room', floorId: 'floor-1', mapId: 'home-map', xMeters: 3.5, yMeters: 4.25, confidence: 0.96
+    roomId: 'living-room', floorId: 'floor-1', mapId: 'home-map', xMeters: 3.5, yMeters: 4.25, confidence: 0.96, capturedAt: 50_000
   });
   assert.equal(status.lastSeenAt, 50_000);
+  assert.equal(status.battery, 81);
+  assert.equal(status.batteryCharging, true);
   assert.equal(typeof poll, 'function');
   await poll();
   assert.equal(telemetryReads, 2);
@@ -403,6 +410,195 @@ test('home robot telemetry is single-flight, rejects older samples, and suspends
   await robot.startNetworkMonitoring();
   assert.equal(intervalCleared, true);
   assert.equal(robot.getStatus().online, false);
+  robot.dispose();
+});
+
+test('home robot keeps the relay online but rejects malformed gateway JSON', async () => {
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-malformed',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      text: async () => '{not-json'
+    })
+  });
+  await assert.rejects(robot.request('/v1/devices/robot-malformed/telemetry'), /response is invalid/);
+  assert.equal(robot.getStatus().relayOnline, true);
+  assert.equal(robot.getStatus().online, false);
+  assert.equal(robot.getStatus().lastErrorCode, 'ROBOT_GATEWAY_INVALID_RESPONSE');
+  robot.dispose();
+
+  const multibyte = new HomeRobotDevice({
+    deviceId: 'robot-multibyte',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      text: async () => `{"padding":"${'😀'.repeat(300_000)}"}`
+    })
+  });
+  await assert.rejects(multibyte.request('/v1/devices/robot-multibyte/telemetry'), /response is invalid/);
+  assert.equal(multibyte.getStatus().lastErrorCode, 'ROBOT_GATEWAY_INVALID_RESPONSE');
+  multibyte.dispose();
+
+  let streamCancelled = 0;
+  const streamed = new HomeRobotDevice({
+    deviceId: 'robot-stream-oversize',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader: () => ({
+          async read() { return { done: false, value: new Uint8Array((1024 * 1024) + 1) }; },
+          async cancel() { streamCancelled += 1; },
+          releaseLock() {}
+        })
+      }
+    })
+  });
+  await assert.rejects(streamed.request('/v1/devices/robot-stream-oversize/telemetry'), /response is invalid/);
+  assert.equal(streamCancelled, 1);
+  streamed.dispose();
+});
+
+test('home robot cancels non-success response bodies before releasing the request', async () => {
+  let cancelled = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-http-error-body',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: false,
+      status: 503,
+      body: { async cancel() { cancelled += 1; } }
+    })
+  });
+  await assert.rejects(robot.request('/health'), (error) => error.statusCode === 503);
+  assert.equal(cancelled, 1);
+  robot.dispose();
+});
+
+test('home robot request timeout survives fetch implementations that ignore AbortSignal', async () => {
+  let requestSignal;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-timeout',
+    gatewayURL: 'https://api.example.test',
+    timeoutMs: 10,
+    fetchImpl: async (_url, options) => {
+      requestSignal = options.signal;
+      return new Promise(() => {});
+    }
+  });
+
+  const startedAt = Date.now();
+  await assert.rejects(robot.request('/health'), (error) => {
+    assert.equal(error.code, 'ROBOT_NETWORK_TIMEOUT');
+    return true;
+  });
+  assert.equal(requestSignal.aborted, true);
+  assert.ok(Date.now() - startedAt < 500);
+  assert.equal(robot.getStatus().relayOnline, false);
+  robot.dispose();
+});
+
+test('home robot request timeout also bounds stalled credential retrieval', async () => {
+  let fetches = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-credential-timeout',
+    gatewayURL: 'https://api.example.test',
+    timeoutMs: 10,
+    accessTokenProvider: async () => new Promise(() => {}),
+    fetchImpl: async () => {
+      fetches += 1;
+      return { ok: true, status: 204 };
+    }
+  });
+  await assert.rejects(robot.request('/health'), { code: 'ROBOT_NETWORK_TIMEOUT' });
+  assert.equal(fetches, 0);
+  robot.dispose();
+});
+
+test('home robot timeout covers a stalled response body and cancels it', async () => {
+  let cancelled = 0;
+  let releaseText;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-body-timeout',
+    gatewayURL: 'https://api.example.test',
+    timeoutMs: 10,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => '2' },
+      body: {
+        async cancel() {
+          cancelled += 1;
+          releaseText?.('{}');
+        }
+      },
+      text: () => new Promise((resolve) => { releaseText = resolve; })
+    })
+  });
+
+  await assert.rejects(robot.request('/v1/devices/robot-body-timeout/telemetry'), (error) => {
+    assert.equal(error.code, 'ROBOT_NETWORK_TIMEOUT');
+    return true;
+  });
+  assert.equal(cancelled, 1);
+  assert.equal(robot.getStatus().relayOnline, true);
+  assert.equal(robot.getStatus().online, false);
+  robot.dispose();
+});
+
+test('home robot rejects unsafe timeout configuration', () => {
+  assert.throws(() => new HomeRobotDevice({
+    deviceId: 'robot-bad-timeout',
+    gatewayURL: 'https://api.example.test',
+    timeoutMs: 0
+  }), /timeout is invalid/);
+});
+
+test('home robot never treats telemetry without a valid vendor timestamp as fresh', async () => {
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-no-timestamp',
+    gatewayURL: 'https://api.example.test',
+    now: () => 50_000,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ online: true, location: { longitude: 103.8, latitude: 1.3 } })
+    })
+  });
+  const telemetry = await robot.refreshTelemetry();
+  assert.equal(telemetry.invalid, true);
+  assert.equal(robot.getStatus().relayOnline, true);
+  assert.equal(robot.getStatus().online, false);
+  assert.equal(robot.getStatus().lastSeenAt, undefined);
+  assert.equal(robot.getStatus().lastErrorCode, 'ROBOT_TELEMETRY_TIMESTAMP_INVALID');
+  robot.dispose();
+});
+
+test('home robot fails closed when fresh telemetry omits required online state', async () => {
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-missing-online',
+    gatewayURL: 'https://api.example.test',
+    now: () => 50_000,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      text: async () => JSON.stringify({ reported_at: 50_000 })
+    })
+  });
+  robot.setStatus({ online: true, hardwareStatus: 'online', connectionState: 'connected' });
+  const telemetry = await robot.refreshTelemetry();
+  assert.equal(telemetry.invalid, true);
+  assert.equal(robot.getStatus().online, false);
+  assert.equal(robot.getStatus().connectionState, 'disconnected');
+  assert.equal(robot.getStatus().lastErrorCode, 'ROBOT_TELEMETRY_SCHEMA_INVALID');
+  assert.equal(robot.getStatus().lastSeenAt, undefined);
   robot.dispose();
 });
 

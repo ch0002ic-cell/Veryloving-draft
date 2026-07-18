@@ -803,7 +803,11 @@ async function handleSafetyAPI({
   }
   if (req.method === 'DELETE' && url.pathname === '/v1/privacy/data') {
     requireScope(principal, 'safety:write');
-    if (privacyCoordinator) await privacyCoordinator.deleteUserData(userId);
+    if (privacyCoordinator) {
+      await privacyCoordinator.deleteUserData(userId, {
+        ...(typeof principal?.sid === 'string' ? { recoverySessionId: principal.sid } : {})
+      });
+    }
     else await repository.deleteUserData(userId);
     res.writeHead(204, { 'Cache-Control': 'no-store' });
     res.end();

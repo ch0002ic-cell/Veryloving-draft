@@ -11,11 +11,17 @@ export async function pairHomeRobot(qrCode, accessToken, options = {}) {
     throw new Error('A valid manufacturer QR code is required');
   }
   if (!options.accountId) throw new Error('An authenticated account is required');
+  if (options.vendor !== undefined && !['yongyida', 'jiangzhi'].includes(options.vendor)) {
+    throw new Error('A supported robot manufacturer is required');
+  }
   const paired = await safetyRequest('/v1/devices/home-robots/pair', {
     ...options,
     accessToken,
     method: 'POST',
-    body: { qr_code: qrCode }
+    body: {
+      qr_code: qrCode,
+      ...(options.vendor ? { robot_vendor: options.vendor } : {})
+    }
   });
   await saveRobotPairingCredential(options.accountId, paired?.robot_id, paired?.pairing_token, options);
   return { robot_id: paired.robot_id, device_type: paired.device_type };

@@ -10,9 +10,16 @@ const {
   createManufacturerPairingVerifier,
   createManufacturerRobotResetClient,
   createManufacturerRobotStatusClient,
+  createRoutedManufacturerPrivacyRepository,
   normalizeIndoorPosition
 } = require('./manufacturer-client.cjs');
 const { createManufacturerMockServer } = require('../tests/integration/manufacturer-mock-server.js');
+
+const RESET_REQUEST = Object.freeze({
+  resetId: 'reset-operation-0001',
+  manufacturerDeviceId: 'manufacturer-1',
+  bindingEpoch: 4
+});
 
 test('manufacturer mock receives the signed production webhook contract', async (t) => {
   const signingPrivateKey = crypto.generateKeyPairSync('ed25519').privateKey.export({ format: 'pem', type: 'pkcs8' });
@@ -77,7 +84,19 @@ test('manufacturer status bounds navigation paths and reset keeps its API key se
         }
       };
     }
-    return { ok: true, status: 204 };
+    return {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: RESET_REQUEST.resetId,
+          binding_epoch: RESET_REQUEST.bindingEpoch,
+          state: 'completed',
+          erased: true,
+          fenced: true
+        });
+      }
+    };
   };
   const statusClient = createManufacturerRobotStatusClient({ url: 'https://manufacturer.test/status', apiKey: 'private-key', fetchImpl });
   const status = await statusClient('manufacturer-1');
@@ -98,9 +117,116 @@ test('manufacturer status bounds navigation paths and reset keeps its API key se
     captured_at: 998
   });
   const resetClient = createManufacturerRobotResetClient({ url: 'https://manufacturer.test/reset', apiKey: 'private-key', fetchImpl });
-  assert.equal(await resetClient('manufacturer-1'), true);
+  assert.equal(await resetClient(RESET_REQUEST), true);
   assert.equal(calls[1].options.headers['X-Manufacturer-Api-Key'], 'private-key');
-  assert.deepEqual(JSON.parse(calls[1].options.body), { robot_id: 'manufacturer-1', erase_user_data: true });
+  assert.equal(calls[1].options.headers['Idempotency-Key'], RESET_REQUEST.resetId);
+  assert.equal(calls[1].options.headers['X-Veryloving-Reset-Contract'], 'veryloving.robot-reset.v1');
+  assert.deepEqual(JSON.parse(calls[1].options.body), {
+    contract_version: 'vl-robot-reset/1',
+    reset_id: RESET_REQUEST.resetId,
+    robot_id: RESET_REQUEST.manufacturerDeviceId,
+    binding_epoch: RESET_REQUEST.bindingEpoch,
+    erase_user_data: true
+  });
+  assert.ok(calls.every(({ options }) => options.redirect === 'error'));
+});
+
+test('manufacturer telemetry without a trustworthy timestamp fails closed', async () => {
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      async text() { return JSON.stringify({ online: true, location: { longitude: 103.8, latitude: 1.3 } }); }
+    })
+  });
+  assert.deepEqual(await statusClient('manufacturer-1'), {
+    online: false,
+    hardware_status: 'unknown',
+    telemetry_error: 'invalid_timestamp'
+  });
+});
+
+test('manufacturer requests time out when fetch ignores AbortSignal', async () => {
+  let requestSignal;
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    timeoutMs: 10,
+    fetchImpl: async (_url, options) => {
+      requestSignal = options.signal;
+      return new Promise(() => {});
+    }
+  });
+
+  const startedAt = Date.now();
+  await assert.rejects(statusClient('manufacturer-1'), (error) => {
+    assert.equal(error.name, 'TimeoutError');
+    assert.equal(error.code, 'MANUFACTURER_TIMEOUT');
+    return true;
+  });
+  const elapsedMs = Date.now() - startedAt;
+
+  assert.equal(requestSignal.aborted, true);
+  assert.ok(elapsedMs < 500, `manufacturer timeout took ${elapsedMs}ms`);
+});
+
+test('manufacturer clients reject unsafe timeout configuration before transport', async () => {
+  let called = false;
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'server-only-key',
+    timeoutMs: 0,
+    fetchImpl: async () => {
+      called = true;
+      return { ok: true, status: 200, async text() { return '{}'; } };
+    }
+  });
+
+  await assert.rejects(statusClient('manufacturer-r1'), /timeout is invalid/);
+  assert.equal(called, false);
+});
+
+test('manufacturer timeout cancels a response stream whose body read stalls', async () => {
+  let cancelCount = 0;
+  let completeRead;
+  const response = {
+    ok: true,
+    status: 200,
+    headers: { get: () => null },
+    body: {
+      getReader() {
+        return {
+          read() {
+            return new Promise((resolve) => { completeRead = resolve; });
+          },
+          async cancel() {
+            cancelCount += 1;
+            completeRead?.({ done: true });
+          },
+          releaseLock() {}
+        };
+      }
+    }
+  };
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    timeoutMs: 10,
+    fetchImpl: async () => response
+  });
+
+  const startedAt = Date.now();
+  await assert.rejects(statusClient('manufacturer-1'), (error) => {
+    assert.equal(error.name, 'TimeoutError');
+    assert.equal(error.code, 'MANUFACTURER_TIMEOUT');
+    return true;
+  });
+  const elapsedMs = Date.now() - startedAt;
+
+  assert.equal(cancelCount, 1);
+  assert.ok(elapsedMs < 500, `stalled response timeout took ${elapsedMs}ms`);
 });
 
 test('manufacturer privacy sends only bound robot identifiers and requires completed deletion', async () => {
@@ -130,6 +256,33 @@ test('manufacturer privacy sends only bound robot identifiers and requires compl
   ]);
   assert.ok(calls.every(({ options }) => options.headers['X-Manufacturer-Api-Key'] === 'server-only-key'));
   assert.doesNotMatch(JSON.stringify(calls), /user-private/);
+
+  const oversizedExport = createManufacturerPrivacyRepository({
+    exportURL: 'https://manufacturer.test/privacy/export',
+    deleteURL: 'https://manufacturer.test/privacy/delete',
+    apiKey: 'server-only-key',
+    listManufacturerDeviceIds: async () => ['manufacturer-r1'],
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader: () => {
+          let sent = false;
+          return {
+            async read() {
+              if (sent) return { done: true };
+              sent = true;
+              return { done: false, value: Buffer.alloc((1024 * 1024) + 1) };
+            },
+            async cancel() {},
+            releaseLock() {}
+          };
+        }
+      }
+    })
+  });
+  await assert.rejects(oversizedExport.exportUserData('user-private'), /too large/);
 });
 
 test('manufacturer privacy does not treat an asynchronous deletion receipt as erasure', async () => {
@@ -143,18 +296,148 @@ test('manufacturer privacy does not treat an asynchronous deletion receipt as er
   await assert.rejects(repository.deleteUserData('user-private'), /returned 202/);
 });
 
+test('mixed-fleet privacy groups identifiers by adapter and never crosses handlers', async () => {
+  const calls = [];
+  const legacyClient = {
+    async exportRobotData(robotIds) { calls.push(['legacy-export', robotIds]); return { vendor: 'legacy' }; },
+    async deleteRobotData(robotIds) { calls.push(['legacy-delete', robotIds]); return { deleted: robotIds.length }; }
+  };
+  const robotAdapterRuntime = {
+    async exportRobotData(adapterId, robotIds) {
+      calls.push(['adapter-export', adapterId, robotIds]);
+      return { vendor: adapterId };
+    },
+    async deleteRobotData(adapterId, robotIds) {
+      calls.push(['adapter-delete', adapterId, robotIds]);
+      return { deleted: robotIds.length };
+    }
+  };
+  const repository = createRoutedManufacturerPrivacyRepository({
+    listManufacturerRobotBindings: async () => [
+      { adapterId: 'manufacturer-default', manufacturerDeviceId: 'legacy-1' },
+      { adapterId: 'yongyida-cloud', manufacturerDeviceId: 'yongyida-1' },
+      { adapterId: 'jiangzhi-edge', manufacturerDeviceId: 'jiangzhi-1' },
+      { adapterId: 'yongyida-cloud', manufacturerDeviceId: 'yongyida-1' }
+    ],
+    legacyClient,
+    robotAdapterRuntime
+  });
+
+  assert.deepEqual(await repository.exportUserData('user-private'), {
+    adapter_exports: [
+      { adapter_id: 'manufacturer-default', data: { vendor: 'legacy' } },
+      { adapter_id: 'yongyida-cloud', data: { vendor: 'yongyida-cloud' } },
+      { adapter_id: 'jiangzhi-edge', data: { vendor: 'jiangzhi-edge' } }
+    ]
+  });
+  assert.deepEqual(calls, [
+    ['legacy-export', ['legacy-1']],
+    ['adapter-export', 'yongyida-cloud', ['yongyida-1']],
+    ['adapter-export', 'jiangzhi-edge', ['jiangzhi-1']]
+  ]);
+
+  calls.length = 0;
+  assert.deepEqual(await repository.deleteUserData('user-private'), { deleted: 3 });
+  assert.deepEqual(calls, [
+    ['legacy-delete', ['legacy-1']],
+    ['adapter-delete', 'yongyida-cloud', ['yongyida-1']],
+    ['adapter-delete', 'jiangzhi-edge', ['jiangzhi-1']]
+  ]);
+
+  const missingModernHandler = createRoutedManufacturerPrivacyRepository({
+    listManufacturerRobotBindings: async () => [
+      { adapterId: 'jiangzhi-edge', manufacturerDeviceId: 'jiangzhi-1' }
+    ],
+    legacyClient
+  });
+  await assert.rejects(missingModernHandler.deleteUserData('user-private'), {
+    code: 'ROBOT_ADAPTER_PRIVACY_NOT_CONFIGURED', statusCode: 503
+  });
+  assert.equal(calls.length, 3);
+});
+
+test('mixed-fleet routed deletion resumes at the failed adapter with a stable vendor key', async () => {
+  let checkpoint;
+  const deletionRepository = {
+    async begin(_userId, plan) {
+      checkpoint ||= {
+        operationId: 'operationidentity00000000000000000000000000',
+        planFingerprint: 'fingerprint00000000000000000000000000000000',
+        adapterIds: plan.map(({ adapterId }) => adapterId),
+        completedAdapters: [],
+        state: 'in_progress'
+      };
+      return structuredClone(checkpoint);
+    },
+    async markAdapterCompleted(_userId, _operationId, adapterId) {
+      checkpoint.completedAdapters.push(adapterId);
+      return structuredClone(checkpoint);
+    },
+    async markCompleted() {
+      checkpoint.state = 'completed';
+      return structuredClone(checkpoint);
+    }
+  };
+  const calls = [];
+  let modernFailurePending = true;
+  const repository = createRoutedManufacturerPrivacyRepository({
+    listManufacturerRobotBindings: async () => [
+      { adapterId: 'manufacturer-default', manufacturerDeviceId: 'legacy-1' },
+      { adapterId: 'yongyida-cloud', manufacturerDeviceId: 'yongyida-1' }
+    ],
+    legacyClient: {
+      async exportRobotData() { return {}; },
+      async deleteRobotData(robotIds, options) {
+        calls.push(['legacy', robotIds, options.idempotencyKey]);
+        return { deleted: robotIds.length };
+      }
+    },
+    robotAdapterRuntime: {
+      async exportRobotData() { return {}; },
+      async deleteRobotData(adapterId, robotIds, options) {
+        calls.push([adapterId, robotIds, options.idempotencyKey]);
+        if (modernFailurePending) {
+          modernFailurePending = false;
+          throw new Error('modern vendor unavailable');
+        }
+        return { deleted: robotIds.length };
+      }
+    },
+    deletionRepository
+  });
+
+  await assert.rejects(repository.deleteUserData('user-private'), /modern vendor unavailable/);
+  assert.deepEqual(checkpoint.completedAdapters, ['manufacturer-default']);
+  assert.deepEqual(await repository.deleteUserData('user-private'), { deleted: 2 });
+  assert.deepEqual(calls.map(([adapterId]) => adapterId), [
+    'legacy',
+    'yongyida-cloud',
+    'yongyida-cloud'
+  ]);
+  assert.equal(calls[1][2], calls[2][2]);
+});
+
 test('manufacturer reset and privacy deletion require explicit synchronous completion', async () => {
   const completedResponse = () => ({
     ok: true,
     status: 200,
-    async text() { return JSON.stringify({ completed: true }); }
+    async text() {
+      return JSON.stringify({
+        completed: true,
+        reset_id: RESET_REQUEST.resetId,
+        binding_epoch: RESET_REQUEST.bindingEpoch,
+        state: 'completed',
+        erased: true,
+        fenced: true
+      });
+    }
   });
   const reset = createManufacturerRobotResetClient({
     url: 'https://manufacturer.test/reset',
     apiKey: 'server-only-key',
     fetchImpl: async () => completedResponse()
   });
-  assert.equal(await reset('manufacturer-r1'), true);
+  assert.equal(await reset(RESET_REQUEST), true);
 
   const deletion = createManufacturerPrivacyRepository({
     exportURL: 'https://manufacturer.test/privacy/export',
@@ -175,7 +458,7 @@ test('manufacturer reset and privacy deletion require explicit synchronous compl
       apiKey: 'server-only-key',
       fetchImpl: async () => incomplete
     });
-    await assert.rejects(incompleteReset('manufacturer-r1'), /invalid|did not confirm completion|returned 206/);
+    await assert.rejects(incompleteReset(RESET_REQUEST), /invalid|returned 206/);
     const incompleteDeletion = createManufacturerPrivacyRepository({
       exportURL: 'https://manufacturer.test/privacy/export',
       deleteURL: 'https://manufacturer.test/privacy/delete',
@@ -215,7 +498,8 @@ test('indoor positioning accepts only bounded contract fields', () => {
     y_m: 1,
     confidence: 2,
     captured_at: -1
-  }), { room_id: 'room:bedroom' });
+  }), undefined);
+  assert.equal(normalizeIndoorPosition({ room_id: 'room:bedroom' }), undefined);
   assert.equal(normalizeIndoorPosition({ room_id: 'x'.repeat(129) }), undefined);
   assert.equal(normalizeIndoorPosition({ x_m: 1, y_m: 2 }), undefined);
   assert.equal(normalizeIndoorPosition({ map_id: 'map:home', x_m: '1', y_m: 2 }), undefined);
@@ -238,5 +522,100 @@ test('manufacturer pairing preserves replay semantics and reset rejects an async
     apiKey: 'server-only-key',
     fetchImpl: async () => ({ ok: true, status: 202 })
   });
-  await assert.rejects(reset('manufacturer-r1'), /returned 202/);
+  await assert.rejects(reset(RESET_REQUEST), /returned 202/);
+});
+
+test('manufacturer reset rejects empty, malformed, or uncorrelated completion responses', async () => {
+  const responses = [
+    { ok: true, status: 204, async text() { return ''; } },
+    { ok: true, status: 200, async text() { return '{"broken":'; } },
+    {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: 'another-reset-operation',
+          binding_epoch: RESET_REQUEST.bindingEpoch,
+          state: 'completed',
+          erased: true,
+          fenced: true
+        });
+      }
+    },
+    {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: RESET_REQUEST.resetId,
+          binding_epoch: RESET_REQUEST.bindingEpoch + 1,
+          state: 'completed',
+          erased: true,
+          fenced: true
+        });
+      }
+    },
+    {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: RESET_REQUEST.resetId,
+          binding_epoch: RESET_REQUEST.bindingEpoch,
+          state: 'accepted',
+          erased: true,
+          fenced: true
+        });
+      }
+    },
+    {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: RESET_REQUEST.resetId,
+          binding_epoch: RESET_REQUEST.bindingEpoch,
+          state: 'completed',
+          erased: false,
+          fenced: true
+        });
+      }
+    },
+    {
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          reset_id: RESET_REQUEST.resetId,
+          binding_epoch: RESET_REQUEST.bindingEpoch,
+          state: 'completed',
+          erased: true,
+          fenced: false
+        });
+      }
+    }
+  ];
+
+  for (const response of responses) {
+    const reset = createManufacturerRobotResetClient({
+      url: 'https://manufacturer.test/reset',
+      apiKey: 'server-only-key',
+      fetchImpl: async () => response
+    });
+    await assert.rejects(reset(RESET_REQUEST), /returned 204|invalid/);
+  }
+
+  let transportCalled = false;
+  const reset = createManufacturerRobotResetClient({
+    url: 'https://manufacturer.test/reset',
+    apiKey: 'server-only-key',
+    fetchImpl: async () => {
+      transportCalled = true;
+      throw new Error('must not execute');
+    }
+  });
+  await assert.rejects(reset({ ...RESET_REQUEST, resetId: 'short' }), /reset id is invalid/);
+  await assert.rejects(reset({ ...RESET_REQUEST, manufacturerDeviceId: '../invalid' }), /device id is invalid/);
+  await assert.rejects(reset({ ...RESET_REQUEST, bindingEpoch: 0 }), /binding epoch is invalid/);
+  assert.equal(transportCalled, false);
 });

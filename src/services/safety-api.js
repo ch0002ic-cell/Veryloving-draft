@@ -2,7 +2,99 @@ import { config } from '../utils/config';
 import { createAuthenticationNonce } from '../utils/session-token';
 
 const REQUEST_TIMEOUT_MS = 10000;
+const MAX_SAFETY_RESPONSE_BYTES = 1024 * 1024;
 export const SOS_LOCATION_MAX_AGE_MS = 5 * 60 * 1000;
+
+function safetyResponseError(code, message) {
+  return Object.assign(new Error(message), { code });
+}
+
+async function cancelSafetyResponse(response) {
+  try { await response?.body?.cancel?.(); } catch {}
+}
+
+function encodedLength(value) {
+  let bytes = 0;
+  for (const character of value) {
+    const codePoint = character.codePointAt(0);
+    bytes += codePoint <= 0x7f ? 1 : codePoint <= 0x7ff ? 2 : codePoint <= 0xffff ? 3 : 4;
+  }
+  return bytes;
+}
+
+async function readBoundedSafetyPayload(response, signal) {
+  const rawContentLength = response.headers?.get?.('content-length');
+  if (rawContentLength !== undefined && rawContentLength !== null) {
+    if (!/^\d{1,12}$/.test(rawContentLength)
+      || Number(rawContentLength) > MAX_SAFETY_RESPONSE_BYTES) {
+      await cancelSafetyResponse(response);
+      throw safetyResponseError('SAFETY_RESPONSE_TOO_LARGE', 'The safety service response was too large.');
+    }
+  }
+
+  let text;
+  if (response.body?.getReader) {
+    const reader = response.body.getReader();
+    const cancelOnAbort = () => { void Promise.resolve(reader.cancel?.()).catch(() => {}); };
+    if (signal?.aborted) cancelOnAbort();
+    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
+    const chunks = [];
+    let received = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!(value instanceof Uint8Array)) {
+          throw safetyResponseError('SAFETY_RESPONSE_INVALID', 'The safety service response was invalid.');
+        }
+        received += value.byteLength;
+        if (received > MAX_SAFETY_RESPONSE_BYTES) {
+          await Promise.resolve(reader.cancel?.()).catch(() => {});
+          throw safetyResponseError('SAFETY_RESPONSE_TOO_LARGE', 'The safety service response was too large.');
+        }
+        chunks.push(value);
+      }
+    } finally {
+      signal?.removeEventListener('abort', cancelOnAbort);
+      reader.releaseLock?.();
+    }
+    const bytes = new Uint8Array(received);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    try { text = new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch {
+      throw safetyResponseError('SAFETY_RESPONSE_INVALID', 'The safety service response was invalid.');
+    }
+  } else if (typeof response.text === 'function') {
+    text = await response.text();
+  } else if (typeof response.json === 'function') {
+    // Compatibility fallback for older React Native fetch implementations.
+    // Production responses advertise Content-Length; streaming is used where
+    // the runtime exposes a byte reader.
+    const payload = await response.json();
+    let serialized;
+    try { serialized = JSON.stringify(payload); } catch {
+      throw safetyResponseError('SAFETY_RESPONSE_INVALID', 'The safety service response was invalid.');
+    }
+    if (typeof serialized !== 'string') {
+      throw safetyResponseError('SAFETY_RESPONSE_INVALID', 'The safety service response was invalid.');
+    }
+    if (encodedLength(serialized) > MAX_SAFETY_RESPONSE_BYTES) {
+      throw safetyResponseError('SAFETY_RESPONSE_TOO_LARGE', 'The safety service response was too large.');
+    }
+    return payload;
+  } else {
+    throw safetyResponseError('SAFETY_RESPONSE_INVALID', 'The safety service response was invalid.');
+  }
+
+  if (typeof text !== 'string' || encodedLength(text) > MAX_SAFETY_RESPONSE_BYTES) {
+    throw safetyResponseError('SAFETY_RESPONSE_TOO_LARGE', 'The safety service response was too large.');
+  }
+  if (!text) return null;
+  try { return JSON.parse(text); } catch { return null; }
+}
 
 function finiteCoordinate(value, limit) {
   if (value === null || value === undefined || value === '') return null;
@@ -54,11 +146,17 @@ export async function safetyRequest(path, {
     error.code = 'SAFETY_AUTHENTICATION_REQUIRED';
     throw error;
   }
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120000) {
+    throw safetyResponseError('SAFETY_TIMEOUT_INVALID', 'The safety service timeout is invalid.');
+  }
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const response = await fetchImpl(`${runtimeConfig.apiBaseUrl.replace(/\/$/, '')}${path}`, {
+  let response;
+  let timedOut = false;
+  let timeoutHandle;
+  const operation = (async () => {
+    response = await fetchImpl(`${runtimeConfig.apiBaseUrl.replace(/\/$/, '')}${path}`, {
       method,
+      redirect: 'error',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json',
@@ -68,14 +166,40 @@ export async function safetyRequest(path, {
       ...(body ? { body: JSON.stringify(body) } : {}),
       signal: controller.signal
     });
+    if (timedOut) {
+      await cancelSafetyResponse(response);
+      const error = new Error('The safety service request timed out.');
+      error.name = 'AbortError';
+      throw error;
+    }
     if (response.status === 204) return null;
-    const payload = await response.json().catch(() => null);
+    const payload = await readBoundedSafetyPayload(response, controller.signal);
+    if (timedOut) {
+      await cancelSafetyResponse(response);
+      const error = new Error('The safety service request timed out.');
+      error.name = 'AbortError';
+      throw error;
+    }
     if (!response.ok) {
       const error = new Error(payload?.error || 'The safety service could not complete the request.');
       error.code = `SAFETY_HTTP_${response.status}`;
       throw error;
     }
     return payload;
+  })();
+  void operation.catch(() => {});
+  const timeout = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+      void cancelSafetyResponse(response);
+      const error = new Error('The safety service request timed out.');
+      error.name = 'AbortError';
+      reject(error);
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([operation, timeout]);
   } catch (error) {
     if (error.name === 'AbortError') {
       const timeoutError = new Error('The safety service took too long to respond.');
@@ -84,7 +208,7 @@ export async function safetyRequest(path, {
     }
     throw error;
   } finally {
-    clearTimeout(timeout);
+    clearTimeout(timeoutHandle);
   }
 }
 

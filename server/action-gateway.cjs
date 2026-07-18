@@ -146,17 +146,38 @@ function deriveEd25519PublicKey(privateKey) {
 
 function deterministicActionId(userId, action) {
   if (!action.idempotency_key) return undefined;
-  const bytes = crypto.createHash('sha256').update(JSON.stringify([
-    String(userId),
-    action.device_type,
-    action.device_id,
-    action.action,
-    action.idempotency_key
-  ])).digest().subarray(0, 16);
+  const identity = action.device_type === 'home_robot'
+    ? [
+        'veryloving-robot-action-id-v2',
+        String(userId),
+        action.device_type,
+        action.device_id,
+        action.binding_epoch,
+        action.action,
+        action.idempotency_key
+      ]
+    : [String(userId), action.device_type, action.device_id, action.action, action.idempotency_key];
+  const bytes = crypto.createHash('sha256').update(JSON.stringify(identity)).digest().subarray(0, 16);
   bytes[6] = (bytes[6] & 0x0f) | 0x50;
   bytes[8] = (bytes[8] & 0x3f) | 0x80;
   const hex = bytes.toString('hex');
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function actionRequestFingerprint(userId, action) {
+  return crypto.createHash('sha256').update(JSON.stringify([
+    'veryloving-action-request-v2',
+    String(userId),
+    action.device_type,
+    action.device_id,
+    action.action,
+    action.parameters,
+    action.manufacturer_device_id || null,
+    action.adapter_id || null,
+    action.binding_epoch || null,
+    action.contract_version || null,
+    action.idempotency_key || null
+  ])).digest('base64url');
 }
 
 function signEnvelope(action, privateKey, now = Date.now, actionId = crypto.randomUUID()) {
@@ -171,7 +192,33 @@ function signEnvelope(action, privateKey, now = Date.now, actionId = crypto.rand
 const ROBOT_FAILURE_MESSAGE = 'Robot command failed. Please check your robot\'s network connection.';
 
 const DEFAULT_OUTBOX_RETENTION_SECONDS = 7 * 24 * 60 * 60;
+const DEFAULT_ROBOT_ACTION_TTL_MS = 60 * 1000;
+const MAX_STRONG_PRIVACY_MUTATION_PASSES = 5;
 const ACTION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function isPositiveBindingEpoch(value) {
+  return Number.isSafeInteger(value) && value > 0;
+}
+
+function isExplicitlyActiveBinding(binding) {
+  return binding?.active === true
+    || binding?.state === 'active'
+    || binding?.lifecycleState === 'active';
+}
+
+function bindingFencedError() {
+  return Object.assign(new Error('Robot binding is no longer active'), {
+    statusCode: 409,
+    code: 'BINDING_FENCED'
+  });
+}
+
+function accountFencedError() {
+  return Object.assign(new Error('Account actions are disabled'), {
+    statusCode: 409,
+    code: 'ACCOUNT_FENCED'
+  });
+}
 
 function createDynamoActionOutboxRepository({ tableName, region, client: injectedClient, userIndexName, retentionSeconds = DEFAULT_OUTBOX_RETENTION_SECONDS } = {}) {
   if (!tableName) throw new Error('Action outbox table is required');
@@ -179,18 +226,24 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
   let commands;
   if (!client) {
     const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-    const { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+    const { BatchWriteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
     client = DynamoDBDocumentClient.from(new DynamoDBClient({ region }), { marshallOptions: { removeUndefinedValues: true } });
-    commands = { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
+    commands = { BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
   } else {
-    const { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
-    commands = { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
+    const { BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+    commands = { BatchWriteCommand, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
   }
 
   const key = (actionId) => ({ PK: `ACTION#${actionId}`, SK: 'OUTBOX' });
   const isConditionalFailure = (error) => error?.name === 'ConditionalCheckFailedException';
 
-  async function transition(actionId, state, attributes = {}, expectedStates = []) {
+  async function transition(actionId, state, attributes = {}, expectedStates = [], {
+    expectedAdapterId,
+    expectedBindingEpoch,
+    expectedUserId,
+    expectedDeviceId,
+    returnCurrentOnCondition = false
+  } = {}) {
     if (!ACTION_ID_PATTERN.test(actionId || '')) throw new Error('Outbox action id is invalid');
     const entries = Object.entries({ state, updated_at: Date.now(), ...attributes })
       .filter(([, value]) => value !== undefined);
@@ -210,6 +263,32 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       });
       condition += ` AND #currentState IN (${expected.join(', ')})`;
     }
+    if (expectedAdapterId !== undefined) {
+      if (!/^[a-z0-9][a-z0-9._-]{0,63}$/.test(expectedAdapterId)) {
+        throw new Error('Outbox adapter id is invalid');
+      }
+      names['#expectedAdapterId'] = 'adapter_id';
+      values[':expectedAdapterId'] = expectedAdapterId;
+      condition += ' AND #expectedAdapterId = :expectedAdapterId';
+    }
+    if (expectedBindingEpoch !== undefined) {
+      if (!isPositiveBindingEpoch(expectedBindingEpoch)) {
+        throw new Error('Outbox binding epoch is invalid');
+      }
+      names['#expectedBindingEpoch'] = 'binding_epoch';
+      values[':expectedBindingEpoch'] = expectedBindingEpoch;
+      condition += ' AND #expectedBindingEpoch = :expectedBindingEpoch';
+    }
+    if (expectedUserId !== undefined) {
+      names['#expectedUserId'] = 'user_id';
+      values[':expectedUserId'] = String(expectedUserId);
+      condition += ' AND #expectedUserId = :expectedUserId';
+    }
+    if (expectedDeviceId !== undefined) {
+      names['#expectedDeviceId'] = 'device_id';
+      values[':expectedDeviceId'] = String(expectedDeviceId);
+      condition += ' AND #expectedDeviceId = :expectedDeviceId';
+    }
     try {
       const result = await client.send(new commands.UpdateCommand({
         TableName: tableName,
@@ -222,16 +301,29 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       }));
       return result.Attributes || true;
     } catch (error) {
-      if (isConditionalFailure(error)) return false;
+      if (isConditionalFailure(error)) {
+        if (!returnCurrentOnCondition) return false;
+        const current = await client.send(new commands.GetCommand({
+          TableName: tableName,
+          Key: key(actionId),
+          ConsistentRead: true
+        }));
+        return current.Item || false;
+      }
       throw error;
     }
   }
 
-  async function scanForUser(userId, projectionExpression, expressionAttributeNames) {
+  async function scanForUser(userId, projectionExpression, expressionAttributeNames, {
+    requireStrongBaseTableRead = false
+  } = {}) {
     const records = [];
     let exclusiveStartKey;
     do {
-      const result = userIndexName
+      // DynamoDB GSIs are eventually consistent. They are appropriate for
+      // exports, but a privacy fence/delete must not miss an action that was
+      // committed to the base table before the index caught up.
+      const result = userIndexName && !requireStrongBaseTableRead
         ? await client.send(new commands.QueryCommand({
             TableName: tableName,
             IndexName: userIndexName,
@@ -243,6 +335,7 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
           }))
         : await client.send(new commands.ScanCommand({
             TableName: tableName,
+            ...(requireStrongBaseTableRead ? { ConsistentRead: true } : {}),
             FilterExpression: '#entity = :entity AND user_id = :userId',
             ExpressionAttributeNames: { '#entity': 'entity', ...(expressionAttributeNames || {}) },
             ExpressionAttributeValues: { ':entity': 'device-action-outbox', ':userId': userId },
@@ -258,6 +351,9 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
   return {
     async enqueue(record) {
       if (!ACTION_ID_PATTERN.test(record?.action_id || '')) throw new Error('Outbox action id is invalid');
+      if (record?.device_type === 'home_robot' && !isPositiveBindingEpoch(record.binding_epoch)) {
+        throw new Error('Outbox binding epoch is invalid');
+      }
       const createdAt = Number.isFinite(record.created_at) ? record.created_at : Date.now();
       try {
         await client.send(new commands.PutCommand({
@@ -277,7 +373,14 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
         }));
         return record;
       } catch (error) {
-        if (isConditionalFailure(error)) return false;
+        if (isConditionalFailure(error)) {
+          const existing = await client.send(new commands.GetCommand({
+            TableName: tableName,
+            Key: key(record.action_id),
+            ConsistentRead: true
+          }));
+          return existing.Item ? { duplicate: true, record: existing.Item } : false;
+        }
         throw error;
       }
     },
@@ -285,7 +388,9 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       return transition(actionId, 'delivering', details, ['queued', 'delivering']);
     },
     markPendingAck(actionId, details = {}) {
-      return transition(actionId, 'pending_ack', details, ['queued', 'delivering']);
+      return transition(actionId, 'pending_ack', details, ['queued', 'delivering'], {
+        returnCurrentOnCondition: true
+      });
     },
     markDelivered(actionId, details = {}) {
       return transition(actionId, 'delivered', details, ['queued', 'delivering', 'pending_ack']);
@@ -293,17 +398,34 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
     markFailed(actionId, details = {}) {
       return transition(actionId, 'failed', details, ['queued', 'delivering', 'pending_ack']);
     },
-    acknowledge(actionId, { ok, acknowledged_at: acknowledgedAt = Date.now(), error_code: errorCode } = {}) {
+    acknowledge(actionId, {
+      ok,
+      acknowledged_at: acknowledgedAt = Date.now(),
+      error_code: errorCode,
+      adapter_id: adapterId,
+      binding_epoch: bindingEpoch
+    } = {}) {
+      if (typeof adapterId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)) {
+        throw new Error('Outbox adapter id is invalid');
+      }
+      if (!isPositiveBindingEpoch(bindingEpoch)) throw new Error('Outbox binding epoch is invalid');
       return transition(actionId, ok === true ? 'delivered' : 'failed', {
         acknowledged_at: acknowledgedAt,
         error_code: errorCode
-      }, ['queued', 'delivering', 'pending_ack']);
+      }, ['queued', 'delivering', 'pending_ack'], {
+        expectedAdapterId: adapterId,
+        expectedBindingEpoch: bindingEpoch
+      });
     },
-    expirePendingAck(actionId, { expired_at: expiredAt = Date.now(), error_code: errorCode = 'ACK_TIMEOUT' } = {}) {
+    expirePendingAck(actionId, {
+      expired_at: expiredAt = Date.now(),
+      error_code: errorCode = 'ACK_TIMEOUT',
+      binding_epoch: bindingEpoch
+    } = {}) {
       return transition(actionId, 'failed', {
         acknowledged_at: expiredAt,
         error_code: errorCode
-      }, ['pending_ack']);
+      }, ['pending_ack'], { expectedBindingEpoch: bindingEpoch });
     },
     async listPending({ limit = 1000 } = {}) {
       const records = [];
@@ -326,24 +448,91 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       } while (exclusiveStartKey);
       return records;
     },
+    async failPendingForBinding(userId, deviceId, bindingEpoch, {
+      failed_at: failedAt = Date.now(),
+      error_code: errorCode = 'BINDING_FENCED'
+    } = {}) {
+      if (!isPositiveBindingEpoch(bindingEpoch)) throw new Error('Outbox binding epoch is invalid');
+      const records = await scanForUser(
+        String(userId),
+        'action_id, device_id, binding_epoch, #state',
+        { '#state': 'state' }
+      );
+      let failed = 0;
+      for (const record of records) {
+        if (
+          record.device_id !== deviceId
+          || record.binding_epoch !== bindingEpoch
+          || !['queued', 'delivering', 'pending_ack'].includes(record.state)
+          || !ACTION_ID_PATTERN.test(record.action_id || '')
+        ) continue;
+        const transitioned = await transition(record.action_id, 'failed', {
+          failed_at: failedAt,
+          error_code: errorCode
+        }, ['queued', 'delivering', 'pending_ack'], {
+          expectedBindingEpoch: bindingEpoch,
+          expectedUserId: userId,
+          expectedDeviceId: deviceId
+        });
+        if (transitioned !== false) failed += 1;
+      }
+      return { failed };
+    },
+    async failPendingForUser(userId, {
+      failed_at: failedAt = Date.now(),
+      error_code: errorCode = 'ACCOUNT_FENCED'
+    } = {}) {
+      let failed = 0;
+      for (let pass = 0; pass < MAX_STRONG_PRIVACY_MUTATION_PASSES; pass += 1) {
+        const records = await scanForUser(
+          String(userId),
+          'action_id, #state',
+          { '#state': 'state' },
+          { requireStrongBaseTableRead: true }
+        );
+        const pending = records.filter((record) => (
+          ['queued', 'delivering', 'pending_ack'].includes(record.state)
+          && ACTION_ID_PATTERN.test(record.action_id || '')
+        ));
+        if (!pending.length) return { failed };
+        for (const record of pending) {
+          const transitioned = await transition(record.action_id, 'failed', {
+            failed_at: failedAt,
+            error_code: errorCode
+          }, ['queued', 'delivering', 'pending_ack'], { expectedUserId: userId });
+          if (transitioned !== false) failed += 1;
+        }
+      }
+      throw new Error('Account actions could not be fully fenced');
+    },
     async exportUserData(userId) {
       return scanForUser(
         userId,
-        'action_id, device_id, device_type, #action, #state, created_at, updated_at, acknowledged_at, error_code',
+        'action_id, device_id, device_type, binding_epoch, #action, #state, created_at, updated_at, acknowledged_at, error_code',
         { '#action': 'action', '#state': 'state' }
       );
     },
     async deleteUserData(userId) {
-      const keys = await scanForUser(userId, 'PK, SK');
-      for (let offset = 0; offset < keys.length; offset += 25) {
-        let pending = keys.slice(offset, offset + 25).map(({ PK, SK }) => ({ DeleteRequest: { Key: { PK, SK } } }));
-        for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
-          const result = await client.send(new commands.BatchWriteCommand({ RequestItems: { [tableName]: pending } }));
-          pending = result.UnprocessedItems?.[tableName] || [];
+      let deletedItems = 0;
+      for (let pass = 0; pass < MAX_STRONG_PRIVACY_MUTATION_PASSES; pass += 1) {
+        const keys = await scanForUser(
+          userId,
+          'PK, SK',
+          undefined,
+          { requireStrongBaseTableRead: true }
+        );
+        if (!keys.length) return { deletedItems };
+        for (let offset = 0; offset < keys.length; offset += 25) {
+          let pending = keys.slice(offset, offset + 25).map(({ PK, SK }) => ({ DeleteRequest: { Key: { PK, SK } } }));
+          for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
+            const result = await client.send(new commands.BatchWriteCommand({ RequestItems: { [tableName]: pending } }));
+            pending = result.UnprocessedItems?.[tableName] || [];
+          }
+          if (pending.length) throw new Error('Device actions could not be fully deleted');
+          deletedItems += keys.slice(offset, offset + 25).length;
         }
-        if (pending.length) throw new Error('Device actions could not be fully deleted');
       }
-      return { deletedItems: keys.length };
+      throw new Error('Device actions could not be fully deleted');
     }
   };
 }
@@ -368,11 +557,17 @@ class ActionGateway {
     notifyUser,
     authorizeDevice,
     resolveManufacturerDeviceId,
+    resolveRobotBinding,
+    isRobotBindingActive,
+    isAccountActionAllowed,
     requireBoundRobotResolver = false,
     getDeviceStatus,
+    robotAdapterRuntime,
     outboxRepository,
     setTimeoutImpl = setTimeout,
     clearTimeoutImpl = clearTimeout,
+    now = Date.now,
+    robotActionTTLms = DEFAULT_ROBOT_ACTION_TTL_MS,
     logger = console
   } = {}) {
     this.signingPrivateKey = signingPrivateKey || signingSecret;
@@ -393,18 +588,27 @@ class ActionGateway {
     this.notifyUser = notifyUser;
     this.authorizeDevice = authorizeDevice;
     this.resolveManufacturerDeviceId = resolveManufacturerDeviceId;
+    this.resolveRobotBinding = resolveRobotBinding;
+    this.isRobotBindingActive = isRobotBindingActive;
+    this.isAccountActionAllowed = isAccountActionAllowed;
     this.requireBoundRobotResolver = requireBoundRobotResolver;
     this.getDeviceStatus = getDeviceStatus;
+    this.robotAdapterRuntime = robotAdapterRuntime;
     this.outboxRepository = outboxRepository;
     this.setTimeoutImpl = setTimeoutImpl;
     this.clearTimeoutImpl = clearTimeoutImpl;
+    this.now = now;
+    this.robotActionTTLms = Math.max(5_000, Math.min(5 * 60 * 1000, Number(robotActionTTLms) || DEFAULT_ROBOT_ACTION_TTL_MS));
     this.sessions = new Map();
     this.deliveryQueues = new Map();
     this.deliveryQueueDepths = new Map();
     this.totalRobotCommands = 0;
     this.pendingDeliveries = new Set();
+    this.pendingRobotDeliveries = new Map();
     this.pendingRobotAcks = new Map();
     this.pendingWearableAcks = new Map();
+    this.fencedRobotBindings = new Set();
+    this.fencedUserActions = new Set();
     this.recoveryPromise = Promise.resolve({ recovered: 0 });
     this.recoveryStarted = false;
   }
@@ -491,8 +695,66 @@ class ActionGateway {
     return result;
   }
 
-  queueKey(userId, deviceId) {
-    return JSON.stringify([String(userId), String(deviceId)]);
+  queueKey(userId, deviceId, bindingEpoch) {
+    if (!isPositiveBindingEpoch(bindingEpoch)) throw new Error('Robot binding epoch is invalid');
+    return JSON.stringify([String(userId), String(deviceId), bindingEpoch]);
+  }
+
+  bindingKey(userId, deviceId, bindingEpoch) {
+    return this.queueKey(userId, deviceId, bindingEpoch);
+  }
+
+  async assertAccountActionAllowed(userId) {
+    if (this.fencedUserActions.has(String(userId))) throw accountFencedError();
+    if (!this.isAccountActionAllowed) return true;
+    if (await this.isAccountActionAllowed(userId) !== true) throw accountFencedError();
+    return true;
+  }
+
+  async assertRobotBindingActive(userId, signed) {
+    const envelope = signed?.envelope;
+    const bindingEpoch = envelope?.binding_epoch;
+    const context = {
+      adapterId: envelope?.adapter_id,
+      manufacturerDeviceId: envelope?.manufacturer_device_id
+    };
+    if (
+      envelope?.version !== 2
+      || envelope?.contract_version !== 'vl-robot-action/2'
+      || envelope?.device_type !== 'home_robot'
+      || !/^[A-Za-z0-9._:-]{1,128}$/.test(envelope?.device_id || '')
+      || !boundedIdentifier(context.manufacturerDeviceId)
+      || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(context.adapterId || '')
+      || !isPositiveBindingEpoch(bindingEpoch)
+    ) {
+      throw bindingFencedError();
+    }
+    const key = this.bindingKey(userId, envelope.device_id, bindingEpoch);
+    if (this.fencedRobotBindings.has(key)) throw bindingFencedError();
+
+    if (this.isRobotBindingActive) {
+      const active = await this.isRobotBindingActive(userId, envelope.device_id, {
+        bindingEpoch,
+        ...context,
+        lifecycleState: 'active'
+      });
+      if (active !== true) throw bindingFencedError();
+      return true;
+    }
+    if (!this.resolveRobotBinding) {
+      throw Object.assign(new Error('Robot binding validator is not configured'), {
+        statusCode: 503,
+        code: 'ROBOT_BINDING_VALIDATOR_UNAVAILABLE'
+      });
+    }
+    const current = await this.resolveRobotBinding(userId, envelope.device_id);
+    if (
+      !isExplicitlyActiveBinding(current)
+      || current?.bindingEpoch !== bindingEpoch
+      || current?.adapterId !== context.adapterId
+      || current?.manufacturerDeviceId !== context.manufacturerDeviceId
+    ) throw bindingFencedError();
+    return true;
   }
 
   reserveRobotSlot(queueKey) {
@@ -509,6 +771,24 @@ class ActionGateway {
     if (depth <= 1) this.deliveryQueueDepths.delete(queueKey);
     else this.deliveryQueueDepths.set(queueKey, depth - 1);
     if (depth > 0) this.totalRobotCommands = Math.max(0, this.totalRobotCommands - 1);
+  }
+
+  installRobotQueueBarrier(queueKey) {
+    const previous = this.deliveryQueues.get(queueKey) || Promise.resolve();
+    let released = false;
+    let resolveBarrier;
+    const barrier = new Promise((resolve) => { resolveBarrier = resolve; });
+    const release = () => {
+      if (released) return;
+      released = true;
+      resolveBarrier();
+    };
+    const tail = previous.catch(() => {}).then(() => barrier);
+    this.deliveryQueues.set(queueKey, tail);
+    tail.finally(() => {
+      if (this.deliveryQueues.get(queueKey) === tail) this.deliveryQueues.delete(queueKey);
+    });
+    return { previous, release, tail };
   }
 
   async transitionOutbox(method, actionId, details) {
@@ -540,9 +820,131 @@ class ActionGateway {
     }
   }
 
-  scheduleRobotAck(userId, action, signed, queueKey, timeoutMs = this.robotAckTimeoutMs) {
+  cancelPendingRobotAcknowledgements(predicate) {
+    let cancelled = 0;
+    for (const [actionId, pending] of this.pendingRobotAcks) {
+      if (!predicate(pending) || this.pendingRobotAcks.get(actionId) !== pending) continue;
+      this.pendingRobotAcks.delete(actionId);
+      this.clearTimeoutImpl(pending.timer);
+      pending.releaseQueue?.();
+      this.releaseRobotSlot(pending.queueKey);
+      cancelled += 1;
+    }
+    return cancelled;
+  }
+
+  async fenceRobotBinding(userId, deviceId, bindingEpoch) {
+    if (!/^[A-Za-z0-9._:-]{1,128}$/.test(deviceId || '') || !isPositiveBindingEpoch(bindingEpoch)) {
+      throw Object.assign(new Error('Robot binding fence is invalid'), { statusCode: 400 });
+    }
+    const key = this.bindingKey(userId, deviceId, bindingEpoch);
+    this.fencedRobotBindings.add(key);
+
+    const matchesBinding = (pending) => pending.userId === userId
+      && pending.deviceId === deviceId
+      && pending.bindingEpoch === bindingEpoch;
+    let cancelledAcknowledgements = this.cancelPendingRobotAcknowledgements(matchesBinding);
+
+    let failedPending = 0;
+    let persistenceError;
+    if (this.outboxRepository && typeof this.outboxRepository.failPendingForBinding !== 'function') {
+      persistenceError = new Error('Action outbox binding fence is not implemented');
+    } else if (this.outboxRepository?.failPendingForBinding) {
+      try {
+        const result = await this.outboxRepository.failPendingForBinding(
+          userId,
+          deviceId,
+          bindingEpoch,
+          { failed_at: this.now(), error_code: 'BINDING_FENCED' }
+        );
+        failedPending = Number.isSafeInteger(result?.failed) ? result.failed : 0;
+      } catch (error) {
+        persistenceError = error;
+        this.logger.error('[ActionGateway] Durable robot binding fence failed', {
+          deviceId,
+          name: error?.name || 'OutboxError'
+        });
+      }
+    }
+    while (true) {
+      const active = [...this.pendingRobotDeliveries.values()]
+        .filter((entry) => entry.userId === userId
+          && entry.deviceId === deviceId
+          && entry.bindingEpoch === bindingEpoch)
+        .map((entry) => entry.promise);
+      if (!active.length) break;
+      await Promise.allSettled(active);
+    }
+    cancelledAcknowledgements += this.cancelPendingRobotAcknowledgements(matchesBinding);
+    if (persistenceError) {
+      throw Object.assign(new Error('Robot binding could not be durably fenced'), {
+        statusCode: 503,
+        code: 'BINDING_FENCE_PERSISTENCE_FAILED',
+        cause: persistenceError
+      });
+    }
+    return { fenced: true, failedPending, cancelledAcknowledgements };
+  }
+
+  async fenceUserActions(userId) {
+    const normalizedUserId = String(userId);
+    this.fencedUserActions.add(normalizedUserId);
+
+    const matchesUser = (pending) => String(pending.userId) === normalizedUserId;
+    let cancelledAcknowledgements = this.cancelPendingRobotAcknowledgements(matchesUser);
+
+    let failedPending = 0;
+    let persistenceError;
+    if (this.outboxRepository && typeof this.outboxRepository.failPendingForUser !== 'function') {
+      persistenceError = new Error('Action outbox account fence is not implemented');
+    } else if (this.outboxRepository?.failPendingForUser) {
+      try {
+        const result = await this.outboxRepository.failPendingForUser(normalizedUserId, {
+          failed_at: this.now(),
+          error_code: 'ACCOUNT_FENCED'
+        });
+        failedPending = Number.isSafeInteger(result?.failed) ? result.failed : 0;
+      } catch (error) {
+        persistenceError = error;
+        this.logger.error('[ActionGateway] Durable account action fence failed', {
+          name: error?.name || 'OutboxError'
+        });
+      }
+    }
+
+    // A request that passed its attempt guard before the fence may already be
+    // on the wire. All transports are bounded; wait for those requests before
+    // the caller starts manufacturer-side privacy erasure.
+    while (true) {
+      const active = [...this.pendingRobotDeliveries.values()]
+        .filter((entry) => String(entry.userId) === normalizedUserId)
+        .map((entry) => entry.promise);
+      if (!active.length) break;
+      await Promise.allSettled(active);
+    }
+    cancelledAcknowledgements += this.cancelPendingRobotAcknowledgements(matchesUser);
+
+    if (persistenceError) {
+      throw Object.assign(new Error('Account actions could not be durably fenced'), {
+        statusCode: 503,
+        code: 'ACCOUNT_FENCE_PERSISTENCE_FAILED',
+        cause: persistenceError
+      });
+    }
+    return { fenced: true, failedPending, cancelledAcknowledgements };
+  }
+
+  scheduleRobotAck(userId, action, signed, queueKey, timeoutMs = this.robotAckTimeoutMs, releaseQueue) {
     const actionId = signed.envelope.id;
-    const pending = { userId, deviceId: action.device_id, queueKey, timer: null };
+    const pending = {
+      userId,
+      deviceId: action.device_id,
+      adapterId: signed.envelope.adapter_id,
+      bindingEpoch: signed.envelope.binding_epoch,
+      queueKey,
+      releaseQueue,
+      timer: null
+    };
     pending.timer = this.setTimeoutImpl(() => {
       const work = this.expireRobotAcknowledgement(actionId, pending);
       this.pendingDeliveries.add(work);
@@ -556,77 +958,131 @@ class ActionGateway {
     const pending = this.pendingRobotAcks.get(actionId) || expectedContext;
     if (!pending || (expectedContext && this.pendingRobotAcks.get(actionId) !== expectedContext)) return false;
     const transitioned = await this.transitionOutbox('expirePendingAck', actionId, {
-      expired_at: Date.now(),
-      error_code: 'ACK_TIMEOUT'
+      expired_at: this.now(),
+      error_code: 'ACK_TIMEOUT',
+      binding_epoch: pending.bindingEpoch
     });
+    // An authenticated ACK can win while the durable expiry transition is in
+    // flight. Only the path that still owns this exact pending context may
+    // release its barrier and queue slot.
+    if (this.pendingRobotAcks.get(actionId) !== pending) return false;
     this.pendingRobotAcks.delete(actionId);
     this.clearTimeoutImpl(pending.timer);
+    pending.releaseQueue?.();
     this.releaseRobotSlot(pending.queueKey);
     if (transitioned !== false) await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
     return transitioned !== false;
   }
 
-  async acknowledgeRobot(actionId, acknowledgement = {}) {
+  async acknowledgeRobot(actionId, acknowledgement = {}, { adapterId, bindingEpoch } = {}) {
     if (!ACTION_ID_PATTERN.test(actionId || '') || typeof acknowledgement.ok !== 'boolean') return false;
     const pending = this.pendingRobotAcks.get(actionId);
+    if (
+      typeof adapterId !== 'string'
+      || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)
+      || !isPositiveBindingEpoch(bindingEpoch)
+    ) return false;
+    if (pending && (pending.adapterId !== adapterId || pending.bindingEpoch !== bindingEpoch)) return false;
+    if (!pending && (!this.outboxRepository || typeof this.outboxRepository.acknowledge !== 'function')) return false;
     const errorCode = typeof acknowledgement.error_code === 'string'
       ? acknowledgement.error_code.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64)
       : (acknowledgement.ok ? undefined : 'ROBOT_COMMAND_REJECTED');
     const transitioned = await this.transitionOutbox('acknowledge', actionId, {
       ok: acknowledgement.ok,
-      acknowledged_at: Date.now(),
-      error_code: errorCode
+      acknowledged_at: this.now(),
+      error_code: errorCode,
+      adapter_id: adapterId,
+      binding_epoch: bindingEpoch
     });
     if (transitioned === false) return false;
     if (pending) {
       this.pendingRobotAcks.delete(actionId);
       this.clearTimeoutImpl(pending.timer);
+      pending.releaseQueue?.();
       this.releaseRobotSlot(pending.queueKey);
       if (!acknowledgement.ok) await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
+    } else if (!acknowledgement.ok && typeof transitioned === 'object') {
+      if (typeof transitioned.user_id === 'string' && typeof transitioned.device_id === 'string') {
+        await this.notifyRobotFailure(transitioned.user_id, actionId, transitioned.device_id);
+      }
     }
     return true;
   }
 
   startRobotDelivery(userId, action, signed, queueKey) {
-    const previous = this.deliveryQueues.get(queueKey) || Promise.resolve();
+    const { previous, release } = this.installRobotQueueBarrier(queueKey);
     const delivery = previous.catch(() => {}).then(async () => {
       await this.transitionOutbox('markDelivering', signed.envelope.id, { attempt: 1 });
       try {
         const result = await this.deliverRobot(signed, {
-          onAttempt: (attempt) => this.transitionOutbox('markDelivering', signed.envelope.id, { attempt })
+          onAttempt: async (attempt) => {
+            await this.assertAccountActionAllowed(userId);
+            await this.assertRobotBindingActive(userId, signed);
+            await this.transitionOutbox('markDelivering', signed.envelope.id, { attempt });
+          }
         });
         if (result.status === 202) {
-          const ackDeadline = Date.now() + this.robotAckTimeoutMs;
-          this.scheduleRobotAck(userId, action, signed, queueKey);
-          await this.transitionOutbox('markPendingAck', signed.envelope.id, {
+          const ackDeadline = this.now() + this.robotAckTimeoutMs;
+          this.scheduleRobotAck(userId, action, signed, queueKey, this.robotAckTimeoutMs, release);
+          const pendingAckState = await this.transitionOutbox('markPendingAck', signed.envelope.id, {
             manufacturer_status: result.status,
             ack_deadline: ackDeadline
           });
+          const pending = this.pendingRobotAcks.get(signed.envelope.id);
+          if (pending
+            && pendingAckState
+            && typeof pendingAckState === 'object'
+            && ['delivered', 'failed'].includes(pendingAckState.state)) {
+            // An authenticated callback may win the race against this 202
+            // response on another replica. Do not leave the per-device queue
+            // blocked until an ACK timeout after DynamoDB is already terminal.
+            this.pendingRobotAcks.delete(signed.envelope.id);
+            this.clearTimeoutImpl(pending.timer);
+            pending.releaseQueue?.();
+            this.releaseRobotSlot(pending.queueKey);
+          }
         } else {
           await this.transitionOutbox('markDelivered', signed.envelope.id, { manufacturer_status: result.status });
+          release();
           this.releaseRobotSlot(queueKey);
         }
         return result;
       } catch (error) {
         await this.transitionOutbox('markFailed', signed.envelope.id, {
-          error_code: error?.name || 'DELIVERY_FAILED'
+          error_code: error?.code || error?.name || 'DELIVERY_FAILED'
         });
+        release();
         this.releaseRobotSlot(queueKey);
         throw error;
       }
     });
-    const tail = delivery.then(() => undefined, () => undefined);
-    this.deliveryQueues.set(queueKey, tail);
     const tracked = delivery.catch(async (error) => {
       this.logger.error('[ActionGateway] Robot delivery exhausted', {
         actionId: signed.envelope.id, name: error?.name || 'DeliveryError'
       });
-      await this.notifyRobotFailure(userId, signed.envelope.id, action.device_id);
+      const intentionallyFenced = ['BINDING_FENCED', 'ACCOUNT_FENCED'].includes(error?.code)
+        || this.fencedUserActions.has(String(userId))
+        || this.fencedRobotBindings.has(this.bindingKey(
+          userId,
+          action.device_id,
+          signed.envelope.binding_epoch
+        ));
+      if (!intentionallyFenced) {
+        await this.notifyRobotFailure(userId, signed.envelope.id, action.device_id);
+      }
     }).finally(() => {
       this.pendingDeliveries.delete(tracked);
-      if (this.deliveryQueues.get(queueKey) === tail) this.deliveryQueues.delete(queueKey);
+      if (this.pendingRobotDeliveries.get(signed.envelope.id)?.promise === tracked) {
+        this.pendingRobotDeliveries.delete(signed.envelope.id);
+      }
     });
     this.pendingDeliveries.add(tracked);
+    this.pendingRobotDeliveries.set(signed.envelope.id, {
+      userId,
+      deviceId: action.device_id,
+      bindingEpoch: signed.envelope.binding_epoch,
+      promise: tracked
+    });
     return tracked;
   }
 
@@ -643,7 +1099,7 @@ class ActionGateway {
         const actionId = signed?.envelope?.id;
         const userId = record?.user_id;
         const deviceId = record?.device_id;
-        if (
+        const hasRecoverableIdentity = (
           !ACTION_ID_PATTERN.test(actionId || '')
           || actionId !== record?.action_id
           || typeof userId !== 'string'
@@ -651,19 +1107,71 @@ class ActionGateway {
           || signed?.envelope?.device_type !== 'home_robot'
           || signed.envelope.device_id !== deviceId
           || !boundedIdentifier(signed.envelope.manufacturer_device_id)
-        ) continue;
+          || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(signed.envelope.adapter_id || '')
+        ) === false;
+        if (!hasRecoverableIdentity) continue;
+        const bindingEpoch = signed.envelope.binding_epoch;
+        if (
+          signed.envelope.version !== 2
+          || signed.envelope.contract_version !== 'vl-robot-action/2'
+          || !isPositiveBindingEpoch(bindingEpoch)
+          || record.binding_epoch !== bindingEpoch
+          || (record.adapter_id !== undefined && record.adapter_id !== signed.envelope.adapter_id)
+        ) {
+          await this.transitionOutbox('markFailed', actionId, {
+            error_code: 'BINDING_FENCED',
+            failed_at: this.now()
+          });
+          continue;
+        }
+        const expiresAt = Number(signed.envelope.expires_at);
+        if (!Number.isSafeInteger(expiresAt) || expiresAt <= this.now()) {
+          await this.transitionOutbox('markFailed', actionId, {
+            error_code: 'ACTION_EXPIRED',
+            expired_at: this.now()
+          });
+          continue;
+        }
+        try {
+          await this.assertAccountActionAllowed(userId);
+        } catch (error) {
+          if (error?.code !== 'ACCOUNT_FENCED') throw error;
+          await this.transitionOutbox('markFailed', actionId, {
+            error_code: 'ACCOUNT_FENCED',
+            failed_at: this.now()
+          });
+          continue;
+        }
+        try {
+          await this.assertRobotBindingActive(userId, signed);
+        } catch (error) {
+          if (error?.code !== 'BINDING_FENCED') throw error;
+          await this.transitionOutbox('markFailed', actionId, {
+            error_code: 'BINDING_FENCED',
+            failed_at: this.now()
+          });
+          continue;
+        }
         const action = {
           action: record.action,
           device_type: 'home_robot',
           device_id: deviceId,
           parameters: signed.envelope.parameters || {}
         };
-        const queueKey = this.queueKey(userId, deviceId);
+        const queueKey = this.queueKey(userId, deviceId, bindingEpoch);
         try { this.reserveRobotSlot(queueKey); } catch { break; }
         recovered += 1;
         if (record.state === 'pending_ack') {
-          const remaining = Number(record.ack_deadline) - Date.now();
-          this.scheduleRobotAck(userId, action, signed, queueKey, Number.isFinite(remaining) ? remaining : 0);
+          const remaining = Number(record.ack_deadline) - this.now();
+          const { release } = this.installRobotQueueBarrier(queueKey);
+          this.scheduleRobotAck(
+            userId,
+            action,
+            signed,
+            queueKey,
+            Number.isFinite(remaining) ? remaining : 0,
+            release
+          );
         } else {
           this.startRobotDelivery(userId, action, signed, queueKey);
         }
@@ -683,6 +1191,9 @@ class ActionGateway {
 
   async route(userId, input) {
     let action = validateAction(input);
+    if (this.isAccountActionAllowed || this.fencedUserActions.has(String(userId))) {
+      await this.assertAccountActionAllowed(userId);
+    }
     const session = this.sessions.get(userId);
     const device = session?.devices.get(action.device_id);
     if (action.device_type === 'wearable') {
@@ -690,28 +1201,35 @@ class ActionGateway {
         throw Object.assign(new Error('Requested device is offline'), { statusCode: 409 });
       }
     } else {
-      let manufacturerDeviceId;
-      if (this.resolveManufacturerDeviceId) {
-        manufacturerDeviceId = await this.resolveManufacturerDeviceId(userId, action.device_id);
-        if (!boundedIdentifier(manufacturerDeviceId)) {
-          throw Object.assign(new Error('Requested device is not bound to this account'), { statusCode: 403 });
-        }
-      } else {
-        if (this.requireBoundRobotResolver) {
-          throw Object.assign(new Error('Robot ownership resolver is not configured'), { statusCode: 503 });
-        }
-        if (this.authorizeDevice && !await this.authorizeDevice(userId, action.device_id)) {
-          throw Object.assign(new Error('Requested device is not bound to this account'), { statusCode: 403 });
-        }
-        manufacturerDeviceId = action.device_id;
+      if (!this.resolveRobotBinding) {
+        throw Object.assign(new Error('Robot binding resolver is not configured'), { statusCode: 503 });
+      }
+      const binding = await this.resolveRobotBinding(userId, action.device_id);
+      const manufacturerDeviceId = binding?.manufacturerDeviceId;
+      const adapterId = binding?.adapterId;
+      const bindingEpoch = binding?.bindingEpoch;
+      if (
+        !isExplicitlyActiveBinding(binding)
+        || !boundedIdentifier(manufacturerDeviceId)
+        || typeof adapterId !== 'string'
+        || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)
+        || !isPositiveBindingEpoch(bindingEpoch)
+      ) {
+        throw Object.assign(new Error('Requested device is not bound to an active supported adapter'), { statusCode: 403 });
       }
       let online = device?.device_type === 'home_robot' && device.online === true;
       if (!online && this.getDeviceStatus) {
-        const status = await this.getDeviceStatus(manufacturerDeviceId);
+        const status = await this.getDeviceStatus(manufacturerDeviceId, adapterId);
         online = status?.online === true;
       }
       if (!online) throw Object.assign(new Error('Requested device is offline'), { statusCode: 409 });
-      action = { ...action, manufacturer_device_id: manufacturerDeviceId };
+      action = {
+        ...action,
+        manufacturer_device_id: manufacturerDeviceId,
+        adapter_id: adapterId,
+        binding_epoch: bindingEpoch,
+        contract_version: 'vl-robot-action/2'
+      };
     }
     if (action.device_type === 'wearable') {
       const commandPayload = this.wearableCommandPayloads[action.action];
@@ -720,14 +1238,23 @@ class ActionGateway {
       }
       action = { ...action, parameters: { command_payload: commandPayload } };
     }
+    const issuedAt = this.now();
+    if (action.device_type === 'home_robot') {
+      action = { ...action, version: 2, expires_at: issuedAt + this.robotActionTTLms };
+    }
     const actionId = deterministicActionId(userId, action);
+    const requestFingerprint = actionRequestFingerprint(userId, action);
     const { idempotency_key: _idempotencyKey, ...actionEnvelope } = action;
-    const signed = signEnvelope(actionEnvelope, this.signingPrivateKey, Date.now, actionId);
+    const signed = signEnvelope(actionEnvelope, this.signingPrivateKey, () => issuedAt, actionId);
     if (action.device_type === 'wearable') {
       return this.routeWearable(userId, session, signed);
     }
+    await this.assertAccountActionAllowed(userId);
+    await this.assertRobotBindingActive(userId, signed);
     await this.recoverPendingCommands();
-    const queueKey = this.queueKey(userId, action.device_id);
+    await this.assertAccountActionAllowed(userId);
+    await this.assertRobotBindingActive(userId, signed);
+    const queueKey = this.queueKey(userId, action.device_id, action.binding_epoch);
     this.reserveRobotSlot(queueKey);
     if (this.outboxRepository) {
       if (typeof this.outboxRepository.enqueue !== 'function') {
@@ -741,15 +1268,39 @@ class ActionGateway {
           device_id: action.device_id,
           device_type: action.device_type,
           action: action.action,
+          adapter_id: signed.envelope.adapter_id,
+          binding_epoch: signed.envelope.binding_epoch,
+          request_fingerprint: requestFingerprint,
           signed,
           created_at: signed.envelope.issued_at
         });
-        if (enqueued === false) {
+        if (enqueued?.duplicate === true) {
+          const existing = enqueued.record;
+          if (
+            existing?.action_id !== signed.envelope.id
+            || existing?.user_id !== userId
+            || existing?.device_id !== action.device_id
+            || existing?.adapter_id !== signed.envelope.adapter_id
+            || existing?.binding_epoch !== signed.envelope.binding_epoch
+            || existing?.request_fingerprint !== requestFingerprint
+          ) {
+            throw Object.assign(new Error('Idempotency key conflicts with another robot command'), {
+              statusCode: 409,
+              code: 'ROBOT_IDEMPOTENCY_CONFLICT'
+            });
+          }
           this.releaseRobotSlot(queueKey);
           return { status: 'accepted', action_id: signed.envelope.id, duplicate: true };
         }
+        if (enqueued === false) {
+          throw Object.assign(new Error('Idempotency state could not be verified'), {
+            statusCode: 409,
+            code: 'ROBOT_IDEMPOTENCY_CONFLICT'
+          });
+        }
       } catch (error) {
         this.releaseRobotSlot(queueKey);
+        if (error?.code === 'ROBOT_IDEMPOTENCY_CONFLICT') throw error;
         throw Object.assign(new Error('Robot command could not be durably queued'), { statusCode: 503, cause: error });
       }
     }
@@ -774,7 +1325,12 @@ class ActionGateway {
       return await Promise.race([
         this.fetchImpl(this.manufacturerWebhookURL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Manufacturer-Api-Key': this.manufacturerApiKey },
+          redirect: 'error',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Manufacturer-Api-Key': this.manufacturerApiKey,
+            'Idempotency-Key': signed.envelope.id
+          },
           body: JSON.stringify(signed),
           signal: controller.signal
         }),
@@ -784,16 +1340,35 @@ class ActionGateway {
   }
 
   async deliverRobot(signed, { onAttempt } = {}) {
+    const adapterId = signed?.envelope?.adapter_id;
+    // Bindings created before the vendor HAL rollout intentionally remain on
+    // the legacy manufacturer control plane until an explicit, audited
+    // backfill assigns a vendor adapter. Never guess a vendor from a missing
+    // historical field.
+    if (this.robotAdapterRuntime && adapterId !== 'manufacturer-default') {
+      if (typeof adapterId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)) {
+        throw new Error('Robot adapter is invalid');
+      }
+      return this.robotAdapterRuntime.deliverSignedAction(adapterId, signed, { onAttempt });
+    }
     if (!this.manufacturerWebhookURL || !this.manufacturerApiKey) throw new Error('Manufacturer gateway is not configured');
+    const expiresAt = signed?.envelope?.expires_at;
+    if (expiresAt !== undefined && (!Number.isSafeInteger(expiresAt) || expiresAt <= this.now())) {
+      throw Object.assign(new Error('Robot action has expired'), { code: 'ACTION_EXPIRED' });
+    }
     let lastError;
     for (let attempt = 0; attempt < this.retries; attempt += 1) {
       try {
+        if (expiresAt !== undefined && expiresAt <= this.now()) {
+          throw Object.assign(new Error('Robot action has expired'), { code: 'ACTION_EXPIRED' });
+        }
         await onAttempt?.(attempt + 1);
         const response = await this.postManufacturer(signed);
         if (response.status !== 202 && !response.ok) throw new Error(`Manufacturer returned ${response.status}`);
         return { acknowledged: response.status !== 202, status: response.status };
       } catch (error) {
         lastError = error;
+        if (error?.code === 'BINDING_FENCED') break;
         if (attempt + 1 < this.retries) await this.sleep(this.retryDelayMs * 2 ** attempt);
       }
     }
@@ -804,6 +1379,7 @@ class ActionGateway {
 module.exports = {
   ACTIONS,
   ActionGateway,
+  DEFAULT_ROBOT_ACTION_TTL_MS,
   ROBOT_FAILURE_MESSAGE,
   createDynamoActionOutboxRepository,
   deriveEd25519PublicKey,

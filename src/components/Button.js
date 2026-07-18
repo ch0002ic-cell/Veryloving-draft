@@ -8,6 +8,7 @@ export function Button({
   icon,
   variant = 'primary',
   disabled,
+  selected = false,
   loading = false,
   compact = false,
   accessibilityLabel,
@@ -19,7 +20,7 @@ export function Button({
     <Pressable
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
-      accessibilityState={{ busy: loading, disabled: inactive }}
+      accessibilityState={{ busy: loading, disabled: inactive, selected }}
       android_ripple={{ color: variant === 'ghost' ? colors.line : '#FFFFFF22' }}
       disabled={inactive}
       onPress={onPress}

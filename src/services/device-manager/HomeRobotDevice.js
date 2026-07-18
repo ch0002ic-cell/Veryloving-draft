@@ -4,6 +4,94 @@ import { acknowledgeDeviceCommand, enqueueDeviceCommand, loadDeviceCommands } fr
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_TELEMETRY_INTERVAL_MS = 30000;
 const DEFAULT_TELEMETRY_MAX_AGE_MS = 5 * 60 * 1000;
+const MAX_GATEWAY_RESPONSE_BYTES = 1024 * 1024;
+const MAX_TELEMETRY_CLOCK_SKEW_MS = 60 * 1000;
+
+function utf8ByteLength(value) {
+  let bytes = 0;
+  for (const character of value) {
+    const codePoint = character.codePointAt(0);
+    bytes += codePoint <= 0x7f ? 1 : codePoint <= 0x7ff ? 2 : codePoint <= 0xffff ? 3 : 4;
+  }
+  return bytes;
+}
+
+function invalidGatewayResponse(statusCode) {
+  const error = new Error('Robot gateway response is invalid');
+  error.code = 'ROBOT_GATEWAY_INVALID_RESPONSE';
+  error.statusCode = statusCode;
+  return error;
+}
+
+function gatewayTimeoutError(statusCode) {
+  const error = new Error('Robot gateway request timed out');
+  error.name = 'AbortError';
+  error.code = 'ROBOT_NETWORK_TIMEOUT';
+  if (Number.isFinite(statusCode)) error.statusCode = statusCode;
+  return error;
+}
+
+async function cancelGatewayResponse(response) {
+  try { await response?.body?.cancel?.(); } catch {}
+}
+
+async function readGatewayResponseText(response, signal) {
+  const getHeader = response.headers?.get;
+  const rawContentLength = typeof getHeader === 'function'
+    ? getHeader.call(response.headers, 'content-length')
+    : undefined;
+  if (rawContentLength !== undefined && rawContentLength !== null) {
+    if (!/^\d{1,12}$/.test(rawContentLength) || Number(rawContentLength) > MAX_GATEWAY_RESPONSE_BYTES) {
+      await cancelGatewayResponse(response);
+      throw invalidGatewayResponse(response.status);
+    }
+  }
+  if (response.body?.getReader) {
+    const reader = response.body.getReader();
+    const cancelOnAbort = () => { void Promise.resolve(reader.cancel?.()).catch(() => {}); };
+    if (signal?.aborted) cancelOnAbort();
+    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
+    const chunks = [];
+    let received = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!(value instanceof Uint8Array)) throw invalidGatewayResponse(response.status);
+        received += value.byteLength;
+        if (received > MAX_GATEWAY_RESPONSE_BYTES) {
+          await Promise.resolve(reader.cancel?.()).catch(() => {});
+          throw invalidGatewayResponse(response.status);
+        }
+        chunks.push(value);
+      }
+    } finally {
+      signal?.removeEventListener('abort', cancelOnAbort);
+      reader.releaseLock?.();
+    }
+    const bytes = new Uint8Array(received);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch {
+      throw invalidGatewayResponse(response.status);
+    }
+  }
+  // Native fetch implementations that do not expose a byte stream must give
+  // us an authenticated Content-Length before text() is allowed to allocate.
+  if (typeof getHeader === 'function' && (rawContentLength === undefined || rawContentLength === null)) {
+    await cancelGatewayResponse(response);
+    throw invalidGatewayResponse(response.status);
+  }
+  if (typeof response.text !== 'function') throw invalidGatewayResponse(response.status);
+  const text = await response.text();
+  if (typeof text !== 'string' || utf8ByteLength(text) > MAX_GATEWAY_RESPONSE_BYTES) {
+    throw invalidGatewayResponse(response.status);
+  }
+  return text;
+}
 
 function normalizePath(value) {
   if (!Array.isArray(value)) return undefined;
@@ -17,7 +105,7 @@ function normalizePath(value) {
   return coordinates.length >= 2 ? coordinates : undefined;
 }
 
-function normalizeIndoorPosition(value) {
+function normalizeIndoorPosition(value, currentTime, maximumAgeMs) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
   const identifier = (candidate) => typeof candidate === 'string'
     && /^[A-Za-z0-9._:-]{1,128}$/.test(candidate) ? candidate : undefined;
@@ -28,13 +116,21 @@ function normalizeIndoorPosition(value) {
   const y = Number(value.y_m);
   const hasCoordinates = mapId && Number.isFinite(x) && Math.abs(x) <= 10000
     && Number.isFinite(y) && Math.abs(y) <= 10000;
-  if (!roomId && !hasCoordinates) return undefined;
+  const capturedAt = Number(value.captured_at);
+  if ((!roomId && !hasCoordinates)
+    || !Number.isSafeInteger(capturedAt)
+    || capturedAt <= 0
+    || capturedAt > currentTime + MAX_TELEMETRY_CLOCK_SKEW_MS
+    || currentTime - capturedAt > maximumAgeMs) return undefined;
   return {
     ...(roomId ? { roomId } : {}),
     ...(floorId ? { floorId } : {}),
     ...(mapId ? { mapId } : {}),
     ...(hasCoordinates ? { xMeters: x, yMeters: y } : {}),
-    ...(Number.isFinite(value.confidence) ? { confidence: value.confidence } : {})
+    ...(Number.isFinite(value.confidence) && value.confidence >= 0 && value.confidence <= 1
+      ? { confidence: value.confidence }
+      : {}),
+    capturedAt
   };
 }
 
@@ -48,7 +144,10 @@ export class HomeRobotDevice extends BaseDevice {
     this.pairingToken = pairingToken;
     this.pairingTokenProvider = pairingTokenProvider;
     this.fetchImpl = fetchImpl;
-    this.timeoutMs = timeoutMs;
+    this.timeoutMs = Number(timeoutMs);
+    if (!Number.isSafeInteger(this.timeoutMs) || this.timeoutMs < 1 || this.timeoutMs > 120000) {
+      throw new Error('Robot gateway timeout is invalid');
+    }
     this.loadNetwork = loadNetwork;
     this.networkSubscription = null;
     this.activeRequestControllers = new Set();
@@ -83,39 +182,94 @@ export class HomeRobotDevice extends BaseDevice {
     }
     const controller = new AbortController();
     this.activeRequestControllers.add(controller);
-    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    let response;
+    let timedOut = false;
+    let responseCancelled = false;
+    let timeoutHandle;
+    const cancelResponse = async () => {
+      if (!response || responseCancelled) return;
+      responseCancelled = true;
+      await cancelGatewayResponse(response);
+    };
     try {
-      const accessToken = await this.accessTokenProvider?.() || this.accessToken;
-      const pairingToken = await this.pairingTokenProvider?.(this.deviceId) || this.pairingToken;
-      if (path.startsWith('/v1/') && this.pairingTokenProvider && !pairingToken) {
-        const error = new Error('Robot pairing credential is unavailable');
-        error.code = 'ROBOT_PAIRING_CREDENTIAL_MISSING';
-        throw error;
-      }
-      const response = await this.fetchImpl(`${this.gatewayURL}${path}`, {
-        ...options,
-        signal: controller.signal,
-        headers: {
-          Accept: 'application/json',
-          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-          ...(pairingToken ? { 'X-Device-Pairing-Token': pairingToken } : {}),
-          ...options.headers
+      const operation = (async () => {
+        const accessToken = await this.accessTokenProvider?.() || this.accessToken;
+        const pairingToken = await this.pairingTokenProvider?.(this.deviceId) || this.pairingToken;
+        if (timedOut) throw gatewayTimeoutError();
+        if (path.startsWith('/v1/') && this.pairingTokenProvider && !pairingToken) {
+          const error = new Error('Robot pairing credential is unavailable');
+          error.code = 'ROBOT_PAIRING_CREDENTIAL_MISSING';
+          throw error;
         }
+        response = await this.fetchImpl(`${this.gatewayURL}${path}`, {
+          ...options,
+          redirect: 'error',
+          signal: controller.signal,
+          headers: {
+            Accept: 'application/json',
+            ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            ...(pairingToken ? { 'X-Device-Pairing-Token': pairingToken } : {}),
+            ...options.headers
+          }
+        });
+        if (timedOut) {
+          await cancelResponse();
+          throw gatewayTimeoutError(response?.status);
+        }
+        if (!response.ok) {
+          await cancelResponse();
+          throw Object.assign(new Error('Robot gateway request failed'), { statusCode: response.status });
+        }
+        if (response.status === 204) return null;
+        const responseText = await readGatewayResponseText(response, controller.signal);
+        if (timedOut) {
+          await cancelResponse();
+          throw gatewayTimeoutError(response?.status);
+        }
+        if (typeof responseText !== 'string' || utf8ByteLength(responseText) > MAX_GATEWAY_RESPONSE_BYTES) {
+          throw invalidGatewayResponse(response.status);
+        }
+        if (!responseText) return { accepted: true, status: response.status };
+        try {
+          const parsed = JSON.parse(responseText);
+          if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+            throw invalidGatewayResponse(response.status);
+          }
+          return parsed;
+        } catch (error) {
+          if (error?.code === 'ROBOT_GATEWAY_INVALID_RESPONSE') throw error;
+          throw invalidGatewayResponse(response.status);
+        }
+      })();
+      void operation.catch(() => {});
+      const timeout = new Promise((_, reject) => {
+        timeoutHandle = this.setTimeoutImpl(() => {
+          timedOut = true;
+          controller.abort();
+          void cancelResponse();
+          reject(gatewayTimeoutError(response?.status));
+        }, this.timeoutMs);
       });
-      if (!response.ok) throw Object.assign(new Error('Robot gateway request failed'), { statusCode: response.status });
-      if (response.status === 204) return null;
-      if (typeof response.text === 'function') {
-        const text = await response.text();
-        return text ? JSON.parse(text) : { accepted: true, status: response.status };
-      }
-      return typeof response.json === 'function' ? response.json() : { accepted: true, status: response.status };
+      return await Promise.race([operation, timeout]);
     } catch (error) {
       const relayResponded = Number.isFinite(error?.statusCode);
-      const lastErrorCode = error?.name === 'AbortError'
+      const telemetryRequest = /\/telemetry(?:\?|$)/.test(path);
+      const lastErrorCode = error?.code === 'ROBOT_GATEWAY_INVALID_RESPONSE'
+        ? error.code
+        : error?.name === 'AbortError'
         ? 'ROBOT_NETWORK_TIMEOUT'
         : relayResponded ? `ROBOT_GATEWAY_HTTP_${error.statusCode}` : 'ROBOT_NETWORK_UNAVAILABLE';
-      this.setStatus(relayResponded ? {
+      this.setStatus(relayResponded && telemetryRequest ? {
+        relayOnline: true,
+        online: false,
+        hardwareStatus: 'unknown',
+        connectionState: 'disconnected',
+        navigationPath: null,
+        lastErrorCode
+      } : relayResponded ? {
+        // A command/status HTTP failure proves the relay answered, not that a
+        // fresh independent hardware telemetry sample became false.
         relayOnline: true,
         lastErrorCode
       } : {
@@ -127,7 +281,7 @@ export class HomeRobotDevice extends BaseDevice {
       });
       throw error;
     } finally {
-      clearTimeout(timeout);
+      if (timeoutHandle !== undefined) this.clearTimeoutImpl(timeoutHandle);
       this.activeRequestControllers.delete(controller);
     }
   }
@@ -146,7 +300,10 @@ export class HomeRobotDevice extends BaseDevice {
       const [telemetry, pendingCommands] = await Promise.allSettled([this.refreshTelemetry(), this.retryPendingCommands()]);
       const commandQueueDrained = pendingCommands.status === 'fulfilled'
         && pendingCommands.value.every((result) => result.status === 'fulfilled');
-      if (telemetry.status === 'fulfilled' && commandQueueDrained) this.clearNetworkRetry();
+      const telemetryUsable = telemetry.status === 'fulfilled'
+        && telemetry.value?.invalid !== true
+        && telemetry.value?.stale !== true;
+      if (telemetryUsable && commandQueueDrained) this.clearNetworkRetry();
       else this.scheduleNetworkRetry();
       this.startTelemetryPolling();
     }
@@ -293,9 +450,37 @@ export class HomeRobotDevice extends BaseDevice {
         throw error;
       }
       const suppliedReportedAt = Number(telemetry?.reported_at);
-      const reportedAt = Number.isFinite(suppliedReportedAt) ? suppliedReportedAt : this.now();
+      const currentTime = this.now();
+      if (
+        !Number.isSafeInteger(suppliedReportedAt)
+        || suppliedReportedAt <= 0
+        || suppliedReportedAt > currentTime + MAX_TELEMETRY_CLOCK_SKEW_MS
+      ) {
+        this.setStatus({
+          relayOnline: true,
+          online: false,
+          hardwareStatus: 'unknown',
+          connectionState: 'disconnected',
+          navigationPath: null,
+          lastErrorCode: 'ROBOT_TELEMETRY_TIMESTAMP_INVALID'
+        });
+        return { ...telemetry, invalid: true };
+      }
+      const reportedAt = suppliedReportedAt;
+      if (typeof telemetry?.online !== 'boolean') {
+        this.setStatus({
+          relayOnline: true,
+          online: false,
+          hardwareStatus: 'unknown',
+          connectionState: 'disconnected',
+          navigationPath: null,
+          indoorPosition: null,
+          lastErrorCode: 'ROBOT_TELEMETRY_SCHEMA_INVALID'
+        });
+        return { ...telemetry, invalid: true };
+      }
       if (reportedAt < this.latestTelemetryAt) return { ...telemetry, ignored: true };
-      if (this.now() - reportedAt > this.telemetryMaxAgeMs) {
+      if (currentTime - reportedAt > this.telemetryMaxAgeMs) {
         this.latestTelemetryAt = reportedAt;
         this.setStatus({
           relayOnline: true,
@@ -316,22 +501,32 @@ export class HomeRobotDevice extends BaseDevice {
         ? { longitude, latitude, capturedAt: reportedAt }
         : undefined;
       const path = normalizePath(telemetry?.navigation_path ?? telemetry?.path);
-      const indoorPosition = normalizeIndoorPosition(telemetry?.indoor_position);
+      const indoorPosition = normalizeIndoorPosition(
+        telemetry?.indoor_position,
+        currentTime,
+        this.telemetryMaxAgeMs
+      );
+      const battery = Number(telemetry?.battery?.percentage);
+      const hasBattery = Number.isInteger(battery) && battery >= 0 && battery <= 100;
       const statusPatch = {
         relayOnline: true,
         lastErrorCode: null,
         navigationPath: path || null,
         indoorPosition: indoorPosition || null,
         lastSeenAt: reportedAt,
-        ...(location ? { location } : {})
+        ...(location ? { location } : {}),
+        ...(hasBattery ? {
+          battery,
+          ...(typeof telemetry.battery.charging === 'boolean'
+            ? { batteryCharging: telemetry.battery.charging }
+            : {})
+        } : {})
       };
-      if (typeof telemetry?.online === 'boolean') {
-        Object.assign(statusPatch, {
-          online: telemetry.online,
-          hardwareStatus: telemetry.online ? 'online' : 'offline',
-          connectionState: telemetry.online ? 'connected' : 'disconnected'
-        });
-      }
+      Object.assign(statusPatch, {
+        online: telemetry.online,
+        hardwareStatus: telemetry.online ? 'online' : 'offline',
+        connectionState: telemetry.online ? 'connected' : 'disconnected'
+      });
       this.setStatus(statusPatch);
       this.emitTelemetry(telemetry);
       return telemetry;

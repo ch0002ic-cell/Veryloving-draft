@@ -38,6 +38,7 @@ test('safety client sends first-party bearer auth and validates HTTP failures', 
   });
   assert.deepEqual(payload, { status: 'ok' });
   assert.equal(request.url, 'https://api.example.test/v1/test');
+  assert.equal(request.options.redirect, 'error');
   assert.equal(request.options.headers.Authorization, 'Bearer first-party-session');
   assert.deepEqual(JSON.parse(request.options.body), { mode: 'guardian' });
 
@@ -70,6 +71,60 @@ test('safety client fails closed without auth and aborts stalled requests', asyn
       }, { once: true });
     })
   }), (error) => error.code === 'SAFETY_TIMEOUT');
+
+  const startedAt = Date.now();
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    timeoutMs: 5,
+    fetchImpl: async () => new Promise(() => {})
+  }), (error) => error.code === 'SAFETY_TIMEOUT');
+  assert.ok(Date.now() - startedAt < 500);
+});
+
+test('safety client bounds streamed response bodies and cancels oversized data', async () => {
+  let cancelled = 0;
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader: () => ({
+          async read() { return { done: false, value: new Uint8Array((1024 * 1024) + 1) }; },
+          async cancel() { cancelled += 1; },
+          releaseLock() {}
+        })
+      }
+    })
+  }), (error) => error.code === 'SAFETY_RESPONSE_TOO_LARGE');
+  assert.equal(cancelled, 1);
+
+  let releaseRead;
+  let timeoutCancellations = 0;
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    timeoutMs: 5,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader: () => ({
+          read: () => new Promise((resolve) => { releaseRead = resolve; }),
+          async cancel() {
+            timeoutCancellations += 1;
+            releaseRead?.({ done: true });
+          },
+          releaseLock() {}
+        })
+      }
+    })
+  }), (error) => error.code === 'SAFETY_TIMEOUT');
+  assert.equal(timeoutCancellations, 1);
 });
 
 test('SOS location normalization omits stale optional cache without blocking the event', () => {
