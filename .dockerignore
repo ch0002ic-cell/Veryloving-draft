@@ -8,6 +8,7 @@
 **/.env
 **/.env.*
 **/node_modules
+server/*.test.cjs
 dist
 coverage
 .expo

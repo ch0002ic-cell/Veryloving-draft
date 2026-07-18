@@ -6,9 +6,16 @@
   "engines": {
     "node": "22.x"
   },
+  "scripts": {
+    "build": "tsc -p tsconfig.adapters.json"
+  },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1085.0",
     "@aws-sdk/lib-dynamodb": "^3.1085.0",
     "ws": "8.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "~6.0.3"
   }
 }

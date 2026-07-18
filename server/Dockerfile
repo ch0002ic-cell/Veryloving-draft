@@ -1,9 +1,19 @@
+FROM node:22-alpine AS build
+
+WORKDIR /app/server
+COPY server/package.json server/package-lock.json ./
+RUN npm ci --ignore-scripts
+COPY server/tsconfig.adapters.json ./
+COPY server/src ./src
+RUN npm run build
+
 FROM node:22-alpine
 
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY server/*.cjs ./
+COPY --from=build /app/server/dist ./dist
 
 ENV NODE_ENV=production
 ENV PORT=8787

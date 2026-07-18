@@ -3,8 +3,10 @@ module.exports = [
     ignores: [
       '.expo/**',
       'android/**',
+      'coverage/**',
       'ios/**',
-      'node_modules/**'
+      'node_modules/**',
+      'server/dist/**'
     ]
   },
   {
@@ -27,6 +29,8 @@ module.exports = [
         require: 'readonly',
         setInterval: 'readonly',
         setTimeout: 'readonly',
+        TextDecoder: 'readonly',
+        Uint8Array: 'readonly',
         WebSocket: 'readonly'
       }
     },
@@ -43,11 +47,14 @@ module.exports = [
       globals: {
         AbortController: 'readonly',
         Buffer: 'readonly',
+        __dirname: 'readonly',
         console: 'readonly',
         fetch: 'readonly',
         module: 'readonly',
         process: 'readonly',
         require: 'readonly',
+        Response: 'readonly',
+        setImmediate: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         structuredClone: 'readonly',

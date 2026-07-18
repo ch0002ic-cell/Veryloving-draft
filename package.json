@@ -11,10 +11,16 @@
     "prebuild": "expo prebuild",
     "doctor": "npx expo-doctor",
     "lint": "eslint .",
-    "test": "node --require @babel/register --test tests/*.test.cjs server/*.test.cjs",
+    "test": "npm run build:adapters && npm run test:core && npm run test:adapters && npm run test:integration:adapters",
+    "test:core": "node --require @babel/register --test tests/*.test.cjs server/*.test.cjs",
+    "test:adapters": "jest --config jest.adapters.config.cjs --runInBand --coverage",
+    "test:integration:adapters": "NODE_ENV=test node --test tests/integration/manufacturer-bridge.test.cjs",
+    "test:soak:adapters": "npm run build:adapters && node --expose-gc tests/integration/robot-adapter-soak.cjs",
+    "typecheck:adapters": "tsc -p server/tsconfig.adapters.json --noEmit",
+    "build:adapters": "tsc -p server/tsconfig.adapters.json",
     "validate-env": "node scripts/validate-env.cjs",
     "validate": "node scripts/validate.cjs",
-    "clm:start": "node server/clm-server.cjs",
+    "clm:start": "npm run build:adapters && node server/clm-server.cjs",
     "hume:provision": "node scripts/provision-hume.mjs",
     "hume:voice:generate": "node scripts/design-hume-voice.mjs generate",
     "hume:voice:save": "node scripts/design-hume-voice.mjs save"
@@ -64,8 +70,13 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/register": "^7.29.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.20.1",
+    "babel-jest": "^29.7.0",
     "eslint": "^9.0.0",
-    "react-native-codegen": "^0.70.7"
+    "jest": "~29.7.0",
+    "react-native-codegen": "^0.70.7",
+    "typescript": "~6.0.3"
   },
   "overrides": {
     "xcode": {
