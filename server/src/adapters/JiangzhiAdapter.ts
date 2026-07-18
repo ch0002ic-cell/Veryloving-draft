@@ -35,4 +35,3 @@ export class JiangzhiAdapter extends RestRobotAdapter {
     return translated;
   }
 }
-

@@ -51,4 +51,3 @@ test('account deletion atomically finalizes the marker with its remaining sessio
   assert.equal(transactions.at(-1).length, 3);
   assert.equal(transactions.at(-1).at(-1).Update.ConditionExpression, 'deletion_state = :deleting');
 });
-

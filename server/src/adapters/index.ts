@@ -5,4 +5,3 @@ export * from './RestRobotAdapter';
 export * from './RobotAdapter';
 export * from './StructuredAdapterLogger';
 export * from './YongyidaAdapter';
-

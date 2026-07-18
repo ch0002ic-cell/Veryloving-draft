@@ -34,4 +34,3 @@ export class YongyidaAdapter extends RestRobotAdapter {
     return translated;
   }
 }
-

@@ -1173,7 +1173,7 @@ parameters and credentials are not emitted to logs.
 
 ## ROBOT-BUG-028 — Slow pairing could bind a robot after account deletion completed
 
-**Severity:** Critical  
+**Severity:** Critical
 **Status:** Fixed in code
 
 **Description / reproduction:** Start an authenticated pairing request, hold the
@@ -1189,7 +1189,7 @@ to account deletion after slow manufacturer verification`.
 
 ## ROBOT-BUG-029 — Process death could strand account deletion without a credential
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Kill the process after session rows were deleted
@@ -1204,7 +1204,7 @@ same credential can resume before final revocation.
 
 ## ROBOT-BUG-030 — Reset retries had no recurring recovery trigger
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Fail a reset, or start while its retry time is in
@@ -1217,7 +1217,7 @@ retry schedule. Tests cover future-due work and more records than one pass limit
 
 ## ROBOT-BUG-031 — GSI lag could hide an action from privacy deletion
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Commit an outbox item to the base table and begin
@@ -1231,7 +1231,7 @@ when the user GSI has not propagated`.
 
 ## ROBOT-BUG-032 — Reset lease identity was not an attempt generation
 
-**Severity:** Medium  
+**Severity:** Medium
 **Status:** Fixed in code
 
 **Description / reproduction:** Let attempt A exceed its lease, let attempt B in
@@ -1244,7 +1244,7 @@ generation.
 
 ## ROBOT-BUG-033 — Concurrent robot-credential mutations lost updates
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Run two `saveRobotPairingCredential` operations,
@@ -1257,7 +1257,7 @@ Tests cover simultaneous saves and clear-versus-save ordering.
 
 ## ROBOT-BUG-034 — Malformed telemetry retained a ghost-online robot
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Establish `online: true`, then return a fresh
@@ -1270,7 +1270,7 @@ and retains a typed schema error.
 
 ## ROBOT-BUG-035 — Unsigned direct HAL methods could bypass reset generation fencing
 
-**Severity:** High (latent interface defect)  
+**Severity:** High (latent interface defect)
 **Status:** Fixed in code
 
 **Description / reproduction:** After revoking a binding epoch, call a direct HAL
@@ -1284,7 +1284,7 @@ v2 action delivery.
 
 ## ROBOT-BUG-036 — Redirects could forward pairing/reset credentials
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in code
 
 **Description / reproduction:** Return HTTP 307/308 from the backend safety API
@@ -1297,7 +1297,7 @@ transports retain the same policy.
 
 ## ROBOT-BUG-037 — Manufacturer response loss could brick a consumed QR
 
-**Severity:** High  
+**Severity:** High
 **Status:** Fixed in the provisional contract; real-vendor support required
 
 **Description / reproduction:** Let the manufacturer consume a one-time QR, then
@@ -1312,7 +1312,7 @@ durably implement this contract before activation.
 
 ## ROBOT-BUG-038 — Non-success bodies leaked robot HTTP resources
 
-**Severity:** Medium  
+**Severity:** Medium
 **Status:** Fixed in code
 
 **Description / reproduction:** Repeatedly return HTTP 500 with a readable body.
@@ -1324,7 +1324,7 @@ released. A focused test counts cancellation.
 
 ## ROBOT-BUG-039 — Indoor position lacked an independent timestamp gate
 
-**Severity:** Medium  
+**Severity:** Medium
 **Status:** Fixed in code
 
 **Description / reproduction:** Send a fresh status with a room/map value but no
@@ -1337,7 +1337,7 @@ timestamp.
 
 ## ROBOT-BUG-040 — Callback credentials could equal outbound credentials
 
-**Severity:** Medium  
+**Severity:** Medium
 **Status:** Fixed in code
 
 **Description / reproduction:** Configure an adapter's callback key equal to its
@@ -1350,7 +1350,7 @@ tests cover same-adapter and cross-adapter collisions.
 
 ## ROBOT-BUG-041 — Mobile pairing/reset body consumption was unbounded
 
-**Severity:** Medium  
+**Severity:** Medium
 **Status:** Fixed in code
 
 **Description / reproduction:** Return a stalled or oversized response from the
