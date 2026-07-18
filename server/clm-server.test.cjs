@@ -25,6 +25,7 @@ function productionHTTPConfig(overrides = {}) {
     deleteUserData: async () => ({ deletedItems: 0 }),
     beginAccountDeletion: async () => true,
     completeAccountDeletion: async () => true,
+    finalizeAccountDeletion: async () => ({ deletedItems: 0, completed: true }),
     getAccountDeletionState: async () => 'active'
   };
   const safetyRepository = {
@@ -71,6 +72,7 @@ function productionHTTPConfig(overrides = {}) {
     googleAuthorizedParties: 'google-ios.apps.googleusercontent.com',
     phoneAuthChallengeSecret: 'production-phone-challenge-secret-at-least-32-characters',
     phoneAuthSubjectSecret: 'production-phone-subject-secret-at-least-32-characters',
+    robotPairingTokenSecret: 'production-robot-pairing-secret-at-least-32-characters',
     twilioAccountSid: `AC${'a'.repeat(32)}`,
     twilioAuthToken: 'production-twilio-auth-token-value',
     twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
@@ -116,6 +118,85 @@ function memoryAuthSessionRepository() {
       const current = sessions.get(`${subject}:${sessionId}`);
       return Boolean(current && !current.revoked && current.expiresAt > Date.now());
     }
+  };
+}
+
+function memoryRobotResetRepository({
+  adapterId = 'manufacturer-default',
+  manufacturerDeviceId = 'manufacturer:1',
+  bindingEpoch = 7
+} = {}) {
+  const state = {
+    userId: 'google:user-1',
+    robotId: 'robot:1',
+    pairingToken: 'pairing-token',
+    adapterId,
+    manufacturerDeviceId,
+    bindingEpoch,
+    lifecycleState: 'active',
+    resetId: null,
+    resetAttempt: 0
+  };
+  return {
+    state,
+    async beginFactoryReset(userId, robotId, pairingToken) {
+      if (userId !== state.userId || robotId !== state.robotId) return null;
+      if (pairingToken !== state.pairingToken) {
+        throw Object.assign(new Error('Robot pairing token is invalid'), { statusCode: 403 });
+      }
+      if (state.lifecycleState === 'unbound') {
+        return {
+          robotId,
+          resetId: state.resetId,
+          bindingEpoch: state.bindingEpoch,
+          lifecycleState: 'unbound',
+          completed: true
+        };
+      }
+      if (state.lifecycleState === 'active') {
+        state.lifecycleState = 'reset_pending';
+        state.resetId = '11111111-1111-4111-8111-111111111111';
+      }
+      return { ...state };
+    },
+    async claimFactoryReset(userId, robotId, leaseOwner) {
+      assert.equal(userId, state.userId);
+      assert.equal(robotId, state.robotId);
+      if (state.lifecycleState === 'reset_remote_complete') {
+        return { ...state, claimed: false, remoteComplete: true };
+      }
+      if (state.lifecycleState !== 'reset_pending') return { ...state, claimed: false };
+      state.lifecycleState = 'reset_in_progress';
+      state.resetAttempt += 1;
+      state.resetLeaseOwner = leaseOwner;
+      return { ...state, claimed: true };
+    },
+    async markFactoryResetRemoteComplete(_userId, _robotId, resetId, epoch) {
+      assert.equal(resetId, state.resetId);
+      assert.equal(epoch, state.bindingEpoch);
+      state.lifecycleState = 'reset_remote_complete';
+      return { ...state };
+    },
+    async recordFactoryResetFailure(_userId, _robotId, resetId, epoch) {
+      assert.equal(resetId, state.resetId);
+      assert.equal(epoch, state.bindingEpoch);
+      state.lifecycleState = 'reset_pending';
+      delete state.resetLeaseOwner;
+      return { ...state };
+    },
+    async completeFactoryReset(_userId, robotId, resetId, epoch) {
+      assert.equal(resetId, state.resetId);
+      assert.equal(epoch, state.bindingEpoch);
+      state.lifecycleState = 'unbound';
+      return {
+        robotId,
+        resetId,
+        bindingEpoch: epoch,
+        lifecycleState: 'unbound',
+        completed: true
+      };
+    },
+    async listRecoverableFactoryResets() { return []; }
   };
 }
 
@@ -197,6 +278,7 @@ test('production server rejects insecure credential-bearing outbound URLs', () =
     clmBearerToken: 'server-only-clm-key',
     actionSigningPrivateKey: ACTION_SIGNING_PRIVATE_KEY,
     actionSigningPublicKey: ACTION_SIGNING_PUBLIC_KEY,
+    actionGatewaySingleReplica: true,
     wearableCommandPayloads: JSON.stringify({ deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==', stop: 'BA==' }),
     manufacturerWebhookURL: 'https://manufacturer.example.test/v1/commands',
     manufacturerPairingVerifyURL: 'https://manufacturer.example.test/v1/pairing/verify',
@@ -204,9 +286,51 @@ test('production server rejects insecure credential-bearing outbound URLs', () =
     manufacturerResetURL: 'https://manufacturer.example.test/v1/reset',
     manufacturerApiKey: 'manufacturer-server-key',
     deviceTableName: 'veryloving-devices',
-    actionOutboxUserIndexName: 'user-index'
+    actionOutboxUserIndexName: 'user-index',
+    robotResetRecoveryIndexName: 'robot-reset-recovery-index'
   });
   assert.doesNotThrow(() => validateServerConfig(voiceGateway));
+  assert.throws(
+    () => validateServerConfig({ ...voiceGateway, robotResetRecoveryIndexName: '' }),
+    /ROBOT_RESET_RECOVERY_INDEX_NAME/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...voiceGateway, robotPairingTokenSecret: '' }),
+    /ROBOT_PAIRING_TOKEN_SECRET/
+  );
+  const vendorOnlyGateway = {
+    ...voiceGateway,
+    privacyCoordinator: undefined,
+    manufacturerWebhookURL: '',
+    manufacturerPairingVerifyURL: '',
+    manufacturerStatusURL: '',
+    manufacturerResetURL: '',
+    manufacturerPrivacyExportURL: '',
+    manufacturerPrivacyDeleteURL: '',
+    manufacturerApiKey: '',
+    robotAdapterConfigurations: [{
+      adapterId: 'jiangzhi-edge',
+      pairingVerifyURL: 'https://edge.example.test/pairing/verify',
+      resetURL: 'https://edge.example.test/lifecycle/reset',
+      privacyExportURL: 'https://edge.example.test/privacy/export',
+      privacyDeleteURL: 'https://edge.example.test/privacy/delete'
+    }]
+  };
+  assert.doesNotThrow(() => validateServerConfig(vendorOnlyGateway));
+  assert.throws(
+    () => validateServerConfig({
+      ...vendorOnlyGateway,
+      robotAdapterConfigurations: [{
+        ...vendorOnlyGateway.robotAdapterConfigurations[0],
+        privacyDeleteURL: ''
+      }]
+    }),
+    /complete adapter lifecycle endpoints|Every enabled robot adapter/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...voiceGateway, actionGatewaySingleReplica: false }),
+    /ACTION_GATEWAY_SINGLE_REPLICA/
+  );
   assert.throws(
     () => validateServerConfig({ ...voiceGateway, humeConfigId: 'approved-config' }),
     /HUME_CONFIG_ID must be a canonical UUID/
@@ -326,6 +450,78 @@ test('durable account-deletion state blocks new work but permits deletion retry'
   });
   assert.equal(retry.status, 204);
   assert.equal(retries, 1);
+});
+
+test('factory-reset recovery completes before action recovery and fails closed', async () => {
+  const lifecycle = [];
+  await invoke({
+    robotResetCoordinator: {
+      async recover() { lifecycle.push('reset-recovery'); },
+      async requestReset() {},
+      async resume() {}
+    },
+    actionGateway: {
+      async recoverPendingCommands() { lifecycle.push('action-recovery'); }
+    }
+  }, { url: '/health' });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(lifecycle, ['reset-recovery', 'action-recovery']);
+
+  let unsafeActionRecovery = false;
+  await invoke({
+    robotResetCoordinator: {
+      async recover() { throw new Error('reset checkpoint unavailable'); },
+      async requestReset() {},
+      async resume() {}
+    },
+    actionGateway: {
+      async recoverPendingCommands() { unsafeActionRecovery = true; }
+    }
+  }, { url: '/health' });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(unsafeActionRecovery, false);
+});
+
+test('account deletion durably fences and drains actions before manufacturer erasure', async () => {
+  const lifecycle = [];
+  const dataRepository = (name) => ({
+    async exportUserData() { return []; },
+    async deleteUserData() { lifecycle.push(name); return { deletedItems: 0 }; }
+  });
+  const authSessionRepository = {
+    ...dataRepository('sessions'),
+    async getAccountDeletionState() { return 'active'; },
+    async beginAccountDeletion() { lifecycle.push('account-fence'); },
+    async completeAccountDeletion() { lifecycle.push('account-deleted'); }
+  };
+  const response = await invoke({
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'privacy-action-fence-secret-at-least-32-characters',
+    appleClientIds: 'com.example.test',
+    safetyApiEnabled: true,
+    verifyAppToken: async () => ({ sub: 'user-private', scope: 'safety:read safety:write' }),
+    authSessionRepository,
+    safetyRepository: dataRepository('safety'),
+    manufacturerPrivacyRepository: dataRepository('manufacturer-erasure'),
+    actionOutboxRepository: dataRepository('action-outbox'),
+    pushRepository: dataRepository('push'),
+    robotRepository: dataRepository('robots'),
+    notifyUser: async () => ({ delivered: 0 }),
+    notifyEmergencyContacts: async () => ({ eligible: 0, delivered: 0, failedRecipients: 0 }),
+    actionGateway: {
+      async fenceUserActions(userId) { lifecycle.push(`action-fence:${userId}`); }
+    }
+  }, {
+    method: 'DELETE',
+    url: '/v1/privacy/data',
+    headers: { Authorization: 'Bearer active-account-session' }
+  });
+  assert.equal(response.status, 204);
+  assert.deepEqual(lifecycle.slice(0, 3), [
+    'account-fence',
+    'action-fence:user-private',
+    'manufacturer-erasure'
+  ]);
 });
 
 test('CLM rejects requests without the configured bearer token', async () => {
@@ -1110,58 +1306,141 @@ test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust b
   assert.equal(telemetry.json.online, true);
 
   const resetCalls = [];
+  const legacyRepository = memoryRobotResetRepository();
   const reset = await invoke({
     verifyAppToken,
-    robotRepository: {
-      async verifyPairingToken(_userId, _robotId, token) { return token === 'pairing-token'; },
-      async resolveManufacturerDeviceId(userId, robotId) {
-        return userId === 'google:user-1' && robotId === 'robot:1' ? 'manufacturer:1' : null;
-      },
-      async unbind(userId, robotId) { resetCalls.push(['unbind', userId, robotId]); return { manufacturerDeviceId: 'manufacturer:1' }; }
+    robotRepository: legacyRepository,
+    actionGateway: {
+      async fenceRobotBinding(userId, robotId, epoch) {
+        resetCalls.push(['fence', userId, robotId, epoch]);
+      }
     },
-    async resetManufacturerRobot(robotId) { resetCalls.push(['reset', robotId]); }
+    async resetManufacturerRobot(request) { resetCalls.push(['reset', request]); }
   }, {
     method: 'DELETE',
     url: '/v1/devices/home-robots/robot%3A1',
     headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
   });
   assert.equal(reset.status, 204);
-  assert.deepEqual(resetCalls, [
-    ['reset', 'manufacturer:1'],
-    ['unbind', 'google:user-1', 'robot:1']
-  ]);
+  assert.equal(resetCalls.filter(([kind]) => kind === 'fence').length, 2);
+  assert.deepEqual(resetCalls.at(-1), ['reset', {
+    resetId: '11111111-1111-4111-8111-111111111111',
+    manufacturerDeviceId: 'manufacturer:1',
+    bindingEpoch: 7
+  }]);
+  assert.equal(legacyRepository.state.lifecycleState, 'unbound');
 
-  let unboundAfterFailure = false;
-  const failedReset = await invoke({
+  const modernResetCalls = [];
+  const modernRepository = memoryRobotResetRepository({
+    adapterId: 'jiangzhi-edge',
+    manufacturerDeviceId: 'jiangzhi-device-1',
+    bindingEpoch: 9
+  });
+  const modernReset = await invoke({
     verifyAppToken,
-    robotRepository: {
-      async verifyPairingToken(_userId, _robotId, token) { return token === 'pairing-token'; },
-      async resolveManufacturerDeviceId() { return 'manufacturer:1'; },
-      async unbind() { unboundAfterFailure = true; }
+    robotRepository: modernRepository,
+    actionGateway: {
+      async fenceRobotBinding(userId, robotId, epoch) {
+        modernResetCalls.push(['fence', userId, robotId, epoch]);
+      }
     },
-    async resetManufacturerRobot() { throw new Error('manufacturer unavailable'); }
+    robotAdapterRuntime: {
+      async resetRobot(adapterId, request) {
+        modernResetCalls.push(['reset', adapterId, request]);
+      }
+    },
+    async resetManufacturerRobot() { throw new Error('legacy reset must not receive modern bindings'); }
   }, {
     method: 'DELETE',
     url: '/v1/devices/home-robots/robot%3A1',
     headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
   });
-  assert.equal(failedReset.status, 500);
-  assert.equal(unboundAfterFailure, false);
+  assert.equal(modernReset.status, 204);
+  assert.equal(modernResetCalls.filter(([kind]) => kind === 'fence').length, 2);
+  assert.deepEqual(modernResetCalls.at(-1), ['reset', 'jiangzhi-edge', {
+    resetId: '11111111-1111-4111-8111-111111111111',
+    manufacturerDeviceId: 'jiangzhi-device-1',
+    bindingEpoch: 9
+  }]);
+
+  const retryRepository = memoryRobotResetRepository();
+  const retryResetIds = [];
+  let remoteAvailable = false;
+  const retryConfig = {
+    verifyAppToken,
+    robotRepository: retryRepository,
+    actionGateway: {
+      async fenceRobotBinding() {}
+    },
+    async resetManufacturerRobot(request) {
+      retryResetIds.push(request.resetId);
+      if (!remoteAvailable) throw new Error('manufacturer unavailable');
+    }
+  };
+  const failedReset = await invoke(retryConfig, {
+    method: 'DELETE',
+    url: '/v1/devices/home-robots/robot%3A1',
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
+  });
+  assert.equal(failedReset.status, 502);
+  assert.equal(retryRepository.state.lifecycleState, 'reset_pending');
+  remoteAvailable = true;
+  const retriedReset = await invoke(retryConfig, {
+    method: 'DELETE',
+    url: '/v1/devices/home-robots/robot%3A1',
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
+  });
+  assert.equal(retriedReset.status, 204);
+  assert.deepEqual(retryResetIds, [
+    '11111111-1111-4111-8111-111111111111',
+    '11111111-1111-4111-8111-111111111111'
+  ]);
 
   const acknowledgements = [];
   const acknowledged = await invoke({
     manufacturerApiKey: 'manufacturer-secret',
     actionGateway: {
-      async acknowledgeRobot(actionId, ack) { acknowledgements.push({ actionId, ack }); return true; }
+      async acknowledgeRobot(actionId, ack, context) {
+        acknowledgements.push({ actionId, ack, context });
+        return context.bindingEpoch === 7;
+      }
     }
+  }, {
+    method: 'POST',
+    url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Manufacturer-Api-Key': 'manufacturer-secret' },
+    body: { action_id: '11111111-1111-4111-8111-111111111111', binding_epoch: 7, ok: true }
+  });
+  assert.equal(acknowledged.status, 204);
+  assert.equal(acknowledgements[0].actionId, '11111111-1111-4111-8111-111111111111');
+  assert.deepEqual(acknowledgements[0].context, {
+    adapterId: 'manufacturer-default',
+    bindingEpoch: 7
+  });
+
+  const staleAcknowledgement = await invoke({
+    manufacturerApiKey: 'manufacturer-secret',
+    actionGateway: {
+      async acknowledgeRobot(_actionId, _ack, context) { return context.bindingEpoch === 7; }
+    }
+  }, {
+    method: 'POST',
+    url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Manufacturer-Api-Key': 'manufacturer-secret' },
+    body: { action_id: '11111111-1111-4111-8111-111111111111', binding_epoch: 6, ok: true }
+  });
+  assert.equal(staleAcknowledgement.status, 404);
+
+  const missingEpoch = await invoke({
+    manufacturerApiKey: 'manufacturer-secret',
+    actionGateway: { async acknowledgeRobot() { throw new Error('must not run'); } }
   }, {
     method: 'POST',
     url: '/v1/manufacturer/robot/ack',
     headers: { 'X-Manufacturer-Api-Key': 'manufacturer-secret' },
     body: { action_id: '11111111-1111-4111-8111-111111111111', ok: true }
   });
-  assert.equal(acknowledged.status, 204);
-  assert.equal(acknowledgements[0].actionId, '11111111-1111-4111-8111-111111111111');
+  assert.equal(missingEpoch.status, 400);
 
   let routed = false;
   const splitProcessAction = await invoke({
@@ -1176,4 +1455,124 @@ test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust b
   });
   assert.equal(splitProcessAction.status, 503);
   assert.equal(routed, false);
+});
+
+test('mixed-vendor pairing, telemetry, and callbacks stay adapter-bound', async () => {
+  const calls = [];
+  const robotAdapterRuntime = {
+    async verifyPairingCode(selector, qrCode) {
+      calls.push(['pair', selector, qrCode]);
+      return {
+        adapterId: selector === 'jiangzhi' ? 'edge-deployment-1' : 'cloud-deployment-1',
+        hardwareSerial: 'PRIVATE-SERIAL-001',
+        manufacturerDeviceId: 'manufacturer-device-1',
+        oneTime: true,
+        expiresAt: Date.now() + 60_000
+      };
+    },
+    async getDeviceStatus(adapterId, deviceId) {
+      calls.push(['status', adapterId, deviceId]);
+      return { online: true, hardware_status: 'online', reported_at: Date.now() };
+    },
+    async getTelemetrySnapshot(adapterId, deviceId) {
+      calls.push(['snapshot', adapterId, deviceId]);
+      return {
+        online: true,
+        hardware_status: 'online',
+        reported_at: Date.now(),
+        battery: { percentage: 81, charging: true, observed_at: Date.now() },
+        navigation_path: [[103.8, 1.3], [103.81, 1.31]]
+      };
+    },
+    authenticateCallback(adapterId, key) {
+      return adapterId === 'edge-deployment-1' && key === 'edge-callback-secret';
+    }
+  };
+  let binding;
+  const robotRepository = {
+    async resumeBinding() { return null; },
+    async consumeAndBind(userId, _claimHash, record) {
+      binding = { userId, ...record };
+      return record;
+    },
+    async verifyPairingToken() { return true; },
+    async resolveRobotBinding() {
+      return { manufacturerDeviceId: 'manufacturer-device-1', adapterId: 'edge-deployment-1' };
+    }
+  };
+  const verifyAppToken = async () => ({ sub: 'google:user-1' });
+
+  const paired = await invoke({
+    verifyAppToken,
+    robotAdapterRuntime,
+    robotRepository,
+    robotPairingTokenSecret: 'test-robot-pairing-secret-at-least-32-characters'
+  }, {
+    method: 'POST',
+    url: '/v1/devices/home-robots/pair',
+    headers: { Authorization: 'Bearer app-session' },
+    body: { qr_code: 'manufacturer-one-time-code', robot_vendor: 'jiangzhi' }
+  });
+  assert.equal(paired.status, 201);
+  assert.equal(binding.adapterId, 'edge-deployment-1');
+  assert.deepEqual(calls[0], ['pair', 'jiangzhi', 'manufacturer-one-time-code']);
+
+  const telemetry = await invoke({ verifyAppToken, robotAdapterRuntime, robotRepository }, {
+    method: 'GET',
+    url: `/v1/devices/${encodeURIComponent(paired.json.robot_id)}/telemetry`,
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': paired.json.pairing_token }
+  });
+  assert.equal(telemetry.status, 200);
+  assert.deepEqual(calls[1], ['snapshot', 'edge-deployment-1', 'manufacturer-device-1']);
+  assert.equal(telemetry.json.battery.percentage, 81);
+  assert.deepEqual(telemetry.json.navigation_path, [[103.8, 1.3], [103.81, 1.31]]);
+
+  const acknowledgements = [];
+  const actionGateway = {
+    async acknowledgeRobot(actionId, ack, context) {
+      acknowledgements.push({ actionId, ack, context });
+      return true;
+    }
+  };
+  const wrongVendor = await invoke({ robotAdapterRuntime, actionGateway }, {
+    method: 'POST', url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Robot-Adapter-Id': 'cloud-deployment-1', 'X-Robot-Callback-Key': 'edge-callback-secret' },
+    body: { action_id: '11111111-1111-4111-8111-111111111111', binding_epoch: 4, ok: true }
+  });
+  assert.equal(wrongVendor.status, 401);
+
+  const accepted = await invoke({ robotAdapterRuntime, actionGateway }, {
+    method: 'POST', url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Robot-Adapter-Id': 'edge-deployment-1', 'X-Robot-Callback-Key': 'edge-callback-secret' },
+    body: { action_id: '11111111-1111-4111-8111-111111111111', binding_epoch: 4, ok: true }
+  });
+  assert.equal(accepted.status, 204);
+  assert.deepEqual(acknowledgements[0].context, { adapterId: 'edge-deployment-1', bindingEpoch: 4 });
+
+  const legacyAccepted = await invoke({
+    robotAdapterRuntime,
+    actionGateway,
+    manufacturerApiKey: 'legacy-callback-secret'
+  }, {
+    method: 'POST', url: '/v1/manufacturer/robot/ack',
+    headers: { 'X-Manufacturer-Api-Key': 'legacy-callback-secret' },
+    body: { action_id: '22222222-2222-4222-8222-222222222222', binding_epoch: 2, ok: true }
+  });
+  assert.equal(legacyAccepted.status, 204);
+  assert.deepEqual(acknowledgements[1].context, { adapterId: 'manufacturer-default', bindingEpoch: 2 });
+
+  const ambiguous = await invoke({
+    robotAdapterRuntime,
+    actionGateway,
+    manufacturerApiKey: 'legacy-callback-secret'
+  }, {
+    method: 'POST', url: '/v1/manufacturer/robot/ack',
+    headers: {
+      'X-Robot-Adapter-Id': 'edge-deployment-1',
+      'X-Robot-Callback-Key': 'edge-callback-secret',
+      'X-Manufacturer-Api-Key': 'legacy-callback-secret'
+    },
+    body: { action_id: '33333333-3333-4333-8333-333333333333', binding_epoch: 5, ok: true }
+  });
+  assert.equal(ambiguous.status, 401);
 });

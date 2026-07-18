@@ -20,6 +20,9 @@ const {
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
 const { createPrivacyDataCoordinator } = require('./privacy-data.cjs');
+const {
+  createDynamoManufacturerPrivacyDeletionRepository
+} = require('./manufacturer-privacy-deletion.cjs');
 const { createRedactedLogger } = require('./redacted-logger.cjs');
 const {
   ActionGateway,
@@ -28,12 +31,19 @@ const {
   parseWearableCommandPayloads
 } = require('./action-gateway.cjs');
 const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
+const { createRobotResetCoordinator } = require('./robot-reset.cjs');
 const {
   createManufacturerPairingVerifier,
+  createManufacturerPrivacyClient,
   createManufacturerPrivacyRepository,
   createManufacturerRobotResetClient,
-  createManufacturerRobotStatusClient
+  createManufacturerRobotStatusClient,
+  createRoutedManufacturerPrivacyRepository
 } = require('./manufacturer-client.cjs');
+const {
+  adapterConfigurationsFromEnv,
+  createRobotAdapterRuntime
+} = require('./robot-adapter-runtime.cjs');
 const {
   createDynamoPushRepository,
   createEmergencyContactPushNotifier,
@@ -58,6 +68,14 @@ const MAX_BODY_BYTES = 256 * 1024;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const ROBOT_RESET_REPOSITORY_METHODS = Object.freeze([
+  'beginFactoryReset',
+  'claimFactoryReset',
+  'markFactoryResetRemoteComplete',
+  'recordFactoryResetFailure',
+  'completeFactoryReset',
+  'listRecoverableFactoryResets'
+]);
 
 function positiveNumber(value, fallback) {
   const parsed = Number(value);
@@ -102,8 +120,11 @@ function envConfig(overrides = {}) {
     awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
     deviceTableName: process.env.DEVICE_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
     actionOutboxUserIndexName: process.env.ACTION_OUTBOX_USER_INDEX_NAME || '',
+    robotResetRecoveryIndexName: process.env.ROBOT_RESET_RECOVERY_INDEX_NAME || '',
     actionSigningPrivateKey: process.env.ACTION_SIGNING_PRIVATE_KEY || '',
     actionSigningPublicKey: process.env.ACTION_SIGNING_PUBLIC_KEY || '',
+    robotPairingTokenSecret: process.env.ROBOT_PAIRING_TOKEN_SECRET || '',
+    actionGatewaySingleReplica: process.env.ACTION_GATEWAY_SINGLE_REPLICA === 'true',
     wearableCommandPayloads: process.env.WEARABLE_COMMAND_PAYLOADS_JSON || '',
     manufacturerWebhookURL: process.env.MANUFACTURER_WEBHOOK_URL || '',
     manufacturerPairingVerifyURL: process.env.MANUFACTURER_PAIRING_VERIFY_URL || '',
@@ -112,6 +133,9 @@ function envConfig(overrides = {}) {
     manufacturerPrivacyExportURL: process.env.MANUFACTURER_PRIVACY_EXPORT_URL || '',
     manufacturerPrivacyDeleteURL: process.env.MANUFACTURER_PRIVACY_DELETE_URL || '',
     manufacturerApiKey: process.env.MANUFACTURER_API_KEY || '',
+    robotAdapterConfigurations: adapterConfigurationsFromEnv(process.env, {
+      production: (process.env.NODE_ENV || 'development') === 'production'
+    }),
     actionRequestTimeoutMs: positiveNumber(process.env.ACTION_REQUEST_TIMEOUT_MS, 5000),
     robotAckTimeoutMs: positiveNumber(process.env.ROBOT_ACK_TIMEOUT_MS, 30000),
     wearableAckTimeoutMs: positiveNumber(process.env.WEARABLE_ACK_TIMEOUT_MS, 5000),
@@ -207,7 +231,15 @@ function validateServerConfig(config) {
       throw new Error('SESSION_JWT_SECRET is required when the safety API is enabled');
     }
   }
-  const actionRoutingConfigured = Boolean(config.actionSigningPrivateKey || config.actionSigningPublicKey || config.manufacturerWebhookURL || config.wearableCommandPayloads);
+  const vendorAdaptersConfigured = Array.isArray(config.robotAdapterConfigurations)
+    && config.robotAdapterConfigurations.length > 0;
+  const actionRoutingConfigured = Boolean(
+    config.actionSigningPrivateKey
+    || config.actionSigningPublicKey
+    || config.manufacturerWebhookURL
+    || config.wearableCommandPayloads
+    || vendorAdaptersConfigured
+  );
   if (actionRoutingConfigured) {
     let derivedPublicKey;
     try { derivedPublicKey = deriveEd25519PublicKey(config.actionSigningPrivateKey); } catch (error) {
@@ -224,19 +256,55 @@ function validateServerConfig(config) {
   if (production && voiceGatewayRequired && !actionRoutingConfigured) {
     throw new Error('Production voice gateway requires dual-device action routing');
   }
-  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerPairingVerifyURL || !config.manufacturerStatusURL || !config.manufacturerResetURL || !config.manufacturerApiKey || !config.deviceTableName || !config.actionOutboxUserIndexName)) {
-    throw new Error('MANUFACTURER_WEBHOOK_URL, MANUFACTURER_PAIRING_VERIFY_URL, MANUFACTURER_STATUS_URL, MANUFACTURER_RESET_URL, MANUFACTURER_API_KEY, DEVICE_TABLE_NAME, and ACTION_OUTBOX_USER_INDEX_NAME are required for production action routing');
+  if (production && voiceGatewayRequired && actionRoutingConfigured && config.actionGatewaySingleReplica !== true) {
+    throw new Error('ACTION_GATEWAY_SINGLE_REPLICA=true is required until distributed per-device delivery leases are implemented');
   }
+  const legacyManufacturerConfigured = Boolean(
+    config.manufacturerWebhookURL
+    && config.manufacturerPairingVerifyURL
+    && config.manufacturerStatusURL
+    && config.manufacturerResetURL
+    && config.manufacturerApiKey
+  );
+  const adapterPairingConfigured = vendorAdaptersConfigured
+    && config.robotAdapterConfigurations.every((entry) => entry.pairingVerifyURL);
+  const adapterLifecycleConfigured = vendorAdaptersConfigured
+    && config.robotAdapterConfigurations.every((entry) => (
+      entry.pairingVerifyURL
+      && entry.resetURL
+      && entry.privacyExportURL
+      && entry.privacyDeleteURL
+    ));
+  if ((legacyManufacturerConfigured || adapterPairingConfigured)
+    && (typeof config.robotPairingTokenSecret !== 'string' || config.robotPairingTokenSecret.length < 32)) {
+    throw new Error('ROBOT_PAIRING_TOKEN_SECRET must contain at least 32 characters when robot pairing is configured');
+  }
+  if (production && actionRoutingConfigured && (
+    (!legacyManufacturerConfigured && !adapterPairingConfigured)
+    || !config.deviceTableName
+    || !config.actionOutboxUserIndexName
+    || !config.robotResetRecoveryIndexName
+  )) {
+    throw new Error('A complete legacy manufacturer gateway or enabled vendor adapters with pairing URLs, plus DEVICE_TABLE_NAME, ACTION_OUTBOX_USER_INDEX_NAME, and ROBOT_RESET_RECOVERY_INDEX_NAME, is required for production action routing');
+  }
+  if (production && vendorAdaptersConfigured && !adapterLifecycleConfigured) {
+    throw new Error('Every enabled robot adapter requires pairing, reset, privacy export, and privacy deletion URLs in production');
+  }
+  const legacyPrivacyConfigured = Boolean(
+    config.deviceTableName
+    && config.manufacturerApiKey
+    && config.manufacturerPrivacyExportURL
+    && config.manufacturerPrivacyDeleteURL
+  );
+  const adapterPrivacyConfigured = Boolean(config.deviceTableName && adapterLifecycleConfigured);
   if (
     production
     && config.safetyApiEnabled
     && !config.privacyCoordinator
-    && (!config.deviceTableName
-      || !config.manufacturerApiKey
-      || !config.manufacturerPrivacyExportURL
-      || !config.manufacturerPrivacyDeleteURL)
+    && !legacyPrivacyConfigured
+    && !adapterPrivacyConfigured
   ) {
-    throw new Error('DEVICE_TABLE_NAME, MANUFACTURER_API_KEY, MANUFACTURER_PRIVACY_EXPORT_URL, and MANUFACTURER_PRIVACY_DELETE_URL are required for production privacy operations');
+    throw new Error('Production robot privacy requires DEVICE_TABLE_NAME and either a complete legacy privacy client or complete adapter lifecycle endpoints');
   }
   return config;
 }
@@ -250,7 +318,7 @@ function validatePreparedServices(config) {
   if (config.nodeEnv !== 'production') return config;
   requireMethods(config.authSessionRepository, 'Production auth session repository', [
     'create', 'rotate', 'revoke', 'isActive', 'exportUserData', 'deleteUserData',
-    'beginAccountDeletion', 'completeAccountDeletion', 'getAccountDeletionState'
+    'beginAccountDeletion', 'completeAccountDeletion', 'finalizeAccountDeletion', 'getAccountDeletionState'
   ]);
   requireMethods(config.safetyRepository, 'Production safety repository', [
     'listContacts', 'createContact', 'updateContact', 'deleteContact', 'acceptSOS',
@@ -270,12 +338,23 @@ function validatePreparedServices(config) {
   }
   if (config.actionGateway || config.actionSigningPrivateKey) {
     requireMethods(config.robotRepository, 'Production robot repository', [
-      'owns', 'resolveManufacturerDeviceId', 'list', 'listManufacturerDeviceIds',
-      'verifyPairingToken', 'consumeAndBind', 'unbind', 'exportUserData', 'deleteUserData'
+      'owns', 'resolveManufacturerDeviceId', 'resolveRobotBinding', 'list', 'listManufacturerDeviceIds',
+      'listManufacturerRobotBindings', 'verifyPairingToken', 'resumeBinding', 'consumeAndBind', 'unbind',
+      'beginFactoryReset', 'claimFactoryReset', 'markFactoryResetRemoteComplete',
+      'recordFactoryResetFailure', 'completeFactoryReset', 'listRecoverableFactoryResets',
+      'isRobotBindingActive',
+      'exportUserData', 'deleteUserData'
     ]);
     requireMethods(config.actionOutboxRepository, 'Production action outbox repository', [
       'enqueue', 'markDelivering', 'markPendingAck', 'markDelivered', 'markFailed',
-      'acknowledge', 'listPending', 'exportUserData', 'deleteUserData'
+      'acknowledge', 'listPending', 'failPendingForBinding', 'failPendingForUser',
+      'exportUserData', 'deleteUserData'
+    ]);
+    requireMethods(config.actionGateway, 'Production action gateway', [
+      'route', 'acknowledgeRobot', 'recoverPendingCommands', 'fenceRobotBinding', 'fenceUserActions'
+    ]);
+    requireMethods(config.robotResetCoordinator, 'Production robot reset coordinator', [
+      'requestReset', 'resume', 'recover'
     ]);
   }
   return config;
@@ -735,6 +814,15 @@ async function configureHumeSession(chatId, config) {
 
 function prepareDeviceServices(config) {
   config.logger = createRedactedLogger(config.logger);
+  if (!config.robotAdapterRuntime && Array.isArray(config.robotAdapterConfigurations) && config.robotAdapterConfigurations.length) {
+    config.robotAdapterRuntime = createRobotAdapterRuntime({
+      configurations: config.robotAdapterConfigurations,
+      fetchImpl: config.fetchImpl,
+      logger: config.logger,
+      pairingIdempotencySecret: config.robotPairingTokenSecret,
+      production: config.nodeEnv === 'production'
+    });
+  }
   if (config.safetyApiEnabled && !config.safetyRepository && config.safetyTableName) {
     config.safetyRepository = createDynamoSafetyRepository({
       tableName: config.safetyTableName,
@@ -756,7 +844,12 @@ function prepareDeviceServices(config) {
     }, config);
   }
   if (!config.robotRepository && config.deviceTableName) {
-    config.robotRepository = createDynamoRobotRepository({ tableName: config.deviceTableName, region: config.awsRegion });
+    config.robotRepository = createDynamoRobotRepository({
+      tableName: config.deviceTableName,
+      region: config.awsRegion,
+      resetRecoveryIndexName: config.robotResetRecoveryIndexName,
+      accountStateTableName: config.authSessionTableName
+    });
   }
   if (!config.pushRepository && config.deviceTableName) {
     config.pushRepository = createDynamoPushRepository({ tableName: config.deviceTableName, region: config.awsRegion });
@@ -765,9 +858,15 @@ function prepareDeviceServices(config) {
     config.verifyRobotPairingCode = createManufacturerPairingVerifier({
       url: config.manufacturerPairingVerifyURL,
       apiKey: config.manufacturerApiKey,
+      idempotencySecret: config.robotPairingTokenSecret || config.manufacturerApiKey,
       fetchImpl: config.fetchImpl,
       timeoutMs: config.actionRequestTimeoutMs
     });
+  }
+  if (!config.verifyRobotPairingCodeForAdapter && config.robotAdapterRuntime?.verifyPairingCode) {
+    config.verifyRobotPairingCodeForAdapter = (adapterId, qrCode) => (
+      config.robotAdapterRuntime.verifyPairingCode(adapterId, qrCode)
+    );
   }
   if (!config.getManufacturerRobotStatus && config.manufacturerStatusURL && config.manufacturerApiKey) {
     config.getManufacturerRobotStatus = createManufacturerRobotStatusClient({
@@ -785,13 +884,40 @@ function prepareDeviceServices(config) {
       timeoutMs: config.actionRequestTimeoutMs
     });
   }
-  if (
-    !config.manufacturerPrivacyRepository
-    && config.manufacturerPrivacyExportURL
+  const legacyManufacturerPrivacyClient = config.manufacturerPrivacyExportURL
     && config.manufacturerPrivacyDeleteURL
     && config.manufacturerApiKey
+    ? createManufacturerPrivacyClient({
+      exportURL: config.manufacturerPrivacyExportURL,
+      deleteURL: config.manufacturerPrivacyDeleteURL,
+      apiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    }) : null;
+  if (!config.manufacturerPrivacyDeletionRepository
+    && config.deviceTableName
+    && config.robotPairingTokenSecret
+    && (legacyManufacturerPrivacyClient || config.robotAdapterRuntime)) {
+    config.manufacturerPrivacyDeletionRepository = createDynamoManufacturerPrivacyDeletionRepository({
+      tableName: config.deviceTableName,
+      region: config.awsRegion,
+      secret: config.robotPairingTokenSecret
+    });
+  }
+  if (!config.manufacturerPrivacyRepository && config.robotRepository?.listManufacturerRobotBindings
+    && (legacyManufacturerPrivacyClient || config.robotAdapterRuntime)) {
+    config.manufacturerPrivacyRepository = createRoutedManufacturerPrivacyRepository({
+      listManufacturerRobotBindings: (userId) => config.robotRepository.listManufacturerRobotBindings(userId),
+      legacyClient: legacyManufacturerPrivacyClient,
+      robotAdapterRuntime: config.robotAdapterRuntime,
+      deletionRepository: config.manufacturerPrivacyDeletionRepository
+    });
+  } else if (
+    !config.manufacturerPrivacyRepository
+    && legacyManufacturerPrivacyClient
     && config.robotRepository?.listManufacturerDeviceIds
   ) {
+    // Backward-compatible dependency-injection path for legacy-only callers.
     config.manufacturerPrivacyRepository = createManufacturerPrivacyRepository({
       exportURL: config.manufacturerPrivacyExportURL,
       deleteURL: config.manufacturerPrivacyDeleteURL,
@@ -834,17 +960,82 @@ function prepareDeviceServices(config) {
       wearableAckTimeoutMs: config.wearableAckTimeoutMs,
       notifyUser: config.notifyUser,
       authorizeDevice: config.robotRepository?.owns ? (userId, deviceId) => config.robotRepository.owns(userId, deviceId) : undefined,
+      resolveRobotBinding: config.robotRepository?.resolveRobotBinding
+        ? (userId, deviceId) => config.robotRepository.resolveRobotBinding(userId, deviceId)
+        : undefined,
+      isRobotBindingActive: config.robotRepository?.isRobotBindingActive
+        ? (userId, deviceId, expectedBinding) => (
+            config.robotRepository.isRobotBindingActive(userId, deviceId, expectedBinding)
+          )
+        : undefined,
+      isAccountActionAllowed: async (userId) => (await accountDeletionState(config, userId)) === 'active',
       resolveManufacturerDeviceId: config.robotRepository?.resolveManufacturerDeviceId
         ? (userId, deviceId) => config.robotRepository.resolveManufacturerDeviceId(userId, deviceId)
         : undefined,
       requireBoundRobotResolver: config.nodeEnv === 'production',
-      getDeviceStatus: config.getManufacturerRobotStatus,
+      robotAdapterRuntime: config.robotAdapterRuntime,
+      getDeviceStatus: config.robotAdapterRuntime
+        || config.getManufacturerRobotStatus
+        ? (manufacturerDeviceId, adapterId) => (
+            config.robotAdapterRuntime && adapterId !== 'manufacturer-default'
+              ? config.robotAdapterRuntime.getDeviceStatus(adapterId, manufacturerDeviceId)
+              : config.getManufacturerRobotStatus
+                ? config.getManufacturerRobotStatus(manufacturerDeviceId)
+                : { online: false, hardware_status: 'offline' }
+          )
+        : undefined,
       outboxRepository: config.actionOutboxRepository,
       logger: config.logger
     });
   }
+  const resetRepositoryReady = ROBOT_RESET_REPOSITORY_METHODS.every(
+    (method) => typeof config.robotRepository?.[method] === 'function'
+  );
+  if (!config.robotResetCoordinator
+    && resetRepositoryReady
+    && typeof config.actionGateway?.fenceRobotBinding === 'function') {
+    config.robotResetCoordinator = createRobotResetCoordinator({
+      repository: config.robotRepository,
+      gateway: config.actionGateway,
+      resetHandler: async ({ adapterId, manufacturerDeviceId, resetId, bindingEpoch }) => {
+        const resetRequest = { resetId, manufacturerDeviceId, bindingEpoch };
+        if (adapterId === 'manufacturer-default') {
+          if (typeof config.resetManufacturerRobot !== 'function') {
+            throw Object.assign(new Error('Legacy manufacturer reset is not configured'), {
+              statusCode: 503,
+              code: 'ROBOT_RESET_NOT_CONFIGURED'
+            });
+          }
+          return config.resetManufacturerRobot(resetRequest);
+        }
+        if (typeof config.robotAdapterRuntime?.resetRobot !== 'function') {
+          throw Object.assign(new Error('Robot adapter reset is not configured'), {
+            statusCode: 503,
+            code: 'ROBOT_ADAPTER_RESET_NOT_CONFIGURED'
+          });
+        }
+        return config.robotAdapterRuntime.resetRobot(adapterId, resetRequest);
+      },
+      logger: config.logger
+    });
+  }
+  if (config.robotResetCoordinator?.recover && !config.robotResetRecoveryPromise) {
+    config.robotResetRecoveryPromise = Promise.resolve().then(() => (
+      typeof config.robotResetCoordinator.startRecoveryWorker === 'function'
+        ? config.robotResetCoordinator.startRecoveryWorker()
+        : config.robotResetCoordinator.recover()
+    ));
+    config.robotResetRecoveryPromise.catch(() => {});
+  }
   if (config.actionGateway?.recoverPendingCommands && !config.actionRecoveryPromise) {
-    config.actionRecoveryPromise = config.actionGateway.recoverPendingCommands();
+    const resetRecovery = config.robotResetCoordinator
+      ? (config.robotResetRecoveryPromise || Promise.reject(new Error('Robot reset recovery is not configured')))
+      : (config.nodeEnv === 'production'
+          ? Promise.reject(new Error('Robot reset coordinator is not configured'))
+          : Promise.resolve());
+    // A failed reset recovery must prevent action recovery. Pending actions
+    // cannot be replayed safely when binding lifecycle state is unavailable.
+    config.actionRecoveryPromise = resetRecovery.then(() => config.actionGateway.recoverPendingCommands());
     config.actionRecoveryPromise.catch(() => {});
   }
   if (!config.privacyCoordinator && config.safetyApiEnabled) {
@@ -854,7 +1045,10 @@ function prepareDeviceServices(config) {
       actionOutboxRepository: config.actionOutboxRepository,
       pushRepository: config.pushRepository,
       manufacturerPrivacyRepository: config.manufacturerPrivacyRepository,
-      authSessionRepository: config.authSessionRepository
+      authSessionRepository: config.authSessionRepository,
+      beforeAccountDeletion: typeof config.actionGateway?.fenceUserActions === 'function'
+        ? (userId) => config.actionGateway.fenceUserActions(userId)
+        : undefined
     });
   }
   if (config.nodeEnv === 'production' && config.safetyApiEnabled) {
@@ -1003,13 +1197,32 @@ function createHandler(overrides = {}) {
       }
 
       if (req.method === 'POST' && url.pathname === '/v1/manufacturer/robot/ack') {
-        if (!config.actionGateway || !config.manufacturerApiKey || !safeEqual(req.headers['x-manufacturer-api-key'] || '', config.manufacturerApiKey)) {
+        const adapterId = req.headers['x-robot-adapter-id'] || '';
+        const adapterCredential = req.headers['x-robot-callback-key'] || '';
+        const adapterAuthenticated = Boolean(
+          config.robotAdapterRuntime
+          && /^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)
+          && config.robotAdapterRuntime.authenticateCallback(adapterId, adapterCredential)
+        );
+        const legacyAuthenticated = Boolean(
+          config.manufacturerApiKey
+          && safeEqual(req.headers['x-manufacturer-api-key'] || '', config.manufacturerApiKey)
+        );
+        if (!config.actionGateway
+          || (!adapterAuthenticated && !legacyAuthenticated)
+          || (adapterAuthenticated && legacyAuthenticated)) {
           json(res, 401, { error: 'Unauthorized' }); return;
         }
         const body = await readJson(req);
+        if (!Number.isSafeInteger(body.binding_epoch) || body.binding_epoch <= 0) {
+          json(res, 400, { error: 'binding_epoch must be a positive integer' }); return;
+        }
         const accepted = await config.actionGateway.acknowledgeRobot(body.action_id, {
           ok: body.ok,
           error_code: body.error_code
+        }, {
+          adapterId: adapterAuthenticated ? adapterId : 'manufacturer-default',
+          bindingEpoch: body.binding_epoch
         });
         if (!accepted) { json(res, 404, { error: 'Action acknowledgement was not found' }); return; }
         res.writeHead(204, { 'Cache-Control': 'no-store' });
@@ -1032,19 +1245,22 @@ function createHandler(overrides = {}) {
         let robotId;
         try { robotId = decodeURIComponent(robotBindingMatch[1]); } catch { robotId = ''; }
         if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) { json(res, 400, { error: 'Robot identifier is invalid' }); return; }
-        if (!config.robotRepository?.resolveManufacturerDeviceId || !config.robotRepository?.unbind || !config.resetManufacturerRobot) {
+        if (typeof config.robotResetCoordinator?.requestReset !== 'function') {
           json(res, 503, { error: 'Robot reset is not configured' }); return;
         }
-        await requireRobotPairingCredential(req, config.robotRepository, principal.sub, robotId);
-        const manufacturerDeviceId = await config.robotRepository.resolveManufacturerDeviceId(principal.sub, robotId);
-        if (!/^[A-Za-z0-9._:-]{1,128}$/.test(manufacturerDeviceId || '')) {
-          json(res, 404, { error: 'Robot was not found' }); return;
+        const result = await config.robotResetCoordinator.requestReset({
+          userId: principal.sub,
+          robotId,
+          pairingToken: req.headers['x-device-pairing-token']
+        });
+        if (result?.completed !== true || result?.lifecycleState !== 'unbound') {
+          json(res, 409, {
+            error: 'Robot reset is in progress',
+            code: 'ROBOT_RESET_IN_PROGRESS',
+            ...(Number.isSafeInteger(result?.retryAt) ? { retry_at: result.retryAt } : {})
+          });
+          return;
         }
-        // Keep the account binding intact unless the manufacturer confirms
-        // that user data was erased from the physical robot.
-        await config.resetManufacturerRobot(manufacturerDeviceId);
-        const removed = await config.robotRepository.unbind(principal.sub, robotId);
-        if (!removed) { json(res, 409, { error: 'Robot binding could not be removed' }); return; }
         res.writeHead(204, { 'Cache-Control': 'no-store' });
         res.end();
         return;
@@ -1059,7 +1275,16 @@ function createHandler(overrides = {}) {
         if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) { json(res, 400, { error: 'Robot identifier is invalid' }); return; }
         await requireRobotPairingCredential(req, config.robotRepository, principal.sub, robotId);
         let manufacturerDeviceId = robotId;
-        if (config.robotRepository?.resolveManufacturerDeviceId) {
+        let adapterId = 'manufacturer-default';
+        if (config.robotRepository?.resolveRobotBinding) {
+          const binding = await config.robotRepository.resolveRobotBinding(principal.sub, robotId);
+          manufacturerDeviceId = binding?.manufacturerDeviceId;
+          adapterId = binding?.adapterId;
+          if (!/^[A-Za-z0-9._:-]{1,128}$/.test(manufacturerDeviceId || '')
+            || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId || '')) {
+            json(res, 404, { error: 'Robot was not found' }); return;
+          }
+        } else if (config.robotRepository?.resolveManufacturerDeviceId) {
           manufacturerDeviceId = await config.robotRepository.resolveManufacturerDeviceId(principal.sub, robotId);
           if (!/^[A-Za-z0-9._:-]{1,128}$/.test(manufacturerDeviceId || '')) {
             json(res, 404, { error: 'Robot was not found' }); return;
@@ -1067,19 +1292,40 @@ function createHandler(overrides = {}) {
         } else if (!config.robotRepository?.owns || !await config.robotRepository.owns(principal.sub, robotId)) {
           json(res, 404, { error: 'Robot was not found' }); return;
         }
-        if (!config.getManufacturerRobotStatus) { json(res, 503, { error: 'Robot telemetry is not configured' }); return; }
-        json(res, 200, await config.getManufacturerRobotStatus(manufacturerDeviceId));
+        const getStatus = config.robotAdapterRuntime && adapterId !== 'manufacturer-default'
+          ? (deviceId) => config.robotAdapterRuntime.getTelemetrySnapshot(adapterId, deviceId)
+          : config.getManufacturerRobotStatus;
+        if (!getStatus) { json(res, 503, { error: 'Robot telemetry is not configured' }); return; }
+        json(res, 200, await getStatus(manufacturerDeviceId));
         return;
       }
 
       if (req.method === 'POST' && url.pathname === '/v1/devices/home-robots/pair') {
         const principal = await authenticateApp(req, config);
         if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
-        if (!config.robotRepository || typeof config.verifyRobotPairingCode !== 'function') {
+        if (!config.robotRepository || (
+          typeof config.verifyRobotPairingCode !== 'function'
+          && typeof config.verifyRobotPairingCodeForAdapter !== 'function'
+        )) {
           json(res, 503, { error: 'Robot pairing is not configured' }); return;
         }
         const body = await readJson(req);
-        json(res, 201, await pairRobot({ userId: principal.sub, qrCode: body.qr_code, verifier: config.verifyRobotPairingCode, repository: config.robotRepository, logger: config.logger }));
+        let verifier = config.verifyRobotPairingCode;
+        if (config.verifyRobotPairingCodeForAdapter) {
+          if (!['yongyida', 'jiangzhi'].includes(body.robot_vendor)) {
+            json(res, 400, { error: 'Robot manufacturer selection is required' }); return;
+          }
+          verifier = (qrCode) => config.verifyRobotPairingCodeForAdapter(body.robot_vendor, qrCode);
+        }
+        json(res, 201, await pairRobot({
+          userId: principal.sub,
+          qrCode: body.qr_code,
+          pairingScope: body.robot_vendor || 'manufacturer-default',
+          pairingTokenSecret: config.robotPairingTokenSecret,
+          verifier,
+          repository: config.robotRepository,
+          logger: config.logger
+        }));
         return;
       }
 

@@ -41,6 +41,32 @@ test('robot pairing credentials are account-bound and never enter device descrip
   assert.equal(await loadRobotPairingCredential('user-a', 'robot-1', { secureStorageImpl }), null);
 });
 
+test('concurrent robot credential mutations cannot lose a device or resurrect data after clear', async () => {
+  const secureStorageImpl = memorySecureStore();
+  await Promise.all([
+    saveRobotPairingCredential('user-a', 'robot-a', 'a'.repeat(43), { secureStorageImpl }),
+    saveRobotPairingCredential('user-a', 'robot-b', 'b'.repeat(43), { secureStorageImpl })
+  ]);
+  assert.equal(await loadRobotPairingCredential('user-a', 'robot-a', { secureStorageImpl }), 'a'.repeat(43));
+  assert.equal(await loadRobotPairingCredential('user-a', 'robot-b', { secureStorageImpl }), 'b'.repeat(43));
+
+  let releaseWrite;
+  const originalSet = secureStorageImpl.setItemAsync;
+  secureStorageImpl.setItemAsync = async (...args) => {
+    await new Promise((resolve) => { releaseWrite = resolve; });
+    return originalSet(...args);
+  };
+  const pendingSave = saveRobotPairingCredential(
+    'user-a', 'robot-c', 'c'.repeat(43), { secureStorageImpl }
+  );
+  while (!releaseWrite) await Promise.resolve();
+  const { clearRobotPairingCredentials } = require('../src/services/robot-pairing-credential-store');
+  const pendingClear = clearRobotPairingCredentials({ secureStorageImpl });
+  releaseWrite();
+  await Promise.all([pendingSave, pendingClear]);
+  assert.equal(secureStorageImpl.raw(), undefined);
+});
+
 test('pairing stores the one-time response in protected storage and reset proves possession', async () => {
   const secureStorageImpl = memorySecureStore();
   const requests = [];
@@ -58,8 +84,9 @@ test('pairing stores the one-time response in protected storage and reset proves
   };
 
   assert.deepEqual(await pairHomeRobot('q'.repeat(24), 'access-token', {
-    accountId: 'user-a', secureStorageImpl, runtimeConfig, fetchImpl
+    accountId: 'user-a', vendor: 'jiangzhi', secureStorageImpl, runtimeConfig, fetchImpl
   }), { robot_id: 'robot-1', device_type: 'home_robot' });
+  assert.equal(JSON.parse(requests[0].options.body).robot_vendor, 'jiangzhi');
   assert.equal(await loadRobotPairingCredential('user-a', 'robot-1', { secureStorageImpl }), token);
   assert.doesNotMatch(JSON.stringify(requests[0]), new RegExp(token));
 

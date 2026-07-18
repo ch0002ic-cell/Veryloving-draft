@@ -31,6 +31,7 @@ function privacyFailure(operation, dataset, cause) {
  * configuration check instead of silently omitting a data processor.
  */
 function createPrivacyDataCoordinator(repositories = {}) {
+  const beforeAccountDeletion = repositories.beforeAccountDeletion;
   const configured = PRIVACY_DATASETS.map(([dataset, repositoryName]) => ({
     dataset,
     repositoryName,
@@ -66,20 +67,37 @@ function createPrivacyDataCoordinator(repositories = {}) {
       return { schemaVersion: 1, datasets: result };
     },
 
-    async deleteUserData(userId) {
+    async deleteUserData(userId, { recoverySessionId } = {}) {
       if (typeof userId !== 'string' || !userId) throw new TypeError('A user is required for privacy deletion.');
       const authRepository = repositories.authSessionRepository;
       if (typeof authRepository?.beginAccountDeletion === 'function') {
-        await authRepository.beginAccountDeletion(userId);
+        await authRepository.beginAccountDeletion(userId, Date.now(), recoverySessionId);
+      }
+      // Persist the account-deletion fence first, then drain any robot action
+      // that already passed its attempt guard. Manufacturer erasure must run
+      // only after this hook returns, otherwise a delayed command could
+      // repopulate or act on a robot after its account data was erased.
+      if (typeof beforeAccountDeletion === 'function') {
+        try {
+          await beforeAccountDeletion(userId);
+        } catch (error) {
+          throw privacyFailure('delete', 'deviceActionFence', error);
+        }
       }
       const attempts = [];
+      let accountFinalized = false;
       for (const { dataset, repository } of configured) {
         if (typeof repository?.deleteUserData !== 'function') {
           attempts.push({ dataset, status: 'not-configured' });
           continue;
         }
         try {
-          await repository.deleteUserData(userId);
+          if (dataset === 'sessions' && typeof repository.finalizeAccountDeletion === 'function') {
+            await repository.finalizeAccountDeletion(userId, { recoverySessionId });
+            accountFinalized = true;
+          } else {
+            await repository.deleteUserData(userId);
+          }
           attempts.push({ dataset, status: 'deleted' });
         } catch (error) {
           attempts.push({ dataset, status: 'failed', error: privacyFailure('delete', dataset, error) });
@@ -98,7 +116,7 @@ function createPrivacyDataCoordinator(repositories = {}) {
         error.failures = failures.map(({ dataset, error: failure }) => ({ dataset, code: failure.code }));
         throw error;
       }
-      if (typeof authRepository?.completeAccountDeletion === 'function') {
+      if (!accountFinalized && typeof authRepository?.completeAccountDeletion === 'function') {
         await authRepository.completeAccountDeletion(userId);
       }
       return {

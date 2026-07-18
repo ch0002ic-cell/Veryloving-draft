@@ -113,6 +113,7 @@ test('manufacturer erasure failure preserves all VeryLoving data and the retry c
 test('privacy deletion fences the account before mutation and marks completion last', async () => {
   const lifecycle = [];
   const coordinator = createPrivacyDataCoordinator({
+    async beforeAccountDeletion(userId) { lifecycle.push(['action-fence', userId]); },
     authSessionRepository: {
       async exportUserData() { return []; },
       async beginAccountDeletion(userId) { lifecycle.push(['begin', userId]); },
@@ -123,7 +124,59 @@ test('privacy deletion fences the account before mutation and marks completion l
   await coordinator.deleteUserData('user-a');
   assert.deepEqual(lifecycle, [
     ['begin', 'user-a'],
+    ['action-fence', 'user-a'],
     ['sessions', 'user-a'],
     ['complete', 'user-a']
   ]);
+});
+
+test('privacy deletion uses atomic session/account finalization when available', async () => {
+  const lifecycle = [];
+  const coordinator = createPrivacyDataCoordinator({
+    authSessionRepository: {
+      async exportUserData() { return []; },
+      async deleteUserData() { throw new Error('non-atomic session deletion must not run'); },
+      async beginAccountDeletion(userId, _now, recoverySessionId) {
+        lifecycle.push(['begin', userId, recoverySessionId]);
+      },
+      async finalizeAccountDeletion(userId, options) {
+        lifecycle.push(['finalize', userId, options.recoverySessionId]);
+      },
+      async completeAccountDeletion() {
+        throw new Error('separate completion must not run after atomic finalization');
+      }
+    }
+  });
+  await coordinator.deleteUserData('user-a', { recoverySessionId: 'session-recovery-1' });
+  assert.deepEqual(lifecycle, [
+    ['begin', 'user-a', 'session-recovery-1'],
+    ['finalize', 'user-a', 'session-recovery-1']
+  ]);
+});
+
+test('privacy deletion stops before manufacturer erasure when the action fence cannot drain', async () => {
+  const calls = [];
+  const coordinator = createPrivacyDataCoordinator({
+    async beforeAccountDeletion() {
+      calls.push('fence');
+      throw new Error('private transport detail');
+    },
+    manufacturerPrivacyRepository: {
+      async exportUserData() { return {}; },
+      async deleteUserData() { calls.push('manufacturer'); }
+    },
+    authSessionRepository: {
+      async exportUserData() { return {}; },
+      async deleteUserData() { calls.push('sessions'); },
+      async beginAccountDeletion() { calls.push('begin'); }
+    }
+  });
+
+  await assert.rejects(coordinator.deleteUserData('user-a'), (error) => {
+    assert.equal(error.code, 'PRIVACY_DELETE_DEVICE_ACTION_FENCE_FAILED');
+    assert.equal(error.statusCode, 503);
+    assert.doesNotMatch(error.message, /private transport detail/);
+    return true;
+  });
+  assert.deepEqual(calls, ['begin', 'fence']);
 });
