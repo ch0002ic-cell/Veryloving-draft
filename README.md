@@ -58,7 +58,7 @@ When dated evidence or sections differ, use this precedence:
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. They do not supersede the current 465-test baseline.
+Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 18 July 2026 with 535 core, 23 TypeScript-adapter, and 7 manufacturer-bridge tests. The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse mock-bridge evidence with vendor/hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -77,7 +77,9 @@ Historical test totals remain valid only for their recorded snapshots. They do n
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic tests | **PASS — 465/465** | No failed or skipped tests in the 18 July audit run. |
+| Deterministic core tests | **PASS — 535/535** | Fresh full candidate run on 18 July 2026. |
+| TypeScript robot adapters | **PASS — 23/23** | Fresh coverage: 99.32% statements/lines, 91.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
+| Manufacturer bridge integration | **PASS — 7/7** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
 | Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
@@ -113,6 +115,7 @@ VeryLoving is an Expo Router personal-safety companion with account onboarding, 
 | Emergency/SOS | Confirmation, contact fallback, recent-location validation, idempotent durable acceptance, medical-profile consent, push fan-out/outbox accounting, and honest dialer/result semantics. | `accepted` means stored, not delivered. Production APNs/FCM delivery, recipient identity acceptance, and emergency-provider dispatch remain external. |
 | Voice AI | Hume WebSocket client, PCM path, playback, barge-in cleanup, tools, history, queue, reconnect, and offline text fallback. | Production Hume/CLM, signed audio routes, latency/AEC, background/lock-screen behavior, and load remain open. |
 | BLE/NorthStar | Permission/state handling, filtered scan, GATT validation, battery, optional notifications, commands, disconnect, persistence, and reconnect. | Firmware schema, decoded events, command authorization, ownership/secure pairing, DFU/reset policy, and physical hardware remain open. |
+| Home companion robot | Server-side TypeScript HAL, provisional Yongyida cloud-bridge and Jiangzhi Android-edge adapters, immutable per-robot vendor/binding generations, signed/expiring actions, durable outbox and adapter/epoch-bound ACKs, bounded mixed-vendor telemetry snapshot polling, replay-safe QR pairing with same-account interrupted-response recovery, crash-resumable factory reset and privacy deletion sagas, and a test-only bridge. | Neither vendor has supplied an approved API/HAL or exact production hardware. Real vendor translation/event ingestion, durable downstream idempotency/epoch fencing, telemetry provenance/medical validity, distributed per-device queue leases, and all physical safety claims remain production gates. Exactly one long-lived ActionGateway delivery replica is required meanwhile. |
 | Settings | Language, voice/persona, medication reminders, contacts, medical profile, Saved Places, dual devices, history, privacy/export/delete. | Account-sensitive local stores are encrypted; remote workflows still depend on production services. |
 | Globalization | Profile-gated language picker, immediate same-direction update, durable selection, RTL transition, full-catalog QA mode. | Machine-generated safety copy and RTL visual behavior require human/signed-device approval. |
 | Friends | Honest empty/planned surface. | No account-backed invite/friend API, consent model, or abuse controls; no fake friend data is shipped. |
@@ -522,8 +525,9 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
 | Phone verification | `PHONE_AUTH_ENABLED`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `PHONE_AUTH_CHALLENGE_TTL_SECONDS`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | Independent secrets; stable subject derivation; Twilio credentials remain server-only. |
 | Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. |
-| Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI must use `user_index_pk` as its partition key and `user_index_sk` as its sort key; signing private keys and wearable payload bytes remain server-only. |
-| Manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | HTTPS endpoints and API key are server-only; production startup fails closed when the required robot routes are incomplete. |
+| Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ROBOT_RESET_RECOVERY_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `ROBOT_PAIRING_TOKEN_SECRET`, `ACTION_GATEWAY_SINGLE_REPLICA`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI uses `user_index_pk`/`user_index_sk`; the reset-recovery GSI uses `resetRecoveryPk`/`resetRecoveryAt`. Pairing HMAC and action-signing keys are independent server secrets. Current production delivery must explicitly select one ActionGateway replica until distributed per-device leases exist. |
+| Legacy manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | Historical `manufacturer-default` bindings only. HTTPS endpoints and API key are server-only; modern vendor bindings never fall back to this shared client. |
+| Vendor robot adapters/lifecycle | `YONGYIDA_ADAPTER_ENABLED`, `YONGYIDA_ADAPTER_ID`, `YONGYIDA_BRIDGE_URL`, `YONGYIDA_BRIDGE_API_KEY`, `YONGYIDA_CALLBACK_API_KEY`, `YONGYIDA_PAIRING_VERIFY_URL`, `YONGYIDA_RESET_URL`, `YONGYIDA_PRIVACY_EXPORT_URL`, `YONGYIDA_PRIVACY_DELETE_URL`, and the corresponding `JIANGZHI_*` variables | Both adapters can be enabled simultaneously. Each modern binding uses only its immutable adapter's bridge, callback credential, pairing verifier, reset, export, and deletion handlers; missing handlers fail closed without cross-vendor fallback or local deletion. These are provisional Veryloving bridge settings, not published manufacturer endpoints. |
 | Optional upstream CLM | `CLM_UPSTREAM_URL`, `CLM_UPSTREAM_API_KEY`, `CLM_UPSTREAM_MODEL`, `CLM_UPSTREAM_TIMEOUT_MS` | Configure the URL/key/model together or omit all to use deterministic local responses. |
 | Optional verifier fallback | `APP_AUTH_VERIFY_URL` | Not required when all callers use the in-repository app JWT. |
 | Hume provisioning operator | `HUME_CLM_URL`, `HUME_TOOL_ID`, `HUME_CUSTOM_VOICE_ID` | Operator-only inputs for versioned Hume resources; never mobile secrets. |
@@ -535,7 +539,7 @@ Generate independent high-entropy values for session signing, phone challenge si
 1. **Apple/Google:** register bundle/package `com.veryloving.app`, verify the Google Web audience and iOS client, configure Android signing SHA-1 clients, align backend audience/presenter allowlists, and rebuild native iOS after callback-scheme changes.
 2. **Mapbox:** create a least-privilege public `pk.*` mobile token and a separate `sk.*` `downloads:read` build token. Store only the latter as a local/EAS build secret.
 3. **Hume:** obtain organization access, install the server-only key in the approved secret manager, approve quota/retention/prompt/tool/voice policy, deploy the authenticated CLM/WSS surfaces, then publish versioned config/tool/voice resources.
-4. **Twilio/DynamoDB:** configure a Verify service with geo/fraud/rate policy; create the Dynamo table with string `PK`/`SK`, TTL on numeric `expiresAt`, encryption, PITR/backups, alarms, and least-privilege Query/Get/Put/Delete access. Add the action-outbox GSI named by `ACTION_OUTBOX_USER_INDEX_NAME` with string keys `user_index_pk` and `user_index_sk`; production action routing rejects a missing index name instead of falling back to a table scan.
+4. **Twilio/DynamoDB:** configure a Verify service with geo/fraud/rate policy; create the Dynamo table with string `PK`/`SK`, TTL on numeric `expiresAt`, encryption, PITR/backups, alarms, and least-privilege Query/Get/Put/Delete access. Add the action-outbox GSI named by `ACTION_OUTBOX_USER_INDEX_NAME` with string keys `user_index_pk` and `user_index_sk`, plus the reset-recovery GSI named by `ROBOT_RESET_RECOVERY_INDEX_NAME` with string partition key `resetRecoveryPk` and numeric sort key `resetRecoveryAt`; production routing rejects missing index names instead of relying on a table scan.
 5. **VL01:** obtain a versioned GATT document covering UUIDs, properties, encoding, events, commands, secure ownership/pairing, reset, and firmware compatibility.
 6. **APNs/FCM:** provision environment-correct credentials through approved account/EAS workflows and deploy an authenticated token registration/rotation/revocation and delivery service before enabling safety pushes.
 7. **EAS/store accounts:** grant the real organization/project roles; do not relink the app or replace its project ID merely to bypass access control.
@@ -589,7 +593,7 @@ As of the dated deployment audit:
 
 - A protected Vercel preview proved the HTTP adapter builds, the catch-all health route works, and missing protected configuration fails closed.
 - The Vercel adapter did not expose the repository's raw WebSocket route.
-- An isolated Railway staging container proved Docker startup, public TLS/liveness, protected-route failure behavior, WebSocket upgrades, and one synthetic first-party authentication through to Hume `auth_ok`.
+- An earlier isolated Railway staging container proved Docker startup, public TLS/liveness, protected-route failure behavior, WebSocket upgrades, and one synthetic first-party authentication through to Hume `auth_ok`. That run predates the current Product 2 multi-stage adapter image and is not its container-build/health evidence; no Docker-compatible CLI was available for the current audit.
 - AWS application infrastructure was not provisioned from this repository.
 - The recorded EAS operator lacked access to the configured project.
 
@@ -779,7 +783,7 @@ Current decision: **NO-GO**.
 | Swift 5.9+, SwiftUI, SwiftData | Expo CNG/native configuration and generated iOS boundary only. | No tracked application-authored Swift, SwiftUI, or SwiftData implementation. |
 | WebSockets and real-time audio | Hume lifecycle, 48 kHz PCM, playback, interruption, tools, backpressure, reconnect, authenticated gateway. | Signed-device audio, production Hume/load, and native route evidence remain open. |
 | React 19 | Expo/React Native application uses React 19. | Demonstrated. |
-| Next.js 14+ and TypeScript | Substantive Node HTTP/WSS backend and Vercel adapter. | No Next.js App Router, TypeScript source, or typed full-stack contracts; Node adjacency is not equivalent proof. |
+| Next.js 14+ and TypeScript | Substantive Node HTTP/WSS backend, Vercel adapter, and a strict TypeScript Product 2 HAL with compiled CommonJS runtime integration and Jest coverage gates. | No Next.js App Router and the broader mobile/server contracts remain JavaScript; the adapter HAL is meaningful TypeScript evidence, not a full Next.js stack. |
 | AWS/Vercel | Vercel HTTP adapter and DynamoDB application repository; Railway/ECS-compatible container. | No SES, IaC, or provisioned production AWS/IAM/TTL/PITR/alarms evidence. |
 | OAuth/JWT/security | Provider JWKS verification, Apple nonce, audience/issuer checks, scoped JWTs, durable refresh reuse detection/revocation, deletion fencing, and SecureStore. | Distributed abuse controls, provider-state handling, and production security evidence remain open. |
 | Hybrid data model | Account boundary, SecureStore, authenticated encrypted local stores, Dynamo contacts/safety/privacy/action outboxes. | Vendor-wide lifecycle and production repository evidence remain open. |
@@ -787,9 +791,9 @@ Current decision: **NO-GO**.
 | 3D/Spline | None. | Good-to-have not evidenced. |
 | Voice AI/TTS/WebRTC | Hume conversational generated speech, CLM/tools, mobile voice UI. | No standalone/local TTS or WebRTC. |
 
-Fair assessment: **strong hands-on mobile, voice, security, BLE, and Node architecture evidence; material exact-stack gaps in SwiftUI/SwiftData and Next.js/TypeScript; production proof still gated by security, cloud, delivery, and physical-device work.**
+Fair assessment: **strong hands-on mobile, voice, security, BLE, Node, and focused TypeScript HAL evidence; material exact-stack gaps in SwiftUI/SwiftData and Next.js; production proof still gated by security, cloud, delivery, vendor contracts, and physical-device work.**
 
-Do not add decorative Swift, Next.js, TypeScript, SES, WebRTC, or Spline scaffolds solely to imply experience. Close a gap only with a meaningful, tested product artifact or separate verifiable work evidence. See [Founding engineer requirement mapping](#15-founding-engineer-requirement-mapping).
+Do not add decorative Swift, Next.js, SES, WebRTC, or Spline scaffolds solely to imply experience. Close a gap only with a meaningful, tested product artifact or separate verifiable work evidence. See [Founding engineer requirement mapping](#15-founding-engineer-requirement-mapping).
 
 ## 16. Validation and operator commands
 
@@ -799,6 +803,8 @@ Do not add decorative Swift, Next.js, TypeScript, SES, WebRTC, or Spline scaffol
 npm run validate-env
 npm run lint
 npm test
+npm run typecheck:adapters
+npm run test:soak:adapters
 git diff --check
 npx expo-doctor
 npx expo export --platform ios
@@ -810,6 +816,8 @@ The combined release-oriented source gate is:
 ```bash
 npm run validate
 ```
+
+This is the development/source gate. It does not run or waive the production environment profile.
 
 Run the production configuration gate separately:
 
@@ -883,15 +891,16 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 3. Validate encrypted local-store key accessibility, migration, backup exclusion, rollback, account-switch, process-death, and deletion behavior in signed builds.
 4. Complete production guardian/push delivery acceptance, authenticated receipts, invalid-token cleanup, revocable sharing, and honest operational states.
 5. Obtain the approved VL01 firmware/security contract and complete ownership, decoding, authorized commands, and physical hardware tests.
-6. Finish isolated staging with production-like Apple/Google/Twilio/Mapbox/Hume/Dynamo/APNs/FCM resources, observability, threat-model approval, and rollback evidence.
-7. Grant the authorized EAS owner access, validate the current production profile, and build the exact reviewed TestFlight SHA.
-8. Run the priority language script, then the full UI, provider, privacy, safety, audio, BLE, accessibility, performance, clean-install, and upgrade matrices.
-9. Obtain native-speaker safety approval for every intended public locale; keep full-catalog artifacts marked as QA until approved.
-10. Re-run the full source/config/security/dependency gates, reconcile store/privacy disclosures, record GO/NO-GO, and use a monitored staged rollout only after every P1 closes.
+6. Run the identical vendor artifact gate in [hardware-partner-research.md](./docs/hardware-partner-research.md), obtain exact Yongyida/Jiangzhi API or HAL packages under acceptable IP/security terms, and complete exact-SKU hardware conformance before enabling either provisional adapter in production.
+7. Finish isolated staging with production-like Apple/Google/Twilio/Mapbox/Hume/Dynamo/APNs/FCM resources, observability, threat-model approval, and rollback evidence.
+8. Grant the authorized EAS owner access, validate the current production profile, and build the exact reviewed TestFlight SHA.
+9. Run the priority language script, then the full UI, provider, privacy, safety, audio, BLE, accessibility, performance, clean-install, and upgrade matrices.
+10. Obtain native-speaker safety approval for every intended public locale; keep full-catalog artifacts marked as QA until approved.
+11. Re-run the full source/config/security/dependency gates, reconcile store/privacy disclosures, record GO/NO-GO, and use a monitored staged rollout only after every P1 closes.
 
 ## 18. Consolidation map
 
-This README is the sole Markdown handoff. The former root documents below were merged into the indicated sections and removed after consolidation. Their pre-consolidation text remains available through Git history, while current status and procedures must be maintained here.
+This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), and [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |
@@ -920,6 +929,7 @@ This README is the sole Markdown handoff. The former root documents below were m
 - Security/storage: [`auth-session.js`](./src/services/auth-session.js), [`secure-storage.js`](./src/services/secure-storage.js), [`account-data-boundary.js`](./src/services/account-data-boundary.js), [`privacy.js`](./src/services/privacy.js)
 - Voice: [`hume-evi.js`](./src/services/websocket/hume-evi.js), [`audio.js`](./src/services/audio.js), [`useHumeVoiceCall.js`](./src/hooks/useHumeVoiceCall.js), [`voice-gateway.cjs`](./server/voice-gateway.cjs)
 - Backend: [`clm-server.cjs`](./server/clm-server.cjs), [`auth-session.cjs`](./server/auth-session.cjs), [`safety-api.cjs`](./server/safety-api.cjs), [`server/api/index.js`](./server/api/index.js)
+- Product 2 HAL: [`RobotAdapter.ts`](./server/src/adapters/RobotAdapter.ts), [`robot-adapter-runtime.cjs`](./server/robot-adapter-runtime.cjs), [architecture](./docs/robot-hal-architecture.md), [integration guide](./docs/robot-adapter-integration-guide.md), [manufacturer research](./docs/hardware-partner-research.md), and [bug log](./docs/robot-adapter-bug-log.md)
 - BLE: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services/vl01-protocol.js)
 - Native/build: [`app.config.js`](./app.config.js), [`eas.json`](./eas.json), [`plugins/`](./plugins), [`server/Dockerfile`](./server/Dockerfile), [`railway.toml`](./railway.toml)
 

@@ -10,6 +10,16 @@ Previous branch head: 9c5ea003ba431fc25d9148b8fae7901d25dcc16e
 
 Products: VL01 BLE wearable and WiFi home companion robot
 
+> **Historical evidence notice:** This matrix is intentionally scoped to the
+> audited commit above. It does not describe the later Yongyida/Jiangzhi HAL,
+> bounded mixed-vendor telemetry snapshot, pairing-response recovery,
+> adapter-bound lifecycle/privacy routing, or single-replica delivery gate.
+> For the current Product 2 contract and release blockers, use
+> [robot-hal-architecture.md](./robot-hal-architecture.md),
+> [robot-adapter-integration-guide.md](./robot-adapter-integration-guide.md), and
+> [robot-adapter-bug-log.md](./robot-adapter-bug-log.md). Do not combine this
+> historical test count with the current suites.
+
 ## Release recommendation
 
 **NO-GO / not ready for production.**
