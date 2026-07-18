@@ -352,7 +352,17 @@ test('VL01 battery and GATT validation reject malformed or incompatible devices'
     [{ uuid: 'fff0' }],
     [
       { uuid: 'fff1', isReadable: true },
-      { uuid: 'fff2', isNotifiable: true },
+      { uuid: 'fff2', isReadable: false, isNotifiable: true },
+      { uuid: 'fff3', isNotifiable: true },
+      { uuid: 'fff4', isWritableWithResponse: true }
+    ],
+    TEST_FULL_PROTOCOL
+  ), /status characteristic is not readable/);
+  assert.throws(() => validateVL01GATT(
+    [{ uuid: 'fff0' }],
+    [
+      { uuid: 'fff1', isReadable: true },
+      { uuid: 'fff2', isReadable: true, isNotifiable: true },
       { uuid: 'fff3', isIndicatable: true },
       { uuid: 'fff4' }
     ],
@@ -387,7 +397,7 @@ test('BLE subscribes to approved battery, status, and event characteristics and 
   const callbacks = new Map();
   let disconnectCallback;
   let cancelledDeviceId = null;
-  let commandWrite = null;
+  const commandWrites = [];
   const service = new BLEService({ protocol: TEST_FULL_PROTOCOL });
   const received = { batteries: [], statuses: [], events: [], degraded: [] };
   service.setEventHandler({
@@ -404,21 +414,22 @@ test('BLE subscribes to approved battery, status, and event characteristics and 
     async characteristicsForService() {
       return [
         { uuid: 'fff1', isReadable: true, isNotifiable: true },
-        { uuid: 'fff2', isReadable: false, isNotifiable: true },
+        { uuid: 'fff2', isReadable: true, isNotifiable: true },
         { uuid: 'fff3', isReadable: false, isNotifiable: true },
         { uuid: 'fff4', isWritableWithResponse: true }
       ];
     },
     async readCharacteristicForService(_service, characteristic) {
-      assert.equal(characteristic, 'fff1');
-      return { value: 'Ug==' };
+      if (characteristic === 'fff1') return { value: 'Ug==' };
+      assert.equal(characteristic, 'fff2');
+      return { value: 'AA==' };
     },
     monitorCharacteristicForService(_service, characteristic, callback) {
       callbacks.set(characteristic, callback);
       return { remove() {} };
     },
     async writeCharacteristicWithResponseForService(serviceUUID, characteristicUUID, value) {
-      commandWrite = { serviceUUID, characteristicUUID, value };
+      commandWrites.push({ serviceUUID, characteristicUUID, value });
     }
   };
   service.manager = {
@@ -436,14 +447,20 @@ test('BLE subscribes to approved battery, status, and event characteristics and 
   callbacks.get('fff2')(null, { value: 'AQ==' });
   callbacks.get('fff3')(null, { value: 'Ag==' });
   assert.deepEqual(received.batteries, [100]);
-  assert.deepEqual(received.statuses, ['AQ==']);
+  assert.deepEqual(received.statuses, ['AA==', 'AQ==']);
   assert.deepEqual(received.events, ['Ag==']);
   assert.equal(await service.writeCommand(connectedDevice.id, 'AQ=='), true);
-  assert.deepEqual(commandWrite, {
+  assert.deepEqual(commandWrites[0], {
     serviceUUID: 'fff0',
     characteristicUUID: 'fff4',
     value: 'AQ=='
   });
+  const longCommand = Buffer.from(Array.from({ length: 45 }, (_, index) => index)).toString('base64');
+  assert.equal(await service.writeCommand(connectedDevice.id, longCommand), true);
+  assert.deepEqual(
+    commandWrites.slice(1).map((entry) => Buffer.from(entry.value, 'base64').length),
+    [20, 20, 5]
+  );
 
   const monitorError = { errorCode: 201 };
   callbacks.get('fff2')(monitorError);

@@ -3,14 +3,15 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
-const { ActionGateway, ROBOT_FAILURE_MESSAGE, deriveEd25519PublicKey, redactSerial, signEnvelope, validateAction } = require('./action-gateway.cjs');
+const { ActionGateway, ROBOT_FAILURE_MESSAGE, createDynamoActionOutboxRepository, deriveEd25519PublicKey, redactSerial, signEnvelope, validateAction } = require('./action-gateway.cjs');
 
 const secret = crypto.generateKeyPairSync('ed25519').privateKey.export({ format: 'pem', type: 'pkcs8' });
-const wearableCommandPayloads = { deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==' };
+const wearableCommandPayloads = { deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==', stop: 'BA==' };
 
 test('action validation enforces device/action compatibility', () => {
   assert.throws(() => validateAction({ action: 'check_medication', device_type: 'wearable', device_id: 'w1' }), /not allowed/);
   assert.equal(validateAction({ action: 'check_medication', device_type: 'home_robot', device_id: 'r1' }).device_id, 'r1');
+  assert.equal(validateAction({ action: 'stop', device_type: 'wearable', device_id: 'w1' }).action, 'stop');
 });
 
 test('signed action envelopes are deterministic with a fixed clock except identity', () => {
@@ -22,6 +23,48 @@ test('signed action envelopes are deterministic with a fixed clock except identi
   assert.equal(crypto.verify(null, Buffer.from(signed.payload), publicKey, Buffer.from(signed.signature, 'base64url')), true);
   assert.equal(deriveEd25519PublicKey(secret).length, 43);
   assert.ok(signed.signature.length > 20);
+});
+
+test('signed manufacturer medication envelope carries the stable reminder correlation ID', async () => {
+  let signedRequest;
+  const gateway = new ActionGateway({
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test/hooks',
+    manufacturerApiKey: 'key',
+    fetchImpl: async (_url, options) => {
+      signedRequest = JSON.parse(options.body);
+      return { ok: true, status: 202 };
+    }
+  });
+  gateway.registerSession('user-1', null, [
+    { device_id: 'robot-home-0001', device_type: 'home_robot', online: true }
+  ]);
+  await gateway.route('user-1', {
+    action: 'medication_reminder',
+    device_type: 'home_robot',
+    device_id: 'robot-home-0001',
+    idempotency_key: 'med-reminder-001_reminder_v1',
+    parameters: {
+      reminder_id: 'med-reminder-001',
+      medication_id: 'morning-dose',
+      scheduled_at: 1_060_000
+    }
+  });
+  await gateway.waitForDeliveries();
+  assert.deepEqual(signedRequest.envelope.parameters, {
+    reminder_id: 'med-reminder-001',
+    medication_id: 'morning-dose',
+    scheduled_at: 1_060_000
+  });
+  assert.equal(
+    crypto.verify(
+      null,
+      Buffer.from(signedRequest.payload),
+      crypto.createPublicKey(secret),
+      Buffer.from(signedRequest.signature, 'base64url')
+    ),
+    true
+  );
 });
 
 test('wearable actions use the active authenticated voice channel', async () => {
@@ -341,4 +384,37 @@ test('wearable delivery signs only the server-owned firmware command mapping', a
 
 test('hardware serial redaction never contains the serial', () => {
   assert.doesNotMatch(redactSerial('SERIAL-PRIVATE-123'), /SERIAL-PRIVATE-123/);
+});
+
+test('privacy export uses the account outbox index instead of a table scan', async () => {
+  const commands = [];
+  const repository = createDynamoActionOutboxRepository({
+    tableName: 'actions',
+    userIndexName: 'user-index',
+    client: {
+      async send(command) {
+        commands.push(command);
+        if (command.constructor.name === 'QueryCommand') return { Items: [] };
+        return {};
+      }
+    }
+  });
+  await repository.enqueue({
+    action_id: '11111111-1111-4111-8111-111111111111',
+    user_id: 'user-1',
+    device_id: 'robot-1',
+    device_type: 'home_robot',
+    action: 'check_medication',
+    signed: {},
+    created_at: 1000
+  });
+  const put = commands[0].input.Item;
+  assert.equal(put.user_index_pk, 'USER#user-1');
+  assert.match(put.user_index_sk, /^ACTION#/);
+
+  await repository.exportUserData('user-1');
+  const query = commands[1];
+  assert.equal(query.constructor.name, 'QueryCommand');
+  assert.equal(query.input.IndexName, 'user-index');
+  assert.equal(query.input.ExpressionAttributeValues[':userId'], 'USER#user-1');
 });

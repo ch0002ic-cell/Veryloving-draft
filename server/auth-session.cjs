@@ -167,7 +167,11 @@ function signSessionJWT(identity, config, { now = Date.now, randomUUID = crypto.
   return { token: `${signingInput}.${signature}`, payload };
 }
 
-function signRefreshJWT(identity, config, { now = Date.now, randomUUID = crypto.randomUUID } = {}) {
+function signRefreshJWT(identity, config, {
+  now = Date.now,
+  randomUUID = crypto.randomUUID,
+  absoluteExpiresAtSeconds
+} = {}) {
   const jwt = sessionJWTConfig(config);
   if (typeof jwt.secret !== 'string' || jwt.secret.length < 32) throw new Error('Session signing is not configured');
   if (!identity?.subject || !identity?.sessionId) throw new Error('Refresh session identity is invalid');
@@ -182,8 +186,12 @@ function signRefreshJWT(identity, config, { now = Date.now, randomUUID = crypto.
     scope: 'session:refresh',
     iat: issuedAt,
     nbf: issuedAt - 5,
-    exp: issuedAt + jwt.refreshTTLSeconds
+    exp: Math.min(
+      issuedAt + jwt.refreshTTLSeconds,
+      Number.isFinite(absoluteExpiresAtSeconds) ? absoluteExpiresAtSeconds : Number.MAX_SAFE_INTEGER
+    )
   };
+  if (payload.exp <= issuedAt) throw new Error('Refresh session family has expired');
   const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
   const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
   const signingInput = `${encodedHeader}.${encodedPayload}`;

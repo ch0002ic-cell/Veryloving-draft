@@ -16,6 +16,8 @@ const {
   createToolErrorPayload,
   createToolResponsePayload,
   normalizeHumeConfigId,
+  normalizePersonaId,
+  normalizeVoiceLocale,
   reconnectDelay
 } = require('../src/services/websocket/hume-protocol');
 const { humeVoiceOverride, validHumeVoiceId } = require('../src/utils/hume-voice');
@@ -50,12 +52,25 @@ test('Hume protocol uses official session and resume field names', () => {
   assert.match(url, /api_key=development-key/);
   assert.match(url, /config_id=config-id/);
   assert.match(url, /resumed_chat_group_id=chat-group-id/);
-  const settings = createSessionSettingsPayload({ customSessionId: 'opaque-session', systemPrompt: 'Be helpful.' });
+  const settings = createSessionSettingsPayload({
+    customSessionId: 'opaque-session',
+    systemPrompt: 'Be helpful.',
+    locale: 'ES',
+    personaId: 'bestie'
+  });
   assert.equal(settings.type, 'session_settings');
   assert.equal(settings.custom_session_id, 'opaque-session');
   assert.deepEqual(settings.audio, { format: 'linear16', sample_rate: 48000, channels: 1 });
   assert.equal(settings.audio.encoding, undefined);
   assert.equal(settings.language_model_api_key, undefined);
+  assert.deepEqual(settings.variables, {
+    veryloving_locale: 'es',
+    veryloving_persona: 'bestie'
+  });
+  assert.equal(normalizeVoiceLocale('zh_CN'), 'zh-cn');
+  assert.equal(normalizeVoiceLocale('fr'), 'fr');
+  assert.equal(normalizePersonaId('muscleMan'), 'muscleMan');
+  assert.equal(normalizePersonaId('../persona'), undefined);
 });
 
 test('Hume protocol omits blank config IDs and preserves configured IDs', () => {
@@ -89,13 +104,17 @@ test('proxy WebSocket URL never contains the app session token', () => {
   assert.doesNotMatch(proxyURL, /token|must-not-appear/);
   assert.deepEqual(createProxyAuthenticationPayload({
     accessToken: 'first-party-session',
-    configId: 'config-id'
+    configId: 'config-id',
+    locale: 'fr',
+    personaId: 'capybara'
   }), {
     type: 'authenticate',
     access_token: 'first-party-session',
     connection: {
       config_id: 'config-id',
       voice_id: undefined,
+      persona_id: 'capybara',
+      locale: 'fr',
       resumed_chat_group_id: undefined
     }
   });

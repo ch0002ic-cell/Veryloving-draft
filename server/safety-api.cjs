@@ -4,7 +4,23 @@ const crypto = require('node:crypto');
 
 const E164_PATTERN = /^\+[1-9]\d{6,14}$/;
 const IDEMPOTENCY_PATTERN = /^[A-Za-z0-9_-]{16,100}$/;
+const MEDICATION_REFERENCE_PATTERN = /^[A-Za-z0-9_-]{1,100}$/;
 const SAFETY_MODES = new Set(['home', 'guardian', 'emergency']);
+const MEDICATION_ESCALATION_REASONS = new Set([
+  'missed_dose',
+  'reminder_unacknowledged',
+  'care_recipient_unresponsive'
+]);
+const CONTACT_DELIVERY_STATUSES = new Set([
+  'pending',
+  'delivered',
+  'partially_delivered',
+  'failed',
+  'no_eligible_recipients',
+  'not_configured'
+]);
+const MAX_SAFETY_RETENTION_DAYS = 365;
+const MAX_MEDICATION_ESCALATION_AGE_MS = 24 * 60 * 60 * 1000;
 
 function validateContactInput(body) {
   const name = typeof body?.name === 'string' ? body.name.trim() : '';
@@ -23,6 +39,48 @@ function validateIdempotencyKey(value) {
   return value;
 }
 
+function safetyEventExpiry(retentionDays) {
+  const parsed = Number(retentionDays);
+  const days = Number.isFinite(parsed)
+    ? Math.max(1, Math.min(MAX_SAFETY_RETENTION_DAYS, Math.floor(parsed)))
+    : 30;
+  return Math.floor((Date.now() + days * 86400000) / 1000);
+}
+
+function validateMedicationEscalationInput(body, { allowHistorical = false } = {}) {
+  const medicationReference = typeof body?.medicationReference === 'string'
+    ? body.medicationReference.trim()
+    : '';
+  if (!MEDICATION_REFERENCE_PATTERN.test(medicationReference)) {
+    throw Object.assign(new Error('medicationReference is invalid'), { statusCode: 400 });
+  }
+  if (!MEDICATION_ESCALATION_REASONS.has(body?.reason)) {
+    throw Object.assign(new Error('reason is invalid'), { statusCode: 400 });
+  }
+  const occurredAt = Number(body?.occurredAt);
+  const now = Date.now();
+  if (!Number.isSafeInteger(occurredAt)
+    || (!allowHistorical && occurredAt < now - MAX_MEDICATION_ESCALATION_AGE_MS)
+    || (!allowHistorical && occurredAt > now + 5 * 60 * 1000)) {
+    throw Object.assign(new Error('occurredAt is invalid or stale'), { statusCode: 400 });
+  }
+  if (body?.contactIds !== undefined && !Array.isArray(body.contactIds)) {
+    throw Object.assign(new Error('contactIds is invalid'), { statusCode: 400 });
+  }
+  if (Array.isArray(body?.contactIds) && body.contactIds.length > 10) {
+    throw Object.assign(new Error('contactIds exceeds the emergency contact limit'), { statusCode: 400 });
+  }
+  const source = body?.source === 'home_robot' ? 'home_robot' : body?.source === 'app' ? 'app' : null;
+  if (!source) throw Object.assign(new Error('source is invalid'), { statusCode: 400 });
+  return {
+    medicationReference,
+    reason: body.reason,
+    occurredAt,
+    source,
+    requestedContactIds: body.contactIds
+  };
+}
+
 function validateLocation(value) {
   if (value === undefined || value === null) return null;
   const latitude = Number(value.latitude ?? value.coords?.latitude);
@@ -35,6 +93,67 @@ function validateLocation(value) {
     throw Object.assign(new Error('location is stale'), { statusCode: 400 });
   }
   return { latitude, longitude, capturedAt };
+}
+
+function validateMedicalAttachment(value) {
+  if (value === undefined || value === null) return null;
+  if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1) {
+    throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+  }
+  const generatedAt = Number(value.generatedAt);
+  const consentRecordedAt = Number(value.consentRecordedAt);
+  const profileVersion = Number(value.profileVersion);
+  if (!Number.isSafeInteger(generatedAt)
+    || Math.abs(Date.now() - generatedAt) > 5 * 60 * 1000
+    || !Number.isSafeInteger(consentRecordedAt)
+    || consentRecordedAt > generatedAt
+    || !Number.isSafeInteger(profileVersion)
+    || profileVersion < 1) {
+    throw Object.assign(new Error('medicalAttachment is stale or invalid'), { statusCode: 400 });
+  }
+  const cleanString = (input, maxLength) => {
+    if (input === null || input === undefined || input === '') return null;
+    if (typeof input !== 'string' || input.trim().length > maxLength) {
+      throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+    }
+    return input.trim();
+  };
+  const cleanList = (input) => {
+    if (!Array.isArray(input) || input.length > 20) {
+      throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+    }
+    return input.map((item) => cleanString(item, 160)).filter(Boolean);
+  };
+  if (!Array.isArray(value.medications) || value.medications.length > 20) {
+    throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+  }
+  const medications = value.medications.map((item) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) {
+      throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+    }
+    const name = cleanString(item.name, 160);
+    if (!name) throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+    return {
+      name,
+      dose: cleanString(item.dose, 160),
+      instructions: cleanString(item.instructions, 160)
+    };
+  });
+  const bloodType = cleanString(value.bloodType, 7) || 'unknown';
+  if (!new Set(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown']).has(bloodType)) {
+    throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
+  }
+  return {
+    schemaVersion: 1,
+    profileVersion,
+    consentRecordedAt,
+    generatedAt,
+    bloodType,
+    conditions: cleanList(value.conditions),
+    allergies: cleanList(value.allergies),
+    medications,
+    emergencyNotes: cleanString(value.emergencyNotes, 500)
+  };
 }
 
 function opaqueId(prefix, input) {
@@ -72,6 +191,86 @@ function createDynamoSafetyRepository({ tableName, region }) {
       exclusiveStartKey = result.LastEvaluatedKey;
     } while (exclusiveStartKey);
     return items;
+  }
+
+  async function acceptDeliveryEvent(userId, sortPrefix, entity, event) {
+    const key = { PK: `USER#${userId}`, SK: `${sortPrefix}#${event.idempotencyKey}` };
+    try {
+      await documentClient.send(new PutCommand({
+        TableName: tableName,
+        Item: { ...key, entity, ...event },
+        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+      }));
+      return event;
+    } catch (error) {
+      if (error?.name !== 'ConditionalCheckFailedException') throw error;
+      const existing = await documentClient.send(new GetCommand({
+        TableName: tableName,
+        Key: key,
+        ConsistentRead: true
+      }));
+      if (!existing.Item) throw error;
+      return existing.Item;
+    }
+  }
+
+  async function claimDeliveryEvent(userId, sortPrefix, idempotencyKey) {
+    try {
+      const result = await documentClient.send(new UpdateCommand({
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` },
+        UpdateExpression: 'SET deliveryAttemptedAt = :attemptedAt',
+        ConditionExpression: [
+          'attribute_exists(PK)',
+          'attribute_exists(SK)',
+          '#status = :accepted',
+          'deliveryStatus = :pending',
+          'attribute_not_exists(deliveryAttemptedAt)'
+        ].join(' AND '),
+        ExpressionAttributeNames: { '#status': 'status' },
+        ExpressionAttributeValues: {
+          ':accepted': 'accepted',
+          ':pending': 'pending',
+          ':attemptedAt': Date.now()
+        },
+        ReturnValues: 'ALL_NEW'
+      }));
+      return result.Attributes || null;
+    } catch (error) {
+      if (error?.name === 'ConditionalCheckFailedException') return null;
+      throw error;
+    }
+  }
+
+  async function recordDeliveryEvent(userId, sortPrefix, idempotencyKey, delivery) {
+    if (!CONTACT_DELIVERY_STATUSES.has(delivery?.deliveryStatus) || delivery.deliveryStatus === 'pending') {
+      throw new Error('Contact delivery status is invalid');
+    }
+    const count = (value) => Math.min(10, Math.max(0, Number.isSafeInteger(value) ? value : 0));
+    const recordedAt = Date.now();
+    const result = await documentClient.send(new UpdateCommand({
+      TableName: tableName,
+      Key: { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` },
+      UpdateExpression: [
+        'SET deliveryStatus = :deliveryStatus',
+        'deliveryRecordedAt = :recordedAt',
+        'deliveryEligibleCount = :eligibleCount',
+        'deliveryDeliveredCount = :deliveredCount',
+        'deliveryFailedCount = :failedCount'
+      ].join(', '),
+      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #status = :accepted',
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: {
+        ':accepted': 'accepted',
+        ':deliveryStatus': delivery.deliveryStatus,
+        ':recordedAt': recordedAt,
+        ':eligibleCount': count(delivery.eligibleCount),
+        ':deliveredCount': count(delivery.deliveredCount),
+        ':failedCount': count(delivery.failedCount)
+      },
+      ReturnValues: 'ALL_NEW'
+    }));
+    return result.Attributes || null;
   }
 
   return {
@@ -145,19 +344,30 @@ function createDynamoSafetyRepository({ tableName, region }) {
       }));
     },
     async acceptSOS(userId, event) {
-      const key = { PK: `USER#${userId}`, SK: `SOS#${event.idempotencyKey}` };
-      try {
-        await documentClient.send(new PutCommand({
-          TableName: tableName,
-          Item: { ...key, entity: 'sos', ...event },
-          ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
-        }));
-        return event;
-      } catch (error) {
-        if (error?.name !== 'ConditionalCheckFailedException') throw error;
-        const existing = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
-        return existing.Item;
-      }
+      return acceptDeliveryEvent(userId, 'SOS', 'sos', event);
+    },
+    async claimSOSDelivery(userId, idempotencyKey) {
+      return claimDeliveryEvent(userId, 'SOS', idempotencyKey);
+    },
+    async recordSOSDelivery(userId, idempotencyKey, delivery) {
+      return recordDeliveryEvent(userId, 'SOS', idempotencyKey, delivery);
+    },
+    async acceptMedicationEscalation(userId, event) {
+      return acceptDeliveryEvent(userId, 'MEDICATION_ESCALATION', 'medication-escalation', event);
+    },
+    async getMedicationEscalation(userId, idempotencyKey) {
+      const result = await documentClient.send(new GetCommand({
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: `MEDICATION_ESCALATION#${idempotencyKey}` },
+        ConsistentRead: true
+      }));
+      return result.Item || null;
+    },
+    async claimMedicationEscalationDelivery(userId, idempotencyKey) {
+      return claimDeliveryEvent(userId, 'MEDICATION_ESCALATION', idempotencyKey);
+    },
+    async recordMedicationEscalationDelivery(userId, idempotencyKey, delivery) {
+      return recordDeliveryEvent(userId, 'MEDICATION_ESCALATION', idempotencyKey, delivery);
     },
     async startSafetySession(userId, session) {
       await documentClient.send(new PutCommand({
@@ -190,11 +400,72 @@ function createDynamoSafetyRepository({ tableName, region }) {
           startedAt: safetyState.startedAt,
           location: safetyState.location || null
         } : null,
-        sosEvents: items.filter((item) => item.entity === 'sos').map(
-          ({ id, status, acceptedAt, occurredAt, source, contactIds, location }) => ({
-            id, status, acceptedAt, occurredAt, source, contactIds, location: location || null
-          })
-        )
+        sosEvents: items.filter((item) => item.entity === 'sos').map(({
+          id,
+          status,
+          acceptedAt,
+          occurredAt,
+          source,
+          contactIds,
+          location,
+          medicalAttachment,
+          deliveryStatus,
+          deliveryAttemptedAt,
+          deliveryRecordedAt,
+          deliveryEligibleCount,
+          deliveryDeliveredCount,
+          deliveryFailedCount
+        }) => ({
+          id,
+          status,
+          acceptedAt,
+          occurredAt,
+          source,
+          contactIds,
+          location: location || null,
+          medicalAttachment: medicalAttachment || null,
+          deliveryStatus: CONTACT_DELIVERY_STATUSES.has(deliveryStatus) ? deliveryStatus : 'not_configured',
+          deliveryAttemptedAt: Number.isFinite(deliveryAttemptedAt) ? deliveryAttemptedAt : null,
+          deliveryRecordedAt: Number.isFinite(deliveryRecordedAt) ? deliveryRecordedAt : null,
+          deliveryEligibleCount: Number.isSafeInteger(deliveryEligibleCount) ? deliveryEligibleCount : 0,
+          deliveryDeliveredCount: Number.isSafeInteger(deliveryDeliveredCount) ? deliveryDeliveredCount : 0,
+          deliveryFailedCount: Number.isSafeInteger(deliveryFailedCount) ? deliveryFailedCount : 0
+        })),
+        medicationEscalations: items
+          .filter((item) => item.entity === 'medication-escalation')
+          .map(({
+            id,
+            status,
+            acceptedAt,
+            occurredAt,
+            source,
+            reason,
+            medicationReference,
+            contactIds,
+            deliveryStatus,
+            deliveryAttemptedAt,
+            deliveryRecordedAt,
+            deliveryEligibleCount,
+            deliveryDeliveredCount,
+            deliveryFailedCount,
+            expiresAt
+          }) => ({
+            id,
+            status,
+            acceptedAt,
+            occurredAt,
+            source,
+            reason,
+            medicationReference,
+            contactIds,
+            deliveryStatus: CONTACT_DELIVERY_STATUSES.has(deliveryStatus) ? deliveryStatus : 'not_configured',
+            deliveryAttemptedAt: Number.isFinite(deliveryAttemptedAt) ? deliveryAttemptedAt : null,
+            deliveryRecordedAt: Number.isFinite(deliveryRecordedAt) ? deliveryRecordedAt : null,
+            deliveryEligibleCount: Number.isSafeInteger(deliveryEligibleCount) ? deliveryEligibleCount : 0,
+            deliveryDeliveredCount: Number.isSafeInteger(deliveryDeliveredCount) ? deliveryDeliveredCount : 0,
+            deliveryFailedCount: Number.isSafeInteger(deliveryFailedCount) ? deliveryFailedCount : 0,
+            expiresAt: Number.isSafeInteger(expiresAt) ? expiresAt : null
+          }))
       };
     },
     async deleteUserData(userId) {
@@ -227,7 +498,84 @@ function requireScope(principal, required) {
   }
 }
 
-async function handleSafetyAPI({ req, res, url, body, principal, repository, retentionDays = 30, json }) {
+async function deliverContactAlert({
+  repository,
+  userId,
+  accepted,
+  contactIds,
+  notifyEmergencyContacts,
+  claimMethod,
+  recordMethod,
+  notification,
+  initialDeliveryStatus
+}) {
+  let deliveryStatus = CONTACT_DELIVERY_STATUSES.has(accepted.deliveryStatus)
+    ? accepted.deliveryStatus
+    : initialDeliveryStatus;
+  if (typeof notifyEmergencyContacts !== 'function') return deliveryStatus;
+
+  const recordDelivery = async (delivery) => {
+    try {
+      await repository[recordMethod]?.(userId, accepted.idempotencyKey, delivery);
+    } catch {
+      // Delivery-state storage is deliberately isolated from durable event
+      // acceptance. An alert provider failure cannot rewrite acceptance.
+    }
+  };
+  let claimed = null;
+  try {
+    claimed = typeof repository[claimMethod] === 'function'
+      ? await repository[claimMethod](userId, accepted.idempotencyKey)
+      : (deliveryStatus === 'pending' ? accepted : null);
+  } catch {
+    deliveryStatus = 'failed';
+    await recordDelivery({
+      deliveryStatus,
+      eligibleCount: 0,
+      deliveredCount: 0,
+      failedCount: 0
+    });
+  }
+  if (!claimed) return deliveryStatus;
+
+  let delivery = null;
+  try {
+    delivery = await notifyEmergencyContacts(userId, contactIds, notification);
+  } catch {
+    deliveryStatus = 'failed';
+    await recordDelivery({
+      deliveryStatus,
+      eligibleCount: 0,
+      deliveredCount: 0,
+      failedCount: 0
+    });
+  }
+  if (!delivery) return deliveryStatus;
+
+  deliveryStatus = delivery.delivered > 0
+    ? (delivery.failedRecipients > 0 ? 'partially_delivered' : 'delivered')
+    : delivery.eligible > 0 ? 'failed' : 'no_eligible_recipients';
+  await recordDelivery({
+    deliveryStatus,
+    eligibleCount: delivery.eligible,
+    deliveredCount: delivery.delivered,
+    failedCount: delivery.failedRecipients
+  });
+  return deliveryStatus;
+}
+
+async function handleSafetyAPI({
+  req,
+  res,
+  url,
+  body,
+  principal,
+  repository,
+  privacyCoordinator,
+  notifyEmergencyContacts,
+  retentionDays = 30,
+  json
+}) {
   if (!principal?.sub) {
     json(res, 401, { error: 'Unauthorized' });
     return true;
@@ -319,13 +667,109 @@ async function handleSafetyAPI({ req, res, url, body, principal, repository, ret
       source: body?.source === 'vl01' ? 'vl01' : 'app',
       contactIds,
       location: validateLocation(body?.location),
+      medicalAttachment: validateMedicalAttachment(body?.medicalAttachment),
+      deliveryStatus: typeof notifyEmergencyContacts === 'function' ? 'pending' : 'not_configured',
       // Configure DynamoDB TTL on this attribute. Contacts and the current
       // safety state remain until user deletion; transient SOS telemetry does
       // not persist indefinitely.
-      expiresAt: Math.floor((Date.now() + Math.max(1, retentionDays) * 86400000) / 1000)
+      expiresAt: safetyEventExpiry(retentionDays)
     };
     const accepted = await repository.acceptSOS(userId, event);
-    json(res, 202, { id: accepted.id, status: accepted.status, acceptedAt: accepted.acceptedAt });
+    const deliveryStatus = await deliverContactAlert({
+      repository,
+      userId,
+      accepted,
+      contactIds,
+      notifyEmergencyContacts,
+      claimMethod: 'claimSOSDelivery',
+      recordMethod: 'recordSOSDelivery',
+      notification: {
+        title: 'VeryLoving safety alert',
+        body: 'A trusted contact activated SOS. Open VeryLoving and check on them now.',
+        data: { type: 'emergency_contact_sos', sos_id: accepted.id }
+      },
+      initialDeliveryStatus: event.deliveryStatus
+    });
+    json(res, 202, {
+      id: accepted.id,
+      status: accepted.status,
+      acceptedAt: accepted.acceptedAt,
+      deliveryStatus
+    });
+    return true;
+  }
+  if (req.method === 'POST' && url.pathname === '/v1/medication-escalations') {
+    requireScope(principal, 'safety:write');
+    const idempotencyKey = validateIdempotencyKey(body?.idempotencyKey);
+    const input = validateMedicationEscalationInput(body, { allowHistorical: true });
+    const selectedContactIds = input.requestedContactIds === undefined
+      ? null
+      : [...new Set(input.requestedContactIds)];
+    if (selectedContactIds && (
+      selectedContactIds.length === 0
+      || selectedContactIds.some((id) => typeof id !== 'string' || !/^contact_[A-Za-z0-9_-]{24}$/.test(id))
+    )) {
+      throw Object.assign(new Error('contactIds is invalid'), { statusCode: 400 });
+    }
+    const requestFingerprint = crypto.createHash('sha256').update(JSON.stringify({
+      medicationReference: input.medicationReference,
+      reason: input.reason,
+      occurredAt: input.occurredAt,
+      source: input.source,
+      contacts: selectedContactIds ? [...selectedContactIds].sort() : 'all'
+    })).digest('base64url');
+
+    let accepted = typeof repository.getMedicationEscalation === 'function'
+      ? await repository.getMedicationEscalation(userId, idempotencyKey)
+      : null;
+    if (!accepted) {
+      validateMedicationEscalationInput(body);
+      const contacts = (await repository.listContacts(userId)).slice(0, 10);
+      const ownedContactIds = new Set(contacts.map((contact) => contact.id));
+      if (selectedContactIds?.some((contactId) => !ownedContactIds.has(contactId))) {
+        throw Object.assign(new Error('An emergency contact is unavailable'), { statusCode: 400 });
+      }
+      const contactIds = selectedContactIds || [...ownedContactIds];
+      const event = {
+        id: opaqueId('medication_escalation', `${userId}:${idempotencyKey}`),
+        idempotencyKey,
+        requestFingerprint,
+        status: 'accepted',
+        acceptedAt: Date.now(),
+        occurredAt: input.occurredAt,
+        source: input.source,
+        reason: input.reason,
+        medicationReference: input.medicationReference,
+        contactIds,
+        deliveryStatus: typeof notifyEmergencyContacts === 'function' ? 'pending' : 'not_configured',
+        expiresAt: safetyEventExpiry(retentionDays)
+      };
+      accepted = await repository.acceptMedicationEscalation(userId, event);
+    }
+    if (accepted.requestFingerprint !== requestFingerprint) {
+      throw Object.assign(new Error('idempotencyKey was already used for a different escalation'), { statusCode: 409 });
+    }
+    const deliveryStatus = await deliverContactAlert({
+      repository,
+      userId,
+      accepted,
+      contactIds: accepted.contactIds,
+      notifyEmergencyContacts,
+      claimMethod: 'claimMedicationEscalationDelivery',
+      recordMethod: 'recordMedicationEscalationDelivery',
+      notification: {
+        title: 'VeryLoving caregiver alert',
+        body: 'Someone who selected you as an emergency contact may need help with a care task. Open VeryLoving and check on them.',
+        data: { type: 'medication_caregiver_escalation', escalation_id: accepted.id }
+      },
+      initialDeliveryStatus: accepted.deliveryStatus || 'not_configured'
+    });
+    json(res, 202, {
+      id: accepted.id,
+      status: accepted.status,
+      acceptedAt: accepted.acceptedAt,
+      deliveryStatus
+    });
     return true;
   }
   if (req.method === 'POST' && url.pathname === '/v1/safety-sessions') {
@@ -350,12 +794,17 @@ async function handleSafetyAPI({ req, res, url, body, principal, repository, ret
   }
   if (req.method === 'GET' && url.pathname === '/v1/privacy/export') {
     requireScope(principal, 'safety:read');
-    json(res, 200, { data: await repository.exportUserData(userId) });
+    json(res, 200, {
+      data: privacyCoordinator
+        ? await privacyCoordinator.exportUserData(userId)
+        : await repository.exportUserData(userId)
+    });
     return true;
   }
   if (req.method === 'DELETE' && url.pathname === '/v1/privacy/data') {
     requireScope(principal, 'safety:write');
-    await repository.deleteUserData(userId);
+    if (privacyCoordinator) await privacyCoordinator.deleteUserData(userId);
+    else await repository.deleteUserData(userId);
     res.writeHead(204, { 'Cache-Control': 'no-store' });
     res.end();
     return true;
@@ -368,6 +817,8 @@ module.exports = {
   handleSafetyAPI,
   opaqueId,
   validateContactInput,
+  validateMedicalAttachment,
+  validateMedicationEscalationInput,
   validateIdempotencyKey,
   validateLocation
 };

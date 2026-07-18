@@ -82,6 +82,7 @@ export default function Home() {
         {settings.showCompanion ? (
           <Button title={t('home.safetyCall')} icon="call" onPress={() => router.push('/safety-call')} />
         ) : null}
+        <Button title={t('tutorial.excuseTitle')} icon="call-outline" variant="ghost" onPress={() => router.push('/excuse-call')} />
         <Button title={t('common.sos')} icon="warning" variant="danger" onPress={() => router.push('/emergency-sos')} />
         <Button title={t('common.friends')} icon="people" variant="ghost" onPress={() => router.push('/friends')} />
         <Button title={t('common.settings')} icon="settings" variant="ghost" onPress={() => router.push('/settings')} />

@@ -23,6 +23,20 @@ export function normalizeHumeConfigId(value) {
   return value.trim() || undefined;
 }
 
+export function normalizeVoiceLocale(value) {
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.trim().replace(/_/g, '-').toLowerCase();
+  return /^[a-z]{2,3}(?:-[a-z0-9]{2,8}){0,2}$/.test(normalized)
+    ? normalized
+    : undefined;
+}
+
+export function normalizePersonaId(value) {
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.trim();
+  return /^[A-Za-z0-9_-]{1,40}$/.test(normalized) ? normalized : undefined;
+}
+
 export function appendHumeParams(baseUrl, params) {
   const query = Object.entries(params)
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
@@ -53,7 +67,15 @@ export function normalizeProxyDevices(devices = []) {
   });
 }
 
-export function createProxyAuthenticationPayload({ accessToken, configId, voiceId, resumedChatGroupId, devices = [] }) {
+export function createProxyAuthenticationPayload({
+  accessToken,
+  configId,
+  voiceId,
+  personaId,
+  locale,
+  resumedChatGroupId,
+  devices = []
+}) {
   const normalizedDevices = normalizeProxyDevices(devices);
   return {
     type: 'authenticate',
@@ -61,6 +83,8 @@ export function createProxyAuthenticationPayload({ accessToken, configId, voiceI
     connection: {
       config_id: normalizeHumeConfigId(configId),
       voice_id: voiceId || undefined,
+      persona_id: normalizePersonaId(personaId),
+      locale: normalizeVoiceLocale(locale),
       resumed_chat_group_id: resumedChatGroupId || undefined,
       ...(normalizedDevices.length ? { devices: normalizedDevices } : {})
     }
@@ -79,7 +103,14 @@ export function createSessionSettingsPayload(sessionConfig = {}) {
   if (sessionConfig.systemPrompt) payload.system_prompt = sessionConfig.systemPrompt;
   if (sessionConfig.context) payload.context = { text: sessionConfig.context, type: 'persistent' };
   if (sessionConfig.customSessionId) payload.custom_session_id = sessionConfig.customSessionId;
-  if (sessionConfig.variables) payload.variables = sessionConfig.variables;
+  const variables = sessionConfig.variables && typeof sessionConfig.variables === 'object'
+    ? { ...sessionConfig.variables }
+    : {};
+  const locale = normalizeVoiceLocale(sessionConfig.locale);
+  const personaId = normalizePersonaId(sessionConfig.personaId);
+  if (locale) variables.veryloving_locale = locale;
+  if (personaId) variables.veryloving_persona = personaId;
+  if (Object.keys(variables).length) payload.variables = variables;
   return payload;
 }
 

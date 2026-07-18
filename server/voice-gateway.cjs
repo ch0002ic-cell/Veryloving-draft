@@ -3,16 +3,100 @@
 const { WebSocket, WebSocketServer } = require('ws');
 const { verifySessionJWT } = require('./auth-session.cjs');
 const { ACTION_TOOL_SCHEMAS } = require('./device-action-tools.cjs');
+const { VOICE_LOCALES: VOICE_LOCALE_CODES } = require('./voice-locales.cjs');
 
 const GATEWAY_PATH = '/api/voice/hume-ws';
 const HUME_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
 const AUTH_TIMEOUT_MS = 10000;
 const MAX_CLIENT_PAYLOAD_BYTES = 1024 * 1024;
 const MAX_BUFFERED_BYTES = 512 * 1024;
+const HUME_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const PERSONA_ID_PATTERN = /^[A-Za-z0-9_-]{1,40}$/;
+const VOICE_LOCALES = new Set(VOICE_LOCALE_CODES);
 
 function boundedString(value, maxLength) {
   if (value === undefined || value === null || value === '') return undefined;
   return typeof value === 'string' && value.length <= maxLength ? value : null;
+}
+
+function normalizeVoiceLocale(value) {
+  if (typeof value !== 'string') return undefined;
+  const normalized = value.trim().replace(/_/g, '-').toLowerCase();
+  return VOICE_LOCALES.has(normalized) ? normalized : undefined;
+}
+
+function parsePersonaMap(value) {
+  if (!value) return new Map();
+  let parsed = value;
+  if (typeof value === 'string') {
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      throw new Error('HUME_PERSONA_MAP_JSON must be valid JSON');
+    }
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('HUME_PERSONA_MAP_JSON must be an object');
+  }
+  const personas = new Map();
+  for (const [personaId, definition] of Object.entries(parsed)) {
+    const voiceId = definition?.voice_id;
+    const instructions = definition?.instructions;
+    if (!PERSONA_ID_PATTERN.test(personaId) || !HUME_ID_PATTERN.test(String(voiceId || ''))) {
+      throw new Error('HUME_PERSONA_MAP_JSON contains an invalid persona or voice ID');
+    }
+    if (instructions !== undefined && (typeof instructions !== 'string' || !instructions.trim() || instructions.length > 500)) {
+      throw new Error('HUME_PERSONA_MAP_JSON persona instructions are invalid');
+    }
+    personas.set(personaId, {
+      voiceId,
+      instructions: instructions?.trim()
+    });
+  }
+  return personas;
+}
+
+function configuredPersonaMap(config) {
+  if (config.humePersonaMap instanceof Map) return config.humePersonaMap;
+  return parsePersonaMap(config.humePersonaMapJSON || process.env.HUME_PERSONA_MAP_JSON || '');
+}
+
+function configuredDefaultPersona(config) {
+  return config.humeDefaultPersonaId || process.env.HUME_DEFAULT_PERSONA_ID || undefined;
+}
+
+function assertVoicePersonaConfig(config) {
+  const personas = configuredPersonaMap(config);
+  if (config.nodeEnv !== 'production') return personas;
+  if (!personas.size) throw new Error('HUME_PERSONA_MAP_JSON is required in production');
+  const defaultPersonaId = configuredDefaultPersona(config);
+  if (!defaultPersonaId || !personas.has(defaultPersonaId)) {
+    throw new Error('HUME_DEFAULT_PERSONA_ID must select a configured persona in production');
+  }
+  const allowedVoices = new Set(String(config.humeAllowedVoiceIds || '').split(',').map((item) => item.trim()).filter(Boolean));
+  if ([...personas.values()].some((persona) => !allowedVoices.has(persona.voiceId))) {
+    throw new Error('Every configured persona voice must be present in HUME_ALLOWED_VOICE_IDS');
+  }
+  return personas;
+}
+
+function resolveVoiceSession(auth, config) {
+  const personas = configuredPersonaMap(config);
+  const personaId = auth.personaId || configuredDefaultPersona(config);
+  const locale = auth.locale || 'en';
+  if (!personas.size) return { ...auth, locale, personaId };
+  const persona = personas.get(personaId);
+  if (!persona) throw new Error('The requested voice persona is not allowed');
+  if (auth.voiceId && auth.voiceId !== persona.voiceId) {
+    throw new Error('Direct voice overrides are not allowed with a voice persona');
+  }
+  return {
+    ...auth,
+    locale,
+    personaId,
+    voiceId: persona.voiceId,
+    personaInstructions: persona.instructions
+  };
 }
 
 function parseVoiceAuthenticationMessage(raw) {
@@ -33,15 +117,28 @@ function parseVoiceAuthenticationMessage(raw) {
   const connection = message.connection && typeof message.connection === 'object' ? message.connection : {};
   const configId = boundedString(connection.config_id, 200);
   const voiceId = boundedString(connection.voice_id, 200);
+  const personaId = boundedString(connection.persona_id, 40);
+  const rawLocale = boundedString(connection.locale, 35);
+  const locale = normalizeVoiceLocale(rawLocale);
   const resumedChatGroupId = boundedString(connection.resumed_chat_group_id, 200);
   const devices = normalizeDevices(connection.devices);
-  if (configId === null || voiceId === null || resumedChatGroupId === null) {
+  if (
+    configId === null
+    || voiceId === null
+    || personaId === null
+    || (personaId !== undefined && !PERSONA_ID_PATTERN.test(personaId))
+    || rawLocale === null
+    || (rawLocale !== undefined && !locale)
+    || resumedChatGroupId === null
+  ) {
     throw new Error('Voice connection parameters are invalid');
   }
   return {
     accessToken: message.access_token,
     configId,
     voiceId,
+    personaId,
+    locale,
     resumedChatGroupId,
     devices
   };
@@ -82,6 +179,26 @@ function prepareUpstreamMessage(data, isBinary, config) {
     delete sanitized.system_prompt;
     delete sanitized.tools;
     delete sanitized.builtin_tools;
+    delete sanitized.context;
+    delete sanitized.variables;
+  }
+  const voiceSession = config.voiceSession || {};
+  const sessionVariables = config.nodeEnv === 'production'
+    ? {}
+    : { ...(sanitized.variables && typeof sanitized.variables === 'object' ? sanitized.variables : {}) };
+  delete sessionVariables.veryloving_locale;
+  delete sessionVariables.veryloving_persona;
+  sessionVariables.veryloving_locale = voiceSession.locale || 'en';
+  if (voiceSession.personaId) sessionVariables.veryloving_persona = voiceSession.personaId;
+  sanitized.variables = sessionVariables;
+  if (config.nodeEnv === 'production') {
+    const personaInstruction = voiceSession.personaInstructions
+      ? ` Persona style: ${voiceSession.personaInstructions}`
+      : '';
+    sanitized.context = {
+      type: 'persistent',
+      text: `Respond in the user's interface language (${voiceSession.locale || 'en'}) unless the user explicitly requests another language.${personaInstruction}`
+    };
   }
   // Device actions are always server-owned. This makes the deployed runtime
   // independent of a mutable, out-of-band Hume dashboard configuration.
@@ -91,22 +208,23 @@ function prepareUpstreamMessage(data, isBinary, config) {
 
 function buildHumeUpstreamURL(auth, config) {
   if (!config.humeApiKey) throw new Error('Hume gateway credentials are not configured');
-  const configuredId = config.humeConfigId || auth.configId;
-  if (config.humeConfigId && auth.configId && auth.configId !== config.humeConfigId) {
+  const voiceSession = config.voiceSessionResolved ? auth : resolveVoiceSession(auth, config);
+  const configuredId = config.humeConfigId || voiceSession.configId;
+  if (config.humeConfigId && voiceSession.configId && voiceSession.configId !== config.humeConfigId) {
     throw new Error('The requested Hume configuration is not allowed');
   }
   const allowedVoices = new Set(String(config.humeAllowedVoiceIds || '').split(',').map((item) => item.trim()).filter(Boolean));
-  if (allowedVoices.size && auth.voiceId && !allowedVoices.has(auth.voiceId)) {
+  if (allowedVoices.size && voiceSession.voiceId && !allowedVoices.has(voiceSession.voiceId)) {
     throw new Error('The requested Hume voice is not allowed');
   }
-  if (auth.resumedChatGroupId && !config.humeAllowClientResume) {
+  if (voiceSession.resumedChatGroupId && !config.humeAllowClientResume) {
     throw new Error('Voice session resume is not enabled');
   }
   const url = new URL(HUME_WS_URL);
   url.searchParams.set('api_key', config.humeApiKey);
   if (configuredId) url.searchParams.set('config_id', configuredId);
-  if (auth.voiceId) url.searchParams.set('voice_id', auth.voiceId);
-  if (auth.resumedChatGroupId) url.searchParams.set('resumed_chat_group_id', auth.resumedChatGroupId);
+  if (voiceSession.voiceId) url.searchParams.set('voice_id', voiceSession.voiceId);
+  if (voiceSession.resumedChatGroupId) url.searchParams.set('resumed_chat_group_id', voiceSession.resumedChatGroupId);
   return url.toString();
 }
 
@@ -120,6 +238,7 @@ function closeSocket(socket, code, reason) {
 }
 
 function attachVoiceGateway(server, config) {
+  const humePersonaMap = assertVoicePersonaConfig(config);
   const gateway = new WebSocketServer({ noServer: true, maxPayload: MAX_CLIENT_PAYLOAD_BYTES, perMessageDeflate: false });
 
   server.on('upgrade', (request, socket, head) => {
@@ -145,6 +264,7 @@ function attachVoiceGateway(server, config) {
     let sessionExpiryTimer = null;
     let unregisterActionSession = null;
     let principal = null;
+    let voiceSession = null;
     const authTimer = setTimeout(() => closeSocket(client, 4001, 'authentication timeout'), AUTH_TIMEOUT_MS);
 
     const cleanup = () => {
@@ -184,7 +304,12 @@ function attachVoiceGateway(server, config) {
           sessionExpiryTimer = setTimeout(() => {
             closeSocket(client, 4001, 'voice session expired');
           }, Math.min(expiresInMs, 2147483647));
-          const upstreamURL = buildHumeUpstreamURL(auth, config);
+          voiceSession = resolveVoiceSession(auth, { ...config, humePersonaMap });
+          const upstreamURL = buildHumeUpstreamURL(voiceSession, {
+            ...config,
+            humePersonaMap,
+            voiceSessionResolved: true
+          });
           const createUpstream = config.createUpstreamWebSocket || ((url) => new WebSocket(url, {
             handshakeTimeout: AUTH_TIMEOUT_MS,
             maxPayload: MAX_CLIENT_PAYLOAD_BYTES,
@@ -270,7 +395,7 @@ function attachVoiceGateway(server, config) {
         closeSocket(client, 4000, 'upstream backpressure limit');
         return;
       }
-      const outbound = prepareUpstreamMessage(data, isBinary, config);
+      const outbound = prepareUpstreamMessage(data, isBinary, { ...config, voiceSession });
       upstream.send(outbound.payload, { binary: outbound.binary });
     });
 
@@ -284,8 +409,12 @@ function attachVoiceGateway(server, config) {
 module.exports = {
   GATEWAY_PATH,
   attachVoiceGateway,
+  assertVoicePersonaConfig,
   buildHumeUpstreamURL,
   hasScope,
+  normalizeVoiceLocale,
+  parsePersonaMap,
   parseVoiceAuthenticationMessage,
-  prepareUpstreamMessage
+  prepareUpstreamMessage,
+  resolveVoiceSession
 };

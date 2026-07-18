@@ -1,4 +1,5 @@
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
+import { retainableRobotLocation } from './robot-telemetry-policy';
 import { storage } from './storage';
 
 export const DEVICE_ENTITIES_KEY = 'veryloving.deviceEntities.v1';
@@ -18,36 +19,39 @@ function normalizedLocation(value) {
   return { longitude, latitude, ...(Number.isFinite(capturedAt) ? { capturedAt } : {}) };
 }
 
-export function normalizeDeviceEntity(value, accountId) {
+export function normalizeDeviceEntity(value, accountId, { now = Date.now } = {}) {
   const deviceType = DEVICE_TYPES.has(value?.deviceType) ? value.deviceType : null;
   const deviceId = boundedString(value?.deviceId ?? value?.id);
   if (!accountId || !deviceType || !deviceId) return null;
+  const location = normalizedLocation(value);
   return {
     accountId,
     deviceId,
     deviceType,
-    name: boundedString(value?.name, 80) || (deviceType === 'wearable' ? 'NorthStar VL01' : 'Home robot'),
+    name: boundedString(value?.name, 80) || (deviceType === 'wearable' ? 'NorthStar VL01' : 'VeryLoving Home'),
     online: false,
     connectionState: deviceType === 'wearable' && value?.autoReconnect !== false ? 'reconnecting' : 'disconnected',
     autoReconnect: deviceType === 'wearable' && value?.autoReconnect !== false,
-    location: normalizedLocation(value)
+    location: deviceType === 'home_robot'
+      ? retainableRobotLocation(location, { now })
+      : location
   };
 }
 
-export async function loadDeviceEntities(accountId, { storageImpl = storage } = {}) {
+export async function loadDeviceEntities(accountId, { storageImpl = storage, now = Date.now } = {}) {
   if (!accountId) return [];
   const stored = await storageImpl.getJSON(DEVICE_ENTITIES_KEY, null);
   if (stored?.accountId !== accountId || !Array.isArray(stored?.entities)) return [];
   return stored.entities.slice(0, 50).flatMap((entity) => {
-    const normalized = normalizeDeviceEntity(entity, accountId);
+    const normalized = normalizeDeviceEntity(entity, accountId, { now });
     return normalized ? [normalized] : [];
   });
 }
 
-export async function persistDeviceEntities(accountId, entities, { storageImpl = storage } = {}) {
+export async function persistDeviceEntities(accountId, entities, { storageImpl = storage, now = Date.now } = {}) {
   if (!accountId) throw new Error('An authenticated account is required to persist devices.');
   const normalized = (Array.isArray(entities) ? entities : []).slice(0, 50).flatMap((entity) => {
-    const next = normalizeDeviceEntity(entity, accountId);
+    const next = normalizeDeviceEntity(entity, accountId, { now });
     return next ? [next] : [];
   });
   await runLocalUserDataMutation(() => storageImpl.setJSON(DEVICE_ENTITIES_KEY, {

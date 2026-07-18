@@ -22,6 +22,7 @@ export function hasLocalUserDataDeletionWarnings(result) {
     || Number(result?.tombstoneFailures)
     || Number(result?.languagePreservationFailures)
     || Number(result?.notificationFailures)
+    || Number(result?.encryptionKeyFailures)
   );
 }
 

@@ -59,3 +59,22 @@ export async function requestCurrentLocation({ showRationale = true } = {}) {
     throw liveLocationError;
   }
 }
+
+export async function watchLiveLocation(onLocation, {
+  showRationale = false,
+  locationImpl = Location,
+  requestPermission = requestLocationPermission
+} = {}) {
+  if (typeof onLocation !== 'function') throw new TypeError('A live location callback is required.');
+  await requestPermission({ showRationale });
+  return locationImpl.watchPositionAsync({
+    accuracy: locationImpl.Accuracy?.Balanced,
+    timeInterval: 10000,
+    distanceInterval: 15
+  }, (location) => {
+    onLocation({ ...location, isCached: false });
+    saveLastKnownLocation(location).catch((error) => logger.warn('[Mapbox] Could not cache a live location update', {
+      name: error?.name || 'LocationCacheError'
+    }));
+  });
+}

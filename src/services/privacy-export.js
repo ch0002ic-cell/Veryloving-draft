@@ -6,14 +6,16 @@ export const REMOTE_DATA_EXPORT_STATUS = Object.freeze({
 
 export async function loadAccountBoundExportData(accountId, {
   loadEmergencyContacts,
-  loadSavedPlaces
+  loadSavedPlaces,
+  loadMedicalProfile = async () => null
 }) {
-  if (!accountId) return { emergencyContacts: [], savedPlaces: [] };
-  const [emergencyContacts, savedPlaces] = await Promise.all([
+  if (!accountId) return { emergencyContacts: [], savedPlaces: [], medicalProfile: null };
+  const [emergencyContacts, savedPlaces, medicalProfile] = await Promise.all([
     loadEmergencyContacts(accountId),
-    loadSavedPlaces(accountId)
+    loadSavedPlaces(accountId),
+    loadMedicalProfile(accountId)
   ]);
-  return { emergencyContacts, savedPlaces };
+  return { emergencyContacts, savedPlaces, medicalProfile };
 }
 
 export function remoteDataExportErrorCode(error) {

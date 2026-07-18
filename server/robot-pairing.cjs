@@ -15,7 +15,7 @@ function createDynamoRobotRepository({ tableName, region, client: injectedClient
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         FilterExpression: 'id = :id',
         ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'ROBOT#', ':id': robotId },
-        ProjectionExpression: 'id, manufacturerDeviceId',
+        ProjectionExpression: 'id, manufacturerDeviceId, serialHash, pairingClaimHash, pairingTokenHash, pairedAt, SK',
         ConsistentRead: true,
         ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
       }));
@@ -25,6 +25,68 @@ function createDynamoRobotRepository({ tableName, region, client: injectedClient
     } while (exclusiveStartKey);
     return null;
   }
+  async function queryBoundRobots(userId, projectionExpression = 'id, pairedAt') {
+    const robots = [];
+    let exclusiveStartKey;
+    do {
+      const result = await client.send(new QueryCommand({
+        TableName: tableName,
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+        ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'ROBOT#' },
+        ProjectionExpression: projectionExpression,
+        ConsistentRead: true,
+        ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
+      }));
+      robots.push(...(result.Items || []));
+      exclusiveStartKey = result.LastEvaluatedKey;
+    } while (exclusiveStartKey);
+    return robots;
+  }
+  async function list(userId) {
+    const robots = await queryBoundRobots(userId);
+    return robots.flatMap((item) => (
+      typeof item.id === 'string' && item.id
+        ? [{
+            robot_id: item.id,
+            device_type: 'home_robot',
+            ...(Number.isFinite(item.pairedAt) ? { paired_at: item.pairedAt } : {})
+          }]
+        : []
+    ));
+  }
+  async function unbind(userId, robotId) {
+    const record = await findBoundRobot(userId, robotId);
+    if (!record) return null;
+    const serialHash = typeof record.serialHash === 'string' && record.serialHash
+      ? record.serialHash
+      : typeof record.SK === 'string' && record.SK.startsWith('ROBOT#') ? record.SK.slice(6) : null;
+    if (!serialHash || !record.manufacturerDeviceId) return null;
+    const transactions = [
+      { Delete: {
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: record.SK || `ROBOT#${serialHash}` },
+        ConditionExpression: 'id = :robotId',
+        ExpressionAttributeValues: { ':robotId': robotId }
+      } },
+      { Delete: {
+        TableName: tableName,
+        Key: { PK: `ROBOT#${serialHash}`, SK: 'OWNER' },
+        ConditionExpression: 'bound_to = :userId',
+        ExpressionAttributeValues: { ':userId': userId }
+      } }
+    ];
+    if (typeof record.pairingClaimHash === 'string' && /^[A-Za-z0-9_-]{43}$/.test(record.pairingClaimHash)) {
+      transactions.push({ Update: {
+        TableName: tableName,
+        Key: { PK: `PAIRING#${record.pairingClaimHash}`, SK: 'CLAIM' },
+        UpdateExpression: 'SET unbound_at = :now REMOVE bound_to, serial_hash',
+        ConditionExpression: 'bound_to = :userId',
+        ExpressionAttributeValues: { ':now': Date.now(), ':userId': userId }
+      } });
+    }
+    await client.send(new TransactWriteCommand({ TransactItems: transactions }));
+    return { manufacturerDeviceId: record.manufacturerDeviceId };
+  }
   return {
     async owns(userId, robotId) {
       return Boolean(await findBoundRobot(userId, robotId));
@@ -33,30 +95,32 @@ function createDynamoRobotRepository({ tableName, region, client: injectedClient
       const record = await findBoundRobot(userId, robotId);
       return typeof record?.manufacturerDeviceId === 'string' ? record.manufacturerDeviceId : null;
     },
-    async list(userId) {
-      const robots = [];
-      let exclusiveStartKey;
-      do {
-        const result = await client.send(new QueryCommand({
-          TableName: tableName,
-          KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-          ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'ROBOT#' },
-          ProjectionExpression: 'id, pairedAt',
-          ConsistentRead: true,
-          ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
-        }));
-        robots.push(...(result.Items || []).flatMap((item) => (
-          typeof item.id === 'string' && item.id
-            ? [{
-                robot_id: item.id,
-                device_type: 'home_robot',
-                ...(Number.isFinite(item.pairedAt) ? { paired_at: item.pairedAt } : {})
-              }]
-            : []
-        )));
-        exclusiveStartKey = result.LastEvaluatedKey;
-      } while (exclusiveStartKey);
-      return robots;
+    async verifyPairingToken(userId, robotId, token) {
+      if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token)) return false;
+      const record = await findBoundRobot(userId, robotId);
+      if (typeof record?.pairingTokenHash !== 'string') return false;
+      const supplied = Buffer.from(crypto.createHash('sha256').update(token).digest('base64url'));
+      const expected = Buffer.from(record.pairingTokenHash);
+      return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
+    },
+    list,
+    async listManufacturerDeviceIds(userId) {
+      const robots = await queryBoundRobots(userId, 'manufacturerDeviceId');
+      return [...new Set(robots.map((item) => item.manufacturerDeviceId)
+        .filter((id) => typeof id === 'string' && /^[A-Za-z0-9._:-]{1,128}$/.test(id)))];
+    },
+    async exportUserData(userId) {
+      return list(userId);
+    },
+    unbind,
+    async deleteUserData(userId) {
+      const robots = await queryBoundRobots(userId, 'id');
+      let deleted = 0;
+      for (const robot of robots) {
+        if (typeof robot.id !== 'string') continue;
+        if (await unbind(userId, robot.id)) deleted += 1;
+      }
+      return { deletedItems: deleted };
     },
     async consumeAndBind(userId, pairingCodeHash, robot, usedAt) {
       const pairingKey = { PK: `PAIRING#${pairingCodeHash}`, SK: 'CLAIM' };
@@ -96,9 +160,22 @@ function createDynamoRobotRepository({ tableName, region, client: injectedClient
 async function pairRobot({ userId, qrCode, verifier, repository, logger = console, now = Date.now }) {
   if (typeof qrCode !== 'string' || qrCode.length < 20 || qrCode.length > 2048) throw Object.assign(new Error('Pairing code is invalid'), { statusCode: 400 });
   if (typeof verifier !== 'function') throw Object.assign(new Error('Manufacturer pairing verification is unavailable'), { statusCode: 503 });
-  const verified = await verifier(qrCode);
+  let verified;
+  try {
+    verified = await verifier(qrCode);
+  } catch (error) {
+    if (error?.statusCode === 410) {
+      logger.warn('[RobotPairing] Pairing replay rejected', {
+        claimFingerprint: crypto.createHash('sha256').update(qrCode).digest('hex').slice(0, 12),
+        code: error.code || 'ROBOT_PAIRING_REPLAY'
+      });
+    }
+    throw error;
+  }
   if (
-    !verified?.hardwareSerial
+    typeof verified?.hardwareSerial !== 'string'
+    || verified.hardwareSerial.length < 4
+    || verified.hardwareSerial.length > 256
     || verified.oneTime !== true
     || typeof verified.manufacturerDeviceId !== 'string'
     || !/^[A-Za-z0-9._:-]{1,128}$/.test(verified.manufacturerDeviceId)
@@ -118,6 +195,7 @@ async function pairRobot({ userId, qrCode, verifier, repository, logger = consol
     manufacturerDeviceId: verified.manufacturerDeviceId,
     serialHash,
     pairingTokenHash: crypto.createHash('sha256').update(pairingToken).digest('base64url'),
+    pairingClaimHash: pairingCodeHash,
     pairedAt: usedAt
   };
   try {

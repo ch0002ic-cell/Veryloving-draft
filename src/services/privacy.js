@@ -23,7 +23,12 @@ import { deleteRemoteUserData, fetchRemoteUserData } from './safety-api';
 import { secureStorage } from './secure-storage';
 import { parseSessionEnvelope } from '../utils/session-envelope';
 import { clearSavedPlaces, loadSavedPlaces } from './saved-place-store';
+import {
+  clearMedicalEmergencyProfile,
+  loadMedicalEmergencyProfile
+} from './medical-profile-store';
 import { setCapybearReminderEnabled } from './capybear-reminder';
+import { clearRobotPairingCredentials } from './robot-pairing-credential-store';
 import {
   attachRemoteDataToExport,
   loadAccountBoundExportData,
@@ -73,9 +78,10 @@ export async function buildUserDataExport({ accessToken } = {}) {
   // A privacy export must never report success after silently omitting a
   // protected local store. Let either Keychain read failure reach Settings so
   // the user can retry instead of receiving an incomplete archive.
-  const { emergencyContacts, savedPlaces } = await loadAccountBoundExportData(account?.id, {
+  const { emergencyContacts, savedPlaces, medicalProfile } = await loadAccountBoundExportData(account?.id, {
     loadEmergencyContacts: loadEmergencyContactCache,
-    loadSavedPlaces
+    loadSavedPlaces,
+    loadMedicalProfile: loadMedicalEmergencyProfile
   });
   const localSnapshot = {
     schemaVersion: 1,
@@ -88,6 +94,7 @@ export async function buildUserDataExport({ accessToken } = {}) {
     settings: localStorage['veryloving.settings'] || null,
     emergencyContacts,
     savedPlaces,
+    medicalProfile,
     conversations,
     localStorage,
     permissionRationales: Object.fromEntries(
@@ -145,7 +152,7 @@ export async function deleteLocalUserData({
   const [reminderResult] = await Promise.allSettled([
     setCapybearReminderEnabled(false)
   ]);
-  const [localResult, secureContactResult, savedPlacesResult] = await Promise.allSettled([
+  const [localResult, secureContactResult, savedPlacesResult, medicalProfileResult, robotCredentialsResult] = await Promise.allSettled([
     deleteLocalUserStores({
       mutationLockHeld: localMutationLockHeld,
       preserveLanguage,
@@ -155,7 +162,9 @@ export async function deleteLocalUserData({
       ])
     }),
     clearEmergencyContactCache(),
-    clearSavedPlaces()
+    clearSavedPlaces(),
+    clearMedicalEmergencyProfile(),
+    clearRobotPairingCredentials()
   ]);
   const result = {
     ...(localResult.status === 'fulfilled' ? localResult.value : {
@@ -166,6 +175,8 @@ export async function deleteLocalUserData({
     notificationFailures: reminderResult.status === 'rejected' ? 1 : 0,
     secureStoreFailures: (secureContactResult.status === 'rejected' ? 1 : 0)
       + (savedPlacesResult.status === 'rejected' ? 1 : 0)
+      + (medicalProfileResult.status === 'rejected' ? 1 : 0)
+      + (robotCredentialsResult.status === 'rejected' ? 1 : 0)
   };
   const artifactFailures = Number(result?.artifactCleanup?.failures) || 0;
   if (hasLocalUserDataDeletionWarnings(result)) {
@@ -200,6 +211,16 @@ export async function deleteAllUserData({ accessToken, ...options } = {}) {
   } catch {
     result = { localStoreFailures: 1, secureStoreFailures: 0 };
   }
+  let encryptionKeyFailures = 0;
+  try {
+    // Account deletion is the one lifecycle boundary where preserving the
+    // AsyncStorage key would leave recoverable ciphertext behind. Rotate only
+    // after the complete prefix sweep (ordinary logout preserves language),
+    // then write the signed-out tombstone with the fresh key.
+    await storage.rotateEncryptionKeyAfterPurge();
+  } catch {
+    encryptionKeyFailures = 1;
+  }
   let tombstoneFailures = 0;
   try {
     await storage.setJSON(AUTH_STORAGE_KEYS.signedOut, {
@@ -231,6 +252,7 @@ export async function deleteAllUserData({ accessToken, ...options } = {}) {
   return {
     ...result,
     remoteDeletionFailures: 0,
+    encryptionKeyFailures,
     tombstoneFailures,
     secureStoreFailures: (Number(result.secureStoreFailures) || 0) + secureStoreFailures
   };

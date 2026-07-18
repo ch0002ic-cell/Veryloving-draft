@@ -20,12 +20,14 @@ const steps = [
   {
     label: 'iOS production export',
     command: npxCommand,
-    args: ['expo', 'export', '--platform', 'ios', '--output-dir', join(exportRoot, 'ios')]
+    args: ['expo', 'export', '--platform', 'ios', '--output-dir', join(exportRoot, 'ios')],
+    env: { VERYLOVING_BUILD_PROFILE: 'production', VERYLOVING_CONFIG_DIAGNOSTICS: '1' }
   },
   {
     label: 'Android production export',
     command: npxCommand,
-    args: ['expo', 'export', '--platform', 'android', '--output-dir', join(exportRoot, 'android')]
+    args: ['expo', 'export', '--platform', 'android', '--output-dir', join(exportRoot, 'android')],
+    env: { VERYLOVING_BUILD_PROFILE: 'production', VERYLOVING_CONFIG_DIAGNOSTICS: '1' }
   }
 ];
 
@@ -39,7 +41,8 @@ try {
       env: {
         ...process.env,
         CI: process.env.CI || '1',
-        EXPO_NO_TELEMETRY: '1'
+        EXPO_NO_TELEMETRY: '1',
+        ...(step.env || {})
       },
       stdio: 'inherit'
     });

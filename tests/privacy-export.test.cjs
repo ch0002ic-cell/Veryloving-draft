@@ -12,11 +12,13 @@ const {
 test('privacy export never silently omits protected account-bound stores', async () => {
   const complete = await loadAccountBoundExportData('account-a', {
     loadEmergencyContacts: async (accountId) => [{ id: `contact-${accountId}` }],
-    loadSavedPlaces: async (accountId) => [{ id: `place-${accountId}` }]
+    loadSavedPlaces: async (accountId) => [{ id: `place-${accountId}` }],
+    loadMedicalProfile: async (accountId) => ({ accountId, bloodType: 'O+' })
   });
   assert.deepEqual(complete, {
     emergencyContacts: [{ id: 'contact-account-a' }],
-    savedPlaces: [{ id: 'place-account-a' }]
+    savedPlaces: [{ id: 'place-account-a' }],
+    medicalProfile: { accountId: 'account-a', bloodType: 'O+' }
   });
 
   await assert.rejects(loadAccountBoundExportData('account-a', {
@@ -28,7 +30,7 @@ test('privacy export never silently omits protected account-bound stores', async
   assert.deepEqual(await loadAccountBoundExportData(null, {
     loadEmergencyContacts: async () => { loads += 1; },
     loadSavedPlaces: async () => { loads += 1; }
-  }), { emergencyContacts: [], savedPlaces: [] });
+  }), { emergencyContacts: [], savedPlaces: [], medicalProfile: null });
   assert.equal(loads, 0);
 });
 

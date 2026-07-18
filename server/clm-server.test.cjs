@@ -16,13 +16,55 @@ const ACTION_SIGNING_PRIVATE_KEY = ACTION_KEY_PAIR.privateKey.export({ format: '
 const ACTION_SIGNING_PUBLIC_KEY = ACTION_KEY_PAIR.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64url');
 
 function productionHTTPConfig(overrides = {}) {
+  const authSessionRepository = {
+    create: async () => true,
+    rotate: async () => true,
+    revoke: async () => true,
+    isActive: async () => true,
+    exportUserData: async () => [],
+    deleteUserData: async () => ({ deletedItems: 0 }),
+    beginAccountDeletion: async () => true,
+    completeAccountDeletion: async () => true,
+    getAccountDeletionState: async () => 'active'
+  };
+  const safetyRepository = {
+    listContacts: async () => [],
+    createContact: async (_userId, contact) => contact,
+    updateContact: async (_userId, _contactId, contact) => contact,
+    deleteContact: async () => undefined,
+    acceptSOS: async (_userId, event) => event,
+    claimSOSDelivery: async () => null,
+    recordSOSDelivery: async () => null,
+    getMedicationEscalation: async () => null,
+    acceptMedicationEscalation: async (_userId, event) => event,
+    claimMedicationEscalationDelivery: async () => null,
+    recordMedicationEscalationDelivery: async () => null,
+    startSafetySession: async (_userId, session) => session,
+    getSafetySession: async () => null,
+    exportUserData: async () => ({}),
+    deleteUserData: async () => ({ deletedItems: 0 })
+  };
+  const pushRepository = {
+    register: async () => undefined,
+    list: async () => [],
+    exportUserData: async () => [],
+    deleteUserData: async () => ({ deletedItems: 0 })
+  };
   return {
     nodeEnv: 'production',
     httpOnlyDeployment: true,
     authExchangeEnabled: true,
     phoneAuthEnabled: true,
     safetyApiEnabled: true,
-    safetyRepository: {},
+    safetyRepository,
+    pushRepository,
+    notifyEmergencyContacts: async () => ({ eligible: 0, delivered: 0, failedRecipients: 0 }),
+    authSessionRepository,
+    privacyCoordinator: {
+      missingRepositories: () => [],
+      exportUserData: async () => ({}),
+      deleteUserData: async () => ({ deleted: [] })
+    },
     sessionJWTSecret: 'production-session-secret-at-least-32-characters',
     appleClientIds: 'com.veryloving.app',
     googleTokenAudiences: 'google-web.apps.googleusercontent.com',
@@ -39,6 +81,41 @@ function productionHTTPConfig(overrides = {}) {
     humeAllowClientResume: false,
     clmBearerToken: '',
     ...overrides
+  };
+}
+
+function memoryAuthSessionRepository() {
+  const sessions = new Map();
+  const key = ({ subject, sessionId }) => `${subject}:${sessionId}`;
+  return {
+    async create(session) {
+      sessions.set(key(session), {
+        refreshJti: session.refreshJti,
+        expiresAt: session.expiresAt,
+        revoked: false
+      });
+      return true;
+    },
+    async rotate(session) {
+      const current = sessions.get(key(session));
+      if (!current || current.revoked || current.refreshJti !== session.currentJti) {
+        if (current) current.revoked = true;
+        return false;
+      }
+      current.refreshJti = session.nextJti;
+      current.expiresAt = session.expiresAt;
+      return true;
+    },
+    async revoke(session) {
+      const current = sessions.get(key(session));
+      if (!current) return false;
+      current.revoked = true;
+      return true;
+    },
+    async isActive(subject, sessionId) {
+      const current = sessions.get(`${subject}:${sessionId}`);
+      return Boolean(current && !current.revoked && current.expiresAt > Date.now());
+    }
   };
 }
 
@@ -120,12 +197,14 @@ test('production server rejects insecure credential-bearing outbound URLs', () =
     clmBearerToken: 'server-only-clm-key',
     actionSigningPrivateKey: ACTION_SIGNING_PRIVATE_KEY,
     actionSigningPublicKey: ACTION_SIGNING_PUBLIC_KEY,
-    wearableCommandPayloads: JSON.stringify({ deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==' }),
+    wearableCommandPayloads: JSON.stringify({ deploy_barrier: 'AQ==', emit_alarm: 'Ag==', trigger_sos: 'Aw==', stop: 'BA==' }),
     manufacturerWebhookURL: 'https://manufacturer.example.test/v1/commands',
     manufacturerPairingVerifyURL: 'https://manufacturer.example.test/v1/pairing/verify',
     manufacturerStatusURL: 'https://manufacturer.example.test/v1/status',
+    manufacturerResetURL: 'https://manufacturer.example.test/v1/reset',
     manufacturerApiKey: 'manufacturer-server-key',
-    deviceTableName: 'veryloving-devices'
+    deviceTableName: 'veryloving-devices',
+    actionOutboxUserIndexName: 'user-index'
   });
   assert.doesNotThrow(() => validateServerConfig(voiceGateway));
   assert.throws(
@@ -166,6 +245,10 @@ test('HTTP-only production validation omits voice-gateway secrets but keeps the 
     () => validateServerConfig({ ...httpOnly, safetyRepository: null, safetyTableName: '' }),
     /SAFETY_TABLE_NAME/
   );
+  assert.throws(
+    () => validateServerConfig({ ...httpOnly, authSessionRepository: null, authSessionTableName: '' }),
+    /AUTH_SESSION_TABLE_NAME/
+  );
 
   assert.throws(
     () => validateServerConfig({ ...httpOnly, httpOnlyDeployment: false }),
@@ -184,6 +267,19 @@ test('HTTP-only production validation omits voice-gateway secrets but keeps the 
   });
   assert.equal(response.status, 503);
   assert.deepEqual(response.json, { error: 'CLM authentication is not configured' });
+
+  await assert.rejects(
+    async () => invoke({ ...httpOnly, authSessionRepository: {} }, { url: '/health' }),
+    /Production auth session repository is missing required methods/
+  );
+  await assert.rejects(
+    async () => invoke({ ...httpOnly, pushRepository: {} }, { url: '/health' }),
+    /Production push repository is missing required methods/
+  );
+  await assert.rejects(
+    async () => invoke({ ...httpOnly, notifyEmergencyContacts: {} }, { url: '/health' }),
+    /Production emergency-contact push delivery is not configured/
+  );
 });
 
 test('arbitrary bearer tokens cannot bypass first-party authentication', async () => {
@@ -196,6 +292,40 @@ test('arbitrary bearer tokens cannot bypass first-party authentication', async (
     body: { scenario: 'general' }
   });
   assert.equal(response.status, 401);
+});
+
+test('durable account-deletion state blocks new work but permits deletion retry', async () => {
+  const authSessionRepository = {
+    async getAccountDeletionState() { return 'deleting'; }
+  };
+  const verifyAppToken = async () => ({
+    sub: 'user-deleting',
+    scope: 'safety:read safety:write'
+  });
+  const blocked = await invoke({ authSessionRepository, verifyAppToken }, {
+    method: 'GET',
+    url: '/v1/devices/home-robots',
+    headers: { Authorization: 'Bearer still-valid' }
+  });
+  assert.equal(blocked.status, 423);
+
+  let retries = 0;
+  const retry = await invoke({
+    authSessionRepository,
+    verifyAppToken,
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'account-deletion-test-secret-at-least-32-characters',
+    appleClientIds: 'com.example.test',
+    safetyApiEnabled: true,
+    safetyRepository: {},
+    privacyCoordinator: { async deleteUserData() { retries += 1; } }
+  }, {
+    method: 'DELETE',
+    url: '/v1/privacy/data',
+    headers: { Authorization: 'Bearer still-valid' }
+  });
+  assert.equal(retry.status, 204);
+  assert.equal(retries, 1);
 });
 
 test('CLM rejects requests without the configured bearer token', async () => {
@@ -269,6 +399,73 @@ test('auth exchange returns a first-party JWT derived from verified provider cla
   assert.equal(refreshed.json.accessToken.split('.').length, 3);
   assert.equal(refreshed.json.refreshToken.split('.').length, 3);
   assert.notEqual(refreshed.json.accessToken, response.json.accessToken);
+});
+
+test('refresh rotation rejects replay, revokes the token family, and logout revokes access', async () => {
+  const authSessionRepository = memoryAuthSessionRepository();
+  const config = {
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'test-session-secret-with-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com',
+    authSessionRepository,
+    robotRepository: { list: async () => [] },
+    verifyProviderToken: async () => ({ sub: crypto.randomUUID(), email_verified: false })
+  };
+  const exchange = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    body: { provider: 'google', idToken: 'verified-provider-token' }
+  });
+  assert.equal(exchange.status, 200);
+
+  const firstRefresh = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/refresh',
+    body: { refreshToken: exchange.json.refreshToken }
+  });
+  assert.equal(firstRefresh.status, 200);
+  const initialRefreshClaims = JSON.parse(Buffer.from(exchange.json.refreshToken.split('.')[1], 'base64url'));
+  const rotatedRefreshClaims = JSON.parse(Buffer.from(firstRefresh.json.refreshToken.split('.')[1], 'base64url'));
+  assert.equal(rotatedRefreshClaims.exp, initialRefreshClaims.exp, 'refresh rotation must not slide the family expiry');
+
+  const replay = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/refresh',
+    body: { refreshToken: exchange.json.refreshToken }
+  });
+  assert.equal(replay.status, 401);
+
+  const tokenFamily = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/refresh',
+    body: { refreshToken: firstRefresh.json.refreshToken }
+  });
+  assert.equal(tokenFamily.status, 401);
+
+  const secondExchange = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/exchange',
+    body: { provider: 'google', idToken: 'another-verified-provider-token' }
+  });
+  const beforeLogout = await invoke(config, {
+    url: '/v1/devices/home-robots',
+    headers: { Authorization: `Bearer ${secondExchange.json.accessToken}` }
+  });
+  assert.equal(beforeLogout.status, 200);
+  const logout = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/logout',
+    headers: { Authorization: `Bearer ${secondExchange.json.accessToken}` }
+  });
+  assert.equal(logout.status, 204);
+  const afterLogout = await invoke(config, {
+    url: '/v1/devices/home-robots',
+    headers: { Authorization: `Bearer ${secondExchange.json.accessToken}` }
+  });
+  assert.equal(afterLogout.status, 401);
 });
 
 test('auth exchange fails closed when disabled or provider verification fails', async () => {
@@ -417,6 +614,23 @@ test('CLM handles immediate danger locally and preserves the custom session ID',
   assert.match(response.text, /local emergency services/);
   assert.match(response.text, /opaque-session-1/);
   assert.match(response.text, /data: \[DONE\]/);
+});
+
+test('CLM emits the confirmed help-dial tool for immediate danger when available', async () => {
+  const response = await invoke({ clmBearerToken: 'server-secret' }, {
+    method: 'POST',
+    url: '/chat/completions?custom_session_id=urgent-session',
+    headers: { Authorization: 'Bearer server-secret' },
+    body: {
+      model: 'safety-model',
+      messages: [{ role: 'user', content: 'I am in immediate danger and need help now' }],
+      tools: [{ type: 'function', function: { name: 'request_help_dial', parameters: { type: 'object' } } }]
+    }
+  });
+  assert.equal(response.status, 200);
+  assert.match(response.text, /"name":"request_help_dial"/);
+  assert.match(response.text, /urgent-session/);
+  assert.match(response.text, /"finish_reason":"tool_calls"/);
 });
 
 test('CLM emits an OpenAI-compatible custom tool call for safety guidance', async () => {
@@ -650,8 +864,9 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
     headers: authorization
   });
   assert.equal(exported.status, 200);
-  assert.equal(exported.json.data.contacts.length, 1);
-  assert.equal(exported.json.data.sosEvents.length, 1);
+  assert.equal(exported.json.data.datasets.safety.data.contacts.length, 1);
+  assert.equal(exported.json.data.datasets.safety.data.sosEvents.length, 1);
+  assert.equal(exported.json.data.datasets.devices.status, 'not-configured');
 
   const deleted = await invoke(config, {
     method: 'DELETE',
@@ -661,6 +876,140 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
   assert.equal(deleted.status, 204);
   assert.equal(records.contacts.length, 0);
   assert.equal(records.sos.length, 0);
+});
+
+test('medication caregiver escalation is durable, idempotent, private, and can target selected or all contacts', async () => {
+  const contacts = [
+    { id: 'contact_abcdefghijklmnopqrstuvwx', phone: '+6591111111' },
+    { id: 'contact_1234567890abcdefghijklmn', phone: '+6592222222' }
+  ];
+  const escalations = new Map();
+  const pushes = [];
+  const repository = {
+    async listContacts() { return contacts; },
+    async getMedicationEscalation(_userId, idempotencyKey) {
+      return escalations.get(idempotencyKey) || null;
+    },
+    async acceptMedicationEscalation(_userId, event) {
+      if (!escalations.has(event.idempotencyKey)) escalations.set(event.idempotencyKey, event);
+      return escalations.get(event.idempotencyKey);
+    },
+    async claimMedicationEscalationDelivery(_userId, idempotencyKey) {
+      const event = escalations.get(idempotencyKey);
+      if (!event || event.deliveryAttemptedAt) return null;
+      event.deliveryAttemptedAt = Date.now();
+      return event;
+    },
+    async recordMedicationEscalationDelivery(_userId, idempotencyKey, delivery) {
+      Object.assign(escalations.get(idempotencyKey), delivery, { deliveryRecordedAt: Date.now() });
+    },
+    async exportUserData() { return { medicationEscalations: [...escalations.values()] }; },
+    async deleteUserData() { escalations.clear(); return { deletedItems: 1 }; }
+  };
+  const config = {
+    safetyApiEnabled: true,
+    safetyRepository: repository,
+    safetyRetentionDays: 9999,
+    authExchangeEnabled: true,
+    sessionJWTSecret: 'medication-escalation-test-secret-at-least-32-characters',
+    sessionJWTIssuer: 'https://api.example.test',
+    sessionJWTAudience: 'veryloving-test',
+    googleTokenAudiences: 'google-web.apps.googleusercontent.com',
+    googleAuthorizedParties: 'google-native.apps.googleusercontent.com',
+    async notifyEmergencyContacts(userId, contactIds, notification) {
+      pushes.push({ userId, contactIds, notification });
+      return { eligible: contactIds.length, delivered: contactIds.length, failedRecipients: 0 };
+    }
+  };
+  const token = signSessionJWT({ provider: 'google', subject: 'medication-user' }, config).token;
+  const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const occurredAt = Date.now();
+  const selectedBody = {
+    idempotencyKey: 'medication_1234567890abcdef',
+    medicationReference: 'schedule_item_01',
+    reason: 'missed_dose',
+    occurredAt,
+    source: 'home_robot',
+    contactIds: [contacts[0].id]
+  };
+
+  const first = await invoke(config, {
+    method: 'POST', url: '/v1/medication-escalations', headers, body: selectedBody
+  });
+  const duplicate = await invoke(config, {
+    method: 'POST', url: '/v1/medication-escalations', headers, body: selectedBody
+  });
+  assert.equal(first.status, 202);
+  assert.equal(first.json.status, 'accepted');
+  assert.equal(first.json.deliveryStatus, 'delivered');
+  assert.deepEqual(duplicate.json, first.json);
+  assert.equal(pushes.length, 1);
+  assert.deepEqual(pushes[0].contactIds, [contacts[0].id]);
+  assert.equal(JSON.stringify(pushes[0].notification).includes(selectedBody.medicationReference), false);
+  assert.equal(JSON.stringify(pushes[0].notification).includes(selectedBody.reason), false);
+  const persisted = escalations.get(selectedBody.idempotencyKey);
+  assert.equal(persisted.status, 'accepted');
+  assert.equal(persisted.deliveryStatus, 'delivered');
+  assert.ok(persisted.expiresAt <= Math.floor((Date.now() + 365 * 86400000) / 1000));
+
+  const conflictingRetry = await invoke(config, {
+    method: 'POST',
+    url: '/v1/medication-escalations',
+    headers,
+    body: { ...selectedBody, reason: 'reminder_unacknowledged' }
+  });
+  assert.equal(conflictingRetry.status, 409);
+  assert.equal(pushes.length, 1);
+
+  const allContacts = await invoke(config, {
+    method: 'POST',
+    url: '/v1/medication-escalations',
+    headers,
+    body: {
+      idempotencyKey: 'medication_abcdef1234567890',
+      medicationReference: 'schedule_item_02',
+      reason: 'care_recipient_unresponsive',
+      occurredAt,
+      source: 'app'
+    }
+  });
+  assert.equal(allContacts.status, 202);
+  assert.deepEqual(pushes[1].contactIds, contacts.map(({ id }) => id));
+
+  const failedDeliveryConfig = {
+    ...config,
+    async notifyEmergencyContacts() { throw new Error('push unavailable'); }
+  };
+  const failedDelivery = await invoke(failedDeliveryConfig, {
+    method: 'POST',
+    url: '/v1/medication-escalations',
+    headers,
+    body: {
+      ...selectedBody,
+      idempotencyKey: 'medication_failed_123456',
+      medicationReference: 'schedule_item_03'
+    }
+  });
+  assert.equal(failedDelivery.status, 202);
+  assert.equal(failedDelivery.json.status, 'accepted');
+  assert.equal(failedDelivery.json.deliveryStatus, 'failed');
+  assert.equal(escalations.get('medication_failed_123456').status, 'accepted');
+  assert.equal(escalations.get('medication_failed_123456').deliveryStatus, 'failed');
+
+  const invalid = await invoke(config, {
+    method: 'POST',
+    url: '/v1/medication-escalations',
+    headers,
+    body: { ...selectedBody, idempotencyKey: 'medication_invalid_1234', medicationReference: 'x'.repeat(101) }
+  });
+  assert.equal(invalid.status, 400);
+
+  const exported = await invoke(config, { url: '/v1/privacy/export', headers });
+  assert.equal(exported.status, 200);
+  assert.equal(exported.json.data.datasets.safety.data.medicationEscalations.length, 3);
+  const deleted = await invoke(config, { method: 'DELETE', url: '/v1/privacy/data', headers });
+  assert.equal(deleted.status, 204);
+  assert.equal(escalations.size, 0);
 });
 
 test('safety API rejects missing sessions and invalid contact data', async () => {
@@ -744,6 +1093,9 @@ test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust b
   const telemetry = await invoke({
     verifyAppToken,
     robotRepository: {
+      async verifyPairingToken(userId, robotId, token) {
+        return userId === 'google:user-1' && robotId === 'robot:1' && token === 'pairing-token';
+      },
       async resolveManufacturerDeviceId(userId, robotId) {
         return userId === 'google:user-1' && robotId === 'robot:1' ? 'manufacturer:1' : null;
       }
@@ -752,10 +1104,49 @@ test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust b
   }, {
     method: 'GET',
     url: '/v1/devices/robot%3A1/telemetry',
-    headers: { Authorization: 'Bearer app-session' }
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
   });
   assert.equal(telemetry.status, 200);
   assert.equal(telemetry.json.online, true);
+
+  const resetCalls = [];
+  const reset = await invoke({
+    verifyAppToken,
+    robotRepository: {
+      async verifyPairingToken(_userId, _robotId, token) { return token === 'pairing-token'; },
+      async resolveManufacturerDeviceId(userId, robotId) {
+        return userId === 'google:user-1' && robotId === 'robot:1' ? 'manufacturer:1' : null;
+      },
+      async unbind(userId, robotId) { resetCalls.push(['unbind', userId, robotId]); return { manufacturerDeviceId: 'manufacturer:1' }; }
+    },
+    async resetManufacturerRobot(robotId) { resetCalls.push(['reset', robotId]); }
+  }, {
+    method: 'DELETE',
+    url: '/v1/devices/home-robots/robot%3A1',
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
+  });
+  assert.equal(reset.status, 204);
+  assert.deepEqual(resetCalls, [
+    ['reset', 'manufacturer:1'],
+    ['unbind', 'google:user-1', 'robot:1']
+  ]);
+
+  let unboundAfterFailure = false;
+  const failedReset = await invoke({
+    verifyAppToken,
+    robotRepository: {
+      async verifyPairingToken(_userId, _robotId, token) { return token === 'pairing-token'; },
+      async resolveManufacturerDeviceId() { return 'manufacturer:1'; },
+      async unbind() { unboundAfterFailure = true; }
+    },
+    async resetManufacturerRobot() { throw new Error('manufacturer unavailable'); }
+  }, {
+    method: 'DELETE',
+    url: '/v1/devices/home-robots/robot%3A1',
+    headers: { Authorization: 'Bearer app-session', 'X-Device-Pairing-Token': 'pairing-token' }
+  });
+  assert.equal(failedReset.status, 500);
+  assert.equal(unboundAfterFailure, false);
 
   const acknowledgements = [];
   const acknowledged = await invoke({

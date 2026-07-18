@@ -6,7 +6,7 @@ import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
-import { voiceProfiles } from '../src/mocks/voiceProfiles';
+import { voiceProfiles } from '../src/constants/voiceProfiles';
 import { useAppState } from '../src/context/AppContext';
 import { colors, fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';

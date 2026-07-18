@@ -19,6 +19,8 @@ const {
   verifyPhoneVerification
 } = require('./phone-auth.cjs');
 const { createDynamoSafetyRepository, handleSafetyAPI } = require('./safety-api.cjs');
+const { createPrivacyDataCoordinator } = require('./privacy-data.cjs');
+const { createRedactedLogger } = require('./redacted-logger.cjs');
 const {
   ActionGateway,
   createDynamoActionOutboxRepository,
@@ -26,8 +28,19 @@ const {
   parseWearableCommandPayloads
 } = require('./action-gateway.cjs');
 const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
-const { createManufacturerPairingVerifier, createManufacturerRobotStatusClient } = require('./manufacturer-client.cjs');
-const { createDynamoPushRepository, createExpoPushNotifier, validatePushToken } = require('./push-notifications.cjs');
+const {
+  createManufacturerPairingVerifier,
+  createManufacturerPrivacyRepository,
+  createManufacturerRobotResetClient,
+  createManufacturerRobotStatusClient
+} = require('./manufacturer-client.cjs');
+const {
+  createDynamoPushRepository,
+  createEmergencyContactPushNotifier,
+  createExpoPushNotifier,
+  validatePushToken
+} = require('./push-notifications.cjs');
+const { createDynamoAuthSessionRepository } = require('./auth-session-repository.cjs');
 const { ACTION_TOOL_SCHEMAS } = require('./device-action-tools.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
@@ -62,6 +75,8 @@ function envConfig(overrides = {}) {
     humeApiKey: process.env.HUME_API_KEY || '',
     humeConfigId: process.env.HUME_CONFIG_ID || '',
     humeAllowedVoiceIds: process.env.HUME_ALLOWED_VOICE_IDS || '',
+    humePersonaMapJSON: process.env.HUME_PERSONA_MAP_JSON || '',
+    humeDefaultPersonaId: process.env.HUME_DEFAULT_PERSONA_ID || '',
     humeAllowClientResume: process.env.HUME_ALLOW_CLIENT_RESUME === 'true',
     appAuthVerifyURL: process.env.APP_AUTH_VERIFY_URL || '',
     authExchangeEnabled: process.env.AUTH_EXCHANGE_ENABLED === 'true',
@@ -82,15 +97,20 @@ function envConfig(overrides = {}) {
     twilioVerifyServiceSid: process.env.TWILIO_VERIFY_SERVICE_SID || '',
     safetyApiEnabled: process.env.SAFETY_API_ENABLED === 'true',
     safetyTableName: process.env.SAFETY_TABLE_NAME || '',
+    authSessionTableName: process.env.AUTH_SESSION_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
     safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
     awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
     deviceTableName: process.env.DEVICE_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
+    actionOutboxUserIndexName: process.env.ACTION_OUTBOX_USER_INDEX_NAME || '',
     actionSigningPrivateKey: process.env.ACTION_SIGNING_PRIVATE_KEY || '',
     actionSigningPublicKey: process.env.ACTION_SIGNING_PUBLIC_KEY || '',
     wearableCommandPayloads: process.env.WEARABLE_COMMAND_PAYLOADS_JSON || '',
     manufacturerWebhookURL: process.env.MANUFACTURER_WEBHOOK_URL || '',
     manufacturerPairingVerifyURL: process.env.MANUFACTURER_PAIRING_VERIFY_URL || '',
     manufacturerStatusURL: process.env.MANUFACTURER_STATUS_URL || '',
+    manufacturerResetURL: process.env.MANUFACTURER_RESET_URL || '',
+    manufacturerPrivacyExportURL: process.env.MANUFACTURER_PRIVACY_EXPORT_URL || '',
+    manufacturerPrivacyDeleteURL: process.env.MANUFACTURER_PRIVACY_DELETE_URL || '',
     manufacturerApiKey: process.env.MANUFACTURER_API_KEY || '',
     actionRequestTimeoutMs: positiveNumber(process.env.ACTION_REQUEST_TIMEOUT_MS, 5000),
     robotAckTimeoutMs: positiveNumber(process.env.ROBOT_ACK_TIMEOUT_MS, 30000),
@@ -129,6 +149,9 @@ function validateServerConfig(config) {
   validateServerURL(config.manufacturerWebhookURL, 'MANUFACTURER_WEBHOOK_URL', { production });
   validateServerURL(config.manufacturerPairingVerifyURL, 'MANUFACTURER_PAIRING_VERIFY_URL', { production });
   validateServerURL(config.manufacturerStatusURL, 'MANUFACTURER_STATUS_URL', { production });
+  validateServerURL(config.manufacturerResetURL, 'MANUFACTURER_RESET_URL', { production });
+  validateServerURL(config.manufacturerPrivacyExportURL, 'MANUFACTURER_PRIVACY_EXPORT_URL', { production });
+  validateServerURL(config.manufacturerPrivacyDeleteURL, 'MANUFACTURER_PRIVACY_DELETE_URL', { production });
   if (production) {
     if (!config.authExchangeEnabled) throw new Error('AUTH_EXCHANGE_ENABLED must be true in production');
     if (!config.phoneAuthEnabled) throw new Error('PHONE_AUTH_ENABLED must be true in production');
@@ -168,6 +191,9 @@ function validateServerConfig(config) {
     if (config.googleTokenAudiences && !config.googleAuthorizedParties) {
       throw new Error('GOOGLE_AUTHORIZED_PARTIES is required when Google auth exchange is enabled');
     }
+    if (production && !config.authSessionRepository && !config.authSessionTableName) {
+      throw new Error('AUTH_SESSION_TABLE_NAME is required for production refresh rotation and revocation');
+    }
   }
   validatePhoneAuthConfig(config);
   if (config.safetyApiEnabled && !config.safetyRepository && !config.safetyTableName) {
@@ -191,15 +217,66 @@ function validateServerConfig(config) {
       throw new Error('ACTION_SIGNING_PUBLIC_KEY must match ACTION_SIGNING_PRIVATE_KEY');
     }
     const payloads = parseWearableCommandPayloads(config.wearableCommandPayloads);
-    if (!['deploy_barrier', 'emit_alarm', 'trigger_sos'].every((action) => payloads[action])) {
+    if (!['deploy_barrier', 'emit_alarm', 'trigger_sos', 'stop'].every((action) => payloads[action])) {
       throw new Error('WEARABLE_COMMAND_PAYLOADS_JSON must configure every wearable action');
     }
   }
   if (production && voiceGatewayRequired && !actionRoutingConfigured) {
     throw new Error('Production voice gateway requires dual-device action routing');
   }
-  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerPairingVerifyURL || !config.manufacturerStatusURL || !config.manufacturerApiKey || !config.deviceTableName)) {
-    throw new Error('MANUFACTURER_WEBHOOK_URL, MANUFACTURER_PAIRING_VERIFY_URL, MANUFACTURER_STATUS_URL, MANUFACTURER_API_KEY, and DEVICE_TABLE_NAME are required for production action routing');
+  if (production && actionRoutingConfigured && (!config.manufacturerWebhookURL || !config.manufacturerPairingVerifyURL || !config.manufacturerStatusURL || !config.manufacturerResetURL || !config.manufacturerApiKey || !config.deviceTableName || !config.actionOutboxUserIndexName)) {
+    throw new Error('MANUFACTURER_WEBHOOK_URL, MANUFACTURER_PAIRING_VERIFY_URL, MANUFACTURER_STATUS_URL, MANUFACTURER_RESET_URL, MANUFACTURER_API_KEY, DEVICE_TABLE_NAME, and ACTION_OUTBOX_USER_INDEX_NAME are required for production action routing');
+  }
+  if (
+    production
+    && config.safetyApiEnabled
+    && !config.privacyCoordinator
+    && (!config.deviceTableName
+      || !config.manufacturerApiKey
+      || !config.manufacturerPrivacyExportURL
+      || !config.manufacturerPrivacyDeleteURL)
+  ) {
+    throw new Error('DEVICE_TABLE_NAME, MANUFACTURER_API_KEY, MANUFACTURER_PRIVACY_EXPORT_URL, and MANUFACTURER_PRIVACY_DELETE_URL are required for production privacy operations');
+  }
+  return config;
+}
+
+function requireMethods(value, label, methods) {
+  const missing = methods.filter((method) => typeof value?.[method] !== 'function');
+  if (missing.length) throw new Error(`${label} is missing required methods: ${missing.join(', ')}`);
+}
+
+function validatePreparedServices(config) {
+  if (config.nodeEnv !== 'production') return config;
+  requireMethods(config.authSessionRepository, 'Production auth session repository', [
+    'create', 'rotate', 'revoke', 'isActive', 'exportUserData', 'deleteUserData',
+    'beginAccountDeletion', 'completeAccountDeletion', 'getAccountDeletionState'
+  ]);
+  requireMethods(config.safetyRepository, 'Production safety repository', [
+    'listContacts', 'createContact', 'updateContact', 'deleteContact', 'acceptSOS',
+    'claimSOSDelivery', 'recordSOSDelivery', 'getMedicationEscalation',
+    'acceptMedicationEscalation', 'claimMedicationEscalationDelivery',
+    'recordMedicationEscalationDelivery',
+    'startSafetySession', 'getSafetySession', 'exportUserData', 'deleteUserData'
+  ]);
+  requireMethods(config.privacyCoordinator, 'Production privacy coordinator', [
+    'missingRepositories', 'exportUserData', 'deleteUserData'
+  ]);
+  requireMethods(config.pushRepository, 'Production push repository', [
+    'register', 'list', 'exportUserData', 'deleteUserData'
+  ]);
+  if (config.safetyApiEnabled && typeof config.notifyEmergencyContacts !== 'function') {
+    throw new Error('Production emergency-contact push delivery is not configured');
+  }
+  if (config.actionGateway || config.actionSigningPrivateKey) {
+    requireMethods(config.robotRepository, 'Production robot repository', [
+      'owns', 'resolveManufacturerDeviceId', 'list', 'listManufacturerDeviceIds',
+      'verifyPairingToken', 'consumeAndBind', 'unbind', 'exportUserData', 'deleteUserData'
+    ]);
+    requireMethods(config.actionOutboxRepository, 'Production action outbox repository', [
+      'enqueue', 'markDelivering', 'markPendingAck', 'markDelivered', 'markFailed',
+      'acknowledge', 'listPending', 'exportUserData', 'deleteUserData'
+    ]);
   }
   return config;
 }
@@ -223,6 +300,16 @@ function safeEqual(left, right) {
 function bearerToken(req) {
   const match = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || '');
   return match?.[1] || '';
+}
+
+async function requireRobotPairingCredential(req, repository, userId, robotId) {
+  if (typeof repository?.verifyPairingToken !== 'function') {
+    throw Object.assign(new Error('Robot credential verification is not configured'), { statusCode: 503 });
+  }
+  const token = req.headers['x-device-pairing-token'];
+  if (!await repository.verifyPairingToken(userId, robotId, token)) {
+    throw Object.assign(new Error('Robot pairing credential is invalid'), { statusCode: 401 });
+  }
 }
 
 async function readJson(req) {
@@ -297,7 +384,7 @@ function streamTextCompletion(res, { text, model, sessionId }) {
   res.end();
 }
 
-function streamToolCall(res, { model, sessionId, scenario }) {
+function streamToolCall(res, { model, sessionId, name = 'get_safety_tips', parameters }) {
   openSSE(res);
   const id = `chatcmpl_${crypto.randomUUID().replaceAll('-', '')}`;
   const toolCallId = `call_${crypto.randomUUID().replaceAll('-', '')}`;
@@ -311,7 +398,7 @@ function streamToolCall(res, { model, sessionId, scenario }) {
           index: 0,
           id: toolCallId,
           type: 'function',
-          function: { name: 'get_safety_tips', arguments: JSON.stringify({ scenario }) }
+          function: { name, arguments: JSON.stringify(parameters || {}) }
         }]
       },
       finish_reason: null
@@ -338,6 +425,10 @@ function normalizeMessages(messages) {
 
 function hasSafetyTool(tools) {
   return Array.isArray(tools) && tools.some((tool) => tool?.function?.name === 'get_safety_tips' || tool?.name === 'get_safety_tips');
+}
+
+function hasTool(tools, name) {
+  return Array.isArray(tools) && tools.some((tool) => tool?.function?.name === name || tool?.name === name);
 }
 
 function sessionHash(sessionId) {
@@ -427,15 +518,41 @@ async function callUpstream(body, config, res, sessionId) {
   }
 }
 
-async function authenticateApp(req, config) {
+async function accountDeletionState(config, subject) {
+  return typeof config.authSessionRepository?.getAccountDeletionState === 'function'
+    ? config.authSessionRepository.getAccountDeletionState(subject)
+    : 'active';
+}
+
+async function assertAccountAvailable(config, subject, { allowDeleting = false } = {}) {
+  const state = await accountDeletionState(config, subject);
+  if (state === 'deleted') {
+    throw Object.assign(new Error('Account has been deleted'), { statusCode: 410, code: 'ACCOUNT_DELETED' });
+  }
+  if (state === 'deleting' && !allowDeleting) {
+    throw Object.assign(new Error('Account deletion is in progress'), {
+      statusCode: 423,
+      code: 'ACCOUNT_DELETION_IN_PROGRESS'
+    });
+  }
+}
+
+async function authenticateApp(req, config, { allowDeleting = false } = {}) {
   const token = bearerToken(req);
   if (!token) return false;
   const session = verifySessionJWT(token, config);
-  if (session) return session;
+  if (session) {
+    if (config.authSessionRepository?.isActive
+      && !await config.authSessionRepository.isActive(session.sub, session.sid)) return false;
+    await assertAccountAvailable(config, session.sub, { allowDeleting });
+    return session;
+  }
   if (typeof config.verifyAppToken === 'function') {
     const verified = await config.verifyAppToken(token);
     if (!verified) return false;
-    return typeof verified === 'object' ? verified : { sub: null, externallyVerified: true };
+    const principal = typeof verified === 'object' ? verified : { sub: null, externallyVerified: true };
+    if (principal?.sub) await assertAccountAvailable(config, principal.sub, { allowDeleting });
+    return principal;
   }
   if (config.appAuthVerifyURL) {
     const controller = new AbortController();
@@ -447,7 +564,9 @@ async function authenticateApp(req, config) {
       });
       if (!response.ok || typeof response.json !== 'function') return false;
       const claims = await response.json();
-      return claims && typeof claims.sub === 'string' && claims.sub ? claims : false;
+      if (!(claims && typeof claims.sub === 'string' && claims.sub)) return false;
+      await assertAccountAvailable(config, claims.sub, { allowDeleting });
+      return claims;
     } finally {
       clearTimeout(timeout);
     }
@@ -501,11 +620,18 @@ async function exchangeIdentity(body, config) {
     throw error;
   }
   const user = profileFromClaims(provider, claims, body?.displayName);
+  await assertAccountAvailable(config, user.id);
   const session = signSessionJWT({ provider, subject: claims.sub }, config);
   const refresh = signRefreshJWT({
     subject: session.payload.sub,
     sessionId: session.payload.sid
   }, config);
+  await config.authSessionRepository?.create?.({
+    subject: session.payload.sub,
+    sessionId: session.payload.sid,
+    refreshJti: refresh.payload.jti,
+    expiresAt: refresh.payload.exp * 1000
+  });
   return {
     accessToken: session.token,
     expiresAt: session.payload.exp * 1000,
@@ -518,11 +644,18 @@ async function exchangeIdentity(body, config) {
 async function verifyPhoneIdentity(body, config) {
   const claims = await verifyPhoneVerification(body, config);
   const subject = `phone:${phoneSubject(claims.phone, config.phoneAuthSubjectSecret)}`;
+  await assertAccountAvailable(config, subject);
   const session = signSessionJWT({ subjectClaim: subject }, config);
   const refresh = signRefreshJWT({
     subject: session.payload.sub,
     sessionId: session.payload.sid
   }, config);
+  await config.authSessionRepository?.create?.({
+    subject: session.payload.sub,
+    sessionId: session.payload.sid,
+    refreshJti: refresh.payload.jti,
+    expiresAt: refresh.payload.exp * 1000
+  });
   return {
     accessToken: session.token,
     expiresAt: session.payload.exp * 1000,
@@ -538,18 +671,40 @@ async function verifyPhoneIdentity(body, config) {
   };
 }
 
-function refreshIdentity(body, config) {
+async function refreshIdentity(body, config) {
   const claims = verifyRefreshJWT(body?.refreshToken, config);
   if (!claims) {
     const error = new Error('Refresh session is invalid or expired');
     error.statusCode = 401;
     throw error;
   }
+  await assertAccountAvailable(config, claims.sub);
   const session = signSessionJWT({
     subjectClaim: claims.sub,
     sessionId: claims.sid
   }, config);
-  const refresh = signRefreshJWT({ subject: claims.sub, sessionId: claims.sid }, config);
+  // The original refresh expiry is the absolute family lifetime. Rotation
+  // cannot slide a session indefinitely beyond that boundary.
+  const refresh = signRefreshJWT(
+    { subject: claims.sub, sessionId: claims.sid },
+    config,
+    { absoluteExpiresAtSeconds: claims.exp }
+  );
+  if (config.authSessionRepository?.rotate) {
+    const rotated = await config.authSessionRepository.rotate({
+      subject: claims.sub,
+      sessionId: claims.sid,
+      currentJti: claims.jti,
+      nextJti: refresh.payload.jti,
+      expiresAt: refresh.payload.exp * 1000
+    });
+    if (!rotated) {
+      const error = new Error('Refresh session reuse was detected');
+      error.statusCode = 401;
+      error.code = 'REFRESH_REUSE_DETECTED';
+      throw error;
+    }
+  }
   return {
     accessToken: session.token,
     expiresAt: session.payload.exp * 1000,
@@ -579,6 +734,27 @@ async function configureHumeSession(chatId, config) {
 }
 
 function prepareDeviceServices(config) {
+  config.logger = createRedactedLogger(config.logger);
+  if (config.safetyApiEnabled && !config.safetyRepository && config.safetyTableName) {
+    config.safetyRepository = createDynamoSafetyRepository({
+      tableName: config.safetyTableName,
+      region: config.awsRegion
+    });
+  }
+  if (!config.authSessionRepository && config.authSessionTableName) {
+    config.authSessionRepository = createDynamoAuthSessionRepository({
+      tableName: config.authSessionTableName,
+      region: config.awsRegion
+    });
+  }
+  if (!config.verifyVoiceToken) {
+    // Raw WebSocket upgrades do not pass through the HTTP auth middleware.
+    // Reuse the same repository-aware verifier so logout and refresh-replay
+    // revocation prevent new voice sessions immediately, not only at JWT exp.
+    config.verifyVoiceToken = (token) => authenticateApp({
+      headers: { authorization: `Bearer ${token}` }
+    }, config);
+  }
   if (!config.robotRepository && config.deviceTableName) {
     config.robotRepository = createDynamoRobotRepository({ tableName: config.deviceTableName, region: config.awsRegion });
   }
@@ -601,6 +777,30 @@ function prepareDeviceServices(config) {
       timeoutMs: config.actionRequestTimeoutMs
     });
   }
+  if (!config.resetManufacturerRobot && config.manufacturerResetURL && config.manufacturerApiKey) {
+    config.resetManufacturerRobot = createManufacturerRobotResetClient({
+      url: config.manufacturerResetURL,
+      apiKey: config.manufacturerApiKey,
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    });
+  }
+  if (
+    !config.manufacturerPrivacyRepository
+    && config.manufacturerPrivacyExportURL
+    && config.manufacturerPrivacyDeleteURL
+    && config.manufacturerApiKey
+    && config.robotRepository?.listManufacturerDeviceIds
+  ) {
+    config.manufacturerPrivacyRepository = createManufacturerPrivacyRepository({
+      exportURL: config.manufacturerPrivacyExportURL,
+      deleteURL: config.manufacturerPrivacyDeleteURL,
+      apiKey: config.manufacturerApiKey,
+      listManufacturerDeviceIds: (userId) => config.robotRepository.listManufacturerDeviceIds(userId),
+      fetchImpl: config.fetchImpl,
+      timeoutMs: config.actionRequestTimeoutMs
+    });
+  }
   if (!config.notifyUser && config.pushRepository) {
     config.notifyUser = createExpoPushNotifier({
       repository: config.pushRepository,
@@ -608,10 +808,18 @@ function prepareDeviceServices(config) {
       timeoutMs: config.actionRequestTimeoutMs
     });
   }
-  if (!config.actionOutboxRepository && config.deviceTableName && config.actionSigningPrivateKey) {
+  if (!config.notifyEmergencyContacts && config.notifyUser && config.safetyRepository) {
+    config.notifyEmergencyContacts = createEmergencyContactPushNotifier({
+      safetyRepository: config.safetyRepository,
+      notifyUser: config.notifyUser,
+      resolvePhoneAccountId: (phone) => `phone:${phoneSubject(phone, config.phoneAuthSubjectSecret)}`
+    });
+  }
+  if (!config.actionOutboxRepository && config.deviceTableName) {
     config.actionOutboxRepository = createDynamoActionOutboxRepository({
       tableName: config.deviceTableName,
-      region: config.awsRegion
+      region: config.awsRegion,
+      userIndexName: config.actionOutboxUserIndexName
     });
   }
   if (!config.actionGateway && config.actionSigningPrivateKey) {
@@ -629,6 +837,7 @@ function prepareDeviceServices(config) {
       resolveManufacturerDeviceId: config.robotRepository?.resolveManufacturerDeviceId
         ? (userId, deviceId) => config.robotRepository.resolveManufacturerDeviceId(userId, deviceId)
         : undefined,
+      requireBoundRobotResolver: config.nodeEnv === 'production',
       getDeviceStatus: config.getManufacturerRobotStatus,
       outboxRepository: config.actionOutboxRepository,
       logger: config.logger
@@ -638,17 +847,27 @@ function prepareDeviceServices(config) {
     config.actionRecoveryPromise = config.actionGateway.recoverPendingCommands();
     config.actionRecoveryPromise.catch(() => {});
   }
-  return config;
+  if (!config.privacyCoordinator && config.safetyApiEnabled) {
+    config.privacyCoordinator = createPrivacyDataCoordinator({
+      safetyRepository: config.safetyRepository,
+      robotRepository: config.robotRepository,
+      actionOutboxRepository: config.actionOutboxRepository,
+      pushRepository: config.pushRepository,
+      manufacturerPrivacyRepository: config.manufacturerPrivacyRepository,
+      authSessionRepository: config.authSessionRepository
+    });
+  }
+  if (config.nodeEnv === 'production' && config.safetyApiEnabled) {
+    const missingPrivacyRepositories = config.privacyCoordinator?.missingRepositories?.() || [];
+    if (missingPrivacyRepositories.length) {
+      throw new Error(`Production privacy repositories are incomplete: ${missingPrivacyRepositories.join(', ')}`);
+    }
+  }
+  return validatePreparedServices(config);
 }
 
 function createHandler(overrides = {}) {
   const config = prepareDeviceServices(validateServerConfig(envConfig(overrides)));
-  if (config.safetyApiEnabled && !config.safetyRepository) {
-    config.safetyRepository = createDynamoSafetyRepository({
-      tableName: config.safetyTableName,
-      region: config.awsRegion
-    });
-  }
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
     try {
@@ -682,11 +901,20 @@ function createHandler(overrides = {}) {
           return;
         }
         if (hasImmediateDanger(userText)) {
+          if (hasTool(body.tools, 'request_help_dial')) {
+            streamToolCall(res, { model, sessionId, name: 'request_help_dial' });
+            return;
+          }
           streamTextCompletion(res, { text: createLocalCompanionResponse(body.messages), model, sessionId });
           return;
         }
         if (shouldRequestSafetyTips(userText) && hasSafetyTool(body.tools)) {
-          streamToolCall(res, { model, sessionId, scenario: inferScenario(userText) });
+          streamToolCall(res, {
+            model,
+            sessionId,
+            name: 'get_safety_tips',
+            parameters: { scenario: inferScenario(userText) }
+          });
           return;
         }
         if (config.upstreamURL && config.upstreamApiKey && config.upstreamModel) {
@@ -748,7 +976,16 @@ function createHandler(overrides = {}) {
           return;
         }
         const body = await readJson(req);
-        json(res, 200, refreshIdentity(body, config));
+        json(res, 200, await refreshIdentity(body, config));
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/auth/logout') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        await config.authSessionRepository?.revoke?.({ subject: principal.sub, sessionId: principal.sid });
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
         return;
       }
 
@@ -757,7 +994,11 @@ function createHandler(overrides = {}) {
         if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
         if (config.httpOnlyDeployment === true) { json(res, 503, { error: 'Device actions require the authenticated voice gateway' }); return; }
         if (!config.actionGateway) { json(res, 503, { error: 'Action gateway is not configured' }); return; }
-        json(res, 202, await config.actionGateway.route(principal.sub, await readJson(req)));
+        const body = await readJson(req);
+        if (body?.device_type === 'home_robot') {
+          await requireRobotPairingCredential(req, config.robotRepository, principal.sub, body.device_id);
+        }
+        json(res, 202, await config.actionGateway.route(principal.sub, body));
         return;
       }
 
@@ -784,6 +1025,31 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      const robotBindingMatch = /^\/v1\/devices\/home-robots\/([^/]{1,384})$/.exec(url.pathname);
+      if (req.method === 'DELETE' && robotBindingMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        let robotId;
+        try { robotId = decodeURIComponent(robotBindingMatch[1]); } catch { robotId = ''; }
+        if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) { json(res, 400, { error: 'Robot identifier is invalid' }); return; }
+        if (!config.robotRepository?.resolveManufacturerDeviceId || !config.robotRepository?.unbind || !config.resetManufacturerRobot) {
+          json(res, 503, { error: 'Robot reset is not configured' }); return;
+        }
+        await requireRobotPairingCredential(req, config.robotRepository, principal.sub, robotId);
+        const manufacturerDeviceId = await config.robotRepository.resolveManufacturerDeviceId(principal.sub, robotId);
+        if (!/^[A-Za-z0-9._:-]{1,128}$/.test(manufacturerDeviceId || '')) {
+          json(res, 404, { error: 'Robot was not found' }); return;
+        }
+        // Keep the account binding intact unless the manufacturer confirms
+        // that user data was erased from the physical robot.
+        await config.resetManufacturerRobot(manufacturerDeviceId);
+        const removed = await config.robotRepository.unbind(principal.sub, robotId);
+        if (!removed) { json(res, 409, { error: 'Robot binding could not be removed' }); return; }
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
       const robotTelemetryMatch = /^\/v1\/devices\/([^/]{1,384})\/telemetry$/.exec(url.pathname);
       if (req.method === 'GET' && robotTelemetryMatch) {
         const principal = await authenticateApp(req, config);
@@ -791,6 +1057,7 @@ function createHandler(overrides = {}) {
         let robotId;
         try { robotId = decodeURIComponent(robotTelemetryMatch[1]); } catch { robotId = ''; }
         if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) { json(res, 400, { error: 'Robot identifier is invalid' }); return; }
+        await requireRobotPairingCredential(req, config.robotRepository, principal.sub, robotId);
         let manufacturerDeviceId = robotId;
         if (config.robotRepository?.resolveManufacturerDeviceId) {
           manufacturerDeviceId = await config.robotRepository.resolveManufacturerDeviceId(principal.sub, robotId);
@@ -831,6 +1098,7 @@ function createHandler(overrides = {}) {
         url.pathname === '/v1/emergency-contacts'
         || url.pathname.startsWith('/v1/emergency-contacts/')
         || url.pathname === '/v1/sos-events'
+        || url.pathname === '/v1/medication-escalations'
         || url.pathname.startsWith('/v1/safety-sessions')
         || url.pathname.startsWith('/v1/privacy/')
       ) {
@@ -838,7 +1106,9 @@ function createHandler(overrides = {}) {
           json(res, 503, { error: 'The production safety API is not configured' });
           return;
         }
-        const principal = await authenticateApp(req, config);
+        const principal = await authenticateApp(req, config, {
+          allowDeleting: req.method === 'DELETE' && url.pathname === '/v1/privacy/data'
+        });
         const body = ['POST', 'PATCH'].includes(req.method) ? await readJson(req) : {};
         if (await handleSafetyAPI({
           req,
@@ -847,6 +1117,8 @@ function createHandler(overrides = {}) {
           body,
           principal,
           repository: config.safetyRepository,
+          privacyCoordinator: config.privacyCoordinator,
+          notifyEmergencyContacts: config.notifyEmergencyContacts,
           retentionDays: config.safetyRetentionDays,
           json
         })) return;

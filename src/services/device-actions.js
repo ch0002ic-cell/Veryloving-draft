@@ -3,7 +3,7 @@ import { base64ToBytes, decodeBase64URLJSON } from '../utils/base64';
 import { deviceRegistry } from './device-manager/DeviceRegistry';
 import { deviceActionReplayStore } from './device-action-replay-store';
 
-const WEARABLE_ACTIONS = new Set(['deploy_barrier', 'emit_alarm', 'trigger_sos']);
+const WEARABLE_ACTIONS = new Set(['deploy_barrier', 'emit_alarm', 'trigger_sos', 'stop']);
 
 function asciiBytes(value) {
   return Uint8Array.from(value, (character) => character.charCodeAt(0));
@@ -62,7 +62,12 @@ export async function dispatchWearableAction(message, {
     }
     const payload = envelope.parameters?.command_payload;
     if (typeof payload !== 'string' || !payload || payload.length > 1024) throw new Error('Wearable command payload is invalid.');
-    const result = await device.sendCommand({ payload, withResponse: true });
+    const result = await device.sendCommand({
+      payload,
+      action: envelope.action,
+      priority: envelope.action === 'stop' ? 'critical' : 'standard',
+      withResponse: true
+    });
     if (typeof replayStore.reserve !== 'function') await replayStore.remember(envelope.id, expiresAt);
     return result;
   } catch (error) {

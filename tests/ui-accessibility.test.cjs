@@ -102,6 +102,13 @@ test('shared async feedback is announced with status semantics', () => {
   assert.match(loadingState, /accessibilityState=\{\{ busy: true \}\}/);
 });
 
+test('shared critical controls expand for Dynamic Type without clipping labels', () => {
+  const button = source('src/components/Button.js');
+  assert.doesNotMatch(button, /<Text\s+numberOfLines=/);
+  assert.doesNotMatch(button, /base:\s*\{[^}]*overflow:\s*'hidden'/);
+  assert.match(button, /row:\s*\{[^}]*flexShrink:\s*1/);
+});
+
 test('map annotations are named and decorative empty-state art stays silent', () => {
   const map = source('app/(tabs)/map.js');
   assert.match(map, /title=\{zoneTitle\}/);
@@ -119,7 +126,9 @@ test('protected detail screens expose visible, localized back navigation', () =>
     'app/voices.js',
     'app/friends.js',
     'app/emergency-contacts.js',
+    'app/medical-profile.js',
     'app/device-management.js',
+    'app/medication-reminders.js',
     'app/conversation-history.js',
     'app/quick-share-location.js',
     'app/capybear-tap.js',
@@ -132,6 +141,37 @@ test('protected detail screens expose visible, localized back navigation', () =>
   const header = source('src/components/Header.js');
   assert.match(header, /const \{ isRTL \} = useI18n\(\)/);
   assert.match(header, /backButton: \{ width: 48, height: 48/);
+});
+
+test('medication management exposes an accessible create, list, and acknowledge journey', () => {
+  const screen = source('app/medication-reminders.js');
+  assert.match(screen, /accessibilityRole="radio"/);
+  assert.match(screen, /accessibilityState=\{\{ checked: selected, disabled: Boolean\(busyAction\) \}\}/);
+  assert.match(screen, /scheduleMedicationReminder\(input\)/);
+  assert.match(screen, /listMedicationReminders\(\)/);
+  assert.match(screen, /acknowledgeMedicationReminder\(reminderId\)/);
+  assert.match(screen, /backLabel=\{t\('common\.back'\)\}/);
+
+  const settings = source('app/settings.js');
+  assert.match(settings, /router\.push\('\/medication-reminders'\)/);
+  const authRouting = source('src/utils/auth-routing.js');
+  assert.match(authRouting, /'medication-reminders'/);
+});
+
+test('medical emergency sharing is reachable, explicit, and accessibly labelled', () => {
+  const settings = source('app/settings.js');
+  const medicalProfile = source('app/medical-profile.js');
+  const authRouting = source('src/utils/auth-routing.js');
+
+  assert.match(settings, /router\.push\('\/medical-profile'\)/);
+  assert.match(authRouting, /'medical-profile'/);
+  assert.match(medicalProfile, /loadMedicalEmergencyProfile\(user\.id\)/);
+  assert.match(medicalProfile, /saveMedicalEmergencyProfile\(user\.id/);
+  assert.match(medicalProfile, /clearMedicalEmergencyProfile\(user\.id\)/);
+  assert.match(medicalProfile, /accessibilityLabel=\{t\('medicalProfile\.shareLabel'\)\}/);
+  assert.match(medicalProfile, /accessibilityHint=\{t\('medicalProfile\.shareHint'\)\}/);
+  assert.match(medicalProfile, /consentRecordedAt: form\.shareInEmergency/);
+  assert.match(medicalProfile, /toLocaleString\(locale\)/);
 });
 
 test('shared screen content is never hidden behind an entrance animation', () => {

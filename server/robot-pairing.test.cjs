@@ -28,6 +28,49 @@ test('manufacturer routing identity is resolved only through the account binding
   assert.equal(await repository.resolveManufacturerDeviceId('user-a', 'robot-1'), 'manufacturer-opaque-1');
 });
 
+test('robot pairing credential verification is account-bound and timing-safe', async () => {
+  const crypto = require('node:crypto');
+  const token = 'a'.repeat(43);
+  const repository = createDynamoRobotRepository({
+    tableName: 'devices',
+    client: {
+      async send() {
+        return {
+          Items: [{
+            id: 'robot-1',
+            pairingTokenHash: crypto.createHash('sha256').update(token).digest('base64url')
+          }]
+        };
+      }
+    }
+  });
+  assert.equal(await repository.verifyPairingToken('user-a', 'robot-1', token), true);
+  assert.equal(await repository.verifyPairingToken('user-a', 'robot-1', 'b'.repeat(43)), false);
+  assert.equal(await repository.verifyPairingToken('user-b', 'robot-1', 'short'), false);
+});
+
+test('factory reset unbind atomically removes only the authenticated user and matching owner', async () => {
+  const inputs = [];
+  const repository = createDynamoRobotRepository({
+    tableName: 'devices',
+    client: {
+      async send(command) {
+        inputs.push(command.input);
+        if (inputs.length === 1) {
+          return { Items: [{ id: 'robot-1', manufacturerDeviceId: 'manufacturer-1', serialHash: 'serial-hash', pairingClaimHash: 'A'.repeat(43), SK: 'ROBOT#serial-hash' }] };
+        }
+        return {};
+      }
+    }
+  });
+  assert.deepEqual(await repository.unbind('user-a', 'robot-1'), { manufacturerDeviceId: 'manufacturer-1' });
+  const transaction = inputs[1].TransactItems;
+  assert.deepEqual(transaction[0].Delete.Key, { PK: 'USER#user-a', SK: 'ROBOT#serial-hash' });
+  assert.deepEqual(transaction[1].Delete.Key, { PK: 'ROBOT#serial-hash', SK: 'OWNER' });
+  assert.equal(transaction[1].Delete.ExpressionAttributeValues[':userId'], 'user-a');
+  assert.equal(transaction[2].Update.UpdateExpression, 'SET unbound_at = :now REMOVE bound_to, serial_hash');
+});
+
 test('account robot listing paginates and returns only safe public descriptors', async () => {
   const responses = [
     {

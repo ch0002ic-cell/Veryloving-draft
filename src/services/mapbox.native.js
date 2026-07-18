@@ -9,7 +9,7 @@ import {
 } from './offline-map-cache';
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
 
-export { dangerZones, requestCurrentLocation, requestLocationPermission } from './mapbox-core';
+export { dangerZones, requestCurrentLocation, requestLocationPermission, watchLiveLocation } from './mapbox-core';
 
 let cacheQueue = Promise.resolve();
 

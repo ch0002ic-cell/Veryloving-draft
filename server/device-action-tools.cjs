@@ -3,10 +3,11 @@
 const ACTION_TOOL_DEFINITIONS = Object.freeze([
   ['deploy_barrier', 'wearable', 'Deploy the paired wearable safety barrier.'],
   ['emit_alarm', 'wearable', 'Sound the paired wearable alarm.'],
+  ['stop', 'wearable', 'Immediately stop the paired wearable alarm or active actuator.'],
   ['check_medication', 'home_robot', 'Ask the paired home robot to check the medication schedule.']
 ]);
 
-const ACTION_TOOL_SCHEMAS = Object.freeze(ACTION_TOOL_DEFINITIONS.map(([name, deviceType, description]) => ({
+const deviceActionSchemas = ACTION_TOOL_DEFINITIONS.map(([name, deviceType, description]) => ({
   type: 'function',
   function: {
     name,
@@ -30,6 +31,21 @@ const ACTION_TOOL_SCHEMAS = Object.freeze(ACTION_TOOL_DEFINITIONS.map(([name, de
       }
     }
   }
-})));
+}));
 
-module.exports = { ACTION_TOOL_SCHEMAS };
+const HELP_DIAL_TOOL_SCHEMA = Object.freeze({
+  type: 'function',
+  function: {
+    name: 'request_help_dial',
+    description: 'Open the confirmed emergency-contact help flow when the user reports immediate danger.',
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {}
+    }
+  }
+});
+
+const ACTION_TOOL_SCHEMAS = Object.freeze([...deviceActionSchemas, HELP_DIAL_TOOL_SCHEMA]);
+
+module.exports = { ACTION_TOOL_SCHEMAS, HELP_DIAL_TOOL_SCHEMA };

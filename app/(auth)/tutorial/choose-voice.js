@@ -5,7 +5,7 @@ import { Header } from '../../../src/components/Header';
 import { Card } from '../../../src/components/Card';
 import { Button } from '../../../src/components/Button';
 import { StatusPill } from '../../../src/components/StatusPill';
-import { voiceProfiles } from '../../../src/mocks/voiceProfiles';
+import { voiceProfiles } from '../../../src/constants/voiceProfiles';
 import { useAppState } from '../../../src/context/AppContext';
 import { useI18n } from '../../../src/context/I18nContext';
 import { colors, fonts } from '../../../src/constants/theme';

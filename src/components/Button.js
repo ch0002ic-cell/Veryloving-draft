@@ -35,14 +35,14 @@ export function Button({
       <View style={styles.row}>
         {loading ? <ActivityIndicator size="small" color={contentColor} /> : null}
         {!loading && icon ? <Ionicons name={icon} size={18} color={contentColor} /> : null}
-        <Text numberOfLines={2} style={[styles.text, variant === 'ghost' && styles.ghostText]}>{title}</Text>
+        <Text style={[styles.text, variant === 'ghost' && styles.ghostText]}>{title}</Text>
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 50, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18, overflow: 'hidden' },
+  base: { minHeight: 50, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18 },
   compact: { minHeight: 44, paddingHorizontal: 12 },
   primary: { backgroundColor: colors.ink },
   orange: { backgroundColor: colors.orangeAccessible },
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   ghost: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.controlBorder },
   disabled: { opacity: 0.45 },
   pressed: { transform: [{ scale: 0.98 }] },
-  row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexShrink: 1, gap: 8 },
   text: { flexShrink: 1, color: '#fff', fontFamily: fonts.semibold, fontSize: 16, textAlign: 'center' },
   ghostText: { color: colors.ink }
 });

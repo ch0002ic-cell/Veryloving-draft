@@ -115,6 +115,29 @@ export function refreshApplicationSession(refreshToken, options) {
     .then(validateSession);
 }
 
+export async function revokeApplicationSession(
+  accessToken,
+  { fetchImpl = globalThis.fetch, apiBaseUrl = config.apiBaseUrl } = {}
+) {
+  if (!accessToken) return false;
+  const endpoint = authenticationEndpoint('/v1/auth/logout', apiBaseUrl);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), AUTH_EXCHANGE_TIMEOUT_MS);
+  try {
+    const response = await fetchImpl(endpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/json'
+      },
+      signal: controller.signal
+    });
+    return response.ok;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function requestPhoneVerification({ phone, countryCode }, options) {
   if (!/^\+[1-9]\d{7,14}$/.test(phone) || !/^[A-Z]{2}$/.test(countryCode)) {
     throw createAuthError('PHONE_NUMBER_INVALID', 'Enter a valid international phone number.');

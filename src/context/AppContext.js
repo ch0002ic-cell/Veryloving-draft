@@ -1,8 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
-import { voiceProfiles } from '../mocks/voiceProfiles';
+import { voiceProfiles } from '../constants/voiceProfiles';
 import { DEFAULT_SETTINGS, loadSettings, mergeSettings, persistSettings } from '../services/settings-store';
 import { logger } from '../utils/logger';
+import { createSafetyEventRouter } from '../services/safety-events';
+import { decodeVL01SafetyEvent } from '../services/vl01-protocol';
+import { triggerSOS } from '../services/emergency';
+import { loadLastKnownLocation } from '../services/location-cache';
 import { wearableBLE as bleService } from '../services/device-manager/WearableDevice';
 import {
   DEFAULT_DEVICE,
@@ -17,6 +21,7 @@ import { config } from '../utils/config';
 import {
   createEmergencyContact,
   deleteEmergencyContact,
+  dispatchMedicationEscalation,
   fetchEmergencyContacts
 } from '../services/safety-api';
 import { createAuthenticationNonce } from '../utils/session-token';
@@ -29,8 +34,19 @@ import { HomeRobotDevice } from '../services/device-manager/HomeRobotDevice';
 import { persistDeviceEntities } from '../services/device-entity-store';
 import { registerDevicePushToken } from '../services/notifications';
 import { listHomeRobots } from '../services/robot-pairing';
+import { loadRobotPairingCredential } from '../services/robot-pairing-credential-store';
+import { createMedicationReminderScheduler } from '../services/medication-reminder-scheduler';
+import { recordMedicationDeliveryTelemetry } from '../services/medication-telemetry';
 
 const AppContext = createContext(null);
+
+function safetyEventIdempotencyKey(deviceId, eventId) {
+  let hash = 2166136261;
+  for (const character of String(deviceId)) {
+    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619);
+  }
+  return `safety-${(hash >>> 0).toString(36)}-${String(eventId).slice(0, 80)}`;
+}
 const DEFAULT_CONTACTS = [];
 const DEFAULT_FRIENDS = [];
 
@@ -55,10 +71,14 @@ export function AppProvider({ children }) {
   const deviceAccountIdRef = useRef(null);
   const reconnectInFlightRef = useRef(null);
   const [friends, setFriends] = useState(DEFAULT_FRIENDS);
-  const [wearableEntities, setWearableEntities] = useState([]);
+  const [wearableEntities, setWearableEntitiesState] = useState([]);
   const wearableEntitiesRef = useRef([]);
+  const setWearableEntitiesRef = useRef(null);
   const [robotEntities, setRobotEntitiesState] = useState([]);
   const robotEntitiesRef = useRef([]);
+  const safetyEventRouterRef = useRef(null);
+  const medicationSchedulerRef = useRef(null);
+  const [medicationReminders, setMedicationReminders] = useState([]);
   const deviceEntitiesMutationQueueRef = useRef(Promise.resolve());
   const deviceHydrationGenerationRef = useRef(0);
   const [deviceEntitiesAccountId, setDeviceEntitiesAccountId] = useState(undefined);
@@ -86,7 +106,7 @@ export function AppProvider({ children }) {
     deviceRegistry.clear();
     wearableEntitiesRef.current = [];
     robotEntitiesRef.current = [];
-    setWearableEntities([]);
+    setWearableEntitiesState([]);
     setRobotEntitiesState([]);
     setDeviceEntitiesAccountId(undefined);
     if (!accountId) {
@@ -103,7 +123,8 @@ export function AppProvider({ children }) {
         name: record.name,
         accountId,
         gatewayURL: config.actionGatewayURL,
-        accessTokenProvider: () => accessTokenRef.current
+        accessTokenProvider: () => accessTokenRef.current,
+        pairingTokenProvider: (deviceId) => loadRobotPairingCredential(accountId, deviceId)
       })
     }), 8000, 'Device restoration timed out.').then((devices) => {
       if (!active || generation !== deviceHydrationGenerationRef.current || activeAccountIdRef.current !== accountId) return;
@@ -112,7 +133,7 @@ export function AppProvider({ children }) {
       const robots = restored.filter((entry) => entry.deviceType === 'home_robot');
       wearableEntitiesRef.current = wearables;
       robotEntitiesRef.current = robots;
-      setWearableEntities(wearables);
+      setWearableEntitiesState(wearables);
       setRobotEntitiesState(robots);
       setDeviceEntitiesAccountId(accountId);
     }).catch((error) => {
@@ -135,7 +156,7 @@ export function AppProvider({ children }) {
     const robots = entities.filter((entry) => entry.deviceType === 'home_robot');
     wearableEntitiesRef.current = wearables;
     robotEntitiesRef.current = robots;
-    setWearableEntities(wearables);
+    setWearableEntitiesState(wearables);
     setRobotEntitiesState(robots);
     if (deviceEntitiesAccountId !== user.id) return;
     const accountId = user.id;
@@ -150,11 +171,125 @@ export function AppProvider({ children }) {
   }), [deviceEntitiesAccountId, user?.id]);
 
   useEffect(() => {
+    safetyEventRouterRef.current = createSafetyEventRouter({
+      decodeWearableEvent: decodeVL01SafetyEvent,
+      activateSOS: async ({ idempotencyKey, deviceId }) => triggerSOS(contactsRef.current, {
+        accessToken: accessTokenRef.current,
+        accountId: activeAccountIdRef.current,
+        location: await loadLastKnownLocation().catch(() => null),
+        idempotencyKey: safetyEventIdempotencyKey(deviceId, idempotencyKey)
+      }),
+      reportFall: async (event) => triggerSOS(contactsRef.current, {
+        accessToken: accessTokenRef.current,
+        accountId: activeAccountIdRef.current,
+        location: await loadLastKnownLocation().catch(() => null),
+        idempotencyKey: safetyEventIdempotencyKey(event.deviceId, event.eventId)
+      })
+    });
+    return deviceRegistry.subscribeTelemetry(({ deviceId, deviceType, telemetry }) => {
+      const operation = deviceType === 'wearable' && telemetry?.type === 'event'
+        ? safetyEventRouterRef.current?.routeWearableEvent(telemetry.value, { deviceId })
+        : deviceType === 'home_robot' && Array.isArray(telemetry?.safety_events)
+          ? Promise.all(telemetry.safety_events.map((event) => (
+              safetyEventRouterRef.current?.routeRobotEvent(event, { deviceId })
+            )))
+          : null;
+      operation?.catch?.((error) => logger.warn('[SafetyEvents] Device safety event was rejected', {
+        errorCode: error?.code || error?.name || 'SAFETY_EVENT_REJECTED',
+        deviceType
+      }));
+    });
+  }, []);
+
+  useEffect(() => {
     if (!isHydrated || !user?.id || !accessToken || !config.safetyBackendEnabled) return;
     registerDevicePushToken(accessToken).catch((error) => logger.warn('[AppState] Push token registration deferred', {
       errorCode: error?.code || error?.name || 'PUSH_TOKEN_REGISTRATION_FAILED'
     }));
   }, [accessToken, isHydrated, user?.id]);
+
+  useEffect(() => {
+    medicationSchedulerRef.current?.stop();
+    medicationSchedulerRef.current = null;
+    setMedicationReminders([]);
+    if (!isHydrated || !user?.id) return undefined;
+    const accountId = user.id;
+    let scheduler;
+    scheduler = createMedicationReminderScheduler({
+      accountId,
+      sendRobotReminder: async ({ deviceId, command, idempotencyKey }) => {
+        if (activeAccountIdRef.current !== accountId) throw new Error('The active account changed.');
+        const robot = deviceRegistry.get(deviceId);
+        if (!robot || robot.deviceType !== 'home_robot') {
+          const error = new Error('The medication robot is unavailable.');
+          error.code = 'MEDICATION_ROBOT_UNAVAILABLE';
+          throw error;
+        }
+        return robot.sendCommand({ ...command, idempotency_key: idempotencyKey });
+      },
+      notifyCaregiver: ({ reminderId, medicationId, idempotencyKey, occurredAt }) => {
+        if (activeAccountIdRef.current !== accountId || !accessTokenRef.current) {
+          const error = new Error('Medication escalation authentication is unavailable.');
+          error.code = 'MEDICATION_ESCALATION_AUTH_REQUIRED';
+          throw error;
+        }
+        return dispatchMedicationEscalation({
+          reminderId,
+          medicationId,
+          idempotencyKey,
+          occurredAt,
+          accessToken: accessTokenRef.current
+        });
+      },
+      onDeliveryFailure: ({ phase, errorCode }) => logger.warn('[Medication] Reminder delivery deferred', {
+        phase,
+        errorCode
+      }),
+      onStateChange: (reminders) => {
+        if (
+          medicationSchedulerRef.current === scheduler
+          && activeAccountIdRef.current === accountId
+        ) setMedicationReminders(reminders);
+      }
+    });
+    medicationSchedulerRef.current = scheduler;
+    scheduler.start().then(({ reminders }) => {
+      if (medicationSchedulerRef.current === scheduler && activeAccountIdRef.current === accountId) {
+        setMedicationReminders(reminders);
+      }
+    }).catch((error) => logger.warn('[Medication] Reminder restoration failed', {
+      errorCode: error?.code || error?.name || 'MEDICATION_RESTORE_FAILED'
+    }));
+    return () => {
+      scheduler.stop();
+      if (medicationSchedulerRef.current === scheduler) medicationSchedulerRef.current = null;
+    };
+  }, [isHydrated, user?.id]);
+
+  useEffect(() => {
+    if (!isHydrated || !user?.id) return undefined;
+    const accountId = user.id;
+    return deviceRegistry.subscribeTelemetry(({ deviceId, deviceType, telemetry }) => {
+      if (
+        deviceType !== 'home_robot'
+        || telemetry?.medication_acknowledgements === undefined
+      ) return;
+      const scheduler = medicationSchedulerRef.current;
+      if (!scheduler) return;
+      recordMedicationDeliveryTelemetry({
+        deviceId,
+        telemetry,
+        recordRobotDelivery: (...args) => scheduler.recordRobotDelivery(...args)
+      }).then(() => scheduler.list()).then((reminders) => {
+        if (
+          medicationSchedulerRef.current === scheduler
+          && activeAccountIdRef.current === accountId
+        ) setMedicationReminders(reminders);
+      }).catch((error) => logger.warn('[Medication] Robot delivery acknowledgement was rejected', {
+        errorCode: error?.code || error?.name || 'MEDICATION_ACK_REJECTED'
+      }));
+    });
+  }, [isHydrated, user?.id]);
 
   useEffect(() => {
     if (authLoading) return undefined;
@@ -199,7 +334,7 @@ export function AppProvider({ children }) {
       deviceRegistry.clear();
       wearableEntitiesRef.current = [];
       robotEntitiesRef.current = [];
-      setWearableEntities([]);
+      setWearableEntitiesState([]);
       setRobotEntitiesState([]);
       setContactsAccountId(null);
       setPairedDeviceAccountId(null);
@@ -476,7 +611,12 @@ export function AppProvider({ children }) {
     let result;
     try {
       result = await forgetPairedDevice(rememberedDevice, {
-        clearRememberedDevice: () => setDevice(DEFAULT_DEVICE),
+        clearRememberedDevice: async () => {
+          if (rememberedDevice.id && setWearableEntitiesRef.current) {
+            await setWearableEntitiesRef.current((current) => current.filter((entry) => entry.deviceId !== rememberedDevice.id));
+          }
+          await setDevice(DEFAULT_DEVICE);
+        },
         disconnectNativeDevice: (deviceId) => bleService.disconnect(deviceId)
       });
     } catch (error) {
@@ -624,8 +764,9 @@ export function AppProvider({ children }) {
     deviceRegistry.clear();
     wearableEntitiesRef.current = [];
     robotEntitiesRef.current = [];
-    setWearableEntities([]);
+    setWearableEntitiesState([]);
     setRobotEntitiesState([]);
+    setMedicationReminders([]);
     if (pairedDeviceId) {
       bleService.disconnect(pairedDeviceId).catch((error) => logger.warn('[AppState] Device cleanup failed', {
         errorCode: error?.code || 'BLE_DISCONNECT_FAILED',
@@ -644,7 +785,8 @@ export function AppProvider({ children }) {
         settingsMutationQueueRef.current.catch(() => {}),
         contactsMutationQueueRef.current.catch(() => {}),
         deviceMutationQueueRef.current.catch(() => {}),
-        deviceEntitiesMutationQueueRef.current.catch(() => {})
+        deviceEntitiesMutationQueueRef.current.catch(() => {}),
+        medicationSchedulerRef.current?.drain?.() || Promise.resolve()
       ]);
       releaseServiceMutations = await lockAndDrainLocalUserDataMutations();
     } catch (error) {
@@ -663,6 +805,32 @@ export function AppProvider({ children }) {
 
   const selectedVoice = voiceProfiles.find((profile) => profile.id === settings.selectedVoiceId) || voiceProfiles[0];
 
+  const scheduleMedicationReminder = useCallback(async (input) => {
+    if (!medicationSchedulerRef.current) throw new Error('Medication reminders are not ready.');
+    const scheduler = medicationSchedulerRef.current;
+    const reminder = await scheduler.schedule(input);
+    const reminders = await scheduler.list();
+    if (medicationSchedulerRef.current === scheduler) setMedicationReminders(reminders);
+    return reminder;
+  }, []);
+
+  const acknowledgeMedicationReminder = useCallback(async (reminderId) => {
+    if (!medicationSchedulerRef.current) throw new Error('Medication reminders are not ready.');
+    const scheduler = medicationSchedulerRef.current;
+    const reminder = await scheduler.acknowledge(reminderId);
+    const reminders = await scheduler.list();
+    if (medicationSchedulerRef.current === scheduler) setMedicationReminders(reminders);
+    return reminder;
+  }, []);
+
+  const listMedicationReminders = useCallback(async () => {
+    if (!medicationSchedulerRef.current) throw new Error('Medication reminders are not ready.');
+    const scheduler = medicationSchedulerRef.current;
+    const reminders = await scheduler.list();
+    if (medicationSchedulerRef.current === scheduler) setMedicationReminders(reminders);
+    return reminders;
+  }, []);
+
   useEffect(() => {
     if (!user?.id || deviceEntitiesAccountId !== user.id || pairedDeviceAccountId !== user.id || deviceAccountIdRef.current !== user.id) return;
     const restoredWearable = device.id
@@ -671,7 +839,9 @@ export function AppProvider({ children }) {
           ? deviceRegistry.get(device.id).getStatus()
           : null)
       : null;
-    const wearables = device.id ? [{
+    const wearables = wearableEntitiesRef.current
+      .filter((entry) => entry.deviceId && entry.deviceId !== device.id);
+    const primaryWearable = device.id ? {
       ...restoredWearable,
       ...device,
       accountId: user.id,
@@ -679,17 +849,15 @@ export function AppProvider({ children }) {
       deviceType: 'wearable',
       online: device.connected === true,
       location: device.location ?? restoredWearable?.location ?? null
-    }] : [];
-    for (const registered of deviceRegistry.list({ deviceType: 'wearable' })) {
-      if (registered.deviceId !== device.id) deviceRegistry.unregister(registered.deviceId);
-    }
+    } : null;
+    if (primaryWearable) wearables.push(primaryWearable);
     wearableEntitiesRef.current = wearables;
-    setWearableEntities(wearables);
+    setWearableEntitiesState(wearables);
     if (device.id) {
       const registered = deviceRegistry.get(device.id);
       if (!registered || registered.deviceType !== 'wearable') deviceRegistry.upsert(new WearableDevice({ deviceId: device.id, name: device.name, nativeDevice: device }));
       deviceRegistry.get(device.id).name = device.name;
-      deviceRegistry.get(device.id)?.setStatus({ ...wearables[0], online: device.connected === true });
+      deviceRegistry.get(device.id)?.setStatus({ ...primaryWearable, online: device.connected === true });
     }
     const accountId = user.id;
     const operation = deviceEntitiesMutationQueueRef.current.catch(() => {}).then(() => {
@@ -701,6 +869,47 @@ export function AppProvider({ children }) {
       errorCode: error?.code || error?.name || 'DEVICE_ENTITY_PERSIST_FAILED'
     }));
   }, [device, deviceEntitiesAccountId, pairedDeviceAccountId, user?.id]);
+
+  const setWearableEntities = useCallback(async (nextValue) => {
+    if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
+    if (!user?.id || deviceEntitiesAccountId !== user.id) throw new Error('Device state is not hydrated for this account.');
+    const operation = deviceEntitiesMutationQueueRef.current.catch(() => {}).then(async () => {
+      const previous = wearableEntitiesRef.current;
+      const next = typeof nextValue === 'function' ? nextValue(previous) : nextValue;
+      if (!Array.isArray(next)) throw new TypeError('Wearable entities must be an array.');
+      if (activeAccountIdRef.current !== user.id) throw new Error('The active account changed during the device update.');
+      await persistDeviceEntities(user.id, [...next, ...robotEntitiesRef.current]);
+      if (activeAccountIdRef.current !== user.id) throw new Error('The active account changed during the device update.');
+      const nextIds = new Set(next.map((wearable) => wearable.deviceId));
+      for (const registered of deviceRegistry.list({ deviceType: 'wearable' })) {
+        if (!nextIds.has(registered.deviceId)) {
+          deviceRegistry.unregister(registered.deviceId);
+          bleService.disconnect(registered.deviceId).catch(() => {});
+        }
+      }
+      for (const wearable of next) {
+        let registered = deviceRegistry.get(wearable.deviceId);
+        if (!registered || registered.deviceType !== 'wearable') {
+          registered = deviceRegistry.upsert(new WearableDevice({
+            deviceId: wearable.deviceId,
+            name: wearable.name,
+            nativeDevice: { ...wearable, id: wearable.deviceId }
+          }));
+        }
+        registered.name = wearable.name;
+        registered.setStatus(wearable);
+        if (wearable.autoReconnect && wearable.online !== true) {
+          registered.reconnect?.().catch(() => registered.setStatus({ online: false, connectionState: 'disconnected' }));
+        }
+      }
+      wearableEntitiesRef.current = next;
+      setWearableEntitiesState(next);
+      return next;
+    });
+    deviceEntitiesMutationQueueRef.current = operation.then(() => undefined, () => undefined);
+    return operation;
+  }, [deviceEntitiesAccountId, user?.id]);
+  setWearableEntitiesRef.current = setWearableEntities;
 
   const setRobotEntities = useCallback(async (nextValue) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
@@ -724,7 +933,8 @@ export function AppProvider({ children }) {
             name: robot.name,
             accountId: user.id,
             gatewayURL: config.actionGatewayURL,
-            accessTokenProvider: () => accessTokenRef.current
+            accessTokenProvider: () => accessTokenRef.current,
+            pairingTokenProvider: (deviceId) => loadRobotPairingCredential(user.id, deviceId)
           }));
         }
         registered.name = robot.name;
@@ -759,7 +969,7 @@ export function AppProvider({ children }) {
             ...local,
             deviceId,
             deviceType: 'home_robot',
-            name: local?.name || 'Home robot',
+            name: local?.name || 'VeryLoving Home',
             online: local?.online === true,
             connectionState: local?.connectionState || 'disconnected'
           });
@@ -772,7 +982,7 @@ export function AppProvider({ children }) {
     return () => { active = false; };
   }, [deviceEntitiesAccountId, setRobotEntities, user?.id]);
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, robotEntities, setRobotEntities, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, robotEntities, setRobotEntities, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

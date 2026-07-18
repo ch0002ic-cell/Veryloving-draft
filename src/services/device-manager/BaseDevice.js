@@ -3,6 +3,12 @@ export const DEVICE_TYPES = Object.freeze({
   homeRobot: 'home_robot'
 });
 
+export const COMMAND_PRIORITIES = Object.freeze({
+  critical: 0,
+  standard: 1,
+  background: 2
+});
+
 export class BaseDevice {
   constructor({ deviceId, deviceType, name } = {}) {
     if (!deviceId || typeof deviceId !== 'string') throw new TypeError('deviceId is required');
@@ -15,28 +21,64 @@ export class BaseDevice {
     this.statusListeners = new Set();
     this.disposed = false;
     this.commandGeneration = 0;
-    // Every device owns a queue. A stalled GATT write can serialize later
-    // writes to that wearable without blocking a different device instance.
-    this.commandQueue = Promise.resolve();
+    // Every device owns an independent, stable priority queue. An active
+    // operation is never pre-empted, but queued safety work overtakes standard
+    // and background work without blocking a different device instance.
+    this.pendingCommands = [];
+    this.commandActive = false;
+    this.commandSequence = 0;
+    this.commandDrainWaiters = new Set();
   }
 
   async connect() { throw new Error('connect() must be implemented'); }
   async disconnect() { throw new Error('disconnect() must be implemented'); }
   async sendCommand() { throw new Error('sendCommand() must be implemented'); }
 
-  enqueueCommand(operation) {
+  enqueueCommand(operation, { priority = 'standard', bypass = false } = {}) {
     if (typeof operation !== 'function') throw new TypeError('Command operation is required');
     if (this.disposed) return Promise.reject(this.disposedError());
     const generation = this.commandGeneration;
-    const queued = this.commandQueue.catch(() => {}).then(() => {
+    if (bypass) return Promise.resolve().then(() => {
       if (this.disposed || generation !== this.commandGeneration) throw this.disposedError();
       return operation();
     });
-    this.commandQueue = queued.then(() => undefined, () => undefined);
-    return queued;
+    if (!(priority in COMMAND_PRIORITIES)) throw new TypeError('Command priority is invalid');
+    return new Promise((resolve, reject) => {
+      this.pendingCommands.push({
+        operation,
+        priority: COMMAND_PRIORITIES[priority],
+        sequence: this.commandSequence++,
+        generation,
+        resolve,
+        reject
+      });
+      this.pendingCommands.sort((left, right) => left.priority - right.priority || left.sequence - right.sequence);
+      this.pumpCommandQueue();
+    });
   }
 
-  async drainCommandQueue() { await this.commandQueue.catch(() => {}); }
+  pumpCommandQueue() {
+    if (this.commandActive || this.disposed) return;
+    const next = this.pendingCommands.shift();
+    if (!next) {
+      for (const resolve of this.commandDrainWaiters) resolve();
+      this.commandDrainWaiters.clear();
+      return;
+    }
+    this.commandActive = true;
+    Promise.resolve().then(() => {
+      if (this.disposed || next.generation !== this.commandGeneration) throw this.disposedError();
+      return next.operation();
+    }).then(next.resolve, next.reject).finally(() => {
+      this.commandActive = false;
+      this.pumpCommandQueue();
+    });
+  }
+
+  drainCommandQueue() {
+    if (!this.commandActive && this.pendingCommands.length === 0) return Promise.resolve();
+    return new Promise((resolve) => this.commandDrainWaiters.add(resolve));
+  }
 
   disposedError() {
     const error = new Error('Device is no longer active.');
@@ -48,6 +90,10 @@ export class BaseDevice {
     if (this.disposed) return;
     this.disposed = true;
     this.commandGeneration += 1;
+    const error = this.disposedError();
+    for (const command of this.pendingCommands.splice(0)) command.reject(error);
+    for (const resolve of this.commandDrainWaiters) resolve();
+    this.commandDrainWaiters.clear();
     this.telemetryListeners.clear();
     this.statusListeners.clear();
   }

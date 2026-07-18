@@ -64,6 +64,7 @@ export class HumeEVIService {
     this.usesProxy = false;
     this.proxyAuthenticated = false;
     this.proxyAuthenticationFailed = false;
+    this.assistantAudioInterrupted = false;
   }
 
   setMessageHandler(handler) { this.messageHandler = handler || {}; }
@@ -160,6 +161,7 @@ export class HumeEVIService {
     this.usesProxy = usesProxy;
     this.proxyAuthenticated = false;
     this.proxyAuthenticationFailed = false;
+    this.assistantAudioInterrupted = false;
     const appAccessToken = sessionConfig.accessToken;
     const humeAccessToken = sessionConfig.humeAccessToken;
     const apiKey = config.humeApiKey;
@@ -253,6 +255,8 @@ export class HumeEVIService {
         accessToken: this.sessionConfig?.accessToken,
         configId: this.sessionConfig?.configId || config.humeConfigId,
         voiceId: this.sessionConfig?.voiceId,
+        personaId: this.sessionConfig?.personaId,
+        locale: this.sessionConfig?.locale,
         resumedChatGroupId: this.sessionConfig?.resumedChatGroupId,
         devices: this.sessionConfig?.devices
       })));
@@ -356,13 +360,19 @@ export class HumeEVIService {
       case 'user_message':
         // Hume emits this when the user starts a new turn. Treat it as a
         // barge-in even if a separate user_interruption frame is delayed.
+        this.assistantAudioInterrupted = true;
         audioService.cancelAndClearQueue().catch(() => {});
         this.messageHandler.onUserMessage?.(message.message?.content || '', message.models?.prosody?.scores || {});
         break;
       case 'assistant_message':
+        // An assistant message begins a new turn. Until this boundary arrives,
+        // discard any audio frames that were already in flight when the user
+        // interrupted the previous turn.
+        this.assistantAudioInterrupted = false;
         this.messageHandler.onAssistantMessage?.(message.message?.content || '', message.models?.prosody?.scores || {});
         break;
       case 'audio_output':
+        if (this.assistantAudioInterrupted) break;
         this.messageHandler.onAudioOutput?.(message.data);
         audioService.playBase64Audio(message.data, 'wav').catch((error) => logger.error('[HumeEVIService] Audio playback failed:', error));
         break;
@@ -370,6 +380,7 @@ export class HumeEVIService {
         this.messageHandler.onAssistantEnd?.();
         break;
       case 'user_interruption':
+        this.assistantAudioInterrupted = true;
         audioService.cancelAndClearQueue().catch(() => {});
         break;
       case 'tool_call':

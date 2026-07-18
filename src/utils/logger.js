@@ -5,7 +5,22 @@ const isSensitiveKey = (key) => {
     || compactKey.endsWith('token')
     || compactKey.endsWith('apikey')
     || compactKey.endsWith('secret')
-    || compactKey.endsWith('password');
+    || compactKey.endsWith('password')
+    || compactKey.endsWith('serial')
+    || compactKey.endsWith('serialnumber')
+    || compactKey.endsWith('pairingcode')
+    || compactKey.endsWith('qrcode')
+    || compactKey.endsWith('email')
+    || compactKey.endsWith('phone')
+    || compactKey.endsWith('phonenumber')
+    || compactKey.endsWith('address')
+    || compactKey.endsWith('coordinates')
+    || compactKey.endsWith('location')
+    || compactKey === 'latitude'
+    || compactKey === 'longitude'
+    || compactKey === 'userid'
+    || compactKey === 'accountid'
+    || compactKey === 'subject';
 };
 const isDevelopment = typeof __DEV__ !== 'undefined'
   ? __DEV__
@@ -16,7 +31,12 @@ const redact = (value) => {
 
   return value
     .replace(/([?&](token|access_token|api_key|apikey|key|secret|client_secret|authorization)=)[^&\s]+/gi, '$1[REDACTED]')
-    .replace(/\bBearer\s+[^\s,;]+/gi, 'Bearer [REDACTED]');
+    .replace(/\bBearer\s+[^\s,;]+/gi, 'Bearer [REDACTED]')
+    .replace(/\b(?:eyJ[A-Za-z0-9_-]{4,}\.){2}[A-Za-z0-9_-]{4,}\b/g, '[REDACTED_JWT]')
+    .replace(/\b(?:ExponentPushToken|ExpoPushToken)\[[A-Za-z0-9_-]{8,200}\]/g, '[REDACTED_PUSH_TOKEN]')
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[REDACTED_EMAIL]')
+    .replace(/(^|[^\d])\+[1-9]\d{6,14}\b/g, '$1[REDACTED_PHONE]')
+    .replace(/\b((?:hardware[_ -]?serial|serial(?:[_ -]?number)?|pairing[_ -]?code|qr[_ -]?code)\s*[:=]\s*)[^\s,;]+/gi, '$1[REDACTED]');
 };
 
 const normalize = (payload, depth = 0) => {

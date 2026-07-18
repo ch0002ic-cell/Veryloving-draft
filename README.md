@@ -1,7 +1,7 @@
 # VeryLoving – Complete Handoff & Documentation
 
-- Consolidated: 15 July 2026
-- Repository evidence baseline: through `d0a9407`
+- Consolidated: 18 July 2026
+- Repository evidence baseline: comprehensive `feature/dual-product-core` audit
 - Audience: Grace, Product, Mobile QA, Engineering, Security, Privacy, Localization, and Release Operations
 - Primary iOS acceptance environment: signed TestFlight build on a physical device
 
@@ -53,19 +53,19 @@ Only an observation from the exact recorded build, profile, device, backend vers
 When dated evidence or sections differ, use this precedence:
 
 1. [Launch gates and ownership](#13-launch-gates-and-ownership) for the binding release decision.
-2. [Executive status](#2-executive-status), [UI framework and application state](#5-ui-framework-and-application-state), and [Globalization and language strategy](#6-globalization-and-language-strategy) for the latest 15 July code, UI, and locale status.
+2. [Executive status](#2-executive-status), [UI framework and application state](#5-ui-framework-and-application-state), and [Globalization and language strategy](#6-globalization-and-language-strategy) for the latest 18 July code, UI, and locale status.
 3. [Environment setup and build profiles](#10-environment-setup-and-build-profiles), [Deployment architecture and external services](#11-deployment-architecture-and-external-services), [Voice AI and Hume](#8-voice-ai-and-hume), and [Security, data, and privacy](#7-security-data-and-privacy) for detailed operator contracts.
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical totals such as 74, 118, 163, 215, 241, 313, 339, and 340 tests remain valid only for their recorded snapshots. They do not supersede the current 341-test baseline.
+Historical test totals remain valid only for their recorded snapshots. They do not supersede the current 465-test baseline.
 
 ### Reconciled documentation updates
 
 | Older wording | Current consolidated truth |
 | --- | --- |
 | Phone verification challenge stays only in memory. | A valid challenge is stored as a versioned, expiring SecureStore record on supported signed builds and restored only when it is newer than the signed-out tombstone. |
-| Camera and photo-library permissions remain declared. | The inactive image-picker dependency/plugin and unused camera/photo permissions were removed; current tests prevent their reintroduction. |
+| Camera and photo-library permissions remain broadly declared. | Photo-library access and the inactive image-picker were removed. Camera access is narrowly retained for authenticated home-robot QR pairing, with its own rationale and denial path. |
 | Contact editing is absent. | Local/offline editing exists; authenticated remote editing requires the updated backend deployment. |
 | PCM, authenticated WebSocket, Dynamo safety APIs, and VL01 GATT are absent. | These paths are implemented and deterministically tested, but their provider, signed-device, production, firmware, and hardware acceptance remains open. |
 | 151 entire catalogs were machine-generated. | There are 155 structurally complete catalogs. Six critical blocks pre-existed; 149 `releaseCritical` blocks were machine-generated. Arabic and Hebrew are also review-required, producing 151 `QA`-marked rows in the full-catalog picker. |
@@ -77,7 +77,7 @@ Historical totals such as 74, 118, 163, 215, 241, 313, 339, and 340 tests remain
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic tests | **PASS — 341/341** | No failed or skipped tests in the recorded run. |
+| Deterministic tests | **PASS — 465/465** | No failed or skipped tests in the 18 July audit run. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
 | Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
@@ -85,7 +85,7 @@ Historical totals such as 74, 118, 163, 215, 241, 313, 339, and 340 tests remain
 | Android production JavaScript export | **PASS** | Release-optimized bundle generation only. |
 | iOS simulator supporting run | **PASS for named flows** | Spanish switching/persistence, selected UI flows, honest SOS fallback, Map/Saved Places/share, offline Safety Call, and selected responsive layouts were observed. |
 | Isolated backend staging/preview | **PARTIAL — EXTERNAL** | HTTP liveness/fail-closed behavior and a synthetic authenticated Hume handshake were recorded; no production approval is implied. |
-| Local production environment validation | **FAIL — recorded 15 July** | 13 checks OK, 2 warnings, and 9 errors: phone auth, custom Hume CLM, safety backend, VL01 readiness, and five approved VL01 UUID requirements were incomplete in the locally readable profile. |
+| Local production environment validation | **FAIL — recorded 18 July** | 12 checks OK, 3 warnings, and 11 errors. Required action-gateway/signing configuration, production feature gates, and five approved VL01 UUIDs are not provisioned in the local profile. No secret values are recorded. |
 | Signed EAS/TestFlight archive | **BLOCKED — EXTERNAL** | The recorded Expo account lacked project build access. |
 | Physical iPhone/iPad acceptance | **BLOCKED — EXTERNAL** | No connected physical iOS device was available for the audited commit. |
 | Production safety release | **NO-GO** | P1 security, delivery, hardware, provider, localization, privacy, and operations gates remain. |
@@ -105,15 +105,15 @@ VeryLoving is an Expo Router personal-safety companion with account onboarding, 
 
 | Product area | Implemented baseline | Current boundary |
 | --- | --- | --- |
-| Authentication | Apple/Google provider exchange, phone start/verify API, scoped access/refresh JWTs, secure envelope, refresh and protected routes. | Real Apple/Google/Twilio, Keychain lifecycle, durable refresh revocation/reuse detection, provider credential state, and abuse controls require production-like evidence. |
+| Authentication | Apple/Google provider exchange, phone start/verify API, scoped access/refresh JWTs, durable hashed refresh families, single-use rotation/replay revocation, secure envelope, and protected routes. | Real Apple/Google/Twilio, Keychain lifecycle, provider credential state, and distributed abuse controls require production-like evidence. |
 | Onboarding | Ordered, account-bound, resumable state machine with contextual permission explanations. | Native allow/deny/revoke/Settings recovery and upgrade behavior require signed-device testing. |
 | Navigation | Public/protected stacks, safe Back/Home fallbacks, allowlisted stable restoration, and native-intent/deep-link sanitization. | Universal/custom-link launch, gestures, process death, and iPad split view require the exact signed build. |
 | Safety modes | Home/Guardian/Emergency state and authenticated persistence contracts. | Connected guardian behavior, actual delivery, receipts, and production outage semantics remain incomplete. |
 | Map and Saved Places | Mapbox rendering/fallbacks, location state, bounded offline tile cache, Quick Share snapshot, secure Saved Places. | Routes, remote danger/avoidance intelligence, revocable live sharing, recipients, and expiry are not complete production features. |
-| Emergency/SOS | Confirmation, contact fallback, recent-location validation, idempotent durable acceptance, honest dialer/result semantics. | `accepted` means stored, not delivered. Guardian/contact/push delivery, receipts, escalation, and emergency dispatch do not yet exist end to end. |
+| Emergency/SOS | Confirmation, contact fallback, recent-location validation, idempotent durable acceptance, medical-profile consent, push fan-out/outbox accounting, and honest dialer/result semantics. | `accepted` means stored, not delivered. Production APNs/FCM delivery, recipient identity acceptance, and emergency-provider dispatch remain external. |
 | Voice AI | Hume WebSocket client, PCM path, playback, barge-in cleanup, tools, history, queue, reconnect, and offline text fallback. | Production Hume/CLM, signed audio routes, latency/AEC, background/lock-screen behavior, and load remain open. |
 | BLE/NorthStar | Permission/state handling, filtered scan, GATT validation, battery, optional notifications, commands, disconnect, persistence, and reconnect. | Firmware schema, decoded events, command authorization, ownership/secure pairing, DFU/reset policy, and physical hardware remain open. |
-| Settings | Language, voice/persona, reminder, contacts, Saved Places, devices, history, privacy/export/delete. | Some settings and resilience stores remain plaintext; remote workflows depend on production services. |
+| Settings | Language, voice/persona, medication reminders, contacts, medical profile, Saved Places, dual devices, history, privacy/export/delete. | Account-sensitive local stores are encrypted; remote workflows still depend on production services. |
 | Globalization | Profile-gated language picker, immediate same-direction update, durable selection, RTL transition, full-catalog QA mode. | Machine-generated safety copy and RTL visual behavior require human/signed-device approval. |
 | Friends | Honest empty/planned surface. | No account-backed invite/friend API, consent model, or abuse controls; no fake friend data is shipped. |
 | Theme | Intentional light-only design. | Dark mode is not promised or implemented. |
@@ -193,7 +193,7 @@ Primary server evidence: [`auth-session.cjs`](./server/auth-session.cjs), [`safe
 | Settings | Strict versioned schema with serialized persist-before-publish updates. |
 | Language | Device-level preference intentionally retained across sign-out/account switches. |
 | Navigation | One safe stable destination, not full history. |
-| History/queues/location/SOS/device metadata | Serialized, account-bounded local records with cleanup and stale-data checks; still plaintext at rest. |
+| History/queues/location/SOS/device metadata | Serialized, account-bounded encrypted records with authenticated envelopes, cleanup, and stale-data checks. |
 | Native artifacts | Reminder schedule, temporary voice files, and app-owned Mapbox packs participate in cleanup. |
 
 Expo Go and the iOS Simulator use explicit volatile or unavailable fallbacks for entitlement-dependent SecureStore/notification behavior. A process-memory session does not survive reload and must never be treated as TestFlight persistence evidence.
@@ -254,7 +254,7 @@ The base TestFlight picker has **System default plus six catalogs: seven rows**.
 
 - The registry represents all 183 assigned ISO 639-1 codes.
 - There are 155 JSON catalogs and 28 intentionally unavailable registry entries.
-- Every catalog has 353 non-empty keys with placeholder parity: 319 established keys plus 34 `releaseCritical` keys.
+- Every catalog has exact non-empty key and placeholder parity, including the 34-key `releaseCritical` schema; the deterministic coverage test owns the current schema count so feature copy cannot silently drift between catalogs.
 - The English, Spanish, French, Simplified Chinese, Arabic, and Hebrew critical blocks pre-existed.
 - Codex `gpt-5.6-sol` generated the other 149 critical blocks on 15 July 2026.
 - Machine-generation provenance and review progress are stored in [`translation-review.json`](./src/i18n/translation-review.json); runtime availability and general review state are controlled by [`language-registry.js`](./src/i18n/language-registry.js).
@@ -320,7 +320,7 @@ eas build --platform ios --profile testflight-full-catalog
 
 Phone authentication uses Twilio Verify plus a signed five-minute app challenge. No fixed-code or fabricated production-token fallback exists.
 
-The material open session risk is server-side lifecycle: refresh JWTs remain stateless. Rotating the client-held token does not invalidate an earlier stolen refresh token before expiry. Production needs durable hashed refresh families, single-use rotation, reuse detection, revocation on logout/account disable/deletion, audit events, provider credential-state checks, and distributed abuse controls.
+Refresh sessions use durable hashed families, compare-and-swap single-use rotation, absolute family expiry, replay revocation, deletion markers, and audit-safe outcomes. Production acceptance still requires provider credential-state checks, distributed abuse controls, live Dynamo concurrency/load evidence, and incident-response validation.
 
 ### Hybrid local/cloud data
 
@@ -330,10 +330,10 @@ The material open session risk is server-side lifecycle: refresh JWTs remain sta
 | Contacts/Saved Places | Account-bound SecureStore | Contacts can reconcile with account-partitioned DynamoDB; Saved Places remain local. |
 | Current safety/SOS | Account-bound resilience records | Optional authenticated DynamoDB persistence and account export/delete. |
 | Settings, navigation, device metadata | Local account-bound schemas | No complete cloud synchronization. |
-| Transcripts/history/offline queue | Plaintext AsyncStorage | Hume/CLM receives live conversation content when online; no complete cloud history sync. |
+| Transcripts/history/offline queue | Authenticated encrypted local storage | Hume/CLM receives live conversation content when online; no complete cloud history sync. |
 | Cached location/map packs | Bounded local fallback and native cache | Recent coordinates may accompany confirmed SOS; provider tiles follow Mapbox policy. |
 
-Before a different account is published, [`account-data-boundary.js`](./src/services/account-data-boundary.js) purges previous or unowned local/secure/native surfaces and fails closed if required cleanup cannot complete. This provides account isolation; it does not provide OS-protected encryption for plaintext stores.
+Before a different account is published, [`account-data-boundary.js`](./src/services/account-data-boundary.js) purges previous or unowned local/secure/native surfaces and fails closed if required cleanup cannot complete. Sensitive AsyncStorage records use authenticated encryption with a SecureStore-backed key, which is rotated after account deletion.
 
 ### Data handled by core features
 
@@ -353,11 +353,11 @@ Before a different account is published, [`account-data-boundary.js`](./src/serv
 - Backend-enabled deletion is remote-first. A remote failure leaves the user signed in and local data intact so the request can be retried safely.
 - Successful deletion drains tracked writers, removes local/SecureStore data, and attempts native artifact cleanup.
 
-Current deletion does not revoke the server session, create a durable deletion tombstone, prevent all old-token repopulation, or orchestrate Hume, Apple/Google, Twilio, Mapbox, logs, backups, and external share destinations. Production privacy acceptance must close those boundaries.
+Current deletion fences the account with durable `deleting`/`deleted` markers, rejects normal authenticated use, revokes first-party sessions, coordinates manufacturer deletion before first-party credentials are removed, and rotates local encryption material after the remote phase succeeds. Production privacy acceptance must still verify every live repository, manufacturer retention/DPA behavior, backups/log expiry, provider-specific deletion obligations, and external share destinations.
 
 ### Permissions and disclosure
 
-Active permissions are location, notifications, microphone, and Bluetooth. Each has an app-owned rationale and denial/recovery path. Current source has no active camera/photo picker and no camera/photo permission declaration.
+Active permissions are location, notifications, microphone, Bluetooth, and camera. Camera use is scoped to authenticated home-robot QR pairing; photo-library access and the inactive image picker are absent. Each active permission has an app-owned rationale and denial/recovery path.
 
 The privacy manifest is generated from [`app.config.js`](./app.config.js). Store submission must reconcile the generated archive, SDK manifests, deployed vendors, public privacy policy, App Store answers, and Play Data Safety disclosures. Source configuration alone is not approval.
 
@@ -517,11 +517,13 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | Group | Variable names | Contract |
 | --- | --- | --- |
 | Runtime | `NODE_ENV`, `PORT` | Node 22 service; container platform normally owns `PORT`. |
-| Hume gateway | `HUME_API_KEY`, `HUME_CONFIG_ID`, `HUME_ALLOWED_VOICE_IDS`, `HUME_ALLOW_CLIENT_RESUME`, `HUME_CLM_BEARER_TOKEN` | Server-only; canonical UUIDs; keep resume false until ownership binding exists. |
+| Hume gateway | `HUME_API_KEY`, `HUME_CONFIG_ID`, `HUME_ALLOWED_VOICE_IDS`, `HUME_PERSONA_MAP_JSON`, `HUME_DEFAULT_PERSONA_ID`, `HUME_ALLOW_CLIENT_RESUME`, `HUME_CLM_BEARER_TOKEN` | Server-only; map stable app persona IDs to allowlisted canonical Hume voice UUIDs; keep resume false until ownership binding exists. |
 | App authentication | `AUTH_EXCHANGE_ENABLED`, `SESSION_JWT_SECRET`, `SESSION_JWT_ISSUER`, `SESSION_JWT_AUDIENCE`, `SESSION_JWT_TTL_SECONDS`, `SESSION_REFRESH_TTL_SECONDS` | Independent signing secret, exact issuer/audience, bounded access/refresh lifetimes. |
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
 | Phone verification | `PHONE_AUTH_ENABLED`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `PHONE_AUTH_CHALLENGE_TTL_SECONDS`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | Independent secrets; stable subject derivation; Twilio credentials remain server-only. |
 | Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. |
+| Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI must use `user_index_pk` as its partition key and `user_index_sk` as its sort key; signing private keys and wearable payload bytes remain server-only. |
+| Manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | HTTPS endpoints and API key are server-only; production startup fails closed when the required robot routes are incomplete. |
 | Optional upstream CLM | `CLM_UPSTREAM_URL`, `CLM_UPSTREAM_API_KEY`, `CLM_UPSTREAM_MODEL`, `CLM_UPSTREAM_TIMEOUT_MS` | Configure the URL/key/model together or omit all to use deterministic local responses. |
 | Optional verifier fallback | `APP_AUTH_VERIFY_URL` | Not required when all callers use the in-repository app JWT. |
 | Hume provisioning operator | `HUME_CLM_URL`, `HUME_TOOL_ID`, `HUME_CUSTOM_VOICE_ID` | Operator-only inputs for versioned Hume resources; never mobile secrets. |
@@ -533,7 +535,7 @@ Generate independent high-entropy values for session signing, phone challenge si
 1. **Apple/Google:** register bundle/package `com.veryloving.app`, verify the Google Web audience and iOS client, configure Android signing SHA-1 clients, align backend audience/presenter allowlists, and rebuild native iOS after callback-scheme changes.
 2. **Mapbox:** create a least-privilege public `pk.*` mobile token and a separate `sk.*` `downloads:read` build token. Store only the latter as a local/EAS build secret.
 3. **Hume:** obtain organization access, install the server-only key in the approved secret manager, approve quota/retention/prompt/tool/voice policy, deploy the authenticated CLM/WSS surfaces, then publish versioned config/tool/voice resources.
-4. **Twilio/DynamoDB:** configure a Verify service with geo/fraud/rate policy; create the Dynamo table with string `PK`/`SK`, TTL on numeric `expiresAt`, encryption, PITR/backups, alarms, and least-privilege Query/Get/Put/Delete access.
+4. **Twilio/DynamoDB:** configure a Verify service with geo/fraud/rate policy; create the Dynamo table with string `PK`/`SK`, TTL on numeric `expiresAt`, encryption, PITR/backups, alarms, and least-privilege Query/Get/Put/Delete access. Add the action-outbox GSI named by `ACTION_OUTBOX_USER_INDEX_NAME` with string keys `user_index_pk` and `user_index_sk`; production action routing rejects a missing index name instead of falling back to a table scan.
 5. **VL01:** obtain a versioned GATT document covering UUIDs, properties, encoding, events, commands, secure ownership/pairing, reset, and firmware compatibility.
 6. **APNs/FCM:** provision environment-correct credentials through approved account/EAS workflows and deploy an authenticated token registration/rotation/revocation and delivery service before enabling safety pushes.
 7. **EAS/store accounts:** grant the real organization/project roles; do not relink the app or replace its project ID merely to bypass access control.
@@ -672,7 +674,7 @@ For unsupported-language fallback, do not look for an unavailable row in the app
 | Error handling | Airplane mode, timeout, HTTP failure, malformed response, denial, and retry show actionable localized copy with no false success/raw error. | _QA to fill_ | _QA to fill_ |
 | Map and safety | Live/cached/unavailable location is honest; Saved Places and share work; SOS never claims delivery without a receipt. | _QA to fill_ | _QA to fill_ |
 | Privacy | Export is complete or explicitly partial; remote deletion failure is retryable; successful deletion clears local/remote scope and cannot resurrect cross-account data. | _QA to fill_ | _QA to fill_ |
-| Permissions | Rationale, allow, deny, revoke, Settings recovery, and foreground recheck work for location, notifications, microphone, and Bluetooth; no camera/photo prompt appears. | _QA to fill_ | _QA to fill_ |
+| Permissions | Rationale, allow, deny, revoke, Settings recovery, and foreground recheck work for location, notifications, microphone, Bluetooth, and the robot-pairing camera; no photo-library prompt appears. | _QA to fill_ | _QA to fill_ |
 | Accessibility/layout | Compact/current iPhone and iPad split view; Dynamic Type, VoiceOver, keyboard, rotation, contrast, hit sizes, and light-only policy remain usable. | _QA to fill_ | _QA to fill_ |
 | Voice/audio | Live Hume call, microphone, two-way audio, interruption, Bluetooth route, background/lock, reconnect, queue, offline fallback, and repeated cleanup. | _QA to fill_ | _QA to fill_ |
 | VL01 | Permission, scan, pair/ownership, battery/status/events, authorized commands, disconnect/reconnect, backgrounding, reset, and account switch. | _QA to fill_ | _QA to fill_ |
@@ -714,14 +716,14 @@ Production remains NO-GO until every applicable row has a named person, due date
 
 | P1 gate | Current state | Required closure | Named owner/due date |
 | --- | --- | --- | --- |
-| Identity lifecycle | Access/refresh exchange exists; refresh tokens are stateless. | Durable hashed refresh families, reuse detection, revocation, tombstones, provider-state checks, uniform 401 recovery, abuse controls, and incident tests. | _Assign_ |
-| Local PII | SecureStore protects sessions/contacts/Saved Places; other sensitive stores are plaintext. | Account-bound OS-protected encryption, explicit key accessibility/migration/rollback, account-switch/process-death and deletion evidence. | _Assign_ |
+| Identity lifecycle | Durable access/refresh families, CAS rotation, replay revocation, and deletion markers exist. | Provider-state checks, production Dynamo concurrency, uniform provider revocation, distributed abuse controls, and incident tests. | _Assign_ |
+| Local PII | SecureStore protects key material and high-value records; account-sensitive AsyncStorage uses authenticated encryption. | Signed-device key accessibility/migration/rollback, account-switch/process-death, backup, and deletion evidence. | _Assign_ |
 | Phone auth | Twilio Verify integration exists. | Production service/policy, restricted credentials, distributed throttles, real delivery/expiry/resend tests, and signed-device verification. | _Assign_ |
 | Voice gateway | Authenticated WSS and PCM exist at source/staging layers. | Production TLS/ingress, single-use ticket or equivalent replay control, revocation, ownership binding, rate/load/backpressure, observability, rollback, and signed-provider/device audio. | _Assign_ |
 | Native audio | PCM format and lifecycle are deterministic. | Physical iOS/Android route, interruption, latency, echo, Bluetooth, background, lock-screen, thermal/battery, and cleanup matrix. | _Assign_ |
 | VL01 | Bounded GATT layer exists and fails closed. | Approved firmware schema, decoded events, authorized commands, ownership/secure pairing, hardware, background, reset/DFU and compatibility matrix. | _Assign_ |
 | Safety delivery/maps | Contacts, safety state, SOS acceptance, and bounded map fallback exist. | Guardian/contact/push delivery with receipts and outbox/retry; routes/zones; revocable sharing; honest outage behavior. | _Assign_ |
-| Privacy lifecycle | Local and Dynamo export/delete exist. | Session revocation/tombstone, vendor/log/backup orchestration, TTL/retention/IAM/encryption proof, support/breach policy, and audit. | _Assign_ |
+| Privacy lifecycle | Fenced local/Dynamo/manufacturer export-delete orchestration, session revocation, deletion markers, and key rotation exist. | Live vendor/log/backup orchestration, TTL/retention/IAM/encryption proof, support/breach policy, and audit. | _Assign_ |
 | Notifications | Local reminder path exists. | APNs/FCM credentials, authenticated token lifecycle, delivery/deduplication/receipts, invalid-token cleanup, tap routing, outage tests. | _Assign_ |
 | Localization | Four public locales reviewed; QA catalogs structurally complete. | Native-speaker review for every intended public safety-critical catalog and signed RTL/accessibility layout matrix. | _Assign_ |
 | Signed device coverage | Source/simulator evidence exists. | Exact TestFlight build on small/current iPhone and iPad; signed Android emulator/device matrix; clean install and upgrade. | _Assign_ |
@@ -779,8 +781,8 @@ Current decision: **NO-GO**.
 | React 19 | Expo/React Native application uses React 19. | Demonstrated. |
 | Next.js 14+ and TypeScript | Substantive Node HTTP/WSS backend and Vercel adapter. | No Next.js App Router, TypeScript source, or typed full-stack contracts; Node adjacency is not equivalent proof. |
 | AWS/Vercel | Vercel HTTP adapter and DynamoDB application repository; Railway/ECS-compatible container. | No SES, IaC, or provisioned production AWS/IAM/TTL/PITR/alarms evidence. |
-| OAuth/JWT/security | Provider JWKS verification, Apple nonce, audience/issuer checks, scoped first-party access/refresh JWTs, SecureStore. | Durable refresh reuse detection/revocation, distributed abuse controls, and production security evidence remain open. |
-| Hybrid data model | Account boundary, SecureStore, AsyncStorage resilience, Dynamo contacts/safety/privacy. | Several sensitive stores remain plaintext/local-only; vendor-wide lifecycle remains open. |
+| OAuth/JWT/security | Provider JWKS verification, Apple nonce, audience/issuer checks, scoped JWTs, durable refresh reuse detection/revocation, deletion fencing, and SecureStore. | Distributed abuse controls, provider-state handling, and production security evidence remain open. |
+| Hybrid data model | Account boundary, SecureStore, authenticated encrypted local stores, Dynamo contacts/safety/privacy/action outboxes. | Vendor-wide lifecycle and production repository evidence remain open. |
 | BLE wearable | Scan, permissions, GATT, battery, events, commands, disconnect/reconnect, fail-closed capabilities. | Firmware semantics, secure ownership/pairing, and real hardware remain open. |
 | 3D/Spline | None. | Good-to-have not evidenced. |
 | Voice AI/TTS/WebRTC | Hume conversational generated speech, CLM/tools, mobile voice UI. | No standalone/local TTS or WebRTC. |
@@ -877,9 +879,9 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 ## 17. Recommended next actions
 
 1. Create the private release/evidence record and assign a named owner and due date to every P1 row.
-2. Add durable refresh-family reuse detection/revocation, deletion tombstones, uniform authenticated-request recovery, and distributed auth/SMS abuse controls.
-3. Encrypt and migrate the remaining account-sensitive AsyncStorage data with a tested key, accessibility, backup, rollback, account-switch, and deletion policy.
-4. Complete real guardian/push delivery, authenticated receipts, outbox/retry/dead-letter semantics, revocable sharing, and honest operational states.
+2. Exercise refresh-family replay/revocation, deletion fencing, and authenticated-request recovery against production-like Dynamo concurrency; add distributed auth/SMS abuse controls.
+3. Validate encrypted local-store key accessibility, migration, backup exclusion, rollback, account-switch, process-death, and deletion behavior in signed builds.
+4. Complete production guardian/push delivery acceptance, authenticated receipts, invalid-token cleanup, revocable sharing, and honest operational states.
 5. Obtain the approved VL01 firmware/security contract and complete ownership, decoding, authorized commands, and physical hardware tests.
 6. Finish isolated staging with production-like Apple/Google/Twilio/Mapbox/Hume/Dynamo/APNs/FCM resources, observability, threat-model approval, and rollback evidence.
 7. Grant the authorized EAS owner access, validate the current production profile, and build the exact reviewed TestFlight SHA.

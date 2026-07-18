@@ -500,7 +500,7 @@ const config = {
     [
       "react-native-ble-plx",
       {
-        "isBackgroundEnabled": false,
+        "isBackgroundEnabled": true,
         "modes": [
           "central"
         ],

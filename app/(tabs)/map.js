@@ -8,8 +8,9 @@ import { Card } from '../../src/components/Card';
 import {
   cacheMapRegion,
   dangerZones,
-  getMapboxModule,
-  requestCurrentLocation
+    getMapboxModule,
+    requestCurrentLocation,
+    watchLiveLocation
 } from '../../src/services/mapbox';
 import { colors, fonts } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
@@ -22,6 +23,7 @@ import { shareQuickLocation } from '../../src/services/emergency';
 import { loadSavedPlaces, removeSavedPlace, saveCurrentPlace } from '../../src/services/saved-place-store';
 import { useAuth } from '../../src/context/AuthContext';
 import { useAppState } from '../../src/context/AppContext';
+import { evaluateGeofence } from '../../src/services/geofence-evaluator';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -32,13 +34,17 @@ function locationErrorTranslationKey(error) {
   return 'map.updateFailed';
 }
 
-const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, deviceFeatureCollection, onLoadError, onStyleLoaded, t }) {
+const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, deviceFeatureCollection, robotPathFeatureCollection, onLoadError, onStyleLoaded, t }) {
   const deviceSourceRef = useRef(null);
+  const robotPathSourceRef = useRef(null);
   useEffect(() => {
     // ShapeSource exposes setNativeProps rather than setData in the installed
     // native SDK. Updating it explicitly prevents stale markers after resume.
     deviceSourceRef.current?.setNativeProps?.({ shape: deviceFeatureCollection });
   }, [deviceFeatureCollection]);
+  useEffect(() => {
+    robotPathSourceRef.current?.setNativeProps?.({ shape: robotPathFeatureCollection });
+  }, [robotPathFeatureCollection]);
   return (
     <Mapbox.MapView
       onDidFinishLoadingStyle={onStyleLoaded}
@@ -88,6 +94,14 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, dev
           />
         </Mapbox.ShapeSource>
       ) : null}
+      {Mapbox.ShapeSource && Mapbox.LineLayer ? (
+        <Mapbox.ShapeSource ref={robotPathSourceRef} id="home-robot-navigation-paths" shape={robotPathFeatureCollection}>
+          <Mapbox.LineLayer
+            id="home-robot-navigation-lines"
+            style={{ lineColor: colors.inkSoft, lineWidth: 4, lineOpacity: 0.8, lineCap: 'round', lineJoin: 'round' }}
+          />
+        </Mapbox.ShapeSource>
+      ) : null}
     </Mapbox.MapView>
   );
 });
@@ -103,6 +117,8 @@ export default function MapScreen() {
   const [savedPlaces, setSavedPlaces] = useState(null);
   const [savedPlaceAction, setSavedPlaceAction] = useState(null);
   const [savedPlaceFeedback, setSavedPlaceFeedback] = useState(null);
+  const [geofenceFeedback, setGeofenceFeedback] = useState(null);
+  const geofenceStatesRef = useRef(new Map());
   const mountedRef = useRef(true);
   const mapStyleReadyRef = useRef(false);
   const requestIdRef = useRef(0);
@@ -113,6 +129,7 @@ export default function MapScreen() {
   const { user } = useAuth();
   const { wearableEntities, robotEntities } = useAppState();
   const [deviceFeatureCollection, setDeviceFeatureCollection] = useState({ type: 'FeatureCollection', features: [] });
+  const [robotPathFeatureCollection, setRobotPathFeatureCollection] = useState({ type: 'FeatureCollection', features: [] });
   useEffect(() => {
     const features = [...wearableEntities, ...robotEntities].flatMap((entity) => {
       const longitude = Number(entity?.location?.longitude ?? entity?.longitude);
@@ -126,7 +143,37 @@ export default function MapScreen() {
       }];
     });
     setDeviceFeatureCollection({ type: 'FeatureCollection', features });
+    const robotPaths = robotEntities.flatMap((entity) => {
+      const coordinates = Array.isArray(entity?.navigationPath) ? entity.navigationPath : [];
+      if (coordinates.length < 2) return [];
+      return [{
+        type: 'Feature',
+        id: `path:${entity.deviceId}`,
+        properties: { device_id: entity.deviceId, device_type: 'home_robot' },
+        geometry: { type: 'LineString', coordinates }
+      }];
+    });
+    setRobotPathFeatureCollection({ type: 'FeatureCollection', features: robotPaths });
   }, [robotEntities, wearableEntities]);
+  useEffect(() => {
+    if (!location || !Array.isArray(savedPlaces)) return;
+    const activeIds = new Set(savedPlaces.map((place) => place.id));
+    for (const storedId of geofenceStatesRef.current.keys()) {
+      if (!activeIds.has(storedId)) geofenceStatesRef.current.delete(storedId);
+    }
+    for (const place of savedPlaces) {
+      const previousState = geofenceStatesRef.current.get(place.id) || 'unknown';
+      const result = evaluateGeofence({ geofence: place, location, previousState });
+      if (result.state !== 'unknown') geofenceStatesRef.current.set(place.id, result.state);
+      if (result.transition === 'enter' || result.transition === 'exit') {
+        setGeofenceFeedback({
+          tone: result.transition === 'enter' ? 'success' : 'error',
+          translationKey: result.transition === 'enter' ? 'map.geofenceEntered' : 'map.geofenceExited',
+          translationOptions: { radius: place.radiusMeters }
+        });
+      }
+    }
+  }, [location, savedPlaces]);
   const coordinates = useMemo(() => location
     ? [location.coords.longitude, location.coords.latitude]
     : DEFAULT_COORDINATES, [location]);
@@ -275,6 +322,24 @@ export default function MapScreen() {
   }, [refreshLocation]);
 
   useEffect(() => {
+    if (loading || permissionDenied) return undefined;
+    let active = true;
+    let liveSubscription;
+    watchLiveLocation((nextLocation) => {
+      if (active && mountedRef.current) setLocation(nextLocation);
+    }).then((subscription) => {
+      if (active) liveSubscription = subscription;
+      else subscription?.remove?.();
+    }).catch((liveError) => logger.warn('[Mapbox] Live location updates are unavailable', {
+      errorCode: liveError?.code || liveError?.name || 'LIVE_LOCATION_UNAVAILABLE'
+    }));
+    return () => {
+      active = false;
+      liveSubscription?.remove?.();
+    };
+  }, [loading, permissionDenied]);
+
+  useEffect(() => {
     let active = true;
     if (!user?.id) {
       setSavedPlaces([]);
@@ -299,6 +364,7 @@ export default function MapScreen() {
         <NativeSafetyMap
           Mapbox={Mapbox}
           deviceFeatureCollection={deviceFeatureCollection}
+          robotPathFeatureCollection={robotPathFeatureCollection}
           coordinates={coordinates}
           onLoadError={handleMapLoadError}
           onStyleLoaded={handleMapStyleLoaded}
@@ -347,6 +413,10 @@ export default function MapScreen() {
             actionLabel={permissionDenied ? t('common.settings') : undefined}
             onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
           />
+          <FeedbackBanner
+            message={localizedFeedbackMessage(geofenceFeedback)}
+            tone={geofenceFeedback?.tone}
+          />
           <Button
             title={t('releaseCritical.saveCurrentPlace')}
             icon="bookmark-outline"
@@ -378,6 +448,10 @@ export default function MapScreen() {
         onAction={permissionDenied
           ? () => Linking.openSettings().catch(() => {})
           : retryMapAndLocation}
+      />
+      <FeedbackBanner
+        message={localizedFeedbackMessage(geofenceFeedback)}
+        tone={geofenceFeedback?.tone}
       />
       {dangerZones.map((zone) => (
         <Card key={zone.id}>

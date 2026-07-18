@@ -79,6 +79,8 @@ test('the safety map exposes Quick Share and passes a resolved location to it', 
   const mapScreen = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/map.js'), 'utf8');
   assert.match(mapScreen, /title=\{t\('quickShare\.title'\)\}/);
   assert.match(mapScreen, /const shareLocation = location \|\| await requestCurrentLocation\(\)/);
+  assert.match(mapScreen, /watchLiveLocation\(\(nextLocation\)/);
+  assert.match(mapScreen, /liveSubscription\?\.remove\?\.\(\)/);
   assert.match(mapScreen, /await shareQuickLocation\(shareLocation, \{ locale \}\)/);
   assert.match(mapScreen, /shareInProgressRef\.current/);
 });

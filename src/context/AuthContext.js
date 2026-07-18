@@ -21,6 +21,7 @@ import {
   confirmPhoneVerification,
   exchangeProviderIdentity,
   refreshApplicationSession,
+  revokeApplicationSession,
   requestPhoneVerification
 } from '../services/auth-session';
 import { secureStorage } from '../services/secure-storage';
@@ -743,6 +744,12 @@ export function AuthProvider({ children }) {
 
   const signOut = useCallback(async () => {
     const signedInProvider = user?.provider;
+    const tokenToRevoke = accessToken;
+    // Start revocation while the access token is still available. Local
+    // invalidation remains authoritative when the network is unavailable.
+    const revocation = tokenToRevoke
+      ? revokeApplicationSession(tokenToRevoke).catch(() => false)
+      : Promise.resolve(false);
     authGenerationRef.current += 1;
     const authGeneration = authGenerationRef.current;
     if (refreshRetryTimerRef.current) {
@@ -799,12 +806,17 @@ export function AuthProvider({ children }) {
         });
       }
     }
+    await withTimeout(
+      revocation,
+      PROVIDER_SIGN_OUT_TIMEOUT_MS,
+      'Backend session revocation timed out.'
+    ).catch(() => false);
     if (cleanup.residualFailures) {
       logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {
         residualFailures: cleanup.residualFailures
       });
     }
-  }, [runSessionMutation, user?.provider]);
+  }, [accessToken, runSessionMutation, user?.provider]);
 
   const value = useMemo(() => ({
     user,

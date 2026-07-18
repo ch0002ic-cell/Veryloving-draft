@@ -2,14 +2,51 @@ import { BaseDevice, DEVICE_TYPES } from './BaseDevice';
 import { acknowledgeDeviceCommand, enqueueDeviceCommand, loadDeviceCommands } from '../device-command-queue';
 
 const DEFAULT_TIMEOUT_MS = 10000;
+const DEFAULT_TELEMETRY_INTERVAL_MS = 30000;
+const DEFAULT_TELEMETRY_MAX_AGE_MS = 5 * 60 * 1000;
+
+function normalizePath(value) {
+  if (!Array.isArray(value)) return undefined;
+  const coordinates = value.slice(0, 500).flatMap((point) => {
+    const longitude = Number(Array.isArray(point) ? point[0] : point?.longitude);
+    const latitude = Number(Array.isArray(point) ? point[1] : point?.latitude);
+    return Number.isFinite(longitude) && Math.abs(longitude) <= 180
+      && Number.isFinite(latitude) && Math.abs(latitude) <= 90
+      ? [[longitude, latitude]] : [];
+  });
+  return coordinates.length >= 2 ? coordinates : undefined;
+}
+
+function normalizeIndoorPosition(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const identifier = (candidate) => typeof candidate === 'string'
+    && /^[A-Za-z0-9._:-]{1,128}$/.test(candidate) ? candidate : undefined;
+  const roomId = identifier(value.room_id);
+  const floorId = identifier(value.floor_id);
+  const mapId = identifier(value.map_id);
+  const x = Number(value.x_m);
+  const y = Number(value.y_m);
+  const hasCoordinates = mapId && Number.isFinite(x) && Math.abs(x) <= 10000
+    && Number.isFinite(y) && Math.abs(y) <= 10000;
+  if (!roomId && !hasCoordinates) return undefined;
+  return {
+    ...(roomId ? { roomId } : {}),
+    ...(floorId ? { floorId } : {}),
+    ...(mapId ? { mapId } : {}),
+    ...(hasCoordinates ? { xMeters: x, yMeters: y } : {}),
+    ...(Number.isFinite(value.confidence) ? { confidence: value.confidence } : {})
+  };
+}
 
 export class HomeRobotDevice extends BaseDevice {
-  constructor({ deviceId, name, accountId, gatewayURL, accessToken, accessTokenProvider, fetchImpl = globalThis.fetch, timeoutMs = DEFAULT_TIMEOUT_MS, commandStore, loadNetwork = () => import('expo-network'), setTimeoutImpl = setTimeout, clearTimeoutImpl = clearTimeout } = {}) {
+  constructor({ deviceId, name, accountId, gatewayURL, accessToken, accessTokenProvider, pairingToken, pairingTokenProvider, fetchImpl = globalThis.fetch, timeoutMs = DEFAULT_TIMEOUT_MS, telemetryIntervalMs = DEFAULT_TELEMETRY_INTERVAL_MS, telemetryMaxAgeMs = DEFAULT_TELEMETRY_MAX_AGE_MS, commandStore, loadNetwork = () => import('expo-network'), setTimeoutImpl = setTimeout, clearTimeoutImpl = clearTimeout, setIntervalImpl = setInterval, clearIntervalImpl = clearInterval, now = Date.now } = {}) {
     super({ deviceId, deviceType: DEVICE_TYPES.homeRobot, name });
     this.gatewayURL = typeof gatewayURL === 'string' ? gatewayURL.replace(/\/$/, '') : '';
     this.accessToken = accessToken;
     this.accessTokenProvider = accessTokenProvider;
     this.accountId = accountId;
+    this.pairingToken = pairingToken;
+    this.pairingTokenProvider = pairingTokenProvider;
     this.fetchImpl = fetchImpl;
     this.timeoutMs = timeoutMs;
     this.loadNetwork = loadNetwork;
@@ -19,7 +56,15 @@ export class HomeRobotDevice extends BaseDevice {
     this.pendingScan = null;
     this.setTimeoutImpl = setTimeoutImpl;
     this.clearTimeoutImpl = clearTimeoutImpl;
+    this.setIntervalImpl = setIntervalImpl;
+    this.clearIntervalImpl = clearIntervalImpl;
+    this.telemetryIntervalMs = Math.max(5000, Number(telemetryIntervalMs) || DEFAULT_TELEMETRY_INTERVAL_MS);
+    this.telemetryMaxAgeMs = Math.max(30000, Number(telemetryMaxAgeMs) || DEFAULT_TELEMETRY_MAX_AGE_MS);
+    this.now = now;
     this.retryTimer = null;
+    this.telemetryTimer = null;
+    this.telemetryInFlight = null;
+    this.latestTelemetryAt = 0;
     this.retryAttempt = 0;
     this.commandStore = commandStore || (accountId ? {
       enqueue: enqueueDeviceCommand,
@@ -41,6 +86,12 @@ export class HomeRobotDevice extends BaseDevice {
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const accessToken = await this.accessTokenProvider?.() || this.accessToken;
+      const pairingToken = await this.pairingTokenProvider?.(this.deviceId) || this.pairingToken;
+      if (path.startsWith('/v1/') && this.pairingTokenProvider && !pairingToken) {
+        const error = new Error('Robot pairing credential is unavailable');
+        error.code = 'ROBOT_PAIRING_CREDENTIAL_MISSING';
+        throw error;
+      }
       const response = await this.fetchImpl(`${this.gatewayURL}${path}`, {
         ...options,
         signal: controller.signal,
@@ -48,6 +99,7 @@ export class HomeRobotDevice extends BaseDevice {
           Accept: 'application/json',
           ...(options.body ? { 'Content-Type': 'application/json' } : {}),
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          ...(pairingToken ? { 'X-Device-Pairing-Token': pairingToken } : {}),
           ...options.headers
         }
       });
@@ -96,17 +148,36 @@ export class HomeRobotDevice extends BaseDevice {
         && pendingCommands.value.every((result) => result.status === 'fulfilled');
       if (telemetry.status === 'fulfilled' && commandQueueDrained) this.clearNetworkRetry();
       else this.scheduleNetworkRetry();
+      this.startTelemetryPolling();
     }
     return this.getStatus();
   }
 
   async disconnect() {
+    this.stopTelemetryPolling();
     return this.setStatus({ relayOnline: false, online: false, hardwareStatus: 'unknown', connectionState: 'disconnected' });
+  }
+
+  startTelemetryPolling() {
+    if (this.disposed || this.telemetryTimer) return;
+    this.telemetryTimer = this.setIntervalImpl(() => {
+      if (this.disposed) return;
+      return this.refreshTelemetry().catch(() => this.scheduleNetworkRetry());
+    }, this.telemetryIntervalMs);
+    this.telemetryTimer?.unref?.();
+  }
+
+  stopTelemetryPolling() {
+    if (this.telemetryTimer !== null) this.clearIntervalImpl(this.telemetryTimer);
+    this.telemetryTimer = null;
   }
 
   async deliverQueuedCommand(queued) {
     const command = queued.command && typeof queued.command === 'object' ? queued.command : {};
-    const commandId = typeof queued.id === 'string' && /^[A-Za-z0-9._:-]{1,160}$/.test(queued.id) ? queued.id : null;
+    const candidateCommandId = queued.idempotencyKey || queued.id;
+    const commandId = typeof candidateCommandId === 'string' && /^[A-Za-z0-9._:-]{1,160}$/.test(candidateCommandId)
+      ? candidateCommandId
+      : null;
     const parameters = command.parameters;
     let result;
     try {
@@ -174,6 +245,7 @@ export class HomeRobotDevice extends BaseDevice {
         this.connect().catch(() => this.scheduleNetworkRetry());
       } else if (state.isConnected === false || state.isInternetReachable === false) {
         this.clearNetworkRetry();
+        this.stopTelemetryPolling();
         this.setStatus({ relayOnline: false, online: false, hardwareStatus: 'unknown', connectionState: 'disconnected', lastErrorCode: 'ROBOT_NETWORK_UNAVAILABLE' });
       }
     };
@@ -202,6 +274,7 @@ export class HomeRobotDevice extends BaseDevice {
   dispose() {
     super.dispose();
     this.clearNetworkRetry();
+    this.stopTelemetryPolling();
     for (const controller of this.activeRequestControllers) controller.abort();
     this.activeRequestControllers.clear();
     this.networkSubscription?.remove?.();
@@ -209,31 +282,63 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   async refreshTelemetry() {
-    const telemetry = await this.request(`/v1/devices/${encodeURIComponent(this.deviceId)}/telemetry`);
-    const longitude = Number(telemetry?.location?.longitude);
-    const latitude = Number(telemetry?.location?.latitude);
-    const location = Number.isFinite(longitude) && Math.abs(longitude) <= 180
-      && Number.isFinite(latitude) && Math.abs(latitude) <= 90
-      ? {
-          longitude,
-          latitude,
-          ...(Number.isFinite(Number(telemetry.reported_at)) ? { capturedAt: Number(telemetry.reported_at) } : {})
-        }
-      : undefined;
-    const statusPatch = {
-      relayOnline: true,
-      lastErrorCode: null,
-      ...(location ? { location } : {})
-    };
-    if (typeof telemetry?.online === 'boolean') {
-      Object.assign(statusPatch, {
-        online: telemetry.online,
-        hardwareStatus: telemetry.online ? 'online' : 'offline',
-        connectionState: telemetry.online ? 'connected' : 'disconnected'
-      });
-    }
-    this.setStatus(statusPatch);
-    this.emitTelemetry(telemetry);
-    return telemetry;
+    if (this.telemetryInFlight) return this.telemetryInFlight;
+    let operation;
+    operation = (async () => {
+      let telemetry;
+      try {
+        telemetry = await this.request(`/v1/devices/${encodeURIComponent(this.deviceId)}/telemetry`);
+      } catch (error) {
+        this.stopTelemetryPolling();
+        throw error;
+      }
+      const suppliedReportedAt = Number(telemetry?.reported_at);
+      const reportedAt = Number.isFinite(suppliedReportedAt) ? suppliedReportedAt : this.now();
+      if (reportedAt < this.latestTelemetryAt) return { ...telemetry, ignored: true };
+      if (this.now() - reportedAt > this.telemetryMaxAgeMs) {
+        this.latestTelemetryAt = reportedAt;
+        this.setStatus({
+          relayOnline: true,
+          online: false,
+          hardwareStatus: 'stale',
+          connectionState: 'disconnected',
+          navigationPath: null,
+          lastSeenAt: reportedAt,
+          lastErrorCode: 'ROBOT_TELEMETRY_STALE'
+        });
+        return { ...telemetry, stale: true };
+      }
+      this.latestTelemetryAt = reportedAt;
+      const longitude = Number(telemetry?.location?.longitude);
+      const latitude = Number(telemetry?.location?.latitude);
+      const location = Number.isFinite(longitude) && Math.abs(longitude) <= 180
+        && Number.isFinite(latitude) && Math.abs(latitude) <= 90
+        ? { longitude, latitude, capturedAt: reportedAt }
+        : undefined;
+      const path = normalizePath(telemetry?.navigation_path ?? telemetry?.path);
+      const indoorPosition = normalizeIndoorPosition(telemetry?.indoor_position);
+      const statusPatch = {
+        relayOnline: true,
+        lastErrorCode: null,
+        navigationPath: path || null,
+        indoorPosition: indoorPosition || null,
+        lastSeenAt: reportedAt,
+        ...(location ? { location } : {})
+      };
+      if (typeof telemetry?.online === 'boolean') {
+        Object.assign(statusPatch, {
+          online: telemetry.online,
+          hardwareStatus: telemetry.online ? 'online' : 'offline',
+          connectionState: telemetry.online ? 'connected' : 'disconnected'
+        });
+      }
+      this.setStatus(statusPatch);
+      this.emitTelemetry(telemetry);
+      return telemetry;
+    })().finally(() => {
+      if (this.telemetryInFlight === operation) this.telemetryInFlight = null;
+    });
+    this.telemetryInFlight = operation;
+    return operation;
   }
 }

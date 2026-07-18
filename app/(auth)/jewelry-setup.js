@@ -19,7 +19,8 @@ import { bleErrorTranslationKey } from '../../src/services/ble-errors';
 export default function JewelrySetup() {
   const params = useLocalSearchParams();
   const mode = Array.isArray(params.mode) ? params.mode[0] : params.mode;
-  const standalone = mode === 'standalone';
+  const additional = mode === 'additional';
+  const standalone = mode === 'standalone' || additional;
   const [devices, setDevices] = useState([]);
   const [scanning, setScanning] = useState(false);
   const [connectingId, setConnectingId] = useState(null);
@@ -28,7 +29,7 @@ export default function JewelrySetup() {
   const appStateRef = useRef(AppState.currentState);
   const stopScanRef = useRef(null);
   const finishingRef = useRef(false);
-  const { setDevice } = useAppState();
+  const { setDevice, setWearableEntities } = useAppState();
   const { advanceOnboarding } = useAuth();
   const { t } = useI18n();
 
@@ -114,7 +115,18 @@ export default function JewelrySetup() {
         await bleService.disconnect(connected.id).catch(() => {});
         return;
       }
-      await setDevice(connected);
+      if (additional) {
+        await setWearableEntities((current) => current.some((wearable) => wearable.deviceId === connected.id)
+          ? current
+          : [...current, {
+              ...connected,
+              deviceId: connected.id,
+              deviceType: 'wearable',
+              online: true
+            }]);
+      } else {
+        await setDevice(connected);
+      }
       remembered = true;
       if (mountedRef.current) await finishSetup();
     } catch (connectionError) {
@@ -128,7 +140,7 @@ export default function JewelrySetup() {
     } finally {
       if (mountedRef.current) setConnectingId(null);
     }
-  }, [finishSetup, setDevice, stopScan]);
+  }, [additional, finishSetup, setDevice, setWearableEntities, stopScan]);
 
   return (
     <Screen scroll={false}>

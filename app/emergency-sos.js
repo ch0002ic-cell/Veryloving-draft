@@ -17,6 +17,7 @@ import { fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { useAuth } from '../src/context/AuthContext';
 import { loadLastKnownLocation } from '../src/services/location-cache';
+import { loadEmergencyMedicalAttachment } from '../src/services/medical-profile-store';
 
 function closeScreen() {
   if (router.canGoBack()) {
@@ -56,7 +57,13 @@ export default function EmergencySOS() {
     setFeedbackKey(null);
     try {
       const location = await loadLastKnownLocation().catch(() => null);
-      const result = await triggerSOS(contacts, { accessToken, accountId: user?.id, location });
+      const medicalAttachment = await loadEmergencyMedicalAttachment(user?.id).catch(() => null);
+      const result = await triggerSOS(contacts, {
+        accessToken,
+        accountId: user?.id,
+        location,
+        medicalAttachment
+      });
       await refreshLastStatus();
       if (result.status === 'contact_required') {
         setFeedbackKey('emergency.addContact');

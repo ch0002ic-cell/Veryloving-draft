@@ -1,4 +1,4 @@
-import { base64ToBytes } from '../utils/base64';
+import { base64ToBytes, utf8BytesToString } from '../utils/base64';
 
 const UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 
@@ -62,6 +62,25 @@ export function decodeVL01Battery(base64Value) {
   return percentage;
 }
 
+export function decodeVL01SafetyEvent(base64Value) {
+  if (typeof base64Value !== 'string' || !base64Value) throw new Error('VL01 safety event is missing.');
+  let bytes;
+  try {
+    bytes = base64ToBytes(base64Value);
+  } catch {
+    throw new Error('VL01 safety event is not a valid versioned envelope.');
+  }
+  if (!bytes.length || bytes.length > 512) throw new Error('VL01 safety event has an invalid length.');
+  let decoded;
+  try {
+    decoded = JSON.parse(utf8BytesToString(bytes));
+  } catch {
+    throw new Error('VL01 safety event is not a valid versioned envelope.');
+  }
+  if (decoded?.version !== 1) throw new Error('VL01 safety event version is unsupported.');
+  return decoded;
+}
+
 export function hasVL01Service(device, protocol) {
   if (!protocol?.serviceUUID) return false;
   return Array.isArray(device?.serviceUUIDs)
@@ -88,6 +107,10 @@ export function validateVL01GATT(services, characteristics, protocol) {
     if (characteristic.isNotifiable !== true && characteristic.isIndicatable !== true) {
       throw new Error('VL01 required notification characteristic does not support notifications.');
     }
+  }
+  if (protocol.statusCharacteristicUUID) {
+    const status = characteristicsByUUID.get(canonicalVL01UUID(protocol.statusCharacteristicUUID));
+    if (status.isReadable !== true) throw new Error('VL01 status characteristic is not readable.');
   }
   if (protocol.commandCharacteristicUUID) {
     const command = characteristicsByUUID.get(canonicalVL01UUID(protocol.commandCharacteristicUUID));

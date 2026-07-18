@@ -39,6 +39,7 @@ export async function safetyRequest(path, {
   accessToken,
   method = 'GET',
   body,
+  headers,
   fetchImpl = globalThis.fetch,
   runtimeConfig = config,
   timeoutMs = REQUEST_TIMEOUT_MS
@@ -61,7 +62,8 @@ export async function safetyRequest(path, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json',
-        ...(body ? { 'Content-Type': 'application/json' } : {})
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+        ...(headers || {})
       },
       ...(body ? { body: JSON.stringify(body) } : {}),
       signal: controller.signal
@@ -128,7 +130,14 @@ export async function fetchCurrentSafetyMode(accessToken) {
   return payload?.session || null;
 }
 
-export function dispatchSOS({ contactIds, accessToken, location, source = 'app', idempotencyKey = createAuthenticationNonce() }) {
+export function dispatchSOS({
+  contactIds,
+  accessToken,
+  location,
+  medicalAttachment,
+  source = 'app',
+  idempotencyKey = createAuthenticationNonce()
+}) {
   const occurredAt = Date.now();
   const recentLocation = normalizeSOSLocation(location, { now: () => occurredAt });
   return safetyRequest('/v1/sos-events', {
@@ -139,7 +148,33 @@ export function dispatchSOS({ contactIds, accessToken, location, source = 'app',
       source,
       occurredAt,
       contactIds,
-      ...(recentLocation ? { location: recentLocation } : {})
+      ...(recentLocation ? { location: recentLocation } : {}),
+      ...(medicalAttachment ? { medicalAttachment } : {})
+    }
+  });
+}
+
+export function dispatchMedicationEscalation({
+  reminderId,
+  medicationId,
+  idempotencyKey,
+  accessToken,
+  occurredAt = Date.now()
+}) {
+  if (typeof reminderId !== 'string' || !reminderId) {
+    const error = new Error('Medication reminder identifier is required.');
+    error.code = 'MEDICATION_REMINDER_ID_REQUIRED';
+    throw error;
+  }
+  return safetyRequest('/v1/medication-escalations', {
+    accessToken,
+    method: 'POST',
+    body: {
+      idempotencyKey,
+      medicationReference: medicationId,
+      reason: 'reminder_unacknowledged',
+      occurredAt,
+      source: 'home_robot'
     }
   });
 }

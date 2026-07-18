@@ -120,6 +120,15 @@ function responseForToolResult(rawResult) {
     if (Array.isArray(result?.tips) && result.tips.length) {
       return `Here are the best next steps: ${result.tips.slice(0, 3).join(' ')} I can stay with you while you decide what to do next.`;
     }
+    if (result?.status === 'dialer_opened') {
+      return 'The phone dialer was opened after confirmation. The call is not confirmed until you complete it on the phone.';
+    }
+    if (result?.status === 'cancelled') {
+      return 'The help dial was cancelled. I can stay with you and help choose another safe next step.';
+    }
+    if (result?.status === 'contact_required') {
+      return 'No emergency contact is configured. Call local emergency services directly if danger is immediate.';
+    }
   } catch {
     // Tool responses may be plain text.
   }

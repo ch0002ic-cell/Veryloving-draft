@@ -11,8 +11,14 @@ const {
 } = require('../src/utils/auth-routing');
 const {
   ONBOARDING_STATE_VERSION,
+  ONBOARDING_ROUTES,
+  canAdvanceOnboarding,
+  createOnboardingProgress,
   createOnboardingMarker,
-  isOnboardingMarkerValid
+  isOnboardingMarkerValid,
+  isOnboardingRouteAllowed,
+  nextOnboardingProgress,
+  parseOnboardingProgress
 } = require('../src/utils/onboarding-state');
 
 function routeNames(directory) {
@@ -64,6 +70,16 @@ test('modal close actions return home when there is no navigation history', () =
   }
 });
 
+test('excuse call is a protected simulated incoming-call journey', () => {
+  const screen = readFileSync(path.resolve(process.cwd(), 'app/excuse-call.js'), 'utf8');
+  const home = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/index.js'), 'utf8');
+  assert.equal(PROTECTED_ROOT_ROUTES.includes('excuse-call'), true);
+  assert.match(home, /router\.push\('\/excuse-call'\)/);
+  assert.match(screen, /tutorial\.excuseTitle/);
+  assert.match(screen, /router\.replace\('\/safety-call'\)/);
+  assert.match(screen, /if \(router\.canGoBack\(\)\)/);
+});
+
 test('phone authentication uses the backend and keeps PII out of route parameters', () => {
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
   const client = readFileSync(path.resolve(process.cwd(), 'src/services/auth-session.js'), 'utf8');
@@ -91,6 +107,22 @@ test('onboarding completion is versioned and bound to the authenticated account'
   assert.equal(isOnboardingMarkerValid({ ...marker, version: ONBOARDING_STATE_VERSION + 1 }, 'apple-user-a'), false);
   assert.equal(isOnboardingMarkerValid('not-json', 'apple-user-a'), false);
   assert.equal(isOnboardingMarkerValid(null, 'apple-user-a'), false);
+});
+
+test('onboarding progress resumes account-bound state and rejects skipped forward steps', () => {
+  const accountId = 'google:resumable-user';
+  let progress = createOnboardingProgress(accountId);
+  assert.equal(progress.route, ONBOARDING_ROUTES[0]);
+  progress = nextOnboardingProgress(progress, accountId, '/(auth)/notification-permission');
+  assert.deepEqual(parseOnboardingProgress(JSON.stringify(progress), accountId), progress);
+  assert.equal(parseOnboardingProgress(progress, 'google:different-user'), null);
+  assert.equal(canAdvanceOnboarding(progress.route, '/(auth)/tutorial/home-mode'), false);
+  assert.throws(
+    () => nextOnboardingProgress(progress, accountId, '/(auth)/tutorial/home-mode'),
+    (error) => error.code === 'ONBOARDING_ROUTE_BLOCKED'
+  );
+  assert.equal(isOnboardingRouteAllowed(ONBOARDING_ROUTES[0], progress.route), true);
+  assert.equal(isOnboardingRouteAllowed('/(auth)/tutorial/home-mode', progress.route), false);
 });
 
 test('all onboarding exits pass through the completion gate', () => {
@@ -295,12 +327,16 @@ test('privacy deletion keeps sign-out progressing after protected Keychain clean
   const deletion = privacy.slice(privacy.indexOf('export async function deleteAllUserData'));
   const remoteDeletion = deletion.indexOf('await deleteRemoteUserData(accessToken)');
   const localDeletion = deletion.indexOf('await deleteLocalUserData');
+  const encryptionKeyRotation = deletion.indexOf('await storage.rotateEncryptionKeyAfterPurge()');
   const tombstone = deletion.indexOf('storage.setJSON(AUTH_STORAGE_KEYS.signedOut');
   const cleanup = deletion.indexOf('const secureResults = await Promise.allSettled');
   assert.notEqual(remoteDeletion, -1);
   assert.ok(remoteDeletion < localDeletion, 'Remote deletion must succeed before local credentials are removed');
   assert.notEqual(tombstone, -1);
+  assert.ok(localDeletion < encryptionKeyRotation && encryptionKeyRotation < tombstone,
+    'Account deletion must cryptographically erase residual ciphertext before writing a fresh tombstone');
   assert.ok(tombstone < cleanup, 'The signed-out tombstone must precede best-effort Keychain cleanup');
+  assert.match(deletion, /encryptionKeyFailures,/);
   assert.match(deletion, /secureStoreFailures: \(Number\(result\.secureStoreFailures\) \|\| 0\) \+ secureStoreFailures/);
   assert.doesNotMatch(deletion, /await Promise\.all\(\[/);
 });

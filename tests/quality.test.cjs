@@ -220,21 +220,45 @@ test('offline companion returns actionable safety guidance for the safety-tips p
 test('diagnostic logging recursively redacts credential fields and bearer values', () => {
   const sanitized = sanitizeLogPayload({
     authorization: 'Bearer top-level-secret',
+    email: 'care@example.test',
+    phoneNumber: '+6591234567',
+    hardwareSerial: 'VL01-SECRET-001',
+    location: { latitude: 1.3, longitude: 103.8 },
     connection: {
       api_key: 'nested-secret',
-      detail: 'request failed with Bearer embedded-secret',
+      detail: 'request failed for care@example.test at +6591234567 with Bearer embedded-secret; serial=VL01-SECRET-001',
       query: 'wss://voice.example.test?access_token=query-secret&config_id=public-id'
     }
   });
 
   assert.equal(sanitized.authorization, '[REDACTED]');
+  assert.equal(sanitized.email, '[REDACTED]');
+  assert.equal(sanitized.phoneNumber, '[REDACTED]');
+  assert.equal(sanitized.hardwareSerial, '[REDACTED]');
+  assert.equal(sanitized.location, '[REDACTED]');
   assert.equal(sanitized.connection.api_key, '[REDACTED]');
-  assert.equal(sanitized.connection.detail, 'request failed with Bearer [REDACTED]');
+  assert.equal(
+    sanitized.connection.detail,
+    'request failed for [REDACTED_EMAIL] at [REDACTED_PHONE] with Bearer [REDACTED]; serial=[REDACTED]'
+  );
   assert.equal(
     sanitizeUrl(sanitized.connection.query),
     'wss://voice.example.test?access_token=[REDACTED]&config_id=public-id'
   );
-  assert.doesNotMatch(JSON.stringify(sanitized), /top-level-secret|nested-secret|embedded-secret|query-secret/);
+  assert.doesNotMatch(
+    JSON.stringify(sanitized),
+    /top-level-secret|nested-secret|embedded-secret|query-secret|care@example|6591234567|VL01-SECRET/
+  );
+});
+
+test('diagnostic logging redacts JWTs and Expo push tokens embedded in error messages', () => {
+  const sanitized = sanitizeLogPayload(new Error(
+    'failed eyJhbGciOiJub25lIn0.eyJzdWIiOiJ1c2VyIn0.signature for ExpoPushToken[private-device-token]'
+  ));
+  assert.equal(sanitized.name, 'Error');
+  assert.doesNotMatch(sanitized.message, /eyJ|private-device-token/);
+  assert.match(sanitized.message, /REDACTED_JWT/);
+  assert.match(sanitized.message, /REDACTED_PUSH_TOKEN/);
 });
 
 test('async timeout guard rejects stalled operations with a typed error', async () => {

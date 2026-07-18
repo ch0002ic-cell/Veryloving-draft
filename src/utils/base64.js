@@ -32,6 +32,22 @@ export function base64ToBytes(value) {
   return bytes;
 }
 
+export function bytesToBase64(value) {
+  const bytes = value instanceof Uint8Array ? value : Uint8Array.from(value || []);
+  let result = '';
+  for (let index = 0; index < bytes.length; index += 3) {
+    const a = bytes[index];
+    const b = index + 1 < bytes.length ? bytes[index + 1] : 0;
+    const c = index + 2 < bytes.length ? bytes[index + 2] : 0;
+    const combined = (a << 16) | (b << 8) | c;
+    result += BASE64_ALPHABET[(combined >>> 18) & 0x3f];
+    result += BASE64_ALPHABET[(combined >>> 12) & 0x3f];
+    result += index + 1 < bytes.length ? BASE64_ALPHABET[(combined >>> 6) & 0x3f] : '=';
+    result += index + 2 < bytes.length ? BASE64_ALPHABET[combined & 0x3f] : '=';
+  }
+  return result;
+}
+
 export function utf8BytesToString(bytes) {
   let result = '';
   for (let index = 0; index < bytes.length;) {

@@ -19,13 +19,14 @@ import {
   equalVL01UUID,
   validateVL01GATT
 } from './vl01-protocol';
-import { base64ToBytes } from '../utils/base64';
+import { base64ToBytes, bytesToBase64 } from '../utils/base64';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
 
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
 const GATT_OPERATION_TIMEOUT_MS = 5000;
 const BLUETOOTH_STATE_TIMEOUT_MS = 3000;
+const MAX_GATT_WRITE_BYTES = 20;
 const BLE_RESTORE_IDENTIFIER = 'com.veryloving.vl01.central';
 const DEVELOPMENT_RUNTIME = typeof __DEV__ !== 'undefined' && __DEV__;
 const CONFIGURED_VL01_PROTOCOL = createVL01Protocol({
@@ -463,20 +464,13 @@ export class BLEService {
       monitor(protocol.statusCharacteristicUUID, 'onStatus');
       monitor(protocol.eventCharacteristicUUID, 'onEvent');
 
-      const statusDefinition = connection.characteristics.find(
-        (characteristic) => equalVL01UUID(characteristic.uuid, protocol.statusCharacteristicUUID)
-      );
-      if (protocol.statusCharacteristicUUID && statusDefinition?.isReadable === true) {
-        try {
-          const status = await withTimeout(
-            connected.readCharacteristicForService(protocol.serviceUUID, protocol.statusCharacteristicUUID),
-            this.gattOperationTimeoutMs,
-            translate('jewelry.connectTimeout')
-          );
-          this.emitEvent('onStatus', connected.id, status?.value || null);
-        } catch (statusError) {
-          logBLEFailure('[BLE] Initial status read failed', statusError, { hasDeviceId: true });
-        }
+      if (protocol.statusCharacteristicUUID) {
+        const status = await withTimeout(
+          connected.readCharacteristicForService(protocol.serviceUUID, protocol.statusCharacteristicUUID),
+          this.gattOperationTimeoutMs,
+          translate('jewelry.connectTimeout')
+        );
+        this.emitEvent('onStatus', connected.id, status?.value || null);
       }
       if (typeof manager.onDeviceDisconnected === 'function') {
         addSubscription(manager.onDeviceDisconnected(connected.id, (disconnectError) => {
@@ -528,8 +522,9 @@ export class BLEService {
     if (typeof base64Value !== 'string' || !base64Value || base64Value.length > 1024) {
       throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, null, 'write');
     }
+    let decoded;
     try {
-      const decoded = base64ToBytes(base64Value);
+      decoded = base64ToBytes(base64Value);
       if (!decoded.length || decoded.length > 512) throw new Error('VL01 command payload is invalid.');
     } catch (error) {
       throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, error, 'write');
@@ -544,16 +539,19 @@ export class BLEService {
       throw createBLEError(BLE_ERROR_CODES.incompatibleDevice, null, 'write');
     }
     try {
-      await withTimeout(
-        method.call(
-          connected,
-          protocol.serviceUUID,
-          protocol.commandCharacteristicUUID,
-          base64Value
-        ),
-        this.gattOperationTimeoutMs,
-        translate('jewelry.connectTimeout')
-      );
+      for (let offset = 0; offset < decoded.length; offset += MAX_GATT_WRITE_BYTES) {
+        const fragment = bytesToBase64(decoded.subarray(offset, offset + MAX_GATT_WRITE_BYTES));
+        await withTimeout(
+          method.call(
+            connected,
+            protocol.serviceUUID,
+            protocol.commandCharacteristicUUID,
+            fragment
+          ),
+          this.gattOperationTimeoutMs,
+          translate('jewelry.connectTimeout')
+        );
+      }
       return true;
     } catch (error) {
       const code = error instanceof OperationTimeoutError

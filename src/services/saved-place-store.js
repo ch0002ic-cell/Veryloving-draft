@@ -4,6 +4,7 @@ import { createAuthenticationNonce } from '../utils/session-token';
 export const SAVED_PLACES_KEY = 'veryloving.savedPlaces.secure.v1';
 export const SAVED_PLACES_VERSION = 1;
 export const MAX_SAVED_PLACES = 8;
+export const DEFAULT_SAVED_PLACE_RADIUS_METERS = 200;
 
 let mutationQueue = Promise.resolve();
 
@@ -27,10 +28,16 @@ export function normalizeSavedPlace(value) {
     ? value.id.trim()
     : null;
   const capturedAt = Number(value?.capturedAt);
+  const suppliedRadius = Number(value?.radiusMeters);
+  const radiusMeters = Number.isFinite(suppliedRadius)
+    && suppliedRadius >= 25
+    && suppliedRadius <= 100000
+    ? suppliedRadius
+    : DEFAULT_SAVED_PLACE_RADIUS_METERS;
   if (!id || latitude === null || longitude === null || !Number.isFinite(capturedAt) || capturedAt <= 0) {
     return null;
   }
-  return { id, latitude, longitude, capturedAt };
+  return { id, latitude, longitude, radiusMeters, capturedAt };
 }
 
 function parseSnapshot(raw, accountId) {
@@ -81,6 +88,7 @@ export function saveCurrentPlace(accountId, location, {
     id: createId(),
     latitude: location?.coords?.latitude,
     longitude: location?.coords?.longitude,
+    radiusMeters: DEFAULT_SAVED_PLACE_RADIUS_METERS,
     capturedAt: Number(location?.timestamp || location?.cachedAt) || now()
   });
   if (!candidate) return Promise.reject(new Error('A valid current location is required to save a place.'));

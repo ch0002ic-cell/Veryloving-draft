@@ -170,7 +170,7 @@ test('Expo config minimizes native permissions and owns launch appearance', () =
   assert.equal(permissions.has('android.permission.CAMERA'), false);
   assert.equal(permissions.has('android.permission.BLUETOOTH_ADVERTISE'), false);
   assert.equal(plugins.get('react-native-ble-plx').neverForLocation, true);
-  assert.equal(plugins.get('react-native-ble-plx').isBackgroundEnabled, false);
+  assert.equal(plugins.get('react-native-ble-plx').isBackgroundEnabled, true);
   assert.equal(
     plugins.get('expo-location').locationWhenInUsePermission,
     'VeryLoving needs your location to show the map and provide safety features'

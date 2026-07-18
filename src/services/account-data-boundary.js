@@ -1,5 +1,7 @@
 import { clearEmergencyContactCache } from './emergency-contact-store';
 import { clearSavedPlaces } from './saved-place-store';
+import { clearMedicalEmergencyProfile } from './medical-profile-store';
+import { clearRobotPairingCredentials } from './robot-pairing-credential-store';
 import { deleteLocalUserStores } from './local-user-data';
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
 import {
@@ -64,6 +66,8 @@ export function parseAccountDataOwner(value) {
 export function ensureAccountDataOwner(accountId, {
   clearEmergencyContactsImpl = clearEmergencyContactCache,
   clearSavedPlacesImpl = clearSavedPlaces,
+  clearMedicalProfileImpl = clearMedicalEmergencyProfile,
+  clearRobotCredentialsImpl = clearRobotPairingCredentials,
   disableReminderImpl = disableCapybearReminder,
   deleteLocalUserStoresImpl = deleteLocalUserStores,
   loadSettingsImpl = loadSettings,
@@ -128,6 +132,18 @@ export function ensureAccountDataOwner(accountId, {
     } catch {
       savedPlacesWarning = 1;
     }
+    let medicalProfileWarning = 0;
+    try {
+      await clearMedicalProfileImpl();
+    } catch {
+      medicalProfileWarning = 1;
+    }
+    let robotCredentialsWarning = 0;
+    try {
+      await clearRobotCredentialsImpl();
+    } catch {
+      robotCredentialsWarning = 1;
+    }
 
     await persistSettingsImpl({ ...DEFAULT_SETTINGS, language });
     const owner = {
@@ -142,6 +158,8 @@ export function ensureAccountDataOwner(accountId, {
       accountId: nextAccountId,
       warnings: secureContactWarning
         + savedPlacesWarning
+        + medicalProfileWarning
+        + robotCredentialsWarning
         + reminderWarning
         + Number(localDeletion?.drainFailures || 0)
         + Number(localDeletion?.artifactCleanup?.failures || 0)

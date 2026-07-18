@@ -182,7 +182,9 @@
       "low": "baxx",
       "medium": "Medju",
       "high": "għoli"
-    }
+    },
+    "geofenceEntered": "You entered the %{radius}m saved-place safety zone.",
+    "geofenceExited": "You left the %{radius}m saved-place safety zone."
   },
   "safetyCall": {
     "connecting": "Konnessjoni...",
@@ -431,5 +433,66 @@
     "editContactTitle": "Editja l-kuntatt ta’ emerġenza",
     "editContactAccessibility": "Editja %{name}",
     "contactUpdated": "Il-kuntatt ta’ emerġenza ġie aġġornat."
+  },
+  "medicalProfile": {
+    "title": "Emergency medical profile",
+    "subtitle": "Information you choose to share during an SOS",
+    "description": "Keep this information current. VeryLoving attaches it only to a connected SOS after you enable sharing; it is not sent through the phone call itself.",
+    "bloodType": "Blood type",
+    "conditions": "Medical conditions",
+    "conditionsHint": "Enter one per line or separate items with commas.",
+    "allergies": "Allergies",
+    "allergiesHint": "Enter one per line or separate items with commas.",
+    "medications": "Medications",
+    "medicationsHint": "Enter one per line: name | dose | instructions.",
+    "emergencyNotes": "Emergency notes",
+    "emergencyNotesHint": "Add details that may help your emergency contacts.",
+    "shareLabel": "Include this profile with connected SOS alerts",
+    "shareHint": "When enabled, reviewed details may be sent to your synchronized emergency flow.",
+    "consentBody": "Saving with sharing enabled records your consent and review time. You can turn sharing off or clear this profile at any time.",
+    "lastReviewed": "Last reviewed: %{date}",
+    "neverReviewed": "Not reviewed yet",
+    "saveAndReview": "Save and mark reviewed",
+    "clearProfile": "Clear medical profile",
+    "saved": "Medical profile saved and review time recorded.",
+    "cleared": "Medical profile cleared.",
+    "loadFailed": "We could not load your medical profile. Try again.",
+    "saveFailed": "We could not save your medical profile. Check the entries and try again.",
+    "clearFailed": "We could not clear your medical profile. Try again.",
+    "clearTitle": "Clear medical profile?",
+    "clearMessage": "This removes the emergency medical information stored securely on this device."
+  },
+  "medication": {
+    "title": "Medication reminders",
+    "subtitle": "Schedule home robot reminders and caregiver escalation.",
+    "create": "Add reminder",
+    "reference": "Medication reference",
+    "referenceHint": "Use a short private schedule reference with letters, numbers, hyphens, or underscores.",
+    "referencePlaceholder": "morning_dose",
+    "robot": "Home robot",
+    "noRobot": "Pair a home robot before adding medication reminders.",
+    "reminderMinutes": "Remind in (minutes)",
+    "escalationMinutes": "Escalate after reminder time (minutes)",
+    "escalationHint": "Caregivers are alerted only if the reminder remains unacknowledged.",
+    "saved": "Medication reminder saved.",
+    "saveFailed": "We could not save this medication reminder. Check the entries and try again.",
+    "loadFailed": "We could not load medication reminders. Try again.",
+    "acknowledged": "Medication reminder acknowledged.",
+    "acknowledgeFailed": "We could not acknowledge this medication reminder. Try again.",
+    "upcoming": "Medication schedule",
+    "empty": "No medication reminders yet.",
+    "acknowledge": "I have taken it",
+    "due": "Due %{date}",
+    "statuses": {
+      "scheduled": "Scheduled",
+      "reminder_due": "Due",
+      "reminder_accepted": "Sent to robot",
+      "awaiting_acknowledgement": "Awaiting acknowledgement",
+      "escalation_due": "Escalation due",
+      "escalation_accepted": "Caregiver alert accepted",
+      "escalated": "Caregiver alerted",
+      "acknowledged": "Acknowledged",
+      "cancelled": "Cancelled"
+    }
   }
 }

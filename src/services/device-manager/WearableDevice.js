@@ -28,10 +28,13 @@ export class WearableDevice extends BaseDevice {
 
   sendCommand(command) {
     const payload = typeof command === 'string' ? command : command?.payload;
+    const stop = typeof command === 'object' && [command.action, command.type, command.command]
+      .some((value) => typeof value === 'string' && value.toLowerCase() === 'stop');
+    const priority = stop ? 'critical' : command?.priority || 'standard';
     return this.enqueueCommand(async () => {
       await this.bleClient.writeCommand(this.deviceId, payload, { withResponse: command?.withResponse !== false });
       return { accepted: true, deviceId: this.deviceId };
-    });
+    }, { priority, bypass: stop });
   }
 
   onTelemetry(callback) {

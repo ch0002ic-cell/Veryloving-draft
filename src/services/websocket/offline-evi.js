@@ -9,6 +9,7 @@ export class OfflineEVIService {
     this.connectionTimer = null;
     this.connectionResolve = null;
     this.responseTimers = new Set();
+    this.sessionConfig = {};
   }
 
   setMessageHandler(handler) { this.messageHandler = handler || {}; }
@@ -17,8 +18,12 @@ export class OfflineEVIService {
   getState() { return this.state; }
   isConnected() { return this.state === 'connected'; }
 
-  async connect() {
+  async connect(sessionConfig = {}) {
     logger.info('[OfflineEVIService] Offline companion mode active');
+    this.sessionConfig = {
+      locale: sessionConfig.locale,
+      personaId: sessionConfig.personaId
+    };
     if (this.state === 'connected') return;
     if (this.connectionTimer) clearTimeout(this.connectionTimer);
     this.connectionResolve?.();

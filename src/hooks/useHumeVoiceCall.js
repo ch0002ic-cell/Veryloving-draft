@@ -28,6 +28,10 @@ import {
 } from '../utils/user-facing-error';
 import { humeVoiceOverride } from '../utils/hume-voice';
 import { dispatchWearableAction } from '../services/device-actions';
+import { useI18n } from '../context/I18nContext';
+import { triggerSOS } from '../services/emergency';
+import { loadLastKnownLocation } from '../services/location-cache';
+import { loadEmergencyMedicalAttachment } from '../services/medical-profile-store';
 
 function normalizeSessionId(value) {
   if (Array.isArray(value)) return value[0];
@@ -42,8 +46,9 @@ function voiceOverride(selectedVoice) {
 }
 
 export function useHumeVoiceCall({ initialSessionId } = {}) {
-  const { accessToken, isDemoMode } = useAuth();
-  const { selectedVoice, settings, wearableEntities, robotEntities } = useAppState();
+  const { accessToken, isDemoMode, user } = useAuth();
+  const { contacts, selectedVoice, settings, wearableEntities, robotEntities } = useAppState();
+  const { locale } = useI18n();
   const networkState = useNetworkState();
   const isOnline = networkState.isConnected !== false && networkState.isInternetReachable !== false;
   const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
@@ -74,6 +79,21 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     const count = await queuedMessageCount(sessionIdRef.current);
     if (mountedRef.current) setPendingMessageCount(count);
   }, []);
+
+  const requestHelpDial = useCallback(async ({ signal } = {}) => {
+    if (signal?.aborted) throw new Error('The help-dial request was cancelled.');
+    const [location, medicalAttachment] = await Promise.all([
+      loadLastKnownLocation().catch(() => null),
+      loadEmergencyMedicalAttachment(user?.id).catch(() => null)
+    ]);
+    if (signal?.aborted) throw new Error('The help-dial request was cancelled.');
+    return triggerSOS(contacts, {
+      accessToken,
+      accountId: user?.id,
+      location,
+      medicalAttachment
+    });
+  }, [accessToken, contacts, user?.id]);
 
   const appendMessage = useCallback((role, text, options = {}) => {
     if (!text?.trim()) return null;
@@ -197,6 +217,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       onToolCall: (toolCall, { signal }) => executeHumeTool(toolCall, {
         accessToken,
         signal,
+        requestHelpDial,
         requestDeviceAction: service === humeEVIService && config.humeWSProxyURL
           ? (request, options) => humeEVIService.requestDeviceAction(request, options)
           : undefined
@@ -208,7 +229,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
         if (service !== offlineEVIService) setFallbackAvailable(true);
       }
     });
-  }, [accessToken, appendMessage, consumeSuppressedEcho, flushPendingMessages, presentError, selectedVoice.displayName, selectedVoice.id]);
+  }, [accessToken, appendMessage, consumeSuppressedEcho, flushPendingMessages, presentError, requestHelpDial, selectedVoice.displayName, selectedVoice.id]);
 
   useEffect(() => {
     bindServiceHandlers(serviceRef.current);
@@ -256,20 +277,25 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     bindServiceHandlers(service);
     setStatus(service.getState());
     if (service === offlineEVIService) {
-      await service.connect();
+      await service.connect({ locale, personaId: selectedVoice.id });
       return;
     }
     const session = await loadConversationSession(sessionIdRef.current);
     await service.connect({
       accessToken,
       configId: config.humeConfigId,
-      voiceId: voiceOverride(selectedVoice),
+      // Provider voice UUIDs stay server-side when the authenticated gateway
+      // is in use. Direct development connections may still use the single
+      // explicitly configured branded UUID.
+      voiceId: config.humeWSProxyURL ? undefined : voiceOverride(selectedVoice),
+      personaId: selectedVoice.id,
+      locale,
       customSessionId: sessionIdRef.current,
       resumedChatGroupId: session?.chatGroupId,
       systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Be concise, emotionally attuned, honest about actions, and practical.`,
       devices: [...wearableEntities, ...robotEntities]
     });
-  }, [accessToken, bindServiceHandlers, robotEntities, selectedVoice.displayName, selectedVoice.humeVoiceID, wearableEntities]);
+  }, [accessToken, bindServiceHandlers, locale, robotEntities, selectedVoice.displayName, selectedVoice.id, wearableEntities]);
 
   const start = useCallback(async () => {
     if (startInFlightRef.current) return false;

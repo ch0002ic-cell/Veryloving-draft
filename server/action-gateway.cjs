@@ -7,11 +7,12 @@ const ACTIONS = Object.freeze({
   deploy_barrier: new Set(['wearable']),
   emit_alarm: new Set(['wearable']),
   trigger_sos: new Set(['wearable']),
+  stop: new Set(['wearable']),
   check_medication: new Set(['home_robot']),
   medication_reminder: new Set(['home_robot']),
   cognitive_engagement: new Set(['home_robot'])
 });
-const WEARABLE_ACTION_NAMES = Object.freeze(['deploy_barrier', 'emit_alarm', 'trigger_sos']);
+const WEARABLE_ACTION_NAMES = Object.freeze(['deploy_barrier', 'emit_alarm', 'trigger_sos', 'stop']);
 
 function boundedIdentifier(value, maxLength = 128) {
   return typeof value === 'string' && /^[A-Za-z0-9._:-]+$/.test(value) && value.length <= maxLength
@@ -40,16 +41,23 @@ function normalizeActionParameters(action, parameters) {
     return medicationId ? { medication_id: medicationId } : {};
   }
   if (action === 'medication_reminder') {
-    const allowed = new Set(['medication_id', 'scheduled_at']);
+    const allowed = new Set(['reminder_id', 'medication_id', 'scheduled_at']);
     if (Object.keys(parameters).some((key) => !allowed.has(key))) {
       throw Object.assign(new Error('Medication reminder parameters are invalid'), { statusCode: 400 });
     }
+    const reminderId = boundedIdentifier(parameters.reminder_id, 80);
     const medicationId = boundedIdentifier(parameters.medication_id);
     const scheduledAt = Number(parameters.scheduled_at);
-    if (!medicationId || !Number.isSafeInteger(scheduledAt) || scheduledAt <= 0) {
+    if (
+      !reminderId
+      || !/^[A-Za-z0-9_-]{16,80}$/.test(reminderId)
+      || !medicationId
+      || !Number.isSafeInteger(scheduledAt)
+      || scheduledAt <= 0
+    ) {
       throw Object.assign(new Error('Medication reminder parameters are invalid'), { statusCode: 400 });
     }
-    return { medication_id: medicationId, scheduled_at: scheduledAt };
+    return { reminder_id: reminderId, medication_id: medicationId, scheduled_at: scheduledAt };
   }
   if (action === 'cognitive_engagement') {
     if (Object.keys(parameters).some((key) => key !== 'activity') || !['conversation', 'memory_game', 'music'].includes(parameters.activity)) {
@@ -165,18 +173,18 @@ const ROBOT_FAILURE_MESSAGE = 'Robot command failed. Please check your robot\'s 
 const DEFAULT_OUTBOX_RETENTION_SECONDS = 7 * 24 * 60 * 60;
 const ACTION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-function createDynamoActionOutboxRepository({ tableName, region, client: injectedClient, retentionSeconds = DEFAULT_OUTBOX_RETENTION_SECONDS } = {}) {
+function createDynamoActionOutboxRepository({ tableName, region, client: injectedClient, userIndexName, retentionSeconds = DEFAULT_OUTBOX_RETENTION_SECONDS } = {}) {
   if (!tableName) throw new Error('Action outbox table is required');
   let client = injectedClient;
   let commands;
   if (!client) {
     const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-    const { DynamoDBDocumentClient, PutCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+    const { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
     client = DynamoDBDocumentClient.from(new DynamoDBClient({ region }), { marshallOptions: { removeUndefinedValues: true } });
-    commands = { PutCommand, ScanCommand, UpdateCommand };
+    commands = { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
   } else {
-    const { PutCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
-    commands = { PutCommand, ScanCommand, UpdateCommand };
+    const { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+    commands = { BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand };
   }
 
   const key = (actionId) => ({ PK: `ACTION#${actionId}`, SK: 'OUTBOX' });
@@ -219,6 +227,34 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
     }
   }
 
+  async function scanForUser(userId, projectionExpression, expressionAttributeNames) {
+    const records = [];
+    let exclusiveStartKey;
+    do {
+      const result = userIndexName
+        ? await client.send(new commands.QueryCommand({
+            TableName: tableName,
+            IndexName: userIndexName,
+            KeyConditionExpression: 'user_index_pk = :userId',
+            ExpressionAttributeValues: { ':userId': `USER#${userId}` },
+            ProjectionExpression: projectionExpression,
+            ...(expressionAttributeNames ? { ExpressionAttributeNames: expressionAttributeNames } : {}),
+            ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
+          }))
+        : await client.send(new commands.ScanCommand({
+            TableName: tableName,
+            FilterExpression: '#entity = :entity AND user_id = :userId',
+            ExpressionAttributeNames: { '#entity': 'entity', ...(expressionAttributeNames || {}) },
+            ExpressionAttributeValues: { ':entity': 'device-action-outbox', ':userId': userId },
+            ProjectionExpression: projectionExpression,
+            ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
+          }));
+      records.push(...(result.Items || []));
+      exclusiveStartKey = result.LastEvaluatedKey;
+    } while (exclusiveStartKey);
+    return records;
+  }
+
   return {
     async enqueue(record) {
       if (!ACTION_ID_PATTERN.test(record?.action_id || '')) throw new Error('Outbox action id is invalid');
@@ -233,6 +269,8 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
             created_at: createdAt,
             updated_at: createdAt,
             expiresAt: Math.floor(createdAt / 1000) + retentionSeconds,
+            user_index_pk: `USER#${record.user_id}`,
+            user_index_sk: `ACTION#${String(createdAt).padStart(16, '0')}#${record.action_id}`,
             ...record
           },
           ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
@@ -287,6 +325,25 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
         exclusiveStartKey = records.length < limit ? result.LastEvaluatedKey : undefined;
       } while (exclusiveStartKey);
       return records;
+    },
+    async exportUserData(userId) {
+      return scanForUser(
+        userId,
+        'action_id, device_id, device_type, #action, #state, created_at, updated_at, acknowledged_at, error_code',
+        { '#action': 'action', '#state': 'state' }
+      );
+    },
+    async deleteUserData(userId) {
+      const keys = await scanForUser(userId, 'PK, SK');
+      for (let offset = 0; offset < keys.length; offset += 25) {
+        let pending = keys.slice(offset, offset + 25).map(({ PK, SK }) => ({ DeleteRequest: { Key: { PK, SK } } }));
+        for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
+          const result = await client.send(new commands.BatchWriteCommand({ RequestItems: { [tableName]: pending } }));
+          pending = result.UnprocessedItems?.[tableName] || [];
+        }
+        if (pending.length) throw new Error('Device actions could not be fully deleted');
+      }
+      return { deletedItems: keys.length };
     }
   };
 }
@@ -311,6 +368,7 @@ class ActionGateway {
     notifyUser,
     authorizeDevice,
     resolveManufacturerDeviceId,
+    requireBoundRobotResolver = false,
     getDeviceStatus,
     outboxRepository,
     setTimeoutImpl = setTimeout,
@@ -335,6 +393,7 @@ class ActionGateway {
     this.notifyUser = notifyUser;
     this.authorizeDevice = authorizeDevice;
     this.resolveManufacturerDeviceId = resolveManufacturerDeviceId;
+    this.requireBoundRobotResolver = requireBoundRobotResolver;
     this.getDeviceStatus = getDeviceStatus;
     this.outboxRepository = outboxRepository;
     this.setTimeoutImpl = setTimeoutImpl;
@@ -638,6 +697,9 @@ class ActionGateway {
           throw Object.assign(new Error('Requested device is not bound to this account'), { statusCode: 403 });
         }
       } else {
+        if (this.requireBoundRobotResolver) {
+          throw Object.assign(new Error('Robot ownership resolver is not configured'), { statusCode: 503 });
+        }
         if (this.authorizeDevice && !await this.authorizeDevice(userId, action.device_id)) {
           throw Object.assign(new Error('Requested device is not bound to this account'), { statusCode: 403 });
         }

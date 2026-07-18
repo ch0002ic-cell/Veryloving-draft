@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage as encryptedStorage } from './storage';
 
 const STORAGE_KEY = 'veryloving.deviceActionReplay.v1';
 const MAX_IDS = 200;
@@ -10,7 +10,12 @@ async function loadEntries(storage, now) {
     : [];
 }
 
-export function createDeviceActionReplayStore({ storage = AsyncStorage, now = Date.now } = {}) {
+const defaultStorage = {
+  getItem: (key) => encryptedStorage.getRaw(key),
+  setItem: (key, value) => encryptedStorage.setRaw(key, value)
+};
+
+export function createDeviceActionReplayStore({ storage = defaultStorage, now = Date.now } = {}) {
   let mutation = Promise.resolve();
   return {
     async has(id) {

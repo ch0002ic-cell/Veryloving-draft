@@ -14,6 +14,7 @@ Module._load = function loadAuthClientDependency(request, parent, isMain) {
 const {
   confirmPhoneVerification,
   refreshApplicationSession,
+  revokeApplicationSession,
   requestPhoneVerification
 } = require('../src/services/auth-session');
 Module._load = originalLoad;
@@ -51,6 +52,21 @@ test('mobile auth refresh rotates both secure session tokens', async () => {
   assert.deepEqual(JSON.parse(request.options.body), { refreshToken: 'old-refresh-token' });
   assert.equal(result.accessToken.split('.').length, 3);
   assert.equal(result.refreshToken.split('.').length, 3);
+});
+
+test('mobile logout sends only the access token in an authenticated revocation request', async () => {
+  let request;
+  const revoked = await revokeApplicationSession('signed-access-token', {
+    fetchImpl: async (url, options) => {
+      request = { url, options };
+      return { ok: true, status: 204 };
+    }
+  });
+  assert.equal(revoked, true);
+  assert.equal(request.url, 'https://api.example.test/v1/auth/logout');
+  assert.equal(request.options.method, 'POST');
+  assert.equal(request.options.headers.Authorization, 'Bearer signed-access-token');
+  assert.equal(request.options.body, undefined);
 });
 
 test('mobile phone auth starts and confirms a backend verification without URL PII', async () => {

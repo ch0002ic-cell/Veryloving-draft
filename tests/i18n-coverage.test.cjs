@@ -8,6 +8,7 @@ const { test } = require('node:test');
 const languageCatalog = require('../src/i18n/languages');
 const english = require('../src/i18n/locales/en.json');
 const translationReview = require('../src/i18n/translation-review.json');
+const { VOICE_LOCALES } = require('../server/voice-locales.cjs');
 
 const localeDirectory = path.resolve('src/i18n/locales');
 const assignedLanguages = languageCatalog.filter((language) => language.code !== 'system');
@@ -122,9 +123,9 @@ test('reviewed safety catalogs do not silently reuse English source copy', () =>
   }
 });
 
-test('every selectable catalog exactly covers all 353 English keys with non-empty strings', () => {
+test('every selectable catalog exactly covers all 410 English keys with non-empty strings', () => {
   assert.equal(availableLanguages.length, 155);
-  assert.equal(referenceKeys.length, 353);
+  assert.equal(referenceKeys.length, 410);
   for (const language of availableLanguages) {
     const translated = flattenCatalog(language.messages);
     let englishIdenticalValues = 0;
@@ -209,6 +210,10 @@ test('catalog files and selectable language metadata stay in sync', () => {
     assignedLanguages.filter((language) => !language.messages).map((language) => language.code).sort(),
     ['ae', 'an', 'bi', 'cr', 'cu', 'ho', 'hz', 'ia', 'ie', 'ii', 'ik', 'io', 'ki', 'kj', 'kw', 'lu', 'na', 'nd', 'ng', 'nn', 'nv', 'oj', 'pi', 'rm', 'sc', 'vo', 'wa', 'za'].sort()
   );
+});
+
+test('standalone voice gateway locale allowlist mirrors every shipped catalog', () => {
+  assert.deepEqual([...VOICE_LOCALES].sort(), availableLanguages.map((language) => language.code).sort());
 });
 
 test('machine-generated catalogs are explicitly marked for native-speaker review', () => {

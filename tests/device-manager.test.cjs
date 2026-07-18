@@ -3,12 +3,23 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
+const Module = require('node:module');
 const path = require('node:path');
 const { BaseDevice, DEVICE_TYPES } = require('../src/services/device-manager/BaseDevice');
 const { DeviceRegistry } = require('../src/services/device-manager/DeviceRegistry');
 const { HomeRobotDevice } = require('../src/services/device-manager/HomeRobotDevice');
 const { normalizeDeviceEntity, persistDeviceEntities } = require('../src/services/device-entity-store');
 const { enqueueDeviceCommand } = require('../src/services/device-command-queue');
+
+const originalModuleLoad = Module._load;
+Module._load = function loadWearableWithoutNativeBLE(request, parent, isMain) {
+  if (request === '../ble' && parent?.filename?.endsWith('/device-manager/WearableDevice.js')) {
+    return { bleService: {} };
+  }
+  return originalModuleLoad.call(this, request, parent, isMain);
+};
+const { WearableDevice } = require('../src/services/device-manager/WearableDevice');
+Module._load = originalModuleLoad;
 
 class TestDevice extends BaseDevice {
   async connect() { return this.setStatus({ online: true }); }
@@ -35,6 +46,20 @@ test('DeviceRegistry filters devices by type and online status', async () => {
   registry.register(new TestDevice({ deviceId: 'r1', deviceType: DEVICE_TYPES.homeRobot }));
   await wearable.connect();
   assert.deepEqual(registry.list({ deviceType: 'wearable', online: true }), [wearable]);
+});
+
+test('DeviceRegistry forwards typed telemetry with its bound device identity', () => {
+  const registry = new DeviceRegistry();
+  const device = registry.register(new TestDevice({ deviceId: 'w-telemetry', deviceType: DEVICE_TYPES.wearable }));
+  const events = [];
+  const unsubscribe = registry.subscribeTelemetry((event) => events.push(event));
+  device.emitTelemetry({ type: 'event', value: 'firmware-envelope' });
+  unsubscribe();
+  assert.deepEqual(events, [{
+    deviceId: 'w-telemetry',
+    deviceType: 'wearable',
+    telemetry: { type: 'event', value: 'firmware-envelope' }
+  }]);
 });
 
 test('HomeRobotDevice serializes commands through the backend relay', async () => {
@@ -93,6 +118,54 @@ test('per-device queues isolate a stalled BLE wearable from robot HTTP delivery'
   assert.equal(robotResult.accepted, true);
   releaseWearable();
   await stalled;
+});
+
+test('per-device queues prioritize safety work and STOP bypasses a stalled write', async () => {
+  const order = [];
+  let releaseActive;
+  const device = new TestDevice({ deviceId: 'priority-1', deviceType: DEVICE_TYPES.wearable });
+  const active = device.enqueueCommand(() => new Promise((resolve) => {
+    order.push('active');
+    releaseActive = resolve;
+  }));
+  while (!releaseActive) await Promise.resolve();
+  const background = device.enqueueCommand(async () => order.push('background'), { priority: 'background' });
+  const standard = device.enqueueCommand(async () => order.push('standard'));
+  const critical = device.enqueueCommand(async () => order.push('critical'), { priority: 'critical' });
+  releaseActive();
+  await Promise.all([active, background, standard, critical]);
+  assert.deepEqual(order, ['active', 'critical', 'standard', 'background']);
+
+  let releaseWrite;
+  const writes = [];
+  const running = device.enqueueCommand(() => new Promise((resolve) => {
+    writes.push('RUN');
+    releaseWrite = resolve;
+  }), { priority: 'background' });
+  while (!releaseWrite) await Promise.resolve();
+  await device.enqueueCommand(async () => writes.push('HALT'), { priority: 'critical', bypass: true });
+  assert.deepEqual(writes, ['RUN', 'HALT']);
+  releaseWrite();
+  await running;
+
+  let releaseNativeWrite;
+  const nativeWrites = [];
+  const wearable = new WearableDevice({
+    deviceId: 'real-stop-1',
+    bleClient: {
+      writeCommand(_id, payload) {
+        nativeWrites.push(payload);
+        if (payload === 'RUN') return new Promise((resolve) => { releaseNativeWrite = resolve; });
+        return Promise.resolve();
+      }
+    }
+  });
+  const nativeRunning = wearable.sendCommand({ payload: 'RUN', priority: 'background' });
+  while (!releaseNativeWrite) await Promise.resolve();
+  await wearable.sendCommand({ payload: 'HALT', action: 'stop' });
+  assert.deepEqual(nativeWrites, ['RUN', 'HALT']);
+  releaseNativeWrite();
+  await nativeRunning;
 });
 
 test('robot network failure marks it offline and retains its durable command', async () => {
@@ -226,6 +299,7 @@ test('successful telemetry persists robot location without cancelling a failed c
       async load() { return [{ id: 'pending-1', command: { action: 'check_medication', parameters: {} } }]; },
       async acknowledge() { throw new Error('failed command must not be acknowledged'); }
     },
+    now: () => 1234,
     setTimeoutImpl(callback) { retry = callback; return { unref() {} }; },
     clearTimeoutImpl() {},
     fetchImpl: async (url) => {
@@ -244,6 +318,91 @@ test('successful telemetry persists robot location without cancelling a failed c
   assert.deepEqual(status.location, { longitude: 103.8, latitude: 1.3, capturedAt: 1234 });
   assert.equal(status.online, true);
   assert.equal(typeof retry, 'function');
+  robot.dispose();
+});
+
+test('home robot polls telemetry, validates navigation paths, and cleans up the lifecycle timer', async () => {
+  let poll;
+  let cleared = false;
+  let telemetryReads = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-path',
+    gatewayURL: 'https://api.example.test',
+    telemetryIntervalMs: 5000,
+    now: () => 50_000,
+    setIntervalImpl(callback, delay) { assert.equal(delay, 5000); poll = callback; return 'poll-1'; },
+    clearIntervalImpl(timer) { assert.equal(timer, 'poll-1'); cleared = true; },
+    fetchImpl: async (url) => {
+      if (url.endsWith('/health')) return { ok: true, status: 200, text: async () => JSON.stringify({ status: 'ok' }) };
+      telemetryReads += 1;
+      return {
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({
+          online: true,
+          reported_at: 50_000,
+          indoor_position: { room_id: 'living-room', floor_id: 'floor-1', map_id: 'home-map', x_m: 3.5, y_m: 4.25, confidence: 0.96 },
+          navigation_path: [[103.8, 1.3], { longitude: 103.81, latitude: 1.31 }, [999, 999]]
+        })
+      };
+    }
+  });
+  const status = await robot.connect();
+  assert.deepEqual(status.navigationPath, [[103.8, 1.3], [103.81, 1.31]]);
+  assert.deepEqual(status.indoorPosition, {
+    roomId: 'living-room', floorId: 'floor-1', mapId: 'home-map', xMeters: 3.5, yMeters: 4.25, confidence: 0.96
+  });
+  assert.equal(status.lastSeenAt, 50_000);
+  assert.equal(typeof poll, 'function');
+  await poll();
+  assert.equal(telemetryReads, 2);
+  robot.dispose();
+  assert.equal(cleared, true);
+
+  const mapSource = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/map.js'), 'utf8');
+  assert.match(mapSource, /id="home-robot-navigation-paths"/);
+  assert.match(mapSource, /geometry:\s*\{ type: 'LineString', coordinates \}/);
+  assert.match(mapSource, /robotPathSourceRef\.current\?\.setNativeProps/);
+});
+
+test('home robot telemetry is single-flight, rejects older samples, and suspends polling offline', async () => {
+  let resolveFirst;
+  let requests = 0;
+  let intervalCallback;
+  let intervalCleared = false;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-ordering',
+    gatewayURL: 'https://api.example.test',
+    now: () => 20_000,
+    setIntervalImpl(callback) { intervalCallback = callback; return 'timer'; },
+    clearIntervalImpl() { intervalCleared = true; },
+    fetchImpl: async () => {
+      requests += 1;
+      if (requests === 1) return new Promise((resolve) => { resolveFirst = resolve; });
+      return { ok: true, status: 200, text: async () => JSON.stringify({ online: true, reported_at: 19_000 }) };
+    }
+  });
+  const first = robot.refreshTelemetry();
+  const coalesced = robot.refreshTelemetry();
+  while (!resolveFirst) await Promise.resolve();
+  assert.equal(requests, 1);
+  resolveFirst({ ok: true, status: 200, text: async () => JSON.stringify({ online: true, reported_at: 20_000, navigation_path: [[1, 1], [2, 2]] }) });
+  await Promise.all([first, coalesced]);
+  const ignored = await robot.refreshTelemetry();
+  assert.equal(ignored.ignored, true);
+  assert.equal(robot.getStatus().lastSeenAt, 20_000);
+  assert.deepEqual(robot.getStatus().navigationPath, [[1, 1], [2, 2]]);
+
+  robot.startTelemetryPolling();
+  assert.equal(typeof intervalCallback, 'function');
+  const Network = {
+    addNetworkStateListener(callback) { callback({ isConnected: false, isInternetReachable: false }); return { remove() {} }; },
+    async getNetworkStateAsync() { return null; }
+  };
+  robot.loadNetwork = async () => Network;
+  await robot.startNetworkMonitoring();
+  assert.equal(intervalCleared, true);
+  assert.equal(robot.getStatus().online, false);
   robot.dispose();
 });
 
@@ -281,10 +440,21 @@ test('robot relay failures schedule bounded recovery even without another networ
   robot.dispose();
 });
 
-test('AppContext keeps restored wearable location, removes stale wearables, and starts new robot monitoring', () => {
+test('AppContext keeps restored wearable location, preserves multiple wearables, and starts new robot monitoring', () => {
   const source = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
   assert.match(source, /location:\s*device\.location\s*\?\?\s*restoredWearable\?\.location\s*\?\?\s*null/);
-  assert.match(source, /deviceRegistry\.list\(\{ deviceType: 'wearable' \}\)[\s\S]*deviceRegistry\.unregister\(registered\.deviceId\)/);
+  assert.match(source, /wearableEntitiesRef\.current[\s\S]*\.filter\(\(entry\) => entry\.deviceId && entry\.deviceId !== device\.id\)/);
+  assert.match(source, /const primaryWearable = device\.id/);
+  assert.match(source, /setStatus\(\{ \.\.\.primaryWearable/);
+  assert.match(source, /filter\(\(entry\) => entry\.deviceId !== rememberedDevice\.id\)/);
   assert.match(source, /registered\.startNetworkMonitoring\?\.\(\)\.catch/);
   assert.doesNotMatch(source, /\}, \[accessToken, authLoading, user\?\.id\]\);/);
+});
+
+test('My Devices can pair an additional wearable without replacing the primary device', () => {
+  const setup = readFileSync(path.resolve('app/(auth)/jewelry-setup.js'), 'utf8');
+  const management = readFileSync(path.resolve('app/device-management.js'), 'utf8');
+  assert.match(setup, /mode === 'additional'/);
+  assert.match(setup, /setWearableEntities\(\(current\)/);
+  assert.match(management, /jewelry-setup\?mode=additional/);
 });

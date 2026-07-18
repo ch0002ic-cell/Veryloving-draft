@@ -10,49 +10,51 @@ import { useAuth } from '../src/context/AuthContext';
 import { useAppState } from '../src/context/AppContext';
 import { pairHomeRobot } from '../src/services/robot-pairing';
 import { colors, fonts } from '../src/constants/theme';
+import { useI18n } from '../src/context/I18nContext';
 
 export default function RobotPairingScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(null);
-  const { accessToken } = useAuth();
+  const [errorKey, setErrorKey] = useState(null);
+  const { accessToken, user } = useAuth();
   const { setRobotEntities } = useAppState();
+  const { t } = useI18n();
 
   const pair = useCallback(async ({ data }) => {
     if (busy || typeof data !== 'string') return;
     setBusy(true);
-    setError(null);
+    setErrorKey(null);
     try {
-      const paired = await pairHomeRobot(data, accessToken);
+      const paired = await pairHomeRobot(data, accessToken, { accountId: user?.id });
       await setRobotEntities((current) => current.some((robot) => robot.deviceId === paired.robot_id)
         ? current
         : [...current, {
             deviceId: paired.robot_id,
             deviceType: 'home_robot',
-            name: 'Home robot',
+            name: 'VeryLoving Home',
             online: false,
             connectionState: 'disconnected'
           }]);
       router.replace('/device-management');
-    } catch (pairingError) {
-      setError(pairingError?.message || 'Robot pairing failed. Request a new QR code and try again.');
+    } catch {
+      setErrorKey('settings.updateFailedMessage');
       setBusy(false);
     }
-  }, [accessToken, busy, setRobotEntities]);
+  }, [accessToken, busy, setRobotEntities, user?.id]);
 
-  if (!permission) return <Screen><Header title="Pair home robot" showBack /><Text>Checking camera access…</Text></Screen>;
+  if (!permission) return <Screen><Header title={t('settings.deviceManagement')} showBack /><Text>{t('common.loading')}</Text></Screen>;
   if (!permission.granted) {
     return (
       <Screen>
-        <Header title="Pair home robot" showBack />
-        <Text style={styles.copy}>Camera access is required to scan the manufacturer’s one-time pairing QR code.</Text>
-        <Button title="Allow camera access" onPress={requestPermission} />
+        <Header title={t('settings.deviceManagement')} showBack />
+        <Text style={styles.copy}>{t('permissions.cameraRationaleMessage')}</Text>
+        <Button title={t('common.continue')} onPress={requestPermission} />
       </Screen>
     );
   }
   return (
     <Screen>
-      <Header title="Pair home robot" subtitle="Scan the one-time QR code shown on your robot" showBack />
+      <Header title={t('settings.deviceManagement')} subtitle={t('jewelry.scan')} showBack />
       <View style={styles.cameraFrame}>
         <CameraView
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
@@ -60,8 +62,8 @@ export default function RobotPairingScreen() {
           style={StyleSheet.absoluteFill}
         />
       </View>
-      <FeedbackBanner message={error} />
-      {error ? <Button title="Scan again" onPress={() => { setError(null); setBusy(false); }} /> : null}
+      <FeedbackBanner message={errorKey ? t(errorKey) : null} />
+      {errorKey ? <Button title={t('common.retry')} onPress={() => { setErrorKey(null); setBusy(false); }} /> : null}
     </Screen>
   );
 }

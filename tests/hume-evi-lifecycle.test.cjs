@@ -210,6 +210,38 @@ test('microphone PCM frames become bounded Hume audio_input messages only while 
   assert.equal(fakeAudioService.callback, null);
 });
 
+test('barge-in cancels queued playback and drops stale audio until the next assistant turn', async () => {
+  const playback = [];
+  let cancelCalls = 0;
+  fakeAudioService.playBase64Audio = async (data) => { playback.push(data); };
+  fakeAudioService.cancelAndClearQueue = async () => { cancelCalls += 1; };
+  const service = readyService();
+
+  await service.handleMessage({ data: JSON.stringify({
+    type: 'assistant_message',
+    message: { content: 'First answer' }
+  }) }, service.socket);
+  await service.handleMessage({ data: JSON.stringify({ type: 'audio_output', data: 'first-audio' }) }, service.socket);
+  await service.handleMessage({ data: JSON.stringify({ type: 'user_interruption' }) }, service.socket);
+  await service.handleMessage({ data: JSON.stringify({ type: 'audio_output', data: 'stale-audio' }) }, service.socket);
+
+  assert.equal(cancelCalls, 1);
+  assert.deepEqual(playback, ['first-audio']);
+
+  await service.handleMessage({ data: JSON.stringify({
+    type: 'assistant_message',
+    message: { content: 'Second answer' }
+  }) }, service.socket);
+  await service.handleMessage({ data: JSON.stringify({ type: 'audio_output', data: 'second-audio' }) }, service.socket);
+  assert.deepEqual(playback, ['first-audio', 'second-audio']);
+
+  await service.handleMessage({ data: JSON.stringify({
+    type: 'user_message',
+    message: { content: 'Stop' }
+  }) }, service.socket);
+  assert.equal(cancelCalls, 2);
+});
+
 test('a text-send race returns false for durable queue fallback and surfaces a safe error', () => {
   const service = readyService();
   const received = [];

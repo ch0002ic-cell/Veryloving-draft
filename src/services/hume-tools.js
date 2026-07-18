@@ -15,8 +15,21 @@ function linkAbortSignal(controller, signal) {
   return () => signal.removeEventListener?.('abort', abort);
 }
 
-export async function executeHumeTool(toolCall, { accessToken, signal, requestDeviceAction } = {}) {
-  if (['deploy_barrier', 'emit_alarm', 'check_medication'].includes(toolCall?.name)) {
+export async function executeHumeTool(toolCall, {
+  accessToken,
+  signal,
+  requestDeviceAction,
+  requestHelpDial
+} = {}) {
+  if (toolCall?.name === 'request_help_dial') {
+    if (typeof requestHelpDial !== 'function') throw new Error('The emergency help flow is unavailable.');
+    const result = await requestHelpDial({ signal });
+    return JSON.stringify({
+      status: result?.status || 'unknown',
+      backend_status: result?.backendStatus || 'disabled'
+    });
+  }
+  if (['deploy_barrier', 'emit_alarm', 'stop', 'check_medication'].includes(toolCall?.name)) {
     let parameters;
     try { parameters = typeof toolCall.parameters === 'string' ? JSON.parse(toolCall.parameters) : toolCall.parameters; } catch { throw new Error('Device action parameters were invalid.'); }
     if (typeof requestDeviceAction === 'function') {

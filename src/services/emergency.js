@@ -48,7 +48,13 @@ async function finalizeAcceptedSOSAttempt(idempotencyKey) {
   }
 }
 
-export async function triggerSOS(contacts = [], { accessToken, accountId, location } = {}) {
+export async function triggerSOS(contacts = [], {
+  accessToken,
+  accountId,
+  location,
+  medicalAttachment,
+  idempotencyKey
+} = {}) {
   const backendEnabled = config.safetyBackendEnabled && Boolean(accessToken);
   const synchronizedContactIds = contacts
     .map((contact) => contact.id)
@@ -68,7 +74,8 @@ export async function triggerSOS(contacts = [], { accessToken, accountId, locati
     pendingAttemptPromise = Promise.resolve()
       .then(() => loadOrCreatePendingSOSAttempt({
         accountId: authenticatedAccountId,
-        contactIds: synchronizedContactIds
+        contactIds: synchronizedContactIds,
+        ...(idempotencyKey ? { createId: () => idempotencyKey } : {})
       }))
       .catch(() => ({ idempotencyKey: createAuthenticationNonce() }));
   }
@@ -85,7 +92,8 @@ export async function triggerSOS(contacts = [], { accessToken, accountId, locati
             accessToken,
             idempotencyKey: pendingAttempt.idempotencyKey,
             contactIds: synchronizedContactIds,
-            location
+            location,
+            medicalAttachment
           });
         }
         : undefined

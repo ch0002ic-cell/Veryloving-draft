@@ -46,7 +46,7 @@ test('wearable commands verify pinned Ed25519 signatures and persist replay IDs'
   const message = signedMessage(envelope, keyPair);
   assert.equal(verifyWearableActionEnvelope(message, { publicKey, now: () => 10_001 }).id, 'action-1');
   await dispatchWearableAction(message, { registry, replayStore, publicKey, now: () => 10_001 });
-  assert.deepEqual(commands, [{ payload: 'QQ==', withResponse: true }]);
+  assert.deepEqual(commands, [{ payload: 'QQ==', action: 'emit_alarm', priority: 'standard', withResponse: true }]);
   await assert.rejects(
     dispatchWearableAction(message, { registry, replayStore, publicKey, now: () => 10_002 }),
     /already used/
@@ -109,4 +109,32 @@ test('concurrent wearable dispatch atomically reserves a signed envelope before 
   assert.equal(results.filter((result) => result.status === 'fulfilled').length, 1);
   assert.equal(results.filter((result) => result.status === 'rejected').length, 1);
   assert.equal(commands, 1);
+});
+
+test('a signed STOP envelope is the only remote path that requests critical queue bypass', async () => {
+  const keyPair = nacl.sign.keyPair();
+  const publicKey = Buffer.from(keyPair.publicKey).toString('base64url');
+  const commands = [];
+  const message = signedMessage({
+    version: 1,
+    id: 'stop-action-1',
+    issued_at: 10_000,
+    action: 'stop',
+    device_type: 'wearable',
+    device_id: 'wearable-1',
+    parameters: { command_payload: 'AA==' }
+  }, keyPair);
+  await dispatchWearableAction(message, {
+    publicKey,
+    now: () => 10_001,
+    replayStore: { async reserve() { return true; }, async release() {} },
+    registry: {
+      get: () => ({
+        deviceType: 'wearable',
+        getStatus: () => ({ online: true }),
+        async sendCommand(command) { commands.push(command); return { accepted: true }; }
+      })
+    }
+  });
+  assert.deepEqual(commands, [{ payload: 'AA==', action: 'stop', priority: 'critical', withResponse: true }]);
 });

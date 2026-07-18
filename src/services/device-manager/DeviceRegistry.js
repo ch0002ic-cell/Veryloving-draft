@@ -6,6 +6,7 @@ export class DeviceRegistry {
     this.devices = new Map();
     this.listeners = new Set();
     this.deviceSubscriptions = new Map();
+    this.telemetryListeners = new Set();
     this.rehydrationGeneration = 0;
   }
 
@@ -27,9 +28,32 @@ export class DeviceRegistry {
     return () => this.listeners.delete(listener);
   }
 
+  subscribeTelemetry(listener) {
+    if (typeof listener !== 'function') throw new TypeError('Telemetry listener is required');
+    this.telemetryListeners.add(listener);
+    return () => this.telemetryListeners.delete(listener);
+  }
+
   attach(device) {
     this.deviceSubscriptions.get(device.deviceId)?.();
-    this.deviceSubscriptions.set(device.deviceId, device.onStatusChange(() => this.emitChange()));
+    const removeStatus = device.onStatusChange(() => this.emitChange());
+    const removeTelemetry = device.onTelemetry((telemetry) => {
+      if (!telemetry || typeof telemetry !== 'object') return;
+      for (const listener of this.telemetryListeners) {
+        try { listener({ deviceId: device.deviceId, deviceType: device.deviceType, telemetry }); } catch {}
+      }
+      if (telemetry.type === 'battery' && Number.isFinite(telemetry.battery)) {
+        device.setStatus({ battery: telemetry.battery, lastTelemetryAt: Date.now() });
+      } else if (telemetry.type === 'connection') {
+        device.setStatus({ online: telemetry.online === true, connectionState: telemetry.online === true ? 'connected' : 'disconnected', lastTelemetryAt: Date.now() });
+      } else if (telemetry.type === 'status' || telemetry.type === 'event') {
+        device.setStatus({ [`${telemetry.type}Value`]: telemetry.value, lastTelemetryAt: Date.now() });
+      }
+    });
+    this.deviceSubscriptions.set(device.deviceId, () => {
+      removeStatus();
+      removeTelemetry();
+    });
   }
 
   register(device) {
@@ -121,6 +145,9 @@ export class DeviceRegistry {
     this.replaceDevices(nextDevices);
     for (const device of this.devices.values()) {
       if (device.deviceType === 'home_robot') device.startNetworkMonitoring?.().catch(() => {});
+      if (device.deviceType === 'wearable' && device.getStatus().autoReconnect) {
+        device.reconnect?.().catch(() => device.setStatus({ online: false, connectionState: 'disconnected' }));
+      }
     }
     return this.list();
   }

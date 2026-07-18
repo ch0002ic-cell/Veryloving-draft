@@ -179,12 +179,12 @@ export default function Settings() {
 
       <SettingsSection
         icon="hardware-chip-outline"
-        title="My Devices"
-        subtitle="Wearables and home robots paired to your account"
+        title={t('settings.deviceManagement')}
+        subtitle={t('device.subtitle')}
       >
-        <SettingLink icon="watch-outline" title="Manage paired devices" onPress={() => router.push('/device-management')} />
+        <SettingLink icon="watch-outline" title={t('settings.deviceManagement')} onPress={() => router.push('/device-management')} />
         <View style={styles.divider} />
-        <SettingLink icon="qr-code-outline" title="Pair a home robot" onPress={() => router.push('/robot-pairing')} />
+        <SettingLink icon="qr-code-outline" title={t('common.add')} onPress={() => router.push('/robot-pairing')} />
       </SettingsSection>
 
       <SettingsSection
@@ -193,6 +193,10 @@ export default function Settings() {
         subtitle={t('settings.sections.deviceSafetySubtitle')}
       >
         <SettingLink icon="call-outline" title={t('settings.emergencyContacts')} onPress={() => router.push('/emergency-contacts')} />
+        <View style={styles.divider} />
+        <SettingLink icon="medical-outline" title={t('medicalProfile.title')} subtitle={t('medicalProfile.subtitle')} onPress={() => router.push('/medical-profile')} />
+        <View style={styles.divider} />
+        <SettingLink icon="medkit-outline" title={t('medication.title')} onPress={() => router.push('/medication-reminders')} />
         <View style={styles.divider} />
         <SettingLink icon="hardware-chip-outline" title={t('settings.deviceManagement')} onPress={() => router.push('/device-management')} />
         <View style={styles.divider} />

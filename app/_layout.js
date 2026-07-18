@@ -53,7 +53,7 @@ function LocalizedNavigation() {
             <Stack.Screen
               key={name}
               name={name}
-              options={name === 'safety-call' || name === 'emergency-sos'
+              options={name === 'safety-call' || name === 'excuse-call' || name === 'emergency-sos'
                 ? { animation: 'slide_from_bottom', presentation: 'modal' }
                 : undefined}
             />

@@ -15,8 +15,26 @@ function validatePushToken(value) {
 
 function createDynamoPushRepository({ tableName, region }) {
   const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-  const { DynamoDBDocumentClient, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+  const { BatchWriteCommand, DynamoDBDocumentClient, PutCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
   const client = DynamoDBDocumentClient.from(new DynamoDBClient({ region }), { marshallOptions: { removeUndefinedValues: true } });
+  async function queryRegistrations(userId, projectionExpression, expressionAttributeNames) {
+    const registrations = [];
+    let exclusiveStartKey;
+    do {
+      const result = await client.send(new QueryCommand({
+        TableName: tableName,
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+        ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'PUSH#' },
+        ProjectionExpression: projectionExpression,
+        ...(expressionAttributeNames ? { ExpressionAttributeNames: expressionAttributeNames } : {}),
+        ConsistentRead: true,
+        ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
+      }));
+      registrations.push(...(result.Items || []));
+      exclusiveStartKey = result.LastEvaluatedKey;
+    } while (exclusiveStartKey);
+    return registrations;
+  }
   return {
     async register(userId, token) {
       const tokenHash = crypto.createHash('sha256').update(token).digest('base64url');
@@ -26,22 +44,27 @@ function createDynamoPushRepository({ tableName, region }) {
       }));
     },
     async list(userId) {
-      const tokens = [];
-      let exclusiveStartKey;
-      do {
-        const result = await client.send(new QueryCommand({
-          TableName: tableName,
-          KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-          ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'PUSH#' },
-          ProjectionExpression: '#token',
-          ExpressionAttributeNames: { '#token': 'token' },
-          ConsistentRead: true,
-          ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
-        }));
-        tokens.push(...(result.Items || []).map((item) => item.token).filter((token) => EXPO_TOKEN_PATTERN.test(token)));
-        exclusiveStartKey = result.LastEvaluatedKey;
-      } while (exclusiveStartKey);
-      return tokens;
+      const registrations = await queryRegistrations(userId, '#token', { '#token': 'token' });
+      return registrations.map((item) => item.token).filter((token) => EXPO_TOKEN_PATTERN.test(token));
+    },
+    async exportUserData(userId) {
+      const registrations = await queryRegistrations(userId, 'SK, updatedAt');
+      return registrations.map(({ SK, updatedAt }) => ({
+        tokenFingerprint: typeof SK === 'string' ? SK.replace(/^PUSH#/, '') : null,
+        updatedAt: Number.isFinite(updatedAt) ? updatedAt : null
+      }));
+    },
+    async deleteUserData(userId) {
+      const keys = await queryRegistrations(userId, 'PK, SK');
+      for (let offset = 0; offset < keys.length; offset += 25) {
+        let pending = keys.slice(offset, offset + 25).map(({ PK, SK }) => ({ DeleteRequest: { Key: { PK, SK } } }));
+        for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
+          const result = await client.send(new BatchWriteCommand({ RequestItems: { [tableName]: pending } }));
+          pending = result.UnprocessedItems?.[tableName] || [];
+        }
+        if (pending.length) throw new Error('Push registrations could not be fully deleted');
+      }
+      return { deletedItems: keys.length };
     }
   };
 }
@@ -102,10 +125,48 @@ function createExpoPushNotifier({ repository, fetchImpl = globalThis.fetch, endp
   };
 }
 
+function createEmergencyContactPushNotifier({
+  safetyRepository,
+  notifyUser,
+  resolvePhoneAccountId
+} = {}) {
+  if (typeof safetyRepository?.listContacts !== 'function'
+    || typeof notifyUser !== 'function'
+    || typeof resolvePhoneAccountId !== 'function') {
+    throw new Error('Emergency-contact push delivery is not configured');
+  }
+  return async function notifyEmergencyContacts(userId, contactIds, notification) {
+    const requested = new Set(Array.isArray(contactIds) ? contactIds : []);
+    const contacts = (await safetyRepository.listContacts(userId))
+      .filter((contact) => requested.has(contact.id));
+    const resolvedAccounts = await Promise.all(contacts.map(async (contact) => {
+      const accountId = await resolvePhoneAccountId(contact.phone);
+      if (typeof accountId !== 'string') return null;
+      const normalized = accountId.trim();
+      return normalized && normalized.length <= 512 && normalized !== userId ? normalized : null;
+    }));
+    // A person can be present more than once in an imported address book. Fan
+    // out per verified account so one SOS never produces duplicate alerts.
+    const recipients = [...new Set(resolvedAccounts.filter(Boolean))];
+    const results = await Promise.allSettled(recipients.map((recipientId) => notifyUser(recipientId, notification)));
+    const delivered = results.filter((result) => (
+      result.status === 'fulfilled' && Number(result.value?.sent) > 0
+    )).length;
+    return {
+      eligible: recipients.length,
+      delivered,
+      failedRecipients: recipients.length - delivered,
+      sentNotifications: results.reduce((count, result) => count
+        + (result.status === 'fulfilled' ? Math.max(0, Number(result.value?.sent) || 0) : 0), 0)
+    };
+  };
+}
+
 module.exports = {
   EXPO_PUSH_URL,
   MAX_EXPO_BATCH_SIZE,
   createDynamoPushRepository,
+  createEmergencyContactPushNotifier,
   createExpoPushNotifier,
   validatePushToken
 };
