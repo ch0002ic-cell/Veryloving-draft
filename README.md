@@ -53,12 +53,12 @@ Only an observation from the exact recorded build, profile, device, backend vers
 When dated evidence or sections differ, use this precedence:
 
 1. [Launch gates and ownership](#13-launch-gates-and-ownership) for the binding release decision.
-2. [Executive status](#2-executive-status), [UI framework and application state](#5-ui-framework-and-application-state), and [Globalization and language strategy](#6-globalization-and-language-strategy) for the latest 18 July code, UI, and locale status.
+2. [Executive status](#2-executive-status), [UI framework and application state](#5-ui-framework-and-application-state), and [Globalization and language strategy](#6-globalization-and-language-strategy) for the latest consolidated code, UI, and locale status.
 3. [Environment setup and build profiles](#10-environment-setup-and-build-profiles), [Deployment architecture and external services](#11-deployment-architecture-and-external-services), [Voice AI and Hume](#8-voice-ai-and-hume), and [Security, data, and privacy](#7-security-data-and-privacy) for detailed operator contracts.
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 18 July 2026 with 535 core, 23 TypeScript-adapter, and 7 manufacturer-bridge tests. The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse mock-bridge evidence with vendor/hardware evidence.
+Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 20 July 2026 with 542 core, 29 TypeScript-adapter/simulator, and 7 manufacturer-bridge tests (578 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse mock-bridge evidence with vendor/hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -77,8 +77,8 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic core tests | **PASS — 535/535** | Fresh full candidate run on 18 July 2026. |
-| TypeScript robot adapters | **PASS — 23/23** | Fresh coverage: 99.32% statements/lines, 91.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
+| Deterministic core tests | **PASS — 542/542** | Fresh full candidate run on 20 July 2026. |
+| TypeScript robot adapters and manufacturer simulator | **PASS — 29/29** | Fresh coverage: 99.45% statements/lines, 92.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
 | Manufacturer bridge integration | **PASS — 7/7** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
@@ -891,7 +891,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 3. Validate encrypted local-store key accessibility, migration, backup exclusion, rollback, account-switch, process-death, and deletion behavior in signed builds.
 4. Complete production guardian/push delivery acceptance, authenticated receipts, invalid-token cleanup, revocable sharing, and honest operational states.
 5. Obtain the approved VL01 firmware/security contract and complete ownership, decoding, authorized commands, and physical hardware tests.
-6. Run the identical vendor artifact gate in [hardware-partner-research.md](./docs/hardware-partner-research.md), obtain exact Yongyida/Jiangzhi API or HAL packages under acceptable IP/security terms, and complete exact-SKU hardware conformance before enabling either provisional adapter in production.
+6. Use the [hardware-partner decision matrix](./docs/hardware-partner-decision-matrix.md), [manufacturer API requirements](./docs/manufacturer-api-requirements.md), [external-dependencies dashboard](./docs/external-dependencies-dashboard.md), and [integration timeline](./docs/integration-timeline.md) to run the same artifact gate for both vendors. The [ask templates](./docs/ask-templates.md) are ready for the NDA, technical-package, hardware-sample, and credential requests. Do not enable either provisional adapter in production until exact API/HAL packages, acceptable IP/security terms, and exact-SKU hardware evidence close the named external blockers.
 7. Finish isolated staging with production-like Apple/Google/Twilio/Mapbox/Hume/Dynamo/APNs/FCM resources, observability, threat-model approval, and rollback evidence.
 8. Grant the authorized EAS owner access, validate the current production profile, and build the exact reviewed TestFlight SHA.
 9. Run the priority language script, then the full UI, provider, privacy, safety, audio, BLE, accessibility, performance, clean-install, and upgrade matrices.
@@ -900,7 +900,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 
 ## 18. Consolidation map
 
-This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), and [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
+This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), and [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |
@@ -929,7 +929,7 @@ This README is the primary consolidated project and release handoff. Specialist 
 - Security/storage: [`auth-session.js`](./src/services/auth-session.js), [`secure-storage.js`](./src/services/secure-storage.js), [`account-data-boundary.js`](./src/services/account-data-boundary.js), [`privacy.js`](./src/services/privacy.js)
 - Voice: [`hume-evi.js`](./src/services/websocket/hume-evi.js), [`audio.js`](./src/services/audio.js), [`useHumeVoiceCall.js`](./src/hooks/useHumeVoiceCall.js), [`voice-gateway.cjs`](./server/voice-gateway.cjs)
 - Backend: [`clm-server.cjs`](./server/clm-server.cjs), [`auth-session.cjs`](./server/auth-session.cjs), [`safety-api.cjs`](./server/safety-api.cjs), [`server/api/index.js`](./server/api/index.js)
-- Product 2 HAL: [`RobotAdapter.ts`](./server/src/adapters/RobotAdapter.ts), [`robot-adapter-runtime.cjs`](./server/robot-adapter-runtime.cjs), [architecture](./docs/robot-hal-architecture.md), [integration guide](./docs/robot-adapter-integration-guide.md), [manufacturer research](./docs/hardware-partner-research.md), and [bug log](./docs/robot-adapter-bug-log.md)
+- Product 2 HAL: [`RobotAdapter.ts`](./server/src/adapters/RobotAdapter.ts), [`robot-adapter-runtime.cjs`](./server/robot-adapter-runtime.cjs), [architecture](./docs/robot-hal-architecture.md), [integration guide](./docs/robot-adapter-integration-guide.md), [manufacturer research](./docs/hardware-partner-research.md), [decision matrix](./docs/hardware-partner-decision-matrix.md), [API intake requirements](./docs/manufacturer-api-requirements.md), [external-dependency dashboard](./docs/external-dependencies-dashboard.md), [timeline](./docs/integration-timeline.md), [ask templates](./docs/ask-templates.md), and [bug log](./docs/robot-adapter-bug-log.md)
 - BLE: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services/vl01-protocol.js)
 - Native/build: [`app.config.js`](./app.config.js), [`eas.json`](./eas.json), [`plugins/`](./plugins), [`server/Dockerfile`](./server/Dockerfile), [`railway.toml`](./railway.toml)
 
