@@ -355,6 +355,87 @@ describe('ManufacturerMockServer', () => {
     expect(JSON.stringify(logs)).not.toContain(rawRobotId);
   });
 
+  test('accepts authenticated scenario lifecycle updates without exposing raw device IDs', async () => {
+    const logs: ManufacturerMockLogEntry[] = [];
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      log: (entry) => logs.push(entry)
+    });
+    const { baseUrl } = await activeServer.start();
+    const rawWearableId = 'private-wearable-lifecycle-001';
+    const rawRobotId = 'private-robot-lifecycle-001';
+    const body = {
+      scenario_id: 'fall_detection',
+      status: 'started',
+      wearable_device_id: rawWearableId,
+      robot_device_id: rawRobotId
+    };
+
+    const unauthorized = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    expect(unauthorized.status).toBe(401);
+
+    const started = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    expect(started.status).toBe(201);
+    const startedPayload = await json(started);
+    expect(startedPayload).toMatchObject({
+      accepted: true,
+      scenario: {
+        scenarioId: 'fall_detection',
+        status: 'started',
+        synthetic: true,
+        deviceReferences: [
+          expect.stringMatching(/^device_[0-9a-f]{12}$/),
+          expect.stringMatching(/^device_[0-9a-f]{12}$/)
+        ]
+      }
+    });
+    expect(JSON.stringify(startedPayload)).not.toContain(rawWearableId);
+    expect(JSON.stringify(startedPayload)).not.toContain(rawRobotId);
+
+    const completed = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, status: 'completed' })
+    });
+    expect(completed.status).toBe(201);
+
+    const invalid = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, private_note: 'must-not-be-accepted' })
+    });
+    expect(invalid.status).toBe(400);
+    expect(await json(invalid)).toEqual({ error: 'SCENARIO_EXECUTION_INVALID' });
+
+    const dashboard = await fetch(new URL('/api/v1/simulation/dashboard', baseUrl), {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
+    });
+    expect(dashboard.status).toBe(200);
+    const dashboardPayload = await json(dashboard);
+    expect(dashboardPayload.scenarioExecutions).toEqual([
+      expect.objectContaining({ scenarioId: 'fall_detection', status: 'started' }),
+      expect.objectContaining({ scenarioId: 'fall_detection', status: 'completed' })
+    ]);
+    const serializedDashboard = JSON.stringify(dashboardPayload);
+    expect(serializedDashboard).not.toContain(rawWearableId);
+    expect(serializedDashboard).not.toContain(rawRobotId);
+    expect(serializedDashboard).not.toContain('private_note');
+    expect(logs.map(({ route }) => route)).toContain('/api/v1/simulation/scenarios');
+    expect(JSON.stringify(logs)).not.toContain(rawWearableId);
+    expect(JSON.stringify(logs)).not.toContain(rawRobotId);
+  });
+
   test('uses deterministic configured fall frequency and validates event configuration', async () => {
     expect(() => createManufacturerMockServer({ environment: 'test', fallEventRate: 1.1 }))
       .toThrow('fall-event rate is invalid');

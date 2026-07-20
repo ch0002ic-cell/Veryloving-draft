@@ -11,7 +11,7 @@
     "prebuild": "expo prebuild",
     "doctor": "npx expo-doctor",
     "lint": "eslint .",
-    "test": "npm run build:adapters && npm run typecheck:manufacturer-mock && npm run typecheck:ai-native && npm run test:core && npm run test:adapters && npm run test:integration:adapters && npm run test:ai-native",
+    "test": "npm run build:adapters && npm run typecheck:manufacturer-mock && npm run build:ai-native && npm run test:core && npm run test:adapters && npm run test:integration:adapters && npm run test:ai-native",
     "test:core": "node --require @babel/register --test tests/*.test.cjs server/*.test.cjs",
     "test:adapters": "jest --config jest.adapters.config.cjs --runInBand --coverage",
     "test:manufacturer-mock": "jest --config jest.adapters.config.cjs --runInBand --coverage=false --runTestsByPath server/mocks/__tests__/ManufacturerMockServer.test.ts",

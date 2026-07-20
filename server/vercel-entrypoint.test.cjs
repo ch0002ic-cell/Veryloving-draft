@@ -75,8 +75,17 @@ async function invokeVercel({
 test('standalone HTTP listener starts the existing handler without mounting raw WebSocket upgrades', () => {
   assert.match(entrypointSource, /require\(['"]node:http['"]\)/);
   assert.match(entrypointSource, /require\(['"]\.\/clm-server\.cjs['"]\)/);
-  assert.match(entrypointSource, /http\.createServer\(createHandler\(\{ httpOnlyDeployment: true \}\)\)/);
+  assert.match(entrypointSource, /require\(['"]\.\/ai-native-demo\.cjs['"]\)/);
+  assert.match(entrypointSource, /process\.loadEnvFile\(/);
+  // The standalone entrypoint may compose the CLM handler with local-only
+  // middleware (for example, the AI-native demo injector). Keep this guard
+  // focused on the deployment boundary instead of requiring one exact source
+  // expression.
+  assert.match(entrypointSource, /httpOnlyDeployment:\s*true/);
+  assert.match(entrypointSource, /createHandler\(/);
+  assert.match(entrypointSource, /http\.createServer\(/);
   assert.match(entrypointSource, /server\.listen\(/);
+  assert.match(entrypointSource, /\[AI-Native\] System injected/);
   assert.doesNotMatch(entrypointSource, /attachVoiceGateway|createVeryLovingCLMServer|\.on\(['"]upgrade['"]\)/);
 });
 

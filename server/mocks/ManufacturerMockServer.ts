@@ -51,6 +51,9 @@ const COMMAND_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const IDEMPOTENCY_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const CAMERA_SESSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const SCENARIO_PATTERN = /^[a-z][a-z0-9_:-]{0,63}$/;
+const SCENARIO_STATUSES: readonly ManufacturerScenarioStatus[] = Object.freeze([
+  'started', 'completed', 'fallback', 'failed', 'cancelled'
+]);
 const ACTION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BASE64URL_PATTERN = /^[A-Za-z0-9_-]+$/;
 const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
@@ -767,13 +770,10 @@ export class ManufacturerMockServer {
    * Raw device IDs are one-way hashed before storage and never reach logs.
    */
   recordScenarioExecution(input: RecordScenarioExecutionInput): ManufacturerScenarioExecutionRecord {
-    const statuses: readonly ManufacturerScenarioStatus[] = [
-      'started', 'completed', 'fallback', 'failed', 'cancelled'
-    ];
     if (!input || typeof input !== 'object'
       || typeof input.scenarioId !== 'string'
       || !SCENARIO_PATTERN.test(input.scenarioId)
-      || !statuses.includes(input.status)
+      || !SCENARIO_STATUSES.includes(input.status)
       || (input.wearableDeviceId !== undefined && !IDENTIFIER_PATTERN.test(input.wearableDeviceId))
       || (input.robotDeviceId !== undefined && !IDENTIFIER_PATTERN.test(input.robotDeviceId))) {
       throw new TypeError('Scenario execution record is invalid');
@@ -916,6 +916,17 @@ export class ManufacturerMockServer {
         await this.simulateTransport();
         const event = this.injectSimulationEvent(body, deviceId);
         writeJson(response, 201, { accepted: true, event });
+        return;
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/v1/simulation/scenarios') {
+        route = '/api/v1/simulation/scenarios';
+        this.requireBearer(request, this.accessToken);
+        const body = await this.readJson(request);
+        const input = this.parseScenarioExecutionRequest(body);
+        await this.simulateTransport();
+        const scenario = this.recordScenarioExecution(input);
+        writeJson(response, 201, { accepted: true, scenario });
         return;
       }
 
@@ -1700,6 +1711,34 @@ export class ManufacturerMockServer {
           ? 'warning'
           : 'info',
       occurredAt
+    });
+  }
+
+  private parseScenarioExecutionRequest(body: JsonObject): RecordScenarioExecutionInput {
+    if (!hasOnlyKeys(body, [
+      'scenario_id', 'status', 'wearable_device_id', 'robot_device_id'
+    ])
+      || typeof body.scenario_id !== 'string'
+      || !SCENARIO_PATTERN.test(body.scenario_id)
+      || typeof body.status !== 'string'
+      || !SCENARIO_STATUSES.includes(body.status as ManufacturerScenarioStatus)
+      || (body.wearable_device_id !== undefined
+        && (typeof body.wearable_device_id !== 'string'
+          || !IDENTIFIER_PATTERN.test(body.wearable_device_id)))
+      || (body.robot_device_id !== undefined
+        && (typeof body.robot_device_id !== 'string'
+          || !IDENTIFIER_PATTERN.test(body.robot_device_id)))) {
+      throw new MockRequestError(400, 'SCENARIO_EXECUTION_INVALID');
+    }
+    return Object.freeze({
+      scenarioId: body.scenario_id,
+      status: body.status as ManufacturerScenarioStatus,
+      ...(typeof body.wearable_device_id === 'string'
+        ? { wearableDeviceId: body.wearable_device_id }
+        : {}),
+      ...(typeof body.robot_device_id === 'string'
+        ? { robotDeviceId: body.robot_device_id }
+        : {})
     });
   }
 
