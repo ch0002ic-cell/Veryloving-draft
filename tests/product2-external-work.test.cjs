@@ -116,23 +116,25 @@ test('Product 2 decision and dependency documents are complete and status-explic
   }
 });
 
-test('external dashboard contains exactly 13 blocked dependencies and six completed artifacts', () => {
+test('external dashboard tracks two completed NDAs, 11 blocked dependencies, and six completed artifacts', () => {
   const dashboard = read('docs/external-dependencies-dashboard.md');
   assert.match(dashboard, /\*\*Total External Dependencies:\*\* 13/);
-  assert.match(dashboard, /\*\*PASS \(Completed\):\*\* 0\/13/);
-  assert.match(dashboard, /\*\*BLOCKED — EXTERNAL:\*\* 13\/13/);
-  assert.match(dashboard, /\*\*Next Unblocking Milestone:\*\* Grace signs mutual NDAs with both manufacturers/);
+  assert.match(dashboard, /\*\*✅ PASS \(Completed\):\*\* 2\/13/);
+  assert.match(dashboard, /\*\*BLOCKED — EXTERNAL:\*\* 11\/13/);
+  assert.match(dashboard, /\*\*Next Unblocking Milestone:\*\* Grace sends the .*Technical Package Request/);
 
   const dependencyRows = dashboard.match(/^\| EXT-\d{3} \|.*$/gm) ?? [];
   assert.equal(dependencyRows.length, 13);
   const dependencyIds = dependencyRows.map((row) => parseMarkdownRow(row)[0]);
   assert.deepEqual(dependencyIds, Array.from({ length: 13 }, (_, index) => `EXT-${String(index + 1).padStart(3, '0')}`));
-  for (const row of dependencyRows) {
+  const statuses = dependencyRows.map((row) => {
     const cells = parseMarkdownRow(row);
     assert.equal(cells.length, 8, `dependency has an unexpected column count: ${cells[0]}`);
     assert.ok(cells.every(Boolean), `dependency has an empty field: ${cells[0]}`);
-    assert.equal(cells[5], 'BLOCKED — EXTERNAL');
-  }
+    return cells[5];
+  });
+  assert.deepEqual(statuses.slice(0, 2), ['✅ PASS', '✅ PASS']);
+  assert.ok(statuses.slice(2).every((status) => status === 'BLOCKED — EXTERNAL'));
 
   const detailRows = dashboard.match(/^\| Details for EXT-\d{3} \|.*$/gm) ?? [];
   assert.equal(detailRows.length, 13);
@@ -159,7 +161,7 @@ test('timeline preserves three scenarios while keeping external gates explicit',
   assert.match(timeline, /\| \*\*1\. NDA Signed\*\* \| Day 0 \| Day 7 \| Day 30 \|/);
   assert.match(timeline, /\| \*\*7\. Pilot Launch\*\* \| Day 21 \| Day 42 \| Day 120 \|/);
 
-  const currentPhaseRows = timeline.match(/^\| [1-7]\. .* \| (?:PASS|IN PROGRESS|BLOCKED — EXTERNAL) \|.*$/gm) ?? [];
+  const currentPhaseRows = timeline.match(/^\| [1-7]\. .* \| (?:✅ PASS|PASS|IN PROGRESS|BLOCKED — EXTERNAL) \|.*$/gm) ?? [];
   assert.equal(currentPhaseRows.length, 7);
   assert.ok(currentPhaseRows.some((row) => row.includes('| PASS |')));
   assert.ok(currentPhaseRows.some((row) => row.includes('| BLOCKED — EXTERNAL |')));
