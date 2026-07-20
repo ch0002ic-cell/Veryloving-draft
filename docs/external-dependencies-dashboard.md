@@ -1,18 +1,20 @@
 # Product 2 External Dependencies Dashboard
 
-Last reviewed: 20 July 2026
+Last reviewed: 21 July 2026
 
-Branch scope: `features/dual-product-draft`
+Branch scope: `features/dual-product-draft-2`
 
 ## Quick Status
 
 **Total External Dependencies:** 13
 
-**PASS (Completed):** 0/13
+**✅ PASS (Completed):** 2/13
 
-**BLOCKED — EXTERNAL:** 13/13
+**BLOCKED — EXTERNAL:** 11/13
 
-**Next Unblocking Milestone:** Grace signs mutual NDAs with both manufacturers
+**First Unblocking Milestone:** ✅ PASS — Grace confirms the mutual NDAs with Yongyida and Jiangzhi are signed.
+
+**Next Unblocking Milestone:** Grace sends the [Technical Package Request](./ask-templates.md#2-technical-package-request) to both manufacturers on 21 July 2026.
 
 The 13-row total covers only actions outside this repository. Internal software/document deliverables are tracked separately below and are not included in the denominator.
 
@@ -33,13 +35,13 @@ The 13-row total covers only actions outside this repository. Internal software/
 
 | ID | Category | Item | Owner | Deadline | Status | Dependencies | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| EXT-001 | Legal | Signed mutual NDA — Yongyida | Grace | TBD | BLOCKED — EXTERNAL | Veryloving legal review; Yongyida counterparty | Yongyida is expected to withhold partner-only documents until execution. |
-| EXT-002 | Legal | Signed mutual NDA — Jiangzhi | Grace | TBD | BLOCKED — EXTERNAL | Veryloving legal review; Jiangzhi counterparty | NDA must permit technical, security, source-license, and medical-document review. |
-| EXT-003 | Vendor Docs | Yongyida API/SDK technical package | Yongyida API lead | TBD | BLOCKED — EXTERNAL | EXT-001 | Need versioned API/SDK, auth, commands, telemetry, ACK, error, rate-limit, reset/privacy, SLA, and lifecycle documents. |
-| EXT-004 | Vendor Access | Yongyida sandbox credentials and SDK artifacts | Yongyida platform operations | TBD | BLOCKED — EXTERNAL | EXT-001, EXT-003 | Need isolated tenant, sample device identity, downloadable artifacts, checksums, and support contact. |
-| EXT-005 | Vendor Docs | Jiangzhi source repository access and license | Jiangzhi product/legal leads | TBD | BLOCKED — EXTERNAL | EXT-002 | Need exact repository/revision, build instructions, dependency notices, modification/distribution rights, and support terms. |
-| EXT-006 | Vendor Access | Jiangzhi Android HAL/BSP/OTA engineering package | Jiangzhi BSP/platform lead | TBD | BLOCKED — EXTERNAL | EXT-002, EXT-005 | Need exact SKU/OS/BSP, supported privileged APIs, signing/deployment route, OTA and diagnostics—not production ADB. |
-| EXT-007 | Vendor Docs | Jiangzhi medical sensor protocol and certification package | Jiangzhi medical/regulatory lead | TBD | BLOCKED — EXTERNAL | EXT-002 | Need supported instruments, protocols, schemas, calibration, accuracy, intended use, certificates, and lifecycle. |
+| EXT-001 | Legal | Signed mutual NDA — Yongyida | Grace | Completed | ✅ PASS | None — executed | Grace confirms the mutual NDA is signed. Agreement contents and legal-record locations are intentionally not recorded in source control. |
+| EXT-002 | Legal | Signed mutual NDA — Jiangzhi | Grace | Completed | ✅ PASS | None — executed | Grace confirms the mutual NDA is signed. Agreement contents and legal-record locations are intentionally not recorded in source control. |
+| EXT-003 | Vendor Docs | Yongyida API/SDK technical package | Yongyida API lead | TBD | BLOCKED — EXTERNAL | EXT-001 (PASS) | Send the technical-package request today. Need versioned API/SDK, auth, commands, telemetry, ACK, error, rate-limit, reset/privacy, SLA, and lifecycle documents. |
+| EXT-004 | Vendor Access | Yongyida sandbox credentials and SDK artifacts | Yongyida platform operations | TBD | BLOCKED — EXTERNAL | EXT-001 (PASS), EXT-003 | Need isolated tenant, sample device identity, downloadable artifacts, checksums, and support contact. |
+| EXT-005 | Vendor Docs | Jiangzhi source repository access and license | Jiangzhi product/legal leads | TBD | BLOCKED — EXTERNAL | EXT-002 (PASS) | Send the technical-package request today. Need exact repository/revision, build instructions, dependency notices, modification/distribution rights, and support terms. |
+| EXT-006 | Vendor Access | Jiangzhi Android HAL/BSP/OTA engineering package | Jiangzhi BSP/platform lead | TBD | BLOCKED — EXTERNAL | EXT-002 (PASS), EXT-005 | Need exact SKU/OS/BSP, supported privileged APIs, signing/deployment route, OTA and diagnostics—not production ADB. |
+| EXT-007 | Vendor Docs | Jiangzhi medical sensor protocol and certification package | Jiangzhi medical/regulatory lead | TBD | BLOCKED — EXTERNAL | EXT-002 (PASS) | Include this in today's Jiangzhi technical-package request. Need supported instruments, protocols, schemas, calibration, accuracy, intended use, certificates, and lifecycle. |
 | EXT-008 | Hardware | Physical Y120 engineering unit in Shenzhen | Grace / Shenzhen engineer | TBD | BLOCKED — EXTERNAL | Manufacturer shipment; preferably EXT-003 | One exact unit unblocks initial testing; two are requested for recovery/update and reproducibility work. |
 | EXT-009 | Hardware | Physical Jiangzhi engineering unit in Shenzhen | Grace / Shenzhen engineer | TBD | BLOCKED — EXTERNAL | Manufacturer shipment; preferably EXT-005–EXT-007 | One exact unit unblocks initial testing; two plus scoped medical peripherals are requested for full validation. |
 | EXT-010 | Credentials | Apple Developer production access and APNs setup | SV Lead | TBD | BLOCKED — EXTERNAL | Grace approval; Apple organization access | Need least-privilege team role, production push configuration, and secret-manager injection. |
@@ -51,8 +53,8 @@ The 13-row total covers only actions outside this repository. Internal software/
 
 | ID | What is blocking | Exact unblocking action | Who can unblock | Estimated effort after unblocking | Evidence required before `PASS` |
 | --- | --- | --- | --- | --- | --- |
-| Details for EXT-001 | No executed Yongyida NDA is available to the engineering team. | Grace sends the mutual-NDA request, counsel approves disclosure/IP/security clauses, both authorized entities sign, and the effective copy is stored in the approved legal repository. | Grace, Veryloving counsel, and Yongyida authorized signatory. | 0.5 day engineering intake after execution; legal negotiation excluded. | Effective signed copy and confirmed technical-package delivery contact. |
-| Details for EXT-002 | No executed Jiangzhi NDA is available to the engineering team. | Grace sends the mutual-NDA request; counsel ensures it covers source, third-party code, medical records, and security artifacts; both entities execute it. | Grace, Veryloving counsel, and Jiangzhi authorized signatory. | 0.5 day engineering intake after execution; legal negotiation excluded. | Effective signed copy and confirmed source/medical-package contacts. |
+| Details for EXT-001 | Nothing — Grace confirms the Yongyida NDA is signed. | Completed. Retain the effective copy through the approved legal-record process and use the technical-package request template today. | Completed by Grace, Veryloving counsel, and the Yongyida authorized signatory. | No remaining NDA effort; allow up to 0.5 day for engineering intake when the package arrives. | ✅ PASS recorded from Grace's confirmation on 21 July 2026; keep the agreement and its private record reference outside source control. |
+| Details for EXT-002 | Nothing — Grace confirms the Jiangzhi NDA is signed. | Completed. Retain the effective copy through the approved legal-record process and use the technical-package request template today. | Completed by Grace, Veryloving counsel, and the Jiangzhi authorized signatory. | No remaining NDA effort; allow up to 0.5 day for engineering intake when the package arrives. | ✅ PASS recorded from Grace's confirmation on 21 July 2026; keep the agreement and its private record reference outside source control. |
 | Details for EXT-003 | Public information does not contain a production-callable Yongyida contract. | Yongyida supplies the applicable artifacts in the [manufacturer API checklist](./manufacturer-api-requirements.md), tied to the exact Y120/elder-care SKU and firmware. | Yongyida API/product/security leads; Grace escalates commercially. | 3–7 engineering days for review, mapping, fixtures, and first conformance run. | Versioned documents pass applicable checklist rows; open questions have named owners/dates. |
 | Details for EXT-004 | No authorized endpoint, tenant, credentials, or downloadable SDK exists for Veryloving. | Yongyida provisions a resettable sandbox, sample identities, least-privilege credentials through an approved secret channel, versioned SDK binaries/source as licensed, and an engineering support route. | Yongyida platform operations and developer-support owner. | 2–5 days for configuration and automated sandbox tests. | Successful authentication, command, telemetry, ACK, retry, reset, and revocation exercises. |
 | Details for EXT-005 | Jiangzhi source availability, revision, and legal rights are unconfirmed. | Jiangzhi grants named users read access to the exact repository/release and supplies a signed license covering use, modification, binary distribution, maintenance, third-party obligations, and termination. | Jiangzhi product/legal/IP owners; Grace and Veryloving counsel approve. | 5–10 engineering days for build/review; legal negotiation excluded. | Reproducible build, dependency/license inventory, supported branch, and written rights. |
@@ -67,15 +69,15 @@ The 13-row total covers only actions outside this repository. Internal software/
 
 ## Priority and critical path
 
-1. **P0 — EXT-001 and EXT-002:** send both NDA requests in parallel. These unlock the largest body of evidence.
-2. **P0 — EXT-003 through EXT-007:** request all technical/access packages immediately after signature. Documents, sandboxes, source, and medical evidence should arrive in parallel.
+1. **COMPLETE — EXT-001 and EXT-002:** Grace confirms both mutual NDAs are signed. Do not store the agreements in source control.
+2. **P0 — EXT-003 through EXT-007:** Grace sends the technical-package request to both manufacturers on 21 July 2026. Request documents, sandboxes, source access, and medical evidence in parallel.
 3. **P0 — EXT-008 and EXT-009:** reserve and ship exact hardware while package review begins; do not wait for adapter translation to finish.
 4. **P1 — EXT-010 through EXT-013:** begin account and compliance provisioning early, but keep production secrets out of the mock-development critical path.
 
 The shortest production critical path is:
 
 ```text
-NDA → technical package/access → exact hardware → adapter conformance → physical safety/security/soak validation → pilot approval
+NDA (PASS) → technical package/access → exact hardware → adapter conformance → physical safety/security/soak validation → pilot approval
 ```
 
 ## Status change rule

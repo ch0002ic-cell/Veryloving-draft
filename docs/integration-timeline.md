@@ -1,22 +1,22 @@
 # Product 2 Manufacturer Integration Timeline
 
-Last reviewed: 20 July 2026
+Last reviewed: 21 July 2026
 
-Planning origin: `Day 0` is the date Grace authorizes manufacturer outreach and both NDA requests are sent.
+Planning origin: `Day 0` is the date Grace authorized manufacturer outreach. The NDA phase is now complete; record the date both technical-package requests are sent as the active schedule rebaseline.
 
 ## Current phase status
 
 | Phase | Current status | Evidence or external blocker | Who can unblock | Estimated effort once unblocked |
 | --- | --- | --- | --- | --- |
-| 1. NDA Signed | BLOCKED — EXTERNAL | Neither manufacturer NDA has been executed for this integration. | Grace, Veryloving counsel, and manufacturer signatories. | Engineering intake within 0.5 day of each executed NDA; legal negotiation excluded. |
-| 2. Technical Package Received | BLOCKED — EXTERNAL | No production API/SDK/source/HAL/medical protocol package has been supplied. | Yongyida and Jiangzhi technical/legal owners; Grace escalates. | 3–10 engineering days for initial review, depending on package completeness. |
+| 1. NDA Signed | ✅ PASS | Grace confirms the mutual NDAs with Yongyida and Jiangzhi are signed. Agreement contents are intentionally absent from source control. | Complete. | No remaining NDA effort. |
+| 2. Technical Package Received | BLOCKED — EXTERNAL | No production API/SDK/source/HAL/medical protocol package has been supplied. Grace can send both [technical-package requests](./ask-templates.md#2-technical-package-request) on 21 July 2026. | Grace sends the requests; Yongyida and Jiangzhi technical/legal owners provide access. | 3–10 engineering days for initial review, depending on package completeness. |
 | 3. Adapter Implementation | PASS | Vendor-neutral HAL, provisional Yongyida/Jiangzhi adapters, immutable per-device routing, signed actions, queues, ACK handling, reset, and privacy lifecycles exist. | Not applicable for the completed provisional layer. Real vendor translation still depends on Phase 2. | 3–10 days per vendor to replace provisional mappings after a complete contract arrives. |
 | 4. Mock Testing | PASS | Deterministic adapter and manufacturer-bridge tests exist; the configurable mock exercises the provisional contract without real credentials. | Not applicable for software-mock scope. | Vendor conformance fixtures will require 2–5 days after Phase 2. |
 | 5. Physical Hardware Received | BLOCKED — EXTERNAL | Exact-SKU engineering units, accessories, and frozen firmware are not in Shenzhen. | Grace/procurement, manufacturer logistics, and Shenzhen engineer. | About 1 day intake/setup after delivery. |
 | 6. Real-World Testing | BLOCKED — EXTERNAL | Requires complete vendor contracts and exact physical units; no real manufacturer latency, safety, sensor, reset, OTA, or soak evidence exists. | Manufacturer engineering leads, Shenzhen engineer, and Veryloving safety/security owners. | 2–6 weeks; medical validation may take longer. |
 | 7. Pilot Launch | BLOCKED — EXTERNAL | Requires Phases 1–6, production credentials, privacy/security approval, site approval, support runbooks, and release sign-off. | Grace, SV Lead, vendor, pilot-site owner, and Veryloving release/safety/privacy owners. | 1–3 weeks for controlled pilot preparation after every gate passes. |
 
-`PASS` for Phases 3 and 4 is limited to the vendor-independent/provisional software scope. It does not mean a real Yongyida or Jiangzhi protocol has been implemented or validated.
+`✅ PASS` for Phase 1 reflects Grace's confirmation that both NDAs are signed. `PASS` for Phases 3 and 4 is limited to the vendor-independent/provisional software scope; it does not mean a real Yongyida or Jiangzhi protocol has been implemented or validated.
 
 ## Requested scenario targets
 
@@ -81,7 +81,7 @@ The realistic and worst-case columns mix absolute milestones with work-duration 
 ## Critical path and parallel work
 
 ```text
-NDA
+NDA (PASS)
   → versioned technical package + access rights
   → real adapter translation and vendor conformance
   → exact hardware validation
@@ -101,7 +101,7 @@ The following work can run in parallel without vendor credentials:
 
 | Gate | Acceptance condition | Current result |
 | --- | --- | --- |
-| Legal disclosure gate | Executed NDA for the manufacturer and named disclosure contacts. | BLOCKED — EXTERNAL |
+| Legal disclosure gate | Executed NDA for each manufacturer; request named technical disclosure contacts with the packages. | ✅ PASS — Grace confirms both NDAs are signed. |
 | Package completeness gate | Every applicable critical row in [`manufacturer-api-requirements.md`](./manufacturer-api-requirements.md) has review evidence. | BLOCKED — EXTERNAL |
 | Adapter conformance gate | Real vendor sandbox passes auth, commands, signed action, telemetry, ACK, idempotency, timeout, replay, reset, and deletion cases. | BLOCKED — EXTERNAL |
 | Hardware intake gate | Two exact units recorded with matching BOM/firmware, accessories, diagnostics, and RMA path. | BLOCKED — EXTERNAL |
