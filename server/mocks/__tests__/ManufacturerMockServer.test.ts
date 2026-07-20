@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { generateKeyPairSync, sign } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { connect } from 'node:net';
+import { createServer } from 'node:http';
+import { connect, type AddressInfo } from 'node:net';
 import { JiangzhiAdapter } from '../../src/adapters/JiangzhiAdapter';
 import type { FetchLike } from '../../src/adapters/RestRobotAdapter';
 import { YongyidaAdapter } from '../../src/adapters/YongyidaAdapter';
@@ -17,6 +18,17 @@ const SESSION_TOKEN = 'mock-development-session-token';
 
 async function json(response: Response): Promise<Record<string, unknown>> {
   return await response.json() as Record<string, unknown>;
+}
+
+async function firstSsePayload(response: Response): Promise<Record<string, unknown>> {
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error('SSE response body is unavailable');
+  const chunk = await reader.read();
+  await reader.cancel();
+  const text = new TextDecoder().decode(chunk.value);
+  const dataLine = text.split('\n').find((line) => line.startsWith('data: '));
+  if (!dataLine) throw new Error('SSE data frame is unavailable');
+  return JSON.parse(dataLine.slice('data: '.length)) as Record<string, unknown>;
 }
 
 describe('ManufacturerMockServer', () => {
@@ -90,6 +102,292 @@ describe('ManufacturerMockServer', () => {
       '/api/v1/status/{deviceId}',
       '/api/v1/telemetry/{deviceId}'
     ]));
+  });
+
+  test('acknowledges camera readiness with only the exact opaque session reference', async () => {
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      log: () => undefined
+    });
+    const { baseUrl } = await activeServer.start();
+    const opaqueSession = 'camera-session_7Qq7bH_nothing-public';
+    const response = await fetch(new URL('/api/v1/command', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'camera-command-001'
+      },
+      body: JSON.stringify({
+        device_id: 'camera-device-001',
+        command: 'share_camera_view',
+        parameters: { session_id: opaqueSession }
+      })
+    });
+    expect(response.status).toBe(202);
+    const payload = await json(response);
+    expect(payload).toMatchObject({
+      success: true,
+      state: 'accepted',
+      camera_ready: true,
+      camera_session_ref: opaqueSession
+    });
+    expect(payload).not.toHaveProperty('camera_url');
+    expect(payload).not.toHaveProperty('stream_url');
+    expect(payload).not.toHaveProperty('raw_media');
+    expect(activeServer.getCommandRecords()).toHaveLength(1);
+
+    const missingSession = await fetch(new URL('/api/v1/command', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'camera-command-002'
+      },
+      body: JSON.stringify({
+        device_id: 'camera-device-001',
+        command: 'share_camera_view',
+        parameters: {}
+      })
+    });
+    expect(missingSession.status).toBe(400);
+    expect(await json(missingSession)).toEqual({ error: 'CAMERA_SESSION_INVALID' });
+    expect(activeServer.getCommandRecords()).toHaveLength(1);
+
+    const publicUrlAttempt = await fetch(new URL('/api/v1/command', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'camera-command-003'
+      },
+      body: JSON.stringify({
+        device_id: 'camera-device-001',
+        command: 'share_camera_view',
+        parameters: {
+          session_id: opaqueSession,
+          camera_url: 'https://public.example.invalid/camera'
+        }
+      })
+    });
+    expect(publicUrlAttempt.status).toBe(400);
+    expect(await json(publicUrlAttempt)).toEqual({ error: 'CAMERA_SESSION_INVALID' });
+    expect(activeServer.getCommandRecords()).toHaveLength(1);
+  });
+
+  test('streams both edge devices simultaneously and exposes only a redacted bounded dashboard', async () => {
+    const logs: ManufacturerMockLogEntry[] = [];
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      telemetryIntervalMs: 10,
+      fallEventRate: 0,
+      stressEventRate: 1,
+      medicationReminderEveryTicks: 1,
+      random: () => 0,
+      log: (entry) => logs.push(entry)
+    });
+    const simulationServer = activeServer;
+    const { baseUrl } = await simulationServer.start();
+    const rawWearableId = 'private-wearable-device-001';
+    const rawRobotId = 'private-robot-device-001';
+    const wearableController = new AbortController();
+    const robotController = new AbortController();
+    const [wearableResponse, robotResponse] = await Promise.all([
+      fetch(new URL(`/api/v1/wearable/telemetry/${rawWearableId}`, baseUrl), {
+        headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+        signal: wearableController.signal
+      }),
+      fetch(new URL(`/api/v1/robot/telemetry/${rawRobotId}`, baseUrl), {
+        headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+        signal: robotController.signal
+      })
+    ]);
+    expect(wearableResponse.status).toBe(200);
+    expect(robotResponse.status).toBe(200);
+    expect(wearableResponse.headers.get('content-type')).toContain('text/event-stream');
+    expect(robotResponse.headers.get('content-type')).toContain('text/event-stream');
+    const [wearable, robot] = await Promise.all([
+      firstSsePayload(wearableResponse),
+      firstSsePayload(robotResponse)
+    ]);
+    wearableController.abort();
+    robotController.abort();
+
+    expect(wearable).toMatchObject({
+      contract_version: 'vl-simulation-wearable-telemetry/1',
+      synthetic: true,
+      inference: {
+        contractVersion: 'vl-wearable-inference/1',
+        inference: { activity: 'resting' }
+      },
+      location: { synthetic: true }
+    });
+    expect(wearable).toHaveProperty('sensor_frame.accelerometer');
+    expect(wearable).toHaveProperty('sensor_frame.ppg.heartRateBpm');
+    expect(wearable).not.toHaveProperty('device_id');
+    expect(JSON.stringify(wearable)).not.toContain(rawWearableId);
+    expect((wearable.events as Array<Record<string, unknown>>)[0]).toMatchObject({
+      eventType: 'stress_spike',
+      severity: 'warning'
+    });
+
+    expect(robot).toMatchObject({
+      contract_version: 'vl-simulation-robot-telemetry/1',
+      synthetic: true,
+      raw_camera_retained: false,
+      raw_microphone_retained: false,
+      inference: { contractVersion: 'vl-robot-edge-inference/1' }
+    });
+    expect(robot).toHaveProperty('feature_frame.vision');
+    expect(robot).toHaveProperty('feature_frame.audio');
+    expect(robot).toHaveProperty('feature_frame.motor');
+    expect(robot).not.toHaveProperty('device_id');
+    expect(JSON.stringify(robot)).not.toContain(rawRobotId);
+    expect((robot.events as Array<Record<string, unknown>>)[0]).toMatchObject({
+      eventType: 'medication_reminder'
+    });
+
+    const unauthorizedInjection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_id: rawWearableId,
+        device_type: 'wearable',
+        event_type: 'fall_detected'
+      })
+    });
+    expect(unauthorizedInjection.status).toBe(401);
+    const injection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_id: rawWearableId,
+        device_type: 'wearable',
+        event_type: 'fall_detected'
+      })
+    });
+    expect(injection.status).toBe(201);
+    expect(await json(injection)).toMatchObject({
+      accepted: true,
+      event: { eventType: 'fall_detected', severity: 'critical', synthetic: true }
+    });
+    const invalidInjection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_id: rawWearableId,
+        device_type: 'wearable',
+        event_type: 'stress_spike',
+        private_note: 'must-not-be-accepted'
+      })
+    });
+    expect(invalidInjection.status).toBe(400);
+    expect(await json(invalidInjection)).toEqual({ error: 'SIMULATION_EVENT_INVALID' });
+    const offlineInjection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_id: rawRobotId,
+        device_type: 'home_robot',
+        event_type: 'device_offline'
+      })
+    });
+    expect(offlineInjection.status).toBe(201);
+
+    for (let index = 0; index < 12; index += 1) {
+      simulationServer.recordScenarioExecution({
+        scenarioId: 'fall_response',
+        status: index % 2 === 0 ? 'started' : 'completed',
+        wearableDeviceId: rawWearableId,
+        robotDeviceId: rawRobotId
+      });
+    }
+    expect(() => simulationServer.recordScenarioExecution({
+      scenarioId: '<private-name>',
+      status: 'started'
+    })).toThrow('Scenario execution record is invalid');
+
+    const unauthorizedDashboard = await fetch(new URL('/api/v1/simulation/dashboard', baseUrl));
+    expect(unauthorizedDashboard.status).toBe(401);
+    const dashboardResponse = await fetch(new URL('/api/v1/simulation/dashboard', baseUrl), {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
+    });
+    expect(dashboardResponse.status).toBe(200);
+    const dashboard = await json(dashboardResponse);
+    expect(dashboard).toMatchObject({
+      contractVersion: 'vl-manufacturer-simulation-dashboard/1',
+      synthetic: true
+    });
+    expect((dashboard.devices as unknown[])).toHaveLength(2);
+    expect(dashboard.devices).toEqual(expect.arrayContaining([
+      expect.objectContaining({ deviceType: 'home_robot', online: false, status: 'offline' })
+    ]));
+    expect((dashboard.scenarioExecutions as unknown[])).toHaveLength(10);
+    expect((dashboard.lastEvents as unknown[])).toHaveLength(10);
+    const serializedDashboard = JSON.stringify(dashboard);
+    expect(serializedDashboard).not.toContain(rawWearableId);
+    expect(serializedDashboard).not.toContain(rawRobotId);
+    expect(serializedDashboard).not.toContain('private_note');
+
+    const htmlResponse = await fetch(new URL('/dashboard', baseUrl));
+    expect(htmlResponse.status).toBe(200);
+    expect(htmlResponse.headers.get('content-security-policy')).toContain("default-src 'none'");
+    const html = await htmlResponse.text();
+    expect(html).toContain('Device states, scenario logs, and last 10 events');
+    expect(html).not.toContain(rawWearableId);
+    expect(html).not.toContain(rawRobotId);
+    expect(html).not.toContain('<script');
+
+    expect(logs.map(({ route }) => route)).toEqual(expect.arrayContaining([
+      '/api/v1/wearable/telemetry/{deviceId}',
+      '/api/v1/robot/telemetry/{deviceId}',
+      '/api/v1/simulation/events',
+      '/api/v1/simulation/dashboard',
+      '/dashboard'
+    ]));
+    expect(JSON.stringify(logs)).not.toContain(rawWearableId);
+    expect(JSON.stringify(logs)).not.toContain(rawRobotId);
+  });
+
+  test('uses deterministic configured fall frequency and validates event configuration', async () => {
+    expect(() => createManufacturerMockServer({ environment: 'test', fallEventRate: 1.1 }))
+      .toThrow('fall-event rate is invalid');
+    expect(() => createManufacturerMockServer({ environment: 'test', stressEventRate: -0.1 }))
+      .toThrow('stress-event rate is invalid');
+    expect(() => createManufacturerMockServer({ environment: 'test', medicationReminderEveryTicks: -1 }))
+      .toThrow('medication-reminder tick interval is invalid');
+
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      fallEventRate: 1,
+      stressEventRate: 0,
+      medicationReminderEveryTicks: 0,
+      random: () => 0,
+      log: () => undefined
+    });
+    const { baseUrl } = await activeServer.start();
+    const controller = new AbortController();
+    const response = await fetch(new URL('/api/v1/wearable/telemetry/fall-device-001', baseUrl), {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+      signal: controller.signal
+    });
+    const telemetry = await firstSsePayload(response);
+    controller.abort();
+    expect(telemetry).toMatchObject({
+      inference: { inference: { fallDetected: true, activity: 'fall' } }
+    });
+    expect((telemetry.events as Array<Record<string, unknown>>)[0]).toMatchObject({
+      eventType: 'fall_detected', severity: 'critical'
+    });
   });
 
   test('serializes commands per device, deduplicates retries, and rejects oversized bodies', async () => {
@@ -185,6 +483,29 @@ describe('ManufacturerMockServer', () => {
       .toThrow('disabled in production');
     expect(() => createManufacturerMockServer({ environment: 'staging' }))
       .toThrow('requires NODE_ENV=development or NODE_ENV=test');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      asyncAckCallbackUrl: 'https://external.example.test/v1/manufacturer/robot/ack',
+      asyncAckCallbackCredentials: { 'yongyida-cloud': 'callback-only-secret' }
+    })).toThrow('loopback CLM ACK URL');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      asyncAckCallbackUrl: 'http://127.0.0.1:3000/v1/manufacturer/robot/ack'
+    })).toThrow('URL and credentials must be configured together');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      asyncAckCallbackUrl: 'http://127.0.0.1:3000/v1/manufacturer/robot/ack',
+      asyncAckCallbackCredentials: { 'untrusted-adapter': 'callback-only-secret' }
+    })).toThrow('credentials are invalid');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      asyncAckCallbackUrl: 'http://127.0.0.1:3000/v1/manufacturer/robot/ack',
+      asyncAckCallbackCredentials: { 'yongyida-cloud': API_KEY }
+    })).toThrow('credentials are invalid');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      maxAsyncAckRequestBytes: 256
+    })).toThrow('ACK request limit is invalid');
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
       readonly scripts?: Readonly<Record<string, string>>;
     };
@@ -223,7 +544,13 @@ describe('ManufacturerMockServer', () => {
     const actionId = '123e4567-e89b-42d3-a456-426614174000';
     const createAction = (
       action: string,
-      { adapterId = 'yongyida-cloud' }: { readonly adapterId?: string } = {}
+      {
+        adapterId = 'yongyida-cloud',
+        parameters = {}
+      }: {
+        readonly adapterId?: string;
+        readonly parameters?: Readonly<Record<string, unknown>>;
+      } = {}
     ) => {
       const envelope = {
         version: 2,
@@ -237,7 +564,7 @@ describe('ManufacturerMockServer', () => {
         device_id: 'account-device-001',
         manufacturer_device_id: 'signed-device-001',
         binding_epoch: 1,
-        parameters: {}
+        parameters
       };
       const payload = Buffer.from(JSON.stringify(envelope)).toString('base64url');
       return {
@@ -261,8 +588,23 @@ describe('ManufacturerMockServer', () => {
       }
     );
 
-    const action = createAction('check_medication');
-    expect((await send(action)).status).toBe(202);
+    const opaqueSession = 'camera-session_opaque-2';
+    const action = createAction('share_camera_view', {
+      parameters: { session_id: opaqueSession }
+    });
+    const firstCameraAck = await send(action);
+    expect(firstCameraAck.status).toBe(202);
+    const cameraAck = await json(firstCameraAck);
+    expect(cameraAck).toMatchObject({
+      state: 'accepted',
+      ok: true,
+      action_id: actionId,
+      camera_ready: true,
+      camera_session_ref: opaqueSession
+    });
+    expect(cameraAck).not.toHaveProperty('camera_url');
+    expect(cameraAck).not.toHaveProperty('stream_url');
+    expect(cameraAck).not.toHaveProperty('raw_media');
     expect((await send(action)).status).toBe(202);
     expect(activeServer.getCommandRecords()).toHaveLength(1);
 
@@ -278,6 +620,152 @@ describe('ManufacturerMockServer', () => {
     const crossVendor = await send(createAction('check_medication', { adapterId: 'jiangzhi-edge' }));
     expect(crossVendor.status).toBe(400);
     expect(await json(crossVendor)).toEqual({ error: 'SIGNED_ACTION_INVALID' });
+  });
+
+  test('posts an authenticated bounded async camera ACK only after the 202 receipt', async () => {
+    const keyPair = generateKeyPairSync('ed25519');
+    const callbackCredential = 'mock-callback-credential-yongyida';
+    const actionId = '456e4567-e89b-42d3-a456-426614174111';
+    const opaqueSession = 'camera-session_opaque-callback';
+    const rawDeviceId = 'private-callback-device-001';
+    const logs: ManufacturerMockLogEntry[] = [];
+    let receiptObserved = false;
+    const callbackRequest = new Promise<{
+      readonly headers: Readonly<Record<string, string | string[] | undefined>>;
+      readonly payload: Readonly<Record<string, unknown>>;
+      readonly receiptObserved: boolean;
+    }>((resolve, reject) => {
+      const callbackServer = createServer((request, response) => {
+        const chunks: Buffer[] = [];
+        let total = 0;
+        request.on('data', (chunk: Buffer) => {
+          total += chunk.byteLength;
+          if (total > 4 * 1024) {
+            request.destroy(new Error('callback body exceeded test bound'));
+            return;
+          }
+          chunks.push(chunk);
+        });
+        request.once('error', reject);
+        request.once('end', () => {
+          try {
+            const payload = JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
+            response.writeHead(204, { 'Cache-Control': 'no-store' });
+            response.end();
+            resolve({ headers: request.headers, payload, receiptObserved });
+          } catch (error) {
+            reject(error);
+          } finally {
+            callbackServer.closeAllConnections?.();
+            callbackServer.close();
+          }
+        });
+      });
+      callbackServer.once('error', reject);
+      callbackServer.listen(0, '127.0.0.1', async () => {
+        try {
+          const port = (callbackServer.address() as AddressInfo).port;
+          const currentTime = Date.now();
+          activeServer = createManufacturerMockServer({
+            environment: 'test',
+            port: 0,
+            latencyMinMs: 0,
+            latencyMaxMs: 0,
+            signedActionPublicKey: keyPair.publicKey,
+            asyncAckCallbackUrl: `http://127.0.0.1:${port}/v1/manufacturer/robot/ack`,
+            asyncAckCallbackCredentials: { 'yongyida-cloud': callbackCredential },
+            asyncAckDelayMs: 10,
+            asyncAckTimeoutMs: 500,
+            maxAsyncAckRequestBytes: 512,
+            maxAsyncAckResponseBytes: 0,
+            log: (entry) => logs.push(entry)
+          });
+          const { baseUrl } = await activeServer.start();
+          const envelope = {
+            version: 2,
+            id: actionId,
+            issued_at: currentTime,
+            expires_at: currentTime + 60_000,
+            action: 'share_camera_view',
+            device_type: 'home_robot',
+            adapter_id: 'yongyida-cloud',
+            contract_version: 'vl-robot-action/2',
+            device_id: 'account-device-callback',
+            manufacturer_device_id: rawDeviceId,
+            binding_epoch: 17,
+            parameters: { session_id: opaqueSession }
+          };
+          const payload = Buffer.from(JSON.stringify(envelope)).toString('base64url');
+          const signed = {
+            envelope,
+            payload,
+            signature: sign(null, Buffer.from(payload, 'ascii'), keyPair.privateKey).toString('base64url'),
+            algorithm: 'Ed25519'
+          };
+          const response = await fetch(
+            new URL('/v1/veryloving/yongyida-cloud/signed-actions', baseUrl),
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${API_KEY}`,
+                'Content-Type': 'application/json',
+                'Idempotency-Key': actionId,
+                'X-Veryloving-Session': SESSION_TOKEN
+              },
+              body: JSON.stringify(signed)
+            }
+          );
+          expect(response.status).toBe(202);
+          expect(await json(response)).toMatchObject({
+            action_id: actionId,
+            state: 'accepted',
+            camera_ready: true,
+            camera_session_ref: opaqueSession
+          });
+          receiptObserved = true;
+        } catch (error) {
+          callbackServer.closeAllConnections?.();
+          callbackServer.close();
+          reject(error);
+        }
+      });
+    });
+
+    let callbackTimeout: ReturnType<typeof setTimeout> | undefined;
+    const callback = await Promise.race([
+      callbackRequest,
+      new Promise<never>((_resolve, reject) => {
+        callbackTimeout = setTimeout(
+          () => reject(new Error('async ACK callback was not received')),
+          2_000
+        );
+      })
+    ]).finally(() => {
+      if (callbackTimeout) clearTimeout(callbackTimeout);
+    });
+    expect(callback.receiptObserved).toBe(true);
+    expect(callback.headers['x-robot-adapter-id']).toBe('yongyida-cloud');
+    expect(callback.headers['x-robot-callback-key']).toBe(callbackCredential);
+    expect(callback.payload).toEqual({
+      action_id: actionId,
+      ok: true,
+      binding_epoch: 17,
+      camera_ready: true,
+      camera_session_ref: opaqueSession
+    });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(logs).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        event: 'manufacturer_mock.ack_callback',
+        route: '/v1/manufacturer/robot/ack',
+        statusCode: 204
+      })
+    ]));
+    const serializedLogs = JSON.stringify(logs);
+    expect(serializedLogs).not.toContain(callbackCredential);
+    expect(serializedLogs).not.toContain(actionId);
+    expect(serializedLogs).not.toContain(rawDeviceId);
+    expect(serializedLogs).not.toContain(opaqueSession);
   });
 
   test('bounds global requests, queue keys, SSE streams, and closes timed-out bodies', async () => {

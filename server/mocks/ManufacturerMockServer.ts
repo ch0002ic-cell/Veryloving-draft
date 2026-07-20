@@ -16,6 +16,8 @@ import {
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo, Socket } from 'node:net';
 import { isDeepStrictEqual } from 'node:util';
+import { RobotEdgeAI } from '../src/edge/RobotEdgeAI';
+import { WearableEdgeAI } from '../src/edge/WearableEdgeAI';
 
 const DEFAULT_PORT = 3001;
 const DEFAULT_HOST = '127.0.0.1';
@@ -34,9 +36,21 @@ const DEFAULT_MAX_CONNECTIONS = 100;
 const DEFAULT_MAX_CONCURRENT_REQUESTS = 200;
 const DEFAULT_MAX_TELEMETRY_STREAMS = 25;
 const DEFAULT_SIGNED_ACTION_FUTURE_SKEW_MS = 60_000;
+const DEFAULT_FALL_EVENT_RATE = 0.001;
+const DEFAULT_STRESS_EVENT_RATE = 0.01;
+const DEFAULT_MEDICATION_REMINDER_EVERY_TICKS = 3_600;
+const DEFAULT_MAX_SIMULATED_DEVICES = 100;
+const DEFAULT_ASYNC_ACK_DELAY_MS = 25;
+const DEFAULT_ASYNC_ACK_TIMEOUT_MS = 2_000;
+const DEFAULT_MAX_ASYNC_ACK_REQUEST_BYTES = 4 * 1024;
+const DEFAULT_MAX_ASYNC_ACK_RESPONSE_BYTES = 4 * 1024;
+const MAX_SIMULATION_EVENTS = 10;
+const MAX_SCENARIO_EXECUTIONS = 10;
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/;
 const COMMAND_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const IDEMPOTENCY_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+const CAMERA_SESSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+const SCENARIO_PATTERN = /^[a-z][a-z0-9_:-]{0,63}$/;
 const ACTION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BASE64URL_PATTERN = /^[A-Za-z0-9_-]+$/;
 const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
@@ -53,8 +67,73 @@ const BRIDGE_ADAPTER_IDS = Object.freeze({
 type ManufacturerVendor = keyof typeof BRIDGE_PREFIXES;
 type JsonObject = Record<string, unknown>;
 
+interface AsyncAcknowledgement {
+  readonly actionId: string;
+  readonly adapterId: string;
+  readonly bindingEpoch: number;
+  readonly cameraReady?: boolean;
+  readonly cameraSessionRef?: string;
+}
+
+export type ManufacturerSimulationDeviceType = 'wearable' | 'home_robot';
+export type ManufacturerSimulationEventType =
+  | 'fall_detected'
+  | 'stress_spike'
+  | 'medication_reminder'
+  | 'device_offline'
+  | 'device_online'
+  | 'scenario_execution';
+export type ManufacturerScenarioStatus = 'started' | 'completed' | 'fallback' | 'failed' | 'cancelled';
+
+export interface ManufacturerSimulationEvent {
+  readonly eventId: string;
+  readonly eventType: ManufacturerSimulationEventType;
+  readonly deviceType: ManufacturerSimulationDeviceType | 'both';
+  /** One-way references only. Raw device identifiers are never retained. */
+  readonly deviceReferences: readonly string[];
+  readonly occurredAt: number;
+  readonly synthetic: true;
+  readonly severity: 'info' | 'warning' | 'critical';
+  readonly scenarioId?: string;
+  readonly scenarioStatus?: ManufacturerScenarioStatus;
+}
+
+export interface ManufacturerSimulationDeviceState {
+  readonly deviceReference: string;
+  readonly deviceType: ManufacturerSimulationDeviceType;
+  readonly online: boolean;
+  readonly batteryPercent: number;
+  readonly status: string;
+  readonly observedAt: number;
+}
+
+export interface ManufacturerScenarioExecutionRecord {
+  readonly executionReference: string;
+  readonly scenarioId: string;
+  readonly status: ManufacturerScenarioStatus;
+  readonly deviceReferences: readonly string[];
+  readonly observedAt: number;
+  readonly synthetic: true;
+}
+
+export interface RecordScenarioExecutionInput {
+  readonly scenarioId: string;
+  readonly status: ManufacturerScenarioStatus;
+  readonly wearableDeviceId?: string;
+  readonly robotDeviceId?: string;
+}
+
+export interface ManufacturerSimulationDashboard {
+  readonly contractVersion: 'vl-manufacturer-simulation-dashboard/1';
+  readonly synthetic: true;
+  readonly generatedAt: number;
+  readonly devices: readonly ManufacturerSimulationDeviceState[];
+  readonly scenarioExecutions: readonly ManufacturerScenarioExecutionRecord[];
+  readonly lastEvents: readonly ManufacturerSimulationEvent[];
+}
+
 export interface ManufacturerMockLogEntry {
-  readonly event: 'manufacturer_mock.request';
+  readonly event: 'manufacturer_mock.request' | 'manufacturer_mock.ack_callback';
   readonly requestId: string;
   readonly method: string;
   readonly route: string;
@@ -89,8 +168,26 @@ export interface ManufacturerMockServerOptions {
   readonly maxConcurrentRequests?: number;
   readonly maxTelemetryStreams?: number;
   readonly signedActionFutureSkewMs?: number;
+  /** Per emitted wearable/robot frame. Deterministic when seed/random is supplied. */
+  readonly fallEventRate?: number;
+  /** Per emitted wearable frame. Deterministic when seed/random is supplied. */
+  readonly stressEventRate?: number;
+  /** Robot telemetry ticks between reminders. Set to 0 to disable. */
+  readonly medicationReminderEveryTicks?: number;
+  readonly maxSimulatedDevices?: number;
   /** Ed25519 SPKI PEM/DER or a base64url-encoded 32-byte raw public key. */
   readonly signedActionPublicKey?: string | Buffer | KeyObject;
+  /**
+   * Development callback endpoint used to exercise the real asynchronous ACK
+   * contract. Only the loopback CLM ACK route is accepted.
+   */
+  readonly asyncAckCallbackUrl?: string;
+  /** Per-adapter callback credentials. Values are never included in logs. */
+  readonly asyncAckCallbackCredentials?: Readonly<Record<string, string>>;
+  readonly asyncAckDelayMs?: number;
+  readonly asyncAckTimeoutMs?: number;
+  readonly maxAsyncAckRequestBytes?: number;
+  readonly maxAsyncAckResponseBytes?: number;
   /** Placeholder accepted only by this development simulator. */
   readonly apiKey?: string;
   /** Placeholder bearer returned by /api/v1/authenticate. */
@@ -155,6 +252,14 @@ function boundedRate(value: number | undefined): number {
   return selected;
 }
 
+function boundedProbability(value: number | undefined, fallback: number, label: string): number {
+  const selected = value ?? fallback;
+  if (typeof selected !== 'number' || !Number.isFinite(selected) || selected < 0 || selected > 1) {
+    throw new TypeError(`${label} is invalid`);
+  }
+  return selected;
+}
+
 function createSeededRandom(initialSeed: number): () => number {
   let state = initialSeed >>> 0;
   return () => {
@@ -181,6 +286,20 @@ function requiredCommand(value: unknown): string {
   return value;
 }
 
+function cameraAcknowledgement(command: string, parameters: unknown): JsonObject {
+  if (command.toLowerCase() !== 'share_camera_view') return {};
+  if (!isObject(parameters)
+    || Object.keys(parameters).length !== 1
+    || typeof parameters.session_id !== 'string'
+    || !CAMERA_SESSION_PATTERN.test(parameters.session_id)) {
+    throw new MockRequestError(400, 'CAMERA_SESSION_INVALID');
+  }
+  return {
+    camera_ready: true,
+    camera_session_ref: parameters.session_id
+  };
+}
+
 function writeJson(response: ServerResponse, statusCode: number, payload: JsonObject): void {
   if (response.destroyed || response.writableEnded) return;
   const body = JSON.stringify(payload);
@@ -191,6 +310,47 @@ function writeJson(response: ServerResponse, statusCode: number, payload: JsonOb
     'X-Content-Type-Options': 'nosniff'
   });
   response.end(body);
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character] as string);
+}
+
+function writeDashboardHtml(
+  response: ServerResponse,
+  dashboard: ManufacturerSimulationDashboard
+): void {
+  if (response.destroyed || response.writableEnded) return;
+  const snapshot = escapeHtml(JSON.stringify(dashboard, null, 2));
+  const body = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veryloving dual-device simulator</title></head>
+<body><main><h1>Veryloving dual-device simulator</h1>
+<p>Local synthetic data only. Refreshes every two seconds.</p>
+<h2>Device states, scenario logs, and last 10 events</h2><pre>${snapshot}</pre>
+</main></body></html>`;
+  response.writeHead(200, {
+    'Cache-Control': 'no-store',
+    'Content-Length': Buffer.byteLength(body),
+    'Content-Security-Policy': "default-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    'Content-Type': 'text/html; charset=utf-8',
+    'Referrer-Policy': 'no-referrer',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY'
+  });
+  response.end(body);
+}
+
+function hasOnlyKeys(value: JsonObject, allowed: readonly string[]): boolean {
+  const allowedKeys = new Set(allowed);
+  return Object.keys(value).every((key) => allowedKeys.has(key));
 }
 
 function parseBridgePath(pathname: string): { vendor: ManufacturerVendor; endpoint: string } | undefined {
@@ -248,6 +408,51 @@ function normalizeSigningPublicKey(value: string | Buffer | KeyObject | undefine
   }
 }
 
+function normalizeAsyncAckCallbackUrl(value: string | undefined): string | undefined {
+  if (value === undefined || value === '') return undefined;
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    throw new TypeError('Mock manufacturer ACK callback URL is invalid');
+  }
+  const hostname = parsed.hostname.replace(/^\[|\]$/g, '');
+  if (!['127.0.0.1', 'localhost', '::1'].includes(hostname)
+    || !['http:', 'https:'].includes(parsed.protocol)
+    || parsed.pathname !== '/v1/manufacturer/robot/ack'
+    || parsed.username
+    || parsed.password
+    || parsed.search
+    || parsed.hash) {
+    throw new TypeError('Mock manufacturer ACK callback must be the loopback CLM ACK URL');
+  }
+  return parsed.toString();
+}
+
+function normalizeAsyncAckCredentials(
+  value: Readonly<Record<string, string>> | undefined,
+  outboundSecrets: readonly string[]
+): ReadonlyMap<string, string> {
+  if (value === undefined) return new Map();
+  if (!isObject(value)) throw new TypeError('Mock manufacturer ACK callback credentials are invalid');
+  const supportedAdapterIds = new Set<string>(Object.values(BRIDGE_ADAPTER_IDS));
+  const credentials = new Map<string, string>();
+  const seen = new Set<string>();
+  for (const [adapterId, credential] of Object.entries(value)) {
+    if (!supportedAdapterIds.has(adapterId)
+      || typeof credential !== 'string'
+      || credential.length < 8
+      || credential.length > 4096
+      || seen.has(credential)
+      || outboundSecrets.includes(credential)) {
+      throw new TypeError('Mock manufacturer ACK callback credentials are invalid');
+    }
+    seen.add(credential);
+    credentials.set(adapterId, credential);
+  }
+  return credentials;
+}
+
 /**
  * The simulator is intentionally loopback-only and cannot be constructed in
  * production. Tests may use port 0 to request an ephemeral loopback port.
@@ -270,10 +475,20 @@ export class ManufacturerMockServer {
   private readonly maxConcurrentRequests: number;
   private readonly maxTelemetryStreams: number;
   private readonly signedActionFutureSkewMs: number;
+  private readonly fallEventRate: number;
+  private readonly stressEventRate: number;
+  private readonly medicationReminderEveryTicks: number;
+  private readonly maxSimulatedDevices: number;
   private readonly signedActionPublicKey?: KeyObject;
   private readonly apiKey: string;
   private readonly accessToken: string;
   private readonly sessionToken: string;
+  private readonly asyncAckCallbackUrl?: string;
+  private readonly asyncAckCallbackCredentials: ReadonlyMap<string, string>;
+  private readonly asyncAckDelayMs: number;
+  private readonly asyncAckTimeoutMs: number;
+  private readonly maxAsyncAckRequestBytes: number;
+  private readonly maxAsyncAckResponseBytes: number;
   private readonly random: () => number;
   private readonly now: () => number;
   private readonly logSink: (entry: ManufacturerMockLogEntry) => void;
@@ -281,12 +496,22 @@ export class ManufacturerMockServer {
   private readonly sockets = new Set<Socket>();
   private readonly telemetryIntervals = new Set<NodeJS.Timeout>();
   private readonly pendingDelays = new Map<NodeJS.Timeout, () => void>();
+  private readonly pendingAsyncAckTimers = new Set<NodeJS.Timeout>();
+  private readonly pendingAsyncAcks = new Set<Promise<void>>();
+  private readonly asyncAckControllers = new Set<AbortController>();
   private readonly queueTails = new Map<string, Promise<void>>();
   private readonly queueDepths = new Map<string, number>();
   private readonly commands: ManufacturerMockCommandRecord[] = [];
   private readonly idempotency = new Map<string, { readonly fingerprint: string; readonly payload: JsonObject }>();
+  private readonly simulatedDeviceStates = new Map<string, ManufacturerSimulationDeviceState>();
+  private readonly simulationTicks = new Map<string, number>();
+  private readonly simulationEvents: ManufacturerSimulationEvent[] = [];
+  private readonly scenarioExecutions: ManufacturerScenarioExecutionRecord[] = [];
   private requestSequence = 0;
+  private callbackSequence = 0;
   private commandSequence = 0;
+  private simulationEventSequence = 0;
+  private scenarioExecutionSequence = 0;
   private activeRequests = 0;
   private activeTelemetryStreams = 0;
   private queuedCommandsTotal = 0;
@@ -412,10 +637,70 @@ export class ManufacturerMockServer {
       5 * 60_000,
       'Mock manufacturer signed-action future-skew limit'
     );
+    this.fallEventRate = boundedProbability(
+      options.fallEventRate,
+      DEFAULT_FALL_EVENT_RATE,
+      'Mock manufacturer fall-event rate'
+    );
+    this.stressEventRate = boundedProbability(
+      options.stressEventRate,
+      DEFAULT_STRESS_EVENT_RATE,
+      'Mock manufacturer stress-event rate'
+    );
+    this.medicationReminderEveryTicks = boundedInteger(
+      options.medicationReminderEveryTicks,
+      DEFAULT_MEDICATION_REMINDER_EVERY_TICKS,
+      0,
+      1_000_000,
+      'Mock manufacturer medication-reminder tick interval'
+    );
+    this.maxSimulatedDevices = boundedInteger(
+      options.maxSimulatedDevices,
+      DEFAULT_MAX_SIMULATED_DEVICES,
+      1,
+      1_000,
+      'Mock manufacturer simulated-device limit'
+    );
     this.signedActionPublicKey = normalizeSigningPublicKey(options.signedActionPublicKey);
     this.apiKey = normalizeSecret(options.apiKey, 'mock-server-only-api-key', 'Mock manufacturer API key');
     this.accessToken = normalizeSecret(options.accessToken, 'mock-development-access-token', 'Mock manufacturer access token');
     this.sessionToken = normalizeSecret(options.sessionToken, 'mock-development-session-token', 'Mock bridge session token');
+    this.asyncAckCallbackUrl = normalizeAsyncAckCallbackUrl(options.asyncAckCallbackUrl);
+    this.asyncAckCallbackCredentials = normalizeAsyncAckCredentials(
+      options.asyncAckCallbackCredentials,
+      [this.apiKey, this.accessToken, this.sessionToken]
+    );
+    if (Boolean(this.asyncAckCallbackUrl) !== (this.asyncAckCallbackCredentials.size > 0)) {
+      throw new TypeError('Mock manufacturer ACK callback URL and credentials must be configured together');
+    }
+    this.asyncAckDelayMs = boundedInteger(
+      options.asyncAckDelayMs,
+      DEFAULT_ASYNC_ACK_DELAY_MS,
+      1,
+      60_000,
+      'Mock manufacturer ACK callback delay'
+    );
+    this.asyncAckTimeoutMs = boundedInteger(
+      options.asyncAckTimeoutMs,
+      DEFAULT_ASYNC_ACK_TIMEOUT_MS,
+      100,
+      120_000,
+      'Mock manufacturer ACK callback timeout'
+    );
+    this.maxAsyncAckRequestBytes = boundedInteger(
+      options.maxAsyncAckRequestBytes,
+      DEFAULT_MAX_ASYNC_ACK_REQUEST_BYTES,
+      512,
+      64 * 1024,
+      'Mock manufacturer ACK request limit'
+    );
+    this.maxAsyncAckResponseBytes = boundedInteger(
+      options.maxAsyncAckResponseBytes,
+      DEFAULT_MAX_ASYNC_ACK_RESPONSE_BYTES,
+      0,
+      64 * 1024,
+      'Mock manufacturer ACK response limit'
+    );
     this.random = options.random ?? createSeededRandom(options.seed ?? 0x564c3032);
     this.now = options.now ?? Date.now;
     this.logSink = options.log ?? ((entry) => process.stdout.write(`${JSON.stringify(entry)}\n`));
@@ -457,6 +742,67 @@ export class ManufacturerMockServer {
       queueKeys: this.queueDepths.size,
       queuedCommands: this.queuedCommandsTotal
     });
+  }
+
+  /** Redacted, bounded snapshot used by the local dashboard and integration tests. */
+  getSimulationDashboard(): ManufacturerSimulationDashboard {
+    return Object.freeze({
+      contractVersion: 'vl-manufacturer-simulation-dashboard/1',
+      synthetic: true,
+      generatedAt: this.simulationNow(),
+      devices: Object.freeze(Array.from(this.simulatedDeviceStates.values(), (state) => {
+        return Object.freeze({ ...state });
+      })),
+      scenarioExecutions: Object.freeze(this.scenarioExecutions.map((entry) => {
+        return Object.freeze({ ...entry, deviceReferences: Object.freeze([...entry.deviceReferences]) });
+      })),
+      lastEvents: Object.freeze(this.simulationEvents.map((event) => {
+        return Object.freeze({ ...event, deviceReferences: Object.freeze([...event.deviceReferences]) });
+      }))
+    });
+  }
+
+  /**
+   * Add a redacted scenario lifecycle entry without routing it through HTTP.
+   * Raw device IDs are one-way hashed before storage and never reach logs.
+   */
+  recordScenarioExecution(input: RecordScenarioExecutionInput): ManufacturerScenarioExecutionRecord {
+    const statuses: readonly ManufacturerScenarioStatus[] = [
+      'started', 'completed', 'fallback', 'failed', 'cancelled'
+    ];
+    if (!input || typeof input !== 'object'
+      || typeof input.scenarioId !== 'string'
+      || !SCENARIO_PATTERN.test(input.scenarioId)
+      || !statuses.includes(input.status)
+      || (input.wearableDeviceId !== undefined && !IDENTIFIER_PATTERN.test(input.wearableDeviceId))
+      || (input.robotDeviceId !== undefined && !IDENTIFIER_PATTERN.test(input.robotDeviceId))) {
+      throw new TypeError('Scenario execution record is invalid');
+    }
+    const deviceReferences = Object.freeze(Array.from(new Set([
+      input.wearableDeviceId ? safeReference(input.wearableDeviceId) : undefined,
+      input.robotDeviceId ? safeReference(input.robotDeviceId) : undefined
+    ].filter((value): value is string => value !== undefined))));
+    const observedAt = this.simulationNow();
+    const record = Object.freeze({
+      executionReference: `scenario_${++this.scenarioExecutionSequence}`,
+      scenarioId: input.scenarioId,
+      status: input.status,
+      deviceReferences,
+      observedAt,
+      synthetic: true as const
+    });
+    this.scenarioExecutions.push(record);
+    this.trimToLimit(this.scenarioExecutions, MAX_SCENARIO_EXECUTIONS);
+    this.pushSimulationEvent({
+      eventType: 'scenario_execution',
+      deviceType: 'both',
+      deviceReferences,
+      severity: input.status === 'failed' || input.status === 'fallback' ? 'warning' : 'info',
+      scenarioId: input.scenarioId,
+      scenarioStatus: input.status,
+      occurredAt: observedAt
+    });
+    return Object.freeze({ ...record, deviceReferences: Object.freeze([...record.deviceReferences]) });
   }
 
   async start(): Promise<ManufacturerMockAddress> {
@@ -502,18 +848,28 @@ export class ManufacturerMockServer {
         release();
       }
       this.pendingDelays.clear();
+      for (const timeout of this.pendingAsyncAckTimers) clearTimeout(timeout);
+      this.pendingAsyncAckTimers.clear();
+      for (const controller of this.asyncAckControllers) controller.abort();
       await new Promise<void>((resolve) => {
         this.server.close(() => resolve());
         this.server.closeAllConnections?.();
         for (const socket of this.sockets) socket.destroy();
       });
+      await Promise.allSettled([...this.pendingAsyncAcks]);
     })().finally(() => {
       this.startedAddress = undefined;
       this.stoppingPromise = undefined;
       this.queueTails.clear();
       this.queueDepths.clear();
+      this.simulationTicks.clear();
+      this.simulatedDeviceStates.clear();
+      this.simulationEvents.length = 0;
+      this.scenarioExecutions.length = 0;
       this.queuedCommandsTotal = 0;
       this.activeTelemetryStreams = 0;
+      this.pendingAsyncAcks.clear();
+      this.asyncAckControllers.clear();
     });
     return this.stoppingPromise;
   }
@@ -536,6 +892,32 @@ export class ManufacturerMockServer {
       if (url.search || url.hash) throw new MockRequestError(400, 'QUERY_NOT_ALLOWED');
       const statusDevice = parseDevicePath(url.pathname, '/api/v1/status/');
       const telemetryDevice = parseDevicePath(url.pathname, '/api/v1/telemetry/');
+      const wearableTelemetryDevice = parseDevicePath(url.pathname, '/api/v1/wearable/telemetry/');
+      const robotTelemetryDevice = parseDevicePath(url.pathname, '/api/v1/robot/telemetry/');
+
+      if (request.method === 'GET' && url.pathname === '/dashboard') {
+        route = '/dashboard';
+        writeDashboardHtml(response, this.getSimulationDashboard());
+        return;
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/v1/simulation/dashboard') {
+        route = '/api/v1/simulation/dashboard';
+        this.requireBearer(request, this.accessToken);
+        writeJson(response, 200, { ...this.getSimulationDashboard() });
+        return;
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/v1/simulation/events') {
+        route = '/api/v1/simulation/events';
+        this.requireBearer(request, this.accessToken);
+        const body = await this.readJson(request);
+        deviceId = requiredIdentifier(body.device_id, 'device_id');
+        await this.simulateTransport();
+        const event = this.injectSimulationEvent(body, deviceId);
+        writeJson(response, 201, { accepted: true, event });
+        return;
+      }
 
       if (request.method === 'POST' && url.pathname === '/api/v1/authenticate') {
         route = '/api/v1/authenticate';
@@ -592,6 +974,36 @@ export class ManufacturerMockServer {
         this.requireBearer(request, this.accessToken);
         await this.simulateTransport();
         this.startTelemetryStream(request, response, deviceId);
+        return;
+      }
+
+      if (request.method === 'GET' && wearableTelemetryDevice !== undefined) {
+        route = '/api/v1/wearable/telemetry/{deviceId}';
+        deviceId = wearableTelemetryDevice;
+        this.requireBearer(request, this.accessToken);
+        await this.simulateTransport();
+        this.startTelemetryStream(
+          request,
+          response,
+          deviceId,
+          () => this.wearableTelemetry(deviceId as string),
+          'wearable.telemetry'
+        );
+        return;
+      }
+
+      if (request.method === 'GET' && robotTelemetryDevice !== undefined) {
+        route = '/api/v1/robot/telemetry/{deviceId}';
+        deviceId = robotTelemetryDevice;
+        this.requireBearer(request, this.accessToken);
+        await this.simulateTransport();
+        this.startTelemetryStream(
+          request,
+          response,
+          deviceId,
+          () => this.robotTelemetry(deviceId as string),
+          'robot.telemetry'
+        );
         return;
       }
 
@@ -698,19 +1110,34 @@ export class ManufacturerMockServer {
         const startedAt = this.now();
         await this.simulateTransport();
         const idempotencyScope = `signed:${vendor}:${deviceId}\u0000${actionId}`;
+        const adapterId = BRIDGE_ADAPTER_IDS[vendor];
+        const camera = cameraAcknowledgement(String(envelope.action), envelope.parameters);
+        const acknowledgement = Object.freeze({
+          actionId,
+          adapterId,
+          bindingEpoch: Number(envelope.binding_epoch),
+          ...(camera.camera_ready === true && typeof camera.camera_session_ref === 'string'
+            ? { cameraReady: true, cameraSessionRef: camera.camera_session_ref }
+            : {})
+        });
         const previous = this.idempotency.get(idempotencyScope);
         if (previous) {
           if (previous.fingerprint !== fingerprint) {
             throw new MockRequestError(409, 'IDEMPOTENCY_CONFLICT');
           }
-          writeJson(response, 202, previous.payload);
+          this.writeAcceptedSignedAction(response, previous.payload, acknowledgement);
           return;
         }
 
-        const payload = Object.freeze({ state: 'accepted', ok: true, action_id: actionId });
+        const payload = Object.freeze({
+          state: 'accepted',
+          ok: true,
+          action_id: actionId,
+          ...camera
+        });
         this.recordCommand(deviceId, String(envelope.action), startedAt);
         this.rememberIdempotency(idempotencyScope, fingerprint, payload);
-        writeJson(response, 202, payload);
+        this.writeAcceptedSignedAction(response, payload, acknowledgement);
       });
       return;
     }
@@ -830,6 +1257,121 @@ export class ManufacturerMockServer {
     });
   }
 
+  private writeAcceptedSignedAction(
+    response: ServerResponse,
+    payload: JsonObject,
+    acknowledgement: AsyncAcknowledgement
+  ): void {
+    if (this.asyncAckCallbackUrl && this.asyncAckCallbackCredentials.has(acknowledgement.adapterId)) {
+      // The callback represents work completed after transport acceptance. Arm
+      // it only once the 202 has been flushed so tests exercise the same race
+      // ordering as a real manufacturer gateway.
+      response.once('finish', () => this.scheduleAsyncAcknowledgement(acknowledgement));
+    }
+    writeJson(response, 202, payload);
+  }
+
+  private scheduleAsyncAcknowledgement(acknowledgement: AsyncAcknowledgement): void {
+    if (this.stoppingPromise || !this.asyncAckCallbackUrl) return;
+    const credential = this.asyncAckCallbackCredentials.get(acknowledgement.adapterId);
+    if (!credential) return;
+    const timer = setTimeout(() => {
+      this.pendingAsyncAckTimers.delete(timer);
+      if (this.stoppingPromise) return;
+      const pending = this.postAsyncAcknowledgement(acknowledgement, credential)
+        .catch(() => undefined)
+        .finally(() => this.pendingAsyncAcks.delete(pending));
+      this.pendingAsyncAcks.add(pending);
+    }, this.asyncAckDelayMs);
+    timer.unref?.();
+    this.pendingAsyncAckTimers.add(timer);
+  }
+
+  private async readBoundedCallbackResponse(response: Response): Promise<void> {
+    const advertisedLength = response.headers.get('content-length');
+    if (advertisedLength && /^\d{1,12}$/.test(advertisedLength)
+      && Number(advertisedLength) > this.maxAsyncAckResponseBytes) {
+      try { await response.body?.cancel(); } catch {}
+      throw new Error('ACK_CALLBACK_RESPONSE_TOO_LARGE');
+    }
+    if (!response.body) return;
+    const reader = response.body.getReader();
+    let total = 0;
+    try {
+      while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        total += chunk.value.byteLength;
+        if (total > this.maxAsyncAckResponseBytes) {
+          await reader.cancel();
+          throw new Error('ACK_CALLBACK_RESPONSE_TOO_LARGE');
+        }
+      }
+    } finally {
+      try { reader.releaseLock(); } catch {}
+    }
+  }
+
+  private async postAsyncAcknowledgement(
+    acknowledgement: AsyncAcknowledgement,
+    credential: string
+  ): Promise<void> {
+    const callbackUrl = this.asyncAckCallbackUrl;
+    if (!callbackUrl) return;
+    const requestId = `mock-callback-${++this.callbackSequence}`;
+    const startedAt = this.now();
+    let statusCode = 0;
+    const body = JSON.stringify({
+      action_id: acknowledgement.actionId,
+      ok: true,
+      binding_epoch: acknowledgement.bindingEpoch,
+      ...(acknowledgement.cameraReady === true && acknowledgement.cameraSessionRef
+        ? {
+          camera_ready: true,
+          camera_session_ref: acknowledgement.cameraSessionRef
+        }
+        : {})
+    });
+    if (Buffer.byteLength(body) > this.maxAsyncAckRequestBytes) {
+      throw new Error('ACK_CALLBACK_REQUEST_TOO_LARGE');
+    }
+
+    const controller = new AbortController();
+    this.asyncAckControllers.add(controller);
+    const timeout = setTimeout(() => controller.abort(), this.asyncAckTimeoutMs);
+    timeout.unref?.();
+    try {
+      const response = await fetch(callbackUrl, {
+        method: 'POST',
+        redirect: 'error',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Robot-Adapter-Id': acknowledgement.adapterId,
+          'X-Robot-Callback-Key': credential
+        },
+        body,
+        signal: controller.signal
+      });
+      statusCode = response.status;
+      await this.readBoundedCallbackResponse(response);
+      if (response.status !== 204) throw new Error('ACK_CALLBACK_REJECTED');
+    } finally {
+      clearTimeout(timeout);
+      this.asyncAckControllers.delete(controller);
+      const elapsed = Math.max(0, Math.round(this.now() - startedAt));
+      try {
+        this.logSink(Object.freeze({
+          event: 'manufacturer_mock.ack_callback',
+          requestId,
+          method: 'POST',
+          route: '/v1/manufacturer/robot/ack',
+          statusCode,
+          latencyMs: Number.isSafeInteger(elapsed) ? elapsed : 0
+        }));
+      } catch {}
+    }
+  }
+
   private readJson(request: IncomingMessage): Promise<JsonObject> {
     const advertisedLength = request.headers['content-length'];
     if (typeof advertisedLength === 'string'
@@ -898,9 +1440,11 @@ export class ManufacturerMockServer {
 
   private async simulateTransport(): Promise<void> {
     const span = this.latencyMaxMs - this.latencyMinMs;
-    const latency = this.latencyMinMs + Math.floor(this.random() * (span + 1));
+    const latency = this.latencyMinMs + Math.floor(this.nextSimulationRandom() * (span + 1));
     await this.delay(latency);
-    if (this.random() < this.failureRate) throw new MockRequestError(503, 'SIMULATED_FAILURE');
+    if (this.nextSimulationRandom() < this.failureRate) {
+      throw new MockRequestError(503, 'SIMULATED_FAILURE');
+    }
   }
 
   private enqueueDevice<T>(deviceId: string, operation: () => Promise<T>): Promise<T> {
@@ -960,6 +1504,9 @@ export class ManufacturerMockServer {
     idempotencyKey: string,
     startedAt: number
   ): JsonObject {
+    // Validate camera sessions before recording the command. A malformed
+    // request must not look like an executed side effect in the simulator.
+    const acknowledgement = cameraAcknowledgement(command, parameters);
     const idempotencyScope = `${scope}\u0000${idempotencyKey}`;
     const fingerprint = createHash('sha256')
       .update(JSON.stringify({ command, parameters }))
@@ -977,7 +1524,8 @@ export class ManufacturerMockServer {
       command_id: `mock-command-${sequence}`,
       state: emergencyStop ? 'completed' : 'accepted',
       accepted_at: new Date(completedAt).toISOString(),
-      duplicate: false
+      duplicate: false,
+      ...acknowledgement
     };
     this.rememberIdempotency(idempotencyScope, fingerprint, payload);
     return payload;
@@ -1040,10 +1588,237 @@ export class ManufacturerMockServer {
     };
   }
 
+  private simulationNow(): number {
+    const value = this.now();
+    if (!Number.isSafeInteger(value) || value < 0) {
+      throw new TypeError('Mock manufacturer clock is invalid');
+    }
+    return value;
+  }
+
+  private nextSimulationRandom(): number {
+    const value = this.random();
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value >= 1) {
+      throw new TypeError('Mock manufacturer random source is invalid');
+    }
+    return value;
+  }
+
+  private trimToLimit<T>(items: T[], maximum: number): void {
+    if (items.length > maximum) items.splice(0, items.length - maximum);
+  }
+
+  private pushSimulationEvent(input: {
+    readonly eventType: ManufacturerSimulationEventType;
+    readonly deviceType: ManufacturerSimulationDeviceType | 'both';
+    readonly deviceReferences: readonly string[];
+    readonly severity: 'info' | 'warning' | 'critical';
+    readonly occurredAt: number;
+    readonly scenarioId?: string;
+    readonly scenarioStatus?: ManufacturerScenarioStatus;
+  }): ManufacturerSimulationEvent {
+    const event = Object.freeze({
+      eventId: `simulation_event_${++this.simulationEventSequence}`,
+      eventType: input.eventType,
+      deviceType: input.deviceType,
+      deviceReferences: Object.freeze([...input.deviceReferences].slice(0, 2)),
+      occurredAt: input.occurredAt,
+      synthetic: true as const,
+      severity: input.severity,
+      ...(input.scenarioId ? { scenarioId: input.scenarioId } : {}),
+      ...(input.scenarioStatus ? { scenarioStatus: input.scenarioStatus } : {})
+    });
+    this.simulationEvents.push(event);
+    this.trimToLimit(this.simulationEvents, MAX_SIMULATION_EVENTS);
+    return Object.freeze({ ...event, deviceReferences: Object.freeze([...event.deviceReferences]) });
+  }
+
+  private nextSimulationTick(deviceType: ManufacturerSimulationDeviceType, deviceReference: string): number {
+    const key = `${deviceType}:${deviceReference}`;
+    const next = (this.simulationTicks.get(key) ?? 0) + 1;
+    this.simulationTicks.set(key, next);
+    return next;
+  }
+
+  private updateSimulatedDeviceState(
+    deviceType: ManufacturerSimulationDeviceType,
+    deviceReference: string,
+    state: Omit<ManufacturerSimulationDeviceState, 'deviceType' | 'deviceReference'>
+  ): ManufacturerSimulationDeviceState {
+    const key = `${deviceType}:${deviceReference}`;
+    if (!this.simulatedDeviceStates.has(key)
+      && this.simulatedDeviceStates.size >= this.maxSimulatedDevices) {
+      const oldestKey = this.simulatedDeviceStates.keys().next().value as string | undefined;
+      if (oldestKey !== undefined) {
+        this.simulatedDeviceStates.delete(oldestKey);
+        this.simulationTicks.delete(oldestKey);
+      }
+    }
+    const record = Object.freeze({ deviceReference, deviceType, ...state });
+    // Refresh insertion order so the least recently observed device is evicted.
+    this.simulatedDeviceStates.delete(key);
+    this.simulatedDeviceStates.set(key, record);
+    return record;
+  }
+
+  private injectSimulationEvent(body: JsonObject, rawDeviceId: string): ManufacturerSimulationEvent {
+    if (!hasOnlyKeys(body, ['device_id', 'device_type', 'event_type'])) {
+      throw new MockRequestError(400, 'SIMULATION_EVENT_INVALID');
+    }
+    const deviceType = body.device_type;
+    const eventType = body.event_type;
+    if ((deviceType !== 'wearable' && deviceType !== 'home_robot')
+      || !['fall_detected', 'stress_spike', 'medication_reminder', 'device_offline', 'device_online']
+        .includes(String(eventType))
+      || (eventType === 'stress_spike' && deviceType !== 'wearable')
+      || (eventType === 'medication_reminder' && deviceType !== 'home_robot')) {
+      throw new MockRequestError(400, 'SIMULATION_EVENT_INVALID');
+    }
+    const typedEvent = eventType as Exclude<ManufacturerSimulationEventType, 'scenario_execution'>;
+    const deviceReference = safeReference(rawDeviceId);
+    const occurredAt = this.simulationNow();
+    const existing = this.simulatedDeviceStates.get(`${deviceType}:${deviceReference}`);
+    const online = typedEvent === 'device_offline' ? false : true;
+    const status = typedEvent === 'device_online'
+      ? 'idle'
+      : typedEvent === 'device_offline'
+        ? 'offline'
+        : typedEvent;
+    this.updateSimulatedDeviceState(deviceType, deviceReference, {
+      online,
+      batteryPercent: existing?.batteryPercent ?? (deviceType === 'wearable' ? 82 : 78),
+      status,
+      observedAt: occurredAt
+    });
+    return this.pushSimulationEvent({
+      eventType: typedEvent,
+      deviceType,
+      deviceReferences: [deviceReference],
+      severity: typedEvent === 'fall_detected'
+        ? 'critical'
+        : typedEvent === 'stress_spike' || typedEvent === 'device_offline'
+          ? 'warning'
+          : 'info',
+      occurredAt
+    });
+  }
+
+  private wearableTelemetry(rawDeviceId: string): JsonObject {
+    const deviceReference = safeReference(rawDeviceId);
+    const tick = this.nextSimulationTick('wearable', deviceReference);
+    const fall = this.nextSimulationRandom() < this.fallEventRate;
+    const stress = !fall && this.nextSimulationRandom() < this.stressEventRate;
+    const profile = fall ? 'fall' : stress ? 'stressed' : tick % 4 === 0 ? 'walking' : 'resting';
+    const batteryPercent = Math.max(15, Math.round((92 - (tick % 770) * 0.1) * 10) / 10);
+    const edge = new WearableEdgeAI({
+      clockNow: () => this.simulationNow(),
+      random: () => this.nextSimulationRandom()
+    });
+    const frame = edge.generateFrame({
+      deviceRef: deviceReference,
+      sequence: tick,
+      profile,
+      batteryLevelPercent: batteryPercent
+    });
+    const inference = edge.infer(frame);
+    const generatedEvents: ManufacturerSimulationEvent[] = [];
+    if (fall) {
+      generatedEvents.push(this.pushSimulationEvent({
+        eventType: 'fall_detected',
+        deviceType: 'wearable',
+        deviceReferences: [deviceReference],
+        severity: 'critical',
+        occurredAt: frame.capturedAtMs
+      }));
+    } else if (stress) {
+      generatedEvents.push(this.pushSimulationEvent({
+        eventType: 'stress_spike',
+        deviceType: 'wearable',
+        deviceReferences: [deviceReference],
+        severity: 'warning',
+        occurredAt: frame.capturedAtMs
+      }));
+    }
+    this.updateSimulatedDeviceState('wearable', deviceReference, {
+      online: true,
+      batteryPercent,
+      status: fall ? 'fall_alert' : stress ? 'stress_alert' : inference.inference.activity,
+      observedAt: frame.capturedAtMs
+    });
+    return {
+      contract_version: 'vl-simulation-wearable-telemetry/1',
+      device_reference: deviceReference,
+      observed_at: frame.capturedAtMs,
+      sensor_frame: frame,
+      inference,
+      location: {
+        latitude: 1.2902,
+        longitude: 103.8519,
+        accuracy_meters: 5,
+        synthetic: true
+      },
+      events: generatedEvents,
+      synthetic: true
+    };
+  }
+
+  private robotTelemetry(rawDeviceId: string): JsonObject {
+    const deviceReference = safeReference(rawDeviceId);
+    const tick = this.nextSimulationTick('home_robot', deviceReference);
+    const fall = this.nextSimulationRandom() < this.fallEventRate;
+    const profile = fall ? 'fall' : tick % 3 === 0 ? 'navigating' : 'idle';
+    const edge = new RobotEdgeAI({
+      clockNow: () => this.simulationNow(),
+      random: () => this.nextSimulationRandom()
+    });
+    const frame = edge.generateFrame({ deviceRef: deviceReference, sequence: tick, profile });
+    const inference = edge.infer(frame);
+    const generatedEvents: ManufacturerSimulationEvent[] = [];
+    if (fall) {
+      generatedEvents.push(this.pushSimulationEvent({
+        eventType: 'fall_detected',
+        deviceType: 'home_robot',
+        deviceReferences: [deviceReference],
+        severity: 'critical',
+        occurredAt: frame.capturedAtMs
+      }));
+    }
+    const medicationDue = this.medicationReminderEveryTicks > 0
+      && tick % this.medicationReminderEveryTicks === 0;
+    if (medicationDue) {
+      generatedEvents.push(this.pushSimulationEvent({
+        eventType: 'medication_reminder',
+        deviceType: 'home_robot',
+        deviceReferences: [deviceReference],
+        severity: 'info',
+        occurredAt: frame.capturedAtMs
+      }));
+    }
+    this.updateSimulatedDeviceState('home_robot', deviceReference, {
+      online: true,
+      batteryPercent: 78,
+      status: fall ? 'fall_alert' : medicationDue ? 'medication_reminder' : frame.motor.mode,
+      observedAt: frame.capturedAtMs
+    });
+    return {
+      contract_version: 'vl-simulation-robot-telemetry/1',
+      device_reference: deviceReference,
+      observed_at: frame.capturedAtMs,
+      feature_frame: frame,
+      inference,
+      raw_camera_retained: false,
+      raw_microphone_retained: false,
+      events: generatedEvents,
+      synthetic: true
+    };
+  }
+
   private startTelemetryStream(
     request: IncomingMessage,
     response: ServerResponse,
-    deviceId: string
+    deviceId: string,
+    payloadFactory: () => JsonObject = () => this.genericTelemetry(deviceId),
+    eventName = 'telemetry'
   ): void {
     if (this.activeTelemetryStreams >= this.maxTelemetryStreams) {
       throw new MockRequestError(429, 'TELEMETRY_STREAM_CAPACITY_EXCEEDED');
@@ -1060,27 +1835,41 @@ export class ManufacturerMockServer {
     // the explicitly bounded SSE stream may remain open between telemetry ticks.
     request.socket.setTimeout(0);
     let backpressured = false;
+    let cleanedUp = false;
+    let interval: NodeJS.Timeout | undefined;
+    const cleanup = (): void => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (interval) {
+        clearInterval(interval);
+        this.telemetryIntervals.delete(interval);
+      }
+      if (!request.socket.destroyed) {
+        request.socket.setTimeout(Math.min(120_000, this.requestTimeoutMs + 1_000));
+      }
+      this.activeTelemetryStreams = Math.max(0, this.activeTelemetryStreams - 1);
+    };
     const send = (): void => {
       if (!response.destroyed && !response.writableEnded) {
         if (backpressured) return;
-        backpressured = !response.write(
-          `event: telemetry\ndata: ${JSON.stringify(this.genericTelemetry(deviceId))}\n\n`
-        );
+        let payload: JsonObject;
+        try {
+          payload = payloadFactory();
+        } catch {
+          cleanup();
+          response.destroy();
+          return;
+        }
+        backpressured = !response.write(`event: ${eventName}\ndata: ${JSON.stringify(payload)}\n\n`);
         if (backpressured) response.once('drain', () => { backpressured = false; });
       }
     };
     send();
-    const interval = setInterval(send, this.telemetryIntervalMs);
-    interval.unref?.();
-    this.telemetryIntervals.add(interval);
-    let cleanedUp = false;
-    const cleanup = (): void => {
-      if (cleanedUp) return;
-      cleanedUp = true;
-      clearInterval(interval);
-      this.telemetryIntervals.delete(interval);
-      this.activeTelemetryStreams = Math.max(0, this.activeTelemetryStreams - 1);
-    };
+    if (!cleanedUp) {
+      interval = setInterval(send, this.telemetryIntervalMs);
+      interval.unref?.();
+      this.telemetryIntervals.add(interval);
+    }
     request.once('aborted', cleanup);
     response.once('close', cleanup);
   }
@@ -1101,6 +1890,10 @@ function numericEnvironment(name: string, fallback: number): number {
 }
 
 async function runFromCommandLine(): Promise<void> {
+  const asyncAckCallbackCredentials = Object.fromEntries([
+    ['yongyida-cloud', process.env.YONGYIDA_CALLBACK_API_KEY],
+    ['jiangzhi-edge', process.env.JIANGZHI_CALLBACK_API_KEY]
+  ].filter((entry): entry is [string, string] => typeof entry[1] === 'string' && entry[1].length > 0));
   const simulator = createManufacturerMockServer({
     environment: process.env.NODE_ENV,
     port: numericEnvironment('MOCK_MANUFACTURER_PORT', DEFAULT_PORT),
@@ -1108,6 +1901,16 @@ async function runFromCommandLine(): Promise<void> {
     latencyMaxMs: numericEnvironment('MOCK_MANUFACTURER_LATENCY_MAX_MS', DEFAULT_LATENCY_MAX_MS),
     failureRate: numericEnvironment('MOCK_MANUFACTURER_FAILURE_RATE', DEFAULT_FAILURE_RATE),
     telemetryIntervalMs: numericEnvironment('MOCK_MANUFACTURER_TELEMETRY_INTERVAL_MS', DEFAULT_TELEMETRY_INTERVAL_MS),
+    fallEventRate: numericEnvironment('MOCK_MANUFACTURER_FALL_EVENT_RATE', DEFAULT_FALL_EVENT_RATE),
+    stressEventRate: numericEnvironment('MOCK_MANUFACTURER_STRESS_EVENT_RATE', DEFAULT_STRESS_EVENT_RATE),
+    medicationReminderEveryTicks: numericEnvironment(
+      'MOCK_MANUFACTURER_MEDICATION_REMINDER_EVERY_TICKS',
+      DEFAULT_MEDICATION_REMINDER_EVERY_TICKS
+    ),
+    maxSimulatedDevices: numericEnvironment(
+      'MOCK_MANUFACTURER_MAX_SIMULATED_DEVICES',
+      DEFAULT_MAX_SIMULATED_DEVICES
+    ),
     maxRequestBytes: numericEnvironment('MOCK_MANUFACTURER_MAX_REQUEST_BYTES', DEFAULT_MAX_REQUEST_BYTES),
     requestTimeoutMs: numericEnvironment('MOCK_MANUFACTURER_REQUEST_TIMEOUT_MS', DEFAULT_REQUEST_TIMEOUT_MS),
     maxQueueKeys: numericEnvironment('MOCK_MANUFACTURER_MAX_QUEUE_KEYS', DEFAULT_MAX_QUEUE_KEYS),
@@ -1123,6 +1926,26 @@ async function runFromCommandLine(): Promise<void> {
     maxTelemetryStreams: numericEnvironment(
       'MOCK_MANUFACTURER_MAX_TELEMETRY_STREAMS',
       DEFAULT_MAX_TELEMETRY_STREAMS
+    ),
+    asyncAckCallbackUrl: process.env.MOCK_MANUFACTURER_ACK_CALLBACK_URL,
+    asyncAckCallbackCredentials: Object.keys(asyncAckCallbackCredentials).length
+      ? asyncAckCallbackCredentials
+      : undefined,
+    asyncAckDelayMs: numericEnvironment(
+      'MOCK_MANUFACTURER_ACK_DELAY_MS',
+      DEFAULT_ASYNC_ACK_DELAY_MS
+    ),
+    asyncAckTimeoutMs: numericEnvironment(
+      'MOCK_MANUFACTURER_ACK_TIMEOUT_MS',
+      DEFAULT_ASYNC_ACK_TIMEOUT_MS
+    ),
+    maxAsyncAckRequestBytes: numericEnvironment(
+      'MOCK_MANUFACTURER_ACK_MAX_REQUEST_BYTES',
+      DEFAULT_MAX_ASYNC_ACK_REQUEST_BYTES
+    ),
+    maxAsyncAckResponseBytes: numericEnvironment(
+      'MOCK_MANUFACTURER_ACK_MAX_RESPONSE_BYTES',
+      DEFAULT_MAX_ASYNC_ACK_RESPONSE_BYTES
     ),
     seed: numericEnvironment('MOCK_MANUFACTURER_SEED', 0x564c3032),
     apiKey: process.env.MOCK_MANUFACTURER_API_KEY,
