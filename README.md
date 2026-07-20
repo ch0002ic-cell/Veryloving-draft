@@ -58,7 +58,7 @@ When dated evidence or sections differ, use this precedence:
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 20 July 2026 with 542 core, 29 TypeScript-adapter/simulator, and 7 manufacturer-bridge tests (578 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse mock-bridge evidence with vendor/hardware evidence.
+Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 20 July 2026 with 576 core, 33 TypeScript-adapter/simulator, 7 manufacturer-bridge, and 146 AI-native tests (762 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -77,9 +77,10 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic core tests | **PASS — 542/542** | Fresh full candidate run on 20 July 2026. |
-| TypeScript robot adapters and manufacturer simulator | **PASS — 29/29** | Fresh coverage: 99.45% statements/lines, 92.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
+| Deterministic core tests | **PASS — 576/576** | Fresh full candidate run on 20 July 2026. |
+| TypeScript robot adapters and manufacturer simulator | **PASS — 33/33** | Fresh coverage: 99.45% statements/lines, 92.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
 | Manufacturer bridge integration | **PASS — 7/7** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
+| AI-native state, memory, edge, orchestration, and scenario integration | **PASS — 146/146** | Five deterministic cross-device workflows, authenticated ingress contracts, account privacy lifecycle, edge simulation, and a real loopback manufacturer-ACK path; 97.63% statements/lines, 87.13% branches, and 98.55% functions. This is not clinical/model/hardware/provider validation. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
 | Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
@@ -116,6 +117,7 @@ VeryLoving is an Expo Router personal-safety companion with account onboarding, 
 | Voice AI | Hume WebSocket client, PCM path, playback, barge-in cleanup, tools, history, queue, reconnect, and offline text fallback. | Production Hume/CLM, signed audio routes, latency/AEC, background/lock-screen behavior, and load remain open. |
 | BLE/NorthStar | Permission/state handling, filtered scan, GATT validation, battery, optional notifications, commands, disconnect, persistence, and reconnect. | Firmware schema, decoded events, command authorization, ownership/secure pairing, DFU/reset policy, and physical hardware remain open. |
 | Home companion robot | Server-side TypeScript HAL, provisional Yongyida cloud-bridge and Jiangzhi Android-edge adapters, immutable per-robot vendor/binding generations, signed/expiring actions, durable outbox and adapter/epoch-bound ACKs, bounded mixed-vendor telemetry snapshot polling, replay-safe QR pairing with same-account interrupted-response recovery, crash-resumable factory reset and privacy deletion sagas, and a test-only bridge. | Neither vendor has supplied an approved API/HAL or exact production hardware. Real vendor translation/event ingestion, durable downstream idempotency/epoch fencing, telemetry provenance/medical validity, distributed per-device queue leases, and all physical safety claims remain production gates. Exactly one long-lived ActionGateway delivery replica is required meanwhile. |
+| AI-native dual-device collaboration | AES-256-GCM account state, summary Memory Net, bounded Hume context, priority/idempotent/cancellable Scenario Engine, authenticated edge routing, five cross-device workflows, simulated wearable/robot inference, and a redacted dual-device dashboard. | Production repositories/providers and four ingress trust hooks must be injected; scenario admission remains explicitly single-replica. Hume, notifications/SMS, vendor contracts, model validation, and physical hardware remain external gates. |
 | Settings | Language, voice/persona, medication reminders, contacts, medical profile, Saved Places, dual devices, history, privacy/export/delete. | Account-sensitive local stores are encrypted; remote workflows still depend on production services. |
 | Globalization | Profile-gated language picker, immediate same-direction update, durable selection, RTL transition, full-catalog QA mode. | Machine-generated safety copy and RTL visual behavior require human/signed-device approval. |
 | Friends | Honest empty/planned surface. | No account-backed invite/friend API, consent model, or abuse controls; no fake friend data is shipped. |
@@ -144,7 +146,7 @@ Outer startup error boundary
 
 ```text
 Expo mobile app
-  ├── HTTPS auth, phone, safety, privacy, CLM/tools
+  ├── HTTPS auth, phone, safety, privacy, AI-native scenarios/edge relay, CLM/tools
   │      └── Vercel HTTP Function or reviewed container
   │              ├── DynamoDB
   │              └── Twilio Verify / optional approved model
@@ -153,6 +155,8 @@ Expo mobile app
          └── long-lived Railway/ECS-compatible container
                  └── Hume EVI
 
+Wearable/robot edge observations ── authenticated ingress ──> Scenario Engine
+Scenario Engine ── signed Action Gateway ──> BLE wearable / vendor robot bridge
 Hume EVI ── authenticated HTTPS SSE ──> /chat/completions
 ```
 
@@ -165,11 +169,13 @@ The HTTP-only Vercel adapter is [`server/api/index.js`](./server/api/index.js). 
 | `GET /health` | None | Liveness only. |
 | `POST /chat/completions` | Independent Hume CLM bearer | OpenAI-compatible SSE CLM with safety handling and optional approved upstream. |
 | `POST /v1/auth/exchange` | Provider assertion | Verifies Apple/Google identity and issues first-party session tokens. |
-| `POST /v1/auth/refresh` | Refresh JWT | Rotates the client-held pair; durable family revocation is still absent. |
+| `POST /v1/auth/refresh` | Refresh JWT | Atomically rotates the durable refresh family; replay revokes the family. |
 | `POST /v1/auth/phone/start` and `/verify` | Signed bounded challenge | Uses Twilio Verify when enabled and configured. |
 | Emergency-contact routes | Scoped app JWT | Account-partitioned read/create/update/delete. |
 | Safety-session and SOS routes | Scoped app JWT | Idempotent current-state and durable SOS acceptance; no delivery claim. |
-| Privacy export/delete routes | Scoped app JWT | Account Dynamo records only; not full vendor orchestration or session revocation. |
+| Privacy export/delete routes | Scoped app JWT | Coordinates account sessions, safety/device/action data, AI-native state/memory/scenarios, and configured manufacturer lifecycle providers behind deletion fences. |
+| `POST /v1/scenarios`, status, and confirmed cancellation routes | Scoped app JWT | Starts only the server-mapped AI Angel flow, derives devices server-side, and exposes account-scoped execution state. |
+| Wearable/robot inference and trusted context-event routes | App JWT, robot callback credential, or scheduler credential according to route | Separate trust boundaries validate source binding, freshness, shape, and account ownership before edge routing. |
 | `GET` upgrade `/api/voice/hume-ws` | JWT in first TLS frame with `voice:connect` | Opens Hume only after app authentication. |
 | `POST /v1/safety/tips` | Scoped app JWT | Curated safety guidance for tool calls. |
 
@@ -479,6 +485,7 @@ npm run validate-env
 | Voice | WSS proxy URL, Hume config/customization/branded-voice IDs, CLM readiness flag | Hume API key, CLM bearer, voice allowlist, session verification, optional upstream key |
 | Maps | Public runtime Mapbox token | Build-only Mapbox download token |
 | Safety | Safety-backend readiness flag | Dynamo table/region/retention and least-privilege AWS identity |
+| AI-native collaboration | No public credential or device-target variable | Injected encrypted/scenario repositories, Hume/signal/notification/SMS/analytics providers, privacy erasure, and authenticated binding resolvers |
 | Localization | RTL-QA and full-catalog flags plus build-profile metadata | Native-speaker approvals and release policy |
 | VL01 | Readiness flag and approved public GATT UUID metadata | Firmware specification, security/ownership policy, hardware evidence |
 
@@ -525,6 +532,7 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
 | Phone verification | `PHONE_AUTH_ENABLED`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `PHONE_AUTH_CHALLENGE_TTL_SECONDS`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | Independent secrets; stable subject derivation; Twilio credentials remain server-only. |
 | Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. |
+| AI-native orchestration | `AI_NATIVE_ENABLED`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED`, `AI_NATIVE_SINGLE_REPLICA` | Runtime enablement requires an injected durable `createAINativeSystem(...)`, durable privacy lifecycle, and all four authenticated ingress/binding hooks. Once an environment stores AI-native data, keep the lifecycle flag enabled during runtime outages so export/deletion cannot omit it. Production intentionally fails closed unless the current single-replica admission gate is explicit. |
 | Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ROBOT_RESET_RECOVERY_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `ROBOT_PAIRING_TOKEN_SECRET`, `ACTION_GATEWAY_SINGLE_REPLICA`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI uses `user_index_pk`/`user_index_sk`; the reset-recovery GSI uses `resetRecoveryPk`/`resetRecoveryAt`. Pairing HMAC and action-signing keys are independent server secrets. Current production delivery must explicitly select one ActionGateway replica until distributed per-device leases exist. |
 | Legacy manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | Historical `manufacturer-default` bindings only. HTTPS endpoints and API key are server-only; modern vendor bindings never fall back to this shared client. |
 | Vendor robot adapters/lifecycle | `YONGYIDA_ADAPTER_ENABLED`, `YONGYIDA_ADAPTER_ID`, `YONGYIDA_BRIDGE_URL`, `YONGYIDA_BRIDGE_API_KEY`, `YONGYIDA_CALLBACK_API_KEY`, `YONGYIDA_PAIRING_VERIFY_URL`, `YONGYIDA_RESET_URL`, `YONGYIDA_PRIVACY_EXPORT_URL`, `YONGYIDA_PRIVACY_DELETE_URL`, and the corresponding `JIANGZHI_*` variables | Both adapters can be enabled simultaneously. Each modern binding uses only its immutable adapter's bridge, callback credential, pairing verifier, reset, export, and deletion handlers; missing handlers fail closed without cross-vendor fallback or local deletion. These are provisional Veryloving bridge settings, not published manufacturer endpoints. |
@@ -804,6 +812,10 @@ npm run validate-env
 npm run lint
 npm test
 npm run typecheck:adapters
+npm run typecheck:manufacturer-mock
+npm run typecheck:ai-native
+npm run test:manufacturer-mock
+npm run test:ai-native
 npm run test:soak:adapters
 git diff --check
 npx expo-doctor
@@ -836,6 +848,8 @@ npm run clm:start
 ```
 
 `server/.env` is ignored and must contain legitimate development credentials only when required by the operator. Never print or paste it.
+
+For the loopback-only dual-device simulator, use `npm run mock:manufacturer`, then open `http://127.0.0.1:3001/dashboard`. It is rejected in production and does not prove vendor, clinical, or physical-device behavior.
 
 ### Container and cloud deployment boundary
 
@@ -900,7 +914,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 
 ## 18. Consolidation map
 
-This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), and [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
+This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md), [`docs/ai-native-integration-guide.md`](./docs/ai-native-integration-guide.md), [`docs/api-reference-ai-native.md`](./docs/api-reference-ai-native.md), [`docs/troubleshooting-ai-native.md`](./docs/troubleshooting-ai-native.md), and [`docs/demo-script.md`](./docs/demo-script.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |
@@ -930,6 +944,7 @@ This README is the primary consolidated project and release handoff. Specialist 
 - Voice: [`hume-evi.js`](./src/services/websocket/hume-evi.js), [`audio.js`](./src/services/audio.js), [`useHumeVoiceCall.js`](./src/hooks/useHumeVoiceCall.js), [`voice-gateway.cjs`](./server/voice-gateway.cjs)
 - Backend: [`clm-server.cjs`](./server/clm-server.cjs), [`auth-session.cjs`](./server/auth-session.cjs), [`safety-api.cjs`](./server/safety-api.cjs), [`server/api/index.js`](./server/api/index.js)
 - Product 2 HAL: [`RobotAdapter.ts`](./server/src/adapters/RobotAdapter.ts), [`robot-adapter-runtime.cjs`](./server/robot-adapter-runtime.cjs), [architecture](./docs/robot-hal-architecture.md), [integration guide](./docs/robot-adapter-integration-guide.md), [manufacturer research](./docs/hardware-partner-research.md), [decision matrix](./docs/hardware-partner-decision-matrix.md), [API intake requirements](./docs/manufacturer-api-requirements.md), [external-dependency dashboard](./docs/external-dependencies-dashboard.md), [timeline](./docs/integration-timeline.md), [ask templates](./docs/ask-templates.md), and [bug log](./docs/robot-adapter-bug-log.md)
+- AI-native dual-device layer: [`AINativeSystem.ts`](./server/src/orchestration/AINativeSystem.ts), [`ScenarioEngine.ts`](./server/src/orchestration/ScenarioEngine.ts), [`EdgeScenarioRouter.ts`](./server/src/orchestration/EdgeScenarioRouter.ts), [`UserState.ts`](./server/src/models/UserState.ts), [`MemoryNet.ts`](./server/src/memory/MemoryNet.ts), [integration guide](./docs/ai-native-integration-guide.md), [API reference](./docs/api-reference-ai-native.md), [troubleshooting](./docs/troubleshooting-ai-native.md), and [demo script](./docs/demo-script.md)
 - BLE: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services/vl01-protocol.js)
 - Native/build: [`app.config.js`](./app.config.js), [`eas.json`](./eas.json), [`plugins/`](./plugins), [`server/Dockerfile`](./server/Dockerfile), [`railway.toml`](./railway.toml)
 

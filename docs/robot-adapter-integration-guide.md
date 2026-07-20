@@ -186,6 +186,10 @@ MOCK_MANUFACTURER_MAX_QUEUED_COMMANDS_TOTAL
 MOCK_MANUFACTURER_MAX_CONNECTIONS
 MOCK_MANUFACTURER_MAX_CONCURRENT_REQUESTS
 MOCK_MANUFACTURER_MAX_TELEMETRY_STREAMS
+MOCK_MANUFACTURER_FALL_EVENT_RATE
+MOCK_MANUFACTURER_STRESS_EVENT_RATE
+MOCK_MANUFACTURER_MEDICATION_REMINDER_EVERY_TICKS
+MOCK_MANUFACTURER_MAX_SIMULATED_DEVICES
 ```
 
 `MOCK_MANUFACTURER_API_KEY` is simulator-only. If omitted, the documented placeholder `mock-server-only-api-key` is used. When the mock URL override is active, runtime configuration replaces both vendor outbound keys with this dedicated mock key, rejects any mock key equal to a configured vendor bridge key, and disables real pairing/reset/privacy URLs. This prevents mock-mode traffic or existing vendor credentials from reaching an external lifecycle endpoint.
@@ -216,6 +220,8 @@ export JIANGZHI_CALLBACK_API_KEY=mock-jiangzhi-callback-key
 `MOCK_MANUFACTURER_URL` accepts only a loopback origin with no path, query, fragment, or embedded credentials. It automatically permits local HTTP for that origin. Configuration loading rejects the override unless `NODE_ENV` is exactly `development` or `test`, and rejects it unconditionally under production configuration.
 
 The provisional `signed-actions` routes fail closed with `503 SIGNING_KEY_NOT_CONFIGURED` unless `ACTION_SIGNING_PUBLIC_KEY` contains the matching Ed25519 public key. With the key configured, the simulator verifies the exact signed payload, rejects forged or expired envelopes, and permits only byte-equivalent retries for a previously accepted action ID.
+
+Open `http://127.0.0.1:3001/dashboard` for the redacted dual-device state, scenario lifecycle records, and last ten events. The authenticated JSON projection is `GET /api/v1/simulation/dashboard`; wearable and robot SSE streams are exposed only on the documented loopback development surface. Camera commands accept only an opaque `session_id` and return a correlated readiness reference, never a stream URL or raw media.
 
 Run the focused end-to-end verification:
 
@@ -478,7 +484,7 @@ npm run lint
 
 The Jest configuration enforces 90% global statements, branches, functions, and lines for executable adapter implementation files. Do not describe the target as met unless the current command exits zero and prints coverage at or above each threshold.
 
-The mock server refuses to load unless `NODE_ENV=test`. It must remain under `tests/integration`; do not package or deploy it with the server. Its deterministic controls cover:
+The TypeScript manufacturer simulator refuses `NODE_ENV=production`, binds to loopback by default, lives under `server/mocks`, and is excluded from the production server image. A separate legacy bridge fixture remains test-only under `tests/integration`. The deterministic simulator controls cover:
 
 - both vendor prefixes and sessions;
 - signature and envelope verification;
@@ -487,6 +493,7 @@ The mock server refuses to load unless `NODE_ENV=test`. It must remain under `te
 - 202 versus synchronous ACK behavior;
 - the bounded provisional telemetry snapshot, including status, battery, vitals, location/path, indoor position, safety events, medication acknowledgements, and stale/future suppression;
 - authentication failure, HTTP 500, timeout, malformed JSON, and oversized payloads.
+- simultaneous wearable/robot telemetry, bounded synthetic fall/stress/medication events, camera-session correlation, and the redacted dashboard.
 
 These tests prove Veryloving contract behavior only. They do not exercise Hume's hosted service, a manufacturer sandbox, a real Android image, a real robot, or medical instruments.
 
