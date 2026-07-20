@@ -1,6 +1,6 @@
 # Robot Adapter Integration Guide
 
-Last reviewed: 18 July 2026
+Last reviewed: 20 July 2026
 
 This guide covers the Veryloving Product 2 prototype for Yongyida and Jiangzhi. The runnable endpoints are test/Veryloving bridge contracts. They are not official manufacturer endpoints and must not be pointed at guessed vendor URLs.
 
@@ -18,7 +18,8 @@ The repository contains:
 - mixed-vendor routing, signed actions, per-device queues, durable outbox recovery, and asynchronous ACK handling in [`server/action-gateway.cjs`](../server/action-gateway.cjs);
 - QR ownership binding, one-time claim enforcement, and same-account interrupted-pairing recovery in [`server/robot-pairing.cjs`](../server/robot-pairing.cjs);
 - an account-authorized, bounded telemetry snapshot path for status, battery, vitals, location, navigation path, indoor position, safety events, and medication acknowledgements;
-- a test-only strict manufacturer bridge in [`tests/integration/manufacturer-mock-server.js`](../tests/integration/manufacturer-mock-server.js).
+- a test-only strict manufacturer bridge in [`tests/integration/manufacturer-mock-server.js`](../tests/integration/manufacturer-mock-server.js); and
+- a loopback-only development simulator in [`server/mocks/ManufacturerMockServer.ts`](../server/mocks/ManufacturerMockServer.ts), exposing the generic assumed-manufacturer API and both provisional adapter contracts.
 
 The final translation from the provisional bridge to a real Yongyida API or Jiangzhi SDK/HAL is not implemented because neither vendor has supplied a verified partner contract. Real hardware behavior, vendor latency, and medical data are unvalidated.
 
@@ -103,6 +104,7 @@ Follow the main server environment documentation for authentication, Hume, push 
 | `ROBOT_ADAPTER_RETRY_BASE_MS` | `100` | Initial exponential backoff |
 | `ROBOT_ADAPTER_RETRY_MAX_MS` | `2000` | Maximum backoff |
 | `ROBOT_ADAPTER_ALLOW_INSECURE_HTTP` | `false` | Test/development only; ignored in production |
+| `MOCK_MANUFACTURER_URL` | unset | Development/test-only loopback origin overriding both bridge URLs |
 
 Production adapter and callback keys are required by the runtime validator to be at least 32 characters. Every callback secret must differ from every outbound and callback secret across the enabled registry; startup fails closed on any collision. Length is only a minimum validation—use independently generated high-entropy secrets and rotate them through the secret manager.
 
@@ -154,6 +156,89 @@ ACTION_GATEWAY_SINGLE_REPLICA=true
 ```
 
 `.invalid` is intentional; replace it only with a controlled bridge that implements the documented provisional contract or a reviewed successor.
+
+### 3.7 Local manufacturer simulator — PASS
+
+The simulator is a development aid based on Veryloving-owned assumptions. It is not manufacturer documentation, a clinical-data source, a vendor conformance result, or a production service. It is omitted from the production adapter build and Docker image, binds to loopback by default, and refuses to start when `NODE_ENV=production`.
+
+Build and start it in one terminal:
+
+```bash
+NODE_ENV=development \
+MOCK_MANUFACTURER_FAILURE_RATE=0.05 \
+npm run mock:manufacturer
+```
+
+Defaults are port `3001`, 50–200 ms deterministic seeded latency/failure selection, a 5% simulated failure rate, and 1 Hz telemetry. Set `MOCK_MANUFACTURER_FAILURE_RATE=0` for a deterministic happy-path manual run. Tests construct the simulator with failure injection disabled unless a test explicitly enables it. Optional controls are:
+
+```text
+MOCK_MANUFACTURER_PORT
+MOCK_MANUFACTURER_LATENCY_MIN_MS
+MOCK_MANUFACTURER_LATENCY_MAX_MS
+MOCK_MANUFACTURER_FAILURE_RATE
+MOCK_MANUFACTURER_TELEMETRY_INTERVAL_MS
+MOCK_MANUFACTURER_SEED
+MOCK_MANUFACTURER_API_KEY
+MOCK_MANUFACTURER_MAX_REQUEST_BYTES
+MOCK_MANUFACTURER_REQUEST_TIMEOUT_MS
+MOCK_MANUFACTURER_MAX_QUEUE_KEYS
+MOCK_MANUFACTURER_MAX_QUEUED_COMMANDS_TOTAL
+MOCK_MANUFACTURER_MAX_CONNECTIONS
+MOCK_MANUFACTURER_MAX_CONCURRENT_REQUESTS
+MOCK_MANUFACTURER_MAX_TELEMETRY_STREAMS
+```
+
+`MOCK_MANUFACTURER_API_KEY` is simulator-only. If omitted, the documented placeholder `mock-server-only-api-key` is used. When the mock URL override is active, runtime configuration replaces both vendor outbound keys with this dedicated mock key, rejects any mock key equal to a configured vendor bridge key, and disables real pairing/reset/privacy URLs. This prevents mock-mode traffic or existing vendor credentials from reaching an external lifecycle endpoint.
+
+The generic assumed-manufacturer surface is:
+
+```text
+POST /api/v1/authenticate
+POST /api/v1/command
+GET  /api/v1/status/{deviceId}
+GET  /api/v1/telemetry/{deviceId}   # Server-Sent Events, one event/second
+```
+
+The same process implements the actual provisional paths used by the adapters under `/v1/veryloving/yongyida-cloud/*` and `/v1/veryloving/jiangzhi-edge/*`. The focused test therefore exercises each adapter over real loopback HTTP rather than replacing `fetch` with a stub.
+
+To direct both enabled adapters to the simulator, set this server-only configuration in another terminal. Callback keys remain distinct because normal runtime credential-isolation checks still apply:
+
+```bash
+export NODE_ENV=development
+export MOCK_MANUFACTURER_URL=http://127.0.0.1:3001/
+export MOCK_MANUFACTURER_API_KEY=mock-server-only-api-key
+export YONGYIDA_ADAPTER_ENABLED=true
+export YONGYIDA_CALLBACK_API_KEY=mock-yongyida-callback-key
+export JIANGZHI_ADAPTER_ENABLED=true
+export JIANGZHI_CALLBACK_API_KEY=mock-jiangzhi-callback-key
+```
+
+`MOCK_MANUFACTURER_URL` accepts only a loopback origin with no path, query, fragment, or embedded credentials. It automatically permits local HTTP for that origin. Configuration loading rejects the override unless `NODE_ENV` is exactly `development` or `test`, and rejects it unconditionally under production configuration.
+
+The provisional `signed-actions` routes fail closed with `503 SIGNING_KEY_NOT_CONFIGURED` unless `ACTION_SIGNING_PUBLIC_KEY` contains the matching Ed25519 public key. With the key configured, the simulator verifies the exact signed payload, rejects forged or expired envelopes, and permits only byte-equivalent retries for a previously accepted action ID.
+
+Run the focused end-to-end verification:
+
+```bash
+npm run typecheck:manufacturer-mock
+npm run test:manufacturer-mock
+```
+
+For manual generic-API inspection, authenticate first and use the returned development bearer token:
+
+```bash
+curl --fail-with-body \
+  -H 'Authorization: Bearer mock-server-only-api-key' \
+  -H 'Content-Type: application/json' \
+  --data '{"device_id":"lab-robot-001"}' \
+  http://127.0.0.1:3001/api/v1/authenticate
+
+curl --no-buffer \
+  -H 'Authorization: Bearer mock-development-access-token' \
+  http://127.0.0.1:3001/api/v1/telemetry/lab-robot-001
+```
+
+Requests and responses are bounded, commands are serialized per vendor/device while unrelated devices remain independent, retries require the same idempotency key and payload, and shutdown clears listeners, timers, streams, and sockets. Structured logs contain route templates and one-way device references; headers, bearer tokens, bodies, raw device IDs, medical values, and credentials are never logged.
 
 ## 4. Starting the gateway
 

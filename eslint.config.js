@@ -6,7 +6,8 @@ module.exports = [
       'coverage/**',
       'ios/**',
       'node_modules/**',
-      'server/dist/**'
+      'server/dist/**',
+      'server/dist-mocks/**'
     ]
   },
   {

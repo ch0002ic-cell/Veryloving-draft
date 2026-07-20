@@ -2,6 +2,7 @@ node_modules/
 .expo/
 dist/
 server/dist/
+server/dist-mocks/
 coverage/
 build/
 /ios/

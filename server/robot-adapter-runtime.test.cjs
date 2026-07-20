@@ -283,6 +283,52 @@ describe('RobotAdapterRuntime', () => {
     }), /HTTPS/);
   });
 
+  test('development mock URL safely overrides both vendor bridges and fails closed elsewhere', () => {
+    const base = {
+      NODE_ENV: 'test',
+      MOCK_MANUFACTURER_URL: 'http://127.0.0.1:3001/',
+      YONGYIDA_ADAPTER_ENABLED: 'true',
+      YONGYIDA_BRIDGE_API_KEY: 'sentinel-real-yongyida-key',
+      YONGYIDA_CALLBACK_API_KEY: 'mock-yongyida-callback-key',
+      YONGYIDA_PAIRING_VERIFY_URL: 'https://real-yongyida.example.test/pairing',
+      JIANGZHI_ADAPTER_ENABLED: 'true',
+      JIANGZHI_BRIDGE_API_KEY: 'sentinel-real-jiangzhi-key',
+      JIANGZHI_CALLBACK_API_KEY: 'mock-jiangzhi-callback-key',
+      JIANGZHI_RESET_URL: 'https://real-jiangzhi.example.test/reset'
+    };
+    const loaded = adapterConfigurationsFromEnv(base);
+    assert.deepEqual(loaded.map(({ baseUrl, apiKey, allowInsecureHttp }) => ({ baseUrl, apiKey, allowInsecureHttp })), [
+      { baseUrl: 'http://127.0.0.1:3001/', apiKey: 'mock-server-only-api-key', allowInsecureHttp: true },
+      { baseUrl: 'http://127.0.0.1:3001/', apiKey: 'mock-server-only-api-key', allowInsecureHttp: true }
+    ]);
+    assert.equal(JSON.stringify(loaded).includes('sentinel-real-'), false);
+    assert.equal(JSON.stringify(loaded).includes('real-yongyida.example.test'), false);
+    assert.equal(JSON.stringify(loaded).includes('real-jiangzhi.example.test'), false);
+    assert.deepEqual(
+      adapterConfigurationsFromEnv({ ...base, MOCK_MANUFACTURER_API_KEY: 'dedicated-custom-mock-key' })
+        .map(({ apiKey }) => apiKey),
+      ['dedicated-custom-mock-key', 'dedicated-custom-mock-key']
+    );
+    assert.throws(() => adapterConfigurationsFromEnv({
+      ...base,
+      MOCK_MANUFACTURER_API_KEY: 'sentinel-real-yongyida-key'
+    }), /must differ/);
+
+    assert.throws(() => adapterConfigurationsFromEnv({
+      ...base,
+      NODE_ENV: 'production',
+      MOCK_MANUFACTURER_URL: 'https://127.0.0.1:3001/'
+    }), /allowed only/);
+    assert.throws(() => adapterConfigurationsFromEnv({
+      ...base,
+      MOCK_MANUFACTURER_URL: 'http://manufacturer.example.test:3001/'
+    }), /loopback origin/);
+    assert.throws(() => adapterConfigurationsFromEnv({
+      ...base,
+      MOCK_MANUFACTURER_URL: 'http://127.0.0.1:3001/not-root/'
+    }), /without a path/);
+  });
+
   test('reset and privacy use only the selected adapter endpoints and credential', async () => {
     const calls = [];
     const fetchImpl = async (url, options) => {

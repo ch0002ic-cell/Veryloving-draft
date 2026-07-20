@@ -12,6 +12,7 @@ const ADAPTER_ID_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/;
 const SUPPORTED_VENDORS = new Set(['yongyida', 'jiangzhi']);
 const MEDICATION_ACK_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+const DEFAULT_MOCK_MANUFACTURER_API_KEY = 'mock-server-only-api-key';
 
 function safeEqual(left, right) {
   const a = Buffer.from(String(left || ''), 'utf8');
@@ -41,6 +42,37 @@ function normalizeURL(value, label, { production }) {
     throw new Error(`${label} must not contain credentials, query parameters, or fragments`);
   }
   return parsed.toString();
+}
+
+function mockManufacturerURLFromEnv(env, { production }) {
+  const value = env.MOCK_MANUFACTURER_URL;
+  if (!value) return '';
+  if (production || !['development', 'test'].includes(env.NODE_ENV)) {
+    throw new Error('MOCK_MANUFACTURER_URL is allowed only when NODE_ENV is development or test');
+  }
+  const normalized = normalizeURL(value, 'Mock manufacturer URL', { production: false });
+  const parsed = new URL(normalized);
+  const hostname = parsed.hostname.replace(/^\[|\]$/g, '');
+  if (!['localhost', '127.0.0.1', '::1'].includes(hostname)
+    || !['http:', 'https:'].includes(parsed.protocol)
+    || parsed.pathname !== '/') {
+    throw new Error('MOCK_MANUFACTURER_URL must be a loopback origin without a path');
+  }
+  return normalized;
+}
+
+function mockManufacturerAPIKeyFromEnv(env, mockManufacturerURL) {
+  if (!mockManufacturerURL) return '';
+  const apiKey = env.MOCK_MANUFACTURER_API_KEY || DEFAULT_MOCK_MANUFACTURER_API_KEY;
+  if (typeof apiKey !== 'string' || apiKey.length < 8 || apiKey.length > 4096) {
+    throw new Error('MOCK_MANUFACTURER_API_KEY is invalid');
+  }
+  const vendorKeys = [env.YONGYIDA_BRIDGE_API_KEY, env.JIANGZHI_BRIDGE_API_KEY]
+    .filter((value) => typeof value === 'string' && value.length > 0);
+  if (vendorKeys.includes(apiKey)) {
+    throw new Error('MOCK_MANUFACTURER_API_KEY must differ from vendor bridge credentials');
+  }
+  return apiKey;
 }
 
 function boundedInteger(value, fallback, minimum, maximum, label) {
@@ -87,30 +119,32 @@ function normalizeConfiguration(raw, { production = false } = {}) {
 }
 
 function adapterConfigurationsFromEnv(env = process.env, { production = env.NODE_ENV === 'production' } = {}) {
+  const mockManufacturerURL = mockManufacturerURLFromEnv(env, { production });
+  const mockManufacturerAPIKey = mockManufacturerAPIKeyFromEnv(env, mockManufacturerURL);
   const definitions = [
     {
       enabled: env.YONGYIDA_ADAPTER_ENABLED === 'true',
       vendor: 'yongyida',
       adapterId: env.YONGYIDA_ADAPTER_ID || 'yongyida-cloud',
-      baseUrl: env.YONGYIDA_BRIDGE_URL || '',
-      apiKey: env.YONGYIDA_BRIDGE_API_KEY || '',
+      baseUrl: mockManufacturerURL || env.YONGYIDA_BRIDGE_URL || '',
+      apiKey: mockManufacturerAPIKey || env.YONGYIDA_BRIDGE_API_KEY || '',
       callbackApiKey: env.YONGYIDA_CALLBACK_API_KEY || '',
-      pairingVerifyURL: env.YONGYIDA_PAIRING_VERIFY_URL || '',
-      resetURL: env.YONGYIDA_RESET_URL || '',
-      privacyExportURL: env.YONGYIDA_PRIVACY_EXPORT_URL || '',
-      privacyDeleteURL: env.YONGYIDA_PRIVACY_DELETE_URL || ''
+      pairingVerifyURL: mockManufacturerURL ? '' : env.YONGYIDA_PAIRING_VERIFY_URL || '',
+      resetURL: mockManufacturerURL ? '' : env.YONGYIDA_RESET_URL || '',
+      privacyExportURL: mockManufacturerURL ? '' : env.YONGYIDA_PRIVACY_EXPORT_URL || '',
+      privacyDeleteURL: mockManufacturerURL ? '' : env.YONGYIDA_PRIVACY_DELETE_URL || ''
     },
     {
       enabled: env.JIANGZHI_ADAPTER_ENABLED === 'true',
       vendor: 'jiangzhi',
       adapterId: env.JIANGZHI_ADAPTER_ID || 'jiangzhi-edge',
-      baseUrl: env.JIANGZHI_BRIDGE_URL || '',
-      apiKey: env.JIANGZHI_BRIDGE_API_KEY || '',
+      baseUrl: mockManufacturerURL || env.JIANGZHI_BRIDGE_URL || '',
+      apiKey: mockManufacturerAPIKey || env.JIANGZHI_BRIDGE_API_KEY || '',
       callbackApiKey: env.JIANGZHI_CALLBACK_API_KEY || '',
-      pairingVerifyURL: env.JIANGZHI_PAIRING_VERIFY_URL || '',
-      resetURL: env.JIANGZHI_RESET_URL || '',
-      privacyExportURL: env.JIANGZHI_PRIVACY_EXPORT_URL || '',
-      privacyDeleteURL: env.JIANGZHI_PRIVACY_DELETE_URL || ''
+      pairingVerifyURL: mockManufacturerURL ? '' : env.JIANGZHI_PAIRING_VERIFY_URL || '',
+      resetURL: mockManufacturerURL ? '' : env.JIANGZHI_RESET_URL || '',
+      privacyExportURL: mockManufacturerURL ? '' : env.JIANGZHI_PRIVACY_EXPORT_URL || '',
+      privacyDeleteURL: mockManufacturerURL ? '' : env.JIANGZHI_PRIVACY_DELETE_URL || ''
     }
   ];
   return definitions.filter((entry) => entry.enabled).map((entry) => normalizeConfiguration({
@@ -119,7 +153,9 @@ function adapterConfigurationsFromEnv(env = process.env, { production = env.NODE
     maxAttempts: Number(env.ROBOT_ADAPTER_MAX_ATTEMPTS || 3),
     retryBaseDelayMs: Number(env.ROBOT_ADAPTER_RETRY_BASE_MS || 100),
     retryMaxDelayMs: Number(env.ROBOT_ADAPTER_RETRY_MAX_MS || 2000),
-    allowInsecureHttp: env.ROBOT_ADAPTER_ALLOW_INSECURE_HTTP === 'true'
+    allowInsecureHttp: mockManufacturerURL
+      ? new URL(mockManufacturerURL).protocol === 'http:'
+      : env.ROBOT_ADAPTER_ALLOW_INSECURE_HTTP === 'true'
   }, { production }));
 }
 
@@ -423,6 +459,8 @@ module.exports = {
   adapterConfigurationsFromEnv,
   createRobotAdapterRuntime,
   loadCompiledAdapterModule,
+  mockManufacturerAPIKeyFromEnv,
+  mockManufacturerURLFromEnv,
   normalizeConfiguration,
   safeEqual
 };
