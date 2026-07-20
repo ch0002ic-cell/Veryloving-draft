@@ -28,3 +28,17 @@ test('redacted logger sanitizes before forwarding to its configured sink', () =>
     { pairingToken: '[REDACTED]', code: 'REPLAY' }
   ]]);
 });
+
+test('server log sanitizer redacts device identifiers in common field styles', () => {
+  assert.deepEqual(sanitizeServerLog({
+    deviceId: 'wearable-private-1',
+    device_id: 'robot-private-1',
+    sourceDeviceRef: 'edge-private-1',
+    nested: { device_ref: 'binding-private-1' }
+  }), {
+    deviceId: '[REDACTED]',
+    device_id: '[REDACTED]',
+    sourceDeviceRef: '[REDACTED]',
+    nested: { device_ref: '[REDACTED]' }
+  });
+});

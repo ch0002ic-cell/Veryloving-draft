@@ -114,6 +114,9 @@ function envConfig(overrides = {}) {
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || '',
     twilioVerifyServiceSid: process.env.TWILIO_VERIFY_SERVICE_SID || '',
     safetyApiEnabled: process.env.SAFETY_API_ENABLED === 'true',
+    aiNativeEnabled: process.env.AI_NATIVE_ENABLED === 'true',
+    aiNativeDataLifecycleEnabled: process.env.AI_NATIVE_DATA_LIFECYCLE_ENABLED === 'true',
+    aiNativeSingleReplica: process.env.AI_NATIVE_SINGLE_REPLICA === 'true',
     safetyTableName: process.env.SAFETY_TABLE_NAME || '',
     authSessionTableName: process.env.AUTH_SESSION_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
     safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
@@ -168,6 +171,34 @@ function validateServerURL(value, name, { production = false } = {}) {
 function validateServerConfig(config) {
   const production = config.nodeEnv === 'production';
   const voiceGatewayRequired = config.httpOnlyDeployment !== true;
+  if (config.aiNativeEnabled && !config.aiNativeSystem) {
+    throw new Error('AI_NATIVE_ENABLED requires an injected durable AI-native system');
+  }
+  if (config.aiNativeEnabled && config.aiNativeDataLifecycleEnabled !== true) {
+    throw new Error('AI_NATIVE_ENABLED requires AI_NATIVE_DATA_LIFECYCLE_ENABLED=true');
+  }
+  if (production && config.aiNativeDataLifecycleEnabled
+    && !config.aiNativeSystem
+    && !config.aiNativePrivacyRepository) {
+    throw new Error('AI-native data lifecycle requires an injected durable privacy repository');
+  }
+  if (production && config.aiNativeEnabled) {
+    if (config.aiNativeSingleReplica !== true) {
+      throw new Error('AI_NATIVE_SINGLE_REPLICA=true is required until distributed scenario admission leases are implemented');
+    }
+    if (typeof config.resolveEdgeDeviceBinding !== 'function') {
+      throw new Error('AI-native wearable ingress requires an account-bound device resolver');
+    }
+    if (typeof config.authenticateRobotEdgeIngress !== 'function') {
+      throw new Error('AI-native robot ingress requires manufacturer/device authentication');
+    }
+    if (typeof config.resolveScenarioDevices !== 'function') {
+      throw new Error('AI-native user and voice scenarios require a server-side device resolver');
+    }
+    if (typeof config.authenticateScenarioIngress !== 'function') {
+      throw new Error('AI-native scheduled context ingress requires service authentication');
+    }
+  }
   validateServerURL(config.appAuthVerifyURL, 'APP_AUTH_VERIFY_URL', { production });
   validateServerURL(config.upstreamURL, 'CLM_UPSTREAM_URL', { production });
   validateServerURL(config.manufacturerWebhookURL, 'MANUFACTURER_WEBHOOK_URL', { production });
@@ -357,6 +388,17 @@ function validatePreparedServices(config) {
       'requestReset', 'resume', 'recover'
     ]);
   }
+  if (config.aiNativeEnabled) {
+    requireMethods(config.scenarioEngine, 'Production AI-native scenario engine', [
+      'startScenario', 'getExecution', 'cancelScenario'
+    ]);
+    requireMethods(config.edgeScenarioRouter, 'Production AI-native edge router', [
+      'ingestWearableInference', 'ingestRobotInference', 'ingestContextEvent', 'confirmCancellation'
+    ]);
+    requireMethods(config.aiNativePrivacyRepository, 'Production AI-native privacy repository', [
+      'exportUserData', 'deleteUserData'
+    ]);
+  }
   return config;
 }
 
@@ -374,6 +416,137 @@ function safeEqual(left, right) {
   const leftBuffer = Buffer.from(String(left));
   const rightBuffer = Buffer.from(String(right));
   return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+const AI_NATIVE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+
+function httpError(statusCode, code, message) {
+  return Object.assign(new Error(message), { statusCode, code });
+}
+
+function assertExactObjectKeys(value, allowed, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || Object.keys(value).some((key) => !allowed.has(key))) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', `${label} is invalid`);
+  }
+}
+
+function normalizeScenarioBinding(value, { requiredSource, sourceDeviceRef } = {}) {
+  const targets = value?.targets;
+  if (!targets || typeof targets !== 'object' || Array.isArray(targets)) {
+    throw httpError(503, 'SCENARIO_BINDING_UNAVAILABLE', 'Scenario device binding is unavailable');
+  }
+  const wearableId = targets.wearableId;
+  const homeRobotId = targets.homeRobotId;
+  if ((wearableId !== undefined && !AI_NATIVE_IDENTIFIER_PATTERN.test(wearableId))
+    || (homeRobotId !== undefined && !AI_NATIVE_IDENTIFIER_PATTERN.test(homeRobotId))
+    || (!wearableId && !homeRobotId)) {
+    throw httpError(503, 'SCENARIO_BINDING_UNAVAILABLE', 'Scenario device binding is unavailable');
+  }
+  const wearableSourceRef = value.wearableSourceRef;
+  const homeRobotSourceRef = value.homeRobotSourceRef;
+  if ((wearableSourceRef !== undefined && !AI_NATIVE_IDENTIFIER_PATTERN.test(wearableSourceRef))
+    || (homeRobotSourceRef !== undefined && !AI_NATIVE_IDENTIFIER_PATTERN.test(homeRobotSourceRef))) {
+    throw httpError(503, 'SCENARIO_BINDING_UNAVAILABLE', 'Scenario source binding is unavailable');
+  }
+  if (requiredSource === 'wearable' && wearableSourceRef !== sourceDeviceRef) {
+    throw httpError(403, 'EDGE_SOURCE_MISMATCH', 'Wearable source is not bound to this account');
+  }
+  if (requiredSource === 'home_robot' && homeRobotSourceRef !== sourceDeviceRef) {
+    throw httpError(403, 'EDGE_SOURCE_MISMATCH', 'Robot source is not bound to this account');
+  }
+  return Object.freeze({
+    targets: Object.freeze({
+      ...(wearableId ? { wearableId } : {}),
+      ...(homeRobotId ? { homeRobotId } : {})
+    }),
+    ...(wearableSourceRef ? { wearableSourceRef } : {}),
+    ...(homeRobotSourceRef ? { homeRobotSourceRef } : {})
+  });
+}
+
+function normalizeInferenceContext(raw) {
+  if (raw === undefined) return Object.freeze({});
+  assertExactObjectKeys(raw, new Set(['location_context']), 'Inference context');
+  if (!['home', 'away', 'unknown'].includes(raw.location_context)) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Inference location context is invalid');
+  }
+  return Object.freeze({ locationContext: raw.location_context });
+}
+
+function parseUserScenarioRequest(body) {
+  assertExactObjectKeys(body, new Set(['scenario_id', 'request_id', 'occurred_at']), 'Scenario request');
+  if (body.scenario_id !== 'ai_angel_auto_dial'
+    || !AI_NATIVE_IDENTIFIER_PATTERN.test(body.request_id ?? '')
+    || !Number.isSafeInteger(body.occurred_at)) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Scenario request is invalid');
+  }
+  return Object.freeze({
+    scenarioId: 'ai_angel_auto_dial',
+    event: Object.freeze({
+      eventId: body.request_id,
+      type: 'panic_button',
+      occurredAt: body.occurred_at,
+      data: Object.freeze({})
+    })
+  });
+}
+
+function parseScheduledContextEvent(body) {
+  assertExactObjectKeys(body, new Set(['event_id', 'type', 'occurred_at', 'data']), 'Context event');
+  if (!AI_NATIVE_IDENTIFIER_PATTERN.test(body.event_id ?? '')
+    || !['medication_due', 'bedroom_inactivity'].includes(body.type)
+    || !Number.isSafeInteger(body.occurred_at)) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Context event is invalid');
+  }
+  const data = body.data ?? {};
+  assertExactObjectKeys(
+    data,
+    body.type === 'medication_due' ? new Set(['medication_id', 'scheduled_at']) : new Set(),
+    'Context event data'
+  );
+  if (data.medication_id !== undefined && !AI_NATIVE_IDENTIFIER_PATTERN.test(data.medication_id)) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Medication reference is invalid');
+  }
+  if (data.scheduled_at !== undefined && !Number.isSafeInteger(data.scheduled_at)) {
+    throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Medication schedule is invalid');
+  }
+  return Object.freeze({
+    eventId: body.event_id,
+    type: body.type,
+    occurredAt: body.occurred_at,
+    data: Object.freeze({
+      ...(data.medication_id ? { medicationId: data.medication_id } : {}),
+      ...(data.scheduled_at !== undefined ? { scheduledAt: data.scheduled_at } : {})
+    })
+  });
+}
+
+async function authenticateRobotEdgeRequest(req, config, envelope) {
+  if (bearerToken(req)) return false;
+  const adapterId = req.headers['x-robot-adapter-id'];
+  const credential = req.headers['x-robot-callback-key'];
+  if (!AI_NATIVE_IDENTIFIER_PATTERN.test(adapterId ?? '')
+    || typeof credential !== 'string' || !credential || credential.length > 4096
+    || !AI_NATIVE_IDENTIFIER_PATTERN.test(envelope?.sourceDeviceRef ?? '')
+    || typeof config.authenticateRobotEdgeIngress !== 'function') return false;
+  const authenticated = await config.authenticateRobotEdgeIngress({
+    adapterId,
+    credential,
+    sourceDeviceRef: envelope.sourceDeviceRef
+  });
+  if (!authenticated
+    || typeof authenticated.accountId !== 'string'
+    || !authenticated.accountId
+    || authenticated.accountId.length > 256) return false;
+  await assertAccountAvailable(config, authenticated.accountId);
+  return Object.freeze({
+    accountId: authenticated.accountId,
+    binding: normalizeScenarioBinding(authenticated.binding, {
+      requiredSource: 'home_robot',
+      sourceDeviceRef: envelope.sourceDeviceRef
+    })
+  });
 }
 
 function bearerToken(req) {
@@ -814,6 +987,31 @@ async function configureHumeSession(chatId, config) {
 
 function prepareDeviceServices(config) {
   config.logger = createRedactedLogger(config.logger);
+  if ((config.aiNativeEnabled || config.aiNativeDataLifecycleEnabled) && config.aiNativeSystem) {
+    const system = config.aiNativeSystem;
+    const runtimeIncomplete = config.aiNativeEnabled && (
+      !system.scenarioEngine
+      || !system.edgeScenarioRouter
+      || typeof system.getVoiceContext !== 'function'
+      || typeof system.memory?.list !== 'function'
+      || typeof system.memory?.delete !== 'function'
+      || typeof system.memory?.deleteAll !== 'function'
+    );
+    const privacyIncomplete = config.aiNativeDataLifecycleEnabled && (
+      typeof system.privacyRepository?.exportUserData !== 'function'
+      || typeof system.privacyRepository?.deleteUserData !== 'function'
+    );
+    if (runtimeIncomplete || privacyIncomplete) {
+      throw new Error('Injected AI-native system is incomplete');
+    }
+    if (config.aiNativeEnabled) {
+      config.scenarioEngine = system.scenarioEngine;
+      config.edgeScenarioRouter = system.edgeScenarioRouter;
+    }
+    if (config.aiNativeDataLifecycleEnabled) {
+      config.aiNativePrivacyRepository = system.privacyRepository;
+    }
+  }
   if (!config.robotAdapterRuntime && Array.isArray(config.robotAdapterConfigurations) && config.robotAdapterConfigurations.length) {
     config.robotAdapterRuntime = createRobotAdapterRuntime({
       configurations: config.robotAdapterConfigurations,
@@ -985,6 +1183,7 @@ function prepareDeviceServices(config) {
           )
         : undefined,
       outboxRepository: config.actionOutboxRepository,
+      scenarioEngine: config.aiNativeEnabled ? config.scenarioEngine : undefined,
       logger: config.logger
     });
   }
@@ -1045,6 +1244,8 @@ function prepareDeviceServices(config) {
       actionOutboxRepository: config.actionOutboxRepository,
       pushRepository: config.pushRepository,
       manufacturerPrivacyRepository: config.manufacturerPrivacyRepository,
+      includeAINative: config.aiNativeDataLifecycleEnabled === true,
+      aiNativePrivacyRepository: config.aiNativePrivacyRepository,
       authSessionRepository: config.authSessionRepository,
       beforeAccountDeletion: typeof config.actionGateway?.fenceUserActions === 'function'
         ? (userId) => config.actionGateway.fenceUserActions(userId)
@@ -1095,6 +1296,13 @@ function createHandler(overrides = {}) {
           return;
         }
         if (hasImmediateDanger(userText)) {
+          if (config.aiNativeEnabled
+            && config.edgeScenarioRouter
+            && typeof config.resolveScenarioDevices === 'function'
+            && hasTool(body.tools, 'trigger_ai_angel')) {
+            streamToolCall(res, { model, sessionId, name: 'trigger_ai_angel' });
+            return;
+          }
           if (hasTool(body.tools, 'request_help_dial')) {
             streamToolCall(res, { model, sessionId, name: 'request_help_dial' });
             return;
@@ -1196,6 +1404,217 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      if (req.method === 'POST' && url.pathname === '/v1/scenarios') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled
+          || !config.edgeScenarioRouter
+          || typeof config.resolveScenarioDevices !== 'function') {
+          json(res, 503, { error: 'AI-native scenarios are not configured' }); return;
+        }
+        const body = await readJson(req);
+        const request = parseUserScenarioRequest(body);
+        const binding = normalizeScenarioBinding(await config.resolveScenarioDevices({
+          accountId: principal.sub,
+          scenarioId: request.scenarioId,
+          source: 'authenticated_app'
+        }));
+        json(res, 202, await config.edgeScenarioRouter.ingestContextEvent(
+          principal.sub,
+          request.event,
+          binding
+        ));
+        return;
+      }
+
+      const scenarioMatch = /^\/v1\/scenarios\/([0-9a-f-]{36})$/i.exec(url.pathname);
+      if (req.method === 'GET' && scenarioMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || !config.scenarioEngine) {
+          json(res, 503, { error: 'AI-native scenarios are not configured' }); return;
+        }
+        const execution = await config.scenarioEngine.getExecution(principal.sub, scenarioMatch[1]);
+        if (!execution) { json(res, 404, { error: 'Scenario execution was not found' }); return; }
+        json(res, 200, execution);
+        return;
+      }
+
+      const scenarioCancelMatch = /^\/v1\/scenarios\/([0-9a-f-]{36})\/cancel$/i.exec(url.pathname);
+      if (req.method === 'POST' && scenarioCancelMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || !config.edgeScenarioRouter) {
+          json(res, 503, { error: 'AI-native cancellation is not configured' }); return;
+        }
+        const body = await readJson(req);
+        assertExactObjectKeys(body, new Set(['confirmed', 'occurred_at']), 'Cancellation request');
+        if (body.confirmed !== true || !Number.isSafeInteger(body.occurred_at)) {
+          json(res, 400, { error: 'Explicit cancellation confirmation is required' }); return;
+        }
+        json(res, 200, await config.edgeScenarioRouter.confirmCancellation(
+          principal.sub,
+          scenarioCancelMatch[1],
+          {
+            confirmed: true,
+            source: 'authenticated_user',
+            occurredAt: body.occurred_at
+          }
+        ));
+        return;
+      }
+
+      const edgeIngress = {
+        '/v1/edge/wearable/inference': ['wearable', 'ingestWearableInference'],
+        '/v1/edge/robot/inference': ['home_robot', 'ingestRobotInference']
+      }[url.pathname];
+      if (req.method === 'POST' && edgeIngress) {
+        if (!config.aiNativeEnabled || !config.edgeScenarioRouter) {
+          json(res, 503, { error: 'Authenticated edge ingress is not configured' }); return;
+        }
+        const body = await readJson(req);
+        let accountId;
+        let binding;
+        if (edgeIngress[0] === 'wearable') {
+          if (req.headers['x-robot-adapter-id'] || req.headers['x-robot-callback-key']) {
+            json(res, 401, { error: 'Unauthorized' }); return;
+          }
+          const principal = await authenticateApp(req, config);
+          if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+          assertExactObjectKeys(body, new Set(['envelope', 'context']), 'Edge inference request');
+          if (typeof config.resolveEdgeDeviceBinding !== 'function') {
+            json(res, 503, { error: 'Authenticated edge ingress is not configured' }); return;
+          }
+          accountId = principal.sub;
+          binding = normalizeScenarioBinding(await config.resolveEdgeDeviceBinding({
+            accountId,
+            deviceType: 'wearable',
+            sourceDeviceRef: body?.envelope?.sourceDeviceRef
+          }), {
+            requiredSource: 'wearable',
+            sourceDeviceRef: body?.envelope?.sourceDeviceRef
+          });
+        } else {
+          const authenticated = await authenticateRobotEdgeRequest(req, config, body?.envelope);
+          if (!authenticated) { json(res, 401, { error: 'Unauthorized' }); return; }
+          assertExactObjectKeys(body, new Set(['envelope', 'context']), 'Edge inference request');
+          accountId = authenticated.accountId;
+          binding = authenticated.binding;
+        }
+        const context = normalizeInferenceContext(body.context);
+        const result = await config.edgeScenarioRouter[edgeIngress[1]](
+          accountId,
+          body?.envelope,
+          binding,
+          context
+        );
+        json(res, 202, result);
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/scenarios/context-events') {
+        if (!config.aiNativeEnabled
+          || !config.edgeScenarioRouter
+          || typeof config.authenticateScenarioIngress !== 'function'
+          || typeof config.resolveScenarioDevices !== 'function') {
+          json(res, 503, { error: 'Authenticated scenario ingress is not configured' }); return;
+        }
+        const body = await readJson(req);
+        const headerCredential = req.headers['x-scenario-ingress-key'] || '';
+        if (bearerToken(req) || typeof headerCredential !== 'string' || !headerCredential) {
+          json(res, 401, { error: 'Unauthorized' }); return;
+        }
+        const authenticated = await config.authenticateScenarioIngress({
+          credential: headerCredential,
+          eventType: typeof body?.type === 'string' ? body.type : undefined
+        });
+        if (!authenticated || typeof authenticated.accountId !== 'string' || !authenticated.accountId) {
+          json(res, 401, { error: 'Unauthorized' }); return;
+        }
+        const event = parseScheduledContextEvent(body);
+        await assertAccountAvailable(config, authenticated.accountId);
+        const binding = normalizeScenarioBinding(await config.resolveScenarioDevices({
+          accountId: authenticated.accountId,
+          scenarioId: event.type === 'medication_due' ? 'medication_adherence' : 'cognitive_engagement',
+          source: 'trusted_scheduler'
+        }));
+        json(res, 202, await config.edgeScenarioRouter.ingestContextEvent(
+          authenticated.accountId,
+          event,
+          binding
+        ));
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === '/v1/ai-native/memories') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || typeof config.aiNativeSystem?.memory?.list !== 'function') {
+          json(res, 503, { error: 'AI-native memory is not configured' }); return;
+        }
+        const supported = new Set(['kind', 'offset', 'limit']);
+        if ([...url.searchParams.keys()].some((key) => !supported.has(key))
+          || [...supported].some((key) => url.searchParams.getAll(key).length > 1)) {
+          json(res, 400, { error: 'Memory query is invalid' }); return;
+        }
+        const kind = url.searchParams.get('kind') || undefined;
+        if (kind !== undefined
+          && !['conversation_summary', 'health_trend', 'life_event', 'preference'].includes(kind)) {
+          json(res, 400, { error: 'Memory query is invalid' }); return;
+        }
+        const parseQueryInteger = (name, fallback, maximum) => {
+          const raw = url.searchParams.get(name);
+          if (raw === null) return fallback;
+          if (!/^(?:0|[1-9][0-9]*)$/.test(raw)) return null;
+          const value = Number(raw);
+          return Number.isSafeInteger(value) && value >= (name === 'limit' ? 1 : 0) && value <= maximum
+            ? value
+            : null;
+        };
+        const offset = parseQueryInteger('offset', 0, 100_000);
+        const limit = parseQueryInteger('limit', 100, 500);
+        if (offset === null || limit === null) { json(res, 400, { error: 'Memory query is invalid' }); return; }
+        const memories = await config.aiNativeSystem.memory.list(principal.sub, { kind, offset, limit });
+        json(res, 200, { memories });
+        return;
+      }
+
+      if (req.method === 'DELETE' && url.pathname === '/v1/ai-native/memories') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || typeof config.aiNativeSystem?.memory?.deleteAll !== 'function') {
+          json(res, 503, { error: 'AI-native memory is not configured' }); return;
+        }
+        const body = await readJson(req);
+        assertExactObjectKeys(body, new Set(['confirmed']), 'Memory deletion request');
+        if (body.confirmed !== true) {
+          json(res, 400, { error: 'Explicit memory deletion confirmation is required' }); return;
+        }
+        await config.aiNativeSystem.memory.deleteAll(principal.sub);
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
+      const memoryMatch = /^\/v1\/ai-native\/memories\/([^/]{1,384})$/.exec(url.pathname);
+      if (req.method === 'DELETE' && memoryMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || typeof config.aiNativeSystem?.memory?.delete !== 'function') {
+          json(res, 503, { error: 'AI-native memory is not configured' }); return;
+        }
+        let memoryId;
+        try { memoryId = decodeURIComponent(memoryMatch[1]); } catch { memoryId = ''; }
+        if (!AI_NATIVE_IDENTIFIER_PATTERN.test(memoryId)) {
+          json(res, 400, { error: 'Memory identifier is invalid' }); return;
+        }
+        const deleted = await config.aiNativeSystem.memory.delete(principal.sub, memoryId);
+        if (!deleted) { json(res, 404, { error: 'Memory was not found' }); return; }
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
       if (req.method === 'POST' && url.pathname === '/v1/manufacturer/robot/ack') {
         const adapterId = req.headers['x-robot-adapter-id'] || '';
         const adapterCredential = req.headers['x-robot-callback-key'] || '';
@@ -1219,7 +1638,9 @@ function createHandler(overrides = {}) {
         }
         const accepted = await config.actionGateway.acknowledgeRobot(body.action_id, {
           ok: body.ok,
-          error_code: body.error_code
+          error_code: body.error_code,
+          camera_ready: body.camera_ready,
+          camera_session_ref: body.camera_session_ref
         }, {
           adapterId: adapterAuthenticated ? adapterId : 'manufacturer-default',
           bindingEpoch: body.binding_epoch

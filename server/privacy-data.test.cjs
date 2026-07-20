@@ -54,6 +54,31 @@ test('privacy coordinator never silently omits an unconfigured repository', asyn
   assert.equal(exported.datasets.sessions.data, null);
 });
 
+test('AI-native history remains an explicit privacy dataset when its runtime is disabled', async () => {
+  const coordinator = createPrivacyDataCoordinator({
+    includeAINative: true,
+    safetyRepository: repository('safety', [])
+  });
+  assert.ok(coordinator.missingRepositories().includes('aiNativePrivacyRepository'));
+  const exported = await coordinator.exportUserData('user-a');
+  assert.deepEqual(exported.datasets.aiNative, { status: 'not-configured', data: null });
+});
+
+test('AI-native history is exported and erased when the durable lifecycle is enabled', async () => {
+  const calls = [];
+  const coordinator = createPrivacyDataCoordinator({
+    includeAINative: true,
+    aiNativePrivacyRepository: repository('ai-native', calls)
+  });
+  const exported = await coordinator.exportUserData('user-a');
+  assert.equal(exported.datasets.aiNative.status, 'included');
+  await coordinator.deleteUserData('user-a');
+  assert.deepEqual(calls, [
+    ['export', 'ai-native', 'user-a'],
+    ['delete', 'ai-native', 'user-a']
+  ]);
+});
+
 test('privacy coordinator stops deletion before credentials after a bounded failure', async () => {
   const deleted = [];
   const coordinator = createPrivacyDataCoordinator({

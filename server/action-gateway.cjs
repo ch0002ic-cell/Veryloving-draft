@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { performance } = require('node:perf_hooks');
 
 const DEVICE_TYPES = new Set(['wearable', 'home_robot']);
 const ACTIONS = Object.freeze({
@@ -10,9 +11,31 @@ const ACTIONS = Object.freeze({
   stop: new Set(['wearable']),
   check_medication: new Set(['home_robot']),
   medication_reminder: new Set(['home_robot']),
-  cognitive_engagement: new Set(['home_robot'])
+  cognitive_engagement: new Set(['home_robot']),
+  navigate_to_location: new Set(['home_robot']),
+  start_two_way_call: new Set(['home_robot']),
+  share_camera_view: new Set(['home_robot']),
+  play_soothing_audio: new Set(['home_robot']),
+  emergency_stop: new Set(['home_robot'])
 });
 const WEARABLE_ACTION_NAMES = Object.freeze(['deploy_barrier', 'emit_alarm', 'trigger_sos', 'stop']);
+const MANUFACTURER_ACK_ERROR_CODES = new Set([
+  'ACK_TIMEOUT',
+  'AUTHENTICATION_FAILED',
+  'COMMAND_UNSUPPORTED',
+  'DEVICE_BUSY',
+  'DEVICE_OFFLINE',
+  'MANUFACTURER_REJECTED',
+  'ROBOT_COMMAND_REJECTED',
+  'SAFETY_INTERLOCK_ACTIVE'
+]);
+
+function normalizeManufacturerAckErrorCode(value, ok) {
+  if (ok === true) return undefined;
+  return typeof value === 'string' && MANUFACTURER_ACK_ERROR_CODES.has(value)
+    ? value
+    : 'ROBOT_COMMAND_REJECTED';
+}
 
 function boundedIdentifier(value, maxLength = 128) {
   return typeof value === 'string' && /^[A-Za-z0-9._:-]+$/.test(value) && value.length <= maxLength
@@ -24,6 +47,12 @@ function normalizeActionParameters(action, parameters) {
   if (WEARABLE_ACTION_NAMES.includes(action)) {
     if (Object.keys(parameters).length) {
       throw Object.assign(new Error('Wearable action parameters are server-owned'), { statusCode: 400 });
+    }
+    return {};
+  }
+  if (action === 'emergency_stop') {
+    if (Object.keys(parameters).length) {
+      throw Object.assign(new Error('Emergency stop parameters are invalid'), { statusCode: 400 });
     }
     return {};
   }
@@ -64,6 +93,41 @@ function normalizeActionParameters(action, parameters) {
       throw Object.assign(new Error('Cognitive engagement parameters are invalid'), { statusCode: 400 });
     }
     return { activity: parameters.activity };
+  }
+  if (action === 'navigate_to_location') {
+    if (Object.keys(parameters).some((key) => key !== 'location_ref')) {
+      throw Object.assign(new Error('Navigation parameters are invalid'), { statusCode: 400 });
+    }
+    const locationRef = boundedIdentifier(parameters.location_ref, 96);
+    if (!locationRef) throw Object.assign(new Error('Navigation parameters are invalid'), { statusCode: 400 });
+    return { location_ref: locationRef };
+  }
+  if (action === 'start_two_way_call') {
+    if (Object.keys(parameters).some((key) => key !== 'contact_id')) {
+      throw Object.assign(new Error('Two-way call parameters are invalid'), { statusCode: 400 });
+    }
+    const contactId = boundedIdentifier(parameters.contact_id, 96);
+    if (!contactId) throw Object.assign(new Error('Two-way call parameters are invalid'), { statusCode: 400 });
+    return { contact_id: contactId };
+  }
+  if (action === 'share_camera_view') {
+    if (Object.keys(parameters).some((key) => key !== 'session_id')) {
+      throw Object.assign(new Error('Camera sharing parameters are invalid'), { statusCode: 400 });
+    }
+    const sessionId = boundedIdentifier(parameters.session_id, 128);
+    if (!sessionId) throw Object.assign(new Error('Camera sharing parameters are invalid'), { statusCode: 400 });
+    return { session_id: sessionId };
+  }
+  if (action === 'play_soothing_audio') {
+    if (Object.keys(parameters).some((key) => !['audio_id', 'volume'].includes(key))) {
+      throw Object.assign(new Error('Soothing audio parameters are invalid'), { statusCode: 400 });
+    }
+    const audioId = boundedIdentifier(parameters.audio_id, 96);
+    const volume = Number(parameters.volume);
+    if (!audioId || !Number.isSafeInteger(volume) || volume < 0 || volume > 100) {
+      throw Object.assign(new Error('Soothing audio parameters are invalid'), { statusCode: 400 });
+    }
+    return { audio_id: audioId, volume };
   }
   return {};
 }
@@ -220,6 +284,24 @@ function accountFencedError() {
   });
 }
 
+function actionCancelledError(message = 'Action was cancelled', { mayHaveBeenSent = false } = {}) {
+  return Object.assign(new Error(message), {
+    statusCode: 409,
+    code: 'ACTION_CANCELLED',
+    // Transport cancellation only stops local work. Once bytes have been
+    // written, it cannot retract a command already received by hardware.
+    nonRetractable: mayHaveBeenSent
+  });
+}
+
+function throwIfActionCancelled(signal, message, options) {
+  if (signal?.aborted) throw actionCancelledError(message, options);
+}
+
+function accountFenceKey(userId) {
+  return crypto.createHash('sha256').update('veryloving-action-fence-v1\0').update(String(userId)).digest('base64url');
+}
+
 function createDynamoActionOutboxRepository({ tableName, region, client: injectedClient, userIndexName, retentionSeconds = DEFAULT_OUTBOX_RETENTION_SECONDS } = {}) {
   if (!tableName) throw new Error('Action outbox table is required');
   let client = injectedClient;
@@ -242,6 +324,7 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
     expectedBindingEpoch,
     expectedUserId,
     expectedDeviceId,
+    expectedLeaseOwner,
     returnCurrentOnCondition = false
   } = {}) {
     if (!ACTION_ID_PATTERN.test(actionId || '')) throw new Error('Outbox action id is invalid');
@@ -288,6 +371,12 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       names['#expectedDeviceId'] = 'device_id';
       values[':expectedDeviceId'] = String(expectedDeviceId);
       condition += ' AND #expectedDeviceId = :expectedDeviceId';
+    }
+    if (expectedLeaseOwner !== undefined) {
+      if (!boundedIdentifier(expectedLeaseOwner, 128)) throw new Error('Outbox lease owner is invalid');
+      names['#expectedLeaseOwner'] = 'lease_owner';
+      values[':expectedLeaseOwner'] = expectedLeaseOwner;
+      condition += ' AND #expectedLeaseOwner = :expectedLeaseOwner';
     }
     try {
       const result = await client.send(new commands.UpdateCommand({
@@ -349,6 +438,15 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
   }
 
   return {
+    async getAction(actionId) {
+      if (!ACTION_ID_PATTERN.test(actionId || '')) throw new Error('Outbox action id is invalid');
+      const result = await client.send(new commands.GetCommand({
+        TableName: tableName,
+        Key: key(actionId),
+        ConsistentRead: true
+      }));
+      return result.Item;
+    },
     async enqueue(record) {
       if (!ACTION_ID_PATTERN.test(record?.action_id || '')) throw new Error('Outbox action id is invalid');
       if (record?.device_type === 'home_robot' && !isPositiveBindingEpoch(record.binding_epoch)) {
@@ -384,26 +482,74 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
         throw error;
       }
     },
-    markDelivering(actionId, details = {}) {
-      return transition(actionId, 'delivering', details, ['queued', 'delivering']);
+    async markDelivering(actionId, details = {}) {
+      const leaseOwner = boundedIdentifier(details.lease_owner, 128);
+      const leaseNow = Number(details.lease_now);
+      const leaseExpiresAt = Number(details.lease_expires_at);
+      if (!leaseOwner || !Number.isSafeInteger(leaseNow) || !Number.isSafeInteger(leaseExpiresAt) || leaseExpiresAt <= leaseNow) {
+        throw new Error('Outbox delivery lease is invalid');
+      }
+      const attributes = Object.fromEntries(Object.entries(details).filter(([key]) => key !== 'lease_now'));
+      const entries = Object.entries({ state: 'delivering', updated_at: Date.now(), ...attributes })
+        .filter(([, value]) => value !== undefined);
+      const names = { '#state': 'state', '#leaseOwner': 'lease_owner', '#leaseExpiresAt': 'lease_expires_at' };
+      const values = {
+        ':queued': 'queued',
+        ':delivering': 'delivering',
+        ':leaseOwner': leaseOwner,
+        ':leaseNow': leaseNow
+      };
+      const assignments = entries.map(([name, value], index) => {
+        names[`#field${index}`] = name;
+        values[`:value${index}`] = value;
+        return `#field${index} = :value${index}`;
+      });
+      try {
+        const result = await client.send(new commands.UpdateCommand({
+          TableName: tableName,
+          Key: key(actionId),
+          UpdateExpression: `SET ${assignments.join(', ')}`,
+          ConditionExpression: 'attribute_exists(PK) AND (#state = :queued OR (#state = :delivering AND (#leaseOwner = :leaseOwner OR attribute_not_exists(#leaseExpiresAt) OR #leaseExpiresAt < :leaseNow)))',
+          ExpressionAttributeNames: names,
+          ExpressionAttributeValues: values,
+          ReturnValues: 'ALL_NEW'
+        }));
+        return result.Attributes || true;
+      } catch (error) {
+        if (isConditionalFailure(error)) return false;
+        throw error;
+      }
     },
     markPendingAck(actionId, details = {}) {
-      return transition(actionId, 'pending_ack', details, ['queued', 'delivering'], {
+      const { lease_owner: leaseOwner, ...attributes } = details;
+      return transition(actionId, 'pending_ack', attributes, ['delivering'], {
+        expectedLeaseOwner: leaseOwner,
         returnCurrentOnCondition: true
       });
     },
     markDelivered(actionId, details = {}) {
-      return transition(actionId, 'delivered', details, ['queued', 'delivering', 'pending_ack']);
+      const { lease_owner: leaseOwner, ...attributes } = details;
+      return transition(actionId, 'delivered', attributes, ['delivering'], {
+        expectedLeaseOwner: leaseOwner
+      });
     },
     markFailed(actionId, details = {}) {
-      return transition(actionId, 'failed', details, ['queued', 'delivering', 'pending_ack']);
+      const { lease_owner: leaseOwner, ...attributes } = details;
+      return transition(actionId, 'failed', attributes, ['queued', 'delivering', 'pending_ack'], {
+        expectedLeaseOwner: leaseOwner
+      });
+    },
+    markQueuedFailed(actionId, details = {}) {
+      return transition(actionId, 'failed', details, ['queued']);
     },
     acknowledge(actionId, {
       ok,
       acknowledged_at: acknowledgedAt = Date.now(),
       error_code: errorCode,
       adapter_id: adapterId,
-      binding_epoch: bindingEpoch
+      binding_epoch: bindingEpoch,
+      camera_ready: cameraReady,
+      camera_session_ref: cameraSessionRef
     } = {}) {
       if (typeof adapterId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)) {
         throw new Error('Outbox adapter id is invalid');
@@ -411,7 +557,9 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
       if (!isPositiveBindingEpoch(bindingEpoch)) throw new Error('Outbox binding epoch is invalid');
       return transition(actionId, ok === true ? 'delivered' : 'failed', {
         acknowledged_at: acknowledgedAt,
-        error_code: errorCode
+        error_code: errorCode,
+        ...(typeof cameraReady === 'boolean' ? { camera_ready: cameraReady } : {}),
+        ...(boundedIdentifier(cameraSessionRef, 128) ? { camera_session_ref: cameraSessionRef } : {})
       }, ['queued', 'delivering', 'pending_ack'], {
         expectedAdapterId: adapterId,
         expectedBindingEpoch: bindingEpoch
@@ -427,9 +575,9 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
         error_code: errorCode
       }, ['pending_ack'], { expectedBindingEpoch: bindingEpoch });
     },
-    async listPending({ limit = 1000 } = {}) {
+    async listPending({ limit = 1000, cursor } = {}) {
       const records = [];
-      let exclusiveStartKey;
+      let exclusiveStartKey = cursor;
       do {
         const result = await client.send(new commands.ScanCommand({
           TableName: tableName,
@@ -441,12 +589,13 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
             ':delivering': 'delivering',
             ':pendingAck': 'pending_ack'
           },
+          Limit: Math.max(1, limit - records.length),
           ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
         }));
-        records.push(...(result.Items || []).slice(0, Math.max(0, limit - records.length)));
-        exclusiveStartKey = records.length < limit ? result.LastEvaluatedKey : undefined;
-      } while (exclusiveStartKey);
-      return records;
+        records.push(...(result.Items || []));
+        exclusiveStartKey = result.LastEvaluatedKey;
+      } while (exclusiveStartKey && records.length < limit);
+      return { records, nextCursor: exclusiveStartKey };
     },
     async failPendingForBinding(userId, deviceId, bindingEpoch, {
       failed_at: failedAt = Date.now(),
@@ -508,7 +657,7 @@ function createDynamoActionOutboxRepository({ tableName, region, client: injecte
     async exportUserData(userId) {
       return scanForUser(
         userId,
-        'action_id, device_id, device_type, binding_epoch, #action, #state, created_at, updated_at, acknowledged_at, error_code',
+        'action_id, device_id, device_type, binding_epoch, #action, #state, created_at, updated_at, acknowledged_at, error_code, camera_ready, camera_session_ref',
         { '#action': 'action', '#state': 'state' }
       );
     },
@@ -563,9 +712,14 @@ class ActionGateway {
     requireBoundRobotResolver = false,
     getDeviceStatus,
     robotAdapterRuntime,
+    scenarioEngine,
     outboxRepository,
     setTimeoutImpl = setTimeout,
     clearTimeoutImpl = clearTimeout,
+    outcomeSetTimeoutImpl = setTimeout,
+    outcomeClearTimeoutImpl = clearTimeout,
+    monotonicNow = () => performance.now(),
+    deliveryWorkerId = crypto.randomUUID(),
     now = Date.now,
     robotActionTTLms = DEFAULT_ROBOT_ACTION_TTL_MS,
     logger = console
@@ -594,9 +748,15 @@ class ActionGateway {
     this.requireBoundRobotResolver = requireBoundRobotResolver;
     this.getDeviceStatus = getDeviceStatus;
     this.robotAdapterRuntime = robotAdapterRuntime;
+    this.scenarioEngine = scenarioEngine;
     this.outboxRepository = outboxRepository;
     this.setTimeoutImpl = setTimeoutImpl;
     this.clearTimeoutImpl = clearTimeoutImpl;
+    this.outcomeSetTimeoutImpl = outcomeSetTimeoutImpl;
+    this.outcomeClearTimeoutImpl = outcomeClearTimeoutImpl;
+    this.monotonicNow = monotonicNow;
+    if (!boundedIdentifier(deliveryWorkerId, 128)) throw new Error('Robot delivery worker id is invalid');
+    this.deliveryWorkerId = deliveryWorkerId;
     this.now = now;
     this.robotActionTTLms = Math.max(5_000, Math.min(5 * 60 * 1000, Number(robotActionTTLms) || DEFAULT_ROBOT_ACTION_TTL_MS));
     this.sessions = new Map();
@@ -605,12 +765,21 @@ class ActionGateway {
     this.totalRobotCommands = 0;
     this.pendingDeliveries = new Set();
     this.pendingRobotDeliveries = new Map();
+    this.pendingRobotTransports = new Map();
     this.pendingRobotAcks = new Map();
     this.pendingWearableAcks = new Map();
+    this.robotActionOwners = new Map();
+    this.robotActionOutcomes = new Map();
+    this.robotOutcomeWaiters = new Map();
     this.fencedRobotBindings = new Set();
     this.fencedUserActions = new Set();
     this.recoveryPromise = Promise.resolve({ recovered: 0 });
     this.recoveryStarted = false;
+    this.recoveryDeferred = false;
+    this.recoveryScheduled = false;
+    this.recoveryTimer = undefined;
+    this.recoveryDueAt = Number.POSITIVE_INFINITY;
+    this.recoveryCursor = undefined;
   }
 
   registerSession(userId, channel, devices = []) {
@@ -647,8 +816,24 @@ class ActionGateway {
       if (pending.userId !== userId || pending.channel !== channel) continue;
       this.pendingWearableAcks.delete(actionId);
       this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
       pending.reject(Object.assign(new Error(message), { statusCode: 409, code: 'WEARABLE_SESSION_CLOSED' }));
     }
+  }
+
+  rejectWearableAcksForUser(userId) {
+    let cancelled = 0;
+    for (const [actionId, pending] of this.pendingWearableAcks) {
+      if (String(pending.userId) !== String(userId)) continue;
+      this.pendingWearableAcks.delete(actionId);
+      this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
+      pending.reject(Object.assign(accountFencedError(), {
+        nonRetractable: pending.sent === true
+      }));
+      cancelled += 1;
+    }
+    return cancelled;
   }
 
   acknowledgeWearable(userId, channel, acknowledgement = {}) {
@@ -656,6 +841,7 @@ class ActionGateway {
     if (!pending || pending.userId !== userId || pending.channel !== channel || typeof acknowledgement.ok !== 'boolean') return false;
     this.pendingWearableAcks.delete(acknowledgement.action_id);
     this.clearTimeoutImpl(pending.timer);
+    pending.cleanup?.();
     if (acknowledgement.ok) {
       pending.resolve({ status: 'delivered', action_id: acknowledgement.action_id });
     } else {
@@ -667,7 +853,8 @@ class ActionGateway {
     return true;
   }
 
-  async routeWearable(userId, session, signed) {
+  async routeWearable(userId, session, signed, signal) {
+    throwIfActionCancelled(signal, 'Wearable command was cancelled before dispatch');
     if (!session.channel || session.channel.readyState !== 1) {
       throw Object.assign(new Error('Wearable channel is unavailable'), { statusCode: 409 });
     }
@@ -678,18 +865,49 @@ class ActionGateway {
     let rejectAck;
     const result = new Promise((resolve, reject) => { resolveAck = resolve; rejectAck = reject; });
     const actionId = signed.envelope.id;
-    const pending = { userId, channel: session.channel, resolve: resolveAck, reject: rejectAck, timer: null };
+    const pending = {
+      userId,
+      channel: session.channel,
+      resolve: resolveAck,
+      reject: rejectAck,
+      timer: null,
+      sent: false,
+      cleanup: null
+    };
+    const onAbort = () => {
+      if (this.pendingWearableAcks.get(actionId) !== pending) return;
+      this.pendingWearableAcks.delete(actionId);
+      this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
+      rejectAck(actionCancelledError('Wearable command wait was cancelled', {
+        mayHaveBeenSent: pending.sent
+      }));
+    };
+    pending.cleanup = () => signal?.removeEventListener?.('abort', onAbort);
     pending.timer = this.setTimeoutImpl(() => {
       if (this.pendingWearableAcks.get(actionId) !== pending) return;
       this.pendingWearableAcks.delete(actionId);
+      pending.cleanup?.();
       rejectAck(Object.assign(new Error('Wearable acknowledgement timed out'), { statusCode: 504, code: 'WEARABLE_ACK_TIMEOUT' }));
     }, this.wearableAckTimeoutMs);
     this.pendingWearableAcks.set(actionId, pending);
+    signal?.addEventListener?.('abort', onAbort, { once: true });
+    if (signal?.aborted) {
+      onAbort();
+      return result;
+    }
     try {
+      // Set conservatively before invoking the transport: an exception or
+      // cancellation cannot prove that no bytes reached the peer.
+      pending.sent = true;
       session.channel.send(JSON.stringify({ type: 'device_action', ...signed }));
     } catch (error) {
-      this.pendingWearableAcks.delete(actionId);
-      this.clearTimeoutImpl(pending.timer);
+      if (this.pendingWearableAcks.get(actionId) === pending) {
+        this.pendingWearableAcks.delete(actionId);
+        this.clearTimeoutImpl(pending.timer);
+        pending.cleanup?.();
+      }
+      if (error?.code === 'ACTION_CANCELLED') throw error;
       throw Object.assign(new Error('Wearable channel send failed'), { statusCode: 409, cause: error });
     }
     return result;
@@ -705,7 +923,7 @@ class ActionGateway {
   }
 
   async assertAccountActionAllowed(userId) {
-    if (this.fencedUserActions.has(String(userId))) throw accountFencedError();
+    if (this.fencedUserActions.has(accountFenceKey(userId))) throw accountFencedError();
     if (!this.isAccountActionAllowed) return true;
     if (await this.isAccountActionAllowed(userId) !== true) throw accountFencedError();
     return true;
@@ -771,6 +989,29 @@ class ActionGateway {
     if (depth <= 1) this.deliveryQueueDepths.delete(queueKey);
     else this.deliveryQueueDepths.set(queueKey, depth - 1);
     if (depth > 0) this.totalRobotCommands = Math.max(0, this.totalRobotCommands - 1);
+    if (depth > 0 && this.recoveryDeferred) this.scheduleDeferredRecovery();
+  }
+
+  scheduleDeferredRecovery(delayMs = 0) {
+    if (!this.recoveryDeferred) return;
+    const boundedDelay = Math.max(0, Math.min(5 * 60_000, Number(delayMs) || 0));
+    const dueAt = this.monotonicNow() + boundedDelay;
+    if (this.recoveryScheduled && dueAt >= this.recoveryDueAt) return;
+    if (this.recoveryScheduled) this.clearTimeoutImpl(this.recoveryTimer);
+    this.recoveryScheduled = true;
+    this.recoveryDueAt = dueAt;
+    const timer = this.setTimeoutImpl(() => {
+      this.recoveryScheduled = false;
+      this.recoveryTimer = undefined;
+      this.recoveryDueAt = Number.POSITIVE_INFINITY;
+      if (!this.recoveryDeferred) return;
+      this.recoveryStarted = false;
+      const work = this.recoverPendingCommands();
+      this.pendingDeliveries.add(work);
+      work.catch(() => {}).finally(() => this.pendingDeliveries.delete(work));
+    }, boundedDelay);
+    this.recoveryTimer = timer;
+    timer?.unref?.();
   }
 
   installRobotQueueBarrier(queueKey) {
@@ -805,6 +1046,73 @@ class ActionGateway {
     }
   }
 
+  async readOutboxRecord(actionId) {
+    if (!this.outboxRepository?.getAction) return undefined;
+    try {
+      return await this.outboxRepository.getAction(actionId);
+    } catch (error) {
+      this.logger.error('[ActionGateway] Outbox read failed', {
+        actionId,
+        name: error?.name || 'OutboxError'
+      });
+      return undefined;
+    }
+  }
+
+  publishTerminalOutboxRecord(actionId, fallbackUserId, record) {
+    if (!record || !['delivered', 'failed'].includes(record.state)) return undefined;
+    const owner = typeof record.user_id === 'string' ? record.user_id : String(fallbackUserId);
+    const outcome = {
+      status: record.state,
+      action_id: actionId,
+      ...(record.error_code ? { error_code: record.error_code } : {}),
+      ...(record.state === 'delivered' && typeof record.camera_ready === 'boolean'
+        ? { camera_ready: record.camera_ready }
+        : {}),
+      ...(record.state === 'delivered' && boundedIdentifier(record.camera_session_ref, 128)
+        ? { camera_session_ref: record.camera_session_ref }
+        : {})
+    };
+    this.publishRobotOutcome(actionId, owner, outcome);
+    return outcome;
+  }
+
+  validateDuplicateRobotRecord(existing, expected) {
+    if (
+      existing?.action_id !== expected.actionId
+      || String(existing?.user_id) !== String(expected.userId)
+      || existing?.device_id !== expected.action.device_id
+      || existing?.adapter_id !== expected.action.adapter_id
+      || existing?.binding_epoch !== expected.action.binding_epoch
+      || existing?.request_fingerprint !== expected.requestFingerprint
+    ) {
+      throw Object.assign(new Error('Idempotency key conflicts with another robot command'), {
+        statusCode: 409,
+        code: 'ROBOT_IDEMPOTENCY_CONFLICT'
+      });
+    }
+    if (!['queued', 'delivering', 'pending_ack', 'delivered', 'failed'].includes(existing.state)) {
+      throw Object.assign(new Error('Robot idempotency state is invalid'), {
+        statusCode: 503,
+        code: 'ROBOT_IDEMPOTENCY_STATE_INVALID'
+      });
+    }
+    this.rememberRobotActionOwner(expected.actionId, expected.userId);
+    const outcome = this.publishTerminalOutboxRecord(expected.actionId, expected.userId, existing);
+    return {
+      status: outcome?.status || 'accepted',
+      action_id: expected.actionId,
+      duplicate: true,
+      ...(outcome?.error_code ? { error_code: outcome.error_code } : {}),
+      ...(typeof outcome?.camera_ready === 'boolean' && outcome.camera_session_ref
+        ? {
+            camera_ready: outcome.camera_ready,
+            camera_session_ref: outcome.camera_session_ref
+          }
+        : {})
+    };
+  }
+
   async notifyRobotFailure(userId, actionId, deviceId) {
     try {
       await this.notifyUser?.(userId, {
@@ -826,8 +1134,14 @@ class ActionGateway {
       if (!predicate(pending) || this.pendingRobotAcks.get(actionId) !== pending) continue;
       this.pendingRobotAcks.delete(actionId);
       this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
       pending.releaseQueue?.();
       this.releaseRobotSlot(pending.queueKey);
+      this.publishRobotOutcome(actionId, pending.userId, {
+        status: 'failed',
+        action_id: actionId,
+        error_code: 'ACTION_CANCELLED'
+      });
       cancelled += 1;
     }
     return cancelled;
@@ -867,11 +1181,17 @@ class ActionGateway {
       }
     }
     while (true) {
-      const active = [...this.pendingRobotDeliveries.values()]
+      const activeDeliveries = [...this.pendingRobotDeliveries.values()]
         .filter((entry) => entry.userId === userId
           && entry.deviceId === deviceId
           && entry.bindingEpoch === bindingEpoch)
         .map((entry) => entry.promise);
+      const activeTransports = [...this.pendingRobotTransports.values()]
+        .filter((entry) => entry.userId === userId
+          && entry.deviceId === deviceId
+          && entry.bindingEpoch === bindingEpoch)
+        .map((entry) => entry.promise);
+      const active = [...activeDeliveries, ...activeTransports];
       if (!active.length) break;
       await Promise.allSettled(active);
     }
@@ -888,10 +1208,11 @@ class ActionGateway {
 
   async fenceUserActions(userId) {
     const normalizedUserId = String(userId);
-    this.fencedUserActions.add(normalizedUserId);
+    this.fencedUserActions.add(accountFenceKey(normalizedUserId));
 
     const matchesUser = (pending) => String(pending.userId) === normalizedUserId;
     let cancelledAcknowledgements = this.cancelPendingRobotAcknowledgements(matchesUser);
+    cancelledAcknowledgements += this.rejectWearableAcksForUser(normalizedUserId);
 
     let failedPending = 0;
     let persistenceError;
@@ -916,9 +1237,13 @@ class ActionGateway {
     // on the wire. All transports are bounded; wait for those requests before
     // the caller starts manufacturer-side privacy erasure.
     while (true) {
-      const active = [...this.pendingRobotDeliveries.values()]
+      const activeDeliveries = [...this.pendingRobotDeliveries.values()]
         .filter((entry) => String(entry.userId) === normalizedUserId)
         .map((entry) => entry.promise);
+      const activeTransports = [...this.pendingRobotTransports.values()]
+        .filter((entry) => String(entry.userId) === normalizedUserId)
+        .map((entry) => entry.promise);
+      const active = [...activeDeliveries, ...activeTransports];
       if (!active.length) break;
       await Promise.allSettled(active);
     }
@@ -931,20 +1256,33 @@ class ActionGateway {
         cause: persistenceError
       });
     }
+    this.purgeRobotOutcomeDataForUser(normalizedUserId);
     return { fenced: true, failedPending, cancelledAcknowledgements };
   }
 
-  scheduleRobotAck(userId, action, signed, queueKey, timeoutMs = this.robotAckTimeoutMs, releaseQueue) {
+  scheduleRobotAck(userId, action, signed, queueKey, timeoutMs = this.robotAckTimeoutMs, releaseQueue, signal) {
     const actionId = signed.envelope.id;
     const pending = {
       userId,
       deviceId: action.device_id,
       adapterId: signed.envelope.adapter_id,
       bindingEpoch: signed.envelope.binding_epoch,
+      leaseOwner: this.deliveryWorkerId,
+      actionName: signed.envelope.action,
+      expectedCameraSessionRef: signed.envelope.action === 'share_camera_view'
+        ? signed.envelope.parameters?.session_id
+        : undefined,
       queueKey,
       releaseQueue,
-      timer: null
+      timer: null,
+      cleanup: null
     };
+    const onAbort = () => {
+      const work = this.cancelRobotAcknowledgement(actionId, pending);
+      this.pendingDeliveries.add(work);
+      work.finally(() => this.pendingDeliveries.delete(work));
+    };
+    pending.cleanup = () => signal?.removeEventListener?.('abort', onAbort);
     pending.timer = this.setTimeoutImpl(() => {
       const work = this.expireRobotAcknowledgement(actionId, pending);
       this.pendingDeliveries.add(work);
@@ -952,25 +1290,94 @@ class ActionGateway {
     }, Math.max(0, timeoutMs));
     pending.timer?.unref?.();
     this.pendingRobotAcks.set(actionId, pending);
+    signal?.addEventListener?.('abort', onAbort, { once: true });
+    if (signal?.aborted) onAbort();
+  }
+
+  async cancelRobotAcknowledgement(actionId, expectedContext) {
+    if (this.pendingRobotAcks.get(actionId) !== expectedContext) return false;
+    const transitioned = this.outboxRepository && typeof this.outboxRepository.markFailed !== 'function'
+      ? false
+      : await this.transitionOutbox('markFailed', actionId, {
+          failed_at: this.now(),
+          error_code: 'ACTION_CANCELLED_NON_RETRACTABLE',
+          lease_owner: expectedContext.leaseOwner
+        });
+    const authoritative = transitioned === false
+      ? await this.readOutboxRecord(actionId)
+      : transitioned;
+    if (transitioned === false && !['delivered', 'failed'].includes(authoritative?.state)) {
+      // Keep the durable ACK timeout/barrier alive when cancellation could not
+      // be persisted. Releasing it would permit a later command while this one
+      // can still execute or be replayed after restart.
+      expectedContext.cleanup?.();
+      return false;
+    }
+    if (this.pendingRobotAcks.get(actionId) !== expectedContext) return false;
+    this.pendingRobotAcks.delete(actionId);
+    this.clearTimeoutImpl(expectedContext.timer);
+    expectedContext.cleanup?.();
+    expectedContext.releaseQueue?.();
+    this.releaseRobotSlot(expectedContext.queueKey);
+    if (!this.publishTerminalOutboxRecord(actionId, expectedContext.userId, authoritative)) {
+      this.publishRobotOutcome(actionId, expectedContext.userId, {
+        status: 'failed',
+        action_id: actionId,
+        error_code: 'ACTION_CANCELLED_NON_RETRACTABLE'
+      });
+    }
+    return true;
   }
 
   async expireRobotAcknowledgement(actionId, expectedContext) {
     const pending = this.pendingRobotAcks.get(actionId) || expectedContext;
     if (!pending || (expectedContext && this.pendingRobotAcks.get(actionId) !== expectedContext)) return false;
-    const transitioned = await this.transitionOutbox('expirePendingAck', actionId, {
-      expired_at: this.now(),
-      error_code: 'ACK_TIMEOUT',
-      binding_epoch: pending.bindingEpoch
-    });
+    const transitioned = this.outboxRepository && typeof this.outboxRepository.expirePendingAck !== 'function'
+      ? false
+      : await this.transitionOutbox('expirePendingAck', actionId, {
+          expired_at: this.now(),
+          error_code: 'ACK_TIMEOUT',
+          binding_epoch: pending.bindingEpoch
+        });
     // An authenticated ACK can win while the durable expiry transition is in
     // flight. Only the path that still owns this exact pending context may
     // release its barrier and queue slot.
     if (this.pendingRobotAcks.get(actionId) !== pending) return false;
+    const authoritative = transitioned === false
+      ? await this.readOutboxRecord(actionId)
+      : transitioned;
+    if (this.pendingRobotAcks.get(actionId) !== pending) return false;
+    if (transitioned === false && !['delivered', 'failed'].includes(authoritative?.state)) {
+      pending.expiryAttempts = (pending.expiryAttempts || 0) + 1;
+      const retryMs = Math.min(5_000, 100 * 2 ** Math.min(5, pending.expiryAttempts - 1));
+      pending.timer = this.setTimeoutImpl(() => {
+        const work = this.expireRobotAcknowledgement(actionId, pending);
+        this.pendingDeliveries.add(work);
+        work.finally(() => this.pendingDeliveries.delete(work));
+      }, retryMs);
+      pending.timer?.unref?.();
+      return false;
+    }
     this.pendingRobotAcks.delete(actionId);
     this.clearTimeoutImpl(pending.timer);
+    pending.cleanup?.();
     pending.releaseQueue?.();
     this.releaseRobotSlot(pending.queueKey);
-    if (transitioned !== false) await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
+    if (authoritative !== false && authoritative !== undefined) {
+      const authoritativeState = typeof authoritative === 'object' ? authoritative.state : 'failed';
+      if (authoritativeState === 'delivered' || authoritativeState === 'failed') {
+        if (!this.publishTerminalOutboxRecord(actionId, pending.userId, authoritative)) {
+          this.publishRobotOutcome(actionId, pending.userId, {
+            status: authoritativeState,
+            action_id: actionId,
+            error_code: authoritativeState === 'failed' ? 'ACK_TIMEOUT' : undefined
+          });
+        }
+      }
+      if (authoritativeState !== 'delivered') {
+        await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
+      }
+    }
     return transitioned !== false;
   }
 
@@ -984,75 +1391,232 @@ class ActionGateway {
     ) return false;
     if (pending && (pending.adapterId !== adapterId || pending.bindingEpoch !== bindingEpoch)) return false;
     if (!pending && (!this.outboxRepository || typeof this.outboxRepository.acknowledge !== 'function')) return false;
-    const errorCode = typeof acknowledgement.error_code === 'string'
-      ? acknowledgement.error_code.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64)
-      : (acknowledgement.ok ? undefined : 'ROBOT_COMMAND_REJECTED');
+    const durableContext = pending ? undefined : await this.readOutboxRecord(actionId);
+    const expectedActionName = pending?.actionName || durableContext?.action;
+    const expectedCameraSessionRef = pending?.expectedCameraSessionRef
+      || durableContext?.signed?.envelope?.parameters?.session_id;
+    const suppliedCameraSessionRef = boundedIdentifier(acknowledgement.camera_session_ref, 128);
+    const cameraMetadata = acknowledgement.ok === true
+      && expectedActionName === 'share_camera_view'
+      && typeof acknowledgement.camera_ready === 'boolean'
+      && suppliedCameraSessionRef === expectedCameraSessionRef
+      ? {
+          camera_ready: acknowledgement.camera_ready,
+          camera_session_ref: suppliedCameraSessionRef
+        }
+      : {};
+    const errorCode = normalizeManufacturerAckErrorCode(
+      acknowledgement.error_code,
+      acknowledgement.ok
+    );
     const transitioned = await this.transitionOutbox('acknowledge', actionId, {
       ok: acknowledgement.ok,
       acknowledged_at: this.now(),
       error_code: errorCode,
       adapter_id: adapterId,
-      binding_epoch: bindingEpoch
+      binding_epoch: bindingEpoch,
+      ...cameraMetadata
     });
     if (transitioned === false) return false;
     if (pending) {
       this.pendingRobotAcks.delete(actionId);
       this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
       pending.releaseQueue?.();
       this.releaseRobotSlot(pending.queueKey);
+      if (!this.publishTerminalOutboxRecord(actionId, pending.userId, transitioned)) {
+        this.publishRobotOutcome(actionId, pending.userId, {
+          status: acknowledgement.ok ? 'delivered' : 'failed',
+          action_id: actionId,
+          ...(errorCode ? { error_code: errorCode } : {}),
+          ...cameraMetadata
+        });
+      }
       if (!acknowledgement.ok) await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
-    } else if (!acknowledgement.ok && typeof transitioned === 'object') {
-      if (typeof transitioned.user_id === 'string' && typeof transitioned.device_id === 'string') {
+    } else if (typeof transitioned === 'object' && typeof transitioned.user_id === 'string') {
+      this.publishTerminalOutboxRecord(actionId, transitioned.user_id, transitioned);
+      if (!acknowledgement.ok && typeof transitioned.device_id === 'string') {
         await this.notifyRobotFailure(transitioned.user_id, actionId, transitioned.device_id);
       }
     }
     return true;
   }
 
-  startRobotDelivery(userId, action, signed, queueKey) {
+  startRobotDelivery(userId, action, signed, queueKey, signal) {
     const { previous, release } = this.installRobotQueueBarrier(queueKey);
+    let queueReleased = false;
+    const releaseQueue = () => {
+      if (queueReleased) return;
+      queueReleased = true;
+      release();
+      this.releaseRobotSlot(queueKey);
+    };
     const delivery = previous.catch(() => {}).then(async () => {
-      await this.transitionOutbox('markDelivering', signed.envelope.id, { attempt: 1 });
+      let leaseAcquired = false;
+      const acquireOrRenewLease = async (attempt) => {
+        throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+        await this.assertAccountActionAllowed(userId);
+        await this.assertRobotBindingActive(userId, signed);
+        const leaseNow = this.now();
+        // A vendor HAL may have a longer retry budget than this gateway.
+        // Hold ownership through the signed envelope lifetime; a second
+        // replica may observe the row but cannot steal and redeliver a
+        // still-valid safety command.
+        const delivering = await this.transitionOutbox('markDelivering', signed.envelope.id, {
+          attempt,
+          lease_owner: this.deliveryWorkerId,
+          lease_now: leaseNow,
+          lease_expires_at: signed.envelope.expires_at
+        });
+        if (delivering === false) {
+          throw Object.assign(new Error('Robot delivery lease was not acquired'), {
+            statusCode: 409,
+            code: 'OUTBOX_DELIVERY_LEASE_LOST'
+          });
+        }
+        if (typeof delivering === 'object' && ['delivered', 'failed'].includes(delivering.state)) {
+          throw Object.assign(new Error('Robot command is already terminal'), {
+            statusCode: 409,
+            code: 'OUTBOX_ACTION_TERMINAL',
+            durableRecord: delivering
+          });
+        }
+        if (typeof delivering === 'object' && delivering.state !== 'delivering') {
+          throw Object.assign(new Error('Robot delivery lease state is invalid'), {
+            statusCode: 503,
+            code: 'OUTBOX_DELIVERY_LEASE_INVALID'
+          });
+        }
+        leaseAcquired = true;
+        throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+      };
       try {
+        throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+        // Lease before vendor adapter construction/initialization. The HAL may
+        // fail before its first HTTP attempt and must never clobber a lease
+        // already held by another replica.
+        await acquireOrRenewLease(1);
         const result = await this.deliverRobot(signed, {
+          signal,
+          transportContext: {
+            userId,
+            deviceId: action.device_id,
+            bindingEpoch: signed.envelope.binding_epoch,
+            actionId: signed.envelope.id
+          },
           onAttempt: async (attempt) => {
-            await this.assertAccountActionAllowed(userId);
-            await this.assertRobotBindingActive(userId, signed);
-            await this.transitionOutbox('markDelivering', signed.envelope.id, { attempt });
+            if (attempt === 1) {
+              throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+            } else {
+              await acquireOrRenewLease(attempt);
+            }
           }
         });
         if (result.status === 202) {
           const ackDeadline = this.now() + this.robotAckTimeoutMs;
-          this.scheduleRobotAck(userId, action, signed, queueKey, this.robotAckTimeoutMs, release);
           const pendingAckState = await this.transitionOutbox('markPendingAck', signed.envelope.id, {
             manufacturer_status: result.status,
-            ack_deadline: ackDeadline
+            ack_deadline: ackDeadline,
+            lease_owner: this.deliveryWorkerId
           });
-          const pending = this.pendingRobotAcks.get(signed.envelope.id);
-          if (pending
-            && pendingAckState
-            && typeof pendingAckState === 'object'
-            && ['delivered', 'failed'].includes(pendingAckState.state)) {
+          if (pendingAckState === false) {
+            throw Object.assign(new Error('Robot ACK state could not be durably recorded'), {
+              statusCode: 503,
+              code: 'OUTBOX_PENDING_ACK_TRANSITION_FAILED',
+              nonRetractable: true
+            });
+          }
+          if (typeof pendingAckState === 'object' && ['delivered', 'failed'].includes(pendingAckState.state)) {
             // An authenticated callback may win the race against this 202
             // response on another replica. Do not leave the per-device queue
             // blocked until an ACK timeout after DynamoDB is already terminal.
-            this.pendingRobotAcks.delete(signed.envelope.id);
-            this.clearTimeoutImpl(pending.timer);
-            pending.releaseQueue?.();
-            this.releaseRobotSlot(pending.queueKey);
+            releaseQueue();
+            this.publishTerminalOutboxRecord(signed.envelope.id, userId, pendingAckState);
+          } else {
+            if (typeof pendingAckState === 'object' && pendingAckState.state !== 'pending_ack') {
+              throw Object.assign(new Error('Robot ACK state transition returned an invalid state'), {
+                statusCode: 503,
+                code: 'OUTBOX_PENDING_ACK_STATE_INVALID',
+                nonRetractable: true
+              });
+            }
+            throwIfActionCancelled(signal, 'Robot command wait was cancelled', { mayHaveBeenSent: true });
+            this.scheduleRobotAck(
+              userId,
+              action,
+              signed,
+              queueKey,
+              this.robotAckTimeoutMs,
+              release,
+              signal
+            );
           }
         } else {
-          await this.transitionOutbox('markDelivered', signed.envelope.id, { manufacturer_status: result.status });
-          release();
-          this.releaseRobotSlot(queueKey);
+          const transitioned = await this.transitionOutbox('markDelivered', signed.envelope.id, {
+            manufacturer_status: result.status,
+            lease_owner: this.deliveryWorkerId
+          });
+          if (transitioned === false) {
+            throw Object.assign(new Error('Robot delivery result could not be durably recorded'), {
+              statusCode: 503,
+              code: 'OUTBOX_DELIVERED_TRANSITION_FAILED',
+              nonRetractable: true
+            });
+          }
+          if (typeof transitioned === 'object' && !['delivered', 'failed'].includes(transitioned.state)) {
+            throw Object.assign(new Error('Robot delivery transition returned an invalid state'), {
+              statusCode: 503,
+              code: 'OUTBOX_DELIVERED_STATE_INVALID',
+              nonRetractable: true
+            });
+          }
+          releaseQueue();
+          if (!this.publishTerminalOutboxRecord(signed.envelope.id, userId, transitioned)) {
+            this.publishRobotOutcome(signed.envelope.id, userId, {
+              status: 'delivered',
+              action_id: signed.envelope.id
+            });
+          }
         }
         return result;
       } catch (error) {
-        await this.transitionOutbox('markFailed', signed.envelope.id, {
-          error_code: error?.code || error?.name || 'DELIVERY_FAILED'
-        });
-        release();
-        this.releaseRobotSlot(queueKey);
+        let authoritative = error?.durableRecord;
+        const mustNotMutate = [
+          'OUTBOX_DELIVERY_LEASE_LOST',
+          'OUTBOX_DELIVERY_LEASE_INVALID',
+          'OUTBOX_ACTION_TERMINAL'
+        ].includes(error?.code);
+        let durableFailureRejected = false;
+        if (!authoritative && !mustNotMutate) {
+          const failureMethod = leaseAcquired ? 'markFailed' : 'markQueuedFailed';
+          const transitioned = this.outboxRepository
+            && typeof this.outboxRepository[failureMethod] !== 'function'
+            ? false
+            : await this.transitionOutbox(failureMethod, signed.envelope.id, {
+              error_code: error?.nonRetractable === true && error?.code === 'ACTION_CANCELLED'
+                ? 'ACTION_CANCELLED_NON_RETRACTABLE'
+                : (error?.code || error?.name || 'DELIVERY_FAILED'),
+              ...(leaseAcquired ? { lease_owner: this.deliveryWorkerId } : {})
+            });
+          durableFailureRejected = transitioned === false;
+          authoritative = transitioned === false
+            ? await this.readOutboxRecord(signed.envelope.id)
+            : transitioned;
+        } else if (!authoritative) {
+          authoritative = await this.readOutboxRecord(signed.envelope.id);
+        }
+        releaseQueue();
+        if (!this.publishTerminalOutboxRecord(signed.envelope.id, userId, authoritative)) {
+          if (!mustNotMutate && !durableFailureRejected) {
+            this.publishRobotOutcome(signed.envelope.id, userId, {
+              status: 'failed',
+              action_id: signed.envelope.id,
+              error_code: error?.nonRetractable === true && error?.code === 'ACTION_CANCELLED'
+                ? 'ACTION_CANCELLED_NON_RETRACTABLE'
+                : (typeof error?.code === 'string' ? error.code : 'DELIVERY_FAILED')
+            });
+          }
+        }
         throw error;
       }
     });
@@ -1060,13 +1624,21 @@ class ActionGateway {
       this.logger.error('[ActionGateway] Robot delivery exhausted', {
         actionId: signed.envelope.id, name: error?.name || 'DeliveryError'
       });
-      const intentionallyFenced = ['BINDING_FENCED', 'ACCOUNT_FENCED'].includes(error?.code)
-        || this.fencedUserActions.has(String(userId))
+      const intentionallyFenced = [
+        'BINDING_FENCED',
+        'ACCOUNT_FENCED',
+        'ACTION_CANCELLED',
+        'OUTBOX_ACTION_TERMINAL',
+        'OUTBOX_DELIVERY_LEASE_LOST',
+        'OUTBOX_DELIVERY_LEASE_INVALID'
+      ].includes(error?.code)
+        || this.fencedUserActions.has(accountFenceKey(userId))
         || this.fencedRobotBindings.has(this.bindingKey(
           userId,
           action.device_id,
           signed.envelope.binding_epoch
-        ));
+        ))
+        || this.robotActionOutcomes.get(signed.envelope.id)?.outcome?.status === 'delivered';
       if (!intentionallyFenced) {
         await this.notifyRobotFailure(userId, signed.envelope.id, action.device_id);
       }
@@ -1092,8 +1664,15 @@ class ActionGateway {
     let recovery;
     recovery = (async () => {
       if (!this.outboxRepository?.listPending) return { recovered: 0 };
-      const records = await this.outboxRepository.listPending({ limit: this.maxPendingRobotCommands });
+      this.recoveryDeferred = false;
+      const page = await this.outboxRepository.listPending({
+        limit: this.maxPendingRobotCommands,
+        cursor: this.recoveryCursor
+      });
+      const records = Array.isArray(page) ? page : (Array.isArray(page?.records) ? page.records : []);
+      const nextCursor = Array.isArray(page) ? undefined : page?.nextCursor;
       let recovered = 0;
+      let capacityBlocked = false;
       for (const record of records) {
         const signed = record?.signed;
         const actionId = signed?.envelope?.id;
@@ -1110,6 +1689,7 @@ class ActionGateway {
           || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(signed.envelope.adapter_id || '')
         ) === false;
         if (!hasRecoverableIdentity) continue;
+        if (this.pendingRobotDeliveries.has(actionId) || this.pendingRobotAcks.has(actionId)) continue;
         const bindingEpoch = signed.envelope.binding_epoch;
         if (
           signed.envelope.version !== 2
@@ -1152,6 +1732,17 @@ class ActionGateway {
           });
           continue;
         }
+        if (
+          record.state === 'delivering'
+          && boundedIdentifier(record.lease_owner, 128)
+          && record.lease_owner !== this.deliveryWorkerId
+          && Number.isSafeInteger(record.lease_expires_at)
+          && record.lease_expires_at > this.now()
+        ) {
+          this.recoveryDeferred = true;
+          this.scheduleDeferredRecovery(record.lease_expires_at - this.now() + 1);
+          continue;
+        }
         const action = {
           action: record.action,
           device_type: 'home_robot',
@@ -1159,7 +1750,13 @@ class ActionGateway {
           parameters: signed.envelope.parameters || {}
         };
         const queueKey = this.queueKey(userId, deviceId, bindingEpoch);
-        try { this.reserveRobotSlot(queueKey); } catch { break; }
+        try {
+          this.reserveRobotSlot(queueKey);
+        } catch {
+          this.recoveryDeferred = true;
+          capacityBlocked = true;
+          break;
+        }
         recovered += 1;
         if (record.state === 'pending_ack') {
           const remaining = Number(record.ack_deadline) - this.now();
@@ -1176,6 +1773,13 @@ class ActionGateway {
           this.startRobotDelivery(userId, action, signed, queueKey);
         }
       }
+      if (!capacityBlocked) {
+        this.recoveryCursor = nextCursor;
+        if (nextCursor) {
+          this.recoveryDeferred = true;
+          this.scheduleDeferredRecovery();
+        }
+      }
       return { recovered };
     })().catch((error) => {
       this.logger.error('[ActionGateway] Durable action recovery failed', { name: error?.name || 'RecoveryError' });
@@ -1184,16 +1788,20 @@ class ActionGateway {
         this.recoveryPromise = Promise.resolve({ recovered: 0 });
       }
       throw error;
+    }).finally(() => {
+      if (this.recoveryPromise === recovery) this.recoveryStarted = false;
     });
     this.recoveryPromise = recovery;
     return recovery;
   }
 
-  async route(userId, input) {
+  async route(userId, input, { signal } = {}) {
+    throwIfActionCancelled(signal, 'Action was cancelled before validation');
     let action = validateAction(input);
-    if (this.isAccountActionAllowed || this.fencedUserActions.has(String(userId))) {
+    if (this.isAccountActionAllowed || this.fencedUserActions.has(accountFenceKey(userId))) {
       await this.assertAccountActionAllowed(userId);
     }
+    throwIfActionCancelled(signal, 'Action was cancelled before device resolution');
     const session = this.sessions.get(userId);
     const device = session?.devices.get(action.device_id);
     if (action.device_type === 'wearable') {
@@ -1217,12 +1825,6 @@ class ActionGateway {
       ) {
         throw Object.assign(new Error('Requested device is not bound to an active supported adapter'), { statusCode: 403 });
       }
-      let online = device?.device_type === 'home_robot' && device.online === true;
-      if (!online && this.getDeviceStatus) {
-        const status = await this.getDeviceStatus(manufacturerDeviceId, adapterId);
-        online = status?.online === true;
-      }
-      if (!online) throw Object.assign(new Error('Requested device is offline'), { statusCode: 409 });
       action = {
         ...action,
         manufacturer_device_id: manufacturerDeviceId,
@@ -1247,11 +1849,41 @@ class ActionGateway {
     const { idempotency_key: _idempotencyKey, ...actionEnvelope } = action;
     const signed = signEnvelope(actionEnvelope, this.signingPrivateKey, () => issuedAt, actionId);
     if (action.device_type === 'wearable') {
-      return this.routeWearable(userId, session, signed);
+      return this.routeWearable(userId, session, signed, signal);
     }
     await this.assertAccountActionAllowed(userId);
     await this.assertRobotBindingActive(userId, signed);
+    throwIfActionCancelled(signal, 'Robot command was cancelled before idempotency lookup');
+    if (action.idempotency_key && this.outboxRepository?.getAction) {
+      let existing;
+      try {
+        existing = await this.outboxRepository.getAction(signed.envelope.id);
+      } catch (error) {
+        throw Object.assign(new Error('Robot idempotency state could not be read'), {
+          statusCode: 503,
+          code: 'ROBOT_IDEMPOTENCY_STATE_UNAVAILABLE',
+          cause: error
+        });
+      }
+      throwIfActionCancelled(signal, 'Robot command was cancelled during idempotency lookup');
+      if (existing) {
+        return this.validateDuplicateRobotRecord(existing, {
+          actionId: signed.envelope.id,
+          userId,
+          action,
+          requestFingerprint
+        });
+      }
+    }
+    let online = device?.device_type === 'home_robot' && device.online === true;
+    if (!online && this.getDeviceStatus) {
+      const status = await this.getDeviceStatus(action.manufacturer_device_id, action.adapter_id);
+      throwIfActionCancelled(signal, 'Robot command was cancelled during status lookup');
+      online = status?.online === true;
+    }
+    if (!online) throw Object.assign(new Error('Requested device is offline'), { statusCode: 409 });
     await this.recoverPendingCommands();
+    throwIfActionCancelled(signal, 'Robot command was cancelled during recovery');
     await this.assertAccountActionAllowed(userId);
     await this.assertRobotBindingActive(userId, signed);
     const queueKey = this.queueKey(userId, action.device_id, action.binding_epoch);
@@ -1290,7 +1922,12 @@ class ActionGateway {
             });
           }
           this.releaseRobotSlot(queueKey);
-          return { status: 'accepted', action_id: signed.envelope.id, duplicate: true };
+          return this.validateDuplicateRobotRecord(existing, {
+            actionId: signed.envelope.id,
+            userId,
+            action,
+            requestFingerprint
+          });
         }
         if (enqueued === false) {
           throw Object.assign(new Error('Idempotency state could not be verified'), {
@@ -1304,15 +1941,338 @@ class ActionGateway {
         throw Object.assign(new Error('Robot command could not be durably queued'), { statusCode: 503, cause: error });
       }
     }
-    this.startRobotDelivery(userId, action, signed, queueKey);
+    this.rememberRobotActionOwner(signed.envelope.id, userId);
+    this.startRobotDelivery(userId, action, signed, queueKey, signal);
     return { status: 'accepted', action_id: signed.envelope.id };
+  }
+
+  async routeMany(userId, inputs, { mode = 'parallel', signal } = {}) {
+    if (!Array.isArray(inputs) || inputs.length < 1 || inputs.length > 10) {
+      throw Object.assign(new Error('Multi-device action count is invalid'), { statusCode: 400 });
+    }
+    if (!['parallel', 'sequential'].includes(mode)) {
+      throw Object.assign(new Error('Multi-device action mode is invalid'), { statusCode: 400 });
+    }
+    const normalized = inputs.map((input) => validateAction(input));
+    if (normalized.some((action) => !action.idempotency_key)) {
+      throw Object.assign(new Error('Multi-device actions require idempotency keys'), { statusCode: 400 });
+    }
+    const identities = new Set(normalized.map((action) => (
+      `${action.device_type}:${action.device_id}:${action.action}:${action.idempotency_key}`
+    )));
+    if (identities.size !== normalized.length) {
+      throw Object.assign(new Error('Multi-device action is duplicated'), { statusCode: 409 });
+    }
+    const execute = async (action, index) => {
+      try {
+        return {
+          index,
+          device_type: action.device_type,
+          device_id: action.device_id,
+          action: action.action,
+          status: 'fulfilled',
+          value: await this.route(userId, action, { signal })
+        };
+      } catch (error) {
+        return {
+          index,
+          device_type: action.device_type,
+          device_id: action.device_id,
+          action: action.action,
+          status: 'rejected',
+          status_code: Number.isSafeInteger(error?.statusCode) ? error.statusCode : 500,
+          error_code: typeof error?.code === 'string'
+            ? error.code.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64)
+            : 'ACTION_FAILED'
+        };
+      }
+    };
+    const results = [];
+    if (mode === 'sequential') {
+      for (let index = 0; index < normalized.length; index += 1) {
+        results.push(await execute(normalized[index], index));
+      }
+    } else {
+      results.push(...await Promise.all(normalized.map(execute)));
+    }
+    return Object.freeze({ mode, results: Object.freeze(results) });
+  }
+
+  async startScenario(userId, request) {
+    if (!this.scenarioEngine || typeof this.scenarioEngine.startScenario !== 'function') {
+      throw Object.assign(new Error('Scenario engine is not configured'), {
+        statusCode: 503,
+        code: 'SCENARIO_ENGINE_UNAVAILABLE'
+      });
+    }
+    return this.scenarioEngine.startScenario(userId, request);
+  }
+
+  async cancelScenario(userId, executionId) {
+    if (!this.scenarioEngine || typeof this.scenarioEngine.cancelScenario !== 'function') {
+      throw Object.assign(new Error('Scenario engine is not configured'), {
+        statusCode: 503,
+        code: 'SCENARIO_ENGINE_UNAVAILABLE'
+      });
+    }
+    return this.scenarioEngine.cancelScenario(userId, executionId);
+  }
+
+  async getScenarioExecution(userId, executionId) {
+    if (!this.scenarioEngine || typeof this.scenarioEngine.getExecution !== 'function') {
+      throw Object.assign(new Error('Scenario engine is not configured'), {
+        statusCode: 503,
+        code: 'SCENARIO_ENGINE_UNAVAILABLE'
+      });
+    }
+    return this.scenarioEngine.getExecution(userId, executionId);
+  }
+
+  rememberRobotActionOwner(actionId, userId) {
+    this.robotActionOwners.delete(actionId);
+    this.robotActionOwners.set(actionId, String(userId));
+    while (this.robotActionOwners.size > this.maxPendingRobotCommands * 2) {
+      this.robotActionOwners.delete(this.robotActionOwners.keys().next().value);
+    }
+  }
+
+  publishRobotOutcome(actionId, userId, outcome) {
+    if (!ACTION_ID_PATTERN.test(actionId || '')) return false;
+    const normalizedUserId = String(userId);
+    if (this.fencedUserActions.has(accountFenceKey(normalizedUserId))) return false;
+    this.rememberRobotActionOwner(actionId, normalizedUserId);
+    const safeCode = typeof outcome?.error_code === 'string'
+      ? outcome.error_code.replace(/[^A-Za-z0-9_-]/g, '').slice(0, 64)
+      : undefined;
+    const cameraSessionRef = boundedIdentifier(outcome?.camera_session_ref, 128);
+    const stored = Object.freeze({
+      status: outcome?.status === 'delivered' ? 'delivered' : 'failed',
+      action_id: actionId,
+      ...(safeCode ? { error_code: safeCode } : {}),
+      ...(outcome?.status === 'delivered' && typeof outcome?.camera_ready === 'boolean' && cameraSessionRef
+        ? { camera_ready: outcome.camera_ready, camera_session_ref: cameraSessionRef }
+        : {})
+    });
+    this.robotActionOutcomes.delete(actionId);
+    this.robotActionOutcomes.set(actionId, { userId: normalizedUserId, outcome: stored });
+    while (this.robotActionOutcomes.size > this.maxPendingRobotCommands * 2) {
+      this.robotActionOutcomes.delete(this.robotActionOutcomes.keys().next().value);
+    }
+    const waiters = this.robotOutcomeWaiters.get(actionId);
+    this.robotOutcomeWaiters.delete(actionId);
+    for (const waiter of waiters || []) waiter.resolve();
+    return true;
+  }
+
+  async readRobotOutcome(userId, actionId) {
+    const normalizedUserId = String(userId);
+    const cached = this.robotActionOutcomes.get(actionId);
+    if (cached) {
+      if (cached.userId !== normalizedUserId) return { forbidden: true };
+      return cached.outcome;
+    }
+    if (this.outboxRepository?.getAction) {
+      const record = await this.outboxRepository.getAction(actionId);
+      if (this.fencedUserActions.has(accountFenceKey(normalizedUserId))) return { fenced: true };
+      if (record) {
+        if (String(record.user_id) !== normalizedUserId) return { forbidden: true };
+        this.rememberRobotActionOwner(actionId, normalizedUserId);
+        if (record.state === 'delivered' || record.state === 'failed') {
+          this.publishTerminalOutboxRecord(actionId, normalizedUserId, record);
+          return this.robotActionOutcomes.get(actionId)?.outcome;
+        }
+      }
+    }
+    const owner = this.robotActionOwners.get(actionId);
+    if (owner !== undefined && owner !== normalizedUserId) return { forbidden: true };
+    return owner === normalizedUserId ? undefined : { unknown: true };
+  }
+
+  waitForRobotOutcomeChange(userId, actionId, timeoutMs, signal) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const finish = (error) => {
+        if (settled) return;
+        settled = true;
+        this.outcomeClearTimeoutImpl(timer);
+        signal?.removeEventListener?.('abort', onAbort);
+        const waiters = this.robotOutcomeWaiters.get(actionId);
+        waiters?.delete(waiter);
+        if (waiters?.size === 0) this.robotOutcomeWaiters.delete(actionId);
+        if (error) reject(error);
+        else resolve();
+      };
+      const onOutcome = () => finish();
+      const onAbort = () => finish(Object.assign(new Error('Action outcome wait was cancelled'), {
+        statusCode: 409,
+        code: 'ACTION_WAIT_CANCELLED'
+      }));
+      const timer = this.outcomeSetTimeoutImpl(() => finish(), timeoutMs);
+      const waiters = this.robotOutcomeWaiters.get(actionId) || new Set();
+      const waiter = { userId: String(userId), resolve: onOutcome };
+      waiters.add(waiter);
+      this.robotOutcomeWaiters.set(actionId, waiters);
+      if (signal?.aborted) onAbort();
+      else signal?.addEventListener?.('abort', onAbort, { once: true });
+    });
+  }
+
+  readRobotOutcomeWithin(userId, actionId, timeoutMs, signal) {
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const finish = (error, value) => {
+        if (settled) return;
+        settled = true;
+        this.outcomeClearTimeoutImpl(timer);
+        signal?.removeEventListener?.('abort', onAbort);
+        if (error) reject(error);
+        else resolve(value);
+      };
+      const onAbort = () => finish(Object.assign(new Error('Action outcome wait was cancelled'), {
+        statusCode: 409,
+        code: 'ACTION_WAIT_CANCELLED'
+      }));
+      const timer = this.outcomeSetTimeoutImpl(() => finish(Object.assign(new Error('Action outcome read timed out'), {
+        statusCode: 504,
+        code: 'ACTION_OUTCOME_READ_TIMEOUT'
+      })), Math.max(1, timeoutMs));
+      signal?.addEventListener?.('abort', onAbort, { once: true });
+      if (signal?.aborted) {
+        onAbort();
+        return;
+      }
+      Promise.resolve()
+        .then(() => this.readRobotOutcome(userId, actionId))
+        .then((value) => finish(undefined, value), (error) => finish(error));
+    });
+  }
+
+  unwrapRobotOutcome(outcome) {
+    if (outcome?.fenced) throw accountFencedError();
+    if (outcome?.forbidden || outcome?.unknown) {
+      throw Object.assign(new Error('Action outcome was not found'), { statusCode: 404, code: 'ACTION_NOT_FOUND' });
+    }
+    if (outcome?.status === 'delivered') return outcome;
+    if (outcome?.status === 'failed') {
+      const code = outcome.error_code || 'ROBOT_COMMAND_FAILED';
+      throw Object.assign(new Error('Robot command did not complete'), {
+        statusCode: code === 'ACK_TIMEOUT' ? 504 : 502,
+        code
+      });
+    }
+    return undefined;
+  }
+
+  async waitForActionOutcome(userId, actionId, { timeoutMs = this.robotAckTimeoutMs, signal } = {}) {
+    if (!ACTION_ID_PATTERN.test(actionId || '')) {
+      throw Object.assign(new Error('Action outcome id is invalid'), { statusCode: 400 });
+    }
+    const boundedTimeout = Math.max(10, Math.min(5 * 60_000, Number(timeoutMs) || this.robotAckTimeoutMs));
+    const startedAt = this.monotonicNow();
+    const deadline = startedAt + boundedTimeout;
+    while (this.monotonicNow() < deadline) {
+      if (this.fencedUserActions.has(accountFenceKey(userId))) {
+        throw Object.assign(new Error('Account actions are disabled'), {
+          statusCode: 409,
+          code: 'ACCOUNT_FENCED'
+        });
+      }
+      const remaining = Math.max(1, deadline - this.monotonicNow());
+      let outcome;
+      try {
+        outcome = await this.readRobotOutcomeWithin(userId, actionId, remaining, signal);
+      } catch (error) {
+        if (error?.code === 'ACTION_OUTCOME_READ_TIMEOUT') break;
+        throw error;
+      }
+      const terminal = this.unwrapRobotOutcome(outcome);
+      if (terminal) return terminal;
+      const waitMs = Math.min(50, Math.max(1, deadline - this.monotonicNow()));
+      await this.waitForRobotOutcomeChange(userId, actionId, waitMs, signal);
+    }
+
+    // ACK expiry and this caller's deadline can land in the same event-loop
+    // turn. Give the authoritative outbox one short, bounded final read so an
+    // ACK_TIMEOUT is not obscured by a generic local wait timeout.
+    const finalReadBudgetMs = Math.min(50, Math.max(10, Math.ceil(boundedTimeout / 10)));
+    try {
+      const finalOutcome = await this.readRobotOutcomeWithin(userId, actionId, finalReadBudgetMs, signal);
+      const terminal = this.unwrapRobotOutcome(finalOutcome);
+      if (terminal) return terminal;
+    } catch (error) {
+      if (error?.code !== 'ACTION_OUTCOME_READ_TIMEOUT') throw error;
+    }
+    throw Object.assign(new Error('Action outcome wait timed out'), {
+      statusCode: 504,
+      code: 'ACTION_OUTCOME_TIMEOUT'
+    });
+  }
+
+  purgeRobotOutcomeDataForUser(userId) {
+    const normalizedUserId = String(userId);
+    for (const [actionId, owner] of this.robotActionOwners) {
+      if (owner === normalizedUserId) this.robotActionOwners.delete(actionId);
+    }
+    for (const [actionId, entry] of this.robotActionOutcomes) {
+      if (entry.userId === normalizedUserId) this.robotActionOutcomes.delete(actionId);
+    }
+    for (const [actionId, waiters] of this.robotOutcomeWaiters) {
+      for (const waiter of waiters) {
+        if (waiter.userId !== normalizedUserId) continue;
+        waiters.delete(waiter);
+        waiter.resolve();
+      }
+      if (waiters.size === 0) this.robotOutcomeWaiters.delete(actionId);
+    }
   }
 
   async waitForDeliveries() { await Promise.allSettled([...this.pendingDeliveries]); }
 
-  async postManufacturer(signed) {
+  trackNonRetractableTransport(operation, context) {
+    if (!context || typeof context.userId !== 'string') return;
+    const key = Symbol(context.actionId || 'robot-transport');
+    const tracked = Promise.resolve(operation).catch(() => {}).finally(() => {
+      this.pendingRobotTransports.delete(key);
+    });
+    this.pendingRobotTransports.set(key, { ...context, promise: tracked });
+  }
+
+  async awaitWithActionAbort(operation, signal, message, {
+    mayHaveBeenSent = false,
+    transportContext
+  } = {}) {
+    if (!signal) return operation;
+    if (signal.aborted) {
+      if (mayHaveBeenSent) this.trackNonRetractableTransport(operation, transportContext);
+      throw actionCancelledError(message, { mayHaveBeenSent });
+    }
+    let rejectAbort;
+    const aborted = new Promise((_, reject) => { rejectAbort = reject; });
+    const onAbort = () => {
+      if (mayHaveBeenSent) this.trackNonRetractableTransport(operation, transportContext);
+      rejectAbort(actionCancelledError(message, { mayHaveBeenSent }));
+    };
+    signal.addEventListener?.('abort', onAbort, { once: true });
+    if (signal.aborted) onAbort();
+    try {
+      return await Promise.race([operation, aborted]);
+    } finally {
+      signal.removeEventListener?.('abort', onAbort);
+    }
+  }
+
+  async postManufacturer(signed, signal, transportContext) {
+    throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
     const controller = new AbortController();
     let timeout;
+    let rejectAbort;
+    const abortFailure = new Promise((_, reject) => { rejectAbort = reject; });
+    let fetchOperation;
+    const onAbort = () => {
+      controller.abort();
+      if (fetchOperation) this.trackNonRetractableTransport(fetchOperation, transportContext);
+      rejectAbort(actionCancelledError('Robot command transport was cancelled', { mayHaveBeenSent: true }));
+    };
     const timeoutFailure = new Promise((_, reject) => {
       timeout = setTimeout(() => {
         controller.abort();
@@ -1321,25 +2281,37 @@ class ActionGateway {
         reject(error);
       }, this.requestTimeoutMs);
     });
+    signal?.addEventListener?.('abort', onAbort, { once: true });
+    if (signal?.aborted) {
+      onAbort();
+      clearTimeout(timeout);
+      signal?.removeEventListener?.('abort', onAbort);
+      return abortFailure;
+    }
     try {
+      fetchOperation = this.fetchImpl(this.manufacturerWebhookURL, {
+        method: 'POST',
+        redirect: 'error',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Manufacturer-Api-Key': this.manufacturerApiKey,
+          'Idempotency-Key': signed.envelope.id
+        },
+        body: JSON.stringify(signed),
+        signal: controller.signal
+      });
       return await Promise.race([
-        this.fetchImpl(this.manufacturerWebhookURL, {
-          method: 'POST',
-          redirect: 'error',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Manufacturer-Api-Key': this.manufacturerApiKey,
-            'Idempotency-Key': signed.envelope.id
-          },
-          body: JSON.stringify(signed),
-          signal: controller.signal
-        }),
-        timeoutFailure
+        fetchOperation,
+        timeoutFailure,
+        abortFailure
       ]);
-    } finally { clearTimeout(timeout); }
+    } finally {
+      clearTimeout(timeout);
+      signal?.removeEventListener?.('abort', onAbort);
+    }
   }
 
-  async deliverRobot(signed, { onAttempt } = {}) {
+  async deliverRobot(signed, { onAttempt, signal, transportContext } = {}) {
     const adapterId = signed?.envelope?.adapter_id;
     // Bindings created before the vendor HAL rollout intentionally remain on
     // the legacy manufacturer control plane until an explicit, audited
@@ -1349,7 +2321,14 @@ class ActionGateway {
       if (typeof adapterId !== 'string' || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(adapterId)) {
         throw new Error('Robot adapter is invalid');
       }
-      return this.robotAdapterRuntime.deliverSignedAction(adapterId, signed, { onAttempt });
+      throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+      const delivery = this.robotAdapterRuntime.deliverSignedAction(adapterId, signed, { onAttempt, signal });
+      return this.awaitWithActionAbort(
+        delivery,
+        signal,
+        'Robot adapter transport was cancelled',
+        { mayHaveBeenSent: true, transportContext }
+      );
     }
     if (!this.manufacturerWebhookURL || !this.manufacturerApiKey) throw new Error('Manufacturer gateway is not configured');
     const expiresAt = signed?.envelope?.expires_at;
@@ -1359,17 +2338,26 @@ class ActionGateway {
     let lastError;
     for (let attempt = 0; attempt < this.retries; attempt += 1) {
       try {
+        throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
         if (expiresAt !== undefined && expiresAt <= this.now()) {
           throw Object.assign(new Error('Robot action has expired'), { code: 'ACTION_EXPIRED' });
         }
         await onAttempt?.(attempt + 1);
-        const response = await this.postManufacturer(signed);
+        throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
+        const response = await this.postManufacturer(signed, signal, transportContext);
         if (response.status !== 202 && !response.ok) throw new Error(`Manufacturer returned ${response.status}`);
         return { acknowledged: response.status !== 202, status: response.status };
       } catch (error) {
         lastError = error;
-        if (error?.code === 'BINDING_FENCED') break;
-        if (attempt + 1 < this.retries) await this.sleep(this.retryDelayMs * 2 ** attempt);
+        if (['BINDING_FENCED', 'ACCOUNT_FENCED', 'ACTION_CANCELLED', 'OUTBOX_DELIVERY_LEASE_LOST', 'OUTBOX_ACTION_TERMINAL'].includes(error?.code)) break;
+        if (attempt + 1 < this.retries) {
+          await this.awaitWithActionAbort(
+            this.sleep(this.retryDelayMs * 2 ** attempt),
+            signal,
+            'Robot command was cancelled before retry',
+            { mayHaveBeenSent: true }
+          );
+        }
       }
     }
     throw lastError;

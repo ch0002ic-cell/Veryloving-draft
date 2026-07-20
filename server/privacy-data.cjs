@@ -14,6 +14,19 @@ const PRIVACY_DATASETS = Object.freeze([
   ['sessions', 'authSessionRepository']
 ]);
 
+function configuredDatasets(repositories) {
+  // Dataset membership is a deployment/data-lifecycle decision, not a
+  // consequence of whether a repository happened to be injected at startup.
+  // Otherwise disabling the AI runtime could silently omit historical AI
+  // state and memories from an account export or erasure.
+  if (repositories.includeAINative !== true) return PRIVACY_DATASETS;
+  return Object.freeze([
+    PRIVACY_DATASETS[0],
+    ['aiNative', 'aiNativePrivacyRepository'],
+    ...PRIVACY_DATASETS.slice(1)
+  ]);
+}
+
 function privacyFailure(operation, dataset, cause) {
   const error = new Error(`Account ${operation} could not complete for ${dataset}.`);
   error.name = 'PrivacyDataError';
@@ -32,7 +45,7 @@ function privacyFailure(operation, dataset, cause) {
  */
 function createPrivacyDataCoordinator(repositories = {}) {
   const beforeAccountDeletion = repositories.beforeAccountDeletion;
-  const configured = PRIVACY_DATASETS.map(([dataset, repositoryName]) => ({
+  const configured = configuredDatasets(repositories).map(([dataset, repositoryName]) => ({
     dataset,
     repositoryName,
     repository: repositories[repositoryName]

@@ -6,6 +6,7 @@ import {
 } from './hume-tool-utils';
 
 const TOOL_TIMEOUT_MS = 8000;
+const AI_ANGEL_TOOL_NAME = 'trigger_ai_angel';
 
 function linkAbortSignal(controller, signal) {
   if (!signal) return () => {};
@@ -19,6 +20,7 @@ export async function executeHumeTool(toolCall, {
   accessToken,
   signal,
   requestDeviceAction,
+  requestAINativeScenario,
   requestHelpDial
 } = {}) {
   if (toolCall?.name === 'request_help_dial') {
@@ -28,6 +30,18 @@ export async function executeHumeTool(toolCall, {
       status: result?.status || 'unknown',
       backend_status: result?.backendStatus || 'disabled'
     });
+  }
+  if (toolCall?.name === AI_ANGEL_TOOL_NAME) {
+    let parameters;
+    try { parameters = typeof toolCall.parameters === 'string' ? JSON.parse(toolCall.parameters) : (toolCall.parameters ?? {}); } catch {
+      throw new Error('AI Angel parameters were invalid.');
+    }
+    if (!parameters || typeof parameters !== 'object' || Array.isArray(parameters) || Object.keys(parameters).length) {
+      throw new Error('AI Angel does not accept device identifiers or action parameters.');
+    }
+    const startScenario = requestAINativeScenario || requestDeviceAction;
+    if (typeof startScenario !== 'function') throw new Error('The AI Angel scenario gateway is unavailable.');
+    return startScenario({ ...toolCall, parameters: {} }, { signal });
   }
   if (['deploy_barrier', 'emit_alarm', 'stop', 'check_medication'].includes(toolCall?.name)) {
     let parameters;
@@ -75,4 +89,4 @@ export async function executeHumeTool(toolCall, {
   }
 }
 
-export { SAFETY_TIPS_TOOL_NAME };
+export { AI_ANGEL_TOOL_NAME, SAFETY_TIPS_TOOL_NAME };

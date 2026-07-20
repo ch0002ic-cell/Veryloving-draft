@@ -21,6 +21,7 @@ const SOCKET_OPEN = 1;
 const CHAT_METADATA_TIMEOUT_MS = 10000;
 const MAX_AUDIO_BUFFERED_BYTES = 256 * 1024;
 const DEVICE_ACTION_REQUEST_TIMEOUT_MS = 20000;
+const AI_ANGEL_TOOL_NAME = 'trigger_ai_angel';
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
 
 function stableActionRequestId(scope, toolCallId) {
@@ -58,6 +59,7 @@ export class HumeEVIService {
     this.chatGroupId = null;
     this.activeToolAbortControllers = new Map();
     this.pendingActionRequests = new Map();
+    this.scenarioRequestTimes = new Map();
     this.inFlightDeviceActionIds = new Set();
     this.processedDeviceActionIds = new Set();
     this.lastServerErrorCode = null;
@@ -394,6 +396,7 @@ export class HumeEVIService {
         this.messageHandler.onToolError?.(message);
         break;
       case 'action_response':
+      case 'scenario_response':
         this.handleActionResponse(message);
         break;
       case 'devices_updated':
@@ -479,6 +482,15 @@ export class HumeEVIService {
       || this.chatGroupId
       || 'voice';
     const requestId = stableActionRequestId(requestScope, toolCallId);
+    const isAIAngelScenario = toolCall?.name === AI_ANGEL_TOOL_NAME;
+    if (isAIAngelScenario && (
+      !toolParameters
+      || typeof toolParameters !== 'object'
+      || Array.isArray(toolParameters)
+      || Object.keys(toolParameters).length
+    )) {
+      return Promise.reject(new Error('AI Angel does not accept device identifiers or action parameters.'));
+    }
     const existing = this.pendingActionRequests.get(requestId);
     if (existing) return existing.promise;
     const socket = this.socket;
@@ -514,18 +526,37 @@ export class HumeEVIService {
         return;
       }
       try {
-        socket.send(JSON.stringify({
-          type: 'action_request',
-          request_id: requestId,
-          action: toolCall?.name,
-          ...(toolParameters && typeof toolParameters === 'object' ? toolParameters : {})
-        }));
+        if (isAIAngelScenario) {
+          if (!this.scenarioRequestTimes.has(requestId)) {
+            this.scenarioRequestTimes.set(requestId, Date.now());
+            if (this.scenarioRequestTimes.size > 200) {
+              this.scenarioRequestTimes.delete(this.scenarioRequestTimes.keys().next().value);
+            }
+          }
+          socket.send(JSON.stringify({
+            type: 'scenario_request',
+            request_id: requestId,
+            scenario: 'ai_angel_auto_dial',
+            occurred_at: this.scenarioRequestTimes.get(requestId)
+          }));
+        } else {
+          socket.send(JSON.stringify({
+            type: 'action_request',
+            request_id: requestId,
+            action: toolCall?.name,
+            ...(toolParameters && typeof toolParameters === 'object' ? toolParameters : {})
+          }));
+        }
       } catch {
         finish(reject, new Error('The device action request could not be sent.'));
       }
     });
     pendingRecord.promise = actionPromise;
     return actionPromise;
+  }
+
+  requestAINativeScenario(toolCall, options = {}) {
+    return this.requestDeviceAction(toolCall, options);
   }
 
   handleActionResponse(message) {

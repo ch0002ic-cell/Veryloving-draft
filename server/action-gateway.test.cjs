@@ -3,6 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const { performance } = require('node:perf_hooks');
 const {
   ActionGateway,
   ROBOT_FAILURE_MESSAGE,
@@ -44,10 +45,96 @@ function acknowledgeRobot(gateway, actionId, acknowledgement = { ok: true }, {
   return gateway.acknowledgeRobot(actionId, acknowledgement, { adapterId, bindingEpoch });
 }
 
+function createMemoryOutbox(overrides = {}) {
+  const records = new Map();
+  const clone = (record) => record && { ...record };
+  const transition = (actionId, state, allowed, details = {}) => {
+    const record = records.get(actionId);
+    if (!record || !allowed.includes(record.state)) return false;
+    Object.assign(record, details, { state });
+    return clone(record);
+  };
+  return {
+    records,
+    async listPending() { return []; },
+    async getAction(actionId) { return clone(records.get(actionId)); },
+    async enqueue(record) {
+      if (records.has(record.action_id)) return { duplicate: true, record: clone(records.get(record.action_id)) };
+      records.set(record.action_id, { ...record, state: 'queued' });
+      return clone(records.get(record.action_id));
+    },
+    async markDelivering(actionId, details) {
+      return transition(actionId, 'delivering', ['queued', 'delivering'], details);
+    },
+    async markPendingAck(actionId, details) {
+      const result = transition(actionId, 'pending_ack', ['queued', 'delivering'], details);
+      return result || clone(records.get(actionId));
+    },
+    async markDelivered(actionId, details) {
+      return transition(actionId, 'delivered', ['queued', 'delivering', 'pending_ack'], details);
+    },
+    async markFailed(actionId, details) {
+      return transition(actionId, 'failed', ['queued', 'delivering', 'pending_ack'], details);
+    },
+    async markQueuedFailed(actionId, details) {
+      return transition(actionId, 'failed', ['queued'], details);
+    },
+    async acknowledge(actionId, details) {
+      const record = records.get(actionId);
+      if (!record || record.adapter_id !== details.adapter_id || record.binding_epoch !== details.binding_epoch) return false;
+      return transition(actionId, details.ok ? 'delivered' : 'failed', ['queued', 'delivering', 'pending_ack'], details);
+    },
+    async expirePendingAck(actionId, details) {
+      return transition(actionId, 'failed', ['pending_ack'], details);
+    },
+    ...overrides
+  };
+}
+
 test('action validation enforces device/action compatibility', () => {
   assert.throws(() => validateAction({ action: 'check_medication', device_type: 'wearable', device_id: 'w1' }), /not allowed/);
   assert.equal(validateAction({ action: 'check_medication', device_type: 'home_robot', device_id: 'r1' }).device_id, 'r1');
   assert.equal(validateAction({ action: 'stop', device_type: 'wearable', device_id: 'w1' }).action, 'stop');
+});
+
+test('AI-native robot action schemas reject excess or malformed parameters', () => {
+  assert.deepEqual(validateAction({
+    action: 'emergency_stop', device_type: 'home_robot', device_id: 'r1'
+  }).parameters, {});
+  assert.throws(() => validateAction({
+    action: 'emergency_stop', device_type: 'home_robot', device_id: 'r1', parameters: { reason: 'user' }
+  }), /invalid/);
+  assert.throws(() => validateAction({
+    action: 'emergency_stop', device_type: 'wearable', device_id: 'w1'
+  }), /not allowed/);
+  assert.deepEqual(validateAction({
+    action: 'navigate_to_location', device_type: 'home_robot', device_id: 'r1',
+    parameters: { location_ref: 'bedroom-zone' }
+  }).parameters, { location_ref: 'bedroom-zone' });
+  assert.deepEqual(validateAction({
+    action: 'start_two_way_call', device_type: 'home_robot', device_id: 'r1',
+    parameters: { contact_id: 'caregiver-1' }
+  }).parameters, { contact_id: 'caregiver-1' });
+  assert.deepEqual(validateAction({
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    parameters: { session_id: 'scenario-1' }
+  }).parameters, { session_id: 'scenario-1' });
+  assert.deepEqual(validateAction({
+    action: 'play_soothing_audio', device_type: 'home_robot', device_id: 'r1',
+    parameters: { audio_id: 'guided-breathing', volume: 35 }
+  }).parameters, { audio_id: 'guided-breathing', volume: 35 });
+  assert.throws(() => validateAction({
+    action: 'navigate_to_location', device_type: 'wearable', device_id: 'w1',
+    parameters: { location_ref: 'bedroom-zone' }
+  }), /not allowed/);
+  assert.throws(() => validateAction({
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    parameters: { session_id: 'scenario-1', camera_password: 'unsafe' }
+  }), /invalid/);
+  assert.throws(() => validateAction({
+    action: 'play_soothing_audio', device_type: 'home_robot', device_id: 'r1',
+    parameters: { audio_id: 'guided-breathing', volume: 101 }
+  }), /invalid/);
 });
 
 test('signed action envelopes are deterministic with a fixed clock except identity', () => {
@@ -158,6 +245,171 @@ test('wearable delivery rejects a NACK, timeout, and disconnected session', asyn
   const disconnected = gateway.route('user-1', { action: 'deploy_barrier', device_type: 'wearable', device_id: 'w1' });
   unregister();
   await assert.rejects(disconnected, (error) => error.code === 'WEARABLE_SESSION_CLOSED');
+});
+
+test('wearable cancellation removes its ACK listener and reports that an on-wire command is non-retractable', async () => {
+  const controller = new AbortController();
+  let listenerAdds = 0;
+  let listenerRemoves = 0;
+  const addEventListener = controller.signal.addEventListener.bind(controller.signal);
+  const removeEventListener = controller.signal.removeEventListener.bind(controller.signal);
+  controller.signal.addEventListener = (...args) => { listenerAdds += 1; return addEventListener(...args); };
+  controller.signal.removeEventListener = (...args) => { listenerRemoves += 1; return removeEventListener(...args); };
+  const sent = [];
+  const channel = { readyState: 1, send: (message) => sent.push(JSON.parse(message)) };
+  const gateway = new ActionGateway({ signingPrivateKey: secret, wearableCommandPayloads });
+  gateway.registerSession('user-1', channel, [{ device_id: 'w1', device_type: 'wearable', online: true }]);
+
+  const pending = gateway.route('user-1', {
+    action: 'emit_alarm', device_type: 'wearable', device_id: 'w1'
+  }, { signal: controller.signal });
+  await new Promise((resolve) => setImmediate(resolve));
+  controller.abort();
+  await assert.rejects(pending, (error) => (
+    error.code === 'ACTION_CANCELLED' && error.nonRetractable === true
+  ));
+  assert.equal(sent.length, 1);
+  assert.equal(gateway.pendingWearableAcks.size, 0);
+  assert.equal(listenerAdds, 1);
+  assert.equal(listenerRemoves, 1);
+  assert.equal(gateway.acknowledgeWearable('user-1', channel, {
+    action_id: sent[0].envelope.id, ok: true
+  }), false);
+});
+
+test('robot outcome tracking resolves synchronous delivery and asynchronous ACK', async () => {
+  const syncGateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => ({ ok: true, status: 200 })
+  });
+  syncGateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const delivered = await syncGateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await syncGateway.waitForDeliveries();
+  assert.deepEqual(await syncGateway.waitForActionOutcome('user-1', delivered.action_id), {
+    status: 'delivered', action_id: delivered.action_id
+  });
+
+  const asyncGateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => ({ ok: true, status: 202 })
+  });
+  asyncGateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const accepted = await asyncGateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await asyncGateway.waitForDeliveries();
+  const outcome = asyncGateway.waitForActionOutcome('user-1', accepted.action_id);
+  assert.equal(await acknowledgeRobot(asyncGateway, accepted.action_id), true);
+  assert.deepEqual(await outcome, { status: 'delivered', action_id: accepted.action_id });
+});
+
+test('robot NACK and fixed-clock ACK expiry produce authoritative failures', async () => {
+  const nacked = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => ({ ok: true, status: 202 }),
+    logger: { error() {} }
+  });
+  nacked.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const rejected = await nacked.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await nacked.waitForDeliveries();
+  const rejectedOutcome = nacked.waitForActionOutcome('user-1', rejected.action_id);
+  assert.equal(await acknowledgeRobot(nacked, rejected.action_id, {
+    ok: false, error_code: 'MANUFACTURER_REJECTED'
+  }), true);
+  await assert.rejects(rejectedOutcome, (error) => error.code === 'MANUFACTURER_REJECTED' && error.statusCode === 502);
+
+  const expired = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => ({ ok: true, status: 202 }),
+    robotAckTimeoutMs: 10,
+    now: () => 1,
+    logger: { error() {} }
+  });
+  expired.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const timed = await expired.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await expired.waitForDeliveries();
+  const startedAt = performance.now();
+  await assert.rejects(
+    expired.waitForActionOutcome('user-1', timed.action_id, { timeoutMs: 100 }),
+    (error) => error.code === 'ACK_TIMEOUT' && error.statusCode === 504
+  );
+  assert.ok(performance.now() - startedAt < 250);
+});
+
+test('manufacturer ACK error details are mapped to a server-owned privacy-safe category', async () => {
+  const outboxRepository = createMemoryOutbox();
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    outboxRepository,
+    fetchImpl: async () => ({ ok: true, status: 202 }),
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const accepted = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await gateway.waitForDeliveries();
+  await acknowledgeRobot(gateway, accepted.action_id, {
+    ok: false,
+    error_code: 'serial_PERSONAL_IDENTIFIER_123'
+  });
+  assert.equal(outboxRepository.records.get(accepted.action_id).error_code, 'ROBOT_COMMAND_REJECTED');
+  await assert.rejects(
+    gateway.waitForActionOutcome('user-1', accepted.action_id),
+    (error) => error.code === 'ROBOT_COMMAND_REJECTED'
+  );
+});
+
+test('outcome reads are bounded even when durable storage hangs and deny cross-account access', async () => {
+  const hanging = new ActionGateway({
+    signingPrivateKey: secret,
+    outboxRepository: { getAction: async () => new Promise(() => {}) }
+  });
+  const startedAt = performance.now();
+  await assert.rejects(
+    hanging.waitForActionOutcome('user-1', '11111111-1111-4111-8111-111111111111', { timeoutMs: 20 }),
+    (error) => error.code === 'ACTION_OUTCOME_TIMEOUT'
+  );
+  assert.ok(performance.now() - startedAt < 150);
+
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => ({ ok: true, status: 202 })
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const accepted = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1'
+  });
+  await gateway.waitForDeliveries();
+  await assert.rejects(
+    gateway.waitForActionOutcome('user-2', accepted.action_id, { timeoutMs: 20 }),
+    (error) => error.code === 'ACTION_NOT_FOUND' && error.statusCode === 404
+  );
+  await acknowledgeRobot(gateway, accepted.action_id);
 });
 
 test('robot actions return asynchronous acceptance and retry manufacturer delivery', async () => {
@@ -285,6 +537,101 @@ test('separate device delivery queues start independently', async () => {
   assert.deepEqual(started.sort(), ['r1', 'r2']);
   releaseFirst();
   await gateway.waitForDeliveries();
+});
+
+test('routeMany dispatches wearable and robot actions independently when BLE is stalled', async () => {
+  let robotPosted = false;
+  const sent = [];
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    wearableCommandPayloads,
+    manufacturerWebhookURL: 'https://manufacturer.example.test/hooks',
+    manufacturerApiKey: 'key',
+    fetchImpl: async () => {
+      robotPosted = true;
+      return { ok: true, status: 202 };
+    }
+  });
+  const channel = { readyState: 1, send: (message) => sent.push(JSON.parse(message)) };
+  gateway.registerSession('user-1', channel, [
+    { device_id: 'w1', device_type: 'wearable', online: true },
+    { device_id: 'r1', device_type: 'home_robot', online: true }
+  ]);
+
+  const pending = gateway.routeMany('user-1', [{
+    action: 'emit_alarm', device_type: 'wearable', device_id: 'w1',
+    idempotency_key: 'scenario_wearable_alarm'
+  }, {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'scenario_robot_medication'
+  }]);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(robotPosted, true);
+  assert.equal(sent.length, 1);
+  assert.equal(gateway.acknowledgeWearable('user-1', channel, {
+    action_id: sent[0].envelope.id,
+    ok: true
+  }), true);
+  const result = await pending;
+  await gateway.waitForDeliveries();
+  assert.equal(result.mode, 'parallel');
+  assert.deepEqual(result.results.map((entry) => entry.status), ['fulfilled', 'fulfilled']);
+});
+
+test('routeMany is bounded, idempotent, and preserves per-action failures', async () => {
+  const sent = [];
+  const gateway = new ActionGateway({ signingPrivateKey: secret, wearableCommandPayloads });
+  const channel = { readyState: 1, send: (message) => sent.push(JSON.parse(message)) };
+  gateway.registerSession('user-1', channel, [
+    { device_id: 'w1', device_type: 'wearable', online: true },
+    { device_id: 'r-offline', device_type: 'home_robot', online: false }
+  ]);
+  const pending = gateway.routeMany('user-1', [{
+    action: 'stop', device_type: 'wearable', device_id: 'w1', idempotency_key: 'multi_stop_0000001'
+  }, {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r-offline',
+    idempotency_key: 'multi_medication_01'
+  }]);
+  gateway.acknowledgeWearable('user-1', channel, { action_id: sent[0].envelope.id, ok: true });
+  const result = await pending;
+  assert.deepEqual(result.results.map((entry) => entry.status), ['fulfilled', 'rejected']);
+  assert.equal(result.results[1].status_code, 503);
+  assert.equal(result.results[1].error_code, 'ACTION_FAILED');
+
+  await assert.rejects(gateway.routeMany('user-1', []), (error) => error.statusCode === 400);
+  await assert.rejects(gateway.routeMany('user-1', [{
+    action: 'stop', device_type: 'wearable', device_id: 'w1'
+  }]), /idempotency/);
+  const duplicate = {
+    action: 'stop', device_type: 'wearable', device_id: 'w1', idempotency_key: 'multi_duplicate_01'
+  };
+  await assert.rejects(gateway.routeMany('user-1', [duplicate, duplicate]), (error) => error.statusCode === 409);
+  await assert.rejects(gateway.routeMany('user-1', [duplicate], { mode: 'unordered' }), /mode/);
+});
+
+test('ActionGateway delegates account-bound scenario lifecycle operations and fails closed when absent', async () => {
+  const calls = [];
+  const scenarioEngine = {
+    async startScenario(userId, request) { calls.push(['start', userId, request]); return { accepted: true }; },
+    async cancelScenario(userId, executionId) { calls.push(['cancel', userId, executionId]); return { state: 'cancelled' }; },
+    async getExecution(userId, executionId) { calls.push(['get', userId, executionId]); return { state: 'running' }; }
+  };
+  const gateway = new ActionGateway({ signingPrivateKey: secret, scenarioEngine });
+  assert.deepEqual(await gateway.startScenario('user-1', { scenarioId: 'fall_detection' }), { accepted: true });
+  assert.deepEqual(await gateway.cancelScenario('user-1', 'execution-1'), { state: 'cancelled' });
+  assert.deepEqual(await gateway.getScenarioExecution('user-1', 'execution-1'), { state: 'running' });
+  assert.deepEqual(calls.map((entry) => entry.slice(0, 2)), [
+    ['start', 'user-1'], ['cancel', 'user-1'], ['get', 'user-1']
+  ]);
+
+  const unavailable = new ActionGateway({ signingPrivateKey: secret });
+  await assert.rejects(unavailable.startScenario('user-1', {}), (error) => (
+    error.statusCode === 503 && error.code === 'SCENARIO_ENGINE_UNAVAILABLE'
+  ));
+  await assert.rejects(unavailable.cancelScenario('user-1', 'execution-1'), (error) => error.statusCode === 503);
+  await assert.rejects(unavailable.getScenarioExecution('user-1', 'execution-1'), (error) => error.statusCode === 503);
 });
 
 test('same-device commands preserve execution order until the prior asynchronous ACK', async () => {
@@ -454,6 +801,26 @@ test('account fence durably fails queued work and drains an in-flight request be
   }), (error) => error.code === 'ACCOUNT_FENCED');
 });
 
+test('account fencing rejects an in-flight wearable ACK wait as non-retractable', async () => {
+  const sent = [];
+  const channel = { readyState: 1, send: (message) => sent.push(JSON.parse(message)) };
+  const gateway = new ActionGateway({ signingPrivateKey: secret, wearableCommandPayloads });
+  gateway.registerSession('user-1', channel, [{ device_id: 'w1', device_type: 'wearable', online: true }]);
+  const pending = gateway.route('user-1', {
+    action: 'trigger_sos', device_type: 'wearable', device_id: 'w1'
+  });
+  await new Promise((resolve) => setImmediate(resolve));
+  const fencing = gateway.fenceUserActions('user-1');
+  await assert.rejects(pending, (error) => (
+    error.code === 'ACCOUNT_FENCED' && error.nonRetractable === true
+  ));
+  assert.deepEqual(await fencing, { fenced: true, failedPending: 0, cancelledAcknowledgements: 1 });
+  assert.equal(gateway.pendingWearableAcks.size, 0);
+  assert.equal(gateway.acknowledgeWearable('user-1', channel, {
+    action_id: sent[0].envelope.id, ok: true
+  }), false);
+});
+
 test('a vendor callback cannot acknowledge another adapter\'s pending action', async () => {
   const gateway = new ActionGateway({
     ...activeRobotOptions(),
@@ -514,6 +881,12 @@ test('a callback on a fresh replica is durably adapter-bound', async () => {
     { adapterId: 'jiangzhi-edge', bindingEpoch: 19 }
   ), true);
   assert.equal(records.get('11111111-1111-4111-8111-111111111111').state, 'delivered');
+  assert.deepEqual(await freshReplica.waitForActionOutcome(
+    'user-1',
+    '11111111-1111-4111-8111-111111111111'
+  ), {
+    status: 'delivered', action_id: '11111111-1111-4111-8111-111111111111'
+  });
 });
 
 test('an ACK racing a 202 response cannot strand the same-device queue', async () => {
@@ -721,6 +1094,288 @@ test('stable mobile idempotency keys do not redeliver a durably accepted command
   assert.equal(gateway.totalRobotCommands, 0);
 });
 
+test('a durable terminal duplicate resolves before offline status gating', async () => {
+  const outboxRepository = createMemoryOutbox();
+  let fetches = 0;
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    outboxRepository,
+    fetchImpl: async () => { fetches += 1; return { ok: true, status: 200 }; }
+  });
+  const channel = {};
+  gateway.registerSession('user-1', channel, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const input = {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'offline-terminal-retry'
+  };
+  const first = await gateway.route('user-1', input);
+  await gateway.waitForDeliveries();
+  assert.deepEqual(await gateway.waitForActionOutcome('user-1', first.action_id), {
+    status: 'delivered', action_id: first.action_id
+  });
+  gateway.updateSessionDevices('user-1', channel, [
+    { device_id: 'r1', device_type: 'home_robot', online: false }
+  ]);
+  const duplicate = await gateway.route('user-1', input);
+  assert.deepEqual(duplicate, {
+    status: 'delivered', action_id: first.action_id, duplicate: true
+  });
+  assert.equal(fetches, 1);
+});
+
+test('queued robot cancellation never dispatches and is durably terminal', async () => {
+  const outboxRepository = createMemoryOutbox();
+  const delivered = [];
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    outboxRepository,
+    fetchImpl: async (_url, options) => {
+      delivered.push(JSON.parse(options.body).envelope.id);
+      return { ok: true, status: 202 };
+    },
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const first = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'queue-blocker'
+  });
+  await gateway.waitForDeliveries();
+  const controller = new AbortController();
+  const cancelled = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'queue-cancelled'
+  }, { signal: controller.signal });
+  controller.abort();
+  assert.equal(await acknowledgeRobot(gateway, first.action_id), true);
+  await gateway.waitForDeliveries();
+  assert.deepEqual(delivered, [first.action_id]);
+  assert.equal(outboxRepository.records.get(cancelled.action_id).state, 'failed');
+  assert.equal(outboxRepository.records.get(cancelled.action_id).error_code, 'ACTION_CANCELLED');
+  await assert.rejects(
+    gateway.waitForActionOutcome('user-1', cancelled.action_id),
+    (error) => error.code === 'ACTION_CANCELLED'
+  );
+});
+
+test('aborting an on-wire robot transport records delivery as non-retractable', async () => {
+  const outboxRepository = createMemoryOutbox();
+  let requestSignal;
+  let markStarted;
+  const started = new Promise((resolve) => { markStarted = resolve; });
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    requestTimeoutMs: 1_000,
+    outboxRepository,
+    fetchImpl: async (_url, options) => {
+      requestSignal = options.signal;
+      markStarted();
+      return new Promise(() => {});
+    },
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const controller = new AbortController();
+  const accepted = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'on-wire-cancel'
+  }, { signal: controller.signal });
+  await started;
+  controller.abort();
+  await gateway.waitForDeliveries();
+  assert.equal(requestSignal.aborted, true);
+  assert.equal(outboxRepository.records.get(accepted.action_id).error_code, 'ACTION_CANCELLED_NON_RETRACTABLE');
+  await assert.rejects(
+    gateway.waitForActionOutcome('user-1', accepted.action_id),
+    (error) => error.code === 'ACTION_CANCELLED_NON_RETRACTABLE'
+  );
+});
+
+test('account fence joins an underlying HAL transport that ignored AbortSignal', async () => {
+  const outboxRepository = createMemoryOutbox({
+    async failPendingForUser() { return { failed: 0 }; }
+  });
+  let releaseTransport;
+  let markStarted;
+  const started = new Promise((resolve) => { markStarted = resolve; });
+  const gateway = new ActionGateway({
+    ...activeRobotOptions({ adapterId: 'jiangzhi-edge' }),
+    signingPrivateKey: secret,
+    outboxRepository,
+    robotAdapterRuntime: {
+      async deliverSignedAction(_adapterId, _signed, { onAttempt }) {
+        await onAttempt(1);
+        markStarted();
+        await new Promise((resolve) => { releaseTransport = resolve; });
+        return { ok: true, status: 200 };
+      }
+    },
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const controller = new AbortController();
+  await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'hal-fence-join'
+  }, { signal: controller.signal });
+  await started;
+  controller.abort();
+  await gateway.waitForDeliveries();
+  assert.equal(gateway.pendingRobotTransports.size, 1);
+
+  let fenceSettled = false;
+  const fence = gateway.fenceUserActions('user-1')
+    .then((result) => { fenceSettled = true; return result; });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(fenceSettled, false);
+  releaseTransport();
+  assert.equal((await fence).fenced, true);
+  assert.equal(gateway.pendingRobotTransports.size, 0);
+});
+
+test('delivery transitions fail closed before send and before installing an ACK timer', async () => {
+  const leaseOutbox = createMemoryOutbox({ async markDelivering() { return false; } });
+  let leaseFetches = 0;
+  const leaseGateway = new ActionGateway({
+    ...activeRobotOptions(), signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test', manufacturerApiKey: 'key',
+    outboxRepository: leaseOutbox,
+    fetchImpl: async () => { leaseFetches += 1; return { ok: true, status: 200 }; },
+    logger: { error() {} }
+  });
+  leaseGateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const lease = await leaseGateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'lost-lease'
+  });
+  await leaseGateway.waitForDeliveries();
+  assert.equal(leaseFetches, 0);
+  assert.equal(leaseOutbox.records.get(lease.action_id).state, 'queued');
+  await assert.rejects(
+    leaseGateway.waitForActionOutcome('user-1', lease.action_id, { timeoutMs: 20 }),
+    (error) => error.code === 'ACTION_OUTCOME_TIMEOUT'
+  );
+
+  const events = [];
+  const pendingOutbox = createMemoryOutbox({
+    async markPendingAck() { events.push('pending-transition-rejected'); return false; }
+  });
+  const pendingGateway = new ActionGateway({
+    ...activeRobotOptions(), signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test', manufacturerApiKey: 'key',
+    outboxRepository: pendingOutbox,
+    fetchImpl: async () => ({ ok: true, status: 202 }),
+    setTimeoutImpl: (handler, ms) => { events.push('ack-timer-installed'); return setTimeout(handler, ms); },
+    logger: { error() {} }
+  });
+  pendingGateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const pending = await pendingGateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'pending-transition-false'
+  });
+  await pendingGateway.waitForDeliveries();
+  assert.deepEqual(events, ['pending-transition-rejected']);
+  assert.equal(pendingGateway.pendingRobotAcks.size, 0);
+  await assert.rejects(
+    pendingGateway.waitForActionOutcome('user-1', pending.action_id),
+    (error) => error.code === 'OUTBOX_PENDING_ACK_TRANSITION_FAILED'
+  );
+});
+
+test('terminal transition races use the authoritative outbox result', async () => {
+  const outboxRepository = createMemoryOutbox();
+  outboxRepository.markDelivered = async (actionId, details) => {
+    const record = outboxRepository.records.get(actionId);
+    Object.assign(record, details, { state: 'delivered' });
+    return false;
+  };
+  const notifications = [];
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(), signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test', manufacturerApiKey: 'key',
+    outboxRepository,
+    fetchImpl: async () => ({ ok: true, status: 200 }),
+    notifyUser: async (...args) => notifications.push(args),
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const accepted = await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'terminal-race'
+  });
+  await gateway.waitForDeliveries();
+  assert.deepEqual(await gateway.waitForActionOutcome('user-1', accepted.action_id), {
+    status: 'delivered', action_id: accepted.action_id
+  });
+  assert.equal(notifications.length, 0);
+});
+
+test('camera readiness is present only for an explicit ACK bound to the requested opaque session', async () => {
+  const outboxRepository = createMemoryOutbox();
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(), signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test', manufacturerApiKey: 'key',
+    outboxRepository,
+    fetchImpl: async () => ({ ok: true, status: 202 })
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  const generic = await gateway.route('user-1', {
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'camera-generic', parameters: { session_id: 'opaque-session-1' }
+  });
+  await gateway.waitForDeliveries();
+  await acknowledgeRobot(gateway, generic.action_id, { ok: true });
+  assert.deepEqual(await gateway.waitForActionOutcome('user-1', generic.action_id), {
+    status: 'delivered', action_id: generic.action_id
+  });
+
+  const ready = await gateway.route('user-1', {
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'camera-ready', parameters: { session_id: 'opaque-session-2' }
+  });
+  await gateway.waitForDeliveries();
+  await acknowledgeRobot(gateway, ready.action_id, {
+    ok: true, camera_ready: true, camera_session_ref: 'opaque-session-2'
+  });
+  assert.deepEqual(await gateway.waitForActionOutcome('user-1', ready.action_id), {
+    status: 'delivered', action_id: ready.action_id,
+    camera_ready: true, camera_session_ref: 'opaque-session-2'
+  });
+  gateway.updateSessionDevices('user-1', null, [
+    { device_id: 'r1', device_type: 'home_robot', online: false }
+  ]);
+  assert.deepEqual(await gateway.route('user-1', {
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'camera-ready', parameters: { session_id: 'opaque-session-2' }
+  }), {
+    status: 'delivered', action_id: ready.action_id, duplicate: true,
+    camera_ready: true, camera_session_ref: 'opaque-session-2'
+  });
+  gateway.updateSessionDevices('user-1', null, [
+    { device_id: 'r1', device_type: 'home_robot', online: true }
+  ]);
+
+  const mismatched = await gateway.route('user-1', {
+    action: 'share_camera_view', device_type: 'home_robot', device_id: 'r1',
+    idempotency_key: 'camera-mismatch', parameters: { session_id: 'opaque-session-3' }
+  });
+  await gateway.waitForDeliveries();
+  await acknowledgeRobot(gateway, mismatched.action_id, {
+    ok: true, camera_ready: true, camera_session_ref: 'attacker-session'
+  });
+  assert.deepEqual(await gateway.waitForActionOutcome('user-1', mismatched.action_id), {
+    status: 'delivered', action_id: mismatched.action_id
+  });
+
+  const freshReplica = new ActionGateway({ signingPrivateKey: secret, outboxRepository });
+  assert.deepEqual(await freshReplica.waitForActionOutcome('user-1', ready.action_id), {
+    status: 'delivered', action_id: ready.action_id,
+    camera_ready: true, camera_session_ref: 'opaque-session-2'
+  });
+});
+
 test('reuse of an idempotency key with different parameters fails with 409', async () => {
   let stored;
   const gateway = new ActionGateway({
@@ -827,6 +1482,137 @@ test('process restart recovers a durably queued robot command before accepting n
   assert.equal(await acknowledgeRobot(gateway, signed.envelope.id), true);
   assert.equal(transitions.at(-1), 'delivered');
   assert.equal(gateway.totalRobotCommands, 0);
+});
+
+test('deferred durable recovery resumes after queue capacity drains', async () => {
+  const makeSigned = (issuedAt) => signEnvelope({
+    version: 2,
+    action: 'check_medication',
+    device_type: 'home_robot',
+    device_id: 'r1',
+    manufacturer_device_id: 'manufacturer-r1',
+    adapter_id: 'manufacturer-default',
+    binding_epoch: defaultBindingEpoch,
+    contract_version: 'vl-robot-action/2',
+    expires_at: 70_000,
+    parameters: {}
+  }, secret, () => issuedAt);
+  const firstSigned = makeSigned(10_000);
+  const secondSigned = makeSigned(10_001);
+  const outboxRepository = createMemoryOutbox();
+  for (const signed of [firstSigned, secondSigned]) {
+    outboxRepository.records.set(signed.envelope.id, {
+      state: 'queued',
+      action_id: signed.envelope.id,
+      user_id: 'user-1',
+      device_id: 'r1',
+      adapter_id: 'manufacturer-default',
+      binding_epoch: defaultBindingEpoch,
+      action: 'check_medication',
+      signed
+    });
+  }
+  outboxRepository.listPending = async () => [...outboxRepository.records.values()]
+    .filter((record) => ['queued', 'delivering', 'pending_ack'].includes(record.state))
+    .map((record) => ({ ...record }));
+  const delivered = [];
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    now: () => 20_000,
+    maxQueueDepthPerDevice: 1,
+    outboxRepository,
+    fetchImpl: async (_url, options) => {
+      delivered.push(JSON.parse(options.body).envelope.id);
+      return { ok: true, status: 202 };
+    }
+  });
+  assert.deepEqual(await gateway.recoverPendingCommands(), { recovered: 1 });
+  await gateway.waitForDeliveries();
+  assert.deepEqual(delivered, [firstSigned.envelope.id]);
+  assert.equal(await acknowledgeRobot(gateway, firstSigned.envelope.id), true);
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  await gateway.waitForDeliveries();
+  assert.deepEqual(delivered, [firstSigned.envelope.id, secondSigned.envelope.id]);
+  assert.equal(await acknowledgeRobot(gateway, secondSigned.envelope.id), true);
+});
+
+test('two recovery workers cannot initialize or dispatch the same leased action', async () => {
+  const signed = signEnvelope({
+    version: 2,
+    action: 'check_medication',
+    device_type: 'home_robot',
+    device_id: 'r1',
+    manufacturer_device_id: 'manufacturer-r1',
+    adapter_id: 'jiangzhi-edge',
+    binding_epoch: defaultBindingEpoch,
+    contract_version: 'vl-robot-action/2',
+    expires_at: 70_000,
+    parameters: {}
+  }, secret, () => 10_000);
+  const record = {
+    state: 'queued', action_id: signed.envelope.id, user_id: 'user-1',
+    device_id: 'r1', adapter_id: 'jiangzhi-edge', binding_epoch: defaultBindingEpoch,
+    action: 'check_medication', signed
+  };
+  const outboxRepository = {
+    async listPending() { return [{ ...record }]; },
+    async getAction() { return { ...record }; },
+    async markDelivering(_actionId, details) {
+      if (record.state === 'queued') {
+        Object.assign(record, details, { state: 'delivering' });
+        return { ...record };
+      }
+      if (record.state === 'delivering' && record.lease_owner === details.lease_owner) {
+        Object.assign(record, details);
+        return { ...record };
+      }
+      return false;
+    },
+    async markPendingAck(_actionId, details) {
+      if (record.state !== 'delivering' || record.lease_owner !== details.lease_owner) return false;
+      Object.assign(record, details, { state: 'pending_ack' });
+      return { ...record };
+    },
+    async markFailed(_actionId, details) {
+      if (details.lease_owner && record.lease_owner !== details.lease_owner) return false;
+      Object.assign(record, details, { state: 'failed' });
+      return { ...record };
+    },
+    async acknowledge(_actionId, details) {
+      if (record.state !== 'pending_ack') return false;
+      Object.assign(record, details, { state: details.ok ? 'delivered' : 'failed' });
+      return { ...record };
+    }
+  };
+  let adapterInitializations = 0;
+  const makeGateway = (deliveryWorkerId) => new ActionGateway({
+    ...activeRobotOptions({ adapterId: 'jiangzhi-edge' }),
+    signingPrivateKey: secret,
+    deliveryWorkerId,
+    now: () => 20_000,
+    outboxRepository,
+    robotAdapterRuntime: {
+      async deliverSignedAction(_adapterId, _signed, { onAttempt }) {
+        adapterInitializations += 1;
+        await onAttempt(1);
+        return { ok: true, status: 202 };
+      }
+    },
+    logger: { error() {} }
+  });
+  const workerA = makeGateway('worker-a');
+  const workerB = makeGateway('worker-b');
+  await Promise.all([workerA.recoverPendingCommands(), workerB.recoverPendingCommands()]);
+  await Promise.all([workerA.waitForDeliveries(), workerB.waitForDeliveries()]);
+  assert.equal(adapterInitializations, 1);
+  assert.ok(['worker-a', 'worker-b'].includes(record.lease_owner));
+  const winner = record.lease_owner === 'worker-a' ? workerA : workerB;
+  assert.equal(await acknowledgeRobot(winner, signed.envelope.id, { ok: true }, {
+    adapterId: 'jiangzhi-edge'
+  }), true);
 });
 
 test('process restart fails an expired durable robot action without redelivery', async () => {
@@ -958,7 +1744,7 @@ test('transient outbox recovery failure is retried instead of poisoning robot ro
         if (recoveries === 1) throw new Error('temporary Dynamo failure');
         return [];
       },
-      async enqueue(record) { return { duplicate: true, record }; }
+      async enqueue(record) { return { duplicate: true, record: { ...record, state: 'pending_ack' } }; }
     },
     logger: { error() {} }
   });
@@ -1093,6 +1879,41 @@ test('Dynamo pending-ACK transition observes an already-terminal callback race',
   ), { state: 'delivered', adapter_id: 'jiangzhi-edge' });
   assert.deepEqual(commands.map((command) => command.constructor.name), ['UpdateCommand', 'GetCommand']);
   assert.equal(commands[1].input.ConsistentRead, true);
+});
+
+test('Dynamo delivery acquisition is an owner-bound lease through the action lifetime', async () => {
+  const commands = [];
+  const repository = createDynamoActionOutboxRepository({
+    tableName: 'actions',
+    client: {
+      async send(command) {
+        commands.push(command);
+        return { Attributes: { state: 'delivering', lease_owner: 'worker-1' } };
+      }
+    }
+  });
+  assert.deepEqual(await repository.markDelivering(
+    '11111111-1111-4111-8111-111111111111',
+    {
+      attempt: 1,
+      lease_owner: 'worker-1',
+      lease_now: 10_000,
+      lease_expires_at: 70_000
+    }
+  ), { state: 'delivering', lease_owner: 'worker-1' });
+  const lease = commands[0].input;
+  assert.match(lease.ConditionExpression, /#state = :queued/);
+  assert.match(lease.ConditionExpression, /#leaseOwner = :leaseOwner/);
+  assert.match(lease.ConditionExpression, /#leaseExpiresAt < :leaseNow/);
+  assert.equal(lease.ExpressionAttributeValues[':leaseOwner'], 'worker-1');
+  assert.equal(lease.ExpressionAttributeValues[':leaseNow'], 10_000);
+
+  await repository.markPendingAck('11111111-1111-4111-8111-111111111111', {
+    ack_deadline: 80_000,
+    lease_owner: 'worker-1'
+  });
+  assert.match(commands[1].input.ConditionExpression, /#expectedLeaseOwner = :expectedLeaseOwner/);
+  assert.equal(commands[1].input.ExpressionAttributeValues[':expectedLeaseOwner'], 'worker-1');
 });
 
 test('Dynamo duplicate enqueue returns the consistent existing fingerprint', async () => {

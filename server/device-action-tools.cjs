@@ -46,6 +46,28 @@ const HELP_DIAL_TOOL_SCHEMA = Object.freeze({
   }
 });
 
-const ACTION_TOOL_SCHEMAS = Object.freeze([...deviceActionSchemas, HELP_DIAL_TOOL_SCHEMA]);
+const AI_ANGEL_TOOL_NAME = 'trigger_ai_angel';
+const AI_ANGEL_TOOL_SCHEMA = Object.freeze({
+  type: 'function',
+  function: {
+    name: AI_ANGEL_TOOL_NAME,
+    description: 'Start the account-bound AI Angel emergency workflow across paired devices.',
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      maxProperties: 0,
+      properties: {}
+    }
+  }
+});
 
-module.exports = { ACTION_TOOL_SCHEMAS, HELP_DIAL_TOOL_SCHEMA };
+const DEVICE_ACTION_TOOL_SCHEMAS = Object.freeze([...deviceActionSchemas, HELP_DIAL_TOOL_SCHEMA]);
+const ACTION_TOOL_SCHEMAS = Object.freeze([...DEVICE_ACTION_TOOL_SCHEMAS, AI_ANGEL_TOOL_SCHEMA]);
+
+module.exports = {
+  ACTION_TOOL_SCHEMAS,
+  AI_ANGEL_TOOL_NAME,
+  AI_ANGEL_TOOL_SCHEMA,
+  DEVICE_ACTION_TOOL_SCHEMAS,
+  HELP_DIAL_TOOL_SCHEMA
+};

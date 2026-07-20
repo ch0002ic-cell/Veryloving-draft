@@ -360,6 +360,51 @@ test('device action request identity is stable and duplicate in-flight tool call
   await retry;
 });
 
+test('AI Angel sends a target-free scenario request and reuses its occurrence time on retry', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  service.sessionConfig = { customSessionId: 'stable-ai-angel-session' };
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  const toolCall = {
+    tool_call_id: 'call-ai-angel',
+    name: 'trigger_ai_angel',
+    parameters: {}
+  };
+
+  const first = service.requestAINativeScenario(toolCall);
+  assert.equal(sent[0].type, 'scenario_request');
+  assert.equal(sent[0].scenario, 'ai_angel_auto_dial');
+  assert.equal(Number.isSafeInteger(sent[0].occurred_at), true);
+  assert.equal(Object.hasOwn(sent[0], 'device_id'), false);
+  assert.equal(Object.hasOwn(sent[0], 'devices'), false);
+  service.handleActionResponse({
+    type: 'scenario_response',
+    request_id: sent[0].request_id,
+    ok: true,
+    result: { started: [{ executionId: 'execution-1' }] }
+  });
+  await first;
+
+  const retry = service.requestAINativeScenario(toolCall);
+  assert.equal(sent[1].request_id, sent[0].request_id);
+  assert.equal(sent[1].occurred_at, sent[0].occurred_at);
+  service.handleActionResponse({
+    type: 'scenario_response',
+    request_id: sent[1].request_id,
+    ok: true,
+    result: { started: [{ executionId: 'execution-1' }] }
+  });
+  await retry;
+
+  await assert.rejects(() => service.requestAINativeScenario({
+    ...toolCall,
+    tool_call_id: 'call-ai-angel-forged',
+    parameters: { device_id: 'robot-forged' }
+  }), /does not accept device identifiers/);
+});
+
 test('wearable action NACKs a transient failure and ACKs a successful redelivery', async () => {
   const service = readyService();
   service.usesProxy = true;

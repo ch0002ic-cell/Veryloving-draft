@@ -41,3 +41,26 @@ test('STOP is forwarded through the signed wearable action path', async () => {
   assert.equal(request.name, 'stop');
   assert.equal(request.parameters.device_type, 'wearable');
 });
+
+test('AI Angel uses the scenario transport without accepting client device targets', async () => {
+  let request;
+  const result = await executeHumeTool({
+    name: 'trigger_ai_angel',
+    parameters: '{}'
+  }, {
+    async requestAINativeScenario(value) {
+      request = value;
+      return 'scenario accepted';
+    }
+  });
+  assert.equal(result, 'scenario accepted');
+  assert.equal(request.name, 'trigger_ai_angel');
+  assert.deepEqual(request.parameters, {});
+
+  await assert.rejects(() => executeHumeTool({
+    name: 'trigger_ai_angel',
+    parameters: JSON.stringify({ device_id: 'robot-attacker-selected' })
+  }, {
+    async requestAINativeScenario() { throw new Error('must not run'); }
+  }), /does not accept device identifiers/);
+});

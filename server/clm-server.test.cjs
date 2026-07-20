@@ -15,6 +15,29 @@ const ACTION_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
 const ACTION_SIGNING_PRIVATE_KEY = ACTION_KEY_PAIR.privateKey.export({ format: 'pem', type: 'pkcs8' });
 const ACTION_SIGNING_PUBLIC_KEY = ACTION_KEY_PAIR.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64url');
 
+function aiNativeTestConfig(edgeScenarioRouter, overrides = {}) {
+  const scenarioEngine = overrides.scenarioEngine || {};
+  return {
+    aiNativeEnabled: true,
+    aiNativeDataLifecycleEnabled: true,
+    aiNativeSystem: {
+      scenarioEngine,
+      edgeScenarioRouter,
+      async getVoiceContext() { return { state: null, memories: [] }; },
+      memory: {
+        async list() { return []; },
+        async delete() { return false; },
+        async deleteAll() { return false; }
+      },
+      privacyRepository: {
+        async exportUserData() { return {}; },
+        async deleteUserData() { return {}; }
+      }
+    },
+    ...overrides
+  };
+}
+
 function productionHTTPConfig(overrides = {}) {
   const authSessionRepository = {
     create: async () => true,
@@ -403,6 +426,51 @@ test('HTTP-only production validation omits voice-gateway secrets but keeps the 
   await assert.rejects(
     async () => invoke({ ...httpOnly, notifyEmergencyContacts: {} }, { url: '/health' }),
     /Production emergency-contact push delivery is not configured/
+  );
+});
+
+test('production AI-native configuration fails closed for process-local admission and ingress trust', () => {
+  const aiNativeSystem = {
+    scenarioEngine: {},
+    edgeScenarioRouter: {},
+    getVoiceContext() {},
+    memory: { list() {}, delete() {}, deleteAll() {} },
+    privacyRepository: { exportUserData() {}, deleteUserData() {} }
+  };
+  const complete = productionHTTPConfig({
+    aiNativeEnabled: true,
+    aiNativeDataLifecycleEnabled: true,
+    aiNativeSingleReplica: true,
+    aiNativeSystem,
+    resolveEdgeDeviceBinding() {},
+    authenticateRobotEdgeIngress() {},
+    resolveScenarioDevices() {},
+    authenticateScenarioIngress() {}
+  });
+  assert.doesNotThrow(() => validateServerConfig(complete));
+  assert.throws(
+    () => validateServerConfig({ ...complete, aiNativeSingleReplica: false }),
+    /AI_NATIVE_SINGLE_REPLICA/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...complete, aiNativeDataLifecycleEnabled: false }),
+    /AI_NATIVE_DATA_LIFECYCLE_ENABLED/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...complete, resolveEdgeDeviceBinding: undefined }),
+    /wearable ingress/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...complete, authenticateRobotEdgeIngress: undefined }),
+    /robot ingress/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...complete, resolveScenarioDevices: undefined }),
+    /server-side device resolver/
+  );
+  assert.throws(
+    () => validateServerConfig({ ...complete, authenticateScenarioIngress: undefined }),
+    /scheduled context ingress/
   );
 });
 
@@ -829,6 +897,29 @@ test('CLM emits the confirmed help-dial tool for immediate danger when available
   assert.match(response.text, /"finish_reason":"tool_calls"/);
 });
 
+test('CLM prefers the account-bound AI Angel tool when cross-device orchestration is available', async () => {
+  const response = await invoke(aiNativeTestConfig({}, {
+    clmBearerToken: 'server-secret',
+    resolveScenarioDevices() { return { targets: { wearableId: 'wearable-1' } }; }
+  }), {
+    method: 'POST',
+    url: '/chat/completions?custom_session_id=ai-angel-session',
+    headers: { Authorization: 'Bearer server-secret' },
+    body: {
+      model: 'safety-model',
+      messages: [{ role: 'user', content: 'I am in immediate danger and need help now' }],
+      tools: [
+        { type: 'function', function: { name: 'request_help_dial', parameters: { type: 'object' } } },
+        { type: 'function', function: { name: 'trigger_ai_angel', parameters: { type: 'object' } } }
+      ]
+    }
+  });
+  assert.equal(response.status, 200);
+  assert.match(response.text, /"name":"trigger_ai_angel"/);
+  assert.doesNotMatch(response.text, /"name":"request_help_dial"/);
+  assert.match(response.text, /ai-angel-session/);
+});
+
 test('CLM emits an OpenAI-compatible custom tool call for safety guidance', async () => {
   const response = await invoke({ clmBearerToken: 'server-only-secret' }, {
     method: 'POST',
@@ -917,6 +1008,320 @@ test('safety tips endpoint validates app auth and returns curated guidance', asy
   assert.equal(response.status, 200);
   assert.equal(response.json.scenario, 'being_followed');
   assert.equal(response.json.tips.length, 3);
+});
+
+test('user scenario ingress derives trigger and devices server-side and rejects forged safety inputs', async () => {
+  const calls = [];
+  const edgeScenarioRouter = {
+    async ingestContextEvent(accountId, event, binding) {
+      calls.push({ accountId, event, binding });
+      return { started: [{ executionId: 'execution-user-1' }] };
+    }
+  };
+  const config = {
+    ...aiNativeTestConfig(edgeScenarioRouter),
+    verifyAppToken: async (token) => token === 'valid-user-token' && { sub: 'google:user-scenario' },
+    async resolveScenarioDevices(request) {
+      assert.deepEqual(request, {
+        accountId: 'google:user-scenario',
+        scenarioId: 'ai_angel_auto_dial',
+        source: 'authenticated_app'
+      });
+      return { targets: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' } };
+    }
+  };
+  const occurredAt = Date.now();
+  const accepted = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer valid-user-token' },
+    body: {
+      scenario_id: 'ai_angel_auto_dial',
+      request_id: 'panic-request-1',
+      occurred_at: occurredAt
+    }
+  });
+  assert.equal(accepted.status, 202);
+  assert.deepEqual(calls, [{
+    accountId: 'google:user-scenario',
+    event: { eventId: 'panic-request-1', type: 'panic_button', occurredAt, data: {} },
+    binding: { targets: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' } }
+  }]);
+
+  for (const forged of [{
+    scenario_id: 'fall_detection',
+    request_id: 'forged-fall',
+    occurred_at: occurredAt,
+    trigger: { type: 'wearable_fall' }
+  }, {
+    scenario_id: 'ai_angel_auto_dial',
+    request_id: 'forged-target',
+    occurred_at: occurredAt,
+    devices: { homeRobotId: 'robot-attacker-selected' }
+  }, {
+    scenario_id: 'ai_angel_auto_dial',
+    request_id: 'forged-safety',
+    occurred_at: occurredAt,
+    input: { robotSafeToMove: true }
+  }]) {
+    const rejected = await invoke(config, {
+      method: 'POST',
+      url: '/v1/scenarios',
+      headers: { Authorization: 'Bearer valid-user-token' },
+      body: forged
+    });
+    assert.equal(rejected.status, 400);
+  }
+  assert.equal(calls.length, 1);
+});
+
+test('wearable edge ingress uses app identity while robot ingress requires device credentials', async () => {
+  const calls = [];
+  const edgeScenarioRouter = {
+    async ingestWearableInference(accountId, envelope, binding, context) {
+      calls.push(['wearable', accountId, envelope, binding, context]);
+      return { started: [] };
+    },
+    async ingestRobotInference(accountId, envelope, binding, context) {
+      calls.push(['robot', accountId, envelope, binding, context]);
+      return { started: [] };
+    }
+  };
+  const config = {
+    ...aiNativeTestConfig(edgeScenarioRouter),
+    verifyAppToken: async (token) => token === 'app-token' && { sub: 'google:wearable-owner' },
+    async resolveEdgeDeviceBinding(request) {
+      calls.push(['resolve-wearable', request]);
+      return {
+        targets: { wearableId: 'wearable-command-1', homeRobotId: 'robot-command-1' },
+        wearableSourceRef: 'wearable-source-1'
+      };
+    },
+    async authenticateRobotEdgeIngress(request) {
+      calls.push(['authenticate-robot', request]);
+      if (request.adapterId !== 'jiangzhi-edge' || request.credential !== 'robot-secret') return null;
+      return {
+        accountId: 'google:robot-owner',
+        binding: {
+          targets: { wearableId: 'wearable-command-2', homeRobotId: 'robot-command-2' },
+          homeRobotSourceRef: 'robot-source-1'
+        }
+      };
+    }
+  };
+  const wearableEnvelope = { sourceDeviceRef: 'wearable-source-1', sequence: 1 };
+  const wearable = await invoke(config, {
+    method: 'POST',
+    url: '/v1/edge/wearable/inference',
+    headers: { Authorization: 'Bearer app-token' },
+    body: { envelope: wearableEnvelope, context: { location_context: 'away' } }
+  });
+  assert.equal(wearable.status, 202);
+  assert.deepEqual(calls[0], ['resolve-wearable', {
+    accountId: 'google:wearable-owner',
+    deviceType: 'wearable',
+    sourceDeviceRef: 'wearable-source-1'
+  }]);
+  assert.deepEqual(calls[1], ['wearable', 'google:wearable-owner', wearableEnvelope, {
+    targets: { wearableId: 'wearable-command-1', homeRobotId: 'robot-command-1' },
+    wearableSourceRef: 'wearable-source-1'
+  }, { locationContext: 'away' }]);
+
+  const robotEnvelope = { sourceDeviceRef: 'robot-source-1', sequence: 2 };
+  const robot = await invoke(config, {
+    method: 'POST',
+    url: '/v1/edge/robot/inference',
+    headers: {
+      'X-Robot-Adapter-Id': 'jiangzhi-edge',
+      'X-Robot-Callback-Key': 'robot-secret'
+    },
+    body: { envelope: robotEnvelope, context: { location_context: 'home' } }
+  });
+  assert.equal(robot.status, 202);
+  assert.deepEqual(calls[2], ['authenticate-robot', {
+    adapterId: 'jiangzhi-edge',
+    credential: 'robot-secret',
+    sourceDeviceRef: 'robot-source-1'
+  }]);
+  assert.deepEqual(calls[3], ['robot', 'google:robot-owner', robotEnvelope, {
+    targets: { wearableId: 'wearable-command-2', homeRobotId: 'robot-command-2' },
+    homeRobotSourceRef: 'robot-source-1'
+  }, { locationContext: 'home' }]);
+
+  const appCannotImpersonateRobot = await invoke(config, {
+    method: 'POST',
+    url: '/v1/edge/robot/inference',
+    headers: { Authorization: 'Bearer app-token' },
+    body: { envelope: robotEnvelope }
+  });
+  assert.equal(appCannotImpersonateRobot.status, 401);
+  const robotCannotImpersonateWearable = await invoke(config, {
+    method: 'POST',
+    url: '/v1/edge/wearable/inference',
+    headers: {
+      Authorization: 'Bearer app-token',
+      'X-Robot-Adapter-Id': 'jiangzhi-edge',
+      'X-Robot-Callback-Key': 'robot-secret'
+    },
+    body: { envelope: wearableEnvelope }
+  });
+  assert.equal(robotCannotImpersonateWearable.status, 401);
+  assert.equal(calls.length, 4);
+});
+
+test('scheduled context ingress accepts only service authentication and bounded event data', async () => {
+  const calls = [];
+  const config = {
+    ...aiNativeTestConfig({
+      async ingestContextEvent(accountId, event, binding) {
+        calls.push(['ingest', accountId, event, binding]);
+        return { started: [{ executionId: 'medication-execution' }] };
+      }
+    }),
+    verifyAppToken: async () => ({ sub: 'google:app-user' }),
+    async authenticateScenarioIngress({ credential, eventType }) {
+      calls.push(['authenticate', credential, eventType]);
+      return credential === 'scheduler-secret' ? { accountId: 'google:scheduled-user' } : null;
+    },
+    async resolveScenarioDevices(request) {
+      calls.push(['resolve', request]);
+      return { targets: { wearableId: 'wearable-scheduled', homeRobotId: 'robot-scheduled' } };
+    }
+  };
+  const occurredAt = Date.now();
+  const appOnly = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios/context-events',
+    headers: { Authorization: 'Bearer app-token' },
+    body: { event_id: 'med-1', type: 'medication_due', occurred_at: occurredAt, data: {} }
+  });
+  assert.equal(appOnly.status, 401);
+  assert.deepEqual(calls, []);
+
+  const accepted = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios/context-events',
+    headers: { 'X-Scenario-Ingress-Key': 'scheduler-secret' },
+    body: {
+      event_id: 'med-2',
+      type: 'medication_due',
+      occurred_at: occurredAt,
+      data: { medication_id: 'medication-plan-1', scheduled_at: occurredAt }
+    }
+  });
+  assert.equal(accepted.status, 202);
+  assert.deepEqual(calls[1], ['resolve', {
+    accountId: 'google:scheduled-user',
+    scenarioId: 'medication_adherence',
+    source: 'trusted_scheduler'
+  }]);
+  assert.deepEqual(calls[2][2].data, {
+    medicationId: 'medication-plan-1',
+    scheduledAt: occurredAt
+  });
+
+  const forged = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios/context-events',
+    headers: { 'X-Scenario-Ingress-Key': 'scheduler-secret' },
+    body: {
+      event_id: 'med-3',
+      type: 'medication_due',
+      occurred_at: occurredAt,
+      data: { robotSafeToMove: true }
+    }
+  });
+  assert.equal(forged.status, 400);
+  assert.deepEqual(calls[3], ['authenticate', 'scheduler-secret', 'medication_due']);
+  assert.equal(calls.length, 4);
+});
+
+test('authenticated users can list and selectively or completely erase only their AI memories', async () => {
+  const calls = [];
+  const config = aiNativeTestConfig({});
+  config.verifyAppToken = async (token) => token === 'memory-token' && { sub: 'google:memory-owner' };
+  config.aiNativeSystem.memory = {
+    async list(accountId, query) {
+      calls.push(['list', accountId, query]);
+      return [{ id: 'memory-1', kind: 'preference' }];
+    },
+    async delete(accountId, memoryId) {
+      calls.push(['delete', accountId, memoryId]);
+      return memoryId === 'memory-1';
+    },
+    async deleteAll(accountId) {
+      calls.push(['delete-all', accountId]);
+      return true;
+    }
+  };
+  const headers = { Authorization: 'Bearer memory-token' };
+  const listed = await invoke(config, {
+    url: '/v1/ai-native/memories?kind=preference&offset=2&limit=10', headers
+  });
+  assert.equal(listed.status, 200);
+  assert.deepEqual(listed.json.memories, [{ id: 'memory-1', kind: 'preference' }]);
+  assert.deepEqual(calls[0], ['list', 'google:memory-owner', { kind: 'preference', offset: 2, limit: 10 }]);
+
+  const removed = await invoke(config, {
+    method: 'DELETE', url: '/v1/ai-native/memories/memory-1', headers
+  });
+  assert.equal(removed.status, 204);
+  const missing = await invoke(config, {
+    method: 'DELETE', url: '/v1/ai-native/memories/missing-memory', headers
+  });
+  assert.equal(missing.status, 404);
+  const unconfirmed = await invoke(config, {
+    method: 'DELETE', url: '/v1/ai-native/memories', headers, body: { confirmed: false }
+  });
+  assert.equal(unconfirmed.status, 400);
+  const erased = await invoke(config, {
+    method: 'DELETE', url: '/v1/ai-native/memories', headers, body: { confirmed: true }
+  });
+  assert.equal(erased.status, 204);
+  assert.deepEqual(calls.at(-1), ['delete-all', 'google:memory-owner']);
+
+  for (const invalidUrl of [
+    '/v1/ai-native/memories?limit=0',
+    '/v1/ai-native/memories?kind=raw_transcript',
+    '/v1/ai-native/memories?limit=10&limit=20',
+    '/v1/ai-native/memories?private=true'
+  ]) {
+    assert.equal((await invoke(config, { url: invalidUrl, headers })).status, 400);
+  }
+});
+
+test('AI-native feature flag suppresses runtime routes and AI Angel selection despite injected objects', async () => {
+  let invoked = false;
+  const enabled = aiNativeTestConfig({
+    async ingestContextEvent() { invoked = true; return { started: [] }; }
+  }, {
+    clmBearerToken: 'server-secret',
+    verifyAppToken: async () => ({ sub: 'google:disabled-owner' }),
+    resolveScenarioDevices: async () => ({ targets: { wearableId: 'wearable-1' } })
+  });
+  const config = { ...enabled, aiNativeEnabled: false };
+  const route = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer token' },
+    body: { scenario_id: 'ai_angel_auto_dial', request_id: 'disabled-request-1', occurred_at: Date.now() }
+  });
+  assert.equal(route.status, 503);
+  const completion = await invoke(config, {
+    method: 'POST',
+    url: '/chat/completions',
+    headers: { Authorization: 'Bearer server-secret' },
+    body: {
+      messages: [{ role: 'user', content: 'I am in immediate danger' }],
+      tools: [
+        { type: 'function', function: { name: 'request_help_dial', parameters: { type: 'object' } } },
+        { type: 'function', function: { name: 'trigger_ai_angel', parameters: { type: 'object' } } }
+      ]
+    }
+  });
+  assert.match(completion.text, /"name":"request_help_dial"/);
+  assert.doesNotMatch(completion.text, /"name":"trigger_ai_angel"/);
+  assert.equal(invoked, false);
 });
 
 test('authenticated safety API persists contacts, mode sessions, and idempotent SOS receipts', async () => {
