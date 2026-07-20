@@ -2,6 +2,7 @@ node_modules/
 .expo/
 dist/
 server/dist/
+server/dist-ai-native/
 server/dist-mocks/
 coverage/
 build/

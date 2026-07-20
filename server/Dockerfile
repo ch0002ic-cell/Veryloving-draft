@@ -4,6 +4,7 @@ WORKDIR /app/server
 COPY server/package.json server/package-lock.json ./
 RUN npm ci --ignore-scripts
 COPY server/tsconfig.adapters.json ./
+COPY server/tsconfig.ai-native.json ./
 COPY server/src ./src
 RUN npm run build
 
@@ -14,6 +15,7 @@ COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
 COPY server/*.cjs ./
 COPY --from=build /app/server/dist ./dist
+COPY --from=build /app/server/dist-ai-native ./dist-ai-native
 
 ENV NODE_ENV=production
 ENV PORT=8787

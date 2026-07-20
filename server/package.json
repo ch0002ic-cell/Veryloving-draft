@@ -7,7 +7,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.adapters.json"
+    "build": "tsc -p tsconfig.adapters.json && tsc -p tsconfig.ai-native.json"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1085.0",

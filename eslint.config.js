@@ -7,6 +7,7 @@ module.exports = [
       'ios/**',
       'node_modules/**',
       'server/dist/**',
+      'server/dist-ai-native/**',
       'server/dist-mocks/**'
     ]
   },
