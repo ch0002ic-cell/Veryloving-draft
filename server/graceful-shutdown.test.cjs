@@ -3,7 +3,15 @@
 const assert = require('node:assert/strict');
 const { EventEmitter } = require('node:events');
 const { test } = require('node:test');
-const { createGracefulShutdown, installProcessSignalHandlers } = require('./graceful-shutdown.cjs');
+const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
+
+test('listen port parsing rejects malformed and out-of-range environment values', () => {
+  assert.equal(parseListenPort(undefined, 8787), 8787);
+  assert.equal(parseListenPort('3001'), 3001);
+  for (const value of ['3.5', 'abc', '0', '65536', '-1', ' 8787 ']) {
+    assert.throws(() => parseListenPort(value), /PORT must be an integer/);
+  }
+});
 
 const silentLogger = { info() {}, error() {} };
 
@@ -61,6 +69,21 @@ test('cleanup failure cannot clear the force-close deadline while HTTP close is 
 
   await assert.rejects(shutdown(), { code: 'SHUTDOWN_TIMEOUT' });
   assert.equal(forceCalls, 1);
+});
+
+test('force-close exceptions are contained as a bounded shutdown rejection', async () => {
+  const shutdown = createGracefulShutdown({
+    close() {},
+    closeAllConnections() { throw new Error('force close failed'); }
+  }, {
+    cleanup: () => new Promise(() => {}),
+    logger: silentLogger,
+    timeoutMs: 10
+  });
+
+  await assert.rejects(shutdown(), (error) => (
+    error?.code === 'SHUTDOWN_TIMEOUT' && error?.cause?.message === 'force close failed'
+  ));
 });
 
 test('signal handlers set a failure exit code without logging sensitive errors', async () => {

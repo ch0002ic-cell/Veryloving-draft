@@ -16,7 +16,7 @@ function isSafeRoute(route) {
     && segment !== '..'
     && segment.length > 0
     && segment.length <= MAX_ROUTE_SEGMENT_LENGTH
-    && /^[A-Za-z0-9._~-]+$/.test(segment)
+    && /^[A-Za-z0-9._:~-]+$/.test(segment)
   ));
 }
 

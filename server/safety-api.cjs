@@ -21,6 +21,11 @@ const CONTACT_DELIVERY_STATUSES = new Set([
 ]);
 const MAX_SAFETY_RETENTION_DAYS = 365;
 const MAX_MEDICATION_ESCALATION_AGE_MS = 24 * 60 * 60 * 1000;
+const MAX_SAFETY_EXPORT_ITEMS = 10000;
+const MAX_PRIVACY_EXPORT_BYTES = 16 * 1024 * 1024;
+const DELIVERY_CLAIM_LEASE_MS = 60 * 1000;
+const MAX_DELIVERY_ATTEMPTS = 5;
+const DELIVERY_CLAIM_TOKEN_PATTERN = /^[0-9a-f-]{36}$/i;
 
 function validateContactInput(body) {
   const name = typeof body?.name === 'string' ? body.name.trim() : '';
@@ -81,7 +86,7 @@ function validateMedicationEscalationInput(body, { allowHistorical = false } = {
   };
 }
 
-function validateLocation(value) {
+function validateLocation(value, { allowHistorical = false } = {}) {
   if (value === undefined || value === null) return null;
   const latitude = Number(value.latitude ?? value.coords?.latitude);
   const longitude = Number(value.longitude ?? value.coords?.longitude);
@@ -89,13 +94,14 @@ function validateLocation(value) {
   if (!Number.isFinite(latitude) || Math.abs(latitude) > 90 || !Number.isFinite(longitude) || Math.abs(longitude) > 180) {
     throw Object.assign(new Error('location is invalid'), { statusCode: 400 });
   }
-  if (!Number.isFinite(capturedAt) || Math.abs(Date.now() - capturedAt) > 5 * 60 * 1000) {
+  if (!Number.isSafeInteger(capturedAt)
+    || (!allowHistorical && Math.abs(Date.now() - capturedAt) > 5 * 60 * 1000)) {
     throw Object.assign(new Error('location is stale'), { statusCode: 400 });
   }
   return { latitude, longitude, capturedAt };
 }
 
-function validateMedicalAttachment(value) {
+function validateMedicalAttachment(value, { allowHistorical = false } = {}) {
   if (value === undefined || value === null) return null;
   if (!value || typeof value !== 'object' || Array.isArray(value) || value.schemaVersion !== 1) {
     throw Object.assign(new Error('medicalAttachment is invalid'), { statusCode: 400 });
@@ -104,7 +110,7 @@ function validateMedicalAttachment(value) {
   const consentRecordedAt = Number(value.consentRecordedAt);
   const profileVersion = Number(value.profileVersion);
   if (!Number.isSafeInteger(generatedAt)
-    || Math.abs(Date.now() - generatedAt) > 5 * 60 * 1000
+    || (!allowHistorical && Math.abs(Date.now() - generatedAt) > 5 * 60 * 1000)
     || !Number.isSafeInteger(consentRecordedAt)
     || consentRecordedAt > generatedAt
     || !Number.isSafeInteger(profileVersion)
@@ -160,7 +166,22 @@ function opaqueId(prefix, input) {
   return `${prefix}_${crypto.createHash('sha256').update(input).digest('base64url').slice(0, 24)}`;
 }
 
-function createDynamoSafetyRepository({ tableName, region }) {
+function sosRequestFingerprint({ occurredAt, source, contactIds, location, medicalAttachment }) {
+  return crypto.createHash('sha256').update(JSON.stringify({
+    occurredAt,
+    source,
+    contactIds: [...contactIds].sort(),
+    location: location || null,
+    medicalAttachment: medicalAttachment || null
+  })).digest('base64url');
+}
+
+function createDynamoSafetyRepository({
+  tableName,
+  region,
+  client: injectedClient,
+  accountStateTableName
+} = {}) {
   if (!tableName) throw new Error('SAFETY_TABLE_NAME is required');
   const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
   const {
@@ -170,40 +191,161 @@ function createDynamoSafetyRepository({ tableName, region }) {
     GetCommand,
     PutCommand,
     QueryCommand,
+    TransactWriteCommand,
     UpdateCommand
   } = require('@aws-sdk/lib-dynamodb');
-  const documentClient = DynamoDBDocumentClient.from(new DynamoDBClient({ region }), {
+  const documentClient = injectedClient || DynamoDBDocumentClient.from(new DynamoDBClient({ region }), {
     marshallOptions: { removeUndefinedValues: true }
   });
+  const conditional = (error) => error?.name === 'ConditionalCheckFailedException';
+  const transactionCanceled = (error) => error?.name === 'TransactionCanceledException';
 
-  async function queryAllUserItems(userId, projectionExpression) {
+  function accountActiveCondition(userId) {
+    return {
+      ConditionCheck: {
+        TableName: accountStateTableName,
+        Key: { PK: `USER#${userId}`, SK: 'ACCOUNT#STATE' },
+        ConditionExpression: 'attribute_not_exists(deletion_state) OR deletion_state = :active',
+        ExpressionAttributeValues: { ':active': 'active' }
+      }
+    };
+  }
+
+  async function assertAccountActive(userId) {
+    if (!accountStateTableName) return;
+    const result = await documentClient.send(new GetCommand({
+      TableName: accountStateTableName,
+      Key: { PK: `USER#${userId}`, SK: 'ACCOUNT#STATE' },
+      ProjectionExpression: 'deletion_state',
+      ConsistentRead: true
+    }));
+    const state = result.Item?.deletion_state || 'active';
+    if (state === 'deleting') {
+      throw Object.assign(new Error('Account deletion is in progress'), {
+        statusCode: 423,
+        code: 'ACCOUNT_DELETION_IN_PROGRESS'
+      });
+    }
+    if (state === 'deleted') {
+      throw Object.assign(new Error('Account has been deleted'), {
+        statusCode: 410,
+        code: 'ACCOUNT_DELETED'
+      });
+    }
+    if (state !== 'active') {
+      throw Object.assign(new Error('Account deletion state is invalid'), {
+        statusCode: 503,
+        code: 'ACCOUNT_STATE_INVALID'
+      });
+    }
+  }
+
+  async function sendAccountGuardedMutation(userId, legacyCommand, transactionItem) {
+    if (!accountStateTableName) return documentClient.send(legacyCommand);
+    try {
+      await documentClient.send(new TransactWriteCommand({
+        TransactItems: [accountActiveCondition(userId), transactionItem]
+      }));
+      return null;
+    } catch (error) {
+      if (transactionCanceled(error)) await assertAccountActive(userId);
+      throw error;
+    }
+  }
+
+  async function sendAccountGuardedTransaction(userId, transactionItems) {
+    const offset = accountStateTableName ? 1 : 0;
+    try {
+      await documentClient.send(new TransactWriteCommand({
+        TransactItems: [
+          ...(accountStateTableName ? [accountActiveCondition(userId)] : []),
+          ...transactionItems
+        ]
+      }));
+      return { offset };
+    } catch (error) {
+      if (transactionCanceled(error) && accountStateTableName) await assertAccountActive(userId);
+      throw error;
+    }
+  }
+
+  const contactPhoneKey = (userId, phone) => ({
+    PK: `USER#${userId}`,
+    SK: `CONTACT_PHONE#${crypto.createHash('sha256').update(phone).digest('base64url')}`
+  });
+
+  async function listContactRecords(userId) {
+    const result = await documentClient.send(new QueryCommand({
+      TableName: tableName,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+      ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'CONTACT#' },
+      ConsistentRead: true,
+      Limit: 11
+    }));
+    return (result.Items || []).filter((item) => item.entity === 'contact');
+  }
+
+  function mutationConditionFailed(error) {
+    if (conditional(error)) return true;
+    if (!transactionCanceled(error) || !accountStateTableName) return false;
+    const reasons = error.CancellationReasons || error.cancellationReasons;
+    return reasons?.[1]?.Code === 'ConditionalCheckFailed';
+  }
+
+  async function queryAllUserItems(userId, projectionExpression, maxItems = MAX_SAFETY_EXPORT_ITEMS) {
     const items = [];
     let exclusiveStartKey;
     do {
+      const remaining = maxItems + 1 - items.length;
+      if (remaining <= 0) break;
       const result = await documentClient.send(new QueryCommand({
         TableName: tableName,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: { ':pk': `USER#${userId}` },
+        Limit: Math.min(100, remaining),
         ...(projectionExpression ? { ProjectionExpression: projectionExpression } : {}),
         ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
       }));
       items.push(...(result.Items || []));
+      if (items.length > maxItems) {
+        throw Object.assign(new Error('Safety data export exceeds the supported account limit'), {
+          statusCode: 413,
+          code: 'SAFETY_EXPORT_LIMIT_EXCEEDED'
+        });
+      }
       exclusiveStartKey = result.LastEvaluatedKey;
     } while (exclusiveStartKey);
     return items;
   }
 
+  async function deleteKeyBatch(keys) {
+    for (let offset = 0; offset < keys.length; offset += 25) {
+      let pending = keys.slice(offset, offset + 25).map((key) => ({
+        DeleteRequest: { Key: { PK: key.PK, SK: key.SK } }
+      }));
+      for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
+        const result = await documentClient.send(new BatchWriteCommand({
+          RequestItems: { [tableName]: pending }
+        }));
+        pending = result.UnprocessedItems?.[tableName] || [];
+        if (pending.length) await new Promise((resolve) => setTimeout(resolve, 50 * Math.pow(2, attempt)));
+      }
+      if (pending.length) throw new Error('DynamoDB could not delete all user data');
+    }
+  }
+
   async function acceptDeliveryEvent(userId, sortPrefix, entity, event) {
     const key = { PK: `USER#${userId}`, SK: `${sortPrefix}#${event.idempotencyKey}` };
+    const putInput = {
+      TableName: tableName,
+      Item: { ...key, entity, ...event },
+      ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+    };
     try {
-      await documentClient.send(new PutCommand({
-        TableName: tableName,
-        Item: { ...key, entity, ...event },
-        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
-      }));
+      await sendAccountGuardedMutation(userId, new PutCommand(putInput), { Put: putInput });
       return event;
     } catch (error) {
-      if (error?.name !== 'ConditionalCheckFailedException') throw error;
+      if (!mutationConditionFailed(error)) throw error;
       const existing = await documentClient.send(new GetCommand({
         TableName: tableName,
         Key: key,
@@ -215,29 +357,51 @@ function createDynamoSafetyRepository({ tableName, region }) {
   }
 
   async function claimDeliveryEvent(userId, sortPrefix, idempotencyKey) {
+    const key = { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` };
+    const attemptedAt = Date.now();
+    const claimToken = crypto.randomUUID();
+    const updateInput = {
+      TableName: tableName,
+      Key: key,
+      UpdateExpression: [
+        'SET deliveryAttemptedAt = :attemptedAt',
+        'deliveryClaimToken = :claimToken',
+        'deliveryClaimExpiresAt = :claimExpiresAt',
+        'deliveryAttemptCount = if_not_exists(deliveryAttemptCount, :zero) + :one',
+        'deliveryStatus = :pending'
+      ].join(', '),
+      ConditionExpression: [
+        'attribute_exists(PK)',
+        'attribute_exists(SK)',
+        '#status = :accepted',
+        '(deliveryStatus = :pending OR deliveryStatus = :failed)',
+        '(attribute_not_exists(deliveryClaimExpiresAt) OR deliveryClaimExpiresAt <= :attemptedAt)',
+        '(attribute_not_exists(deliveryAttemptCount) OR deliveryAttemptCount < :maxAttempts)'
+      ].join(' AND '),
+      ExpressionAttributeNames: { '#status': 'status' },
+      ExpressionAttributeValues: {
+        ':accepted': 'accepted',
+        ':pending': 'pending',
+        ':failed': 'failed',
+        ':attemptedAt': attemptedAt,
+        ':claimToken': claimToken,
+        ':claimExpiresAt': attemptedAt + DELIVERY_CLAIM_LEASE_MS,
+        ':zero': 0,
+        ':one': 1,
+        ':maxAttempts': MAX_DELIVERY_ATTEMPTS
+      }
+    };
     try {
-      const result = await documentClient.send(new UpdateCommand({
-        TableName: tableName,
-        Key: { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` },
-        UpdateExpression: 'SET deliveryAttemptedAt = :attemptedAt',
-        ConditionExpression: [
-          'attribute_exists(PK)',
-          'attribute_exists(SK)',
-          '#status = :accepted',
-          'deliveryStatus = :pending',
-          'attribute_not_exists(deliveryAttemptedAt)'
-        ].join(' AND '),
-        ExpressionAttributeNames: { '#status': 'status' },
-        ExpressionAttributeValues: {
-          ':accepted': 'accepted',
-          ':pending': 'pending',
-          ':attemptedAt': Date.now()
-        },
-        ReturnValues: 'ALL_NEW'
-      }));
-      return result.Attributes || null;
+      const result = await sendAccountGuardedMutation(
+        userId,
+        new UpdateCommand({ ...updateInput, ReturnValues: 'ALL_NEW' }),
+        { Update: updateInput }
+      );
+      if (!accountStateTableName) return result.Attributes || null;
+      const current = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
+      return current.Item || null;
     } catch (error) {
-      if (error?.name === 'ConditionalCheckFailedException') return null;
+      if (mutationConditionFailed(error)) return null;
       throw error;
     }
   }
@@ -246,105 +410,218 @@ function createDynamoSafetyRepository({ tableName, region }) {
     if (!CONTACT_DELIVERY_STATUSES.has(delivery?.deliveryStatus) || delivery.deliveryStatus === 'pending') {
       throw new Error('Contact delivery status is invalid');
     }
+    if (!DELIVERY_CLAIM_TOKEN_PATTERN.test(delivery?.claimToken || '')) {
+      throw new Error('Contact delivery claim is invalid');
+    }
     const count = (value) => Math.min(10, Math.max(0, Number.isSafeInteger(value) ? value : 0));
     const recordedAt = Date.now();
-    const result = await documentClient.send(new UpdateCommand({
+    const key = { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` };
+    const updateInput = {
       TableName: tableName,
-      Key: { PK: `USER#${userId}`, SK: `${sortPrefix}#${idempotencyKey}` },
-      UpdateExpression: [
+      Key: key,
+      UpdateExpression: `${[
         'SET deliveryStatus = :deliveryStatus',
         'deliveryRecordedAt = :recordedAt',
         'deliveryEligibleCount = :eligibleCount',
         'deliveryDeliveredCount = :deliveredCount',
         'deliveryFailedCount = :failedCount'
-      ].join(', '),
-      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #status = :accepted',
+      ].join(', ')} REMOVE deliveryClaimToken, deliveryClaimExpiresAt`,
+      ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #status = :accepted AND deliveryClaimToken = :claimToken',
       ExpressionAttributeNames: { '#status': 'status' },
       ExpressionAttributeValues: {
         ':accepted': 'accepted',
+        ':claimToken': delivery.claimToken,
         ':deliveryStatus': delivery.deliveryStatus,
         ':recordedAt': recordedAt,
         ':eligibleCount': count(delivery.eligibleCount),
         ':deliveredCount': count(delivery.deliveredCount),
         ':failedCount': count(delivery.failedCount)
-      },
-      ReturnValues: 'ALL_NEW'
-    }));
-    return result.Attributes || null;
+      }
+    };
+    const result = await sendAccountGuardedMutation(
+      userId,
+      new UpdateCommand({ ...updateInput, ReturnValues: 'ALL_NEW' }),
+      { Update: updateInput }
+    );
+    if (!accountStateTableName) return result.Attributes || null;
+    const current = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
+    return current.Item || null;
   }
 
   return {
     async listContacts(userId) {
-      const result = await documentClient.send(new QueryCommand({
-        TableName: tableName,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-        ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'CONTACT#' },
-        ConsistentRead: true
-      }));
-      return (result.Items || []).map(({ id, name, phone, countryCode, version }) => ({ id, name, phone, countryCode, version }));
+      return (await listContactRecords(userId))
+        .map(({ id, name, phone, countryCode, version }) => ({ id, name, phone, countryCode, version }));
     },
     async createContact(userId, contact) {
       const key = { PK: `USER#${userId}`, SK: `CONTACT#${contact.id}` };
+      const existingContacts = await listContactRecords(userId);
+      const putInput = {
+        TableName: tableName,
+        Item: { ...key, entity: 'contact', ...contact },
+        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+      };
+      const phoneKey = contactPhoneKey(userId, contact.phone);
+      const phonePut = {
+        TableName: tableName,
+        Item: { ...phoneKey, entity: 'contact-phone-reservation', contactId: contact.id },
+        ConditionExpression: 'attribute_not_exists(PK) OR contactId = :contactId',
+        ExpressionAttributeValues: { ':contactId': contact.id }
+      };
+      const countUpdate = {
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: 'CONTACT#META' },
+        UpdateExpression: 'SET entity = if_not_exists(entity, :entity), contactCount = if_not_exists(contactCount, :seed) + :one, updatedAt = :updatedAt',
+        ConditionExpression: 'attribute_not_exists(contactCount) OR contactCount < :limit',
+        ExpressionAttributeValues: {
+          ':entity': 'contact-metadata',
+          ':seed': existingContacts.length,
+          ':one': 1,
+          ':limit': 10,
+          ':updatedAt': Date.now()
+        }
+      };
       try {
-        await documentClient.send(new PutCommand({
-          TableName: tableName,
-          Item: { ...key, entity: 'contact', ...contact },
-          ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
-        }));
+        await sendAccountGuardedTransaction(userId, [
+          { Put: phonePut },
+          { Put: putInput },
+          { Update: countUpdate }
+        ]);
         return contact;
       } catch (error) {
-        if (error?.name !== 'ConditionalCheckFailedException') throw error;
+        if (!transactionCanceled(error)) throw error;
         const existing = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
-        if (!existing.Item) throw error;
+        if (!existing.Item) {
+          throw Object.assign(new Error('Emergency contact limit reached or phone number is already in use'), {
+            statusCode: 409,
+            code: 'CONTACT_CONSTRAINT_CONFLICT'
+          });
+        }
         const { id, name, phone, countryCode, version } = existing.Item;
         return { id, name, phone, countryCode, version };
       }
     },
     async updateContact(userId, contactId, contact, expectedVersion) {
       const key = { PK: `USER#${userId}`, SK: `CONTACT#${contactId}` };
+      const current = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
+      if (!current.Item) {
+        throw Object.assign(new Error('Emergency contact not found'), { statusCode: 404 });
+      }
+      if (current.Item.version !== expectedVersion) {
+        throw Object.assign(new Error('Emergency contact changed; refresh and try again'), { statusCode: 409 });
+      }
+      const updateInput = {
+        TableName: tableName,
+        Key: key,
+        UpdateExpression: 'SET #name = :name, phone = :phone, countryCode = :countryCode, #version = :nextVersion, updatedAt = :updatedAt',
+        ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #version = :expectedVersion',
+        ExpressionAttributeNames: {
+          '#name': 'name',
+          '#version': 'version'
+        },
+        ExpressionAttributeValues: {
+          ':name': contact.name,
+          ':phone': contact.phone,
+          ':countryCode': contact.countryCode,
+          ':expectedVersion': expectedVersion,
+          ':nextVersion': contact.version,
+          ':updatedAt': contact.updatedAt
+        }
+      };
+      const nextPhoneKey = contactPhoneKey(userId, contact.phone);
+      const previousPhoneKey = contactPhoneKey(userId, current.Item.phone);
+      const reservationPut = {
+        TableName: tableName,
+        Item: { ...nextPhoneKey, entity: 'contact-phone-reservation', contactId },
+        ConditionExpression: 'attribute_not_exists(PK) OR contactId = :contactId',
+        ExpressionAttributeValues: { ':contactId': contactId }
+      };
+      const transactionItems = [{ Put: reservationPut }, { Update: updateInput }];
+      if (previousPhoneKey.SK !== nextPhoneKey.SK) {
+        transactionItems.push({
+          Delete: {
+            TableName: tableName,
+            Key: previousPhoneKey,
+            ConditionExpression: 'attribute_not_exists(PK) OR contactId = :contactId',
+            ExpressionAttributeValues: { ':contactId': contactId }
+          }
+        });
+      }
       try {
-        const result = await documentClient.send(new UpdateCommand({
-          TableName: tableName,
-          Key: key,
-          UpdateExpression: 'SET #name = :name, phone = :phone, countryCode = :countryCode, #version = :nextVersion, updatedAt = :updatedAt',
-          ConditionExpression: 'attribute_exists(PK) AND attribute_exists(SK) AND #version = :expectedVersion',
-          ExpressionAttributeNames: {
-            '#name': 'name',
-            '#version': 'version'
-          },
-          ExpressionAttributeValues: {
-            ':name': contact.name,
-            ':phone': contact.phone,
-            ':countryCode': contact.countryCode,
-            ':expectedVersion': expectedVersion,
-            ':nextVersion': contact.version,
-            ':updatedAt': contact.updatedAt
-          },
-          ReturnValues: 'ALL_NEW'
-        }));
-        const { id, name, phone, countryCode, version } = result.Attributes || {};
+        await sendAccountGuardedTransaction(userId, transactionItems);
+        const { id, name, phone, countryCode, version } = contact;
         return { id, name, phone, countryCode, version };
       } catch (error) {
-        if (error?.name !== 'ConditionalCheckFailedException') throw error;
-        const current = await documentClient.send(new GetCommand({
+        if (!transactionCanceled(error)) throw error;
+        const latest = await documentClient.send(new GetCommand({
           TableName: tableName,
           Key: key,
           ConsistentRead: true
         }));
         throw Object.assign(
-          new Error(current.Item ? 'Emergency contact changed; refresh and try again' : 'Emergency contact not found'),
-          { statusCode: current.Item ? 409 : 404 }
+          new Error(latest.Item ? 'Emergency contact changed or phone number is already in use' : 'Emergency contact not found'),
+          { statusCode: latest.Item ? 409 : 404, code: latest.Item ? 'CONTACT_CONSTRAINT_CONFLICT' : 'CONTACT_NOT_FOUND' }
         );
       }
     },
     async deleteContact(userId, contactId) {
-      await documentClient.send(new DeleteCommand({
+      const key = { PK: `USER#${userId}`, SK: `CONTACT#${contactId}` };
+      const current = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
+      if (!current.Item) return;
+      const existingContacts = await listContactRecords(userId);
+      const deleteInput = {
         TableName: tableName,
-        Key: { PK: `USER#${userId}`, SK: `CONTACT#${contactId}` }
-      }));
+        Key: key,
+        ConditionExpression: '#version = :version AND phone = :phone',
+        ExpressionAttributeNames: { '#version': 'version' },
+        ExpressionAttributeValues: { ':version': current.Item.version, ':phone': current.Item.phone }
+      };
+      const countUpdate = {
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: 'CONTACT#META' },
+        UpdateExpression: 'SET entity = if_not_exists(entity, :entity), contactCount = if_not_exists(contactCount, :seed) - :one, updatedAt = :updatedAt',
+        ConditionExpression: '(attribute_not_exists(contactCount) AND :seed > :zero) OR contactCount > :zero',
+        ExpressionAttributeValues: {
+          ':entity': 'contact-metadata',
+          ':seed': existingContacts.length,
+          ':zero': 0,
+          ':one': 1,
+          ':updatedAt': Date.now()
+        }
+      };
+      try {
+        await sendAccountGuardedTransaction(userId, [
+          { Delete: deleteInput },
+          {
+            Delete: {
+              TableName: tableName,
+              Key: contactPhoneKey(userId, current.Item.phone),
+              ConditionExpression: 'attribute_not_exists(PK) OR contactId = :contactId',
+              ExpressionAttributeValues: { ':contactId': contactId }
+            }
+          },
+          { Update: countUpdate }
+        ]);
+      } catch (error) {
+        if (!transactionCanceled(error)) throw error;
+        const latest = await documentClient.send(new GetCommand({ TableName: tableName, Key: key, ConsistentRead: true }));
+        if (!latest.Item) return;
+        throw Object.assign(new Error('Emergency contact changed; refresh and try again'), {
+          statusCode: 409,
+          code: 'CONTACT_CONSTRAINT_CONFLICT'
+        });
+      }
     },
     async acceptSOS(userId, event) {
       return acceptDeliveryEvent(userId, 'SOS', 'sos', event);
+    },
+    async getSOS(userId, idempotencyKey) {
+      const result = await documentClient.send(new GetCommand({
+        TableName: tableName,
+        Key: { PK: `USER#${userId}`, SK: `SOS#${idempotencyKey}` },
+        ConsistentRead: true
+      }));
+      return result.Item || null;
     },
     async claimSOSDelivery(userId, idempotencyKey) {
       return claimDeliveryEvent(userId, 'SOS', idempotencyKey);
@@ -370,10 +647,11 @@ function createDynamoSafetyRepository({ tableName, region }) {
       return recordDeliveryEvent(userId, 'MEDICATION_ESCALATION', idempotencyKey, delivery);
     },
     async startSafetySession(userId, session) {
-      await documentClient.send(new PutCommand({
+      const putInput = {
         TableName: tableName,
         Item: { PK: `USER#${userId}`, SK: 'SAFETY#CURRENT', entity: 'safety-state', ...session }
-      }));
+      };
+      await sendAccountGuardedMutation(userId, new PutCommand(putInput), { Put: putInput });
       return session;
     },
     async getSafetySession(userId) {
@@ -469,21 +747,24 @@ function createDynamoSafetyRepository({ tableName, region }) {
       };
     },
     async deleteUserData(userId) {
-      const keys = await queryAllUserItems(userId, 'PK, SK');
-      for (let index = 0; index < keys.length; index += 25) {
-        let pending = keys.slice(index, index + 25).map((key) => ({
-          DeleteRequest: { Key: { PK: key.PK, SK: key.SK } }
+      let deletedItems = 0;
+      let exclusiveStartKey;
+      do {
+        const result = await documentClient.send(new QueryCommand({
+          TableName: tableName,
+          KeyConditionExpression: 'PK = :pk',
+          ExpressionAttributeValues: { ':pk': `USER#${userId}` },
+          ProjectionExpression: 'PK, SK',
+          ConsistentRead: true,
+          Limit: 100,
+          ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
         }));
-        for (let attempt = 0; pending.length && attempt < 5; attempt += 1) {
-          const result = await documentClient.send(new BatchWriteCommand({
-            RequestItems: { [tableName]: pending }
-          }));
-          pending = result.UnprocessedItems?.[tableName] || [];
-          if (pending.length) await new Promise((resolve) => setTimeout(resolve, 50 * Math.pow(2, attempt)));
-        }
-        if (pending.length) throw new Error('DynamoDB could not delete all user data');
-      }
-      return { deletedItems: keys.length };
+        const keys = result.Items || [];
+        await deleteKeyBatch(keys);
+        deletedItems += keys.length;
+        exclusiveStartKey = result.LastEvaluatedKey;
+      } while (exclusiveStartKey);
+      return { deletedItems };
     }
   };
 }
@@ -516,7 +797,12 @@ async function deliverContactAlert({
 
   const recordDelivery = async (delivery) => {
     try {
-      await repository[recordMethod]?.(userId, accepted.idempotencyKey, delivery);
+      await repository[recordMethod]?.(userId, accepted.idempotencyKey, {
+        ...delivery,
+        ...(typeof claimed?.deliveryClaimToken === 'string'
+          ? { claimToken: claimed.deliveryClaimToken }
+          : {})
+      });
     } catch {
       // Delivery-state storage is deliberately isolated from durable event
       // acceptance. An alert provider failure cannot rewrite acceptance.
@@ -574,6 +860,7 @@ async function handleSafetyAPI({
   privacyCoordinator,
   notifyEmergencyContacts,
   retentionDays = 30,
+  privacyExportMaxBytes = MAX_PRIVACY_EXPORT_BYTES,
   json
 }) {
   if (!principal?.sub) {
@@ -646,40 +933,65 @@ async function handleSafetyAPI({
   if (req.method === 'POST' && url.pathname === '/v1/sos-events') {
     requireScope(principal, 'safety:write');
     const idempotencyKey = validateIdempotencyKey(body?.idempotencyKey);
+    const existingSOS = typeof repository.getSOS === 'function'
+      ? await repository.getSOS(userId, idempotencyKey)
+      : null;
     const occurredAt = Number(body?.occurredAt);
-    if (!Number.isFinite(occurredAt) || Math.abs(Date.now() - occurredAt) > 5 * 60 * 1000) {
+    if (!Number.isSafeInteger(occurredAt)
+      || (!existingSOS && Math.abs(Date.now() - occurredAt) > 5 * 60 * 1000)) {
       throw Object.assign(new Error('occurredAt is invalid or stale'), { statusCode: 400 });
     }
-    const contactIds = Array.isArray(body?.contactIds)
-      ? [...new Set(body.contactIds.filter((id) => /^contact_[A-Za-z0-9_-]{24}$/.test(id)))].slice(0, 10)
-      : [];
-    if (!contactIds.length) throw Object.assign(new Error('At least one emergency contact is required'), { statusCode: 400 });
-    const ownedContactIds = new Set((await repository.listContacts(userId)).map((contact) => contact.id));
-    if (contactIds.some((contactId) => !ownedContactIds.has(contactId))) {
-      throw Object.assign(new Error('An emergency contact is unavailable'), { statusCode: 400 });
+    if (!Array.isArray(body?.contactIds)
+      || body.contactIds.length < 1
+      || body.contactIds.length > 10
+      || body.contactIds.some((id) => typeof id !== 'string' || !/^contact_[A-Za-z0-9_-]{24}$/.test(id))) {
+      throw Object.assign(new Error('contactIds is invalid'), { statusCode: 400 });
     }
+    const contactIds = [...new Set(body.contactIds)];
+    const source = ['app', 'vl01'].includes(body?.source) ? body.source : null;
+    if (!source) throw Object.assign(new Error('source is invalid'), { statusCode: 400 });
+    if (!existingSOS) {
+      const ownedContactIds = new Set((await repository.listContacts(userId)).map((contact) => contact.id));
+      if (contactIds.some((contactId) => !ownedContactIds.has(contactId))) {
+        throw Object.assign(new Error('An emergency contact is unavailable'), { statusCode: 400 });
+      }
+    }
+    const location = validateLocation(body?.location, { allowHistorical: Boolean(existingSOS) });
+    const medicalAttachment = validateMedicalAttachment(body?.medicalAttachment, { allowHistorical: Boolean(existingSOS) });
+    const requestFingerprint = sosRequestFingerprint({
+      occurredAt,
+      source,
+      contactIds,
+      location,
+      medicalAttachment
+    });
     const event = {
       id: opaqueId('sos', `${userId}:${idempotencyKey}`),
       idempotencyKey,
+      requestFingerprint,
       status: 'accepted',
       acceptedAt: Date.now(),
       occurredAt,
-      source: body?.source === 'vl01' ? 'vl01' : 'app',
+      source,
       contactIds,
-      location: validateLocation(body?.location),
-      medicalAttachment: validateMedicalAttachment(body?.medicalAttachment),
+      location,
+      medicalAttachment,
       deliveryStatus: typeof notifyEmergencyContacts === 'function' ? 'pending' : 'not_configured',
       // Configure DynamoDB TTL on this attribute. Contacts and the current
       // safety state remain until user deletion; transient SOS telemetry does
       // not persist indefinitely.
       expiresAt: safetyEventExpiry(retentionDays)
     };
-    const accepted = await repository.acceptSOS(userId, event);
+    const accepted = existingSOS || await repository.acceptSOS(userId, event);
+    const acceptedFingerprint = accepted.requestFingerprint || sosRequestFingerprint(accepted);
+    if (acceptedFingerprint !== requestFingerprint) {
+      throw Object.assign(new Error('idempotencyKey was already used for a different SOS event'), { statusCode: 409 });
+    }
     const deliveryStatus = await deliverContactAlert({
       repository,
       userId,
       accepted,
-      contactIds,
+      contactIds: accepted.contactIds,
       notifyEmergencyContacts,
       claimMethod: 'claimSOSDelivery',
       recordMethod: 'recordSOSDelivery',
@@ -794,11 +1106,19 @@ async function handleSafetyAPI({
   }
   if (req.method === 'GET' && url.pathname === '/v1/privacy/export') {
     requireScope(principal, 'safety:read');
-    json(res, 200, {
+    const payload = {
       data: privacyCoordinator
         ? await privacyCoordinator.exportUserData(userId)
         : await repository.exportUserData(userId)
-    });
+    };
+    if (!Number.isSafeInteger(privacyExportMaxBytes) || privacyExportMaxBytes < 1024
+      || Buffer.byteLength(JSON.stringify(payload)) > privacyExportMaxBytes) {
+      throw Object.assign(new Error('Account data export exceeds the synchronous download limit'), {
+        statusCode: 413,
+        code: 'PRIVACY_EXPORT_DOWNLOAD_LIMIT_EXCEEDED'
+      });
+    }
+    json(res, 200, payload);
     return true;
   }
   if (req.method === 'DELETE' && url.pathname === '/v1/privacy/data') {

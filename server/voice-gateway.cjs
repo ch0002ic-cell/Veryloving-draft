@@ -15,6 +15,9 @@ const MAX_CLIENT_PAYLOAD_BYTES = 1024 * 1024;
 const MAX_BUFFERED_BYTES = 512 * 1024;
 const AI_NATIVE_CONTEXT_TIMEOUT_MS = 1500;
 const AI_NATIVE_CONTEXT_MAX_BYTES = 16 * 1024;
+const MAX_VOICE_CONTROL_IN_FLIGHT = 4;
+const MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE = 30;
+const VOICE_CONTROL_RATE_WINDOW_MS = 60 * 1000;
 const HUME_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PERSONA_ID_PATTERN = /^[A-Za-z0-9_-]{1,40}$/;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -159,7 +162,7 @@ function hasScope(claims, required) {
 function normalizeDevices(devices) {
   return Array.isArray(devices) ? devices.slice(0, 20).flatMap((device) => {
     const deviceId = boundedString(device?.device_id, 128);
-    if (!deviceId || !['wearable', 'home_robot'].includes(device?.device_type)) return [];
+    if (!deviceId || !DEVICE_ID_PATTERN.test(deviceId) || !['wearable', 'home_robot'].includes(device?.device_type)) return [];
     return [{ device_id: deviceId, device_type: device.device_type, online: device.online === true }];
   }) : [];
 }
@@ -346,6 +349,28 @@ function closeSocket(socket, code, reason) {
   }
 }
 
+function safeSendSocket(socket, payload, options) {
+  if (!socket || socket.readyState !== WebSocket.OPEN) return false;
+  try {
+    socket.send(payload, options);
+    return true;
+  } catch {
+    closeSocket(socket, 1011, 'socket send failed');
+    return false;
+  }
+}
+
+function normalizeGatewayError(error, fallbackCode) {
+  const status = Number(error?.statusCode);
+  const errorCode = typeof error?.code === 'string' && /^[A-Z][A-Z0-9_]{0,63}$/.test(error.code)
+    ? error.code
+    : fallbackCode;
+  return {
+    status: Number.isSafeInteger(status) && status >= 400 && status <= 599 ? status : 500,
+    errorCode
+  };
+}
+
 const gatewayShutdowns = new WeakMap();
 
 function closeVoiceGateway(gateway) {
@@ -398,7 +423,37 @@ function attachVoiceGateway(server, config) {
     let unregisterActionSession = null;
     let principal = null;
     let voiceSession = null;
+    let controlRequestsInFlight = 0;
+    let controlRequestsInWindow = 0;
+    let controlWindowStartedAt = Date.now();
     const authTimer = setTimeout(() => closeSocket(client, 4001, 'authentication timeout'), AUTH_TIMEOUT_MS);
+
+    const beginControlRequest = (responseType, requestId) => {
+      const now = Date.now();
+      if (now < controlWindowStartedAt || now - controlWindowStartedAt >= VOICE_CONTROL_RATE_WINDOW_MS) {
+        controlWindowStartedAt = now;
+        controlRequestsInWindow = 0;
+      }
+      if (controlRequestsInFlight >= MAX_VOICE_CONTROL_IN_FLIGHT
+        || controlRequestsInWindow >= MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE) {
+        safeSendSocket(client, JSON.stringify({
+          type: responseType,
+          request_id: requestId,
+          ok: false,
+          status: 429,
+          error_code: 'VOICE_REQUEST_OVERLOADED'
+        }));
+        return null;
+      }
+      controlRequestsInFlight += 1;
+      controlRequestsInWindow += 1;
+      let released = false;
+      return () => {
+        if (released) return;
+        released = true;
+        controlRequestsInFlight = Math.max(0, controlRequestsInFlight - 1);
+      };
+    };
 
     const cleanup = () => {
       if (!closed) {
@@ -463,7 +518,7 @@ function attachVoiceGateway(server, config) {
             principal = claims;
             clearTimeout(authTimer);
             unregisterActionSession = config.actionGateway?.registerSession(claims.sub, client, auth.devices);
-            client.send(JSON.stringify({ type: 'auth_ok' }));
+            if (!safeSendSocket(client, JSON.stringify({ type: 'auth_ok' }))) cleanup();
           });
           upstream.on('message', (payload, upstreamBinary) => {
             if (client.readyState !== WebSocket.OPEN) return;
@@ -471,7 +526,7 @@ function attachVoiceGateway(server, config) {
               closeSocket(client, 4000, 'client backpressure limit');
               return;
             }
-            client.send(payload, { binary: upstreamBinary });
+            if (!safeSendSocket(client, payload, { binary: upstreamBinary })) cleanup();
           });
           upstream.on('error', () => closeSocket(client, 1011, 'voice upstream unavailable'));
           upstream.on('close', (code, reason) => {
@@ -479,7 +534,7 @@ function attachVoiceGateway(server, config) {
           });
         }).catch((error) => {
           if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ type: 'auth_error' }));
+            safeSendSocket(client, JSON.stringify({ type: 'auth_error' }));
           }
           config.logger?.warn?.('[VoiceGateway] Authentication rejected', {
             name: error?.name || 'VoiceAuthenticationError'
@@ -495,7 +550,7 @@ function attachVoiceGateway(server, config) {
         if (message?.type === 'devices_update') {
           const devices = normalizeDevices(message.devices);
           config.actionGateway?.updateSessionDevices?.(principal?.sub, client, devices);
-          client.send(JSON.stringify({ type: 'devices_updated', count: devices.length }));
+          safeSendSocket(client, JSON.stringify({ type: 'devices_updated', count: devices.length }));
           return;
         }
         if (message?.type === 'device_action_ack') {
@@ -505,27 +560,30 @@ function attachVoiceGateway(server, config) {
         if (message?.type === 'action_request') {
           const requestId = boundedString(message.request_id, 128);
           if (!requestId || !/^[A-Za-z0-9._:-]+$/.test(requestId) || !config.actionGateway) {
-            client.send(JSON.stringify({ type: 'action_response', request_id: requestId || 'invalid', ok: false, status: config.actionGateway ? 400 : 503 }));
+            safeSendSocket(client, JSON.stringify({ type: 'action_response', request_id: requestId || 'invalid', ok: false, status: config.actionGateway ? 400 : 503 }));
             return;
           }
-          Promise.resolve(config.actionGateway.route(principal.sub, {
+          const releaseControlRequest = beginControlRequest('action_response', requestId);
+          if (!releaseControlRequest) return;
+          Promise.resolve().then(() => config.actionGateway.route(principal.sub, {
             ...message,
             idempotency_key: requestId
           })).then((result) => {
             if (!closed && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({ type: 'action_response', request_id: requestId, ok: true, result }));
+              safeSendSocket(client, JSON.stringify({ type: 'action_response', request_id: requestId, ok: true, result }));
             }
           }).catch((error) => {
             if (!closed && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
+              const normalized = normalizeGatewayError(error, 'DEVICE_ACTION_FAILED');
+              safeSendSocket(client, JSON.stringify({
                 type: 'action_response',
                 request_id: requestId,
                 ok: false,
-                status: Number(error?.statusCode) || 500,
-                error_code: error?.code || 'DEVICE_ACTION_FAILED'
+                status: normalized.status,
+                error_code: normalized.errorCode
               }));
             }
-          });
+          }).finally(releaseControlRequest);
           return;
         }
         if (message?.type === 'scenario_request') {
@@ -541,7 +599,7 @@ function attachVoiceGateway(server, config) {
             || !config.aiNativeEnabled
             || !config.edgeScenarioRouter
             || typeof config.resolveScenarioDevices !== 'function') {
-            client.send(JSON.stringify({
+            safeSendSocket(client, JSON.stringify({
               type: 'scenario_response',
               request_id: requestId || 'invalid',
               ok: false,
@@ -552,7 +610,9 @@ function attachVoiceGateway(server, config) {
             }));
             return;
           }
-          Promise.resolve(config.resolveScenarioDevices({
+          const releaseControlRequest = beginControlRequest('scenario_response', requestId);
+          if (!releaseControlRequest) return;
+          Promise.resolve().then(() => config.resolveScenarioDevices({
             accountId: principal.sub,
             scenarioId: 'ai_angel_auto_dial',
             source: 'voice'
@@ -565,7 +625,7 @@ function attachVoiceGateway(server, config) {
             }, binding)
           )).then((result) => {
             if (!closed && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
+              safeSendSocket(client, JSON.stringify({
                 type: 'scenario_response',
                 request_id: requestId,
                 ok: true,
@@ -574,15 +634,16 @@ function attachVoiceGateway(server, config) {
             }
           }).catch((error) => {
             if (!closed && client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
+              const normalized = normalizeGatewayError(error, 'SCENARIO_START_FAILED');
+              safeSendSocket(client, JSON.stringify({
                 type: 'scenario_response',
                 request_id: requestId,
                 ok: false,
-                status: Number(error?.statusCode) || 500,
-                error_code: error?.code || 'SCENARIO_START_FAILED'
+                status: normalized.status,
+                error_code: normalized.errorCode
               }));
             }
-          });
+          }).finally(releaseControlRequest);
           return;
         }
       }
@@ -593,7 +654,10 @@ function attachVoiceGateway(server, config) {
         return;
       }
       const outbound = prepareUpstreamMessage(data, isBinary, { ...config, voiceSession });
-      upstream.send(outbound.payload, { binary: outbound.binary });
+      if (!safeSendSocket(upstream, outbound.payload, { binary: outbound.binary })) {
+        closeSocket(client, 1011, 'voice upstream send failed');
+        cleanup();
+      }
     });
 
     client.on('error', cleanup);
@@ -605,6 +669,8 @@ function attachVoiceGateway(server, config) {
 
 module.exports = {
   GATEWAY_PATH,
+  MAX_VOICE_CONTROL_IN_FLIGHT,
+  MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE,
   attachVoiceGateway,
   closeVoiceGateway,
   assertVoicePersonaConfig,

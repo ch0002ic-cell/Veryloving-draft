@@ -5,7 +5,13 @@ const crypto = require('node:crypto');
 const { EventEmitter } = require('node:events');
 const { Readable } = require('node:stream');
 const { test } = require('node:test');
-const { createHandler, validateServerConfig } = require('./clm-server.cjs');
+const {
+  createHandler,
+  envConfig,
+  fetchWithDeadline,
+  readBoundedResponseJson,
+  validateServerConfig
+} = require('./clm-server.cjs');
 const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety-companion.cjs');
 const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
 
@@ -15,6 +21,23 @@ const VALID_HUME_VOICE_ID = '22222222-2222-4222-8222-222222222222';
 const ACTION_KEY_PAIR = crypto.generateKeyPairSync('ed25519');
 const ACTION_SIGNING_PRIVATE_KEY = ACTION_KEY_PAIR.privateKey.export({ format: 'pem', type: 'pkcs8' });
 const ACTION_SIGNING_PUBLIC_KEY = ACTION_KEY_PAIR.publicKey.export({ format: 'der', type: 'spki' }).subarray(-32).toString('base64url');
+
+test('CLM environment parsing rejects fractional and oversized timing values at startup', () => {
+  const originalActionTimeout = process.env.ACTION_REQUEST_TIMEOUT_MS;
+  const originalUpstreamTimeout = process.env.CLM_UPSTREAM_TIMEOUT_MS;
+  try {
+    process.env.ACTION_REQUEST_TIMEOUT_MS = '12.5';
+    assert.throws(() => envConfig(), /ACTION_REQUEST_TIMEOUT_MS/);
+    process.env.ACTION_REQUEST_TIMEOUT_MS = '5000';
+    process.env.CLM_UPSTREAM_TIMEOUT_MS = '30001';
+    assert.throws(() => envConfig(), /CLM_UPSTREAM_TIMEOUT_MS/);
+  } finally {
+    if (originalActionTimeout === undefined) delete process.env.ACTION_REQUEST_TIMEOUT_MS;
+    else process.env.ACTION_REQUEST_TIMEOUT_MS = originalActionTimeout;
+    if (originalUpstreamTimeout === undefined) delete process.env.CLM_UPSTREAM_TIMEOUT_MS;
+    else process.env.CLM_UPSTREAM_TIMEOUT_MS = originalUpstreamTimeout;
+  }
+});
 
 function aiNativeTestConfig(edgeScenarioRouter, overrides = {}) {
   const scenarioEngine = overrides.scenarioEngine || {};
@@ -50,7 +73,8 @@ function productionHTTPConfig(overrides = {}) {
     beginAccountDeletion: async () => true,
     completeAccountDeletion: async () => true,
     finalizeAccountDeletion: async () => ({ deletedItems: 0, completed: true }),
-    getAccountDeletionState: async () => 'active'
+    getAccountDeletionState: async () => 'active',
+    consumePhoneChallenge: async () => true
   };
   const safetyRepository = {
     listContacts: async () => [],
@@ -58,6 +82,7 @@ function productionHTTPConfig(overrides = {}) {
     updateContact: async (_userId, _contactId, contact) => contact,
     deleteContact: async () => undefined,
     acceptSOS: async (_userId, event) => event,
+    getSOS: async () => null,
     claimSOSDelivery: async () => null,
     recordSOSDelivery: async () => null,
     getMedicationEscalation: async () => null,
@@ -70,7 +95,9 @@ function productionHTTPConfig(overrides = {}) {
     deleteUserData: async () => ({ deletedItems: 0 })
   };
   const pushRepository = {
-    register: async () => undefined,
+    register: async () => ({ unregisterReceipt: 'receipt-value' }),
+    unregister: async () => true,
+    unregisterByReceipt: async () => true,
     list: async () => [],
     exportUserData: async () => [],
     deleteUserData: async () => ({ deletedItems: 0 })
@@ -269,6 +296,114 @@ test('health endpoint reports the CLM service', async () => {
   const response = await invoke({}, { url: '/health' });
   assert.equal(response.status, 200);
   assert.deepEqual(response.json, { status: 'ok', service: 'veryloving-hume-clm' });
+});
+
+test('request failures normalize invalid status codes and do not expose server errors', async () => {
+  const response = await invoke({
+    verifyAppToken: async () => ({ sub: 'google:user-1' }),
+    actionGateway: {
+      async route() {
+        throw Object.assign(new Error('upstream secret detail'), { statusCode: 999 });
+      }
+    }
+  }, {
+    method: 'POST',
+    url: '/v1/device-actions',
+    headers: { Authorization: 'Bearer app-session' },
+    body: { action: 'emit_alarm', device_type: 'wearable', device_id: 'wearable-1' }
+  });
+  assert.equal(response.status, 500);
+  assert.deepEqual(response.json, { error: 'Internal server error' });
+});
+
+test('external JSON responses are size-bounded and oversized streams are cancelled', async () => {
+  let cancelled = 0;
+  let released = 0;
+  const response = {
+    headers: { get: () => null },
+    body: {
+      getReader() {
+        return {
+          async read() { return { done: false, value: Buffer.alloc(65 * 1024) }; },
+          async cancel() { cancelled += 1; },
+          releaseLock() { released += 1; }
+        };
+      }
+    }
+  };
+  await assert.rejects(
+    readBoundedResponseJson(response, 64 * 1024, 'Authentication verifier'),
+    /too large/
+  );
+  assert.equal(cancelled, 1);
+  assert.equal(released, 1);
+
+  let bodyRead = false;
+  let advertisedBodyCancelled = false;
+  await assert.rejects(readBoundedResponseJson({
+    headers: { get: (name) => name === 'content-length' ? String(64 * 1024 + 1) : null },
+    body: {
+      getReader() { bodyRead = true; },
+      async cancel() { advertisedBodyCancelled = true; }
+    }
+  }, 64 * 1024), /too large/);
+  assert.equal(bodyRead, false);
+  assert.equal(advertisedBodyCancelled, true);
+});
+
+test('external requests hard-time-out and release late responses when transport ignores abort', async () => {
+  let requestSignal;
+  let resolveTransport;
+  let cancelled = 0;
+  const pending = fetchWithDeadline((_url, options) => {
+    requestSignal = options.signal;
+    return new Promise((resolve) => { resolveTransport = resolve; });
+  }, 'https://upstream.example.test', {}, {
+    timeoutMs: 5,
+    label: 'Test upstream',
+    consume: async () => assert.fail('late response must not be consumed')
+  });
+
+  await assert.rejects(pending, (error) => (
+    error.name === 'TimeoutError' && error.code === 'UPSTREAM_TIMEOUT'
+  ));
+  assert.equal(requestSignal.aborted, true);
+  resolveTransport({ body: { async cancel() { cancelled += 1; } } });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(cancelled, 1);
+});
+
+test('external request deadlines cancel an active response reader', async () => {
+  let cancelled = 0;
+  let released = 0;
+  const response = {
+    headers: { get: () => null },
+    body: {
+      getReader() {
+        return {
+          async read() { return new Promise(() => {}); },
+          async cancel() { cancelled += 1; },
+          releaseLock() { released += 1; }
+        };
+      },
+      async cancel() {}
+    }
+  };
+  await assert.rejects(fetchWithDeadline(async () => response, 'https://upstream.example.test', {}, {
+    timeoutMs: 5,
+    label: 'Test upstream',
+    consume: (nextResponse, signal) => readBoundedResponseJson(
+      nextResponse,
+      1024,
+      'Test upstream',
+      signal
+    )
+  }), (error) => error.name === 'TimeoutError');
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(cancelled, 1);
+  // The bounded reader races cancellation itself, so even a non-compliant
+  // pending read cannot retain its lock after the caller's deadline.
+  assert.equal(released, 1);
 });
 
 test('production server rejects insecure credential-bearing outbound URLs', () => {
@@ -485,6 +620,16 @@ test('arbitrary bearer tokens cannot bypass first-party authentication', async (
     body: { scenario: 'general' }
   });
   assert.equal(response.status, 401);
+
+  const invalidSubject = await invoke({
+    verifyAppToken: async () => ({ sub: 'user\nforged-partition', scope: 'safety:read' })
+  }, {
+    method: 'POST',
+    url: '/v1/safety/tips',
+    headers: { Authorization: 'Bearer externally-verified-token' },
+    body: { scenario: 'general' }
+  });
+  assert.equal(invalidSubject.status, 401);
 });
 
 test('durable account-deletion state blocks new work but permits deletion retry', async () => {
@@ -519,6 +664,91 @@ test('durable account-deletion state blocks new work but permits deletion retry'
   });
   assert.equal(retry.status, 204);
   assert.equal(retries, 1);
+});
+
+test('default safety and push repositories receive the auth-session account fence', async () => {
+  const safetyTransactions = [];
+  const pushTransactions = [];
+  const safetyRepositoryClient = {
+    async send(command) {
+      const name = command.constructor.name;
+      if (name === 'QueryCommand') return { Items: [] };
+      if (name === 'TransactWriteCommand') {
+        safetyTransactions.push(command.input.TransactItems);
+        return {};
+      }
+      throw new Error(`Unexpected safety command ${name}`);
+    }
+  };
+  const pushRepositoryClient = {
+    async send(command) {
+      const name = command.constructor.name;
+      if (name === 'GetCommand') return {};
+      if (name === 'QueryCommand') return { Items: [] };
+      if (name === 'TransactWriteCommand') {
+        pushTransactions.push(command.input.TransactItems);
+        return {};
+      }
+      throw new Error(`Unexpected push command ${name}`);
+    }
+  };
+  const config = {
+    authExchangeEnabled: true,
+    safetyApiEnabled: true,
+    sessionJWTSecret: 'test-session-secret-at-least-32-characters',
+    appleClientIds: 'com.veryloving.test',
+    safetyTableName: 'safety-data',
+    deviceTableName: 'device-data',
+    authSessionTableName: 'auth-sessions',
+    safetyRepositoryClient,
+    pushRepositoryClient,
+    authSessionRepository: { async getAccountDeletionState() { return 'active'; } },
+    robotRepository: {},
+    actionOutboxRepository: {},
+    verifyAppToken: async () => ({ sub: 'user-1', scope: 'safety:read safety:write' })
+  };
+  const authorization = { Authorization: 'Bearer verified-token' };
+
+  const pushResponse = await invoke(config, {
+    method: 'POST',
+    url: '/v1/devices/push-token',
+    headers: authorization,
+    body: { token: 'ExpoPushToken[token_00000001]' }
+  });
+  assert.equal(pushResponse.status, 200);
+  assert.match(pushResponse.json.unregisterReceipt, /^[A-Za-z0-9_-]{80,1024}$/);
+  const contactResponse = await invoke(config, {
+    method: 'POST',
+    url: '/v1/emergency-contacts',
+    headers: authorization,
+    body: { name: 'Caregiver', phone: '+15555550100', countryCode: 'US' }
+  });
+  assert.equal(contactResponse.status, 201);
+
+  assert.equal(pushTransactions.length, 2);
+  assert.equal(safetyTransactions.length, 1);
+  for (const transaction of [...pushTransactions, ...safetyTransactions]) {
+    assert.equal(transaction[0].ConditionCheck.TableName, 'auth-sessions');
+    assert.deepEqual(transaction[0].ConditionCheck.Key, {
+      PK: 'USER#user-1',
+      SK: 'ACCOUNT#STATE'
+    });
+  }
+});
+
+test('push unregistration receipt is accepted as a narrow post-logout capability', async () => {
+  let consumedReceipt = null;
+  const response = await invoke({
+    pushRepository: {
+      async unregisterByReceipt(receipt) { consumedReceipt = receipt; }
+    }
+  }, {
+    method: 'DELETE',
+    url: '/v1/devices/push-token/receipt',
+    body: { receipt: 'A'.repeat(120) }
+  });
+  assert.equal(response.status, 204);
+  assert.equal(consumedReceipt, 'A'.repeat(120));
 });
 
 test('factory-reset recovery completes before action recovery and fails closed', async () => {
@@ -781,6 +1011,7 @@ test('phone auth uses Twilio Verify and issues an opaque first-party session', a
     twilioAccountSid: `AC${'a'.repeat(32)}`,
     twilioAuthToken: 'test-twilio-auth-token-value',
     twilioVerifyServiceSid: `VA${'b'.repeat(32)}`,
+    phoneChallengeReplayCache: new Map(),
     fetchImpl: async (url, options) => {
       calls.push({ url, options });
       return {
@@ -813,6 +1044,14 @@ test('phone auth uses Twilio Verify and issues an opaque first-party session', a
   assert.equal(claims.sub, verified.json.user.id);
   assert.equal(claims.sub.includes('+6591234567'), false);
   assert.equal(calls.length, 2);
+
+  const replayed = await invoke(config, {
+    method: 'POST',
+    url: '/v1/auth/phone/verify',
+    body: { verificationId: started.json.verificationId, code: '123456' }
+  });
+  assert.equal(replayed.status, 410);
+  assert.equal(replayed.json.code, 'PHONE_AUTH_CHALLENGE_USED');
 
   const refreshed = await invoke(config, {
     method: 'POST',
@@ -973,6 +1212,28 @@ test('CLM injects the authoritative safety prompt before upstream context', asyn
   assert.match(response.text, /data: \[DONE\]/);
 });
 
+test('CLM does not treat a lookalike media type as an event stream', async () => {
+  const fetchImpl = async () => ({
+    ok: true,
+    status: 200,
+    headers: { get: (name) => name === 'content-type' ? 'text/event-stream+json' : null },
+    json: async () => ({ choices: [{ message: { content: 'Bounded JSON response.' } }] })
+  });
+  const response = await invoke({
+    clmBearerToken: 'server-only-secret',
+    upstreamURL: 'https://model.example/chat/completions',
+    upstreamApiKey: 'upstream-secret',
+    upstreamModel: 'safety-model',
+    fetchImpl
+  }, {
+    method: 'POST',
+    url: '/chat/completions',
+    headers: { Authorization: 'Bearer server-only-secret', 'Content-Type': 'application/json' },
+    body: { messages: [{ role: 'user', content: 'Please stay with me.' }] }
+  });
+  assert.match(response.text, /Bounded JSON response/);
+});
+
 test('CLM aborts and cancels an upstream SSE reader when the downstream disconnects', async () => {
   let upstreamSignal;
   let fetchStarted;
@@ -1037,6 +1298,53 @@ test('CLM aborts and cancels an upstream SSE reader when the downstream disconne
   assert.equal(upstreamSignal.aborted, true);
   assert.equal(cancelCount, 1);
   assert.equal(res.writableEnded, false);
+});
+
+test('CLM deadline cancels a locked SSE reader even when its pending read ignores abort', async () => {
+  let upstreamSignal;
+  let cancelCount = 0;
+  let releaseCount = 0;
+  let bodyCancelCount = 0;
+  const response = await invoke({
+    clmBearerToken: 'server-only-secret',
+    upstreamURL: 'https://model.example/chat/completions',
+    upstreamApiKey: 'upstream-secret',
+    upstreamModel: 'safety-model',
+    upstreamTimeoutMs: 5,
+    fetchImpl: async (_url, options) => {
+      upstreamSignal = options.signal;
+      return {
+        ok: true,
+        status: 200,
+        headers: { get: () => 'text/event-stream' },
+        body: {
+          locked: true,
+          getReader() {
+            return {
+              read() { return new Promise(() => {}); },
+              async cancel() { cancelCount += 1; },
+              releaseLock() { releaseCount += 1; }
+            };
+          },
+          async cancel() {
+            bodyCancelCount += 1;
+          }
+        }
+      };
+    }
+  }, {
+    method: 'POST',
+    url: '/chat/completions',
+    headers: { Authorization: 'Bearer server-only-secret', 'Content-Type': 'application/json' },
+    body: { messages: [{ role: 'user', content: 'Please stay with me.' }] }
+  });
+
+  assert.equal(upstreamSignal.aborted, true);
+  assert.equal(cancelCount, 1);
+  assert.equal(releaseCount, 1);
+  assert.equal(bodyCancelCount, 0);
+  assert.equal(response.status, 200);
+  assert.match(response.text, /data: \[DONE\]/);
 });
 
 test('CLM aborts upstream when a backpressured downstream response errors', async () => {
@@ -1685,7 +1993,7 @@ test('medication caregiver escalation is durable, idempotent, private, and can t
   const config = {
     safetyApiEnabled: true,
     safetyRepository: repository,
-    safetyRetentionDays: 9999,
+    safetyRetentionDays: 365,
     authExchangeEnabled: true,
     sessionJWTSecret: 'medication-escalation-test-secret-at-least-32-characters',
     sessionJWTIssuer: 'https://api.example.test',

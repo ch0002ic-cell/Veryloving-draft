@@ -4,7 +4,7 @@ const http = require('node:http');
 const path = require('node:path');
 const { createAINativeDemoRuntime } = require('./ai-native-demo.cjs');
 const { createHandler } = require('./clm-server.cjs');
-const { createGracefulShutdown, installProcessSignalHandlers } = require('./graceful-shutdown.cjs');
+const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
 
 // Node 22 loads the local, untracked server environment without requiring
 // every assignment to be prefixed with `export`. Existing process variables
@@ -29,7 +29,7 @@ const server = http.createServer(handler);
 server.requestTimeout = 35000;
 server.headersTimeout = 10000;
 server.keepAliveTimeout = 5000;
-const port = Number(process.env.PORT || 8787);
+const port = parseListenPort(process.env.PORT, 8787);
 if (aiNativeDemo) {
   // The credential-free demo route is intentionally unreachable off-host.
   server.listen(port, '127.0.0.1', () => {

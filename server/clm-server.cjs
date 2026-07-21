@@ -3,6 +3,7 @@
 const crypto = require('node:crypto');
 const http = require('node:http');
 const {
+  isValidAccountSubject,
   profileFromClaims,
   signRefreshJWT,
   signSessionJWT,
@@ -13,6 +14,7 @@ const {
 const {
   PHONE_AUTH_CODES,
   PhoneAuthError,
+  consumePhoneVerificationChallenge,
   phoneSubject,
   startPhoneVerification,
   validatePhoneAuthConfig,
@@ -24,6 +26,11 @@ const {
   createDynamoManufacturerPrivacyDeletionRepository
 } = require('./manufacturer-privacy-deletion.cjs');
 const { createRedactedLogger } = require('./redacted-logger.cjs');
+const { readBoundedJSONResponse } = require('./bounded-response.cjs');
+const {
+  parseBoundedServerInteger,
+  validateServerIntegerConfig
+} = require('./environment-schema.cjs');
 const {
   ActionGateway,
   createDynamoActionOutboxRepository,
@@ -65,7 +72,12 @@ const {
 } = require('./safety-companion.cjs');
 
 const MAX_BODY_BYTES = 256 * 1024;
+const PUSH_RECEIPT_RATE_WINDOW_MS = 60 * 1000;
+const PUSH_RECEIPT_RATE_LIMIT = 30;
+const MAX_PUSH_RECEIPT_RATE_KEYS = 10000;
 const MAX_UPSTREAM_SSE_EVENT_BYTES = 256 * 1024;
+const MAX_UPSTREAM_JSON_BYTES = 256 * 1024;
+const MAX_AUTH_RESPONSE_BYTES = 64 * 1024;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -77,11 +89,6 @@ const ROBOT_RESET_REPOSITORY_METHODS = Object.freeze([
   'completeFactoryReset',
   'listRecoverableFactoryResets'
 ]);
-
-function positiveNumber(value, fallback) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
 
 function envConfig(overrides = {}) {
   return {
@@ -103,14 +110,14 @@ function envConfig(overrides = {}) {
     sessionJWTSecret: process.env.SESSION_JWT_SECRET || '',
     sessionJWTIssuer: process.env.SESSION_JWT_ISSUER || 'https://api.veryloving.ai',
     sessionJWTAudience: process.env.SESSION_JWT_AUDIENCE || 'veryloving-mobile',
-    sessionJWTTTLSeconds: positiveNumber(process.env.SESSION_JWT_TTL_SECONDS, 3600),
-    sessionJWTRefreshTTLSeconds: positiveNumber(process.env.SESSION_REFRESH_TTL_SECONDS, 30 * 86400),
+    sessionJWTTTLSeconds: parseBoundedServerInteger('SESSION_JWT_TTL_SECONDS', process.env.SESSION_JWT_TTL_SECONDS),
+    sessionJWTRefreshTTLSeconds: parseBoundedServerInteger('SESSION_REFRESH_TTL_SECONDS', process.env.SESSION_REFRESH_TTL_SECONDS),
     appleClientIds: process.env.APPLE_CLIENT_IDS || '',
     googleTokenAudiences: process.env.GOOGLE_TOKEN_AUDIENCES || '',
     googleAuthorizedParties: process.env.GOOGLE_AUTHORIZED_PARTIES || '',
     phoneAuthChallengeSecret: process.env.PHONE_AUTH_CHALLENGE_SECRET || '',
     phoneAuthSubjectSecret: process.env.PHONE_AUTH_SUBJECT_SECRET || '',
-    phoneAuthChallengeTTLSeconds: positiveNumber(process.env.PHONE_AUTH_CHALLENGE_TTL_SECONDS, 300),
+    phoneAuthChallengeTTLSeconds: parseBoundedServerInteger('PHONE_AUTH_CHALLENGE_TTL_SECONDS', process.env.PHONE_AUTH_CHALLENGE_TTL_SECONDS),
     twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || '',
     twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || '',
     twilioVerifyServiceSid: process.env.TWILIO_VERIFY_SERVICE_SID || '',
@@ -120,7 +127,7 @@ function envConfig(overrides = {}) {
     aiNativeSingleReplica: process.env.AI_NATIVE_SINGLE_REPLICA === 'true',
     safetyTableName: process.env.SAFETY_TABLE_NAME || '',
     authSessionTableName: process.env.AUTH_SESSION_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
-    safetyRetentionDays: Math.min(365, positiveNumber(process.env.SAFETY_RETENTION_DAYS, 30)),
+    safetyRetentionDays: parseBoundedServerInteger('SAFETY_RETENTION_DAYS', process.env.SAFETY_RETENTION_DAYS),
     awsRegion: process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || '',
     deviceTableName: process.env.DEVICE_TABLE_NAME || process.env.SAFETY_TABLE_NAME || '',
     actionOutboxUserIndexName: process.env.ACTION_OUTBOX_USER_INDEX_NAME || '',
@@ -140,13 +147,13 @@ function envConfig(overrides = {}) {
     robotAdapterConfigurations: adapterConfigurationsFromEnv(process.env, {
       production: (process.env.NODE_ENV || 'development') === 'production'
     }),
-    actionRequestTimeoutMs: positiveNumber(process.env.ACTION_REQUEST_TIMEOUT_MS, 5000),
-    robotAckTimeoutMs: positiveNumber(process.env.ROBOT_ACK_TIMEOUT_MS, 30000),
-    wearableAckTimeoutMs: positiveNumber(process.env.WEARABLE_ACK_TIMEOUT_MS, 5000),
+    actionRequestTimeoutMs: parseBoundedServerInteger('ACTION_REQUEST_TIMEOUT_MS', process.env.ACTION_REQUEST_TIMEOUT_MS),
+    robotAckTimeoutMs: parseBoundedServerInteger('ROBOT_ACK_TIMEOUT_MS', process.env.ROBOT_ACK_TIMEOUT_MS),
+    wearableAckTimeoutMs: parseBoundedServerInteger('WEARABLE_ACK_TIMEOUT_MS', process.env.WEARABLE_ACK_TIMEOUT_MS),
     upstreamURL: process.env.CLM_UPSTREAM_URL || '',
     upstreamApiKey: process.env.CLM_UPSTREAM_API_KEY || '',
     upstreamModel: process.env.CLM_UPSTREAM_MODEL || '',
-    upstreamTimeoutMs: positiveNumber(process.env.CLM_UPSTREAM_TIMEOUT_MS, 25000),
+    upstreamTimeoutMs: parseBoundedServerInteger('CLM_UPSTREAM_TIMEOUT_MS', process.env.CLM_UPSTREAM_TIMEOUT_MS),
     fetchImpl: globalThis.fetch,
     logger: console,
     ...overrides
@@ -170,6 +177,7 @@ function validateServerURL(value, name, { production = false } = {}) {
 }
 
 function validateServerConfig(config) {
+  validateServerIntegerConfig(config);
   const production = config.nodeEnv === 'production';
   const voiceGatewayRequired = config.httpOnlyDeployment !== true;
   if (config.aiNativeEnabled && !config.aiNativeSystem) {
@@ -350,10 +358,11 @@ function validatePreparedServices(config) {
   if (config.nodeEnv !== 'production') return config;
   requireMethods(config.authSessionRepository, 'Production auth session repository', [
     'create', 'rotate', 'revoke', 'isActive', 'exportUserData', 'deleteUserData',
-    'beginAccountDeletion', 'completeAccountDeletion', 'finalizeAccountDeletion', 'getAccountDeletionState'
+    'beginAccountDeletion', 'completeAccountDeletion', 'finalizeAccountDeletion', 'getAccountDeletionState',
+    'consumePhoneChallenge'
   ]);
   requireMethods(config.safetyRepository, 'Production safety repository', [
-    'listContacts', 'createContact', 'updateContact', 'deleteContact', 'acceptSOS',
+    'listContacts', 'createContact', 'updateContact', 'deleteContact', 'acceptSOS', 'getSOS',
     'claimSOSDelivery', 'recordSOSDelivery', 'getMedicationEscalation',
     'acceptMedicationEscalation', 'claimMedicationEscalationDelivery',
     'recordMedicationEscalationDelivery',
@@ -363,7 +372,7 @@ function validatePreparedServices(config) {
     'missingRepositories', 'exportUserData', 'deleteUserData'
   ]);
   requireMethods(config.pushRepository, 'Production push repository', [
-    'register', 'list', 'exportUserData', 'deleteUserData'
+    'register', 'unregister', 'unregisterByReceipt', 'list', 'exportUserData', 'deleteUserData'
   ]);
   if (config.safetyApiEnabled && typeof config.notifyEmergencyContacts !== 'function') {
     throw new Error('Production emergency-contact push delivery is not configured');
@@ -413,10 +422,44 @@ function json(res, statusCode, payload) {
   res.end(body);
 }
 
+function normalizeHTTPError(error) {
+  const candidate = Number(error?.statusCode);
+  const statusCode = Number.isSafeInteger(candidate) && candidate >= 400 && candidate <= 599
+    ? candidate
+    : 500;
+  if (statusCode >= 500) {
+    return { statusCode, message: 'Internal server error' };
+  }
+  const message = typeof error?.message === 'string'
+    && error.message.length > 0
+    && error.message.length <= 512
+    && !/[\u0000\r\n]/.test(error.message)
+    ? error.message
+    : 'Request could not be completed';
+  return { statusCode, message };
+}
+
 function safeEqual(left, right) {
   const leftBuffer = Buffer.from(String(left));
   const rightBuffer = Buffer.from(String(right));
   return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function allowPushReceiptAttempt(rateState, req, now = Date.now()) {
+  const address = String(req.socket?.remoteAddress || 'unknown').slice(0, 128);
+  const current = rateState.get(address);
+  if (!current || now - current.startedAt >= PUSH_RECEIPT_RATE_WINDOW_MS) {
+    if (!current && rateState.size >= MAX_PUSH_RECEIPT_RATE_KEYS) {
+      const oldest = rateState.keys().next().value;
+      if (oldest !== undefined) rateState.delete(oldest);
+    }
+    rateState.delete(address);
+    rateState.set(address, { startedAt: now, attempts: 1 });
+    return true;
+  }
+  if (current.attempts >= PUSH_RECEIPT_RATE_LIMIT) return false;
+  current.attempts += 1;
+  return true;
 }
 
 const AI_NATIVE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -537,9 +580,7 @@ async function authenticateRobotEdgeRequest(req, config, envelope) {
     sourceDeviceRef: envelope.sourceDeviceRef
   });
   if (!authenticated
-    || typeof authenticated.accountId !== 'string'
-    || !authenticated.accountId
-    || authenticated.accountId.length > 256) return false;
+    || !isValidAccountSubject(authenticated.accountId)) return false;
   await assertAccountAvailable(config, authenticated.accountId);
   return Object.freeze({
     accountId: authenticated.accountId,
@@ -597,6 +638,77 @@ async function readJson(req) {
     const error = new Error('Request body must be valid JSON');
     error.statusCode = 400;
     throw error;
+  }
+}
+
+async function readBoundedResponseJson(response, maxBytes, label = 'Upstream', signal) {
+  return readBoundedJSONResponse(response, { context: label, maxBytes, signal });
+}
+
+function responseMediaType(response) {
+  return String(response?.headers?.get?.('content-type') || '')
+    .split(';', 1)[0]
+    .trim()
+    .toLowerCase();
+}
+
+function upstreamTimeoutError(label) {
+  const error = new Error(`${label} timed out`);
+  error.name = 'TimeoutError';
+  error.code = 'UPSTREAM_TIMEOUT';
+  return error;
+}
+
+async function fetchWithDeadline(fetchImpl, url, init, {
+  timeoutMs,
+  label = 'Upstream request',
+  controller = new AbortController(),
+  consume = async (response) => response
+} = {}) {
+  if (typeof fetchImpl !== 'function' || typeof consume !== 'function') {
+    throw new TypeError('Upstream transport is not configured');
+  }
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 120_000) {
+    throw new TypeError('Upstream timeout is invalid');
+  }
+  let response;
+  let timedOut = false;
+  let timeoutHandle;
+  const operation = Promise.resolve().then(async () => {
+    response = await fetchImpl(url, {
+      ...init,
+      redirect: init?.redirect || 'error',
+      signal: controller.signal
+    });
+    if (timedOut) {
+      try { await response?.body?.cancel?.(); } catch {}
+      throw upstreamTimeoutError(label);
+    }
+    return consume(response, controller.signal);
+  });
+  // A custom/injected transport may ignore AbortSignal and settle after the
+  // caller's deadline. Keep its eventual rejection observed.
+  void operation.catch(() => {});
+  const timeout = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
+      const timeoutError = upstreamTimeoutError(label);
+      controller.abort(timeoutError);
+      try {
+        // ReadableStream.cancel() is invalid while getReader() owns the lock;
+        // the consumer's abort listener cancels through that reader instead.
+        const cancellation = response?.body?.locked === true
+          ? undefined
+          : response?.body?.cancel?.();
+        if (cancellation && typeof cancellation.catch === 'function') void cancellation.catch(() => {});
+      } catch {}
+      reject(timeoutError);
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([operation, timeout]);
+  } finally {
+    clearTimeout(timeoutHandle);
   }
 }
 
@@ -688,7 +800,7 @@ function sessionHash(sessionId) {
   return sessionId ? crypto.createHash('sha256').update(sessionId).digest('hex').slice(0, 12) : 'none';
 }
 
-async function pipeUpstreamSSE(upstreamResponse, res, sessionId) {
+async function pipeUpstreamSSE(upstreamResponse, res, sessionId, signal) {
   openSSE(res);
   const reader = upstreamResponse.body?.getReader();
   if (!reader) throw new Error('Upstream response did not provide a readable stream');
@@ -696,8 +808,42 @@ async function pipeUpstreamSSE(upstreamResponse, res, sessionId) {
   let buffer = '';
   let sawDone = false;
   let responseErrored = false;
+  let readerCancelled = false;
+  let readerCancellation;
+  let readerReleased = false;
+  let rejectAbort;
+  const aborted = new Promise((_, reject) => { rejectAbort = reject; });
+  // The downstream may close before the read loop starts. Keep the abort
+  // promise observed even when responseClosed() causes the loop to be skipped.
+  void aborted.catch(() => {});
+  const cancelReader = () => {
+    if (readerCancelled) return readerCancellation;
+    readerCancelled = true;
+    try {
+      readerCancellation = Promise.resolve(reader.cancel?.()).catch(() => {});
+    } catch {
+      readerCancellation = Promise.resolve();
+    }
+    return readerCancellation;
+  };
+  const releaseReader = () => {
+    if (readerReleased) return;
+    try {
+      reader.releaseLock?.();
+      readerReleased = true;
+    } catch {}
+  };
+  const abortReader = () => {
+    cancelReader();
+    const reason = signal?.reason instanceof Error
+      ? signal.reason
+      : Object.assign(new Error('Upstream response stream was aborted'), { name: 'AbortError' });
+    rejectAbort(reason);
+  };
   const markResponseError = () => { responseErrored = true; };
   res.once?.('error', markResponseError);
+  if (signal?.aborted) abortReader();
+  else signal?.addEventListener?.('abort', abortReader, { once: true });
 
   const responseClosed = () => responseErrored || res.destroyed === true || res.writableEnded === true;
   const writeWithBackpressure = async (data) => {
@@ -740,7 +886,15 @@ async function pipeUpstreamSSE(upstreamResponse, res, sessionId) {
 
   try {
     while (!responseClosed()) {
-      const { done, value } = await reader.read();
+      // An injected fetch implementation can ignore AbortSignal, and cancelling
+      // a locked ReadableStream through response.body.cancel() is invalid. Race
+      // the read itself and cancel through its owning reader so the request
+      // deadline and downstream disconnect paths always release this pipeline.
+      const read = Promise.resolve().then(() => reader.read());
+      void read.catch(() => {});
+      const { done, value } = signal
+        ? await Promise.race([read, aborted])
+        : await read;
       buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
       const events = buffer.split(/\r?\n\r?\n/);
       buffer = events.pop() || '';
@@ -760,8 +914,13 @@ async function pipeUpstreamSSE(upstreamResponse, res, sessionId) {
     if (!sawDone && !await writeWithBackpressure('[DONE]')) return;
     if (!responseClosed()) res.end();
   } finally {
-    try { await reader.cancel(); } catch {}
-    reader.releaseLock?.();
+    signal?.removeEventListener?.('abort', abortReader);
+    const cancellation = cancelReader();
+    releaseReader();
+    // A standards-compliant reader can keep a read request pending until its
+    // cancellation promise settles. Retry release then without holding the HTTP
+    // request open on a non-compliant/injected cancel implementation.
+    if (!readerReleased && cancellation) void cancellation.then(releaseReader);
     res.removeListener?.('error', markResponseError);
   }
 }
@@ -771,7 +930,6 @@ async function callUpstream(body, config, res, sessionId) {
   const abortOnClose = () => controller.abort();
   res.once?.('close', abortOnClose);
   res.once?.('error', abortOnClose);
-  const timeout = setTimeout(() => controller.abort(), Math.max(1, config.upstreamTimeoutMs || 25000));
   const normalizedMessages = normalizeMessages(body.messages);
   const priorSystem = normalizedMessages.filter((message) => message.role === 'system').map((message) => message.content).join('\n');
   const messages = [
@@ -789,27 +947,34 @@ async function callUpstream(body, config, res, sessionId) {
   if (body.tool_choice) requestBody.tool_choice = body.tool_choice;
 
   try {
-    const response = await config.fetchImpl(config.upstreamURL, {
+    await fetchWithDeadline(config.fetchImpl, config.upstreamURL, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${config.upstreamApiKey}`,
         'Content-Type': 'application/json',
         Accept: 'text/event-stream'
       },
-      body: JSON.stringify(requestBody),
-      signal: controller.signal
+      body: JSON.stringify(requestBody)
+    }, {
+      timeoutMs: Math.max(1, config.upstreamTimeoutMs || 25000),
+      label: 'Model upstream',
+      controller,
+      consume: async (response, signal) => {
+        if (!response.ok) {
+          try { await response.body?.cancel?.(); } catch {}
+          throw new Error(`Upstream returned HTTP ${response.status}`);
+        }
+        if (responseMediaType(response) !== 'text/event-stream') {
+          const payload = await readBoundedResponseJson(response, MAX_UPSTREAM_JSON_BYTES, 'Model upstream', signal);
+          const text = payload?.choices?.[0]?.message?.content;
+          if (!text) throw new Error('Upstream returned no assistant content');
+          streamTextCompletion(res, { text, model: config.upstreamModel, sessionId });
+          return;
+        }
+        await pipeUpstreamSSE(response, res, sessionId, signal);
+      }
     });
-    if (!response.ok) throw new Error(`Upstream returned HTTP ${response.status}`);
-    if (!response.headers.get('content-type')?.includes('text/event-stream')) {
-      const payload = await response.json();
-      const text = payload?.choices?.[0]?.message?.content;
-      if (!text) throw new Error('Upstream returned no assistant content');
-      streamTextCompletion(res, { text, model: config.upstreamModel, sessionId });
-      return;
-    }
-    await pipeUpstreamSSE(response, res, sessionId);
   } finally {
-    clearTimeout(timeout);
     res.removeListener?.('close', abortOnClose);
     res.removeListener?.('error', abortOnClose);
   }
@@ -848,25 +1013,27 @@ async function authenticateApp(req, config, { allowDeleting = false } = {}) {
     const verified = await config.verifyAppToken(token);
     if (!verified) return false;
     const principal = typeof verified === 'object' ? verified : { sub: null, externallyVerified: true };
+    if (principal?.sub && !isValidAccountSubject(principal.sub)) return false;
     if (principal?.sub) await assertAccountAvailable(config, principal.sub, { allowDeleting });
     return principal;
   }
   if (config.appAuthVerifyURL) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    try {
-      const response = await config.fetchImpl(config.appAuthVerifyURL, {
-        headers: { Authorization: `Bearer ${token}` },
-        signal: controller.signal
-      });
-      if (!response.ok || typeof response.json !== 'function') return false;
-      const claims = await response.json();
-      if (!(claims && typeof claims.sub === 'string' && claims.sub)) return false;
-      await assertAccountAvailable(config, claims.sub, { allowDeleting });
-      return claims;
-    } finally {
-      clearTimeout(timeout);
-    }
+    return fetchWithDeadline(config.fetchImpl, config.appAuthVerifyURL, {
+      headers: { Authorization: `Bearer ${token}` }
+    }, {
+      timeoutMs: 5000,
+      label: 'Authentication verifier',
+      consume: async (response, signal) => {
+        if (!response.ok) {
+          try { await response.body?.cancel?.(); } catch {}
+          return false;
+        }
+        const claims = await readBoundedResponseJson(response, MAX_AUTH_RESPONSE_BYTES, 'Authentication verifier', signal);
+        if (!isValidAccountSubject(claims?.sub)) return false;
+        await assertAccountAvailable(config, claims.sub, { allowDeleting });
+        return claims;
+      }
+    });
   }
   return false;
 }
@@ -911,7 +1078,7 @@ async function exchangeIdentity(body, config) {
     error.statusCode = 401;
     throw error;
   }
-  if (!claims?.sub) {
+  if (!isValidAccountSubject(claims?.sub) || claims.sub.length > 240) {
     const error = new Error('Identity token verification failed');
     error.statusCode = 401;
     throw error;
@@ -940,6 +1107,7 @@ async function exchangeIdentity(body, config) {
 
 async function verifyPhoneIdentity(body, config) {
   const claims = await verifyPhoneVerification(body, config);
+  await consumePhoneVerificationChallenge(claims, config);
   const subject = `phone:${phoneSubject(claims.phone, config.phoneAuthSubjectSecret)}`;
   await assertAccountAvailable(config, subject);
   const session = signSessionJWT({ subjectClaim: subject }, config);
@@ -1012,22 +1180,24 @@ async function refreshIdentity(body, config) {
 
 async function configureHumeSession(chatId, config) {
   if (!config.humeApiKey || !config.clmBearerToken) throw new Error('Hume control-plane secrets are not configured');
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 7000);
-  try {
-    const response = await config.fetchImpl(`${HUME_API_BASE_URL}/v0/evi/chat/${encodeURIComponent(chatId)}/send`, {
+  return fetchWithDeadline(config.fetchImpl, `${HUME_API_BASE_URL}/v0/evi/chat/${encodeURIComponent(chatId)}/send`, {
       method: 'POST',
       headers: {
         'X-Hume-Api-Key': config.humeApiKey,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ type: 'session_settings', language_model_api_key: config.clmBearerToken }),
-      signal: controller.signal
+      body: JSON.stringify({ type: 'session_settings', language_model_api_key: config.clmBearerToken })
+    }, {
+      timeoutMs: 7000,
+      label: 'Hume control plane',
+      consume: async (response) => {
+        try {
+          if (!response.ok) throw new Error(`Hume control plane returned HTTP ${response.status}`);
+        } finally {
+          try { await response.body?.cancel?.(); } catch {}
+        }
+      }
     });
-    if (!response.ok) throw new Error(`Hume control plane returned HTTP ${response.status}`);
-  } finally {
-    clearTimeout(timeout);
-  }
 }
 
 function prepareDeviceServices(config) {
@@ -1069,7 +1239,9 @@ function prepareDeviceServices(config) {
   if (config.safetyApiEnabled && !config.safetyRepository && config.safetyTableName) {
     config.safetyRepository = createDynamoSafetyRepository({
       tableName: config.safetyTableName,
-      region: config.awsRegion
+      region: config.awsRegion,
+      client: config.safetyRepositoryClient,
+      accountStateTableName: config.authSessionTableName
     });
   }
   if (!config.authSessionRepository && config.authSessionTableName) {
@@ -1095,7 +1267,15 @@ function prepareDeviceServices(config) {
     });
   }
   if (!config.pushRepository && config.deviceTableName) {
-    config.pushRepository = createDynamoPushRepository({ tableName: config.deviceTableName, region: config.awsRegion });
+    config.pushRepository = createDynamoPushRepository({
+      tableName: config.deviceTableName,
+      region: config.awsRegion,
+      client: config.pushRepositoryClient,
+      accountStateTableName: config.authSessionTableName,
+      ...(typeof config.sessionJWTSecret === 'string' && config.sessionJWTSecret.length >= 32
+        ? { unregisterReceiptSecret: config.sessionJWTSecret }
+        : {})
+    });
   }
   if (!config.verifyRobotPairingCode && config.manufacturerPairingVerifyURL && config.manufacturerApiKey) {
     config.verifyRobotPairingCode = createManufacturerPairingVerifier({
@@ -1308,6 +1488,7 @@ function prepareDeviceServices(config) {
 
 function createHandler(overrides = {}) {
   const config = prepareDeviceServices(validateServerConfig(envConfig(overrides)));
+  const pushReceiptRateState = new Map();
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
     try {
@@ -1574,7 +1755,7 @@ function createHandler(overrides = {}) {
           credential: headerCredential,
           eventType: typeof body?.type === 'string' ? body.type : undefined
         });
-        if (!authenticated || typeof authenticated.accountId !== 'string' || !authenticated.accountId) {
+        if (!authenticated || !isValidAccountSubject(authenticated.accountId)) {
           json(res, 401, { error: 'Unauthorized' }); return;
         }
         const event = parseScheduledContextEvent(body);
@@ -1796,12 +1977,36 @@ function createHandler(overrides = {}) {
         return;
       }
 
+      if (req.method === 'DELETE' && url.pathname === '/v1/devices/push-token/receipt') {
+        if (!config.pushRepository?.unregisterByReceipt) {
+          json(res, 503, { error: 'Push registration is not configured' }); return;
+        }
+        if (!allowPushReceiptAttempt(pushReceiptRateState, req)) {
+          json(res, 429, { error: 'Too many push unregistration attempts' }); return;
+        }
+        const body = await readJson(req);
+        await config.pushRepository.unregisterByReceipt(body.receipt);
+        res.writeHead(204, { 'Cache-Control': 'no-store' });
+        res.end();
+        return;
+      }
+
       if (req.method === 'POST' && url.pathname === '/v1/devices/push-token') {
         const principal = await authenticateApp(req, config);
         if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
         if (!config.pushRepository) { json(res, 503, { error: 'Push registration is not configured' }); return; }
         const body = await readJson(req);
-        await config.pushRepository.register(principal.sub, validatePushToken(body.token));
+        const registration = await config.pushRepository.register(principal.sub, validatePushToken(body.token));
+        json(res, 200, registration);
+        return;
+      }
+
+      if (req.method === 'DELETE' && url.pathname === '/v1/devices/push-token') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.pushRepository?.unregister) { json(res, 503, { error: 'Push registration is not configured' }); return; }
+        const body = await readJson(req);
+        await config.pushRepository.unregister(principal.sub, validatePushToken(body.token));
         res.writeHead(204, { 'Cache-Control': 'no-store' });
         res.end();
         return;
@@ -1884,12 +2089,12 @@ function createHandler(overrides = {}) {
       });
       if (!res.headersSent) {
         const phoneRequest = url.pathname.startsWith('/v1/auth/phone/');
-        const statusCode = error.statusCode || 500;
-        const payload = { error: error.statusCode ? error.message : 'Internal server error' };
+        const { statusCode, message } = normalizeHTTPError(error);
+        const payload = { error: message };
         if (phoneRequest) {
           payload.code = error instanceof PhoneAuthError
             ? error.code
-            : (error.statusCode ? PHONE_AUTH_CODES.INVALID : PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE);
+            : (statusCode < 500 ? PHONE_AUTH_CODES.INVALID : PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE);
         }
         json(res, statusCode, payload);
       }
@@ -1911,8 +2116,8 @@ function createVeryLovingCLMServer(options = {}) {
 }
 
 if (require.main === module) {
-  const { createGracefulShutdown, installProcessSignalHandlers } = require('./graceful-shutdown.cjs');
-  const port = Number(process.env.PORT || DEFAULT_PORT);
+  const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
+  const port = parseListenPort(process.env.PORT, DEFAULT_PORT);
   const server = createVeryLovingCLMServer();
   const shutdown = createGracefulShutdown(server, { cleanup: () => server.closeVoiceGateway() });
   installProcessSignalHandlers(shutdown);
@@ -1928,6 +2133,8 @@ module.exports = {
   verifyPhoneIdentity,
   refreshIdentity,
   normalizeMessages,
+  readBoundedResponseJson,
+  fetchWithDeadline,
   safeEqual,
   validateServerConfig,
   validateServerURL,

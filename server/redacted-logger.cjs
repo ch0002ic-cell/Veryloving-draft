@@ -1,6 +1,6 @@
 'use strict';
 
-const SENSITIVE_KEY = /(?:authorization|token|apikey|secret|password|serial|serialnumber|pairingcode|qrcode|email|phone|phonenumber|address|coordinates|location|latitude|longitude|userid|accountid|subject|deviceid|deviceref|sourcedeviceref)$/i;
+const SENSITIVE_KEY = /(?:authorization|token|apikey|secret|password|serial|serialnumber|pairingcode|qrcode|email|phone|phonenumber|address|coordinates|location|latitude|longitude|userid|accountid|subject|deviceid|deviceref|sourcedeviceref|parameters|actionparameters)$/i;
 
 function redactString(value) {
   return value

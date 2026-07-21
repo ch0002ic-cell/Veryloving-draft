@@ -34,11 +34,13 @@ test('server log sanitizer redacts device identifiers in common field styles', (
     deviceId: 'wearable-private-1',
     device_id: 'robot-private-1',
     sourceDeviceRef: 'edge-private-1',
+    parameters: { medication: 'private-medication' },
     nested: { device_ref: 'binding-private-1' }
   }), {
     deviceId: '[REDACTED]',
     device_id: '[REDACTED]',
     sourceDeviceRef: '[REDACTED]',
+    parameters: '[REDACTED]',
     nested: { device_ref: '[REDACTED]' }
   });
 });

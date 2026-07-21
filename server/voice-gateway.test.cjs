@@ -5,6 +5,8 @@ const { EventEmitter } = require('node:events');
 const { test } = require('node:test');
 const { WebSocket } = require('ws');
 const {
+  MAX_VOICE_CONTROL_IN_FLIGHT,
+  MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE,
   attachVoiceGateway,
   closeVoiceGateway,
   assertVoicePersonaConfig,
@@ -67,6 +69,20 @@ test('voice gateway requires first-frame authentication and bounds connection me
   })), /invalid/);
   assert.equal(hasScope({ scope: 'safety:read voice:connect' }, 'voice:connect'), true);
   assert.equal(hasScope({ scope: 'safety:read' }, 'voice:connect'), false);
+
+  const withDevices = parseVoiceAuthenticationMessage(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-session',
+    connection: {
+      devices: [
+        { device_id: 'wearable-valid', device_type: 'wearable', online: true },
+        { device_id: 'robot\ninvalid', device_type: 'home_robot', online: true }
+      ]
+    }
+  }));
+  assert.deepEqual(withDevices.devices, [
+    { device_id: 'wearable-valid', device_type: 'wearable', online: true }
+  ]);
 });
 
 test('server-owned personas resolve stable app IDs to allowlisted provider UUIDs', () => {
@@ -411,6 +427,230 @@ test('authenticated action and presence frames stay on the long-lived voice gate
     result: { status: 'accepted', action_id: 'action-1' }
   });
   client.emit('close');
+});
+
+test('voice control admission is shared across actions and scenarios and releases in finally', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = () => {};
+  const actionSettlers = [];
+  const scenarioResolvers = [];
+  let scenarioCalls = 0;
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    aiNativeEnabled: true,
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-admission',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    actionGateway: {
+      registerSession() { return () => {}; },
+      route() {
+        return new Promise((resolve, reject) => actionSettlers.push({ resolve, reject }));
+      }
+    },
+    edgeScenarioRouter: {
+      ingestContextEvent() {
+        scenarioCalls += 1;
+        return new Promise((resolve) => scenarioResolvers.push(resolve));
+      }
+    },
+    async resolveScenarioDevices() {
+      return { targets: { wearableId: 'wearable-bound' } };
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+      this.sent = [];
+    }
+    send(payload) { this.sent.push(JSON.parse(payload)); }
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate', access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+
+  for (let index = 0; index < MAX_VOICE_CONTROL_IN_FLIGHT; index += 1) {
+    client.emit('message', Buffer.from(JSON.stringify({
+      type: 'action_request',
+      request_id: `action-pending-${index}`,
+      action: 'emit_alarm',
+      device_type: 'wearable',
+      device_id: 'wearable-bound'
+    })), false);
+  }
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'scenario_request',
+    request_id: 'scenario-overloaded',
+    scenario: 'ai_angel_auto_dial',
+    occurred_at: Date.now()
+  })), false);
+  assert.deepEqual(client.sent.at(-1), {
+    type: 'scenario_response',
+    request_id: 'scenario-overloaded',
+    ok: false,
+    status: 429,
+    error_code: 'VOICE_REQUEST_OVERLOADED'
+  });
+  assert.equal(scenarioCalls, 0);
+
+  await new Promise((resolve) => setImmediate(resolve));
+  actionSettlers[0].reject(Object.assign(new Error('temporary action failure'), {
+    statusCode: 503,
+    code: 'DEVICE_OFFLINE'
+  }));
+  await new Promise((resolve) => setImmediate(resolve));
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'scenario_request',
+    request_id: 'scenario-after-release',
+    scenario: 'ai_angel_auto_dial',
+    occurred_at: Date.now()
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(scenarioCalls, 1);
+
+  for (const { resolve } of actionSettlers.slice(1)) resolve({ status: 'accepted' });
+  scenarioResolvers[0]({ started: [] });
+  await new Promise((resolve) => setImmediate(resolve));
+  client.emit('close');
+});
+
+test('voice control rate limit is per session and shared by both request types', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = () => {};
+  let routed = 0;
+  let scenarioResolutions = 0;
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    aiNativeEnabled: true,
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-rate',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    actionGateway: {
+      registerSession() { return () => {}; },
+      async route() { routed += 1; return { status: 'accepted' }; }
+    },
+    edgeScenarioRouter: { async ingestContextEvent() { throw new Error('must not run'); } },
+    async resolveScenarioDevices() {
+      scenarioResolutions += 1;
+      return { targets: { wearableId: 'wearable-bound' } };
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+      this.sent = [];
+    }
+    send(payload) { this.sent.push(JSON.parse(payload)); }
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate', access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+
+  for (let index = 0; index < MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE; index += 1) {
+    client.emit('message', Buffer.from(JSON.stringify({
+      type: 'action_request',
+      request_id: `action-rate-${index}`,
+      action: 'emit_alarm',
+      device_type: 'wearable',
+      device_id: 'wearable-bound'
+    })), false);
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+  assert.equal(routed, MAX_VOICE_CONTROL_REQUESTS_PER_MINUTE);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'scenario_request',
+    request_id: 'scenario-rate-limited',
+    scenario: 'ai_angel_auto_dial',
+    occurred_at: Date.now()
+  })), false);
+  assert.equal(scenarioResolutions, 0);
+  assert.deepEqual(client.sent.at(-1), {
+    type: 'scenario_response',
+    request_id: 'scenario-rate-limited',
+    ok: false,
+    status: 429,
+    error_code: 'VOICE_REQUEST_OVERLOADED'
+  });
+  client.emit('close');
+});
+
+test('WebSocket send races are contained instead of escaping event callbacks', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = function close(code) {
+    this.readyState = WebSocket.CLOSED;
+    this.emit('close', code, Buffer.from('closed'));
+  };
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    verifyVoiceToken: async () => ({
+      sub: 'google:send-race',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+      this.sent = [];
+    }
+    send(payload) { this.sent.push(JSON.parse(payload)); }
+    close(code) {
+      if (this.readyState === WebSocket.CLOSED) return;
+      this.readyState = WebSocket.CLOSED;
+      this.emit('close', code);
+    }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate', access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+  assert.equal(client.sent.at(-1).type, 'auth_ok');
+
+  upstream.send = () => { throw new Error('OPEN-to-CLOSING race'); };
+  assert.doesNotThrow(() => client.emit('message', Buffer.from(JSON.stringify({
+    type: 'audio_input', data: 'sample'
+  })), false));
+  assert.equal(client.readyState, WebSocket.CLOSED);
 });
 
 test('authenticated voice AI Angel request resolves account devices server-side', async () => {

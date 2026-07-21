@@ -138,6 +138,35 @@ test('phone verification maps provider failures to stable safe errors', async ()
   );
 });
 
+test('phone verification has a hard deadline when the provider ignores AbortSignal', async () => {
+  await assert.rejects(
+    startPhoneVerification({ phone: '+6591234567', countryCode: 'SG' }, phoneConfig({
+      phoneAuthProviderTimeoutMs: 5,
+      fetchImpl: async () => new Promise(() => {})
+    })),
+    (error) => error.code === PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE
+      && error.statusCode === 502
+      && error.message === 'Phone verification is temporarily unavailable'
+  );
+});
+
+test('phone verification rejects and cancels an oversized provider response', async () => {
+  let cancelled = 0;
+  await assert.rejects(
+    startPhoneVerification({ phone: '+6591234567', countryCode: 'SG' }, phoneConfig({
+      fetchImpl: async () => ({
+        ok: true,
+        status: 200,
+        headers: { get: () => String(65 * 1024) },
+        body: { async cancel() { cancelled += 1; } },
+        async json() { throw new Error('oversized body must not be parsed'); }
+      })
+    })),
+    (error) => error.code === PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE && error.statusCode === 502
+  );
+  assert.equal(cancelled, 1);
+});
+
 test('phone session subjects are stable, opaque, and keyed', () => {
   const phone = '+6591234567';
   const first = phoneSubject(phone, 'first-phone-subject-secret-at-least-32-characters');

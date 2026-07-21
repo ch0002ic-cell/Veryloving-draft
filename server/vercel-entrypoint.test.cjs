@@ -137,6 +137,17 @@ test('Vercel rewrite adapter restores a route and preserves legitimate repeated 
   assert.deepEqual(result.json, { status: 'ok', service: 'veryloving-hume-clm' });
 });
 
+test('Vercel rewrite accepts backend identifiers that contain a contract-valid colon', async () => {
+  const result = await invokeVercel({
+    method: 'DELETE',
+    route: 'v1/devices/home-robots/robot:living-room'
+  });
+
+  assert.equal(result.request.url, '/v1/devices/home-robots/robot:living-room');
+  assert.equal(result.status, 401);
+  assert.deepEqual(result.json, { error: 'Unauthorized' });
+});
+
 test('Vercel rewrite adapter rejects missing, duplicate, traversal, malformed, and oversized route metadata', async () => {
   const invalidURLs = [
     '/api/index?probe=missing',

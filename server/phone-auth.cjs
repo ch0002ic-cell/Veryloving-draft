@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const { URLSearchParams } = require('node:url');
+const { cancelResponseBody, readBoundedJSONResponse } = require('./bounded-response.cjs');
 
 const TWILIO_VERIFY_BASE_URL = 'https://verify.twilio.com/v2';
 const PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
@@ -15,12 +16,15 @@ const MIN_CHALLENGE_TTL_SECONDS = 60;
 const MAX_CHALLENGE_TTL_SECONDS = 600;
 const MAX_CHALLENGE_LENGTH = 4096;
 const PROVIDER_TIMEOUT_MS = 7000;
+const MAX_PROVIDER_TIMEOUT_MS = 30000;
+const MAX_PROVIDER_RESPONSE_BYTES = 64 * 1024;
 
 const PHONE_AUTH_CODES = Object.freeze({
   INVALID: 'PHONE_AUTH_INVALID',
   NOT_CONFIGURED: 'PHONE_AUTH_NOT_CONFIGURED',
   PROVIDER_UNAVAILABLE: 'PHONE_AUTH_PROVIDER_UNAVAILABLE',
-  RATE_LIMITED: 'PHONE_AUTH_RATE_LIMITED'
+  RATE_LIMITED: 'PHONE_AUTH_RATE_LIMITED',
+  USED: 'PHONE_AUTH_CHALLENGE_USED'
 });
 
 class PhoneAuthError extends Error {
@@ -44,6 +48,16 @@ function challengeTTL(config) {
   const configured = Number(config.phoneAuthChallengeTTLSeconds);
   if (!Number.isFinite(configured)) return DEFAULT_CHALLENGE_TTL_SECONDS;
   return Math.min(MAX_CHALLENGE_TTL_SECONDS, Math.max(MIN_CHALLENGE_TTL_SECONDS, configured));
+}
+
+function providerTimeout(config) {
+  const selected = config.phoneAuthProviderTimeoutMs === undefined
+    ? PROVIDER_TIMEOUT_MS
+    : Number(config.phoneAuthProviderTimeoutMs);
+  if (!Number.isSafeInteger(selected) || selected < 1 || selected > MAX_PROVIDER_TIMEOUT_MS) {
+    throw new Error('Phone verification provider timeout is invalid');
+  }
+  return selected;
 }
 
 function nowMilliseconds(config) {
@@ -211,10 +225,15 @@ function phoneSubject(phone, secret) {
     .digest('base64url');
 }
 
-async function safeJSON(response) {
+async function safeJSON(response, signal) {
   try {
-    return await response.json();
-  } catch {
+    return await readBoundedJSONResponse(response, {
+      context: 'Phone verification provider',
+      maxBytes: MAX_PROVIDER_RESPONSE_BYTES,
+      signal
+    });
+  } catch (error) {
+    if (error?.code === 'UPSTREAM_RESPONSE_TOO_LARGE') throw error;
     return null;
   }
 }
@@ -247,9 +266,12 @@ function providerError(operation, status, cause) {
 async function requestTwilioVerify(operation, fields, config) {
   const service = encodeURIComponent(config.twilioVerifyServiceSid);
   const endpoint = operation === 'start' ? 'Verifications' : 'VerificationCheck';
+  const timeoutMs = providerTimeout(config);
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS);
-  try {
+  let timedOut = false;
+  let timeoutHandle;
+  let providerResponse;
+  const request = (async () => {
     let response;
     try {
       response = await config.fetchImpl(`${TWILIO_VERIFY_BASE_URL}/Services/${service}/${endpoint}`, {
@@ -260,16 +282,40 @@ async function requestTwilioVerify(operation, fields, config) {
           Accept: 'application/json'
         },
         body: new URLSearchParams(fields).toString(),
+        redirect: 'error',
         signal: controller.signal
       });
+      providerResponse = response;
     } catch (error) {
       throw providerError(operation, 0, error);
     }
-    const payload = await safeJSON(response);
+    if (timedOut) {
+      await cancelResponseBody(response);
+      throw providerError(operation, 0, new Error('Phone verification provider timed out'));
+    }
+    let payload;
+    try {
+      payload = await safeJSON(response, controller.signal);
+    } catch (error) {
+      throw providerError(operation, 0, error);
+    }
+    if (timedOut) throw providerError(operation, 0, new Error('Phone verification provider timed out'));
     if (!response.ok) throw providerError(operation, response.status, payload);
     return payload;
+  })();
+  void request.catch(() => {});
+  const timeout = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+      void cancelResponseBody(providerResponse);
+      reject(providerError(operation, 0, new Error('Phone verification provider timed out')));
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([request, timeout]);
   } finally {
-    clearTimeout(timeout);
+    clearTimeout(timeoutHandle);
   }
 }
 
@@ -303,6 +349,50 @@ async function verifyPhoneVerification(body, config) {
   return challenge;
 }
 
+async function consumePhoneVerificationChallenge(challenge, config) {
+  const repository = config.phoneChallengeRepository || config.authSessionRepository;
+  if (typeof repository?.consumePhoneChallenge === 'function') {
+    try {
+      await repository.consumePhoneChallenge({
+        jti: challenge.jti,
+        expiresAt: challenge.exp * 1000,
+        now: nowMilliseconds(config)
+      });
+    } catch (error) {
+      if (error?.code === PHONE_AUTH_CODES.USED) {
+        throw phoneAuthError(PHONE_AUTH_CODES.USED, 410, 'Phone verification challenge has already been used');
+      }
+      throw error;
+    }
+    return true;
+  }
+  if (config.nodeEnv === 'production') {
+    throw phoneAuthError(PHONE_AUTH_CODES.NOT_CONFIGURED, 503, 'Phone authentication is not configured');
+  }
+  // Development/demo servers deliberately avoid external persistence. Keep a
+  // bounded process-local replay fence so concurrent requests still cannot
+  // mint two sessions from the same approved verification challenge.
+  const cache = config.phoneChallengeReplayCache instanceof Map
+    ? config.phoneChallengeReplayCache
+    : (config.phoneChallengeReplayCache = new Map());
+  const timestamp = nowMilliseconds(config);
+  for (const [jti, expiresAt] of cache) {
+    if (expiresAt <= timestamp) cache.delete(jti);
+  }
+  if (cache.has(challenge.jti)) {
+    throw phoneAuthError(PHONE_AUTH_CODES.USED, 410, 'Phone verification challenge has already been used');
+  }
+  if (cache.size >= 10000) {
+    throw phoneAuthError(
+      PHONE_AUTH_CODES.PROVIDER_UNAVAILABLE,
+      503,
+      'Phone verification is temporarily unavailable'
+    );
+  }
+  cache.set(challenge.jti, challenge.exp * 1000);
+  return true;
+}
+
 module.exports = {
   PHONE_AUTH_CODES,
   PHONE_PATTERN,
@@ -311,6 +401,7 @@ module.exports = {
   phoneSubject,
   signPhoneChallenge,
   startPhoneVerification,
+  consumePhoneVerificationChallenge,
   validatePhoneAuthConfig,
   verifyPhoneChallenge,
   verifyPhoneVerification

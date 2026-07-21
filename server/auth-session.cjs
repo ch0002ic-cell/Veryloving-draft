@@ -1,13 +1,18 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { cancelResponseBody, readBoundedJSONResponse } = require('./bounded-response.cjs');
 
 const APPLE_JWKS_URL = 'https://appleid.apple.com/auth/keys';
 const GOOGLE_JWKS_URL = 'https://www.googleapis.com/oauth2/v3/certs';
 const GOOGLE_ISSUERS = new Set(['accounts.google.com', 'https://accounts.google.com']);
 const JWKS_CACHE_MS = 60 * 60 * 1000;
 const UNKNOWN_KID_REFRESH_COOLDOWN_MS = 60 * 1000;
+const DEFAULT_JWKS_TIMEOUT_MS = 5000;
+const MAX_JWKS_RESPONSE_BYTES = 256 * 1024;
+const ACCOUNT_SUBJECT_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:@-]{0,255}$/;
 const jwksCache = new Map();
+const jwksInFlight = new Map();
 const unknownKidRefreshAt = new Map();
 
 function decodeJSON(segment, label) {
@@ -35,20 +40,70 @@ function stringList(value) {
   return String(value || '').split(',').map((item) => item.trim()).filter(Boolean);
 }
 
-async function loadJWKS(url, { fetchImpl = globalThis.fetch, now = Date.now, forceRefresh = false } = {}) {
+function isValidAccountSubject(value) {
+  return typeof value === 'string' && ACCOUNT_SUBJECT_PATTERN.test(value);
+}
+
+async function loadJWKS(url, {
+  fetchImpl = globalThis.fetch,
+  now = Date.now,
+  forceRefresh = false,
+  jwksTimeoutMs = DEFAULT_JWKS_TIMEOUT_MS
+} = {}) {
+  if (!Number.isSafeInteger(jwksTimeoutMs) || jwksTimeoutMs < 1 || jwksTimeoutMs > 30000) {
+    throw new Error('Identity provider key timeout is invalid');
+  }
   const cached = jwksCache.get(url);
   if (!forceRefresh && cached && cached.expiresAt > now()) return cached.keys;
+  const inFlightKey = `${url}:${forceRefresh ? 'refresh' : 'normal'}`;
+  const existingLoad = jwksInFlight.get(inFlightKey);
+  if (existingLoad) return existingLoad;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
-  try {
-    const response = await fetchImpl(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
-    if (!response.ok) throw new Error('Identity provider keys are unavailable');
-    const body = await response.json();
+  let timedOut = false;
+  let timeoutHandle;
+  const operation = (async () => {
+    const response = await fetchImpl(url, {
+      headers: { Accept: 'application/json' },
+      redirect: 'error',
+      signal: controller.signal
+    });
+    if (timedOut) {
+      await cancelResponseBody(response);
+      throw new Error('Identity provider keys are unavailable');
+    }
+    if (!response.ok) {
+      await cancelResponseBody(response);
+      throw new Error('Identity provider keys are unavailable');
+    }
+    const body = await readBoundedJSONResponse(response, {
+      context: 'Identity provider keys',
+      maxBytes: MAX_JWKS_RESPONSE_BYTES,
+      signal: controller.signal
+    });
+    if (timedOut) throw new Error('Identity provider keys are unavailable');
     if (!Array.isArray(body?.keys) || !body.keys.length) throw new Error('Identity provider keys are invalid');
     jwksCache.set(url, { keys: body.keys, expiresAt: now() + JWKS_CACHE_MS });
     return body.keys;
+  })();
+  // Promise.race installs a rejection observer, but keeping an explicit one
+  // documents and protects the intentionally detached transport if a custom
+  // fetch implementation ignores AbortSignal and settles after the deadline.
+  void operation.catch(() => {});
+  const timeout = new Promise((_, reject) => {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+      reject(new Error('Identity provider keys are unavailable'));
+    }, jwksTimeoutMs);
+  });
+  const load = Promise.race([operation, timeout]).finally(() => {
+    clearTimeout(timeoutHandle);
+  });
+  jwksInFlight.set(inFlightKey, load);
+  try {
+    return await load;
   } finally {
-    clearTimeout(timeout);
+    if (jwksInFlight.get(inFlightKey) === load) jwksInFlight.delete(inFlightKey);
   }
 }
 
@@ -81,8 +136,13 @@ function validateProviderClaims(provider, payload, {
       throw new Error('Identity token authorized party is required');
     }
   }
-  if (!payload.sub || typeof payload.sub !== 'string') throw new Error('Identity token subject is invalid');
+  if (!isValidAccountSubject(payload.sub) || payload.sub.length > 240) {
+    throw new Error('Identity token subject is invalid');
+  }
   if (!Number.isFinite(payload.exp) || payload.exp <= nowSeconds) throw new Error('Identity token has expired');
+  if (payload.nbf !== undefined && (!Number.isFinite(payload.nbf) || payload.nbf > nowSeconds + 300)) {
+    throw new Error('Identity token is not active');
+  }
   if (payload.iat && (!Number.isFinite(payload.iat) || payload.iat > nowSeconds + 300)) {
     throw new Error('Identity token issue time is invalid');
   }
@@ -95,7 +155,11 @@ async function verifyProviderIdentityToken({ provider, idToken, nonce }, options
   if (parsed.header.alg !== 'RS256' || !parsed.header.kid) throw new Error('Identity token algorithm is invalid');
   const jwksURL = provider === 'apple' ? APPLE_JWKS_URL : GOOGLE_JWKS_URL;
   let keys = await loadJWKS(jwksURL, options);
-  let jwk = keys.find((candidate) => candidate.kid === parsed.header.kid && candidate.kty === 'RSA');
+  const signingKey = (candidate) => candidate.kid === parsed.header.kid
+    && candidate.kty === 'RSA'
+    && (candidate.use === undefined || candidate.use === 'sig')
+    && (candidate.alg === undefined || candidate.alg === 'RS256');
+  let jwk = keys.find(signingKey);
   if (!jwk) {
     // Provider keys rotate. Refresh once for an unknown key ID, while a short
     // per-provider cooldown prevents an attacker from turning random `kid`
@@ -105,7 +169,7 @@ async function verifyProviderIdentityToken({ provider, idToken, nonce }, options
     if (nowMs - lastRefresh >= UNKNOWN_KID_REFRESH_COOLDOWN_MS) {
       unknownKidRefreshAt.set(jwksURL, nowMs);
       keys = await loadJWKS(jwksURL, { ...options, forceRefresh: true });
-      jwk = keys.find((candidate) => candidate.kid === parsed.header.kid && candidate.kty === 'RSA');
+      jwk = keys.find(signingKey);
     }
   }
   if (!jwk) throw new Error('Identity token signing key is unavailable');
@@ -149,10 +213,12 @@ function signSessionJWT(identity, config, { now = Date.now, randomUUID = crypto.
   if (typeof jwt.secret !== 'string' || jwt.secret.length < 32) throw new Error('Session signing is not configured');
   const issuedAt = Math.floor(now() / 1000);
   const header = { alg: 'HS256', typ: 'JWT' };
+  const subject = identity.subjectClaim || `${identity.provider}:${identity.subject}`;
+  if (!isValidAccountSubject(subject)) throw new Error('Session subject is invalid');
   const payload = {
     iss: jwt.issuer,
     aud: jwt.audience,
-    sub: identity.subjectClaim || `${identity.provider}:${identity.subject}`,
+    sub: subject,
     sid: identity.sessionId || randomUUID(),
     jti: randomUUID(),
     scope: 'voice:connect safety:read safety:write',
@@ -174,7 +240,9 @@ function signRefreshJWT(identity, config, {
 } = {}) {
   const jwt = sessionJWTConfig(config);
   if (typeof jwt.secret !== 'string' || jwt.secret.length < 32) throw new Error('Session signing is not configured');
-  if (!identity?.subject || !identity?.sessionId) throw new Error('Refresh session identity is invalid');
+  if (!isValidAccountSubject(identity?.subject) || !identity?.sessionId) {
+    throw new Error('Refresh session identity is invalid');
+  }
   const issuedAt = Math.floor(now() / 1000);
   const header = { alg: 'HS256', typ: 'refresh+jwt' };
   const payload = {
@@ -209,7 +277,7 @@ function verifySessionJWT(token, config, { now = Date.now } = {}) {
     if (expected.length !== parsed.signature.length || !crypto.timingSafeEqual(expected, parsed.signature)) return null;
     const nowSeconds = Math.floor(now() / 1000);
     if (parsed.payload.iss !== jwt.issuer || parsed.payload.aud !== jwt.audience) return null;
-    if (!parsed.payload.sub || !parsed.payload.sid || !Number.isFinite(parsed.payload.exp)) return null;
+    if (!isValidAccountSubject(parsed.payload.sub) || !parsed.payload.sid || !Number.isFinite(parsed.payload.exp)) return null;
     if (parsed.payload.exp <= nowSeconds || (parsed.payload.nbf && parsed.payload.nbf > nowSeconds)) return null;
     return parsed.payload;
   } catch {
@@ -227,7 +295,7 @@ function verifyRefreshJWT(token, config, { now = Date.now } = {}) {
     if (expected.length !== parsed.signature.length || !crypto.timingSafeEqual(expected, parsed.signature)) return null;
     const nowSeconds = Math.floor(now() / 1000);
     if (parsed.payload.iss !== jwt.issuer || parsed.payload.aud !== `${jwt.audience}:refresh`) return null;
-    if (!parsed.payload.sub || !parsed.payload.sid || !parsed.payload.jti || !Number.isFinite(parsed.payload.exp)) return null;
+    if (!isValidAccountSubject(parsed.payload.sub) || !parsed.payload.sid || !parsed.payload.jti || !Number.isFinite(parsed.payload.exp)) return null;
     if (parsed.payload.scope !== 'session:refresh') return null;
     if (parsed.payload.exp <= nowSeconds || (parsed.payload.nbf && parsed.payload.nbf > nowSeconds)) return null;
     return parsed.payload;
@@ -255,6 +323,7 @@ function profileFromClaims(provider, claims, displayName) {
 module.exports = {
   APPLE_JWKS_URL,
   GOOGLE_JWKS_URL,
+  isValidAccountSubject,
   parseJWT,
   profileFromClaims,
   signRefreshJWT,

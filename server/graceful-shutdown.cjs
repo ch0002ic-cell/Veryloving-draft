@@ -1,5 +1,18 @@
 'use strict';
 
+function parseListenPort(value, fallback = 8787) {
+  const candidate = value === undefined || value === null || value === '' ? fallback : value;
+  if ((typeof candidate !== 'number' && typeof candidate !== 'string')
+    || !/^[0-9]+$/.test(String(candidate))) {
+    throw new TypeError('PORT must be an integer between 1 and 65535');
+  }
+  const port = Number(candidate);
+  if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
+    throw new TypeError('PORT must be an integer between 1 and 65535');
+  }
+  return port;
+}
+
 function createGracefulShutdown(server, {
   cleanup = async () => undefined,
   logger = console,
@@ -36,9 +49,11 @@ function createGracefulShutdown(server, {
       let timer;
       const timeout = new Promise((_, reject) => {
         timer = setTimeout(() => {
-          server.closeAllConnections?.();
+          let forceCloseError;
+          try { server.closeAllConnections?.(); } catch (error) { forceCloseError = error; }
           const error = Object.assign(new Error('Graceful shutdown timed out'), {
-            code: 'SHUTDOWN_TIMEOUT'
+            code: 'SHUTDOWN_TIMEOUT',
+            ...(forceCloseError ? { cause: forceCloseError } : {})
           });
           reject(error);
         }, timeoutMs);
@@ -85,4 +100,4 @@ function installProcessSignalHandlers(shutdown, {
   };
 }
 
-module.exports = { createGracefulShutdown, installProcessSignalHandlers };
+module.exports = { createGracefulShutdown, installProcessSignalHandlers, parseListenPort };
