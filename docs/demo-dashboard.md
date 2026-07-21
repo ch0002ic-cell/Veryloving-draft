@@ -51,6 +51,7 @@ Selecting a scenario disables that control for the request, displays the returne
 ```bash
 curl -X POST http://127.0.0.1:8787/v1/scenarios \
   -H 'Content-Type: application/json' \
+  -H 'Idempotency-Key: demo-fall-20260721-001' \
   -d '{"scenarioId":"fall-detection","userId":"test-user-1","deviceId":"wearable-1"}'
 ```
 
@@ -77,6 +78,13 @@ The main server accepts the following exact development request shape at `POST /
 - `ai-angel-auto-dial`
 
 `robotDeviceId` and `occurredAt` are optional. Unknown fields, malformed identifiers, stale or future timestamps, non-JSON bodies, oversized bodies, query strings, and non-loopback callers are rejected.
+
+Send a unique `Idempotency-Key` for each intended scenario execution. Concurrent
+or later retries with the same key and identical body join or return the same
+execution; reusing that key with a different body returns `409`. The dashboard
+generates one key per button click and forwards it unchanged through the
+simulator proxy. A client disconnect after admission does not cancel the
+scenario; use the explicit cancellation API when cancellation is intended.
 
 `GET /v1/scenarios/executions?userId=test-user-1` returns a bounded, redacted list for that exact account. The response is for the local demo only; a production endpoint must derive the account from an authenticated session rather than accept a caller-selected user ID.
 

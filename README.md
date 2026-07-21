@@ -58,7 +58,7 @@ When dated evidence or sections differ, use this precedence:
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 21 July 2026 with 595 core, 39 TypeScript-adapter/simulator, 8 integration, and 154 AI-native tests (796 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
+Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 21 July 2026 with 705 core/mobile/server JavaScript tests, 44 TypeScript-adapter/simulator tests, 8 manufacturer integration tests, and 160 AI-native tests (917 total). The delivery report binds those results to the immutable audited candidate and does not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -77,10 +77,10 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic core tests | **PASS — 576/576** | Fresh full candidate run on 20 July 2026. |
-| TypeScript robot adapters and manufacturer simulator | **PASS — 33/33** | Fresh coverage: 99.45% statements/lines, 92.93% branches, and 98.48% functions; all enforced thresholds exceed 90%. |
-| Manufacturer bridge integration | **PASS — 7/7** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
-| AI-native state, memory, edge, orchestration, and scenario integration | **PASS — 146/146** | Five deterministic cross-device workflows, authenticated ingress contracts, account privacy lifecycle, edge simulation, and a real loopback manufacturer-ACK path; 97.63% statements/lines, 87.13% branches, and 98.55% functions. This is not clinical/model/hardware/provider validation. |
+| Deterministic core/mobile/server JavaScript tests | **PASS — 705/705** | Fresh full candidate run on 21 July 2026. |
+| TypeScript robot adapters and manufacturer simulator | **PASS — 44/44** | Fresh coverage: 98.55% statements/lines, 91.20% branches, and 97.26% functions; all enforced thresholds exceed 90%. |
+| Manufacturer bridge integration | **PASS — 8/8** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
+| AI-native state, memory, edge, orchestration, and scenario integration | **PASS — 160/160** | Five deterministic cross-device workflows, authenticated ingress contracts, account privacy lifecycle, edge simulation, and a real loopback manufacturer-ACK path; 97.62% statements/lines, 86.86% branches, and 98.57% functions. This is not clinical/model/hardware/provider validation. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
 | Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
@@ -467,11 +467,18 @@ npm ci --prefix server
 cp .env.example .env
 cp server/.env.example server/.env
 npm run validate-env
+npm run validate-env:server
 ```
 
 - Root `.env` is untracked mobile/build configuration.
+- `npm run validate-env:server` performs a deterministic structural dry-run
+  against the committed server template; it validates booleans, URL locality,
+  and bounded integer timing fields without requiring or printing credentials.
 - Every `EXPO_PUBLIC_*` value is bundled and must be treated as public.
-- `server/.env` is untracked local server configuration and is not loaded automatically.
+- `server/.env` is untracked local server configuration. `node server/server.cjs`
+  loads it automatically on Node 22 and `npm run mock:manufacturer` loads it
+  with Node's env-file flag; `npm run clm:start` runs `clm-server.cjs`
+  directly, so export/source the file first as shown under Local backend.
 - Backend/provider/session secrets belong in deployment secret managers.
 - `RNMAPBOX_MAPS_DOWNLOAD_TOKEN` is a build-only secret and must never use an `EXPO_PUBLIC_` name.
 - `EXPO_PUBLIC_HUME_API_KEY` is development-only and must be absent in preview/TestFlight/production.
@@ -496,6 +503,7 @@ The configuration groups above and the committed example files are the canonical
 | Variable | Purpose | Release rule |
 | --- | --- | --- |
 | `EXPO_PUBLIC_API_BASE_URL` | HTTPS root for auth, phone, safety, privacy, and app-facing tools. | Required for connected production behavior; must be a reviewed HTTPS domain. |
+| `EXPO_PUBLIC_ACTION_GATEWAY_URL` | HTTPS root of the long-lived action gateway used for robot action REST calls. | Required for production robot actions; do not point it at the stateless HTTP-only adapter or include credentials in the URL. |
 | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google Web OAuth audience for backend ID-token verification. | Must match server `GOOGLE_TOKEN_AUDIENCES`. |
 | `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Native iOS OAuth client and callback-scheme source. | Must use bundle `com.veryloving.app` and be trusted when presented as `azp`. |
 | `EXPO_PUBLIC_PHONE_AUTH_ENABLED` | Public readiness gate for phone sign-in. | Enable only after deployed Twilio endpoints and abuse controls pass. |
@@ -504,6 +512,7 @@ The configuration groups above and the committed example files are the canonical
 | `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root for CLM/tool control calls. | May equal the reviewed API root. |
 | `EXPO_PUBLIC_HUME_CLM_ENABLED` | Public custom-voice-stack readiness gate. | Enable only after CLM, gateway, and Hume configuration pass. |
 | `EXPO_PUBLIC_HUME_BRANDED_VOICE_ID` | Optional approved canonical Hume voice UUID. | Empty retains approved configured/default behavior. |
+| `EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY` | Base64url raw Ed25519 public key used by the mobile app to verify signed wearable actions. | Public verification material only; it must match `ACTION_SIGNING_PRIVATE_KEY` and the private key must remain server-side. |
 | `EXPO_PUBLIC_HUME_API_KEY` | Direct development-only compatibility key. | Must be absent from preview, TestFlight, and production. |
 | `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN` | Public least-privilege `pk.*` native runtime token. | Required for production maps; never substitute a secret `sk.*` token. |
 | `EXPO_PUBLIC_ENABLE_OFFLINE_MODE` | Forces the bundled offline companion for fault testing. | Keep `false` for normal release builds. |
@@ -818,7 +827,7 @@ npm run test:manufacturer-mock
 npm run test:ai-native
 npm run test:soak:adapters
 git diff --check
-npx expo-doctor
+npm run doctor
 npx expo export --platform ios
 npx expo export --platform android
 ```
@@ -864,6 +873,16 @@ curl --fail http://localhost:8787/health
 For Vercel, import `server/` as the project root. Its [`api/index.js`](./server/api/index.js) adapter and [`vercel.json`](./server/vercel.json) expose the ordinary HTTP routes only. Verify `/health`, then authenticated auth, phone, safety/privacy, and CLM behavior against the exact candidate. A healthy route is liveness evidence, not authentication or production-readiness evidence.
 
 The raw `/api/voice/hume-ws` upgrade gateway must run on a reviewed long-lived container host. The committed [`railway.toml`](./railway.toml) selects the Dockerfile and health check, but operators must still configure environment-scoped secrets, TLS/domain, ingress restrictions, WebSocket limits, alerts, source/deployment identifiers, and rollback. Never point `EXPO_PUBLIC_HUME_WS_PROXY_URL` at the HTTP-only Vercel adapter.
+
+The committed Docker/Railway entrypoint does not construct the production
+AI-native dependency graph. Keep `AI_NATIVE_ENABLED=false` and
+`AI_NATIVE_DATA_LIFECYCLE_ENABLED=false` there until the deployment injects
+durable encrypted state and scenario repositories, privacy lifecycle support,
+binding resolvers, and the approved Hume/notification/SMS/analytics providers.
+The loopback in-memory composition in `server/server.cjs` is development-only;
+production intentionally fails closed rather than persisting care data in
+process memory. After an environment has stored AI-native data, its lifecycle
+flag must remain enabled even during an orchestration outage.
 
 Recommended split topology:
 
@@ -914,7 +933,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 
 ## 18. Consolidation map
 
-This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md), [`docs/ai-native-integration-guide.md`](./docs/ai-native-integration-guide.md), [`docs/api-reference-ai-native.md`](./docs/api-reference-ai-native.md), [`docs/troubleshooting-ai-native.md`](./docs/troubleshooting-ai-native.md), [`docs/demo-dashboard.md`](./docs/demo-dashboard.md), and [`docs/demo-script.md`](./docs/demo-script.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
+This README is the primary consolidated project and release handoff. The current repository-wide findings and verification evidence are in [`docs/full-codebase-audit-2026-07-21.md`](./docs/full-codebase-audit-2026-07-21.md). Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md), [`docs/ai-native-integration-guide.md`](./docs/ai-native-integration-guide.md), [`docs/api-reference-ai-native.md`](./docs/api-reference-ai-native.md), [`docs/troubleshooting-ai-native.md`](./docs/troubleshooting-ai-native.md), [`docs/demo-dashboard.md`](./docs/demo-dashboard.md), and [`docs/demo-script.md`](./docs/demo-script.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |

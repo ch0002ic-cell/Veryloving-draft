@@ -2,7 +2,7 @@
 
 Last reviewed: 21 July 2026
 
-Branch scope: `features/dual-product-draft-2`
+Branch scope: `features/dual-product-draft`
 
 ## Quick Status
 
