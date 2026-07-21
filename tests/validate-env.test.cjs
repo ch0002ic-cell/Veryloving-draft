@@ -11,6 +11,7 @@ const {
   parseDotEnv,
   parseArguments,
   validateEnvironment,
+  validateServerEnvironment,
   renderReport
 } = require('../scripts/validate-env.cjs');
 
@@ -65,8 +66,46 @@ test('dotenv parser supports export, quotes, inline comments, and embedded hashe
 
 test('argument parser rejects missing option values', () => {
   assert.throws(() => parseArguments(['--file', '--no-color']), /--file requires a value/);
+  assert.throws(() => parseArguments(['--server-file', '--no-color']), /--server-file requires a value/);
   assert.throws(() => parseArguments(['--profile']), /--profile requires a value/);
   assert.equal(parseArguments(['--profile', 'testflight']).profile, 'testflight');
+  assert.equal(parseArguments(['--server-dry-run']).serverFile, 'server/.env.example');
+});
+
+test('server environment dry-run validates structure and timing bounds without real credentials', () => {
+  const environment = parseDotEnv(readFileSync(resolve(process.cwd(), 'server/.env.example'), 'utf8'));
+  const results = validateServerEnvironment(environment, { profile: 'development', dryRun: true });
+  assert.equal(results.some((result) => result.level === 'error'), false);
+  assert.equal(results.find((result) => result.name === 'SERVER_CONFIG_DRY_RUN')?.level, 'ok');
+
+  const invalid = validateServerEnvironment({
+    NODE_ENV: 'development',
+    AUTH_EXCHANGE_ENABLED: 'sometimes',
+    ACTION_REQUEST_TIMEOUT_MS: '12.5',
+    ROBOT_ACK_TIMEOUT_MS: '9007199254740993',
+    CLM_UPSTREAM_TIMEOUT_MS: '30001',
+    MOCK_MAIN_SERVER_URL: 'http://public.example.test:8787',
+    AI_NATIVE_ENABLED: 'true',
+    AI_NATIVE_DATA_LIFECYCLE_ENABLED: 'false'
+  }, { profile: 'development', dryRun: true });
+  const errors = new Set(invalid.filter((result) => result.level === 'error').map((result) => result.name));
+  for (const name of [
+    'AUTH_EXCHANGE_ENABLED',
+    'ACTION_REQUEST_TIMEOUT_MS',
+    'ROBOT_ACK_TIMEOUT_MS',
+    'CLM_UPSTREAM_TIMEOUT_MS',
+    'MOCK_MAIN_SERVER_URL',
+    'AI_NATIVE_DATA_LIFECYCLE_ENABLED'
+  ]) assert.equal(errors.has(name), true, name);
+  assert.doesNotMatch(JSON.stringify(invalid), /9007199254740993|public\.example/);
+
+  const wrongDeploymentMode = validateServerEnvironment({
+    NODE_ENV: 'development'
+  }, { profile: 'production', dryRun: true });
+  assert.equal(
+    wrongDeploymentMode.find((result) => result.name === 'NODE_ENV')?.level,
+    'error'
+  );
 });
 
 test('development endpoints allow only HTTP or WS on loopback, including IPv6', () => {
@@ -310,4 +349,23 @@ test('CLI can validate process variables when the environment file is absent', (
   });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /not found; process environment only/);
+});
+
+test('CLI server dry-run is a credential-free deterministic validation gate', () => {
+  const command = resolve(process.cwd(), 'scripts/validate-env.cjs');
+  const result = spawnSync(process.execPath, [
+    command,
+    '--file', '.env.example',
+    '--server-file', 'server/.env.example',
+    '--server-dry-run',
+    '--no-color'
+  ], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: {}
+  });
+  assert.equal(result.status, 0, result.stdout || result.stderr);
+  assert.match(result.stdout, /VeryLoving server environment dry-run/);
+  assert.match(result.stdout, /SERVER_CONFIG_DRY_RUN/);
+  assert.doesNotMatch(result.stdout, /server-only|must-not-print/);
 });

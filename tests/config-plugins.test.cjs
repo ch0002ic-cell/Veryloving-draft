@@ -138,7 +138,12 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
     );
   }
   assert.equal(config.extra.appleClientId, config.ios.bundleIdentifier);
-  assert.equal(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.length, 13);
+  const collectedTypes = new Set(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.map(
+    (entry) => entry.NSPrivacyCollectedDataType
+  ));
+  assert.equal(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.length, 15);
+  assert.ok(collectedTypes.has('NSPrivacyCollectedDataTypeHealth'));
+  assert.ok(collectedTypes.has('NSPrivacyCollectedDataTypeFitness'));
   assert.ok(plugins.includes('./plugins/withPodfile.js'));
   assert.ok(plugins.includes('./plugins/withEntitlements.js'));
   assert.ok(plugins.includes('./plugins/withGradleProperties.js'));
@@ -367,6 +372,73 @@ test('remote production builds fail closed on missing or unsafe configuration', 
   );
 });
 
+test('preview builds enforce encrypted transports and never bundle a direct Hume key', () => {
+  const preview = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'preview',
+    EAS_BUILD: 'true',
+    EXPO_PUBLIC_API_BASE_URL: 'http://preview.example.test',
+    EXPO_PUBLIC_ACTION_GATEWAY_URL: 'http://preview.example.test/actions',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://preview.example.test/socket',
+    EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'http://preview.example.test',
+    EXPO_PUBLIC_HUME_API_KEY: 'must-not-be-bundled'
+  });
+
+  assert.equal(preview.production, false);
+  assert.equal(preview.secureDistribution, true);
+  assert.ok(preview.invalid.includes('api_base_url_must_use_https'));
+  assert.ok(preview.invalid.includes('action_gateway_url_must_use_https'));
+  assert.ok(preview.invalid.includes('hume_websocket_proxy_must_use_wss'));
+  assert.ok(preview.invalid.includes('public_hume_api_key_must_not_be_set'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(preview),
+    /Distributed build configuration is invalid/
+  );
+});
+
+test('local production exports reject unsafe configured values before bundling', () => {
+  const localProduction = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EAS_BUILD: 'false',
+    EXPO_PUBLIC_API_BASE_URL: 'http://api.example.test',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'ws://voice.example.test',
+    EXPO_PUBLIC_HUME_API_KEY: 'must-not-be-bundled',
+    EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
+    EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_ENABLED: 'true'
+  });
+
+  assert.equal(localProduction.context, 'local');
+  assert.ok(localProduction.invalid.includes('api_base_url_must_use_https'));
+  assert.ok(localProduction.invalid.includes('public_hume_api_key_must_not_be_set'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(localProduction),
+    /Production configuration is invalid/
+  );
+});
+
+test('distributed endpoint configuration rejects query strings and fragments', () => {
+  const diagnostics = createAppConfig.createEnvironmentDiagnostics({
+    VERYLOVING_BUILD_PROFILE: 'production',
+    EAS_BUILD: 'false',
+    EXPO_PUBLIC_API_BASE_URL: 'https://api.example.test?region=sg',
+    EXPO_PUBLIC_ACTION_GATEWAY_URL: 'https://voice.example.test/actions',
+    EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.example.test/socket#unsafe',
+    EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.example.test',
+    EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
+    EXPO_PUBLIC_HUME_CLM_ENABLED: 'true',
+    EXPO_PUBLIC_SAFETY_BACKEND_ENABLED: 'true',
+    EXPO_PUBLIC_VL01_ENABLED: 'true'
+  });
+
+  assert.ok(diagnostics.invalid.includes('api_base_url_query_or_fragment'));
+  assert.ok(diagnostics.invalid.includes('hume_websocket_proxy_query_or_fragment'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(diagnostics),
+    /Production configuration is invalid/
+  );
+});
+
 test('Google iOS client IDs produce the native reversed URL scheme', () => {
   assert.equal(
     createAppConfig.reversedGoogleClientId('123-example.apps.googleusercontent.com'),
@@ -391,8 +463,10 @@ test('Google native plugin is omitted until a real iOS callback ID is configured
 
 test('EAS profiles separate simulator, internal QA, and store artifacts with explicit environments', () => {
   const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
+  const packageJSON = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
   assert.equal(eas.cli.version, '>= 20.0.0');
+  assert.equal(packageJSON.scripts.doctor, 'npx --yes expo-doctor@1.20.1');
   assert.equal(eas.cli.appVersionSource, 'remote');
   assert.equal(eas.build.development.developmentClient, true);
   assert.equal(eas.build.development.distribution, 'internal');

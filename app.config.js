@@ -3,6 +3,7 @@ const languageCatalog = require('./src/i18n/languages.js');
 const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
 const FULL_CATALOG_LANGUAGE_PROFILES = new Set(['development', 'testflight']);
 const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight']);
+const SECURE_DISTRIBUTION_PROFILES = new Set(['preview', 'production', 'testflight']);
 
 function isFullCatalogLanguageEnvironment(env = process.env) {
   const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
@@ -60,6 +61,7 @@ function endpointIssue(value, expectedProtocol) {
     if (url.username || url.password) return 'embedded_credentials';
     const sensitiveQuery = [...url.searchParams.keys()].some((key) => /token|secret|password|api[_-]?key/i.test(key));
     if (sensitiveQuery) return 'credential_query';
+    if (url.search || url.hash) return 'query_or_fragment';
     return null;
   } catch {
     return 'invalid_url';
@@ -76,6 +78,10 @@ function createEnvironmentDiagnostics(env = {}) {
   // paths, and hardware contracts as App Store candidates. Their optional
   // catalog-QA surface must not weaken any production readiness requirement.
   const production = PRODUCTION_LIKE_PROFILES.has(buildProfile);
+  // Preview artifacts are installable distributions too. They may omit
+  // production-only providers, but they must never embed server credentials or
+  // connect to cleartext remote transports.
+  const secureDistribution = SECURE_DISTRIBUTION_PROFILES.has(buildProfile);
   const humeCLMEnabled = env.EXPO_PUBLIC_HUME_CLM_ENABLED === 'true';
   const offlineModeEnabled = env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
@@ -154,7 +160,7 @@ function createEnvironmentDiagnostics(env = {}) {
   if (showAllLanguagesRequested && !showAllLanguagesEnabled) {
     invalid.push('all_languages_not_allowed_for_profile');
   }
-  if (production && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
+  if (secureDistribution && hasConfiguredValue(env.EXPO_PUBLIC_HUME_API_KEY || '')) {
     invalid.push('public_hume_api_key_must_not_be_set');
   }
   for (const [name, value] of [
@@ -174,34 +180,34 @@ function createEnvironmentDiagnostics(env = {}) {
   ]) {
     if (hasConfiguredValue(value || '') && !BLE_UUID_PATTERN.test(value.trim())) invalid.push(`${name}_invalid`);
   }
-  if (production && configured.apiBaseUrl) {
+  if (secureDistribution && configured.apiBaseUrl) {
     const issue = endpointIssue(apiBaseUrl, 'https:');
     if (issue) invalid.push(issue === 'transport' ? 'api_base_url_must_use_https' : `api_base_url_${issue}`);
   }
-  if (production && configured.actionGatewayUrl) {
+  if (secureDistribution && configured.actionGatewayUrl) {
     const issue = endpointIssue(actionGatewayURL, 'https:');
     if (issue) invalid.push(issue === 'transport' ? 'action_gateway_url_must_use_https' : `action_gateway_url_${issue}`);
   }
-  if (production && configured.actionGatewayUrl && configured.humeWebSocketProxy) {
+  if (secureDistribution && configured.actionGatewayUrl && configured.humeWebSocketProxy) {
     try {
       if (new URL(actionGatewayURL).host !== new URL(humeWSProxyURL).host) invalid.push('action_gateway_must_share_voice_host');
     } catch {}
   }
-  if (production && configured.humeWebSocketProxy) {
+  if (secureDistribution && configured.humeWebSocketProxy) {
     const issue = endpointIssue(humeWSProxyURL, 'wss:');
     if (issue) invalid.push(issue === 'transport' ? 'hume_websocket_proxy_must_use_wss' : `hume_websocket_proxy_${issue}`);
   }
-  if (production && configured.humeCustomizationUrl) {
+  if (secureDistribution && configured.humeCustomizationUrl) {
     const issue = endpointIssue(humeCustomizationURL, 'https:');
     if (issue) invalid.push(issue === 'transport' ? 'hume_customization_url_must_use_https' : `hume_customization_url_${issue}`);
   }
-  if (production && configured.googleWebClientId && !googleWebClientId.trim().endsWith('.apps.googleusercontent.com')) {
+  if (secureDistribution && configured.googleWebClientId && !googleWebClientId.trim().endsWith('.apps.googleusercontent.com')) {
     invalid.push('google_web_client_id_has_unexpected_format');
   }
-  if (production && configured.googleIOSClientId && !googleIOSClientId.trim().endsWith('.apps.googleusercontent.com')) {
+  if (secureDistribution && configured.googleIOSClientId && !googleIOSClientId.trim().endsWith('.apps.googleusercontent.com')) {
     invalid.push('google_ios_client_id_has_unexpected_format');
   }
-  if (production && configured.mapboxRuntimeToken && mapboxAccessToken.trim().startsWith('sk.')) {
+  if (secureDistribution && configured.mapboxRuntimeToken && mapboxAccessToken.trim().startsWith('sk.')) {
     invalid.push('mapbox_runtime_token_looks_secret');
   }
 
@@ -214,6 +220,7 @@ function createEnvironmentDiagnostics(env = {}) {
     buildProfile,
     context: easBuild ? 'eas-build' : 'local',
     production,
+    secureDistribution,
     configured,
     missingRequired: [...required].filter((key) => !configured[key]),
     invalid,
@@ -230,14 +237,24 @@ function createEnvironmentDiagnostics(env = {}) {
 }
 
 function assertEnvironmentReady(diagnostics) {
-  if (diagnostics.production && diagnostics.context === 'eas-build') {
-    const blockers = [...diagnostics.missingRequired.map((key) => `missing_${key}`), ...diagnostics.invalid];
-    if (blockers.length) {
-      throw new Error(`[VeryLoving config] Production configuration is invalid: ${blockers.join(', ')}`);
-    }
-  }
-  if (diagnostics.invalid.includes('all_languages_not_allowed_for_profile')) {
+  if (diagnostics.context !== 'eas-build'
+    && diagnostics.invalid.includes('all_languages_not_allowed_for_profile')) {
     throw new Error('[VeryLoving config] Full language catalogs are not allowed for this build profile.');
+  }
+  if (diagnostics.secureDistribution) {
+    // Invalid values are unsafe regardless of where a distributed artifact is
+    // resolved. Only missing build-time secrets may be deferred locally,
+    // because secret EAS variables are intentionally unavailable there.
+    const blockers = [
+      ...diagnostics.invalid,
+      ...(diagnostics.production && diagnostics.context === 'eas-build'
+        ? diagnostics.missingRequired.map((key) => `missing_${key}`)
+        : [])
+    ];
+    if (blockers.length) {
+      const label = diagnostics.production ? 'Production' : 'Distributed build';
+      throw new Error(`[VeryLoving config] ${label} configuration is invalid: ${blockers.join(', ')}`);
+    }
   }
 }
 
@@ -366,6 +383,23 @@ const config = {
           "NSPrivacyCollectedDataTypeTracking": false,
           "NSPrivacyCollectedDataTypePurposes": [
             "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+          ]
+        },
+        {
+          "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeHealth",
+          "NSPrivacyCollectedDataTypeLinked": true,
+          "NSPrivacyCollectedDataTypeTracking": false,
+          "NSPrivacyCollectedDataTypePurposes": [
+            "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+          ]
+        },
+        {
+          "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeFitness",
+          "NSPrivacyCollectedDataTypeLinked": true,
+          "NSPrivacyCollectedDataTypeTracking": false,
+          "NSPrivacyCollectedDataTypePurposes": [
+            "NSPrivacyCollectedDataTypePurposeAppFunctionality",
+            "NSPrivacyCollectedDataTypePurposeProductPersonalization"
           ]
         },
         {

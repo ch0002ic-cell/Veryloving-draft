@@ -14,6 +14,11 @@ const steps = [
     command: npmCommand,
     args: ['run', 'validate-env', '--', '--profile', 'development', '--no-color']
   },
+  {
+    label: 'Server environment dry-run',
+    command: npmCommand,
+    args: ['run', 'validate-env:server']
+  },
   { label: 'ESLint', command: npmCommand, args: ['run', 'lint'] },
   { label: 'Tests', command: npmCommand, args: ['test'] },
   { label: 'Expo Doctor', command: npmCommand, args: ['run', 'doctor'] },

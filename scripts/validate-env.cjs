@@ -3,6 +3,10 @@
 const { existsSync, readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 const { URL } = require('node:url');
+const {
+  SERVER_INTEGER_ENVIRONMENT,
+  parseBoundedServerInteger
+} = require('../server/environment-schema.cjs');
 
 const PROJECT_ROOT = resolve(__dirname, '..');
 const VALID_PROFILES = new Set(['development', 'preview', 'production', 'testflight']);
@@ -66,6 +70,40 @@ const SERVER_SECRET_NAMES = new Set([
 const CANONICAL_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const UUID_PATTERN = /^(?:[0-9a-f]{4}|[0-9a-f]{8}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 const SENSITIVE_QUERY_PATTERN = /token|secret|password|api[_-]?key/i;
+const SERVER_BOOLEAN_VARIABLES = Object.freeze([
+  'HUME_ALLOW_CLIENT_RESUME',
+  'AUTH_EXCHANGE_ENABLED',
+  'PHONE_AUTH_ENABLED',
+  'SAFETY_API_ENABLED',
+  'AI_NATIVE_ENABLED',
+  'AI_NATIVE_DATA_LIFECYCLE_ENABLED',
+  'AI_NATIVE_SINGLE_REPLICA',
+  'ACTION_GATEWAY_SINGLE_REPLICA',
+  'YONGYIDA_ADAPTER_ENABLED',
+  'JIANGZHI_ADAPTER_ENABLED',
+  'ROBOT_ADAPTER_ALLOW_INSECURE_HTTP'
+]);
+const SERVER_URL_VARIABLES = Object.freeze([
+  'SESSION_JWT_ISSUER',
+  'MANUFACTURER_WEBHOOK_URL',
+  'MANUFACTURER_PAIRING_VERIFY_URL',
+  'MANUFACTURER_STATUS_URL',
+  'MANUFACTURER_RESET_URL',
+  'MANUFACTURER_PRIVACY_EXPORT_URL',
+  'MANUFACTURER_PRIVACY_DELETE_URL',
+  'YONGYIDA_BRIDGE_URL',
+  'YONGYIDA_PAIRING_VERIFY_URL',
+  'YONGYIDA_RESET_URL',
+  'YONGYIDA_PRIVACY_EXPORT_URL',
+  'YONGYIDA_PRIVACY_DELETE_URL',
+  'JIANGZHI_BRIDGE_URL',
+  'JIANGZHI_PAIRING_VERIFY_URL',
+  'JIANGZHI_RESET_URL',
+  'JIANGZHI_PRIVACY_EXPORT_URL',
+  'JIANGZHI_PRIVACY_DELETE_URL',
+  'APP_AUTH_VERIFY_URL',
+  'CLM_UPSTREAM_URL'
+]);
 
 function parseDotEnv(source) {
   const parsed = {};
@@ -341,8 +379,110 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
   return results;
 }
 
+function validateServerEnvironment(env, { profile = 'development', dryRun = false } = {}) {
+  const results = [];
+  const production = profile === 'production' || profile === 'testflight';
+  const addConfiguredResult = (name, problem) => {
+    results.push(makeResult(name, problem ? 'error' : 'ok', problem || 'configured'));
+  };
+
+  const nodeEnvironment = env.NODE_ENV || 'development';
+  if (!['development', 'test', 'production'].includes(nodeEnvironment)) {
+    results.push(makeResult('NODE_ENV', 'error', 'must be development, test, or production'));
+  } else if (production && nodeEnvironment !== 'production') {
+    results.push(makeResult('NODE_ENV', 'error', 'must be production for a production or TestFlight profile'));
+  } else {
+    results.push(makeResult('NODE_ENV', 'ok', 'configured'));
+  }
+  if (isConfigured(env.PORT)) {
+    const value = Number(env.PORT);
+    addConfiguredResult('PORT', Number.isSafeInteger(value) && value >= 1 && value <= 65535
+      ? null
+      : 'must be a safe integer between 1 and 65535');
+  } else {
+    results.push(makeResult('PORT', 'warn', 'uses the server default port'));
+  }
+
+  for (const name of SERVER_BOOLEAN_VARIABLES) {
+    if (!isConfigured(env[name])) {
+      results.push(makeResult(name, 'warn', 'optional for this dry-run configuration and currently missing'));
+      continue;
+    }
+    addConfiguredResult(name, /^(?:true|false)$/.test(env[name]) ? null : 'must be exactly true or false');
+  }
+  for (const name of Object.keys(SERVER_INTEGER_ENVIRONMENT)) {
+    if (!isConfigured(env[name])) {
+      results.push(makeResult(name, 'warn', 'uses the bounded server default'));
+      continue;
+    }
+    try {
+      parseBoundedServerInteger(name, env[name]);
+      addConfiguredResult(name, null);
+    } catch (error) {
+      addConfiguredResult(name, error.message);
+    }
+  }
+
+  for (const name of SERVER_URL_VARIABLES) {
+    if (!isConfigured(env[name])) continue;
+    addConfiguredResult(name, endpointProblem(env[name], 'https:', { allowLocalDevelopment: !production }));
+  }
+  for (const name of ['MOCK_MANUFACTURER_URL', 'MOCK_MAIN_SERVER_URL']) {
+    if (!isConfigured(env[name])) continue;
+    let problem = endpointProblem(env[name], 'https:', { allowLocalDevelopment: !production });
+    try {
+      const hostname = new URL(env[name]).hostname.replace(/^\[|\]$/g, '');
+      if (!['localhost', '127.0.0.1', '::1'].includes(hostname)) problem = 'must use a loopback host';
+    } catch {}
+    addConfiguredResult(name, problem);
+  }
+
+  const requireWhenEnabled = (flag, dependencies) => {
+    if (env[flag] !== 'true') return;
+    for (const name of dependencies) {
+      if (isConfigured(env[name])) continue;
+      results.push(makeResult(
+        name,
+        dryRun ? 'warn' : 'error',
+        `required when ${flag}=true${dryRun ? '; credential presence is deferred by dry-run mode' : ''}`
+      ));
+    }
+  };
+  requireWhenEnabled('AUTH_EXCHANGE_ENABLED', [
+    'SESSION_JWT_SECRET', 'APPLE_CLIENT_IDS', 'GOOGLE_TOKEN_AUDIENCES', 'AUTH_SESSION_TABLE_NAME'
+  ]);
+  requireWhenEnabled('PHONE_AUTH_ENABLED', [
+    'SESSION_JWT_SECRET', 'PHONE_AUTH_CHALLENGE_SECRET', 'PHONE_AUTH_SUBJECT_SECRET',
+    'TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN', 'TWILIO_VERIFY_SERVICE_SID'
+  ]);
+  requireWhenEnabled('SAFETY_API_ENABLED', ['SAFETY_TABLE_NAME', 'AUTH_SESSION_TABLE_NAME']);
+  requireWhenEnabled('YONGYIDA_ADAPTER_ENABLED', [
+    'YONGYIDA_BRIDGE_URL', 'YONGYIDA_BRIDGE_API_KEY', 'YONGYIDA_CALLBACK_API_KEY'
+  ]);
+  requireWhenEnabled('JIANGZHI_ADAPTER_ENABLED', [
+    'JIANGZHI_BRIDGE_URL', 'JIANGZHI_BRIDGE_API_KEY', 'JIANGZHI_CALLBACK_API_KEY'
+  ]);
+
+  if (env.AI_NATIVE_ENABLED === 'true' && env.AI_NATIVE_DATA_LIFECYCLE_ENABLED !== 'true') {
+    results.push(makeResult('AI_NATIVE_DATA_LIFECYCLE_ENABLED', 'error', 'must be true when AI_NATIVE_ENABLED=true'));
+  }
+  if (production && env.AI_NATIVE_ENABLED === 'true' && env.AI_NATIVE_SINGLE_REPLICA !== 'true') {
+    results.push(makeResult('AI_NATIVE_SINGLE_REPLICA', 'error', 'must be true for the current production scheduler'));
+  }
+  if (dryRun) {
+    results.push(makeResult('SERVER_CONFIG_DRY_RUN', 'ok', 'structure validated without requiring credential values'));
+  }
+  return results;
+}
+
 function parseArguments(argv) {
-  const options = { file: '.env', profile: undefined, color: !process.env.NO_COLOR };
+  const options = {
+    file: '.env',
+    serverFile: undefined,
+    serverDryRun: false,
+    profile: undefined,
+    color: !process.env.NO_COLOR
+  };
   const optionValue = (index, option) => {
     const value = argv[index + 1];
     if (!value || value.startsWith('--')) throw new Error(`${option} requires a value`);
@@ -353,6 +493,11 @@ function parseArguments(argv) {
     if (argument === '--file') {
       options.file = optionValue(index, '--file');
       index += 1;
+    } else if (argument === '--server-file') {
+      options.serverFile = optionValue(index, '--server-file');
+      index += 1;
+    } else if (argument === '--server-dry-run') {
+      options.serverDryRun = true;
     } else if (argument === '--profile') {
       options.profile = optionValue(index, '--profile');
       index += 1;
@@ -365,6 +510,7 @@ function parseArguments(argv) {
     }
   }
   if (!options.file) throw new Error('--file requires a path');
+  if (options.serverDryRun && !options.serverFile) options.serverFile = 'server/.env.example';
   if (options.profile && !VALID_PROFILES.has(options.profile)) {
     throw new Error('--profile must be development, preview, production, or testflight');
   }
@@ -412,10 +558,11 @@ function renderReport({ results, profile, filePath, fileFound, color = true }) {
 
 function usage() {
   return [
-    'Usage: npm run validate-env -- [--file <path>] [--profile development|preview|production|testflight] [--no-color]',
+    'Usage: npm run validate-env -- [--file <path>] [--server-file <path>] [--server-dry-run] [--profile development|preview|production|testflight] [--no-color]',
     '',
     'The environment file is loaded first and explicit process variables override it.',
-    'Only variable names and validation states are printed; values are never printed.'
+    'Only variable names and validation states are printed; values are never printed.',
+    '--server-dry-run validates server configuration structure while deferring real credential presence.'
   ].join('\n');
 }
 
@@ -443,8 +590,29 @@ function run(argv = process.argv.slice(2), processEnvironment = process.env) {
   }
   environment.VERYLOVING_BUILD_PROFILE = profile;
   const results = validateEnvironment(environment, { profile, fileEnvironment });
-  process.stdout.write(`${renderReport({ results, profile, filePath, fileFound, color: options.color })}\n`);
-  return results.some((result) => result.level === 'error') ? 1 : 0;
+  const reports = [renderReport({ results, profile, filePath, fileFound, color: options.color })];
+  let serverResults = [];
+  if (options.serverFile) {
+    const serverFilePath = resolve(PROJECT_ROOT, options.serverFile);
+    const serverFileFound = existsSync(serverFilePath);
+    const serverFileEnvironment = serverFileFound ? parseDotEnv(readFileSync(serverFilePath, 'utf8')) : {};
+    const serverEnvironment = { ...serverFileEnvironment, ...processEnvironment };
+    serverResults = validateServerEnvironment(serverEnvironment, {
+      profile,
+      dryRun: options.serverDryRun
+    });
+    reports.push(renderReport({
+      results: serverResults,
+      profile,
+      filePath: serverFilePath,
+      fileFound: serverFileFound,
+      color: options.color
+    }).replace('VeryLoving environment validation', options.serverDryRun
+      ? 'VeryLoving server environment dry-run'
+      : 'VeryLoving server environment validation'));
+  }
+  process.stdout.write(`${reports.join('\n\n')}\n`);
+  return [...results, ...serverResults].some((result) => result.level === 'error') ? 1 : 0;
 }
 
 if (require.main === module) process.exitCode = run();
@@ -455,6 +623,7 @@ module.exports = {
   isConfigured,
   endpointProblem,
   validateEnvironment,
+  validateServerEnvironment,
   parseArguments,
   renderReport,
   run
