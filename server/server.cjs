@@ -4,6 +4,7 @@ const http = require('node:http');
 const path = require('node:path');
 const { createAINativeDemoRuntime } = require('./ai-native-demo.cjs');
 const { createHandler } = require('./clm-server.cjs');
+const { createGracefulShutdown, installProcessSignalHandlers } = require('./graceful-shutdown.cjs');
 
 // Node 22 loads the local, untracked server environment without requiring
 // every assignment to be prefixed with `export`. Existing process variables
@@ -37,5 +38,11 @@ if (aiNativeDemo) {
 } else {
   server.listen(port);
 }
+
+const shutdown = createGracefulShutdown(server, {
+  cleanup: async () => aiNativeDemo?.close?.()
+});
+server.shutdown = shutdown;
+if (require.main === module) installProcessSignalHandlers(shutdown);
 
 module.exports = server;

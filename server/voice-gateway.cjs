@@ -346,6 +346,30 @@ function closeSocket(socket, code, reason) {
   }
 }
 
+const gatewayShutdowns = new WeakMap();
+
+function closeVoiceGateway(gateway) {
+  if (!gateway || typeof gateway.close !== 'function') {
+    return Promise.reject(new TypeError('Voice gateway is required'));
+  }
+  const inFlight = gatewayShutdowns.get(gateway);
+  if (inFlight) return inFlight;
+  const shutdown = new Promise((resolve, reject) => {
+    for (const client of gateway.clients ?? []) {
+      closeSocket(client, 1001, 'server shutdown');
+      try { client.terminate?.(); } catch {}
+    }
+    try {
+      gateway.close((error) => error ? reject(error) : resolve());
+    } catch (error) {
+      reject(error);
+    }
+  });
+  gatewayShutdowns.set(gateway, shutdown);
+  void shutdown.catch(() => {});
+  return shutdown;
+}
+
 function attachVoiceGateway(server, config) {
   const humePersonaMap = assertVoicePersonaConfig(config);
   const gateway = new WebSocketServer({ noServer: true, maxPayload: MAX_CLIENT_PAYLOAD_BYTES, perMessageDeflate: false });
@@ -419,6 +443,7 @@ function attachVoiceGateway(server, config) {
           }, Math.min(expiresInMs, 2147483647));
           voiceSession = resolveVoiceSession(auth, { ...config, humePersonaMap });
           const aiNativeContext = await loadAINativeVoiceContext(claims.sub, config);
+          if (closed || client.readyState !== WebSocket.OPEN) return;
           if (aiNativeContext) voiceSession = { ...voiceSession, aiNativeContext };
           const upstreamURL = buildHumeUpstreamURL(voiceSession, {
             ...config,
@@ -581,6 +606,7 @@ function attachVoiceGateway(server, config) {
 module.exports = {
   GATEWAY_PATH,
   attachVoiceGateway,
+  closeVoiceGateway,
   assertVoicePersonaConfig,
   buildHumeUpstreamURL,
   hasScope,

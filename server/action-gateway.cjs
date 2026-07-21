@@ -1278,20 +1278,56 @@ class ActionGateway {
       cleanup: null
     };
     const onAbort = () => {
-      const work = this.cancelRobotAcknowledgement(actionId, pending);
-      this.pendingDeliveries.add(work);
-      work.finally(() => this.pendingDeliveries.delete(work));
+      this.trackRobotAcknowledgementWork(
+        this.cancelRobotAcknowledgement(actionId, pending),
+        'cancel'
+      );
     };
     pending.cleanup = () => signal?.removeEventListener?.('abort', onAbort);
     pending.timer = this.setTimeoutImpl(() => {
-      const work = this.expireRobotAcknowledgement(actionId, pending);
-      this.pendingDeliveries.add(work);
-      work.finally(() => this.pendingDeliveries.delete(work));
+      this.trackRobotAcknowledgementWork(
+        this.expireRobotAcknowledgement(actionId, pending),
+        'expire'
+      );
     }, Math.max(0, timeoutMs));
     pending.timer?.unref?.();
     this.pendingRobotAcks.set(actionId, pending);
     signal?.addEventListener?.('abort', onAbort, { once: true });
     if (signal?.aborted) onAbort();
+  }
+
+  trackRobotAcknowledgementWork(work, operation) {
+    let tracked;
+    tracked = Promise.resolve(work).catch(() => {
+      // This is deliberately free of account, action, device, serial, message,
+      // stack, and repository fields. Observability must not become a PII sink,
+      // and a broken log transport must not recreate an unhandled rejection.
+      try {
+        this.logger.error('[ActionGateway] Robot acknowledgement maintenance failed', {
+          operation,
+          code: 'ACK_BACKGROUND_FAILED'
+        });
+      } catch {}
+    }).finally(() => {
+      this.pendingDeliveries.delete(tracked);
+    });
+    this.pendingDeliveries.add(tracked);
+    return tracked;
+  }
+
+  scheduleRobotAcknowledgementExpiryRetry(actionId, pending) {
+    if (this.pendingRobotAcks.get(actionId) !== pending) return false;
+    pending.expiryAttempts = (pending.expiryAttempts || 0) + 1;
+    const retryMs = Math.min(5_000, 100 * 2 ** Math.min(5, pending.expiryAttempts - 1));
+    this.clearTimeoutImpl(pending.timer);
+    pending.timer = this.setTimeoutImpl(() => {
+      this.trackRobotAcknowledgementWork(
+        this.expireRobotAcknowledgement(actionId, pending),
+        'expire_retry'
+      );
+    }, retryMs);
+    pending.timer?.unref?.();
+    return true;
   }
 
   async cancelRobotAcknowledgement(actionId, expectedContext) {
@@ -1332,53 +1368,53 @@ class ActionGateway {
   async expireRobotAcknowledgement(actionId, expectedContext) {
     const pending = this.pendingRobotAcks.get(actionId) || expectedContext;
     if (!pending || (expectedContext && this.pendingRobotAcks.get(actionId) !== expectedContext)) return false;
-    const transitioned = this.outboxRepository && typeof this.outboxRepository.expirePendingAck !== 'function'
-      ? false
-      : await this.transitionOutbox('expirePendingAck', actionId, {
-          expired_at: this.now(),
-          error_code: 'ACK_TIMEOUT',
-          binding_epoch: pending.bindingEpoch
-        });
-    // An authenticated ACK can win while the durable expiry transition is in
-    // flight. Only the path that still owns this exact pending context may
-    // release its barrier and queue slot.
-    if (this.pendingRobotAcks.get(actionId) !== pending) return false;
-    const authoritative = transitioned === false
-      ? await this.readOutboxRecord(actionId)
-      : transitioned;
-    if (this.pendingRobotAcks.get(actionId) !== pending) return false;
-    if (transitioned === false && !['delivered', 'failed'].includes(authoritative?.state)) {
-      pending.expiryAttempts = (pending.expiryAttempts || 0) + 1;
-      const retryMs = Math.min(5_000, 100 * 2 ** Math.min(5, pending.expiryAttempts - 1));
-      pending.timer = this.setTimeoutImpl(() => {
-        const work = this.expireRobotAcknowledgement(actionId, pending);
-        this.pendingDeliveries.add(work);
-        work.finally(() => this.pendingDeliveries.delete(work));
-      }, retryMs);
-      pending.timer?.unref?.();
-      return false;
-    }
-    this.pendingRobotAcks.delete(actionId);
-    this.clearTimeoutImpl(pending.timer);
-    pending.cleanup?.();
-    pending.releaseQueue?.();
-    this.releaseRobotSlot(pending.queueKey);
-    if (authoritative !== false && authoritative !== undefined) {
-      const authoritativeState = typeof authoritative === 'object' ? authoritative.state : 'failed';
-      if (authoritativeState === 'delivered' || authoritativeState === 'failed') {
-        if (!this.publishTerminalOutboxRecord(actionId, pending.userId, authoritative)) {
-          this.publishRobotOutcome(actionId, pending.userId, {
-            status: authoritativeState,
-            action_id: actionId,
-            error_code: authoritativeState === 'failed' ? 'ACK_TIMEOUT' : undefined
+    try {
+      const transitioned = this.outboxRepository && typeof this.outboxRepository.expirePendingAck !== 'function'
+        ? false
+        : await this.transitionOutbox('expirePendingAck', actionId, {
+            expired_at: this.now(),
+            error_code: 'ACK_TIMEOUT',
+            binding_epoch: pending.bindingEpoch
           });
+      // An authenticated ACK can win while the durable expiry transition is in
+      // flight. Only the path that still owns this exact pending context may
+      // release its barrier and queue slot.
+      if (this.pendingRobotAcks.get(actionId) !== pending) return false;
+      const authoritative = transitioned === false
+        ? await this.readOutboxRecord(actionId)
+        : transitioned;
+      if (this.pendingRobotAcks.get(actionId) !== pending) return false;
+      if (transitioned === false && !['delivered', 'failed'].includes(authoritative?.state)) {
+        this.scheduleRobotAcknowledgementExpiryRetry(actionId, pending);
+        return false;
+      }
+      this.pendingRobotAcks.delete(actionId);
+      this.clearTimeoutImpl(pending.timer);
+      pending.cleanup?.();
+      pending.releaseQueue?.();
+      this.releaseRobotSlot(pending.queueKey);
+      if (authoritative !== false && authoritative !== undefined) {
+        const authoritativeState = typeof authoritative === 'object' ? authoritative.state : 'failed';
+        if (authoritativeState === 'delivered' || authoritativeState === 'failed') {
+          if (!this.publishTerminalOutboxRecord(actionId, pending.userId, authoritative)) {
+            this.publishRobotOutcome(actionId, pending.userId, {
+              status: authoritativeState,
+              action_id: actionId,
+              error_code: authoritativeState === 'failed' ? 'ACK_TIMEOUT' : undefined
+            });
+          }
+        }
+        if (authoritativeState !== 'delivered') {
+          await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
         }
       }
-      if (authoritativeState !== 'delivered') {
-        await this.notifyRobotFailure(pending.userId, actionId, pending.deviceId);
-      }
+      return transitioned !== false;
+    } catch (error) {
+      // The timer that led here has already fired. Retain the durable barrier
+      // and schedule another bounded expiry attempt instead of stranding it.
+      this.scheduleRobotAcknowledgementExpiryRetry(actionId, pending);
+      throw error;
     }
-    return transitioned !== false;
   }
 
   async acknowledgeRobot(actionId, acknowledgement = {}, { adapterId, bindingEpoch } = {}) {

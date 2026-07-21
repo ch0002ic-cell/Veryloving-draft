@@ -98,7 +98,9 @@ test('manufacturer status bounds navigation paths and reset keeps its API key se
       }
     };
   };
-  const statusClient = createManufacturerRobotStatusClient({ url: 'https://manufacturer.test/status', apiKey: 'private-key', fetchImpl });
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status', apiKey: 'private-key', fetchImpl, now: () => 1000
+  });
   const status = await statusClient('manufacturer-1');
   assert.deepEqual(status.navigation_path, [[103.8, 1.3], [103.81, 1.31]]);
   assert.deepEqual(status.safety_events, [{ event_type: 'fall', event_id: 'robot-fall-0001', occurred_at: 999, confidence: 0.9 }]);
@@ -145,6 +147,66 @@ test('manufacturer telemetry without a trustworthy timestamp fails closed', asyn
     online: false,
     hardware_status: 'unknown',
     telemetry_error: 'invalid_timestamp'
+  });
+});
+
+test('manufacturer status rejects stale clocks and drops invalid safety event timestamps', async () => {
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    now: () => 10_000,
+    maxStatusAgeMs: 1_000,
+    statusFutureSkewMs: 100,
+    maxMedicationAcknowledgementAgeMs: 1_000,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      async text() {
+        return JSON.stringify({
+          online: true,
+          reported_at: 10_000,
+          safety_events: [
+            { event_type: 'fall', event_id: 'fall-event-valid', occurred_at: 9_999 },
+            { event_type: 'fall', event_id: 'fall-event-negative', occurred_at: -12.5 },
+            { event_type: 'fall', event_id: 'fall-event-fraction', occurred_at: 9_999.5 },
+            { event_type: 'fall', event_id: 'fall-event-stale', occurred_at: 8_999 },
+            { event_type: 'fall', event_id: 'fall-event-future', occurred_at: 10_101 }
+          ],
+          medication_acknowledgements: [
+            { reminder_id: 'reminder-valid-1', receipt_id: 'receipt-valid-1', delivered_at: 9_999 },
+            { reminder_id: 'reminder-stale-1', receipt_id: 'receipt-stale-1', delivered_at: 8_999 },
+            { reminder_id: 'reminder-future-1', receipt_id: 'receipt-future-1', delivered_at: 10_101 }
+          ],
+          indoor_position: { room_id: 'bedroom', captured_at: 8_999 }
+        });
+      }
+    })
+  });
+
+  const fresh = await statusClient('manufacturer-1');
+  assert.deepEqual(fresh.safety_events, [{
+    event_type: 'fall', event_id: 'fall-event-valid', occurred_at: 9_999
+  }]);
+  assert.deepEqual(fresh.medication_acknowledgements, [{
+    reminder_id: 'reminder-valid-1', receipt_id: 'receipt-valid-1', delivered_at: 9_999
+  }]);
+  assert.equal(fresh.indoor_position, undefined);
+
+  const staleClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    now: () => 10_000,
+    maxStatusAgeMs: 1_000,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      async text() { return JSON.stringify({ online: true, reported_at: 8_999 }); }
+    })
+  });
+  assert.deepEqual(await staleClient('manufacturer-1'), {
+    online: false,
+    hardware_status: 'unknown',
+    telemetry_error: 'stale_timestamp'
   });
 });
 

@@ -140,7 +140,13 @@ function normalizeNavigationPath(value) {
   return path.length >= 2 ? path : undefined;
 }
 
-function normalizeSafetyEvents(value) {
+function isFreshTimestamp(value, { now, maxAgeMs, futureSkewMs } = {}) {
+  if (!Number.isSafeInteger(value) || value <= 0) return false;
+  return !Number.isSafeInteger(now)
+    || (value <= now + futureSkewMs && now - value <= maxAgeMs);
+}
+
+function normalizeSafetyEvents(value, freshness) {
   if (!Array.isArray(value)) return undefined;
   const events = value.slice(0, 20).flatMap((event) => {
     const eventType = event?.event_type;
@@ -150,14 +156,14 @@ function normalizeSafetyEvents(value) {
     if (!['fall', 'fall_detected'].includes(eventType)
       || typeof eventId !== 'string'
       || !/^[A-Za-z0-9._:-]{8,128}$/.test(eventId)
-      || !Number.isFinite(occurredAt)
+      || !isFreshTimestamp(occurredAt, freshness)
       || (confidence !== undefined && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1))) return [];
     return [{ event_type: 'fall', event_id: eventId, occurred_at: occurredAt, ...(confidence === undefined ? {} : { confidence }) }];
   });
   return events.length ? events : undefined;
 }
 
-function normalizeMedicationAcknowledgements(value) {
+function normalizeMedicationAcknowledgements(value, freshness) {
   if (!Array.isArray(value)) return undefined;
   const acknowledgements = value.slice(0, 20).flatMap((acknowledgement) => {
     const reminderId = acknowledgement?.reminder_id;
@@ -166,8 +172,7 @@ function normalizeMedicationAcknowledgements(value) {
     if (
       !MEDICATION_ACK_IDENTIFIER_PATTERN.test(reminderId || '')
       || !MEDICATION_ACK_IDENTIFIER_PATTERN.test(receiptId || '')
-      || !Number.isSafeInteger(deliveredAt)
-      || deliveredAt <= 0
+      || !isFreshTimestamp(deliveredAt, freshness)
     ) return [];
     return [{ reminder_id: reminderId, receipt_id: receiptId, delivered_at: deliveredAt }];
   });
@@ -180,7 +185,7 @@ function normalizeMedicationAcknowledgements(value) {
  * either a room identifier or a complete x/y pair so arbitrary gateway data
  * cannot flow through the account telemetry response.
  */
-function normalizeIndoorPosition(value) {
+function normalizeIndoorPosition(value, freshness) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
   const boundedIdentifier = (candidate) => (
     typeof candidate === 'string' && INDOOR_IDENTIFIER_PATTERN.test(candidate)
@@ -198,7 +203,7 @@ function normalizeIndoorPosition(value) {
   if (!roomId && !hasCoordinates) return undefined;
   const confidence = value.confidence;
   const capturedAt = value.captured_at;
-  if (!Number.isSafeInteger(capturedAt) || capturedAt <= 0) return undefined;
+  if (!isFreshTimestamp(capturedAt, freshness)) return undefined;
   return {
     ...(mapId ? { map_id: mapId } : {}),
     ...(floorId ? { floor_id: floorId } : {}),
@@ -272,7 +277,28 @@ function createManufacturerPairingVerifier({
   };
 }
 
-function createManufacturerRobotStatusClient({ url, apiKey, fetchImpl = globalThis.fetch, timeoutMs = 5000 } = {}) {
+function createManufacturerRobotStatusClient({
+  url,
+  apiKey,
+  fetchImpl = globalThis.fetch,
+  timeoutMs = 5000,
+  now = Date.now,
+  maxStatusAgeMs = 2 * 60_000,
+  statusFutureSkewMs = 60_000,
+  maxMedicationAcknowledgementAgeMs = 30 * 24 * 60 * 60_000
+} = {}) {
+  if (typeof now !== 'function'
+    || !Number.isSafeInteger(maxStatusAgeMs)
+    || maxStatusAgeMs < 1_000
+    || maxStatusAgeMs > 24 * 60 * 60_000
+    || !Number.isSafeInteger(statusFutureSkewMs)
+    || statusFutureSkewMs < 0
+    || statusFutureSkewMs > 5 * 60_000
+    || !Number.isSafeInteger(maxMedicationAcknowledgementAgeMs)
+    || maxMedicationAcknowledgementAgeMs < 1_000
+    || maxMedicationAcknowledgementAgeMs > 90 * 24 * 60 * 60_000) {
+    throw new Error('Manufacturer status freshness configuration is invalid');
+  }
   return async function getRobotStatus(robotId) {
     return manufacturerRequest({
       fetchImpl,
@@ -287,6 +313,10 @@ function createManufacturerRobotStatusClient({ url, apiKey, fetchImpl = globalTh
         if (response.status === 404) return { online: false, hardware_status: 'offline' };
         if (!response.ok) throw new Error(`Manufacturer status service returned ${response.status}`);
         const body = await readBoundedObjectResponse(response, 'Manufacturer status service', signal);
+        const observedNow = now();
+        if (!Number.isSafeInteger(observedNow) || observedNow <= 0) {
+          throw new Error('Manufacturer status clock is invalid');
+        }
         const longitude = Number(body?.location?.longitude);
         const latitude = Number(body?.location?.latitude);
         const location = Number.isFinite(longitude) && Math.abs(longitude) <= 180
@@ -294,17 +324,40 @@ function createManufacturerRobotStatusClient({ url, apiKey, fetchImpl = globalTh
           ? { longitude, latitude }
           : undefined;
         const navigationPath = normalizeNavigationPath(body.navigation_path);
-        const safetyEvents = normalizeSafetyEvents(body.safety_events);
+        const safetyEvents = normalizeSafetyEvents(body.safety_events, {
+          now: observedNow,
+          maxAgeMs: maxStatusAgeMs,
+          futureSkewMs: statusFutureSkewMs
+        });
         const medicationAcknowledgements = normalizeMedicationAcknowledgements(
-          body.medication_acknowledgements
+          body.medication_acknowledgements,
+          {
+            now: observedNow,
+            maxAgeMs: maxMedicationAcknowledgementAgeMs,
+            futureSkewMs: statusFutureSkewMs
+          }
         );
-        const indoorPosition = normalizeIndoorPosition(body.indoor_position);
+        const indoorPosition = normalizeIndoorPosition(body.indoor_position, {
+          now: observedNow,
+          maxAgeMs: maxStatusAgeMs,
+          futureSkewMs: statusFutureSkewMs
+        });
         const reportedAt = Number(body.reported_at);
         if (!Number.isSafeInteger(reportedAt) || reportedAt <= 0) {
           return {
             online: false,
             hardware_status: 'unknown',
             telemetry_error: 'invalid_timestamp'
+          };
+        }
+        if (reportedAt > observedNow + statusFutureSkewMs
+          || observedNow - reportedAt > maxStatusAgeMs) {
+          return {
+            online: false,
+            hardware_status: 'unknown',
+            telemetry_error: reportedAt > observedNow + statusFutureSkewMs
+              ? 'future_timestamp'
+              : 'stale_timestamp'
           };
         }
         return {

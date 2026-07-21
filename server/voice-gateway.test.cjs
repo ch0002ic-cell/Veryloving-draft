@@ -6,6 +6,7 @@ const { test } = require('node:test');
 const { WebSocket } = require('ws');
 const {
   attachVoiceGateway,
+  closeVoiceGateway,
   assertVoicePersonaConfig,
   buildHumeUpstreamURL,
   hasScope,
@@ -21,6 +22,25 @@ const BESTIE_VOICE_ID = '98765432-10ab-4cde-8f01-23456789abcd';
 const PERSONA_MAP = JSON.stringify({
   capybara: { voice_id: CAPYBARA_VOICE_ID, instructions: 'soft, calm, grounding' },
   bestie: { voice_id: BESTIE_VOICE_ID, instructions: 'bright and reassuring' }
+});
+
+test('voice gateway shutdown terminates upgraded clients and is idempotent', async () => {
+  let closeCalls = 0;
+  let terminated = 0;
+  const gateway = {
+    clients: new Set([
+      { readyState: WebSocket.OPEN, close() {}, terminate() { terminated += 1; } },
+      { readyState: WebSocket.CONNECTING, close() {}, terminate() { terminated += 1; } }
+    ]),
+    close(callback) { closeCalls += 1; callback(); }
+  };
+
+  const first = closeVoiceGateway(gateway);
+  const duplicate = closeVoiceGateway(gateway);
+  assert.equal(first, duplicate);
+  await first;
+  assert.equal(terminated, 2);
+  assert.equal(closeCalls, 1);
 });
 
 test('voice gateway requires first-frame authentication and bounds connection metadata', () => {
@@ -260,6 +280,56 @@ test('duplicate pre-auth frames close once and cannot create an upstream after c
     exp: Math.floor(Date.now() / 1000) + 60
   });
   await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(upstreamCreations, 0);
+});
+
+test('disconnect during AI-native context lookup never opens a Hume upstream', async () => {
+  let contextStarted;
+  let releaseContext;
+  const started = new Promise((resolve) => { contextStarted = resolve; });
+  const context = new Promise((resolve) => { releaseContext = resolve; });
+  let upstreamCreations = 0;
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    aiNativeEnabled: true,
+    aiNativeSystem: {
+      async getVoiceContext() {
+        contextStarted();
+        return context;
+      }
+    },
+    verifyVoiceToken: async () => ({
+      sub: 'google:user-context-race',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    createUpstreamWebSocket() {
+      upstreamCreations += 1;
+      throw new Error('must not create an upstream for a disconnected client');
+    },
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+    }
+    send() {}
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-token'
+  })), false);
+  await started;
+  client.readyState = WebSocket.CLOSED;
+  client.emit('close');
+  releaseContext({ state: null, memories: [] });
+  await new Promise((resolve) => setImmediate(resolve));
+
   assert.equal(upstreamCreations, 0);
 });
 

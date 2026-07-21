@@ -998,6 +998,136 @@ test('a losing ACK-timeout race cannot release another command queue slot', asyn
   assert.equal(gateway.totalRobotCommands, 0);
 });
 
+test('unexpected ACK cancellation and expiry failures are observed and redacted', async () => {
+  const logs = [];
+  const scheduled = [];
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    setTimeoutImpl(handler) {
+      scheduled.push(handler);
+      return { unref() {} };
+    },
+    clearTimeoutImpl() {},
+    logger: {
+      error(message, fields) { logs.push({ message, fields }); }
+    }
+  });
+  const signed = signEnvelope({
+    version: 2,
+    action: 'check_medication',
+    device_type: 'home_robot',
+    device_id: 'r1',
+    manufacturer_device_id: 'manufacturer-r1',
+    adapter_id: 'manufacturer-default',
+    binding_epoch: defaultBindingEpoch,
+    contract_version: 'vl-robot-action/2',
+    expires_at: Date.now() + 60_000,
+    parameters: {}
+  }, secret);
+  const action = { device_id: 'r1' };
+  const cancellation = new AbortController();
+
+  gateway.cancelRobotAcknowledgement = async () => {
+    throw Object.assign(new Error('serial-secret-should-not-be-logged'), {
+      code: 'unsafe-code-with-secret'
+    });
+  };
+  gateway.scheduleRobotAck(
+    'user-1', action, signed, 'cancel-queue', 30_000, () => {}, cancellation.signal
+  );
+  cancellation.abort();
+  await gateway.waitForDeliveries();
+
+  gateway.expireRobotAcknowledgement = async () => {
+    throw Object.assign(new Error('device-and-account-secret'), { code: 'OUTBOX_DOWN' });
+  };
+  gateway.scheduleRobotAck('user-1', action, signed, 'expire-queue', 30_000, () => {});
+  scheduled.at(-1)();
+  await gateway.waitForDeliveries();
+
+  assert.equal(gateway.pendingDeliveries.size, 0);
+  assert.deepEqual(logs, [
+    {
+      message: '[ActionGateway] Robot acknowledgement maintenance failed',
+      fields: { operation: 'cancel', code: 'ACK_BACKGROUND_FAILED' }
+    },
+    {
+      message: '[ActionGateway] Robot acknowledgement maintenance failed',
+      fields: { operation: 'expire', code: 'ACK_BACKGROUND_FAILED' }
+    }
+  ]);
+  assert.equal(JSON.stringify(logs).includes('secret'), false);
+  gateway.cancelPendingRobotAcknowledgements(() => true);
+});
+
+test('unexpected ACK expiry failure retries without stranding its device barrier', async () => {
+  const scheduled = [];
+  const logs = [];
+  let releaseCount = 0;
+  let transitionCalls = 0;
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    setTimeoutImpl(handler) {
+      const timer = { handler, cleared: false, unref() {} };
+      scheduled.push(timer);
+      return timer;
+    },
+    clearTimeoutImpl(timer) {
+      if (timer) timer.cleared = true;
+    },
+    logger: {
+      error(message, fields) { logs.push({ message, fields }); }
+    }
+  });
+  const signed = signEnvelope({
+    version: 2,
+    action: 'check_medication',
+    device_type: 'home_robot',
+    device_id: 'r1',
+    manufacturer_device_id: 'manufacturer-r1',
+    adapter_id: 'manufacturer-default',
+    binding_epoch: defaultBindingEpoch,
+    contract_version: 'vl-robot-action/2',
+    expires_at: Date.now() + 60_000,
+    parameters: {}
+  }, secret);
+  gateway.transitionOutbox = async () => {
+    transitionCalls += 1;
+    if (transitionCalls === 1) {
+      throw Object.assign(new Error('private-repository-detail'), { code: 'PRIVATE_DETAIL' });
+    }
+    return {
+      action_id: signed.envelope.id,
+      user_id: 'user-1',
+      state: 'failed',
+      error_code: 'ACK_TIMEOUT'
+    };
+  };
+  gateway.scheduleRobotAck(
+    'user-1',
+    { device_id: 'r1' },
+    signed,
+    'expiry-retry-queue',
+    1,
+    () => { releaseCount += 1; }
+  );
+
+  scheduled[0].handler();
+  await gateway.waitForDeliveries();
+  assert.equal(gateway.pendingRobotAcks.has(signed.envelope.id), true);
+  const retry = scheduled.find((timer, index) => index > 0 && !timer.cleared);
+  assert.ok(retry);
+
+  retry.handler();
+  await gateway.waitForDeliveries();
+  assert.equal(gateway.pendingRobotAcks.has(signed.envelope.id), false);
+  assert.equal(releaseCount, 1);
+  assert.equal(transitionCalls, 2);
+  assert.equal(JSON.stringify(logs).includes('private-repository-detail'), false);
+});
+
 test('robot action is durably enqueued before acceptance and transitions through asynchronous ACK', async () => {
   const events = [];
   const outboxRepository = {

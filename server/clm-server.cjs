@@ -65,6 +65,7 @@ const {
 } = require('./safety-companion.cjs');
 
 const MAX_BODY_BYTES = 256 * 1024;
+const MAX_UPSTREAM_SSE_EVENT_BYTES = 256 * 1024;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -609,7 +610,7 @@ function openSSE(res) {
 }
 
 function writeSSE(res, data) {
-  res.write(`data: ${typeof data === 'string' ? data : JSON.stringify(data)}\n\n`);
+  return res.write(`data: ${typeof data === 'string' ? data : JSON.stringify(data)}\n\n`);
 }
 
 function baseChunk(model, sessionId, id) {
@@ -694,40 +695,82 @@ async function pipeUpstreamSSE(upstreamResponse, res, sessionId) {
   const decoder = new TextDecoder();
   let buffer = '';
   let sawDone = false;
+  let responseErrored = false;
+  const markResponseError = () => { responseErrored = true; };
+  res.once?.('error', markResponseError);
 
-  const writeEvent = (event) => {
+  const responseClosed = () => responseErrored || res.destroyed === true || res.writableEnded === true;
+  const writeWithBackpressure = async (data) => {
+    if (responseClosed()) return false;
+    if (writeSSE(res, data) !== false) return true;
+    if (typeof res.once !== 'function') return false;
+    await new Promise((resolve) => {
+      const cleanup = () => {
+        res.removeListener?.('drain', onDrain);
+        res.removeListener?.('close', onClose);
+        res.removeListener?.('error', onError);
+      };
+      const onDrain = () => { cleanup(); resolve(); };
+      const onClose = () => { cleanup(); resolve(); };
+      const onError = () => { responseErrored = true; cleanup(); resolve(); };
+      res.once('drain', onDrain);
+      res.once('close', onClose);
+      res.once('error', onError);
+    });
+    return !responseClosed();
+  };
+
+  const writeEvent = async (event) => {
     const dataLines = event.split(/\r?\n/).filter((line) => line.startsWith('data:'));
-    if (!dataLines.length) return;
+    if (!dataLines.length) return true;
     const rawData = dataLines.map((line) => line.slice(5).trimStart()).join('\n');
     if (rawData === '[DONE]') {
       sawDone = true;
-      writeSSE(res, '[DONE]');
-      return;
+      return writeWithBackpressure('[DONE]');
     }
     try {
       const payload = JSON.parse(rawData);
       payload.system_fingerprint = sessionId || null;
-      writeSSE(res, payload);
+      return writeWithBackpressure(payload);
     } catch {
       // Ignore malformed upstream events instead of forwarding untrusted bytes.
+      return true;
     }
   };
 
-  while (true) {
-    const { done, value } = await reader.read();
-    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
-    const events = buffer.split(/\r?\n\r?\n/);
-    buffer = events.pop() || '';
-    events.forEach(writeEvent);
-    if (done) break;
+  try {
+    while (!responseClosed()) {
+      const { done, value } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const events = buffer.split(/\r?\n\r?\n/);
+      buffer = events.pop() || '';
+      if (Buffer.byteLength(buffer) > MAX_UPSTREAM_SSE_EVENT_BYTES
+        || events.some((event) => Buffer.byteLength(event) > MAX_UPSTREAM_SSE_EVENT_BYTES)) {
+        throw Object.assign(new Error('Upstream SSE event exceeded the limit'), {
+          code: 'UPSTREAM_EVENT_TOO_LARGE'
+        });
+      }
+      for (const event of events) {
+        if (!await writeEvent(event)) return;
+      }
+      if (done) break;
+    }
+    if (responseClosed()) return;
+    if (buffer.trim() && !await writeEvent(buffer)) return;
+    if (!sawDone && !await writeWithBackpressure('[DONE]')) return;
+    if (!responseClosed()) res.end();
+  } finally {
+    try { await reader.cancel(); } catch {}
+    reader.releaseLock?.();
+    res.removeListener?.('error', markResponseError);
   }
-  if (buffer.trim()) writeEvent(buffer);
-  if (!sawDone) writeSSE(res, '[DONE]');
-  res.end();
 }
 
 async function callUpstream(body, config, res, sessionId) {
   const controller = new AbortController();
+  const abortOnClose = () => controller.abort();
+  res.once?.('close', abortOnClose);
+  res.once?.('error', abortOnClose);
   const timeout = setTimeout(() => controller.abort(), Math.max(1, config.upstreamTimeoutMs || 25000));
   const normalizedMessages = normalizeMessages(body.messages);
   const priorSystem = normalizedMessages.filter((message) => message.role === 'system').map((message) => message.content).join('\n');
@@ -767,6 +810,8 @@ async function callUpstream(body, config, res, sessionId) {
     await pipeUpstreamSSE(response, res, sessionId);
   } finally {
     clearTimeout(timeout);
+    res.removeListener?.('close', abortOnClose);
+    res.removeListener?.('error', abortOnClose);
   }
 }
 
@@ -1325,6 +1370,7 @@ function createHandler(overrides = {}) {
             return;
           } catch (error) {
             config.logger.error('[VeryLovingCLM] upstream unavailable', { name: error.name });
+            if (res.destroyed || res.writableEnded) return;
             if (res.headersSent) {
               writeSSE(res, '[DONE]');
               res.end();
@@ -1853,10 +1899,11 @@ function createHandler(overrides = {}) {
 }
 
 function createVeryLovingCLMServer(options = {}) {
-  const { attachVoiceGateway } = require('./voice-gateway.cjs');
+  const { attachVoiceGateway, closeVoiceGateway } = require('./voice-gateway.cjs');
   const config = prepareDeviceServices(validateServerConfig(envConfig(options)));
   const server = http.createServer(createHandler(config));
-  attachVoiceGateway(server, config);
+  const voiceGateway = attachVoiceGateway(server, config);
+  server.closeVoiceGateway = () => closeVoiceGateway(voiceGateway);
   server.requestTimeout = 35000;
   server.headersTimeout = 10000;
   server.keepAliveTimeout = 5000;
@@ -1864,8 +1911,12 @@ function createVeryLovingCLMServer(options = {}) {
 }
 
 if (require.main === module) {
+  const { createGracefulShutdown, installProcessSignalHandlers } = require('./graceful-shutdown.cjs');
   const port = Number(process.env.PORT || DEFAULT_PORT);
-  createVeryLovingCLMServer().listen(port, () => console.log(`[VeryLovingCLM] listening on ${port}`));
+  const server = createVeryLovingCLMServer();
+  const shutdown = createGracefulShutdown(server, { cleanup: () => server.closeVoiceGateway() });
+  installProcessSignalHandlers(shutdown);
+  server.listen(port, () => console.log(`[VeryLovingCLM] listening on ${port}`));
 }
 
 module.exports = {

@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const { EventEmitter } = require('node:events');
 const { Readable } = require('node:stream');
 const { test } = require('node:test');
 const { createHandler, validateServerConfig } = require('./clm-server.cjs');
@@ -970,6 +971,180 @@ test('CLM injects the authoritative safety prompt before upstream context', asyn
   assert.match(response.headers['Content-Type'], /text\/event-stream/);
   assert.match(response.text, /Stay near other people/);
   assert.match(response.text, /data: \[DONE\]/);
+});
+
+test('CLM aborts and cancels an upstream SSE reader when the downstream disconnects', async () => {
+  let upstreamSignal;
+  let fetchStarted;
+  const started = new Promise((resolve) => { fetchStarted = resolve; });
+  let cancelCount = 0;
+  const fetchImpl = async (_url, options) => {
+    upstreamSignal = options.signal;
+    fetchStarted();
+    return {
+      ok: true,
+      status: 200,
+      headers: { get: () => 'text/event-stream' },
+      body: {
+        getReader() {
+          return {
+            read() {
+              return new Promise((_resolve, reject) => {
+                const abort = () => {
+                  const error = new Error('downstream disconnected');
+                  error.name = 'AbortError';
+                  reject(error);
+                };
+                if (upstreamSignal.aborted) abort();
+                else upstreamSignal.addEventListener('abort', abort, { once: true });
+              });
+            },
+            async cancel() { cancelCount += 1; },
+            releaseLock() {}
+          };
+        }
+      }
+    };
+  };
+  const body = JSON.stringify({ messages: [{ role: 'user', content: 'Please stay with me.' }] });
+  const req = Readable.from([Buffer.from(body)]);
+  req.method = 'POST';
+  req.url = '/chat/completions';
+  req.headers = { authorization: 'Bearer server-only-secret', 'content-type': 'application/json' };
+  const res = Object.assign(new EventEmitter(), {
+    headersSent: false,
+    destroyed: false,
+    writableEnded: false,
+    writeHead() { this.headersSent = true; },
+    write() { return true; },
+    end() { this.writableEnded = true; }
+  });
+  const handling = createHandler({
+    logger: silentLogger,
+    clmBearerToken: 'server-only-secret',
+    upstreamURL: 'https://model.example/chat/completions',
+    upstreamApiKey: 'upstream-secret',
+    upstreamModel: 'safety-model',
+    upstreamTimeoutMs: 5_000,
+    fetchImpl
+  })(req, res);
+
+  await started;
+  res.destroyed = true;
+  res.emit('close');
+  await handling;
+
+  assert.equal(upstreamSignal.aborted, true);
+  assert.equal(cancelCount, 1);
+  assert.equal(res.writableEnded, false);
+});
+
+test('CLM aborts upstream when a backpressured downstream response errors', async () => {
+  let upstreamSignal;
+  let cancelCount = 0;
+  let reads = 0;
+  const fetchImpl = async (_url, options) => {
+    upstreamSignal = options.signal;
+    return {
+      ok: true,
+      status: 200,
+      headers: { get: () => 'text/event-stream' },
+      body: {
+        getReader() {
+          return {
+            read() {
+              reads += 1;
+              if (reads === 1) {
+                return Promise.resolve({
+                  done: false,
+                  value: Buffer.from('data: {"choices":[]}\n\n')
+                });
+              }
+              return new Promise((_resolve, reject) => {
+                const abort = () => {
+                  const error = new Error('downstream response failed');
+                  error.name = 'AbortError';
+                  reject(error);
+                };
+                if (upstreamSignal.aborted) abort();
+                else upstreamSignal.addEventListener('abort', abort, { once: true });
+              });
+            },
+            async cancel() { cancelCount += 1; },
+            releaseLock() {}
+          };
+        }
+      }
+    };
+  };
+  const body = JSON.stringify({ messages: [{ role: 'user', content: 'Please stay with me.' }] });
+  const req = Readable.from([Buffer.from(body)]);
+  req.method = 'POST';
+  req.url = '/chat/completions';
+  req.headers = { authorization: 'Bearer server-only-secret', 'content-type': 'application/json' };
+  const res = Object.assign(new EventEmitter(), {
+    headersSent: false,
+    destroyed: false,
+    writableEnded: false,
+    writeHead() { this.headersSent = true; },
+    write() {
+      setImmediate(() => this.emit('error', new Error('socket write failed')));
+      return false;
+    },
+    end() { this.writableEnded = true; }
+  });
+
+  await createHandler({
+    logger: silentLogger,
+    clmBearerToken: 'server-only-secret',
+    upstreamURL: 'https://model.example/chat/completions',
+    upstreamApiKey: 'upstream-secret',
+    upstreamModel: 'safety-model',
+    upstreamTimeoutMs: 5_000,
+    fetchImpl
+  })(req, res);
+
+  assert.equal(upstreamSignal.aborted, true);
+  assert.equal(cancelCount, 1);
+  assert.equal(res.writableEnded, false);
+});
+
+test('CLM bounds an unterminated upstream SSE event and cancels its reader', async () => {
+  let cancelCount = 0;
+  let sent = false;
+  const response = await invoke({
+    clmBearerToken: 'server-only-secret',
+    upstreamURL: 'https://model.example/chat/completions',
+    upstreamApiKey: 'upstream-secret',
+    upstreamModel: 'safety-model',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => 'text/event-stream' },
+      body: {
+        getReader() {
+          return {
+            async read() {
+              if (sent) return { done: true };
+              sent = true;
+              return { done: false, value: Buffer.alloc((256 * 1024) + 1, 97) };
+            },
+            async cancel() { cancelCount += 1; },
+            releaseLock() {}
+          };
+        }
+      }
+    })
+  }, {
+    method: 'POST',
+    url: '/chat/completions',
+    headers: { Authorization: 'Bearer server-only-secret', 'Content-Type': 'application/json' },
+    body: { messages: [{ role: 'user', content: 'Please stay with me.' }] }
+  });
+
+  assert.equal(response.status, 200);
+  assert.match(response.text, /data: \[DONE\]/);
+  assert.equal(cancelCount, 1);
 });
 
 test('CLM falls back to a local safety response when the upstream times out', async () => {

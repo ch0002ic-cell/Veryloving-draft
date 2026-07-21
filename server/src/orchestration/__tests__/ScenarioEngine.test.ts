@@ -79,6 +79,137 @@ class RecordingRuntime implements ScenarioRuntime {
   }
 }
 
+class DelayedReadScenarioRepository extends InMemoryScenarioExecutionRepository {
+  private nextRead?: {
+    readonly captured: (snapshot: ScenarioExecutionSnapshot | undefined) => void;
+    readonly gate: Promise<void>;
+  };
+
+  holdNextRead(): {
+    readonly captured: Promise<ScenarioExecutionSnapshot | undefined>;
+    readonly release: () => void;
+  } {
+    let capture!: (snapshot: ScenarioExecutionSnapshot | undefined) => void;
+    let release!: () => void;
+    const captured = new Promise<ScenarioExecutionSnapshot | undefined>((resolve) => { capture = resolve; });
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    this.nextRead = { captured: capture, gate };
+    return { captured, release };
+  }
+
+  override async get(
+    accountRef: string,
+    executionId: string
+  ): Promise<ScenarioExecutionSnapshot | undefined> {
+    const snapshot = await super.get(accountRef, executionId);
+    const hold = this.nextRead;
+    if (hold) {
+      this.nextRead = undefined;
+      hold.captured(snapshot);
+      await hold.gate;
+    }
+    return snapshot;
+  }
+}
+
+class DelayedCreateScenarioRepository extends InMemoryScenarioExecutionRepository {
+  private releaseCreate!: () => void;
+  readonly createdVisible: Promise<void>;
+  private readonly createGate: Promise<void>;
+
+  constructor() {
+    super();
+    let markVisible!: () => void;
+    this.createdVisible = new Promise<void>((resolve) => { markVisible = resolve; });
+    this.createGate = new Promise<void>((resolve) => { this.releaseCreate = resolve; });
+    this.markVisible = markVisible;
+  }
+
+  private readonly markVisible: () => void;
+
+  release(): void {
+    this.releaseCreate();
+  }
+
+  override async create(execution: ScenarioExecutionSnapshot): Promise<{
+    readonly created: boolean;
+    readonly execution: ScenarioExecutionSnapshot;
+  }> {
+    const result = await super.create(execution);
+    if (result.created) {
+      this.markVisible();
+      await this.createGate;
+    }
+    return result;
+  }
+}
+
+class TerminalFailureScenarioRepository extends InMemoryScenarioExecutionRepository {
+  terminalPutAttempts = 0;
+
+  override async put(execution: ScenarioExecutionSnapshot): Promise<void> {
+    if (['completed', 'fallback_completed', 'failed', 'cancelled'].includes(execution.state)) {
+      this.terminalPutAttempts += 1;
+      throw Object.assign(new Error('durable store unavailable'), { code: 'STORE_UNAVAILABLE' });
+    }
+    await super.put(execution);
+  }
+}
+
+class CommitThenThrowTerminalScenarioRepository extends InMemoryScenarioExecutionRepository {
+  private failAfterTerminalCommit = true;
+
+  override async put(execution: ScenarioExecutionSnapshot): Promise<void> {
+    await super.put(execution);
+    if (this.failAfterTerminalCommit
+      && ['completed', 'fallback_completed', 'failed', 'cancelled'].includes(execution.state)) {
+      this.failAfterTerminalCommit = false;
+      throw Object.assign(new Error('terminal response was lost'), { code: 'STORE_UNAVAILABLE' });
+    }
+  }
+}
+
+class CommitThenThrowScenarioRepository extends InMemoryScenarioExecutionRepository {
+  private failAfterFirstCreate = true;
+
+  override async create(execution: ScenarioExecutionSnapshot): Promise<{
+    readonly created: boolean;
+    readonly execution: ScenarioExecutionSnapshot;
+  }> {
+    const result = await super.create(execution);
+    if (result.created && this.failAfterFirstCreate) {
+      this.failAfterFirstCreate = false;
+      throw Object.assign(new Error('create response was lost'), { code: 'STORE_UNAVAILABLE' });
+    }
+    return result;
+  }
+}
+
+class TransientCancellationFailureRepository extends InMemoryScenarioExecutionRepository {
+  private failNextCancellation = true;
+  private failNextConfirmationRead = false;
+
+  override async put(execution: ScenarioExecutionSnapshot): Promise<void> {
+    if (execution.state === 'cancelled' && this.failNextCancellation) {
+      this.failNextCancellation = false;
+      this.failNextConfirmationRead = true;
+      throw Object.assign(new Error('cancellation write unavailable'), { code: 'STORE_UNAVAILABLE' });
+    }
+    await super.put(execution);
+  }
+
+  override async get(
+    accountRef: string,
+    executionId: string
+  ): Promise<ScenarioExecutionSnapshot | undefined> {
+    if (this.failNextConfirmationRead) {
+      this.failNextConfirmationRead = false;
+      throw Object.assign(new Error('confirmation read unavailable'), { code: 'STORE_UNAVAILABLE' });
+    }
+    return super.get(accountRef, executionId);
+  }
+}
+
 function singleStepDefinition(
   id: ScenarioDefinition['id'],
   priority: ScenarioPriority,
@@ -383,6 +514,237 @@ describe('ScenarioEngine', () => {
     })).rejects.toMatchObject({ code: 'IDEMPOTENCY_CONFLICT' });
   });
 
+  it('joins a concurrent duplicate while its durable create is visible but admission is unfinished', async () => {
+    const repository = new DelayedCreateScenarioRepository();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'complete', kind: 'analytics', event: 'complete' }
+    );
+    const engine = new ScenarioEngine({
+      definitions: [definition],
+      runtime: new RecordingRuntime(),
+      repository,
+      identitySecret: SECRET,
+      now: () => NOW
+    });
+    const scenarioRequest = request('cognitive_engagement', 'concurrent-create');
+    const first = engine.executeScenario('account-1', scenarioRequest);
+    await repository.createdVisible;
+    let duplicateSettled = false;
+    const duplicate = engine.executeScenario('account-1', scenarioRequest).then((snapshot) => {
+      duplicateSettled = true;
+      return snapshot;
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(duplicateSettled).toBe(false);
+    repository.release();
+
+    const [firstResult, duplicateResult] = await Promise.all([first, duplicate]);
+    expect(firstResult).toMatchObject({ state: 'completed' });
+    expect(duplicateResult).toMatchObject({
+      executionId: firstResult.executionId,
+      state: 'completed'
+    });
+  });
+
+  it('refreshes a completion read when local promise cleanup races durable persistence', async () => {
+    let operationStarted!: () => void;
+    let releaseOperation!: () => void;
+    const started = new Promise<void>((resolve) => { operationStarted = resolve; });
+    const operationGate = new Promise<void>((resolve) => { releaseOperation = resolve; });
+    const repository = new DelayedReadScenarioRepository();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'delayed', kind: 'analytics', event: 'delayed' }
+    );
+    const runtime = new RecordingRuntime(async () => {
+      operationStarted();
+      await operationGate;
+      return { status: 'succeeded' };
+    });
+    const engine = new ScenarioEngine({
+      definitions: [definition], runtime, repository, identitySecret: SECRET, now: () => NOW
+    });
+    const start = await engine.startScenario('account-1', request('cognitive_engagement', 'stale-wait'));
+    await started;
+    const heldRead = repository.holdNextRead();
+    const waiting = engine.waitForCompletion('account-1', start.execution.executionId);
+    await expect(heldRead.captured).resolves.toMatchObject({ state: 'running' });
+
+    releaseOperation();
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const durable = await repository.get(start.execution.accountRef, start.execution.executionId);
+      if (durable?.state === 'completed') break;
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+    await new Promise((resolve) => setImmediate(resolve));
+    heldRead.release();
+
+    await expect(waiting).resolves.toMatchObject({ state: 'completed' });
+  });
+
+  it('serializes duplicate cancellation of the same queued execution', async () => {
+    let releaseBlocker!: () => void;
+    let blockerStarted!: () => void;
+    const blockerGate = new Promise<void>((resolve) => { releaseBlocker = resolve; });
+    const started = new Promise<void>((resolve) => { blockerStarted = resolve; });
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'queue-work', kind: 'analytics', event: 'queue-work' }
+    );
+    const runtime = new RecordingRuntime(async (_operation, context) => {
+      if (context.accountId === 'blocker-account') {
+        blockerStarted();
+        await blockerGate;
+      }
+      return { status: 'succeeded' };
+    });
+    const engine = new ScenarioEngine({
+      definitions: [definition], runtime, identitySecret: SECRET, now: () => NOW, maxConcurrentExecutions: 1
+    });
+    const blocker = engine.executeScenario(
+      'blocker-account',
+      request('cognitive_engagement', 'blocker')
+    );
+    await started;
+    const queued = await engine.startScenario(
+      'account-1',
+      request('cognitive_engagement', 'duplicate-cancel')
+    );
+
+    const [first, second] = await Promise.all([
+      engine.cancelScenario('account-1', queued.execution.executionId),
+      engine.cancelScenario('account-1', queued.execution.executionId)
+    ]);
+
+    expect(first).toMatchObject({ state: 'cancelled', errorCode: 'USER_CANCELLED' });
+    expect(second).toMatchObject({ executionId: first.executionId, state: 'cancelled', version: first.version });
+    await expect(engine.waitForCompletion('account-1', first.executionId)).resolves.toMatchObject({
+      state: 'cancelled'
+    });
+    releaseBlocker();
+    await blocker;
+  });
+
+  it('restores queued work after a transient cancellation write failure', async () => {
+    let releaseBlocker!: () => void;
+    let blockerStarted!: () => void;
+    const blockerGate = new Promise<void>((resolve) => { releaseBlocker = resolve; });
+    const started = new Promise<void>((resolve) => { blockerStarted = resolve; });
+    const repository = new TransientCancellationFailureRepository();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'queue-work', kind: 'analytics', event: 'queue-work' }
+    );
+    const runtime = new RecordingRuntime(async (_operation, context) => {
+      if (context.accountId === 'blocker-account') {
+        blockerStarted();
+        await blockerGate;
+      }
+      return { status: 'succeeded' };
+    });
+    const engine = new ScenarioEngine({
+      definitions: [definition], runtime, repository, identitySecret: SECRET, now: () => NOW,
+      maxConcurrentExecutions: 1, maxPendingPerAccount: 1
+    });
+    const blocker = engine.executeScenario('blocker-account', request('cognitive_engagement', 'cancel-blocker'));
+    await started;
+    const queued = await engine.startScenario('account-1', request('cognitive_engagement', 'cancel-retry'));
+
+    await expect(engine.cancelScenario('account-1', queued.execution.executionId))
+      .rejects.toMatchObject({ code: 'STORE_UNAVAILABLE' });
+    await expect(engine.cancelScenario('account-1', queued.execution.executionId))
+      .resolves.toMatchObject({ state: 'cancelled', errorCode: 'USER_CANCELLED' });
+
+    const replacement = engine.executeScenario(
+      'account-1',
+      request('cognitive_engagement', 'cancel-replacement')
+    );
+    releaseBlocker();
+    await expect(blocker).resolves.toMatchObject({ state: 'completed' });
+    await expect(replacement).resolves.toMatchObject({ state: 'completed' });
+  });
+
+  it('adopts a durable queued execution when the create response is lost', async () => {
+    const repository = new CommitThenThrowScenarioRepository();
+    const runtime = new RecordingRuntime();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'ambiguous-create', kind: 'analytics', event: 'ambiguous-create' }
+    );
+    const engine = new ScenarioEngine({
+      definitions: [definition], runtime, repository, identitySecret: SECRET, now: () => NOW,
+      maxPendingPerAccount: 1
+    });
+
+    await expect(engine.executeScenario(
+      'account-1',
+      request('cognitive_engagement', 'ambiguous-create')
+    )).resolves.toMatchObject({ state: 'completed' });
+    await expect(engine.executeScenario(
+      'account-1',
+      request('cognitive_engagement', 'capacity-after-ambiguous-create')
+    )).resolves.toMatchObject({ state: 'completed' });
+    expect(runtime.calls).toHaveLength(2);
+  });
+
+  it('rejects apparent completion when terminal persistence exhausts bounded retries', async () => {
+    const repository = new TerminalFailureScenarioRepository();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'persist', kind: 'analytics', event: 'persist' }
+    );
+    const engine = new ScenarioEngine({
+      definitions: [definition],
+      runtime: new RecordingRuntime(),
+      repository,
+      identitySecret: SECRET,
+      now: () => NOW
+    });
+
+    await expect(engine.executeScenario(
+      'account-1',
+      request('cognitive_engagement', 'terminal-persistence')
+    )).rejects.toMatchObject({ code: 'SCENARIO_PERSISTENCE_FAILED' });
+
+    expect(repository.terminalPutAttempts).toBe(3);
+    const durable = await engine.listExecutions('account-1');
+    expect(durable).toHaveLength(1);
+    expect(durable[0]?.state).toBe('running');
+  });
+
+  it('keeps a committed terminal result when its storage response is lost', async () => {
+    const repository = new CommitThenThrowTerminalScenarioRepository();
+    const definition = singleStepDefinition(
+      'cognitive_engagement',
+      'background',
+      { id: 'terminal-commit', kind: 'analytics', event: 'terminal-commit' }
+    );
+    const engine = new ScenarioEngine({
+      definitions: [definition],
+      runtime: new RecordingRuntime(),
+      repository,
+      identitySecret: SECRET,
+      now: () => NOW
+    });
+
+    const completed = await engine.executeScenario(
+      'account-1',
+      request('cognitive_engagement', 'terminal-commit-response-loss')
+    );
+    expect(completed.state).toBe('completed');
+    await expect(engine.getExecution('account-1', completed.executionId))
+      .resolves.toMatchObject({ state: 'completed', version: completed.version });
+  });
+
   it('isolates account reads and rejects stale, disabled, and non-JSON requests', async () => {
     const runtime = new RecordingRuntime();
     const engine = new ScenarioEngine({
@@ -454,6 +816,36 @@ describe('InMemoryScenarioExecutionRepository', () => {
     await expect(repository.list('account-ref', 9999)).resolves.toHaveLength(1);
     await expect(repository.listAll('account-ref')).resolves.toHaveLength(1);
     await expect(repository.deleteAccount('account-ref')).resolves.toBe(1);
+  });
+
+  it('bounds terminal demo records and evicts the matching idempotency index', async () => {
+    const repository = new InMemoryScenarioExecutionRepository({ maxRecords: 2 });
+    for (let index = 1; index <= 3; index += 1) {
+      const queued = {
+        ...execution,
+        executionId: `execution-${index}`,
+        idempotencyRef: `idempotency-${index}`,
+        requestRef: `request-${index}`,
+        createdAt: NOW + index,
+        updatedAt: NOW + index
+      };
+      await repository.create(queued);
+      await repository.put({
+        ...queued,
+        state: 'completed',
+        completedAt: NOW + index,
+        version: 2
+      });
+    }
+
+    await expect(repository.get('account-ref', 'execution-1')).resolves.toBeUndefined();
+    await expect(repository.listAll('account-ref')).resolves.toHaveLength(2);
+    await expect(repository.create({
+      ...execution,
+      executionId: 'execution-1',
+      idempotencyRef: 'idempotency-1',
+      requestRef: 'request-1'
+    })).resolves.toMatchObject({ created: true });
   });
 });
 

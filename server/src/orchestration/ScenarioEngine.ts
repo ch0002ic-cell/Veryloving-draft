@@ -290,6 +290,11 @@ function cloneSnapshot(value: ScenarioExecutionSnapshot): ScenarioExecutionSnaps
 export class InMemoryScenarioExecutionRepository implements ScenarioExecutionRepository {
   private readonly records = new Map<string, ScenarioExecutionSnapshot>();
   private readonly idempotency = new Map<string, string>();
+  private readonly maxRecords: number;
+
+  constructor(options: Readonly<{ maxRecords?: number }> = {}) {
+    this.maxRecords = boundedInteger(options.maxRecords, 10_000, 1, 100_000, 'Scenario record capacity');
+  }
 
   private key(accountRef: string, executionId: string): string {
     return `${accountRef}\u0000${executionId}`;
@@ -318,6 +323,7 @@ export class InMemoryScenarioExecutionRepository implements ScenarioExecutionRep
     if (!previous) throw new Error('Scenario execution does not exist');
     if (execution.version <= previous.version) throw new Error('Scenario execution version is stale');
     this.records.set(key, cloneSnapshot(execution));
+    if (terminal(execution.state)) this.evictOldestTerminalRecords();
   }
 
   async get(accountRef: string, executionId: string): Promise<ScenarioExecutionSnapshot | undefined> {
@@ -350,6 +356,21 @@ export class InMemoryScenarioExecutionRepository implements ScenarioExecutionRep
       deleted += 1;
     }
     return deleted;
+  }
+
+  private evictOldestTerminalRecords(): void {
+    if (this.records.size <= this.maxRecords) return;
+    const candidates = [...this.records.entries()]
+      .filter(([, execution]) => terminal(execution.state))
+      .sort(([, left], [, right]) => (
+        (left.completedAt ?? left.updatedAt) - (right.completedAt ?? right.updatedAt)
+        || left.createdAt - right.createdAt
+      ));
+    for (const [key, execution] of candidates) {
+      if (this.records.size <= this.maxRecords) break;
+      this.records.delete(key);
+      this.idempotency.delete(`${execution.accountRef}\u0000${execution.idempotencyRef}`);
+    }
   }
 }
 
@@ -681,6 +702,7 @@ interface RuntimeExecution {
   cancellationReason?: 'user' | 'account_deletion';
   snapshot: ScenarioExecutionSnapshot;
   resolve: (value: ScenarioExecutionSnapshot) => void;
+  reject: (reason: unknown) => void;
   readonly completion: Promise<ScenarioExecutionSnapshot>;
 }
 
@@ -894,6 +916,8 @@ export class ScenarioEngine {
   private readonly fencedAccounts = new Set<string>();
   private readonly schedulingByAccount = new Map<string, Set<symbol>>();
   private readonly schedulingWaiters = new Map<string, Set<() => void>>();
+  private readonly executionSchedulingTails = new Map<string, Promise<void>>();
+  private readonly cancellations = new Map<string, Promise<ScenarioExecutionSnapshot>>();
 
   constructor(private readonly options: ScenarioEngineOptions) {
     const secretLength = Buffer.isBuffer(options.identitySecret)
@@ -982,7 +1006,12 @@ export class ScenarioEngine {
     const existing = await this.repository.get(accountRef, executionId);
     if (!existing) throw Object.assign(new Error('Scenario execution was not found'), { code: 'SCENARIO_NOT_FOUND' });
     if (terminal(existing.state)) return existing;
-    return this.completions.get(executionId) ?? existing;
+    const completion = this.completions.get(executionId);
+    if (completion) return completion;
+    // Persistence completes before the local promise is removed. Refresh once
+    // if that removal raced the first read so callers do not observe stale
+    // `running` state after the durable execution is already terminal.
+    return await this.repository.get(accountRef, executionId) ?? existing;
   }
 
   async getExecution(accountId: string, executionId: string): Promise<ScenarioExecutionSnapshot | undefined> {
@@ -1042,6 +1071,26 @@ export class ScenarioEngine {
 
   async cancelScenario(accountId: string, executionId: string): Promise<ScenarioExecutionSnapshot> {
     const accountRef = this.accountRef(accountId);
+    this.assertAccountOpen(accountRef);
+    if (!IDENTIFIER_PATTERN.test(executionId)) throw new TypeError('Scenario execution identifier is invalid');
+    const cancellationKey = `${accountRef}\u0000${executionId}`;
+    const inFlight = this.cancellations.get(cancellationKey);
+    if (inFlight) return inFlight;
+    const cancellation = this.cancelScenarioTracked(accountRef, executionId);
+    this.cancellations.set(cancellationKey, cancellation);
+    try {
+      return await cancellation;
+    } finally {
+      if (this.cancellations.get(cancellationKey) === cancellation) {
+        this.cancellations.delete(cancellationKey);
+      }
+    }
+  }
+
+  private async cancelScenarioTracked(
+    accountRef: string,
+    executionId: string
+  ): Promise<ScenarioExecutionSnapshot> {
     const existing = await this.repository.get(accountRef, executionId);
     if (!existing) throw Object.assign(new Error('Scenario execution was not found'), { code: 'SCENARIO_NOT_FOUND' });
     if (terminal(existing.state)) return existing;
@@ -1055,7 +1104,6 @@ export class ScenarioEngine {
       active.controller.abort();
       return active.completion;
     }
-    queued?.controller.abort();
     const cancelled = this.nextSnapshot(existing, {
       state: 'cancelled',
       completedAt: this.now(),
@@ -1069,14 +1117,37 @@ export class ScenarioEngine {
         ? { ...step, state: 'cancelled' as const, completedAt: this.now() }
         : step)
     });
-    await this.repository.put(cancelled);
+    let outcome = cancelled;
+    try {
+      await this.repository.put(cancelled);
+    } catch (error) {
+      // An active run can finish after the first repository read but before
+      // its local runtime is observed. Converge on that durable terminal state
+      // rather than surfacing an optimistic-version error.
+      let latest: ScenarioExecutionSnapshot | undefined;
+      try {
+        latest = await this.repository.get(accountRef, executionId);
+      } catch {}
+      if (!latest || !terminal(latest.state)) {
+        if (queued) {
+          queued.snapshot = latest ?? queued.snapshot;
+          this.enqueueRuntime(queued);
+          // Account deletion fences new work and waits for this cancellation.
+          // Leave the restored runtime queued for the deletion path to remove.
+          if (!this.fencedAccounts.has(accountRef)) this.drain();
+        }
+        throw error;
+      }
+      outcome = latest;
+    }
     if (queued) {
-      queued.snapshot = cancelled;
-      queued.resolve(cancelled);
+      queued.controller.abort();
+      queued.snapshot = outcome;
+      queued.resolve(outcome);
       this.completions.delete(executionId);
       this.releaseCapacity(queued.accountRef, queued.definition.priority);
     }
-    return cancelled;
+    return outcome;
   }
 
   async deleteAccountData(accountId: string): Promise<number> {
@@ -1085,6 +1156,11 @@ export class ScenarioEngine {
     // must finish (and be included below) before erasure can return.
     this.fencedAccounts.add(accountRef);
     await this.waitForScheduling(accountRef);
+    const cancellationPrefix = `${accountRef}\u0000`;
+    const cancellations = [...this.cancellations.entries()]
+      .filter(([key]) => key.startsWith(cancellationPrefix))
+      .map(([, cancellation]) => cancellation);
+    await Promise.allSettled(cancellations);
     const pendingForAccount = this.pending.filter((runtime) => runtime.accountRef === accountRef);
     for (const runtime of pendingForAccount) {
       const index = this.pending.indexOf(runtime);
@@ -1233,71 +1309,117 @@ export class ScenarioEngine {
         state: 'pending' as const
       })))
     });
-    const preexisting = await this.repository.get(accountRef, executionId);
-    this.assertAccountOpen(accountRef);
-    if (preexisting) {
-      if (preexisting.requestRef !== requestRef) {
-        throw Object.assign(new Error('Scenario idempotency key was reused with a different request'), {
-          code: 'IDEMPOTENCY_CONFLICT'
-        });
-      }
-      return Object.freeze({
-        result: Object.freeze({ accepted: true, duplicate: true, execution: preexisting }),
-        completion: this.completions.get(preexisting.executionId)
-      });
-    }
-    this.assertAdmissionAllowed(definition, request);
-    this.reserveCapacity(accountRef, definition.priority);
-    let inserted: Awaited<ReturnType<ScenarioExecutionRepository['create']>>;
+    const releaseExecutionScheduling = await this.acquireExecutionScheduling(executionId);
     try {
-      inserted = await this.repository.create(initial);
-    } catch (error) {
-      this.releaseCapacity(accountRef, definition.priority);
-      throw error;
-    }
-    try {
+      const preexisting = await this.repository.get(accountRef, executionId);
       this.assertAccountOpen(accountRef);
-    } catch (error) {
-      this.releaseCapacity(accountRef, definition.priority);
-      throw error;
-    }
-    if (!inserted.created) {
-      this.releaseCapacity(accountRef, definition.priority);
-      if (inserted.execution.requestRef !== requestRef) {
-        throw Object.assign(new Error('Scenario idempotency key was reused with a different request'), {
-          code: 'IDEMPOTENCY_CONFLICT'
+      if (preexisting) {
+        if (preexisting.requestRef !== requestRef) {
+          throw Object.assign(new Error('Scenario idempotency key was reused with a different request'), {
+            code: 'IDEMPOTENCY_CONFLICT'
+          });
+        }
+        return Object.freeze({
+          result: Object.freeze({ accepted: true, duplicate: true, execution: preexisting }),
+          completion: this.completions.get(preexisting.executionId)
         });
       }
-      return Object.freeze({
-        result: Object.freeze({ accepted: true, duplicate: true, execution: inserted.execution }),
-        completion: this.completions.get(inserted.execution.executionId)
-      });
-    }
+      this.assertAdmissionAllowed(definition, request);
+      this.reserveCapacity(accountRef, definition.priority);
+      let inserted: Awaited<ReturnType<ScenarioExecutionRepository['create']>>;
+      try {
+        inserted = await this.repository.create(initial);
+      } catch (error) {
+        // A remote store may commit a conditional create and then lose the
+        // response. Re-read the exact identity before releasing capacity so a
+        // durably queued execution is never orphaned until process restart.
+        let durable: ScenarioExecutionSnapshot | undefined;
+        for (let attempt = 0; attempt < 3 && !durable; attempt += 1) {
+          try {
+            durable = await this.repository.get(accountRef, executionId);
+          } catch {}
+          if (!durable) await Promise.resolve();
+        }
+        if (!durable) {
+          this.releaseCapacity(accountRef, definition.priority);
+          throw error;
+        }
+        if (durable.requestRef !== requestRef) {
+          this.releaseCapacity(accountRef, definition.priority);
+          throw Object.assign(new Error('Scenario idempotency key was reused with a different request'), {
+            code: 'IDEMPOTENCY_CONFLICT'
+          });
+        }
+        if (durable.state !== 'queued') {
+          this.releaseCapacity(accountRef, definition.priority);
+          return Object.freeze({
+            result: Object.freeze({ accepted: true, duplicate: true, execution: durable }),
+            completion: this.completions.get(durable.executionId)
+          });
+        }
+        inserted = Object.freeze({ created: true, execution: durable });
+      }
+      try {
+        this.assertAccountOpen(accountRef);
+      } catch (error) {
+        this.releaseCapacity(accountRef, definition.priority);
+        throw error;
+      }
+      if (!inserted.created) {
+        this.releaseCapacity(accountRef, definition.priority);
+        if (inserted.execution.requestRef !== requestRef) {
+          throw Object.assign(new Error('Scenario idempotency key was reused with a different request'), {
+            code: 'IDEMPOTENCY_CONFLICT'
+          });
+        }
+        return Object.freeze({
+          result: Object.freeze({ accepted: true, duplicate: true, execution: inserted.execution }),
+          completion: this.completions.get(inserted.execution.executionId)
+        });
+      }
 
-    let resolveCompletion!: (value: ScenarioExecutionSnapshot) => void;
-    const completion = new Promise<ScenarioExecutionSnapshot>((resolve) => { resolveCompletion = resolve; });
-    const runtime: RuntimeExecution = {
-      accountId,
-      accountRef,
-      request,
-      definition,
-      steps,
-      controller: new AbortController(),
-      snapshot: inserted.execution,
-      resolve: resolveCompletion,
-      completion
-    };
+      let resolveCompletion!: (value: ScenarioExecutionSnapshot) => void;
+      let rejectCompletion!: (reason: unknown) => void;
+      const completion = new Promise<ScenarioExecutionSnapshot>((resolve, reject) => {
+        resolveCompletion = resolve;
+        rejectCompletion = reject;
+      });
+      // startScenario callers receive only the accepted snapshot. Attach a
+      // rejection observer so a later durable persistence outage is never an
+      // unhandled process rejection; execute/wait callers still receive the
+      // rejection from the original promise.
+      void completion.catch(() => {});
+      const runtime: RuntimeExecution = {
+        accountId,
+        accountRef,
+        request,
+        definition,
+        steps,
+        controller: new AbortController(),
+        snapshot: inserted.execution,
+        resolve: resolveCompletion,
+        reject: rejectCompletion,
+        completion
+      };
+      this.enqueueRuntime(runtime);
+      this.completions.set(executionId, completion);
+      this.drain();
+      return Object.freeze({
+        result: Object.freeze({ accepted: true, duplicate: false, execution: inserted.execution }),
+        completion
+      });
+    } finally {
+      releaseExecutionScheduling();
+    }
+  }
+
+  private enqueueRuntime(runtime: RuntimeExecution): void {
+    if (this.pending.includes(runtime)) return;
     this.pending.push(runtime);
     this.pending.sort((left, right) => (
       PRIORITY_ORDER[left.definition.priority] - PRIORITY_ORDER[right.definition.priority]
       || left.snapshot.createdAt - right.snapshot.createdAt
     ));
-    this.completions.set(executionId, completion);
-    this.drain();
-    return Object.freeze({
-      result: Object.freeze({ accepted: true, duplicate: false, execution: inserted.execution }),
-      completion
-    });
   }
 
   private drain(): void {
@@ -1316,6 +1438,13 @@ export class ScenarioEngine {
       void this.run(runtime).then(
         (snapshot) => runtime.resolve(snapshot),
         async (error) => {
+          if ((error as { readonly code?: unknown } | null)?.code === 'SCENARIO_PERSISTENCE_FAILED') {
+            // A terminal business outcome may already have committed even when
+            // its storage response was lost. Never overwrite that ambiguity
+            // with a different `failed` outcome.
+            runtime.reject(error);
+            return;
+          }
           const completedAt = this.now();
           const cancelled = runtime.controller.signal.aborted;
           const abortCode = runtime.cancellationReason === 'account_deletion'
@@ -1332,8 +1461,15 @@ export class ScenarioEngine {
             ))
           });
           runtime.snapshot = failed;
-          try { await this.repository.put(failed); } catch {}
-          runtime.resolve(failed);
+          try {
+            await this.persistTerminalSnapshot(failed);
+            runtime.resolve(failed);
+          } catch (persistenceError) {
+            runtime.reject(Object.assign(new Error('Scenario terminal state could not be persisted'), {
+              code: 'SCENARIO_PERSISTENCE_FAILED',
+              cause: persistenceError
+            }));
+          }
         }
       ).finally(() => {
         this.activeCount = Math.max(0, this.activeCount - 1);
@@ -1533,7 +1669,14 @@ export class ScenarioEngine {
       ...(cancellation ? { cancellation } : {}),
       ...(cancelled ? { errorCode: abortCode } : failed && errorCode ? { errorCode } : {})
     });
-    await this.repository.put(runtime.snapshot);
+    try {
+      await this.persistTerminalSnapshot(runtime.snapshot);
+    } catch (cause) {
+      throw Object.assign(new Error('Scenario terminal state could not be persisted'), {
+        code: 'SCENARIO_PERSISTENCE_FAILED',
+        cause
+      });
+    }
     return runtime.snapshot;
   }
 
@@ -1708,6 +1851,29 @@ export class ScenarioEngine {
     return this.nextSnapshot(snapshot, { steps });
   }
 
+  private async persistTerminalSnapshot(snapshot: ScenarioExecutionSnapshot): Promise<void> {
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        await this.repository.put(snapshot);
+        return;
+      } catch (error) {
+        lastError = error;
+        // A transport can fail after the conditional write committed. Verify
+        // the exact durable version/state before retrying the same mutation.
+        try {
+          const durable = await this.repository.get(snapshot.accountRef, snapshot.executionId);
+          if (durable
+            && durable.version === snapshot.version
+            && durable.state === snapshot.state
+            && terminal(durable.state)) return;
+        } catch {}
+        await Promise.resolve();
+      }
+    }
+    throw lastError;
+  }
+
   private nextSnapshot(
     snapshot: ScenarioExecutionSnapshot,
     update: Partial<ScenarioExecutionSnapshot>
@@ -1776,6 +1942,20 @@ export class ScenarioEngine {
     inFlight.add(token);
     this.schedulingByAccount.set(accountRef, inFlight);
     return token;
+  }
+
+  private async acquireExecutionScheduling(executionId: string): Promise<() => void> {
+    const previous = this.executionSchedulingTails.get(executionId) ?? Promise.resolve();
+    let release!: () => void;
+    const current = new Promise<void>((resolve) => { release = resolve; });
+    this.executionSchedulingTails.set(executionId, current);
+    await previous;
+    return () => {
+      release();
+      if (this.executionSchedulingTails.get(executionId) === current) {
+        this.executionSchedulingTails.delete(executionId);
+      }
+    };
   }
 
   private endScheduling(accountRef: string, token: symbol): void {
