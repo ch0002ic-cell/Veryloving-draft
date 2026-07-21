@@ -6,15 +6,17 @@ Branch: `features/dual-product-draft`
 
 Audited baseline: `ff3b33d`
 
-Audited implementation commit: `3cf50c8`
+Original audited implementation commit: `3cf50c8`
 
-Audit disposition: **SOURCE + MOCK READY; NO-GO FOR PRODUCTION RELEASE**
+Production-gate follow-up implementation commit: `8536d18`
+
+Audit disposition: **SOURCE-LEVEL PRODUCTION GATES CLOSED; NO-GO FOR EXTERNAL/PHYSICAL PRODUCTION RELEASE**
 
 ## Executive disposition
 
-The mobile application, backend, dual-vendor hardware abstraction layer, AI-native orchestration, and manufacturer simulator have received a repository-wide failure-mode audit. The audit records 74 findings: 66 source defects fixed and verified, one source/documentation boundary already passing, three internal production gates, and three hardware/vendor/deployment blockers. The corrected defects include account-boundary races, replay windows, permanently stranded safety deliveries, unbounded provider responses, incomplete cancellation, stale asynchronous mobile updates, queue-order violations, and simulator idempotency/shutdown defects. Regression coverage was added for the corrected paths.
+The mobile application, backend, dual-vendor hardware abstraction layer, AI-native orchestration, and manufacturer simulator have received a repository-wide failure-mode audit. The detailed register contains 72 finding IDs. At the original audit closeout, 65 source defects were fixed and verified, one source/documentation boundary passed, three internal source gates remained open, and three findings were blocked externally. This follow-up closes all three internal source gates, yielding 68 fixed/source-gate-verified findings, one pass, zero open internal findings, and three externally blocked findings. The former 74/66 totals mistakenly counted two non-finding verification rows; no finding was removed.
 
-The audited implementation commit is suitable for mock-backed demonstrations and the next manufacturer-integration phase. It is **not approved for production safety use**. Production remains a no-go until the exact vendor contracts and devices, physical BLE/robot testing, production identity/communications credentials, durable multi-process AI-native composition, provider delivery evidence, operational drills, and clinical/regulatory claims are independently accepted.
+The follow-up implementation is source-ready for mock-backed demonstrations and the next manufacturer-integration phase. It adds a fail-closed durable AI-native composition contract for the explicitly supported single-replica topology, concrete DynamoDB repository implementations, and enforced release/supply-chain policy. It is **not approved for production safety use**. Production remains a no-go until the packaged composition module, target-account infrastructure, exact vendor contracts and devices, physical BLE/robot testing, production identity/communications credentials, provider delivery evidence, operational drills, and clinical/regulatory claims are independently accepted. Multi-replica scenario execution is not claimed; it requires a future distributed ownership/lease protocol.
 
 The external-dependency register contains 13 gates. The Yongyida and Jiangzhi NDAs are confirmed complete (**2/13 PASS**); the other **11/13 remain BLOCKED — EXTERNAL**. The next action is for Grace to send the technical-package request in [`ask-templates.md`](./ask-templates.md) to both manufacturers.
 
@@ -22,7 +24,8 @@ The external-dependency register contains 13 gates. The Yongyida and Jiangzhi ND
 
 | Status | Meaning |
 | --- | --- |
-| **FIXED — verified** | A source correction, focused regression evidence, and the aggregate verification gates exist for audited implementation commit `3cf50c8`. |
+| **FIXED — verified** | A source correction, focused regression evidence, and the aggregate verification gates exist for original audited implementation `3cf50c8`. |
+| **FIXED — source gate verified** | A fail-closed source implementation and deterministic regression exist for the supported production topology at follow-up implementation `8536d18`. This does not assert deployed infrastructure, live-registry, provider, vendor, or hardware evidence. |
 | **PASS — automated** | The named command passed against the immutable candidate recorded in this report. |
 | **PASS — mock only** | Behavior was exercised against in-memory/test repositories or the manufacturer simulator; it is not hardware/provider evidence. |
 | **BLOCKED — EXTERNAL** | No source-only action can close the gate; a vendor, credential owner, hardware unit, provider, clinical owner, or release operator must act. |
@@ -98,7 +101,7 @@ Line references identify the audited candidate location or the named function wh
 | AI-008 | Medium | `ScenarioEngine.ts` idempotency/cancellation transitions | Parallel starts/cancels could race repository transitions or repeat device actions. | Durable idempotency claims, terminal-state checks, execution-scoped cancellation, and ordered transitions guard each scenario. | **FIXED — verified**; scenario concurrency/cancellation tests. |
 | AI-009 | High | `server/ai-native-demo.cjs:825-858` | Demo `POST /v1/scenarios` lacked caller idempotency; retries/double-clicks could create duplicate cross-device workflows. | Added validated `Idempotency-Key`, request fingerprint conflict (`409`), shared in-flight/result promise, and bounded 500-entry request ledger. | **FIXED — verified**; `server/ai-native-demo.test.cjs`. |
 | AI-010 | High | `server/ai-native-demo.cjs` scenario admission/mirroring | Best-effort dashboard event writes occurred before durable scenario admission and were tied to response-close abort; a client disconnect could suppress a valid fall or show a rejected workflow. | Durable route/admission is authoritative; deterministic best-effort mirror events run afterward with independent lifecycle and stable keys. | **FIXED — verified**; demo and mock tests. |
-| AI-011 | Production gate | `server/server.cjs`; AI-native demo composition | The demo runtime deliberately uses in-memory repositories and a loopback mock client. It cannot provide cross-replica durability, production encryption-key operations, or provider delivery. | Keep production AI-native flags disabled until durable repositories, key management, action providers, distributed admission, observability, backup/restore, and deletion verification are injected. | **OPEN — INTERNAL / production deployment gate**; mock operation may pass, production may not use demo composition. |
+| AI-011 | Production gate | `server/ai-native-composition.cjs`; both server entrypoints; `DynamoCiphertextRepository.ts`; `DynamoScenarioExecutionRepository.ts` | The demo runtime deliberately uses in-memory repositories and a loopback mock client. It could not provide durable persistence, production encryption-key operations, or provider delivery, and the long-lived entrypoints had no production composition boundary. | Both entrypoints now construct AI-native state synchronously through a versioned, fail-closed production composition boundary before listening. It rejects bundled in-memory repositories and raw keys, requires durable repository/keyring/privacy/provider/trust capabilities, and includes tested DynamoDB repository implementations. The supported production topology is explicitly single-replica; startup rejects an implicit multi-replica assumption. | **FIXED — source gate verified**; composition, entrypoint, Dynamo repository, and environment-validation regressions. Real KMS/provider wiring, the packaged production module, backup/restore, deletion drills, and deployed-operation evidence remain under `BLD-005`. Multi-replica scheduling requires a future distributed lease protocol and is not claimed. |
 
 ### Manufacturer simulator and dashboard
 
@@ -142,24 +145,26 @@ Line references identify the audited candidate location or the named function wh
 | --- | --- | --- | --- | --- | --- |
 | BLD-001 | High | `app.config.js`; build-profile tests | Preview/distributed builds could inherit local endpoints or permissive fallbacks. | Preview and production are treated as distributed; required endpoints are HTTPS and local production rejects invalid/missing values. | **FIXED — verified**; config tests and environment validation. |
 | BLD-002 | Medium | `package.json`, `eslint.config.js`, `scripts/validate.cjs` | `expo-doctor` floated to an unreviewed latest version and some CJS scripts were outside lint scope. | Doctor is pinned to `1.20.1`; scripts are linted; the aggregate validation command includes deterministic configuration checks. | **FIXED — verified**; ESLint and Expo Doctor 20/20 passed. |
-| BLD-003 | Medium | root/server lockfiles | A normal online `npm audit` was not available in the isolated audit environment. An offline audit can miss advisories absent from the local cache. | Both lockfiles were checked with `npm audit --offline`; production release must repeat an authenticated live-registry audit/SBOM scan and triage the immutable artifact. | **OPEN — INTERNAL release gate**; see dependency qualification below. |
-| BLD-004 | Low | server container image and `eas.json` CLI constraint | The Node base image tag and EAS CLI semver range are mutable, reducing build reproducibility. No verified digest/exact supported EAS release was available during this source-only audit. | Record a reviewed Node image digest and exact EAS CLI version in the release change after artifact verification; do not invent a digest. | **OPEN — INTERNAL supply-chain gate**. |
+| BLD-003 | Medium | root/server lockfiles; `.github/workflows/production-validation.yml` | A normal online `npm audit` was not available in the isolated audit environment. An offline audit can miss advisories absent from the local cache, and no source gate required retained SBOM or built-image evidence. | Added `npm run validate:production` for cached audits and temporary validated CycloneDX 1.5 inventories. Added fail-closed `validate:production:release` plus a commit-SHA-pinned CI workflow for current-registry audits, retained SBOMs, digest-pinned container build/inspection, health/fail-closed/shutdown checks, and a high/critical Trivy image scan. | **FIXED — source gate verified**; supply-chain tests, production validation scripts, and pinned CI policy. Local offline validation passed. No live-registry, local-container, signed-native-artifact, or deployed scan result is claimed; release-candidate evidence remains under `BLD-005`. |
+| BLD-004 | Low | `server/Dockerfile`; `eas.json`; root/server manifests | The Node base image tag and EAS CLI semver range were mutable, reducing build reproducibility. | Pinned both Docker stages to the reviewed exact Node/Alpine tag and OCI digest; pinned Node `22.23.1`, npm `10.9.8`, and EAS CLI `21.0.2`; required a clean commit for EAS; and added policy tests that reject mutable replacements. | **FIXED — source gate verified**; `release-policy.json`, Docker/EAS/manifests/lockfiles, and supply-chain regressions. No local image pull/build or signed EAS artifact is claimed. |
 | BLD-005 | External | production deployment | No source test proves cloud IAM, secret rotation, DNS/TLS, WAF/rate limiting, multi-AZ recovery, backups, alarms, or provider callbacks in the target account. | Run deployment, restore, key-rotation, abuse, incident, and rollback acceptance against the exact immutable candidate. | **BLOCKED — EXTERNAL** for accounts/credentials; operational approval also required. |
 
 ## Verification record
 
-All source and configuration checks below ran against the exact content committed as audited implementation `3cf50c8`. The later documentation-only commit does not alter executable behavior. Mock/export evidence remains deliberately narrower than physical, provider, signed-build, or production evidence.
+All follow-up source and configuration checks below ran against the exact executable content committed as production-gate implementation `8536d18`. The later report-only commit does not alter executable behavior. Mock/export evidence remains deliberately narrower than physical, provider, signed-build, live-registry, container-runtime, or production-deployment evidence.
 
 | Gate | Command / evidence | Candidate result |
 | --- | --- | --- |
-| Audited implementation | `git rev-parse HEAD` after executable commits | `3cf50c8` |
-| Working tree | `git status --short` after executable commits | **PASS — only this report, README, and previously requested dashboard documentation remained for the documentation commit** |
+| Production-gate implementation | `git rev-parse HEAD` after executable commits | `8536d18` |
+| Working tree | `git status --short` after executable commit | **PASS — only this audit report remained for the report closeout commit** |
 | Diff hygiene | `git diff --check` before commits | **PASS** |
-| Full deterministic suite | `npm test` | **PASS — 917/917** |
-| Core/mobile/server JavaScript | full-suite subgroup | **PASS — 705/705** |
+| Full deterministic suite | `npm test` | **PASS — 949/949** |
+| Core/mobile/server JavaScript | full-suite subgroup | **PASS — 721/721** |
 | TypeScript adapters/simulator | adapter/simulator subgroup | **PASS — 44/44**; 98.55% statements/lines, 91.20% branches, 97.26% functions |
 | Manufacturer integration | integration subgroup | **PASS — 8/8** |
-| AI-native | AI-native subgroup | **PASS — 160/160**; 97.62% statements/lines, 86.86% branches, 98.57% functions |
+| AI-native | AI-native subgroup | **PASS — 176/176**; 97.40% statements/lines, 85.90% branches, 98.34% functions |
+| Production source gate | `npm run validate:production` | **PASS — AI-native build/regressions, production composition/environment policy, both cached audits, and two validated CycloneDX 1.5 SBOMs**; loopback integration was run with local sandbox permission. |
+| Supply-chain policy | `npm run validate:supply-chain` | **PASS — immutable Node image/EAS/tool policy and 1,024 locked packages** |
 | Adapter soak | `npm run test:soak:adapters` | **PASS — 60 seconds, 4,611,721 commands, 0.019 ms sampled p95 admission, 449,320-byte heap growth, zero leaked handles** |
 | ESLint | `npm run lint` | **PASS — no warnings/errors** |
 | Adapter TypeScript | `npm run typecheck:adapters` | **PASS** |
@@ -168,13 +173,14 @@ All source and configuration checks below ran against the exact content committe
 | Server builds | `npm --prefix server run build` | **PASS — adapters and AI-native** |
 | Lockfile/install consistency | root and server `npm ci --dry-run --offline` | **PASS** |
 | Mobile environment | `npm run validate-env` / development profile | **PASS — 0 errors; missing development-only optional settings remain warnings** |
-| Server environment | `npm run validate-env:server` / server dry run | **PASS — 24 server checks, 0 warnings, 0 errors** |
+| Server environment | `npm run validate-env:server` / development server dry run | **PASS — 24 server checks, one expected warning for the production-only composition module, 0 errors** |
 | Expo Doctor | `npm run doctor` | **PASS — 20/20** |
 | iOS production JS export | `npx expo export --platform ios` with production-safe public placeholders | **PASS — 2,610 modules; 9.7 MB Hermes bundle** |
 | Android production JS export | `npx expo export --platform android` with production-safe public placeholders | **PASS — 2,693 modules; 9.9 MB Hermes bundle** |
 | Root dependency audit | `npm audit --offline` | **PASS — 0 cached advisories**; live registry audit still required. |
 | Server dependency audit | `npm --prefix server audit --offline` | **PASS — 0 cached advisories**; live registry audit still required. |
-| Container image build | `docker` / compatible local engine | **NOT RUN — no Docker, Podman, or Colima executable was installed; source Dockerfile reviewed, image build remains a release gate** |
+| Live release/artifact gate | `npm run validate:production:release` | **NOT RUN LOCALLY — no Docker, Podman, or Colima executable was installed and live registry transmission was not approved; the pinned CI workflow fails closed on this command plus the container vulnerability scan** |
+| Container image build | Docker Buildx / compatible local engine | **NOT RUN LOCALLY — digest/policy regression passed; an actual pull, build, health/shutdown run, and Trivy result must be retained for the exact release candidate** |
 | Mock/main-server startup | isolated ports `3101`/`8887`, mock credentials | **PASS — all builds passed, main health `200`, dashboard `200`, and `[AI-Native] System injected` logged** |
 | Scenario trigger | all five `POST /v1/scenarios` workflows | **PASS — five `202` responses and five terminal `completed` executions** |
 | Idempotent replay/conflict | same key/body, then same key/changed body | **PASS — replay reused the execution ID; changed fingerprint returned `409 IDEMPOTENCY_CONFLICT`** |
@@ -183,23 +189,25 @@ All source and configuration checks below ran against the exact content committe
 
 ## Dependency-audit qualification
 
-The root and server offline audits reported zero vulnerabilities using the advisory metadata already present in the local npm cache. That is useful deterministic evidence, but it is not equivalent to a current registry-backed audit on 21 July 2026. A live audit was attempted but workspace security policy rejected sending the private dependency graph to the external npm registry; no workaround was used. Before any release candidate is promoted, Release Engineering must:
+The root and server offline audits reported zero vulnerabilities using the advisory metadata already present in the local npm cache. That is useful deterministic evidence, but it is not equivalent to a current registry-backed audit on 21 July 2026. A live audit was attempted but workspace security policy rejected sending the private dependency graph to the external npm registry; no workaround was used. The repository now makes the distinction executable: `validate:production` is the credential-free source gate, while `validate:production:release` and the pinned workflow are the mandatory live artifact gate. Before any release candidate is promoted, Release Engineering must retain a successful workflow run that:
 
-1. run live `npm audit` for both lockfiles in an approved environment;
-2. generate and archive an SBOM for the immutable mobile and server artifacts;
-3. scan the built container and native artifacts, not only the source lockfiles;
-4. record accepted exceptions with owner, expiry, exposure analysis, and compensating controls.
+1. runs live `npm audit` for both lockfiles in an approved environment;
+2. generates and archives the validated mobile/server SBOMs for the immutable candidate;
+3. builds and inspects the digest-pinned server image and passes its high/critical vulnerability scan;
+4. scans the signed native artifacts when those externally credentialed builds exist;
+5. records accepted exceptions with owner, expiry, exposure analysis, and compensating controls.
 
 No dependency was added merely to address this audit.
 
-## Remaining internal gates
+## Internal source gates — closed
 
-| Gate | Owner | Required evidence | Status |
-| --- | --- | --- | --- |
-| Production AI-native composition | Backend/Platform/Security | Durable encrypted repositories, KMS/key rotation, multi-process admission/leases, provider injection, backup/restore, deletion verification | **OPEN — INTERNAL** |
-| Supply-chain reproducibility | Release Engineering | Reviewed immutable Node image digest, exact EAS CLI, live advisory/SBOM/container scans | **OPEN — INTERNAL** |
-| Production operations | Platform/SRE/Security | WAF/rate limits, dashboards/alerts, on-call, recovery and rollback drills, capacity/load/soak evidence | **OPEN — INTERNAL**, partly credential-dependent |
-| Safety delivery policy | Product/Safety/Privacy | Provider delivery/receipt semantics, escalation policy, human factors, consent, false-positive/negative acceptance | **OPEN — INTERNAL**, provider/hardware evidence required |
+| Finding | Gate | Status |
+| --- | --- | --- |
+| Production AI-native composition (`AI-011`) | Fail-closed composition for the declared single-replica topology | **FIXED — source gate verified** |
+| Dependency qualification (`BLD-003`) | Dependency, SBOM, and built-image release enforcement | **FIXED — source gate verified** |
+| Reproducible builds (`BLD-004`) | Reproducible toolchain and container policy | **FIXED — source gate verified** |
+
+“Closed” is limited to repository/source readiness for the declared topology. It does not convert provider, deployment, vendor, signed-artifact, or physical acceptance into PASS. Production authentication, `NODE_ENV` fail-closed validation, health checks, and graceful shutdown were already closed by `BCK-008`, `BCK-021` through `BCK-024`, `BLD-001`, and their regressions; they were verified again but are not new findings.
 
 ## Remaining external gates
 
@@ -220,6 +228,11 @@ Quick count: **13 total; 2 PASS; 11 BLOCKED — EXTERNAL**. The next milestone i
 
 ## Required physical and external acceptance
 
+| Acceptance area | Finding mapping | Status |
+| --- | --- | --- |
+| Production operations: target-account WAF/rate limits, alerts/on-call, recovery/rollback, capacity, and load/soak evidence | `BLD-005` | **BLOCKED — EXTERNAL** |
+| Safety delivery policy: provider receipt semantics, escalation, consent, human factors, and false-positive/negative acceptance | `ADP-006`, `MOB-019`, `BLD-005` | **BLOCKED — EXTERNAL** |
+
 At minimum, the exact reviewed build must pass:
 
 - VL01 BLE permission deny/retry, filtered scan, ownership/pairing, GATT discovery, fragmented writes, notification bursts, disconnect/reconnect, process death, iOS background/lock behavior, firmware reset/update, 24-hour soak, latency, and battery measurements;
@@ -231,6 +244,6 @@ Acceptance criteria must record build SHA/profile, app and firmware versions, de
 
 ## Final recommendation
 
-**GO** for mock-backed demonstration, continued internal development, and manufacturer technical-package/conformance work on audited implementation `3cf50c8`.
+**GO** for source-level handoff to Grace, mock-backed demonstration, and manufacturer technical-package/conformance work on production-gate implementation `8536d18`. All three internal source gates are closed for the declared single-replica topology.
 
-**NO-GO** for production release, emergency-care reliance, medical claims, unattended robot motion, or public deployment. The remaining constraints are substantive external and operational gates—not missing confidence language. Production approval requires the physical/vendor/provider/durable-operation evidence listed above and an explicit release decision by Engineering, Security, Privacy, Safety/Clinical, and Operations owners.
+**NO-GO** for production release, emergency-care reliance, medical claims, unattended robot motion, or public deployment. The remaining constraints are the three externally blocked findings and their associated provider, deployment, signed-artifact, vendor, and physical acceptance—not unfinished source gates. Production approval requires the evidence listed above and an explicit release decision by Engineering, Security, Privacy, Safety/Clinical, and Operations owners.
