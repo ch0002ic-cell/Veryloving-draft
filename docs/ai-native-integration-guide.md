@@ -152,7 +152,7 @@ Configuration rules:
 
 The development simulator supports deterministic latency and failure injection. `MOCK_MANUFACTURER_URL` is permitted only for a loopback origin when `NODE_ENV` is `development` or `test`; production configuration rejects it. See [robot-adapter-integration-guide.md](./robot-adapter-integration-guide.md) for the adapter bridge configuration.
 
-Synthetic dual-device events are configured with `MOCK_MANUFACTURER_FALL_EVENT_RATE`, `MOCK_MANUFACTURER_STRESS_EVENT_RATE`, `MOCK_MANUFACTURER_MEDICATION_REMINDER_EVERY_TICKS`, `MOCK_MANUFACTURER_TELEMETRY_INTERVAL_MS`, and `MOCK_MANUFACTURER_SEED`. Set event rates to zero for a quiet deterministic walkthrough and inject the desired event explicitly. The HTML dashboard is at `GET /dashboard`; authenticated JSON/event/SSE routes are listed in [api-reference-ai-native.md](./api-reference-ai-native.md).
+Synthetic dual-device events are configured with `MOCK_MANUFACTURER_FALL_EVENT_RATE`, `MOCK_MANUFACTURER_STRESS_EVENT_RATE`, `MOCK_MANUFACTURER_MEDICATION_REMINDER_EVERY_TICKS`, `MOCK_MANUFACTURER_TELEMETRY_INTERVAL_MS`, and `MOCK_MANUFACTURER_SEED`. Set event rates to zero for a quiet deterministic walkthrough and inject the desired event explicitly. The HTML dashboard is at `GET /dashboard`; it shows live devices and real/synthetic executions and can launch all five workflows. Setup, its local cookie/proxy boundary, and operator acceptance steps are documented in [demo-dashboard.md](./demo-dashboard.md); authenticated JSON/event/SSE routes are listed in [api-reference-ai-native.md](./api-reference-ai-native.md).
 
 ## 5. The five workflows
 

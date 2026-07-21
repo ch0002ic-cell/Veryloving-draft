@@ -581,6 +581,9 @@ The following additions are local development/test surfaces in [ManufacturerMock
 ```text
 GET  /dashboard
 GET  /api/v1/simulation/dashboard
+GET  /api/v1/simulation/dashboard/events
+POST /api/v1/simulation/trigger
+POST /api/v1/simulation/executions
 POST /api/v1/simulation/events
 GET  /api/v1/wearable/telemetry/{deviceId}
 GET  /api/v1/robot/telemetry/{deviceId}
@@ -590,7 +593,11 @@ The existing assumed-manufacturer and adapter bridge routes remain documented in
 
 ### 8.1 Dashboard
 
-`GET /dashboard` returns a loopback-only HTML projection and intentionally contains only redacted simulator records. `GET /api/v1/simulation/dashboard` requires the development bearer token and returns contract `vl-manufacturer-simulation-dashboard/1` with `synthetic: true`, current wearable/robot state, up to ten scenario records, and the last ten redacted event summaries. The JSON route is the diagnostic source; the HTML view is not persistent state.
+`GET /dashboard` returns a loopback-only HTML application and sets a random process-local `HttpOnly; SameSite=Strict` dashboard cookie. It intentionally contains only redacted simulator records. `GET /api/v1/simulation/dashboard` requires that cookie or the development bearer token and returns contract `vl-manufacturer-simulation-dashboard/1` with `synthetic: true`, current wearable/robot state, up to ten scenario records, and the last ten redacted event summaries. `GET /api/v1/simulation/dashboard/events` applies the same protection and streams bounded snapshots as SSE with connection caps, heartbeat, backpressure handling, and disconnect cleanup.
+
+The cookie-protected same-origin UI uses `POST /api/v1/simulation/trigger` to forward one exact five-scenario request to the configured loopback main server. `POST /api/v1/simulation/executions` accepts only the fixed `{ "userId": "<AI_NATIVE_DEMO_USER_ID>" }` account (default `test-user-1`) and reads its bounded main-server execution list. Both mutation routes additionally require an exact same-origin `Origin` (and, when supplied, `Sec-Fetch-Site`) header; bearer access remains available to automated local tests. Upstream destinations are fixed, loopback-only, credential-free, timed, and response-size bounded.
+
+When the in-memory AI-native demo is enabled, its loopback wrapper accepts the five camel-case aliases at `POST /v1/scenarios` and exposes `GET /v1/scenarios/executions?userId=test-user-1`. The configured demo user is fixed by `AI_NATIVE_DEMO_USER_ID`; this does not create a caller-selectable production account API. Requests and returned snapshots are strictly validated, bounded, redacted, and unavailable in production. See [demo-dashboard.md](./demo-dashboard.md) for the exact local shapes.
 
 The in-process `recordScenarioExecution({ scenarioId, status, wearableDeviceId?, robotDeviceId? })` helper accepts status `started`, `completed`, `fallback`, `failed`, or `cancelled`. It one-way hashes device IDs before retaining the bounded record.
 

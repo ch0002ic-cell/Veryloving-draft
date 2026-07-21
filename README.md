@@ -58,7 +58,7 @@ When dated evidence or sections differ, use this precedence:
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 20 July 2026 with 576 core, 33 TypeScript-adapter/simulator, 7 manufacturer-bridge, and 146 AI-native tests (762 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
+Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 21 July 2026 with 595 core, 39 TypeScript-adapter/simulator, 8 integration, and 154 AI-native tests (796 total). The delivery report must bind those working-tree results to the final immutable commit SHA and must not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -849,7 +849,7 @@ npm run clm:start
 
 `server/.env` is ignored and must contain legitimate development credentials only when required by the operator. Never print or paste it.
 
-For the loopback-only dual-device simulator, use `npm run mock:manufacturer`, then open `http://127.0.0.1:3001/dashboard`. It is rejected in production and does not prove vendor, clinical, or physical-device behavior.
+For the loopback-only dual-device simulator, use `npm run mock:manufacturer`, then open `http://127.0.0.1:3001/dashboard`. The dashboard renders live device telemetry, real and synthetic scenario executions, and five scenario controls through protected same-origin development routes. See the [dual-device demo dashboard guide](./docs/demo-dashboard.md) for setup, API contracts, security boundaries, and troubleshooting. It is rejected in production and does not prove vendor, clinical, or physical-device behavior.
 
 ### Container and cloud deployment boundary
 
@@ -914,7 +914,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 
 ## 18. Consolidation map
 
-This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md), [`docs/ai-native-integration-guide.md`](./docs/ai-native-integration-guide.md), [`docs/api-reference-ai-native.md`](./docs/api-reference-ai-native.md), [`docs/troubleshooting-ai-native.md`](./docs/troubleshooting-ai-native.md), and [`docs/demo-script.md`](./docs/demo-script.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
+This README is the primary consolidated project and release handoff. Specialist Product 2 evidence and operator detail are maintained in [`docs/hardware-partner-research.md`](./docs/hardware-partner-research.md), [`docs/hardware-partner-decision-matrix.md`](./docs/hardware-partner-decision-matrix.md), [`docs/manufacturer-api-requirements.md`](./docs/manufacturer-api-requirements.md), [`docs/external-dependencies-dashboard.md`](./docs/external-dependencies-dashboard.md), [`docs/integration-timeline.md`](./docs/integration-timeline.md), [`docs/ask-templates.md`](./docs/ask-templates.md), [`docs/robot-hal-architecture.md`](./docs/robot-hal-architecture.md), [`docs/robot-adapter-integration-guide.md`](./docs/robot-adapter-integration-guide.md), [`docs/robot-adapter-bug-log.md`](./docs/robot-adapter-bug-log.md), [`docs/ai-native-integration-guide.md`](./docs/ai-native-integration-guide.md), [`docs/api-reference-ai-native.md`](./docs/api-reference-ai-native.md), [`docs/troubleshooting-ai-native.md`](./docs/troubleshooting-ai-native.md), [`docs/demo-dashboard.md`](./docs/demo-dashboard.md), and [`docs/demo-script.md`](./docs/demo-script.md). The former root documents below were merged into the indicated sections and removed after consolidation; their pre-consolidation text remains available through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |
