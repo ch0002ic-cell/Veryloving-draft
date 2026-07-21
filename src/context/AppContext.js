@@ -40,6 +40,10 @@ import { listHomeRobots } from '../services/robot-pairing';
 import { loadRobotPairingCredential } from '../services/robot-pairing-credential-store';
 import { createMedicationReminderScheduler } from '../services/medication-reminder-scheduler';
 import { recordMedicationDeliveryTelemetry } from '../services/medication-telemetry';
+import {
+  accountSettingsAreHydrated,
+  pairedDeviceNeedsHydration
+} from '../utils/app-hydration';
 
 const AppContext = createContext(null);
 
@@ -417,9 +421,15 @@ export function AppProvider({ children }) {
   }, [authLoading, user?.id]);
 
   useEffect(() => {
-    if (authLoading || !localStateHydrated) return undefined;
+    const accountId = user?.id || null;
+    if (!accountSettingsAreHydrated({
+      accountId,
+      authLoading,
+      localStateHydrated,
+      settingsAccountId
+    })) return undefined;
     let active = true;
-    if (!user?.id) {
+    if (!accountId) {
       const pairedDeviceId = deviceRef.current.id;
       deviceGenerationRef.current += 1;
       deviceAccountIdRef.current = null;
@@ -440,8 +450,11 @@ export function AppProvider({ children }) {
       return () => { active = false; };
     }
 
-    const accountId = user.id;
-    if (deviceAccountIdRef.current !== accountId) {
+    if (pairedDeviceNeedsHydration({
+      accountId,
+      hydratedAccountId: pairedDeviceAccountId,
+      requestedAccountId: deviceAccountIdRef.current
+    })) {
       const previousDeviceId = deviceRef.current.id;
       deviceGenerationRef.current += 1;
       const restoreGeneration = deviceGenerationRef.current;
@@ -545,7 +558,7 @@ export function AppProvider({ children }) {
     return () => {
       active = false;
     };
-  }, [accessToken, authLoading, localStateHydrated, user?.id]);
+  }, [accessToken, authLoading, localStateHydrated, settingsAccountId, user?.id]);
 
   const setDevice = useCallback(async (nextValue) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
