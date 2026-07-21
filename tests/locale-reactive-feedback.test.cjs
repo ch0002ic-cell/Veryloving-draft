@@ -60,7 +60,8 @@ test('onboarding, permission, and device failures remain reactive to locale chan
 
   const deviceManagement = screenSource('app/device-management.js');
   assert.match(deviceManagement, /setErrorKey\('settings\.updateFailedMessage'\)/);
-  assert.match(deviceManagement, /message=\{errorKey \? t\(errorKey\) : connectionErrorKey \? t\(connectionErrorKey\) : null\}/);
+  assert.match(deviceManagement, /message=\{errorKey[\s\S]*?\? t\(errorKey\)[\s\S]*?deviceHydrationErrorCode[\s\S]*?connectionErrorKey \? t\(connectionErrorKey\) : null\}/);
+  assert.match(deviceManagement, /onPress=\{retryDeviceHydration\}/);
   assert.doesNotMatch(deviceManagement, /setError(?:Key)?\(t\(/);
 });
 

@@ -32,6 +32,22 @@ class QueuedWearable extends TestDevice {
   sendCommand(command) { return this.enqueueCommand(() => this.writeCommand(command)); }
 }
 
+function gatewayTextResponse(payload, status = 200) {
+  const text = typeof payload === 'string' ? payload : JSON.stringify(payload);
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: {
+      get(name) {
+        return String(name).toLowerCase() === 'content-length'
+          ? String(Buffer.byteLength(text))
+          : null;
+      }
+    },
+    text: async () => text
+  };
+}
+
 test('DeviceRegistry rejects non-devices and duplicate identities', () => {
   const registry = new DeviceRegistry();
   const device = new TestDevice({ deviceId: 'wearable-1', deviceType: DEVICE_TYPES.wearable });
@@ -62,6 +78,53 @@ test('DeviceRegistry forwards typed telemetry with its bound device identity', (
   }]);
 });
 
+test('telemetry fan-out isolates a failing consumer', () => {
+  const device = new TestDevice({ deviceId: 'w-isolated', deviceType: DEVICE_TYPES.wearable });
+  const delivered = [];
+  device.onTelemetry(() => { throw new Error('screen unmounted'); });
+  device.onTelemetry((event) => delivered.push(event));
+
+  assert.doesNotThrow(() => device.emitTelemetry({ type: 'battery', value: 80 }));
+  assert.deepEqual(delivered, [{ type: 'battery', value: 80 }]);
+});
+
+test('wearable telemetry keeps one BLE bridge until the final listener unsubscribes', () => {
+  let nativeHandler;
+  let registrations = 0;
+  let removals = 0;
+  const wearable = new WearableDevice({
+    deviceId: 'wearable-multi-listener',
+    bleClient: {
+      addEventHandler(handler) {
+        registrations += 1;
+        nativeHandler = handler;
+        return () => { removals += 1; };
+      }
+    }
+  });
+  const firstEvents = [];
+  const secondEvents = [];
+  const removeFirst = wearable.onTelemetry((event) => firstEvents.push(event));
+  const removeSecond = wearable.onTelemetry((event) => secondEvents.push(event));
+
+  assert.equal(registrations, 1);
+  nativeHandler.onBattery('wearable-multi-listener', 87);
+  removeFirst();
+  assert.equal(removals, 0);
+  nativeHandler.onEvent('wearable-multi-listener', 'fall');
+  assert.deepEqual(firstEvents, [{ type: 'battery', battery: 87 }]);
+  assert.deepEqual(secondEvents, [
+    { type: 'battery', battery: 87 },
+    { type: 'event', value: 'fall' }
+  ]);
+
+  removeSecond();
+  removeSecond();
+  assert.equal(removals, 1);
+  wearable.dispose();
+  assert.equal(removals, 1);
+});
+
 test('HomeRobotDevice serializes commands through the backend relay', async () => {
   const bodies = [];
   const redirects = [];
@@ -70,7 +133,7 @@ test('HomeRobotDevice serializes commands through the backend relay', async () =
     fetchImpl: async (_url, options) => {
       bodies.push(JSON.parse(options.body));
       redirects.push(options.redirect);
-      return { ok: true, status: 202, text: async () => JSON.stringify({ accepted: true }) };
+      return gatewayTextResponse({ accepted: true }, 202);
     }
   });
   await Promise.all([robot.sendCommand({ type: 'first' }), robot.sendCommand({ type: 'second' })]);
@@ -113,7 +176,7 @@ test('per-device queues isolate a stalled BLE wearable from robot HTTP delivery'
   let robotDelivered = false;
   const robot = new HomeRobotDevice({
     deviceId: 'r1', gatewayURL: 'https://api.example.test',
-    fetchImpl: async () => { robotDelivered = true; return { ok: true, status: 202, text: async () => '' }; }
+    fetchImpl: async () => { robotDelivered = true; return gatewayTextResponse('', 202); }
   });
   const stalled = wearable.sendCommand({ payload: 'QQ==' });
   const robotResult = await robot.sendCommand({ action: 'check_medication', parameters: {} });
@@ -171,6 +234,34 @@ test('per-device queues prioritize safety work and STOP bypasses a stalled write
   await nativeRunning;
 });
 
+test('a stalled device command queue has a hard admission cap while STOP still bypasses it', async () => {
+  let releaseActive;
+  const device = new TestDevice({
+    deviceId: 'bounded-queue',
+    deviceType: DEVICE_TYPES.wearable,
+    maxCommandQueueDepth: 3
+  });
+  const active = device.enqueueCommand(() => new Promise((resolve) => {
+    releaseActive = resolve;
+  }));
+  while (!releaseActive) await Promise.resolve();
+  const second = device.enqueueCommand(async () => 'second');
+  const third = device.enqueueCommand(async () => 'third');
+
+  await assert.rejects(
+    device.enqueueCommand(async () => 'overflow'),
+    (error) => error.code === 'DEVICE_COMMAND_QUEUE_FULL'
+  );
+  assert.equal(
+    await device.enqueueCommand(async () => 'STOP', { priority: 'critical', bypass: true }),
+    'STOP'
+  );
+  assert.equal(device.pendingCommands.length, 2);
+
+  releaseActive('first');
+  assert.deepEqual(await Promise.all([active, second, third]), ['first', 'second', 'third']);
+});
+
 test('robot network failure marks it offline and retains its durable command', async () => {
   const queued = [];
   const commandStore = {
@@ -186,6 +277,54 @@ test('robot network failure marks it offline and retains its durable command', a
   await assert.rejects(robot.sendCommand({ action: 'check_medication', parameters: {} }), /airplane mode/);
   assert.equal(robot.getStatus().online, false);
   assert.equal(queued.length, 1);
+});
+
+test('robot recovery stages older durable commands before newer in-memory work', async () => {
+  const durable = [];
+  let sequence = 0;
+  let networkAvailable = false;
+  const successfulActions = [];
+  const commandStore = {
+    async enqueue(item) {
+      const queued = { id: `ordered-${++sequence}`, command: item.command };
+      durable.push(queued);
+      return queued;
+    },
+    async load() { return [...durable]; },
+    async acknowledge(id) {
+      const index = durable.findIndex((entry) => entry.id === id);
+      if (index >= 0) durable.splice(index, 1);
+    }
+  };
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-durable-fifo',
+    accountId: 'account-a',
+    gatewayURL: 'https://api.example.test',
+    commandStore,
+    now: () => 50_000,
+    fetchImpl: async (url, options = {}) => {
+      if (!networkAvailable) throw new Error('offline');
+      if (url.endsWith('/health')) return gatewayTextResponse({ status: 'ok' });
+      if (url.includes('/telemetry')) {
+        return gatewayTextResponse({ online: true, reported_at: 50_000 });
+      }
+      const action = JSON.parse(options.body).action;
+      successfulActions.push(action);
+      return gatewayTextResponse({ accepted: true }, 202);
+    }
+  });
+
+  await assert.rejects(robot.sendCommand({ action: 'older' }), /offline/);
+  const newer = robot.sendCommand({ action: 'newer' });
+  await Promise.resolve();
+  assert.deepEqual(durable.map((entry) => entry.command.action), ['older', 'newer']);
+
+  networkAvailable = true;
+  await robot.connect();
+  assert.deepEqual(await newer, { accepted: true });
+  assert.deepEqual(successfulActions, ['older', 'newer']);
+  assert.deepEqual(durable, []);
+  robot.dispose();
 });
 
 test('registry ignores a stale account rehydrate that finishes after a newer account', async () => {
@@ -262,7 +401,7 @@ test('robot durable scan deduplicates delivery and binds identity with a stable 
       deliveries += 1;
       body = JSON.parse(options.body);
       headers = options.headers;
-      return new Promise((resolve) => { releaseDelivery = () => resolve({ ok: true, status: 202, text: async () => '' }); });
+      return new Promise((resolve) => { releaseDelivery = () => resolve(gatewayTextResponse('', 202)); });
     }
   });
   const firstScan = robot.retryPendingCommands();
@@ -283,7 +422,7 @@ test('robot durable scan deduplicates delivery and binds identity with a stable 
 test('generic relay health never labels manufacturer hardware online', async () => {
   const robot = new HomeRobotDevice({
     deviceId: 'robot-unknown', gatewayURL: 'https://api.example.test',
-    fetchImpl: async () => ({ ok: true, status: 200, text: async () => JSON.stringify({ status: 'ok' }) })
+    fetchImpl: async () => gatewayTextResponse({ status: 'ok' })
   });
   const status = await robot.connect();
   assert.equal(status.relayOnline, true);
@@ -307,13 +446,9 @@ test('successful telemetry persists robot location without cancelling a failed c
     setTimeoutImpl(callback) { retry = callback; return { unref() {} }; },
     clearTimeoutImpl() {},
     fetchImpl: async (url) => {
-      if (url.endsWith('/health')) return { ok: true, status: 200, text: async () => JSON.stringify({ status: 'ok' }) };
+      if (url.endsWith('/health')) return gatewayTextResponse({ status: 'ok' });
       if (url.includes('/telemetry')) {
-        return {
-          ok: true,
-          status: 200,
-          text: async () => JSON.stringify({ online: true, location: { longitude: 103.8, latitude: 1.3 }, reported_at: 1234 })
-        };
+        return gatewayTextResponse({ online: true, location: { longitude: 103.8, latitude: 1.3 }, reported_at: 1234 });
       }
       return { ok: false, status: 503, text: async () => '' };
     }
@@ -337,19 +472,15 @@ test('home robot polls telemetry, validates navigation paths, and cleans up the 
     setIntervalImpl(callback, delay) { assert.equal(delay, 5000); poll = callback; return 'poll-1'; },
     clearIntervalImpl(timer) { assert.equal(timer, 'poll-1'); cleared = true; },
     fetchImpl: async (url) => {
-      if (url.endsWith('/health')) return { ok: true, status: 200, text: async () => JSON.stringify({ status: 'ok' }) };
+      if (url.endsWith('/health')) return gatewayTextResponse({ status: 'ok' });
       telemetryReads += 1;
-      return {
-        ok: true,
-        status: 200,
-        text: async () => JSON.stringify({
+      return gatewayTextResponse({
           online: true,
           reported_at: 50_000,
           battery: { percentage: 81, charging: true, observed_at: 50_000 },
           indoor_position: { room_id: 'living-room', floor_id: 'floor-1', map_id: 'home-map', x_m: 3.5, y_m: 4.25, confidence: 0.96, captured_at: 50_000 },
           navigation_path: [[103.8, 1.3], { longitude: 103.81, latitude: 1.31 }, [999, 999]]
-        })
-      };
+      });
     }
   });
   const status = await robot.connect();
@@ -386,14 +517,14 @@ test('home robot telemetry is single-flight, rejects older samples, and suspends
     fetchImpl: async () => {
       requests += 1;
       if (requests === 1) return new Promise((resolve) => { resolveFirst = resolve; });
-      return { ok: true, status: 200, text: async () => JSON.stringify({ online: true, reported_at: 19_000 }) };
+      return gatewayTextResponse({ online: true, reported_at: 19_000 });
     }
   });
   const first = robot.refreshTelemetry();
   const coalesced = robot.refreshTelemetry();
   while (!resolveFirst) await Promise.resolve();
   assert.equal(requests, 1);
-  resolveFirst({ ok: true, status: 200, text: async () => JSON.stringify({ online: true, reported_at: 20_000, navigation_path: [[1, 1], [2, 2]] }) });
+  resolveFirst(gatewayTextResponse({ online: true, reported_at: 20_000, navigation_path: [[1, 1], [2, 2]] }));
   await Promise.all([first, coalesced]);
   const ignored = await robot.refreshTelemetry();
   assert.equal(ignored.ignored, true);
@@ -466,6 +597,29 @@ test('home robot keeps the relay online but rejects malformed gateway JSON', asy
   streamed.dispose();
 });
 
+test('home robot refuses unbounded non-stream response bodies without Content-Length', async () => {
+  let bodyReads = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-unbounded-text',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      async text() {
+        bodyReads += 1;
+        return JSON.stringify({ status: 'ok' });
+      }
+    })
+  });
+
+  await assert.rejects(
+    robot.request('/health'),
+    (error) => error.code === 'ROBOT_GATEWAY_INVALID_RESPONSE'
+  );
+  assert.equal(bodyReads, 0);
+  robot.dispose();
+});
+
 test('home robot cancels non-success response bodies before releasing the request', async () => {
   let cancelled = 0;
   const robot = new HomeRobotDevice({
@@ -480,6 +634,131 @@ test('home robot cancels non-success response bodies before releasing the reques
   await assert.rejects(robot.request('/health'), (error) => error.statusCode === 503);
   assert.equal(cancelled, 1);
   robot.dispose();
+});
+
+test('home robot cancels an unexpected body on a successful 204 response', async () => {
+  let cancelled = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-204-body',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async () => ({
+      ok: true,
+      status: 204,
+      body: { async cancel() { cancelled += 1; } }
+    })
+  });
+  assert.equal(await robot.request('/v1/device-actions'), null);
+  assert.equal(cancelled, 1);
+  robot.dispose();
+});
+
+test('explicit robot disconnect removes recovery work, requests, and network monitoring', async () => {
+  let retryCallback;
+  let telemetryCallback;
+  let networkCallback;
+  let removed = 0;
+  let clearedRetries = 0;
+  let clearedTelemetry = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-explicit-disconnect',
+    gatewayURL: 'https://api.example.test',
+    setTimeoutImpl(callback) { retryCallback = callback; return 11; },
+    clearTimeoutImpl() { clearedRetries += 1; },
+    setIntervalImpl(callback) { telemetryCallback = callback; return 22; },
+    clearIntervalImpl() { clearedTelemetry += 1; },
+    loadNetwork: async () => ({
+      addNetworkStateListener(callback) {
+        networkCallback = callback;
+        return { remove() { removed += 1; } };
+      }
+    })
+  });
+  await robot.startNetworkMonitoring();
+  robot.scheduleNetworkRetry();
+  robot.startTelemetryPolling();
+  const requestController = new AbortController();
+  robot.activeRequestControllers.add(requestController);
+
+  await robot.disconnect();
+  assert.equal(requestController.signal.aborted, true);
+  assert.equal(removed, 1);
+  assert.equal(clearedRetries, 1);
+  assert.equal(clearedTelemetry, 1);
+  assert.equal(robot.networkSubscription, null);
+  assert.equal(robot.retryTimer, null);
+  assert.equal(robot.telemetryTimer, null);
+
+  networkCallback?.({ isConnected: true, isInternetReachable: true });
+  retryCallback?.();
+  telemetryCallback?.();
+  assert.equal(robot.getStatus().connectionState, 'disconnected');
+  assert.equal(robot.retryTimer, null);
+  assert.equal(robot.telemetryTimer, null);
+  robot.dispose();
+});
+
+test('home robot parks queued commands after disconnect and resumes them only after health recovery', async () => {
+  const requests = [];
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-parked-command',
+    gatewayURL: 'https://api.example.test',
+    now: () => 50_000,
+    fetchImpl: async (url) => {
+      requests.push(url);
+      if (url.endsWith('/health')) {
+        return gatewayTextResponse({ status: 'ok' });
+      }
+      if (url.includes('/telemetry')) {
+        return gatewayTextResponse({ online: true, reported_at: 50_000 });
+      }
+      return gatewayTextResponse({ accepted: true }, 202);
+    }
+  });
+
+  await robot.disconnect();
+  const queued = robot.sendCommand({ action: 'check_medication', parameters: {} });
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.equal(requests.length, 0);
+
+  await robot.connect();
+  assert.deepEqual(await queued, { accepted: true });
+  assert.equal(requests.filter((url) => url.endsWith('/v1/device-actions')).length, 1);
+  robot.dispose();
+});
+
+test('late response bodies cannot mutate a robot after disconnect or disposal', async () => {
+  for (const terminate of ['disconnect', 'dispose']) {
+    let releaseBody;
+    let cancelledBodies = 0;
+    const robot = new HomeRobotDevice({
+      deviceId: `robot-late-${terminate}`,
+      gatewayURL: 'https://api.example.test',
+      now: () => 50_000,
+      fetchImpl: async () => ({
+        ok: true,
+        status: 200,
+        headers: { get: () => '37' },
+        body: { async cancel() { cancelledBodies += 1; } },
+        text: () => new Promise((resolve) => { releaseBody = resolve; })
+      })
+    });
+    robot.setStatus({ online: true, hardwareStatus: 'online', connectionState: 'connected' });
+    const telemetry = robot.refreshTelemetry();
+    while (!releaseBody) await Promise.resolve();
+
+    if (terminate === 'disconnect') await robot.disconnect();
+    else robot.dispose();
+    assert.equal(cancelledBodies, 1);
+    releaseBody(JSON.stringify({ online: true, reported_at: 50_000 }));
+
+    await assert.rejects(telemetry, (error) => (
+      error?.code === (terminate === 'dispose' ? 'DEVICE_DISPOSED' : 'DEVICE_DISCONNECTED')
+    ));
+    assert.equal(robot.getStatus().connectionState, terminate === 'dispose' ? 'connected' : 'disconnected');
+    assert.equal(robot.getStatus().lastSeenAt, undefined);
+    robot.dispose();
+  }
 });
 
 test('home robot request timeout survives fetch implementations that ignore AbortSignal', async () => {
@@ -566,10 +845,9 @@ test('home robot never treats telemetry without a valid vendor timestamp as fres
     deviceId: 'robot-no-timestamp',
     gatewayURL: 'https://api.example.test',
     now: () => 50_000,
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      text: async () => JSON.stringify({ online: true, location: { longitude: 103.8, latitude: 1.3 } })
+    fetchImpl: async () => gatewayTextResponse({
+      online: true,
+      location: { longitude: 103.8, latitude: 1.3 }
     })
   });
   const telemetry = await robot.refreshTelemetry();
@@ -586,11 +864,7 @@ test('home robot fails closed when fresh telemetry omits required online state',
     deviceId: 'robot-missing-online',
     gatewayURL: 'https://api.example.test',
     now: () => 50_000,
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      text: async () => JSON.stringify({ reported_at: 50_000 })
-    })
+    fetchImpl: async () => gatewayTextResponse({ reported_at: 50_000 })
   });
   robot.setStatus({ online: true, hardwareStatus: 'online', connectionState: 'connected' });
   const telemetry = await robot.refreshTelemetry();
@@ -645,6 +919,29 @@ test('AppContext keeps restored wearable location, preserves multiple wearables,
   assert.match(source, /filter\(\(entry\) => entry\.deviceId !== rememberedDevice\.id\)/);
   assert.match(source, /registered\.startNetworkMonitoring\?\.\(\)\.catch/);
   assert.doesNotMatch(source, /\}, \[accessToken, authLoading, user\?\.id\]\);/);
+});
+
+test('AppContext bounds registry hydration retries without accumulating uncancellable native reads', () => {
+  const source = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  assert.match(source, /DEVICE_HYDRATION_MAX_ATTEMPTS = 3/);
+  assert.match(source, /deviceHydrationRetryRef\.current\.accountId !== accountId/);
+  assert.match(source, /deviceHydrationOperationRef = useRef\(null\)/);
+  assert.match(source, /hydration\?\.accountId !== accountId \|\| hydration\.state === 'rejected'/);
+  assert.match(source, /deviceHydrationOperationRef\.current !== hydration[\s\S]*hydration\.state !== 'pending'/);
+  assert.match(source, /deviceRegistry\.clear\(\);[\s\S]*nextAttempt < DEVICE_HYDRATION_MAX_ATTEMPTS/);
+  assert.match(source, /setDeviceHydrationErrorCode\([\s\S]*setDeviceEntitiesAccountId\(accountId\)/);
+  assert.match(source, /deviceHydrationErrorCode/);
+  assert.match(source, /deviceEntitiesAccountId !== user\.id \|\| deviceHydrationErrorCode/);
+  assert.match(source, /const retryDeviceHydration = useCallback/);
+  assert.match(source, /nextState === 'active'\) retryDeviceHydration\(\)/);
+  const timeoutObserver = source.slice(
+    source.indexOf('timeoutTimer = setTimeout'),
+    source.indexOf('\n    return () => {', source.indexOf('timeoutTimer = setTimeout'))
+  );
+  assert.doesNotMatch(timeoutObserver, /rehydrateRegistry\(/);
+  const management = readFileSync(path.resolve(process.cwd(), 'app/device-management.js'), 'utf8');
+  assert.match(management, /deviceHydrationErrorCode/);
+  assert.match(management, /onPress=\{retryDeviceHydration\}/);
 });
 
 test('My Devices can pair an additional wearable without replacing the primary device', () => {

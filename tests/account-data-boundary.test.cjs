@@ -48,11 +48,15 @@ test('a different account purges every local user-data surface and preserves onl
     ['unrelated.host.preference', 'keep-me']
   ]);
   let secureContactClears = 0;
+  let nextSecureContactOwner = null;
   let savedPlaceClears = 0;
   let reminderDisables = 0;
 
   const result = await ensureAccountDataOwner('account-b', {
-    clearEmergencyContactsImpl: async () => { secureContactClears += 1; },
+    clearEmergencyContactsImpl: async ({ nextAccountId }) => {
+      secureContactClears += 1;
+      nextSecureContactOwner = nextAccountId;
+    },
     clearSavedPlacesImpl: async () => { savedPlaceClears += 1; },
     disableReminderImpl: async () => { reminderDisables += 1; },
     now: () => 42,
@@ -61,6 +65,7 @@ test('a different account purges every local user-data surface and preserves onl
 
   assert.equal(result.changed, true);
   assert.equal(secureContactClears, 1);
+  assert.equal(nextSecureContactOwner, 'account-b');
   assert.equal(savedPlaceClears, 1);
   assert.equal(reminderDisables, 1);
   assert.deepEqual(memory.get(ACCOUNT_DATA_OWNER_KEY), {

@@ -122,7 +122,7 @@ export function ensureAccountDataOwner(accountId, {
     // required local sweep succeeds to avoid needless data loss on retry.
     let secureContactWarning = 0;
     try {
-      await clearEmergencyContactsImpl();
+      await clearEmergencyContactsImpl({ nextAccountId });
     } catch {
       secureContactWarning = 1;
     }

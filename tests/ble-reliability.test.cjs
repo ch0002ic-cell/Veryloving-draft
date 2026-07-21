@@ -492,6 +492,156 @@ test('a hanging battery read times out and cancels the partial native connection
   assert.equal(cancelled, true);
 });
 
+test('BLE coalesces concurrent and repeated connections to the same wearable', async () => {
+  let releaseNativeConnect;
+  let connectCalls = 0;
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  const connectedDevice = {
+    id: 'VL01-single-flight',
+    name: 'NorthStar VL01',
+    async discoverAllServicesAndCharacteristics() { return this; },
+    async services() { return [{ uuid: 'fff0' }]; },
+    async characteristicsForService() { return [{ uuid: 'fff1', isReadable: true }]; },
+    async readCharacteristicForService() { return { value: 'Ug==' }; }
+  };
+  service.manager = {
+    state: async () => 'PoweredOn',
+    async connectToDevice() {
+      connectCalls += 1;
+      await new Promise((resolve) => { releaseNativeConnect = resolve; });
+      return connectedDevice;
+    },
+    async cancelDeviceConnection() {}
+  };
+
+  const first = service.connect({ id: connectedDevice.id }, { allowSimulation: false });
+  const second = service.connect({ id: connectedDevice.id }, { allowSimulation: false });
+  while (!releaseNativeConnect) await Promise.resolve();
+  assert.equal(connectCalls, 1);
+  releaseNativeConnect();
+  const [firstResult, secondResult] = await Promise.all([first, second]);
+  assert.deepEqual(secondResult, firstResult);
+
+  const establishedResult = await service.connect({ id: connectedDevice.id }, { allowSimulation: false });
+  assert.deepEqual(establishedResult, firstResult);
+  assert.equal(connectCalls, 1);
+});
+
+test('a cached simulated session cannot satisfy a hardware-only connection', async () => {
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  service.sessions.set('VL01-simulated-cache', {
+    failed: false,
+    connectionResult: {
+      id: 'VL01-simulated-cache',
+      connected: true,
+      simulated: true
+    }
+  });
+
+  await assert.rejects(
+    service.connect({ id: 'VL01-simulated-cache' }, { allowSimulation: false }),
+    (error) => error.code === BLE_ERROR_CODES.unavailable
+  );
+});
+
+test('an explicit BLE disconnect fences an in-flight native connection', async () => {
+  let releaseNativeConnect;
+  let cancelCalls = 0;
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  const connectedDevice = {
+    id: 'VL01-disconnect-race',
+    async discoverAllServicesAndCharacteristics() { return this; },
+    async services() { return [{ uuid: 'fff0' }]; },
+    async characteristicsForService() { return [{ uuid: 'fff1', isReadable: true }]; },
+    async readCharacteristicForService() { return { value: 'Ug==' }; }
+  };
+  service.manager = {
+    state: async () => 'PoweredOn',
+    async connectToDevice() {
+      await new Promise((resolve) => { releaseNativeConnect = resolve; });
+      return connectedDevice;
+    },
+    async cancelDeviceConnection() { cancelCalls += 1; }
+  };
+
+  const connection = service.connect({ id: connectedDevice.id }, { allowSimulation: false });
+  while (!releaseNativeConnect) await Promise.resolve();
+  await service.disconnect(connectedDevice.id);
+  releaseNativeConnect();
+  await assert.rejects(connection, (error) => error.code === BLE_ERROR_CODES.connectFailed);
+  assert.equal(service.sessions.has(connectedDevice.id), false);
+  assert.ok(cancelCalls >= 2);
+});
+
+test('a same-ID reconnect waits for the previous native disconnect to finish', async () => {
+  let releaseDisconnect;
+  let connectCalls = 0;
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  const connectedDevice = {
+    id: 'VL01-account-replacement',
+    async discoverAllServicesAndCharacteristics() { return this; },
+    async services() { return [{ uuid: 'fff0' }]; },
+    async characteristicsForService() { return [{ uuid: 'fff1', isReadable: true }]; },
+    async readCharacteristicForService() { return { value: 'Ug==' }; }
+  };
+  service.manager = {
+    state: async () => 'PoweredOn',
+    async connectToDevice() {
+      connectCalls += 1;
+      return connectedDevice;
+    },
+    cancelDeviceConnection: () => new Promise((resolve) => { releaseDisconnect = resolve; })
+  };
+
+  const disconnecting = service.disconnect(connectedDevice.id);
+  while (!releaseDisconnect) await Promise.resolve();
+  const reconnecting = service.connect({ id: connectedDevice.id }, { allowSimulation: false });
+  await Promise.resolve();
+  assert.equal(connectCalls, 0);
+  releaseDisconnect();
+  await disconnecting;
+  assert.equal((await reconnecting).connected, true);
+  assert.equal(connectCalls, 1);
+});
+
+test('a hung native BLE disconnect times out without poisoning same-ID reconnects', async () => {
+  const service = new BLEService({
+    protocol: TEST_PROTOCOL,
+    nativeDisconnectTimeoutMs: 5
+  });
+  service.manager = {
+    cancelDeviceConnection: () => new Promise(() => {})
+  };
+
+  await assert.rejects(
+    service.disconnect('VL01-hung-disconnect'),
+    (error) => error.code === BLE_ERROR_CODES.disconnectFailed
+  );
+  assert.equal(service.disconnectOperations.has('VL01-hung-disconnect'), false);
+
+  service.connectDevice = async () => ({
+    id: 'VL01-hung-disconnect',
+    connected: true,
+    simulated: false
+  });
+  const connected = await service.connect(
+    { id: 'VL01-hung-disconnect' },
+    { allowSimulation: false }
+  );
+  assert.equal(connected.connected, true);
+  assert.equal(service.connectionAttempts.has('VL01-hung-disconnect'), false);
+});
+
+test('a failing primary BLE event listener cannot block safety subscribers', () => {
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  const events = [];
+  service.setEventHandler({ onEvent: () => { throw new Error('stale screen'); } });
+  service.addEventHandler({ onEvent: (...args) => events.push(args) });
+
+  assert.doesNotThrow(() => service.emitEvent('onEvent', 'VL01-safe-fanout', 'fall'));
+  assert.deepEqual(events, [['VL01-safe-fanout', 'fall']]);
+});
+
 test('BLE reconnect uses bounded exponential attempts and stops on success', async () => {
   const service = new BLEService({ protocol: TEST_PROTOCOL });
   let attempts = 0;

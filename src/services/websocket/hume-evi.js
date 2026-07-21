@@ -1,6 +1,7 @@
-import { audioService } from '../audio';
+import { audioService, MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS } from '../audio';
 import { config } from '../../utils/config';
 import { logger, sanitizeUrl } from '../../utils/logger';
+import { normalizeVoiceText } from '../../utils/voice-text';
 import {
   createHumeServerError,
   HumeConfigurationError
@@ -23,6 +24,8 @@ const MAX_AUDIO_BUFFERED_BYTES = 256 * 1024;
 const DEVICE_ACTION_REQUEST_TIMEOUT_MS = 20000;
 const AI_ANGEL_TOOL_NAME = 'trigger_ai_angel';
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
+const ACTION_ERROR_CODE_PATTERN = /^[A-Z][A-Z0-9_:-]{0,79}$/;
+const ACTION_ID_PATTERN = /^[A-Za-z0-9._:-]{1,160}$/;
 
 function stableActionRequestId(scope, toolCallId) {
   const hash = (value) => {
@@ -75,6 +78,38 @@ export class HumeEVIService {
   isConnected() { return this.state === 'connected'; }
   isConnecting() { return this.state === 'connecting'; }
   isMicrophoneActive() { return this.isRecording; }
+
+  sendSocketPayload(payload, {
+    targetSocket = this.socket,
+    operation = 'message'
+  } = {}) {
+    if (targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
+    try {
+      targetSocket.send(JSON.stringify(payload));
+      return true;
+    } catch (error) {
+      logger.warn('[HumeEVIService] WebSocket send failed', {
+        operation,
+        name: error?.name || 'WebSocketSendError'
+      });
+      return false;
+    }
+  }
+
+  handleHandshakeSendFailure(targetSocket, stage) {
+    const error = new Error('The voice connection was interrupted during secure setup. Please try again.');
+    error.code = 'VOICE_HANDSHAKE_SEND_FAILED';
+    this.messageHandler.onError?.(error);
+    this.setState('error');
+    try {
+      if (targetSocket === this.socket && targetSocket?.readyState === SOCKET_OPEN) {
+        targetSocket.close(4000, 'voice handshake send failed');
+      }
+    } catch {
+      if (targetSocket === this.socket) this.handleClose({ code: 1006, reason: stage }, targetSocket);
+    }
+    return false;
+  }
 
   failConnection(error, context = {}) {
     logger.error('[HumeEVIService] Connection setup failed', {
@@ -253,7 +288,7 @@ export class HumeEVIService {
     logger.voice('[HumeEVIService] WebSocket OPEN; starting secure voice handshake');
     this.chatMetadataReceived = false;
     if (this.usesProxy) {
-      openedSocket.send(JSON.stringify(createProxyAuthenticationPayload({
+      const authenticated = this.sendSocketPayload(createProxyAuthenticationPayload({
         accessToken: this.sessionConfig?.accessToken,
         configId: this.sessionConfig?.configId || config.humeConfigId,
         voiceId: this.sessionConfig?.voiceId,
@@ -261,7 +296,8 @@ export class HumeEVIService {
         locale: this.sessionConfig?.locale,
         resumedChatGroupId: this.sessionConfig?.resumedChatGroupId,
         devices: this.sessionConfig?.devices
-      })));
+      }), { targetSocket: openedSocket, operation: 'proxy-authentication' });
+      if (!authenticated) return this.handleHandshakeSendFailure(openedSocket, 'proxy-authentication');
       this.startReadinessTimeout('gateway authentication');
       return;
     }
@@ -284,16 +320,21 @@ export class HumeEVIService {
   }
 
   beginHumeSession() {
-    this.sendSessionSettings();
+    if (!this.sendSessionSettings()) {
+      return this.handleHandshakeSendFailure(this.socket, 'session-settings');
+    }
     this.startReadinessTimeout('chat metadata');
+    return true;
   }
 
   sendSessionSettings() {
     if (!this.socket || this.socket.readyState !== SOCKET_OPEN || !this.sessionConfig) {
       logger.warn('[HumeEVIService] Cannot send session settings - WebSocket is not open');
-      return;
+      return false;
     }
-    this.socket.send(JSON.stringify(createSessionSettingsPayload(this.sessionConfig)));
+    return this.sendSocketPayload(createSessionSettingsPayload(this.sessionConfig), {
+      operation: 'session-settings'
+    });
   }
 
   async handleMessage(event, sourceSocket = this.socket) {
@@ -375,6 +416,10 @@ export class HumeEVIService {
         break;
       case 'audio_output':
         if (this.assistantAudioInterrupted) break;
+        if (typeof message.data !== 'string' || message.data.length > MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS) {
+          logger.warn('[HumeEVIService] Dropped an invalid or oversized assistant audio frame');
+          break;
+        }
         this.messageHandler.onAudioOutput?.(message.data);
         audioService.playBase64Audio(message.data, 'wav').catch((error) => logger.error('[HumeEVIService] Audio playback failed:', error));
         break;
@@ -404,7 +449,7 @@ export class HumeEVIService {
       case 'device_action': {
         if (!this.usesProxy || !this.proxyAuthenticated) throw new Error('Device actions require an authenticated gateway.');
         const actionId = message.envelope?.id;
-        if (!actionId) return;
+        if (typeof actionId !== 'string' || !ACTION_ID_PATTERN.test(actionId)) return;
         if (this.processedDeviceActionIds.has(actionId)) {
           this.sendDeviceActionAcknowledgement(actionId, true, sourceSocket);
           return;
@@ -533,19 +578,21 @@ export class HumeEVIService {
               this.scenarioRequestTimes.delete(this.scenarioRequestTimes.keys().next().value);
             }
           }
-          socket.send(JSON.stringify({
+          const sent = this.sendSocketPayload({
             type: 'scenario_request',
             request_id: requestId,
             scenario: 'ai_angel_auto_dial',
             occurred_at: this.scenarioRequestTimes.get(requestId)
-          }));
+          }, { targetSocket: socket, operation: 'scenario-request' });
+          if (!sent) finish(reject, new Error('The device action request could not be sent.'));
         } else {
-          socket.send(JSON.stringify({
+          const sent = this.sendSocketPayload({
             type: 'action_request',
             request_id: requestId,
             action: toolCall?.name,
             ...(toolParameters && typeof toolParameters === 'object' ? toolParameters : {})
-          }));
+          }, { targetSocket: socket, operation: 'action-request' });
+          if (!sent) finish(reject, new Error('The device action request could not be sent.'));
         }
       } catch {
         finish(reject, new Error('The device action request could not be sent.'));
@@ -560,53 +607,64 @@ export class HumeEVIService {
   }
 
   handleActionResponse(message) {
-    const pending = this.pendingActionRequests.get(message?.request_id);
+    const requestId = typeof message?.request_id === 'string' && message.request_id.length <= 240
+      ? message.request_id
+      : null;
+    if (!requestId) return;
+    const pending = this.pendingActionRequests.get(requestId);
     if (!pending) return;
     if (message.ok === true) pending.resolve(JSON.stringify(message.result || { status: 'accepted' }));
     else {
-      const error = new Error(`Device action service returned ${Number(message.status) || 500}.`);
-      error.code = message.error_code || 'DEVICE_ACTION_FAILED';
+      const suppliedStatus = Number(message.status);
+      const status = Number.isInteger(suppliedStatus) && suppliedStatus >= 400 && suppliedStatus <= 599
+        ? suppliedStatus
+        : 500;
+      const error = new Error(`Device action service returned ${status}.`);
+      error.code = typeof message.error_code === 'string' && ACTION_ERROR_CODE_PATTERN.test(message.error_code)
+        ? message.error_code
+        : 'DEVICE_ACTION_FAILED';
       pending.reject(error);
     }
   }
 
   sendDeviceActionAcknowledgement(actionId, ok, targetSocket = this.socket, errorCode) {
-    if (!actionId || targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
-    targetSocket.send(JSON.stringify({
+    if (typeof actionId !== 'string' || !ACTION_ID_PATTERN.test(actionId)) return false;
+    const normalizedErrorCode = typeof errorCode === 'string' && ACTION_ERROR_CODE_PATTERN.test(errorCode)
+      ? errorCode
+      : errorCode ? 'WEARABLE_ACTION_FAILED' : undefined;
+    return this.sendSocketPayload({
       type: 'device_action_ack',
       action_id: actionId,
       ok,
-      ...(errorCode ? { error_code: errorCode } : {})
-    }));
-    return true;
+      ...(normalizedErrorCode ? { error_code: normalizedErrorCode } : {})
+    }, { targetSocket, operation: 'device-action-acknowledgement' });
   }
 
   updateDevices(devices = []) {
     this.sessionConfig = { ...(this.sessionConfig || {}), devices };
     if (!this.usesProxy || !this.proxyAuthenticated || this.socket?.readyState !== SOCKET_OPEN) return false;
-    this.socket.send(JSON.stringify(createDeviceUpdatePayload(devices)));
-    return true;
+    return this.sendSocketPayload(createDeviceUpdatePayload(devices), {
+      operation: 'device-update'
+    });
   }
 
   sendToolResponse(toolCallId, content, toolCall = {}, targetSocket = this.socket) {
     if (!this.chatMetadataReceived || targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
-    targetSocket.send(JSON.stringify(createToolResponsePayload({
+    return this.sendSocketPayload(createToolResponsePayload({
       toolCallId,
       content,
       toolCall,
       customSessionId: this.sessionConfig?.customSessionId
-    })));
-    return true;
+    }), { targetSocket, operation: 'tool-response' });
   }
 
   sendToolError(toolCallId, error, fallbackContent, targetSocket = this.socket) {
     if (!toolCallId || targetSocket !== this.socket || targetSocket?.readyState !== SOCKET_OPEN) return false;
-    targetSocket.send(JSON.stringify(createToolErrorPayload({
+    return this.sendSocketPayload(createToolErrorPayload({
       toolCallId,
       error,
       fallbackContent
-    })));
-    return true;
+    }), { targetSocket, operation: 'tool-error' });
   }
 
   handleError(event, sourceSocket = this.socket) {
@@ -818,6 +876,14 @@ export class HumeEVIService {
   }
 
   sendText(text) {
+    let normalized;
+    try {
+      normalized = normalizeVoiceText(text);
+    } catch (error) {
+      this.messageHandler.onError?.(error);
+      return false;
+    }
+    if (!normalized) return false;
     if (!this.chatMetadataReceived || !this.socket || this.socket.readyState !== SOCKET_OPEN || this.state !== 'connected') {
       this.messageHandler.onError?.(new Error('Voice chat is still connecting. Please wait a moment and try again.'));
       return false;
@@ -826,8 +892,8 @@ export class HumeEVIService {
       // The socket can close between the readiness check and native send(). A
       // false return lets the caller take its durable offline-queue path exactly
       // once instead of losing the text to a thrown bridge exception.
-      this.socket.send(JSON.stringify({ type: 'user_input', text }));
-      logger.voice('[HumeEVIService] Text sent', { characters: text.length });
+      this.socket.send(JSON.stringify({ type: 'user_input', text: normalized }));
+      logger.voice('[HumeEVIService] Text sent', { characters: normalized.length });
       return true;
     } catch (nativeError) {
       logger.warn('[HumeEVIService] Text send failed after the socket readiness check', {

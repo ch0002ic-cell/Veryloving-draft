@@ -111,8 +111,13 @@ export default function Settings() {
       setBusyAction('signOut');
       try {
         releaseLocalMutations = await lockAndFlushLocalMutations();
+        // AuthContext durably writes the signed-out marker before any broad
+        // settings sweep. Preserve that marker so a process death during
+        // cleanup cannot resurrect a residual secure session.
+        await signOut();
         const deletion = await deleteLocalUserData({
           localMutationLockHeld: true,
+          preserveSignedOutTombstone: true,
           preserveLanguage: true
         });
         deletionWarning = hasLocalUserDataDeletionWarnings(deletion);
@@ -120,7 +125,6 @@ export default function Settings() {
         deletionWarning = true;
       }
       resetLocalState({ language: settings.language });
-      await signOut();
       router.replace('/(auth)/onboarding');
       if (deletionWarning) Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
     } catch {

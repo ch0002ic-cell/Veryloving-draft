@@ -1,5 +1,6 @@
 import { BaseDevice, DEVICE_TYPES } from './BaseDevice';
 import { acknowledgeDeviceCommand, enqueueDeviceCommand, loadDeviceCommands } from '../device-command-queue';
+import { readBoundedByteStream } from '../../utils/bounded-http';
 
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_TELEMETRY_INTERVAL_MS = 30000;
@@ -35,7 +36,7 @@ async function cancelGatewayResponse(response) {
   try { await response?.body?.cancel?.(); } catch {}
 }
 
-async function readGatewayResponseText(response, signal) {
+async function readGatewayResponseText(response, signal, cancelResponseImpl) {
   const getHeader = response.headers?.get;
   const rawContentLength = typeof getHeader === 'function'
     ? getHeader.call(response.headers, 'content-length')
@@ -48,45 +49,36 @@ async function readGatewayResponseText(response, signal) {
   }
   if (response.body?.getReader) {
     const reader = response.body.getReader();
-    const cancelOnAbort = () => { void Promise.resolve(reader.cancel?.()).catch(() => {}); };
-    if (signal?.aborted) cancelOnAbort();
-    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
-    const chunks = [];
-    let received = 0;
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        if (!(value instanceof Uint8Array)) throw invalidGatewayResponse(response.status);
-        received += value.byteLength;
-        if (received > MAX_GATEWAY_RESPONSE_BYTES) {
-          await Promise.resolve(reader.cancel?.()).catch(() => {});
-          throw invalidGatewayResponse(response.status);
-        }
-        chunks.push(value);
-      }
-    } finally {
-      signal?.removeEventListener('abort', cancelOnAbort);
-      reader.releaseLock?.();
-    }
-    const bytes = new Uint8Array(received);
-    let offset = 0;
-    for (const chunk of chunks) {
-      bytes.set(chunk, offset);
-      offset += chunk.byteLength;
-    }
+    const bytes = await readBoundedByteStream(reader, {
+      signal,
+      maxBytes: MAX_GATEWAY_RESPONSE_BYTES,
+      invalidError: () => invalidGatewayResponse(response.status),
+      tooLargeError: () => invalidGatewayResponse(response.status)
+    });
     try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch {
       throw invalidGatewayResponse(response.status);
     }
   }
   // Native fetch implementations that do not expose a byte stream must give
   // us an authenticated Content-Length before text() is allowed to allocate.
-  if (typeof getHeader === 'function' && (rawContentLength === undefined || rawContentLength === null)) {
+  if (rawContentLength === undefined || rawContentLength === null) {
     await cancelGatewayResponse(response);
     throw invalidGatewayResponse(response.status);
   }
   if (typeof response.text !== 'function') throw invalidGatewayResponse(response.status);
-  const text = await response.text();
+  const cancelOnAbort = () => {
+    void Promise.resolve(
+      cancelResponseImpl ? cancelResponseImpl() : cancelGatewayResponse(response)
+    ).catch(() => {});
+  };
+  if (signal?.aborted) cancelOnAbort();
+  else signal?.addEventListener('abort', cancelOnAbort, { once: true });
+  let text;
+  try {
+    text = await response.text();
+  } finally {
+    signal?.removeEventListener('abort', cancelOnAbort);
+  }
   if (typeof text !== 'string' || utf8ByteLength(text) > MAX_GATEWAY_RESPONSE_BYTES) {
     throw invalidGatewayResponse(response.status);
   }
@@ -150,6 +142,9 @@ export class HomeRobotDevice extends BaseDevice {
     }
     this.loadNetwork = loadNetwork;
     this.networkSubscription = null;
+    this.networkMonitoringGeneration = 0;
+    this.lifecycleGeneration = 0;
+    this.explicitlyDisconnected = false;
     this.activeRequestControllers = new Set();
     this.scheduledCommands = new Map();
     this.pendingScan = null;
@@ -172,8 +167,25 @@ export class HomeRobotDevice extends BaseDevice {
     } : null);
   }
 
-  async request(path, options = {}) {
-    if (this.disposed) throw this.disposedError();
+  lifecycleError() {
+    if (this.disposed) return this.disposedError();
+    const error = new Error('Robot device is disconnected.');
+    error.code = 'DEVICE_DISCONNECTED';
+    return error;
+  }
+
+  isLifecycleCurrent(generation) {
+    return !this.disposed
+      && !this.explicitlyDisconnected
+      && generation === this.lifecycleGeneration;
+  }
+
+  assertLifecycleCurrent(generation) {
+    if (!this.isLifecycleCurrent(generation)) throw this.lifecycleError();
+  }
+
+  async request(path, options = {}, lifecycleGeneration = this.lifecycleGeneration) {
+    this.assertLifecycleCurrent(lifecycleGeneration);
     if (!this.gatewayURL) {
       const error = new Error('Robot gateway is not configured');
       error.code = 'ROBOT_GATEWAY_NOT_CONFIGURED';
@@ -193,8 +205,12 @@ export class HomeRobotDevice extends BaseDevice {
     };
     try {
       const operation = (async () => {
-        const accessToken = await this.accessTokenProvider?.() || this.accessToken;
-        const pairingToken = await this.pairingTokenProvider?.(this.deviceId) || this.pairingToken;
+        const providedAccessToken = await this.accessTokenProvider?.();
+        this.assertLifecycleCurrent(lifecycleGeneration);
+        const accessToken = providedAccessToken || this.accessToken;
+        const providedPairingToken = await this.pairingTokenProvider?.(this.deviceId);
+        this.assertLifecycleCurrent(lifecycleGeneration);
+        const pairingToken = providedPairingToken || this.pairingToken;
         if (timedOut) throw gatewayTimeoutError();
         if (path.startsWith('/v1/') && this.pairingTokenProvider && !pairingToken) {
           const error = new Error('Robot pairing credential is unavailable');
@@ -213,16 +229,29 @@ export class HomeRobotDevice extends BaseDevice {
             ...options.headers
           }
         });
+        if (!this.isLifecycleCurrent(lifecycleGeneration)) {
+          // AbortController is advisory: a native or mocked fetch may resolve
+          // after disconnect. Start body cleanup before rejecting the stale
+          // lifecycle so that response cannot retain its socket indefinitely.
+          void cancelResponse();
+          throw this.lifecycleError();
+        }
         if (timedOut) {
           await cancelResponse();
           throw gatewayTimeoutError(response?.status);
         }
         if (!response.ok) {
           await cancelResponse();
+          this.assertLifecycleCurrent(lifecycleGeneration);
           throw Object.assign(new Error('Robot gateway request failed'), { statusCode: response.status });
         }
-        if (response.status === 204) return null;
-        const responseText = await readGatewayResponseText(response, controller.signal);
+        if (response.status === 204) {
+          await cancelResponse();
+          this.assertLifecycleCurrent(lifecycleGeneration);
+          return null;
+        }
+        const responseText = await readGatewayResponseText(response, controller.signal, cancelResponse);
+        this.assertLifecycleCurrent(lifecycleGeneration);
         if (timedOut) {
           await cancelResponse();
           throw gatewayTimeoutError(response?.status);
@@ -260,7 +289,9 @@ export class HomeRobotDevice extends BaseDevice {
         : error?.name === 'AbortError'
         ? 'ROBOT_NETWORK_TIMEOUT'
         : relayResponded ? `ROBOT_GATEWAY_HTTP_${error.statusCode}` : 'ROBOT_NETWORK_UNAVAILABLE';
-      this.setStatus(relayResponded && telemetryRequest ? {
+      if (this.isLifecycleCurrent(lifecycleGeneration)) {
+        if (!relayResponded) this.pauseCommandQueue();
+        this.setStatus(relayResponded && telemetryRequest ? {
         relayOnline: true,
         online: false,
         hardwareStatus: 'unknown',
@@ -278,7 +309,8 @@ export class HomeRobotDevice extends BaseDevice {
         hardwareStatus: 'unknown',
         connectionState: 'disconnected',
         lastErrorCode
-      });
+        });
+      }
       throw error;
     } finally {
       if (timeoutHandle !== undefined) this.clearTimeoutImpl(timeoutHandle);
@@ -287,7 +319,11 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   async connect() {
-    const status = await this.request('/health');
+    if (this.disposed) throw this.disposedError();
+    this.explicitlyDisconnected = false;
+    const lifecycleGeneration = this.lifecycleGeneration;
+    const status = await this.request('/health', {}, lifecycleGeneration);
+    this.assertLifecycleCurrent(lifecycleGeneration);
     const relayOnline = status?.status === 'ok';
     const next = this.setStatus({
       relayOnline,
@@ -296,8 +332,28 @@ export class HomeRobotDevice extends BaseDevice {
       connectionState: relayOnline ? 'unknown' : 'disconnected',
       lastErrorCode: null
     });
+    if (!relayOnline) this.pauseCommandQueue();
     if (relayOnline) {
-      const [telemetry, pendingCommands] = await Promise.allSettled([this.refreshTelemetry(), this.retryPendingCommands()]);
+      const telemetryPromise = this.refreshTelemetry(lifecycleGeneration);
+      let pendingCommandsPromise;
+      try {
+        // Durable work may predate commands already parked in this process.
+        // Stage it at critical priority before resuming so recovery preserves
+        // persisted FIFO ordering instead of running newer work first.
+        const staged = await this.stagePendingCommands(lifecycleGeneration, { priority: 'critical' });
+        this.assertLifecycleCurrent(lifecycleGeneration);
+        this.resumeCommandQueue();
+        pendingCommandsPromise = Promise.allSettled(staged);
+      } catch (error) {
+        // A failed durable scan is not proof that it is safe to run only the
+        // in-memory suffix. Keep the queue parked and retry the full recovery.
+        pendingCommandsPromise = Promise.reject(error);
+      }
+      const [telemetry, pendingCommands] = await Promise.allSettled([
+        telemetryPromise,
+        pendingCommandsPromise
+      ]);
+      this.assertLifecycleCurrent(lifecycleGeneration);
       const commandQueueDrained = pendingCommands.status === 'fulfilled'
         && pendingCommands.value.every((result) => result.status === 'fulfilled');
       const telemetryUsable = telemetry.status === 'fulfilled'
@@ -311,14 +367,25 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   async disconnect() {
+    this.explicitlyDisconnected = true;
+    this.lifecycleGeneration += 1;
+    this.networkMonitoringGeneration += 1;
+    this.pauseCommandQueue();
+    this.clearNetworkRetry();
     this.stopTelemetryPolling();
+    this.telemetryInFlight = null;
+    this.pendingScan = null;
+    for (const controller of this.activeRequestControllers) controller.abort();
+    this.activeRequestControllers.clear();
+    this.networkSubscription?.remove?.();
+    this.networkSubscription = null;
     return this.setStatus({ relayOnline: false, online: false, hardwareStatus: 'unknown', connectionState: 'disconnected' });
   }
 
   startTelemetryPolling() {
-    if (this.disposed || this.telemetryTimer) return;
+    if (this.disposed || this.explicitlyDisconnected || this.telemetryTimer) return;
     this.telemetryTimer = this.setIntervalImpl(() => {
-      if (this.disposed) return;
+      if (this.disposed || this.explicitlyDisconnected) return;
       return this.refreshTelemetry().catch(() => this.scheduleNetworkRetry());
     }, this.telemetryIntervalMs);
     this.telemetryTimer?.unref?.();
@@ -330,6 +397,8 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   async deliverQueuedCommand(queued) {
+    const lifecycleGeneration = this.lifecycleGeneration;
+    this.assertLifecycleCurrent(lifecycleGeneration);
     const command = queued.command && typeof queued.command === 'object' ? queued.command : {};
     const candidateCommandId = queued.idempotencyKey || queued.id;
     const commandId = typeof candidateCommandId === 'string' && /^[A-Za-z0-9._:-]{1,160}$/.test(candidateCommandId)
@@ -349,22 +418,24 @@ export class HomeRobotDevice extends BaseDevice {
           device_id: this.deviceId,
           device_type: DEVICE_TYPES.homeRobot
         })
-      });
+      }, lifecycleGeneration);
     } catch (error) {
       this.scheduleNetworkRetry();
       throw error;
     }
     await this.commandStore?.acknowledge(queued.id);
-    this.setStatus({ relayOnline: true, lastErrorCode: null });
+    if (this.isLifecycleCurrent(lifecycleGeneration)) {
+      this.setStatus({ relayOnline: true, lastErrorCode: null });
+    }
     return result;
   }
 
-  scheduleQueuedCommand(queued) {
-    if (!queued?.id) return this.enqueueCommand(() => this.deliverQueuedCommand(queued));
+  scheduleQueuedCommand(queued, { priority = 'standard' } = {}) {
+    if (!queued?.id) return this.enqueueCommand(() => this.deliverQueuedCommand(queued), { priority });
     const scheduled = this.scheduledCommands.get(queued.id);
     if (scheduled) return scheduled;
     let operation;
-    operation = this.enqueueCommand(() => this.deliverQueuedCommand(queued)).finally(() => {
+    operation = this.enqueueCommand(() => this.deliverQueuedCommand(queued), { priority }).finally(() => {
       if (this.scheduledCommands.get(queued.id) === operation) this.scheduledCommands.delete(queued.id);
     });
     this.scheduledCommands.set(queued.id, operation);
@@ -378,13 +449,14 @@ export class HomeRobotDevice extends BaseDevice {
     return this.scheduleQueuedCommand(queued);
   }
 
-  async retryPendingCommands() {
+  async stagePendingCommands(lifecycleGeneration = this.lifecycleGeneration, { priority = 'critical' } = {}) {
     if (!this.commandStore) return [];
     if (this.pendingScan) return this.pendingScan;
     let scan;
     scan = (async () => {
       const pending = await this.commandStore.load(this.accountId, this.deviceId);
-      return Promise.allSettled(pending.map((queued) => this.scheduleQueuedCommand(queued)));
+      this.assertLifecycleCurrent(lifecycleGeneration);
+      return pending.map((queued) => this.scheduleQueuedCommand(queued, { priority }));
     })().finally(() => {
       if (this.pendingScan === scan) this.pendingScan = null;
     });
@@ -392,15 +464,23 @@ export class HomeRobotDevice extends BaseDevice {
     return scan;
   }
 
+  async retryPendingCommands(lifecycleGeneration = this.lifecycleGeneration) {
+    const staged = await this.stagePendingCommands(lifecycleGeneration, { priority: 'critical' });
+    return Promise.allSettled(staged);
+  }
+
   async startNetworkMonitoring() {
     if (this.disposed || this.networkSubscription) return;
+    this.explicitlyDisconnected = false;
+    const generation = ++this.networkMonitoringGeneration;
     const Network = await this.loadNetwork();
-    if (this.disposed || this.networkSubscription) return;
+    if (this.disposed || this.explicitlyDisconnected || generation !== this.networkMonitoringGeneration || this.networkSubscription) return;
     const handleNetworkState = (state) => {
-      if (this.disposed) return;
+      if (this.disposed || this.explicitlyDisconnected || generation !== this.networkMonitoringGeneration) return;
       if (state.isConnected === true && state.isInternetReachable !== false) {
         this.connect().catch(() => this.scheduleNetworkRetry());
       } else if (state.isConnected === false || state.isInternetReachable === false) {
+        this.pauseCommandQueue();
         this.clearNetworkRetry();
         this.stopTelemetryPolling();
         this.setStatus({ relayOnline: false, online: false, hardwareStatus: 'unknown', connectionState: 'disconnected', lastErrorCode: 'ROBOT_NETWORK_UNAVAILABLE' });
@@ -408,7 +488,7 @@ export class HomeRobotDevice extends BaseDevice {
     };
     this.networkSubscription = Network.addNetworkStateListener(handleNetworkState);
     const current = await Network.getNetworkStateAsync?.();
-    if (current) handleNetworkState(current);
+    if (current && generation === this.networkMonitoringGeneration) handleNetworkState(current);
   }
 
   clearNetworkRetry() {
@@ -418,37 +498,50 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   scheduleNetworkRetry() {
-    if (this.disposed || this.retryTimer) return;
+    if (this.disposed || this.explicitlyDisconnected || this.retryTimer) return;
     const delay = Math.min(60_000, 1000 * 2 ** Math.min(this.retryAttempt, 6));
     this.retryAttempt += 1;
     this.retryTimer = this.setTimeoutImpl(() => {
       this.retryTimer = null;
+      if (this.disposed || this.explicitlyDisconnected) return;
       this.connect().catch(() => this.scheduleNetworkRetry());
     }, delay);
     this.retryTimer?.unref?.();
   }
 
   dispose() {
+    this.explicitlyDisconnected = true;
+    this.lifecycleGeneration += 1;
+    this.networkMonitoringGeneration += 1;
+    this.pauseCommandQueue();
     super.dispose();
     this.clearNetworkRetry();
     this.stopTelemetryPolling();
     for (const controller of this.activeRequestControllers) controller.abort();
     this.activeRequestControllers.clear();
+    this.telemetryInFlight = null;
+    this.pendingScan = null;
     this.networkSubscription?.remove?.();
     this.networkSubscription = null;
   }
 
-  async refreshTelemetry() {
+  async refreshTelemetry(lifecycleGeneration = this.lifecycleGeneration) {
+    this.assertLifecycleCurrent(lifecycleGeneration);
     if (this.telemetryInFlight) return this.telemetryInFlight;
     let operation;
     operation = (async () => {
       let telemetry;
       try {
-        telemetry = await this.request(`/v1/devices/${encodeURIComponent(this.deviceId)}/telemetry`);
+        telemetry = await this.request(
+          `/v1/devices/${encodeURIComponent(this.deviceId)}/telemetry`,
+          {},
+          lifecycleGeneration
+        );
       } catch (error) {
-        this.stopTelemetryPolling();
+        if (this.isLifecycleCurrent(lifecycleGeneration)) this.stopTelemetryPolling();
         throw error;
       }
+      this.assertLifecycleCurrent(lifecycleGeneration);
       const suppliedReportedAt = Number(telemetry?.reported_at);
       const currentTime = this.now();
       if (
@@ -527,6 +620,7 @@ export class HomeRobotDevice extends BaseDevice {
         hardwareStatus: telemetry.online ? 'online' : 'offline',
         connectionState: telemetry.online ? 'connected' : 'disconnected'
       });
+      this.assertLifecycleCurrent(lifecycleGeneration);
       this.setStatus(statusPatch);
       this.emitTelemetry(telemetry);
       return telemetry;

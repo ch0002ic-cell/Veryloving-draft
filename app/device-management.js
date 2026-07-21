@@ -15,7 +15,7 @@ import { factoryResetHomeRobot } from '../src/services/robot-pairing';
 import { useAuth } from '../src/context/AuthContext';
 
 export default function DeviceManagement() {
-  const { device, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities } = useAppState();
+  const { device, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, deviceHydrationErrorCode, retryDeviceHydration } = useAppState();
   const { t } = useI18n();
   const { accessToken, user } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -114,7 +114,19 @@ export default function DeviceManagement() {
         style={{ width: '100%', height: 220 }}
         resizeMode="contain"
       />
-      <FeedbackBanner message={errorKey ? t(errorKey) : connectionErrorKey ? t(connectionErrorKey) : null} />
+      <FeedbackBanner message={errorKey
+        ? t(errorKey)
+        : deviceHydrationErrorCode
+          ? t('settings.updateFailedMessage')
+          : connectionErrorKey ? t(connectionErrorKey) : null} />
+      {deviceHydrationErrorCode ? (
+        <Button
+          title={t('common.retry')}
+          icon="refresh-outline"
+          variant="ghost"
+          onPress={retryDeviceHydration}
+        />
+      ) : null}
       <Text style={styles.sectionTitle}>{t('settings.deviceManagement')}</Text>
       {entities.map((entity) => (
         <Card key={`${entity.deviceType}:${entity.deviceId}`}>

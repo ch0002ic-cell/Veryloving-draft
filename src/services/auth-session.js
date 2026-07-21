@@ -1,6 +1,7 @@
 import { config } from '../utils/config';
 import { createAuthError } from '../utils/auth-configuration';
 import { isSessionTokenUsable, sessionTokenClaims } from '../utils/session-token';
+import { cancelResponseBody, readBoundedJSONResponse, runBoundedRequest } from '../utils/bounded-http';
 
 const AUTH_EXCHANGE_TIMEOUT_MS = 10000;
 
@@ -58,19 +59,24 @@ function validateSession(payload) {
 async function requestAuthenticationSession(
   path,
   body,
-  { fetchImpl = globalThis.fetch, apiBaseUrl = config.apiBaseUrl } = {}
+  { fetchImpl = globalThis.fetch, apiBaseUrl = config.apiBaseUrl, timeoutMs = AUTH_EXCHANGE_TIMEOUT_MS } = {}
 ) {
   const endpoint = authenticationEndpoint(path, apiBaseUrl);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), AUTH_EXCHANGE_TIMEOUT_MS);
   try {
-    const response = await fetchImpl(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(body),
-      signal: controller.signal
-    });
-    const payload = await response.json().catch(() => null);
+    const { response, payload } = await runBoundedRequest(async ({ signal, captureResponse }) => {
+      const nextResponse = await fetchImpl(endpoint, {
+        method: 'POST',
+        redirect: 'error',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+        signal
+      });
+      captureResponse(nextResponse);
+      const nextPayload = nextResponse.status === 204
+        ? (await cancelResponseBody(nextResponse), null)
+        : await readBoundedJSONResponse(nextResponse, { signal });
+      return { response: nextResponse, payload: nextPayload };
+    }, { timeoutMs });
     if (!response.ok) {
       const error = new Error(payload?.error || 'Sign-in could not be verified.');
       error.code = `AUTH_HTTP_${response.status}`;
@@ -83,15 +89,13 @@ async function requestAuthenticationSession(
     }
     return payload;
   } catch (error) {
-    if (error.name === 'AbortError') {
+    if (error.code === 'HTTP_REQUEST_TIMEOUT') {
       throw createAuthError('AUTH_TIMEOUT', 'Sign-in verification timed out. Please try again.', error);
     }
     if (!error.code && error instanceof TypeError) {
       throw createAuthError('AUTH_NETWORK_ERROR', 'The authentication backend could not be reached.', error);
     }
     throw error;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -117,25 +121,24 @@ export function refreshApplicationSession(refreshToken, options) {
 
 export async function revokeApplicationSession(
   accessToken,
-  { fetchImpl = globalThis.fetch, apiBaseUrl = config.apiBaseUrl } = {}
+  { fetchImpl = globalThis.fetch, apiBaseUrl = config.apiBaseUrl, timeoutMs = AUTH_EXCHANGE_TIMEOUT_MS } = {}
 ) {
   if (!accessToken) return false;
   const endpoint = authenticationEndpoint('/v1/auth/logout', apiBaseUrl);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), AUTH_EXCHANGE_TIMEOUT_MS);
-  try {
+  return runBoundedRequest(async ({ signal, captureResponse }) => {
     const response = await fetchImpl(endpoint, {
       method: 'POST',
+      redirect: 'error',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         Accept: 'application/json'
       },
-      signal: controller.signal
+      signal
     });
+    captureResponse(response);
+    await cancelResponseBody(response);
     return response.ok;
-  } finally {
-    clearTimeout(timeout);
-  }
+  }, { timeoutMs });
 }
 
 export async function requestPhoneVerification({ phone, countryCode }, options) {

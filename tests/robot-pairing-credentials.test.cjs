@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
 const Module = require('node:module');
+const path = require('node:path');
 const { test } = require('node:test');
 const {
   ROBOT_PAIRING_CREDENTIALS_KEY,
@@ -30,6 +32,22 @@ function memorySecureStore() {
 }
 
 const token = 'a'.repeat(43);
+
+test('QR pairing closes the same-render duplicate callback window synchronously', () => {
+  const screen = readFileSync(path.resolve(process.cwd(), 'app/robot-pairing.js'), 'utf8');
+  const pairing = screen.slice(
+    screen.indexOf('const pair = useCallback'),
+    screen.indexOf('\n\n  if (!permission)')
+  );
+  const fenceCheck = pairing.indexOf('pairingInFlightRef.current');
+  const fenceSet = pairing.indexOf('pairingInFlightRef.current = true');
+  const stateSet = pairing.indexOf('setBusy(true)');
+
+  assert.match(screen, /const pairingInFlightRef = useRef\(false\)/);
+  assert.ok(fenceCheck >= 0 && fenceCheck < fenceSet && fenceSet < stateSet);
+  assert.match(pairing, /catch \{\s*pairingInFlightRef\.current = false;[\s\S]*setBusy\(false\)/);
+  assert.match(screen, /onBarcodeScanned=\{busy \? undefined : pair\}/);
+});
 
 test('robot pairing credentials are account-bound and never enter device descriptors', async () => {
   const secureStorageImpl = memorySecureStore();
@@ -74,10 +92,12 @@ test('pairing stores the one-time response in protected storage and reset proves
   const fetchImpl = async (url, options) => {
     requests.push({ url, options });
     if (options.method === 'POST') {
+      const responseBody = JSON.stringify({ robot_id: 'robot-1', pairing_token: token, device_type: 'home_robot' });
       return {
         ok: true,
         status: 201,
-        json: async () => ({ robot_id: 'robot-1', pairing_token: token, device_type: 'home_robot' })
+        headers: { get: (name) => name.toLowerCase() === 'content-length' ? String(Buffer.byteLength(responseBody)) : null },
+        text: async () => responseBody
       };
     }
     return { ok: true, status: 204, json: async () => null };

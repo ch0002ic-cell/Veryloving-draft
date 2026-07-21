@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router } from 'expo-router';
@@ -17,12 +17,17 @@ export default function RobotPairingScreen() {
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
   const [robotVendor, setRobotVendor] = useState('yongyida');
+  const pairingInFlightRef = useRef(false);
   const { accessToken, user } = useAuth();
   const { setRobotEntities } = useAppState();
   const { t } = useI18n();
 
   const pair = useCallback(async ({ data }) => {
-    if (busy || typeof data !== 'string') return;
+    // Camera callbacks can fire more than once in the same React render. A
+    // ref closes that synchronous window before the busy state is published,
+    // protecting the manufacturer's one-time pairing credential from reuse.
+    if (pairingInFlightRef.current || typeof data !== 'string') return;
+    pairingInFlightRef.current = true;
     setBusy(true);
     setErrorKey(null);
     try {
@@ -38,10 +43,11 @@ export default function RobotPairingScreen() {
           }]);
       router.replace('/device-management');
     } catch {
+      pairingInFlightRef.current = false;
       setErrorKey('settings.updateFailedMessage');
       setBusy(false);
     }
-  }, [accessToken, busy, robotVendor, setRobotEntities, user?.id]);
+  }, [accessToken, robotVendor, setRobotEntities, user?.id]);
 
   if (!permission) return <Screen><Header title={t('settings.deviceManagement')} showBack /><Text>{t('common.loading')}</Text></Screen>;
   if (!permission.granted) {

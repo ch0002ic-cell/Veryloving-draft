@@ -112,6 +112,41 @@ test('account switching can sweep user data without opening a residual-session r
   assert.deepEqual(memory, new Map([['veryloving.auth.signedOut', tombstone]]));
 });
 
+test('ordinary sign-out cleanup preserves its durable tombstone through settings normalization', async () => {
+  const tombstone = { version: 1, signedOutAt: 987654321 };
+  const memory = new Map([
+    ['veryloving.auth.signedOut', tombstone],
+    ['veryloving.settings', {
+      schemaVersion: 2,
+      language: 'fr',
+      mode: 'emergency',
+      selectedVoiceId: 'boyfriend'
+    }],
+    ['veryloving.conversationHistory', [{ id: 'must-be-cleared' }]]
+  ]);
+  storage.getJSON = async (key, fallback) => memory.has(key) ? structuredClone(memory.get(key)) : fallback;
+  storage.setJSON = async (key, value) => memory.set(key, structuredClone(value));
+  storage.keys = async () => [...memory.keys()];
+  storage.removeMany = async (keys) => keys.forEach((key) => memory.delete(key));
+
+  await deleteLocalUserStores({
+    preserveSignedOutTombstone: true,
+    preserveLanguage: true
+  });
+
+  assert.deepEqual(memory.get('veryloving.auth.signedOut'), tombstone);
+  assert.deepEqual(memory.get('veryloving.settings'), {
+    schemaVersion: 2,
+    language: 'fr',
+    mode: 'home',
+    selectedVoiceId: 'capybara',
+    showCompanion: true,
+    offlineMode: false,
+    reminderEnabled: false
+  });
+  assert.equal(memory.has('veryloving.conversationHistory'), false);
+});
+
 test('a synchronous artifact purge failure cannot prevent the other privacy purge', async () => {
   const attempted = [];
   const result = await purgePrivacyArtifacts([

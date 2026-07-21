@@ -147,6 +147,7 @@ export async function exportUserData(options) {
 
 export async function deleteLocalUserData({
   localMutationLockHeld = false,
+  preserveSignedOutTombstone = false,
   preserveLanguage = false
 } = {}) {
   const [reminderResult] = await Promise.allSettled([
@@ -155,6 +156,7 @@ export async function deleteLocalUserData({
   const [localResult, secureContactResult, savedPlacesResult, medicalProfileResult, robotCredentialsResult] = await Promise.allSettled([
     deleteLocalUserStores({
       mutationLockHeld: localMutationLockHeld,
+      preserveSignedOutTombstone,
       preserveLanguage,
       purgeArtifacts: () => purgePrivacyArtifacts([
         purgeVoiceAudioCache,

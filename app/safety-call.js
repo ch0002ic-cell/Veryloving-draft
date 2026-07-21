@@ -10,6 +10,7 @@ import { colors, fonts } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { EmptyState } from '../src/components/EmptyState';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
+import { MAX_VOICE_TEXT_CHARACTERS } from '../src/utils/voice-text';
 
 function connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t }) {
   if (isConnecting) return t('safetyCall.connecting');
@@ -154,6 +155,7 @@ export default function SafetyCall() {
         <TextInput
           accessibilityLabel={t('safetyCall.typePlaceholder')}
           value={text}
+          maxLength={MAX_VOICE_TEXT_CHARACTERS}
           onChangeText={setText}
           placeholder={t('safetyCall.typePlaceholder')}
           placeholderTextColor={colors.inkSoft}

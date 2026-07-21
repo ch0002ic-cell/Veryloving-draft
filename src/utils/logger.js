@@ -16,6 +16,10 @@ const isSensitiveKey = (key) => {
     || compactKey.endsWith('address')
     || compactKey.endsWith('coordinates')
     || compactKey.endsWith('location')
+    || compactKey.endsWith('deviceid')
+    || compactKey.endsWith('deviceref')
+    || compactKey === 'parameters'
+    || compactKey === 'actionparameters'
     || compactKey === 'latitude'
     || compactKey === 'longitude'
     || compactKey === 'userid'

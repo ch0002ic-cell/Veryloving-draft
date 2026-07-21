@@ -136,3 +136,24 @@ test('offline queue does not overtake a head message that is still in backoff', 
   assert.deepEqual(attempted, []);
   assert.deepEqual((await loadOfflineMessageQueue()).map((item) => item.id), ['ordered-1', 'ordered-2']);
 });
+
+test('voice persistence rejects oversized new text and bounds legacy snapshots', async () => {
+  memory.clear();
+  const oversized = 'x'.repeat(4097);
+  assert.throws(
+    () => queueOfflineMessage({ id: 'too-large', sessionId: 'session', text: oversized }),
+    (error) => error.code === 'VOICE_TEXT_TOO_LONG'
+  );
+  assert.throws(
+    () => appendConversationMessage({ id: 'too-large', sessionId: 'session', role: 'user', text: oversized }),
+    (error) => error.code === 'VOICE_TEXT_TOO_LONG'
+  );
+
+  memory.set('veryloving.offlineMessageQueue', [{ id: 'legacy', sessionId: 'session', text: oversized }]);
+  memory.set('veryloving.conversationHistory', [{
+    id: 'session',
+    messages: [{ id: 'legacy', role: 'assistant', text: oversized }]
+  }]);
+  assert.equal((await loadOfflineMessageQueue())[0].text.length, 4096);
+  assert.equal((await loadConversationSession('session')).messages[0].text.length, 4096);
+});

@@ -48,6 +48,7 @@ test('legacy emergency-contact PII migrates once into an account-bound secure ca
   assert.deepEqual(snapshot.contacts, contacts);
 
   // A different account cannot see the previous account's cached contacts.
+  await clearEmergencyContactCache({ nextAccountId: 'apple:account-b' });
   assert.deepEqual(await loadEmergencyContactCache('apple:account-b'), []);
   assert.equal(JSON.parse(secureMemory.get(EMERGENCY_CONTACT_CACHE_KEY)).accountId, 'apple:account-b');
 });
@@ -58,6 +59,7 @@ test('Expo Go never deletes durable legacy contacts after a volatile migration',
   secureStorageVolatile = true;
   const contacts = [{ id: 'legacy-contact', name: 'Grace', phone: '+6591234567' }];
   legacyMemory.set(LEGACY_EMERGENCY_CONTACTS_KEY, contacts);
+  await clearEmergencyContactCache({ nextAccountId: 'google:expo-go' });
 
   try {
     assert.deepEqual(await loadEmergencyContactCache('google:expo-go'), contacts);
@@ -71,6 +73,7 @@ test('Expo Go never deletes durable legacy contacts after a volatile migration',
 test('secure contact persistence validates account ownership and supports privacy clearing', async () => {
   secureStorageVolatile = false;
   secureMemory.clear();
+  await clearEmergencyContactCache({ nextAccountId: 'google:account' });
   await assert.rejects(persistEmergencyContactCache('', []), /authenticated account/);
   await persistEmergencyContactCache('google:account', [{ id: 'contact' }]);
   assert.equal(secureMemory.has(EMERGENCY_CONTACT_CACHE_KEY), true);

@@ -11,19 +11,39 @@ import { pcmBytesToBase64 } from '../utils/pcm';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
 
 const PLAYBACK_SEGMENT_TIMEOUT_MS = 60000;
+const PLAYBACK_CLEANUP_TIMEOUT_MS = 500;
 const HUME_SAMPLE_RATE = 48000;
 const HUME_CHANNELS = 1;
+export const MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS = 1400000;
+const MAX_PLAYBACK_QUEUE_SEGMENTS = 16;
+const MAX_PLAYBACK_QUEUE_BYTES = 8 * 1024 * 1024;
 
 async function deleteAudioFile(uri) {
   if (!uri) return;
   await FileSystem.deleteAsync(uri, { idempotent: true }).catch(() => {});
 }
 
-class AudioService {
+async function waitForBoundedCleanup(operation, timeoutMs = PLAYBACK_CLEANUP_TIMEOUT_MS) {
+  let timer;
+  try {
+    await Promise.race([
+      Promise.resolve(operation).catch(() => {}),
+      new Promise((resolve) => { timer = setTimeout(resolve, timeoutMs); })
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}
+
+export class AudioService {
   recording = null;
   sound = null;
   audioChunkCallback = null;
   playbackQueue = [];
+  playbackQueuedBytes = 0;
+  playbackRetainedSegments = 0;
+  playbackRetainedBytes = 0;
+  playbackAdmissions = new Set();
   playbackGeneration = 0;
   playbackEnqueueQueue = Promise.resolve();
   playbackDrainPromise = null;
@@ -145,20 +165,53 @@ class AudioService {
   }
 
   async playBase64Audio(base64, extension = 'wav') {
-    if (!base64) return;
+    if (typeof base64 !== 'string' || !base64) return false;
+    if (base64.length > MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS) {
+      logger.warn('[AudioService] Dropped an oversized assistant audio segment', {
+        encodedCharacters: base64.length
+      });
+      return false;
+    }
+    const sizeBytes = Math.ceil(base64.length * 3 / 4);
+    if (
+      this.playbackRetainedSegments >= MAX_PLAYBACK_QUEUE_SEGMENTS
+      || this.playbackRetainedBytes + sizeBytes > MAX_PLAYBACK_QUEUE_BYTES
+    ) {
+      logger.warn('[AudioService] Dropped assistant audio while the playback queue was full');
+      return false;
+    }
     const generation = this.playbackGeneration;
+    const admission = { generation, sizeBytes, released: false };
+    this.playbackAdmissions.add(admission);
+    this.playbackRetainedSegments += 1;
+    this.playbackRetainedBytes += sizeBytes;
+    const releaseAdmission = () => {
+      if (admission.released) return;
+      admission.released = true;
+      this.playbackAdmissions.delete(admission);
+      this.playbackRetainedSegments = Math.max(0, this.playbackRetainedSegments - 1);
+      this.playbackRetainedBytes = Math.max(0, this.playbackRetainedBytes - sizeBytes);
+    };
     const operation = this.playbackEnqueueQueue.catch(() => {}).then(async () => {
       const suffix = Math.random().toString(36).slice(2, 10);
       const uri = `${FileSystem.cacheDirectory}${VOICE_AUDIO_CACHE_PREFIX}${Date.now()}-${suffix}.${extension}`;
-      await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
-      if (generation !== this.playbackGeneration) {
-        await deleteAudioFile(uri);
-        return;
+      let retainedByPlayback = false;
+      try {
+        await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+        if (generation !== this.playbackGeneration) {
+          await deleteAudioFile(uri);
+          return false;
+        }
+        this.playbackQueue.push({ uri, generation, sizeBytes, releaseAdmission });
+        retainedByPlayback = true;
+        this.playbackQueuedBytes += sizeBytes;
+        this._drainPlaybackQueue().catch((error) => {
+          logger.error('[AudioService] Playback queue failed', error);
+        });
+        return true;
+      } finally {
+        if (!retainedByPlayback) releaseAdmission();
       }
-      this.playbackQueue.push({ uri, generation });
-      this._drainPlaybackQueue().catch((error) => {
-        logger.error('[AudioService] Playback queue failed', error);
-      });
     });
     this.playbackEnqueueQueue = operation.then(() => undefined, () => undefined);
     return operation;
@@ -169,20 +222,28 @@ class AudioService {
     const drain = async () => {
       while (this.playbackQueue.length) {
         const item = this.playbackQueue.shift();
-        if (item.generation !== this.playbackGeneration) {
-          await deleteAudioFile(item.uri);
-          continue;
+        this.playbackQueuedBytes = Math.max(0, this.playbackQueuedBytes - (item.sizeBytes || 0));
+        try {
+          if (item.generation !== this.playbackGeneration) {
+            await deleteAudioFile(item.uri);
+            continue;
+          }
+          await this._playFile(item).catch((error) => {
+            logger.error('[AudioService] Could not play assistant audio', error);
+          });
+        } finally {
+          item.releaseAdmission?.();
         }
-        await this._playFile(item).catch((error) => {
-          logger.error('[AudioService] Could not play assistant audio', error);
-        });
       }
     };
-    this.playbackDrainPromise = drain().finally(() => {
+    let trackedDrain;
+    trackedDrain = drain().finally(() => {
+      if (this.playbackDrainPromise !== trackedDrain) return;
       this.playbackDrainPromise = null;
       if (this.playbackQueue.length) this._drainPlaybackQueue().catch(() => {});
     });
-    return this.playbackDrainPromise;
+    this.playbackDrainPromise = trackedDrain;
+    return trackedDrain;
   }
 
   async _playFile({ uri, generation }) {
@@ -231,8 +292,18 @@ class AudioService {
 
   async cancelAndClearQueue() {
     this.playbackGeneration += 1;
+    const pendingEnqueues = this.playbackEnqueueQueue;
+    this.playbackEnqueueQueue = Promise.resolve();
+    const pendingDrain = this.playbackDrainPromise;
+    this.playbackDrainPromise = null;
     const pending = this.playbackQueue.splice(0);
-    await Promise.all(pending.map((item) => deleteAudioFile(item.uri)));
+    this.playbackQueuedBytes = 0;
+    // Queued files no longer retain encoded audio and can release immediately.
+    // Admissions still inside a native write remain charged until that write
+    // settles. Otherwise repeated cancel/new-write cycles could retain an
+    // unbounded number of base64 closures when the native filesystem hangs.
+    for (const item of pending) item.releaseAdmission?.();
+    const pendingDeletes = Promise.all(pending.map((item) => deleteAudioFile(item.uri)));
     if (this.sound) {
       const player = this.sound;
       this.sound = null;
@@ -240,7 +311,12 @@ class AudioService {
       try { player.remove(); } catch {}
     }
     this.currentPlaybackFinish?.();
-    await this.playbackDrainPromise?.catch(() => {});
+    // Native file operations are not reliably cancellable. Detach the next
+    // session immediately and wait only briefly for old work. Every old enqueue
+    // is generation-fenced and deletes its file if the native write resolves.
+    const cleanup = Promise.allSettled([pendingDeletes, pendingEnqueues, pendingDrain]);
+    void cleanup.catch(() => {});
+    await waitForBoundedCleanup(cleanup);
   }
 }
 

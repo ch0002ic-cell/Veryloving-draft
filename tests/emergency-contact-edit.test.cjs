@@ -15,6 +15,12 @@ Module._load = function loadContactConfig(request, parent, isMain) {
 };
 const { editEmergencyContact } = require('../src/services/emergency-contact-edit');
 const { updateEmergencyContact } = require('../src/services/safety-api');
+const {
+  clearEmergencyContactCache,
+  loadEmergencyContactCache,
+  persistEmergencyContactCache
+} = require('../src/services/emergency-contact-store');
+const { secureStorage } = require('../src/services/secure-storage');
 Module._load = originalLoad;
 
 const REMOTE_ID = 'contact_abcdefghijklmnopqrstuvwx';
@@ -154,10 +160,12 @@ test('mobile update client sends an authenticated PATCH with the versioned edit'
     runtimeConfig: { safetyBackendEnabled: true, apiBaseUrl: 'https://api.example.test/' },
     fetchImpl: async (url, options) => {
       request = { url, options };
+      const responseBody = JSON.stringify({ id: REMOTE_ID, version: 3 });
       return {
         ok: true,
         status: 200,
-        json: async () => ({ id: REMOTE_ID, version: 3 })
+        headers: { get: (name) => name.toLowerCase() === 'content-length' ? String(Buffer.byteLength(responseBody)) : null },
+        text: async () => responseBody
       };
     }
   });
@@ -184,4 +192,66 @@ test('emergency contact UI exposes localized edit, save, cancel, and edit-field 
   assert.match(ui, /else await addContact\(nextContact\)/);
   assert.match(ui, /await removeContact\(contact\.id\)/);
   assert.match(ui, /await callNumber\(contact\.phone\)/);
+});
+
+test('contact add and remove mutations fence account changes before cache and UI publication', () => {
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  for (const [startMarker, endMarker] of [
+    ['const addContact = useCallback', 'const removeContact = useCallback'],
+    ['const removeContact = useCallback', 'const updateContact = useCallback']
+  ]) {
+    const operation = appContext.slice(appContext.indexOf(startMarker), appContext.indexOf(endMarker));
+    assert.match(operation, /const accountId = user\.id/);
+    assert.match(operation, /CONTACT_ACCOUNT_CHANGED/);
+    assert.match(operation, /assertAccountActive\(\)/);
+    assert.match(operation, /persistEmergencyContactCache\(accountId, next\)/);
+  }
+});
+
+test('authoritative contact refresh does not resurrect a remotely deleted cached contact', () => {
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  const start = appContext.indexOf('const remoteContacts = await fetchEmergencyContacts');
+  const end = appContext.indexOf("logger.warn('[AppState] Could not refresh emergency contacts'", start);
+  const reconciliation = appContext.slice(start, end);
+
+  assert.match(reconciliation, /const remoteIds = new Set\(\)/);
+  assert.match(reconciliation, /remoteIds\.has\(contact\.id\) \|\| remotePhones\.has\(contact\.phone\)/);
+  assert.match(reconciliation, /REMOTE_EMERGENCY_CONTACT_PATTERN\.test\(contact\.id \|\| ''\)/);
+  assert.match(reconciliation, /contact\.syncStatus !== 'pending'\) continue/);
+  assert.match(reconciliation, /canonicalRemoteContacts/);
+});
+
+test('the secure contact cache rejects stale writes after an account-boundary clear', async () => {
+  const originalGet = secureStorage.getItemAsync;
+  const originalSet = secureStorage.setItemAsync;
+  const originalDelete = secureStorage.deleteItemAsync;
+  let snapshot = null;
+  secureStorage.getItemAsync = async () => snapshot;
+  secureStorage.setItemAsync = async (_key, value) => { snapshot = value; };
+  secureStorage.deleteItemAsync = async () => { snapshot = null; };
+  try {
+    await clearEmergencyContactCache({ nextAccountId: 'account-a' });
+    await persistEmergencyContactCache('account-a', [{ id: 'contact-a' }]);
+    // Logout blocks every later A write immediately, including work that
+    // resolves after the serialized deletion itself.
+    await clearEmergencyContactCache();
+    await assert.rejects(
+      persistEmergencyContactCache('account-a', [{ id: 'stale-after-logout' }]),
+      (error) => error.code === 'CONTACT_ACCOUNT_CHANGED'
+    );
+    // The production account boundary explicitly activates B before its user
+    // is published, so the same process can hydrate and persist the next owner.
+    await clearEmergencyContactCache({ nextAccountId: 'account-b' });
+    await assert.rejects(
+      persistEmergencyContactCache('account-a', [{ id: 'stale-a' }]),
+      (error) => error.code === 'CONTACT_ACCOUNT_CHANGED'
+    );
+    await persistEmergencyContactCache('account-b', [{ id: 'contact-b' }]);
+    assert.deepEqual(await loadEmergencyContactCache('account-b'), [{ id: 'contact-b' }]);
+    assert.deepEqual(await loadEmergencyContactCache('account-a'), []);
+  } finally {
+    secureStorage.getItemAsync = originalGet;
+    secureStorage.setItemAsync = originalSet;
+    secureStorage.deleteItemAsync = originalDelete;
+  }
 });

@@ -16,7 +16,9 @@ const fakeAudioService = {
 const originalModuleLoad = Module._load;
 Module._load = function loadVoiceTestDependency(request, parent, isMain) {
   const isHumeService = parent?.filename.endsWith('/src/services/websocket/hume-evi.js');
-  if (isHumeService && request === '../audio') return { audioService: fakeAudioService };
+  if (isHumeService && request === '../audio') {
+    return { audioService: fakeAudioService, MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS: 1400000 };
+  }
   if (isHumeService && request === '../../utils/config') return { config: {} };
   return originalModuleLoad.call(this, request, parent, isMain);
 };
@@ -259,6 +261,25 @@ test('a text-send race returns false for durable queue fallback and surfaces a s
   assert.doesNotMatch(received[0].message, /native socket detail/);
 });
 
+test('oversized voice text and assistant audio are rejected before transport or playback', async () => {
+  const service = readyService();
+  const errors = [];
+  const sent = [];
+  const playback = [];
+  service.socket.send = (payload) => sent.push(payload);
+  service.setMessageHandler({ onError: (error) => errors.push(error) });
+  fakeAudioService.playBase64Audio = async (data) => { playback.push(data); };
+
+  assert.equal(service.sendText('x'.repeat(4097)), false);
+  assert.equal(errors[0].code, 'VOICE_TEXT_TOO_LONG');
+  assert.deepEqual(sent, []);
+
+  await service.handleMessage({
+    data: JSON.stringify({ type: 'audio_output', data: 'A'.repeat(1400001) })
+  }, service.socket);
+  assert.deepEqual(playback, []);
+});
+
 test('chat metadata does not replenish the bounded reconnect budget', async () => {
   fakeAudioService.startRecording = async () => {};
   fakeAudioService.stopRecording = async () => {};
@@ -427,4 +448,63 @@ test('wearable action NACKs a transient failure and ACKs a successful redelivery
     { type: 'device_action_ack', action_id: 'signed-action-1', ok: true }
   ]);
   assert.equal(attempts, 2);
+});
+
+test('voice socket sends tolerate an OPEN-to-CLOSING race without escaping', () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  service.socket.send = () => { throw new Error('socket is closing'); };
+
+  assert.doesNotThrow(() => service.updateDevices([{ deviceId: 'wearable-1' }]));
+  assert.equal(service.updateDevices([{ deviceId: 'wearable-1' }]), false);
+  assert.equal(service.sendToolResponse('tool-1', 'ok'), false);
+  assert.equal(service.sendToolError('tool-1', 'failed', 'fallback'), false);
+  assert.equal(service.sendDeviceActionAcknowledgement('action-1', true), false);
+});
+
+test('device action responses bound untrusted status and error identifiers', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  const result = service.requestDeviceAction({
+    tool_call_id: 'call-invalid-error',
+    name: 'check_medication',
+    parameters: { device_type: 'home_robot', device_id: 'robot-1' }
+  });
+
+  service.handleActionResponse({
+    type: 'action_response',
+    request_id: sent[0].request_id,
+    ok: false,
+    status: 999999,
+    error_code: `FORGED_${'X'.repeat(500)}`
+  });
+
+  await assert.rejects(result, (error) => (
+    error.message === 'Device action service returned 500.'
+    && error.code === 'DEVICE_ACTION_FAILED'
+  ));
+});
+
+test('a failed secure voice handshake send reports a typed error and closes safely', () => {
+  const service = new HumeEVIService();
+  const received = [];
+  let closeCode = null;
+  const socket = {
+    readyState: 1,
+    send() { throw new Error('socket is closing'); },
+    close(code) { closeCode = code; }
+  };
+  service.socket = socket;
+  service.usesProxy = true;
+  service.sessionConfig = { accessToken: 'test-token' };
+  service.setMessageHandler({ onError: (error) => received.push(error) });
+
+  assert.doesNotThrow(() => service.handleOpen(socket));
+  assert.equal(received.at(-1).code, 'VOICE_HANDSHAKE_SEND_FAILED');
+  assert.equal(service.state, 'error');
+  assert.equal(closeCode, 4000);
 });

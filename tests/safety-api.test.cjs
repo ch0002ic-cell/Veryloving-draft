@@ -14,6 +14,7 @@ Module._load = function loadSafetyConfig(request, parent, isMain) {
 const {
   dispatchMedicationEscalation,
   dispatchSOS,
+  fetchRemoteUserData,
   normalizeSOSLocation,
   safetyRequest,
   SOS_LOCATION_MAX_AGE_MS
@@ -24,6 +25,16 @@ Module._load = originalLoad;
 
 const runtimeConfig = { safetyBackendEnabled: true, apiBaseUrl: 'https://api.example.test/' };
 
+function jsonResponse(payload, { ok = true, status = 200 } = {}) {
+  const text = JSON.stringify(payload);
+  return {
+    ok,
+    status,
+    headers: { get: (name) => name === 'content-length' ? String(Buffer.byteLength(text)) : null },
+    text: async () => text
+  };
+}
+
 test('safety client sends first-party bearer auth and validates HTTP failures', async () => {
   let request;
   const payload = await safetyRequest('/v1/test', {
@@ -33,7 +44,7 @@ test('safety client sends first-party bearer auth and validates HTTP failures', 
     runtimeConfig,
     fetchImpl: async (url, options) => {
       request = { url, options };
-      return { ok: true, status: 200, json: async () => ({ status: 'ok' }) };
+      return jsonResponse({ status: 'ok' });
     }
   });
   assert.deepEqual(payload, { status: 'ok' });
@@ -45,12 +56,23 @@ test('safety client sends first-party bearer auth and validates HTTP failures', 
   await assert.rejects(safetyRequest('/v1/test', {
     accessToken: 'expired-session',
     runtimeConfig,
-    fetchImpl: async () => ({
-      ok: false,
-      status: 401,
-      json: async () => ({ error: 'Unauthorized' })
-    })
+    fetchImpl: async () => jsonResponse({ error: 'Unauthorized' }, { ok: false, status: 401 })
   }), (error) => error.code === 'SAFETY_HTTP_401');
+});
+
+test('safety client cancels unexpected response bodies on 204', async () => {
+  let cancelled = 0;
+  const result = await safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 204,
+      body: { async cancel() { cancelled += 1; } }
+    })
+  });
+  assert.equal(result, null);
+  assert.equal(cancelled, 1);
 });
 
 test('safety client fails closed without auth and aborts stalled requests', async () => {
@@ -127,6 +149,85 @@ test('safety client bounds streamed response bodies and cancels oversized data',
   assert.equal(timeoutCancellations, 1);
 });
 
+test('stream timeouts release the reader lock even when read and cancel ignore abort', async () => {
+  let cancellations = 0;
+  let releases = 0;
+  const startedAt = Date.now();
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    timeoutMs: 5,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader: () => ({
+          read: () => new Promise(() => {}),
+          cancel() {
+            cancellations += 1;
+            return new Promise(() => {});
+          },
+          releaseLock() { releases += 1; }
+        })
+      }
+    })
+  }), (error) => error.code === 'SAFETY_TIMEOUT');
+
+  await Promise.resolve();
+  assert.equal(cancellations, 1);
+  assert.equal(releases, 1);
+  assert.ok(Date.now() - startedAt < 500);
+});
+
+test('safety client rejects an unbounded non-streaming response before allocation', async () => {
+  let bodyReads = 0;
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      async text() { bodyReads += 1; return '{"status":"ok"}'; }
+    })
+  }), (error) => error.code === 'SAFETY_RESPONSE_INVALID');
+  assert.equal(bodyReads, 0);
+});
+
+test('safety client rejects malformed JSON on a successful response', async () => {
+  const malformed = '{"status":';
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => String(Buffer.byteLength(malformed)) },
+      async text() { return malformed; }
+    })
+  }), (error) => error.code === 'SAFETY_RESPONSE_INVALID');
+});
+
+test('privacy export has a larger bounded response budget without weakening other APIs', async () => {
+  const advertisedBytes = 2 * 1024 * 1024;
+  const fetchImpl = async () => ({
+    ok: true,
+    status: 200,
+    headers: { get: (name) => name === 'content-length' ? String(advertisedBytes) : null },
+    async text() { return JSON.stringify({ data: { status: 'exported' } }); }
+  });
+
+  await assert.rejects(safetyRequest('/v1/test', {
+    accessToken: 'first-party-session',
+    runtimeConfig,
+    fetchImpl
+  }), (error) => error.code === 'SAFETY_RESPONSE_TOO_LARGE');
+
+  const exported = await fetchRemoteUserData('first-party-session', { runtimeConfig, fetchImpl });
+  assert.deepEqual(exported, { status: 'exported' });
+});
+
 test('SOS location normalization omits stale optional cache without blocking the event', () => {
   const now = 1_000_000;
   assert.deepEqual(normalizeSOSLocation({
@@ -158,7 +259,7 @@ test('SOS dispatch omits stale location and includes only the consent-built medi
     Date.now = () => 2_000_000;
     globalThis.fetch = async (_url, options) => {
       requests.push(JSON.parse(options.body));
-      return { ok: true, status: 202, json: async () => ({ id: 'sos-receipt', status: 'accepted' }) };
+      return jsonResponse({ id: 'sos-receipt', status: 'accepted' }, { status: 202 });
     };
 
     await dispatchSOS({
@@ -199,11 +300,10 @@ test('medication escalation client matches the protected durable backend contrac
   try {
     globalThis.fetch = async (url, options) => {
       requests.push({ url, options });
-      return {
-        ok: true,
-        status: 202,
-        json: async () => ({ id: 'medication_escalation_receipt', status: 'accepted' })
-      };
+      return jsonResponse(
+        { id: 'medication_escalation_receipt', status: 'accepted' },
+        { status: 202 }
+      );
     };
     const response = await dispatchMedicationEscalation({
       reminderId: 'medication-reminder-0001',
@@ -233,15 +333,11 @@ test('medication scheduler consumes the real caregiver API response shape end to
   let currentTime = 4_000_000;
   let snapshot = null;
   try {
-    globalThis.fetch = async () => ({
-      ok: true,
-      status: 202,
-      json: async () => ({
+    globalThis.fetch = async () => jsonResponse({
         id: 'medication_escalation_backend_0001',
         status: 'accepted',
         deliveryStatus: 'delivered'
-      })
-    });
+    }, { status: 202 });
     const scheduler = createMedicationReminderScheduler({
       accountId: 'user-a',
       now: () => currentTime,
@@ -294,15 +390,11 @@ test('lost caregiver response retries with identical idempotency fingerprint inp
     globalThis.fetch = async (_url, options) => {
       bodies.push(JSON.parse(options.body));
       if (bodies.length === 1) throw Object.assign(new Error('response lost'), { code: 'ECONNRESET' });
-      return {
-        ok: true,
-        status: 202,
-        json: async () => ({
+      return jsonResponse({
           id: 'medication_escalation_retry_0001',
           status: 'accepted',
           deliveryStatus: 'failed'
-        })
-      };
+      }, { status: 202 });
     };
     const scheduler = createMedicationReminderScheduler({
       accountId: 'user-a',

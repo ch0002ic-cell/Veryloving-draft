@@ -1,5 +1,6 @@
 import { chooseOfflineResponse } from '../../mocks/offlineResponses';
 import { logger } from '../../utils/logger';
+import { normalizeVoiceText } from '../../utils/voice-text';
 
 export class OfflineEVIService {
   constructor() {
@@ -50,8 +51,16 @@ export class OfflineEVIService {
       this.messageHandler.onError?.(new Error('Offline companion is still getting ready.'));
       return false;
     }
-    const response = chooseOfflineResponse(text);
-    if (emitUser) this.messageHandler.onUserMessage?.(text, {});
+    let normalized;
+    try {
+      normalized = normalizeVoiceText(text);
+    } catch (error) {
+      this.messageHandler.onError?.(error);
+      return false;
+    }
+    if (!normalized) return false;
+    const response = chooseOfflineResponse(normalized);
+    if (emitUser) this.messageHandler.onUserMessage?.(normalized, {});
     const timer = setTimeout(() => {
       this.responseTimers.delete(timer);
       this.messageHandler.onAssistantMessage?.(response.text, {});

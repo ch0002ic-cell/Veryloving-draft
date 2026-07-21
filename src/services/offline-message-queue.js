@@ -1,10 +1,20 @@
 import { storage } from './storage';
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
+import { normalizeVoiceText } from '../utils/voice-text';
 
 export const OFFLINE_MESSAGE_QUEUE_KEY = 'veryloving.offlineMessageQueue';
 const MAX_QUEUED_MESSAGES = 100;
 const MAX_BACKOFF_MS = 5 * 60 * 1000;
 let mutationQueue = Promise.resolve();
+
+function normalizedQueue(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(-MAX_QUEUED_MESSAGES).flatMap((item) => {
+    if (!item || typeof item !== 'object') return [];
+    const text = normalizeVoiceText(item.text, { truncate: true });
+    return item.sessionId && text ? [{ ...item, text }] : [];
+  });
+}
 
 export function offlineRetryDelay(attempts) {
   const normalizedAttempts = Math.max(1, Number(attempts) || 1);
@@ -15,8 +25,8 @@ function mutate(mutator) {
   const previousMutation = mutationQueue;
   const operation = runLocalUserDataMutation(async () => {
     await previousMutation.catch(() => {});
-    const current = await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []);
-    const next = await mutator(Array.isArray(current) ? current : []);
+    const current = normalizedQueue(await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []));
+    const next = normalizedQueue(await mutator(current));
     await storage.setJSON(OFFLINE_MESSAGE_QUEUE_KEY, next);
     return next;
   });
@@ -31,16 +41,17 @@ export async function drainOfflineMessageQueueMutations() {
 export async function loadOfflineMessageQueue() {
   await drainOfflineMessageQueueMutations();
   const queue = await storage.getJSON(OFFLINE_MESSAGE_QUEUE_KEY, []);
-  return Array.isArray(queue) ? queue : [];
+  return normalizedQueue(queue);
 }
 
 export function queueOfflineMessage(message) {
-  if (!message?.sessionId || !message?.text?.trim()) throw new Error('A session and message text are required.');
+  const text = normalizeVoiceText(message?.text);
+  if (!message?.sessionId || !text) throw new Error('A session and message text are required.');
   const now = new Date().toISOString();
   const queued = {
     id: message.id || `queued-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     sessionId: message.sessionId,
-    text: message.text.trim(),
+    text,
     createdAt: message.createdAt || now,
     attempts: 0,
     nextAttemptAt: 0

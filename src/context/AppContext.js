@@ -26,7 +26,10 @@ import {
 } from '../services/safety-api';
 import { createAuthenticationNonce } from '../utils/session-token';
 import { loadEmergencyContactCache, persistEmergencyContactCache } from '../services/emergency-contact-store';
-import { editEmergencyContact } from '../services/emergency-contact-edit';
+import {
+  editEmergencyContact,
+  REMOTE_EMERGENCY_CONTACT_PATTERN
+} from '../services/emergency-contact-edit';
 import { withTimeout } from '../utils/async';
 import { deviceRegistry } from '../services/device-manager/DeviceRegistry';
 import { WearableDevice } from '../services/device-manager/WearableDevice';
@@ -49,6 +52,9 @@ function safetyEventIdempotencyKey(deviceId, eventId) {
 }
 const DEFAULT_CONTACTS = [];
 const DEFAULT_FRIENDS = [];
+const DEVICE_HYDRATION_TIMEOUT_MS = 8000;
+const DEVICE_HYDRATION_RETRY_DELAY_MS = 1000;
+const DEVICE_HYDRATION_MAX_ATTEMPTS = 3;
 
 export function AppProvider({ children }) {
   const { accessToken, loading: authLoading, user } = useAuth();
@@ -81,8 +87,11 @@ export function AppProvider({ children }) {
   const [medicationReminders, setMedicationReminders] = useState([]);
   const deviceEntitiesMutationQueueRef = useRef(Promise.resolve());
   const deviceHydrationGenerationRef = useRef(0);
+  const deviceHydrationOperationRef = useRef(null);
   const [deviceEntitiesAccountId, setDeviceEntitiesAccountId] = useState(undefined);
   const [deviceHydrationAttempt, setDeviceHydrationAttempt] = useState(0);
+  const deviceHydrationRetryRef = useRef({ accountId: null, attempt: 0 });
+  const [deviceHydrationErrorCode, setDeviceHydrationErrorCode] = useState(null);
   const [pairedDeviceAccountId, setPairedDeviceAccountId] = useState(undefined);
   const [localStateHydrated, setLocalStateHydrated] = useState(false);
   const [settingsAccountId, setSettingsAccountId] = useState(undefined);
@@ -101,33 +110,72 @@ export function AppProvider({ children }) {
     if (authLoading) return undefined;
     let active = true;
     let retryTimer = null;
+    let timeoutTimer = null;
     const generation = ++deviceHydrationGenerationRef.current;
     const accountId = user?.id || null;
-    deviceRegistry.clear();
-    wearableEntitiesRef.current = [];
-    robotEntitiesRef.current = [];
-    setWearableEntitiesState([]);
-    setRobotEntitiesState([]);
+    if (deviceHydrationRetryRef.current.accountId !== accountId) {
+      deviceHydrationRetryRef.current = { accountId, attempt: 0 };
+    }
     setDeviceEntitiesAccountId(undefined);
+    setDeviceHydrationErrorCode(null);
     if (!accountId) {
+      deviceHydrationOperationRef.current = null;
+      deviceHydrationRetryRef.current = { accountId: null, attempt: 0 };
+      deviceRegistry.clear();
+      wearableEntitiesRef.current = [];
+      robotEntitiesRef.current = [];
+      setWearableEntitiesState([]);
+      setRobotEntitiesState([]);
       setDeviceEntitiesAccountId(null);
       return () => { active = false; };
     }
-    withTimeout(deviceRegistry.rehydrateRegistry({
-      accountId,
-      gatewayURL: config.actionGatewayURL,
-      accessTokenProvider: () => accessTokenRef.current,
-      wearableFactory: (record) => new WearableDevice({ deviceId: record.deviceId, name: record.name }),
-      robotFactory: (record) => new HomeRobotDevice({
-        deviceId: record.deviceId,
-        name: record.name,
+    const attempt = deviceHydrationRetryRef.current.attempt;
+    let hydration = deviceHydrationOperationRef.current;
+    if (hydration?.accountId !== accountId || hydration.state === 'rejected') {
+      deviceRegistry.clear();
+      wearableEntitiesRef.current = [];
+      robotEntitiesRef.current = [];
+      setWearableEntitiesState([]);
+      setRobotEntitiesState([]);
+      hydration = {
+        accountId,
+        state: 'pending',
+        value: null,
+        error: null,
+        promise: null
+      };
+      const operation = deviceRegistry.rehydrateRegistry({
         accountId,
         gatewayURL: config.actionGatewayURL,
         accessTokenProvider: () => accessTokenRef.current,
-        pairingTokenProvider: (deviceId) => loadRobotPairingCredential(accountId, deviceId)
-      })
-    }), 8000, 'Device restoration timed out.').then((devices) => {
+        wearableFactory: (record) => new WearableDevice({ deviceId: record.deviceId, name: record.name }),
+        robotFactory: (record) => new HomeRobotDevice({
+          deviceId: record.deviceId,
+          name: record.name,
+          accountId,
+          gatewayURL: config.actionGatewayURL,
+          accessTokenProvider: () => accessTokenRef.current,
+          pairingTokenProvider: (deviceId) => loadRobotPairingCredential(accountId, deviceId)
+        })
+      });
+      hydration.promise = operation.then((devices) => {
+        hydration.state = 'fulfilled';
+        hydration.value = devices;
+        return devices;
+      }, (error) => {
+        hydration.state = 'rejected';
+        hydration.error = error;
+        throw error;
+      });
+      // The effect below observes the tracked promise. Keep a rejection
+      // handler attached even while React tears down and replaces an effect.
+      void hydration.promise.catch(() => {});
+      deviceHydrationOperationRef.current = hydration;
+    }
+    hydration.promise.then((devices) => {
       if (!active || generation !== deviceHydrationGenerationRef.current || activeAccountIdRef.current !== accountId) return;
+      deviceHydrationRetryRef.current = { accountId, attempt: 0 };
+      setDeviceHydrationErrorCode(null);
       const restored = devices.map((entry) => ({ ...entry.getStatus(), deviceId: entry.deviceId, deviceType: entry.deviceType, name: entry.name }));
       const wearables = restored.filter((entry) => entry.deviceType === 'wearable');
       const robots = restored.filter((entry) => entry.deviceType === 'home_robot');
@@ -140,15 +188,65 @@ export function AppProvider({ children }) {
       logger.warn('[AppState] Could not restore the account-bound device registry', {
         errorCode: error?.code || error?.name || 'DEVICE_REGISTRY_RESTORE_FAILED'
       });
-      if (active && generation === deviceHydrationGenerationRef.current && activeAccountIdRef.current === accountId) {
-        retryTimer = setTimeout(() => setDeviceHydrationAttempt((attempt) => attempt + 1), 1000);
+      if (active
+        && generation === deviceHydrationGenerationRef.current
+        && activeAccountIdRef.current === accountId
+        && deviceHydrationOperationRef.current === hydration) {
+        deviceRegistry.clear();
+        const nextAttempt = attempt + 1;
+        if (nextAttempt < DEVICE_HYDRATION_MAX_ATTEMPTS) {
+          deviceHydrationRetryRef.current = { accountId, attempt: nextAttempt };
+          retryTimer = setTimeout(
+            () => setDeviceHydrationAttempt((value) => value + 1),
+            DEVICE_HYDRATION_RETRY_DELAY_MS
+          );
+        } else {
+          // Empty device state is safer than an infinite splash screen. Expose
+          // the bounded restoration failure while allowing the rest of the
+          // account-bound app state to finish hydrating.
+          setDeviceHydrationErrorCode(
+            error?.code || error?.name || 'DEVICE_REGISTRY_RESTORE_FAILED'
+          );
+          setDeviceEntitiesAccountId(accountId);
+        }
       }
     });
+    timeoutTimer = setTimeout(() => {
+      if (!active
+        || generation !== deviceHydrationGenerationRef.current
+        || activeAccountIdRef.current !== accountId
+        || deviceHydrationOperationRef.current !== hydration
+        || hydration.state !== 'pending') return;
+      // AsyncStorage/SecureStore operations are not cancellable. Report a
+      // bounded UI failure but retain and reuse this single native operation;
+      // retries and foreground transitions must not accumulate orphan reads.
+      setDeviceHydrationErrorCode('DEVICE_REGISTRY_RESTORE_TIMEOUT');
+      setDeviceEntitiesAccountId(accountId);
+    }, DEVICE_HYDRATION_TIMEOUT_MS);
     return () => {
       active = false;
       if (retryTimer) clearTimeout(retryTimer);
+      if (timeoutTimer) clearTimeout(timeoutTimer);
     };
   }, [authLoading, deviceHydrationAttempt, user?.id]);
+
+  const retryDeviceHydration = useCallback(() => {
+    const accountId = activeAccountIdRef.current;
+    if (!accountId || !deviceHydrationErrorCode) return false;
+    deviceHydrationRetryRef.current = { accountId, attempt: 0 };
+    setDeviceHydrationErrorCode(null);
+    setDeviceEntitiesAccountId(undefined);
+    setDeviceHydrationAttempt((value) => value + 1);
+    return true;
+  }, [deviceHydrationErrorCode]);
+
+  useEffect(() => {
+    if (!deviceHydrationErrorCode) return undefined;
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active') retryDeviceHydration();
+    });
+    return () => subscription.remove();
+  }, [deviceHydrationErrorCode, retryDeviceHydration]);
 
   useEffect(() => deviceRegistry.subscribe((entities) => {
     if (!user?.id || activeAccountIdRef.current !== user.id) return;
@@ -158,7 +256,7 @@ export function AppProvider({ children }) {
     robotEntitiesRef.current = robots;
     setWearableEntitiesState(wearables);
     setRobotEntitiesState(robots);
-    if (deviceEntitiesAccountId !== user.id) return;
+    if (deviceEntitiesAccountId !== user.id || deviceHydrationErrorCode) return;
     const accountId = user.id;
     const operation = deviceEntitiesMutationQueueRef.current.catch(() => {}).then(() => {
       if (activeAccountIdRef.current !== accountId) throw new Error('The active account changed during the device update.');
@@ -168,7 +266,7 @@ export function AppProvider({ children }) {
     operation.catch((error) => logger.warn('[AppState] Could not persist live device status', {
       errorCode: error?.code || error?.name || 'DEVICE_ENTITY_PERSIST_FAILED'
     }));
-  }), [deviceEntitiesAccountId, user?.id]);
+  }), [deviceEntitiesAccountId, deviceHydrationErrorCode, user?.id]);
 
   useEffect(() => {
     safetyEventRouterRef.current = createSafetyEventRouter({
@@ -393,11 +491,23 @@ export function AppProvider({ children }) {
       if (config.safetyBackendEnabled && accessToken) {
         try {
           const remoteContacts = await fetchEmergencyContacts(accessToken);
-          const remotePhones = new Set(remoteContacts.map((contact) => contact.phone));
+          const remoteIds = new Set();
+          const remotePhones = new Set();
+          const canonicalRemoteContacts = remoteContacts.filter((contact) => {
+            if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) return false;
+            remoteIds.add(contact.id);
+            remotePhones.add(contact.phone);
+            return true;
+          });
           const migratedContacts = [];
           const pendingLocalContacts = [];
           for (const contact of cachedContacts) {
-            if (remotePhones.has(contact.phone)) continue;
+            if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) continue;
+            // A server-issued contact missing from an authoritative refresh
+            // was deleted on another client. Do not recreate it from an old
+            // offline cache; only genuinely local/pending records migrate.
+            if (REMOTE_EMERGENCY_CONTACT_PATTERN.test(contact.id || '')
+              && contact.syncStatus !== 'pending') continue;
             try {
               const migrated = await createEmergencyContact({
                 name: contact.name,
@@ -405,6 +515,7 @@ export function AppProvider({ children }) {
                 countryCode: contact.countryCode
               }, accessToken);
               migratedContacts.push(migrated);
+              remoteIds.add(migrated.id);
               remotePhones.add(migrated.phone);
             } catch (error) {
               pendingLocalContacts.push({ ...contact, syncStatus: 'pending' });
@@ -413,7 +524,7 @@ export function AppProvider({ children }) {
               });
             }
           }
-          nextContacts = [...remoteContacts, ...migratedContacts, ...pendingLocalContacts];
+          nextContacts = [...canonicalRemoteContacts, ...migratedContacts, ...pendingLocalContacts];
         } catch (error) {
           logger.warn('[AppState] Could not refresh emergency contacts', {
             errorCode: error?.code || error?.name || 'CONTACT_SYNC_FAILED'
@@ -650,27 +761,40 @@ export function AppProvider({ children }) {
   const addContact = useCallback(async (contact) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     if (!user?.id) throw new Error('An authenticated account is required.');
+    const accountId = user.id;
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      const assertAccountActive = () => {
+        if (activeAccountIdRef.current === accountId) return;
+        const error = new Error('The authenticated account changed during the contact update.');
+        error.code = 'CONTACT_ACCOUNT_CHANGED';
+        throw error;
+      };
+      assertAccountActive();
       const syncRemote = config.safetyBackendEnabled && Boolean(accessToken);
       const nextContact = syncRemote
         ? await createEmergencyContact(contact, accessToken)
         : { id: createAuthenticationNonce(), ...contact };
+      assertAccountActive();
       const previous = contactsRef.current;
       const next = [...previous, nextContact];
       contactsRef.current = next;
       setContacts(next);
       try {
-        await persistEmergencyContactCache(user.id, next);
+        await persistEmergencyContactCache(accountId, next);
+        assertAccountActive();
         return nextContact;
       } catch (error) {
+        if (error?.code === 'CONTACT_ACCOUNT_CHANGED') throw error;
         if (syncRemote) {
           logger.warn('[AppState] Server contact was saved but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });
           return nextContact;
         }
-        contactsRef.current = previous;
-        setContacts(previous);
+        if (activeAccountIdRef.current === accountId) {
+          contactsRef.current = previous;
+          setContacts(previous);
+        }
         throw error;
       }
     });
@@ -681,28 +805,41 @@ export function AppProvider({ children }) {
   const removeContact = useCallback(async (contactId) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
     if (!user?.id) throw new Error('An authenticated account is required.');
+    const accountId = user.id;
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      const assertAccountActive = () => {
+        if (activeAccountIdRef.current === accountId) return;
+        const error = new Error('The authenticated account changed during the contact update.');
+        error.code = 'CONTACT_ACCOUNT_CHANGED';
+        throw error;
+      };
+      assertAccountActive();
       const previous = contactsRef.current;
       const remoteContact = /^contact_[A-Za-z0-9_-]{24}$/.test(contactId);
       const syncRemote = config.safetyBackendEnabled && Boolean(accessToken);
       if (syncRemote && remoteContact) {
         await deleteEmergencyContact(contactId, accessToken);
       }
+      assertAccountActive();
       const next = previous.filter((contact) => contact.id !== contactId);
       contactsRef.current = next;
       setContacts(next);
       try {
-        await persistEmergencyContactCache(user.id, next);
+        await persistEmergencyContactCache(accountId, next);
+        assertAccountActive();
         return next;
       } catch (error) {
+        if (error?.code === 'CONTACT_ACCOUNT_CHANGED') throw error;
         if (syncRemote) {
           logger.warn('[AppState] Server contact was removed but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });
           return next;
         }
-        contactsRef.current = previous;
-        setContacts(previous);
+        if (activeAccountIdRef.current === accountId) {
+          contactsRef.current = previous;
+          setContacts(previous);
+        }
         throw error;
       }
     });
@@ -832,7 +969,13 @@ export function AppProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!user?.id || deviceEntitiesAccountId !== user.id || pairedDeviceAccountId !== user.id || deviceAccountIdRef.current !== user.id) return;
+    if (
+      !user?.id
+      || deviceHydrationErrorCode
+      || deviceEntitiesAccountId !== user.id
+      || pairedDeviceAccountId !== user.id
+      || deviceAccountIdRef.current !== user.id
+    ) return;
     const restoredWearable = device.id
       ? wearableEntitiesRef.current.find((entry) => entry.deviceId === device.id)
         || (deviceRegistry.get(device.id)?.deviceType === 'wearable'
@@ -868,11 +1011,13 @@ export function AppProvider({ children }) {
     operation.catch((error) => logger.warn('[AppState] Could not persist wearable descriptors', {
       errorCode: error?.code || error?.name || 'DEVICE_ENTITY_PERSIST_FAILED'
     }));
-  }, [device, deviceEntitiesAccountId, pairedDeviceAccountId, user?.id]);
+  }, [device, deviceEntitiesAccountId, deviceHydrationErrorCode, pairedDeviceAccountId, user?.id]);
 
   const setWearableEntities = useCallback(async (nextValue) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
-    if (!user?.id || deviceEntitiesAccountId !== user.id) throw new Error('Device state is not hydrated for this account.');
+    if (!user?.id || deviceEntitiesAccountId !== user.id || deviceHydrationErrorCode) {
+      throw new Error('Device state is not hydrated for this account.');
+    }
     const operation = deviceEntitiesMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = wearableEntitiesRef.current;
       const next = typeof nextValue === 'function' ? nextValue(previous) : nextValue;
@@ -908,12 +1053,14 @@ export function AppProvider({ children }) {
     });
     deviceEntitiesMutationQueueRef.current = operation.then(() => undefined, () => undefined);
     return operation;
-  }, [deviceEntitiesAccountId, user?.id]);
+  }, [deviceEntitiesAccountId, deviceHydrationErrorCode, user?.id]);
   setWearableEntitiesRef.current = setWearableEntities;
 
   const setRobotEntities = useCallback(async (nextValue) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
-    if (!user?.id || deviceEntitiesAccountId !== user.id) throw new Error('Device state is not hydrated for this account.');
+    if (!user?.id || deviceEntitiesAccountId !== user.id || deviceHydrationErrorCode) {
+      throw new Error('Device state is not hydrated for this account.');
+    }
     const operation = deviceEntitiesMutationQueueRef.current.catch(() => {}).then(async () => {
       const previous = robotEntitiesRef.current;
       const next = typeof nextValue === 'function' ? nextValue(previous) : nextValue;
@@ -949,12 +1096,18 @@ export function AppProvider({ children }) {
     });
     deviceEntitiesMutationQueueRef.current = operation.then(() => undefined, () => undefined);
     return operation;
-  }, [deviceEntitiesAccountId, user?.id]);
+  }, [deviceEntitiesAccountId, deviceHydrationErrorCode, user?.id]);
 
   // The backend binding is authoritative and lets a successful pairing be
   // recovered after a lost HTTP response, reinstall, or local storage loss.
   useEffect(() => {
-    if (!user?.id || deviceEntitiesAccountId !== user.id || !accessTokenRef.current || !config.apiBaseUrl) return undefined;
+    if (
+      !user?.id
+      || deviceHydrationErrorCode
+      || deviceEntitiesAccountId !== user.id
+      || !accessTokenRef.current
+      || !config.apiBaseUrl
+    ) return undefined;
     let active = true;
     const accountId = user.id;
     withTimeout(listHomeRobots(accessTokenRef.current), 8000, 'Robot registry request timed out.').then((remoteRobots) => {
@@ -980,9 +1133,9 @@ export function AppProvider({ children }) {
       errorCode: error?.code || error?.name || 'ROBOT_REGISTRY_SYNC_FAILED'
     }));
     return () => { active = false; };
-  }, [deviceEntitiesAccountId, setRobotEntities, user?.id]);
+  }, [deviceEntitiesAccountId, deviceHydrationErrorCode, setRobotEntities, user?.id]);
 
-  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
+  const value = useMemo(() => ({ settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, deviceHydrationErrorCode, retryDeviceHydration, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, setFriends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated }), [settings, updateSettings, contacts, addContact, updateContact, removeContact, device, deviceTelemetry, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, deviceHydrationErrorCode, retryDeviceHydration, medicationReminders, scheduleMedicationReminder, acknowledgeMedicationReminder, listMedicationReminders, friends, selectedVoice, resetLocalState, lockAndFlushLocalMutations, isHydrated]);
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 

@@ -36,19 +36,26 @@ function testSession({ subject = 'google:user', ...overrides } = {}) {
   };
 }
 
+function jsonResponse(payload, { ok = true, status = 200 } = {}) {
+  const text = JSON.stringify(payload);
+  return {
+    ok,
+    status,
+    headers: { get: (name) => name === 'content-length' ? String(Buffer.byteLength(text)) : null },
+    text: async () => text
+  };
+}
+
 test('mobile auth refresh rotates both secure session tokens', async () => {
   let request;
   const result = await refreshApplicationSession('old-refresh-token', {
     fetchImpl: async (url, options) => {
       request = { url, options };
-      return {
-        ok: true,
-        status: 200,
-        json: async () => testSession()
-      };
+      return jsonResponse(testSession());
     }
   });
   assert.equal(request.url, 'https://api.example.test/v1/auth/refresh');
+  assert.equal(request.options.redirect, 'error');
   assert.deepEqual(JSON.parse(request.options.body), { refreshToken: 'old-refresh-token' });
   assert.equal(result.accessToken.split('.').length, 3);
   assert.equal(result.refreshToken.split('.').length, 3);
@@ -56,10 +63,11 @@ test('mobile auth refresh rotates both secure session tokens', async () => {
 
 test('mobile logout sends only the access token in an authenticated revocation request', async () => {
   let request;
+  let cancelled = 0;
   const revoked = await revokeApplicationSession('signed-access-token', {
     fetchImpl: async (url, options) => {
       request = { url, options };
-      return { ok: true, status: 204 };
+      return { ok: true, status: 204, body: { async cancel() { cancelled += 1; } } };
     }
   });
   assert.equal(revoked, true);
@@ -67,6 +75,46 @@ test('mobile logout sends only the access token in an authenticated revocation r
   assert.equal(request.options.method, 'POST');
   assert.equal(request.options.headers.Authorization, 'Bearer signed-access-token');
   assert.equal(request.options.body, undefined);
+  assert.equal(request.options.redirect, 'error');
+  assert.equal(cancelled, 1);
+});
+
+test('mobile auth deadline survives fetch implementations that ignore AbortSignal', async () => {
+  const startedAt = Date.now();
+  await assert.rejects(refreshApplicationSession('old-refresh-token', {
+    timeoutMs: 5,
+    fetchImpl: async () => new Promise(() => {})
+  }), (error) => error.code === 'AUTH_TIMEOUT');
+  assert.ok(Date.now() - startedAt < 500);
+});
+
+test('mobile auth rejects an oversized response before reading its body', async () => {
+  let bodyReads = 0;
+  let cancelled = 0;
+  await assert.rejects(refreshApplicationSession('old-refresh-token', {
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => String(300 * 1024) },
+      body: { async cancel() { cancelled += 1; } },
+      async text() { bodyReads += 1; return '{}'; }
+    })
+  }), (error) => error.code === 'HTTP_RESPONSE_TOO_LARGE');
+  assert.equal(bodyReads, 0);
+  assert.equal(cancelled, 1);
+});
+
+test('mobile auth rejects an unbounded non-streaming response before allocation', async () => {
+  let bodyReads = 0;
+  await assert.rejects(refreshApplicationSession('old-refresh-token', {
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      async text() { bodyReads += 1; return JSON.stringify(testSession()); }
+    })
+  }), (error) => error.code === 'HTTP_RESPONSE_INVALID');
+  assert.equal(bodyReads, 0);
 });
 
 test('mobile phone auth starts and confirms a backend verification without URL PII', async () => {
@@ -77,16 +125,12 @@ test('mobile phone auth starts and confirms a backend verification without URL P
   }, {
     fetchImpl: async (url, options) => {
       requests.push({ url, options });
-      return {
-        ok: true,
-        status: 200,
-        json: async () => ({
+      return jsonResponse({
           verificationId: 'signed-opaque-challenge',
           phone: '+14155552671',
           countryCode: 'US',
           expiresAt: Date.now() + 300_000
-        })
-      };
+      });
     }
   });
   assert.equal(challenge.verificationId, 'signed-opaque-challenge');
@@ -107,7 +151,7 @@ test('mobile phone auth starts and confirms a backend verification without URL P
   }, {
     fetchImpl: async (url, options) => {
       requests.push({ url, options });
-      return { ok: true, status: 200, json: async () => session };
+      return jsonResponse(session);
     }
   });
   assert.equal(requests[1].url, 'https://api.example.test/v1/auth/phone/verify');
@@ -137,14 +181,10 @@ test('mobile phone auth preserves safe backend error codes for UI mapping', asyn
     phone: '+14155552671',
     countryCode: 'US'
   }, {
-    fetchImpl: async () => ({
-      ok: false,
-      status: 503,
-      json: async () => ({
+    fetchImpl: async () => jsonResponse({
         error: 'Phone verification is not configured',
         code: 'PHONE_AUTH_NOT_CONFIGURED'
-      })
-    })
+    }, { ok: false, status: 503 })
   }), (error) => (
     error.code === 'AUTH_HTTP_503'
     && error.serverCode === 'PHONE_AUTH_NOT_CONFIGURED'
@@ -154,15 +194,11 @@ test('mobile phone auth preserves safe backend error codes for UI mapping', asyn
 
 test('mobile rejects malformed or expired session payloads', async () => {
   await assert.rejects(refreshApplicationSession('old-refresh-token', {
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      json: async () => ({
+    fetchImpl: async () => jsonResponse({
         accessToken: 'not-a-jwt',
         refreshToken: 'not-a-jwt',
         expiresAt: Date.now() + 60_000,
         refreshExpiresAt: Date.now() + 86_400_000
-      })
     })
   }), (error) => error.code === 'AUTH_RESPONSE_INVALID');
 });
@@ -171,15 +207,11 @@ test('mobile rejects mixed-account token pairs and unsafe backend URLs', async (
   const expiresAt = Math.floor((Date.now() + 60_000) / 1000) * 1000;
   const refreshExpiresAt = Math.floor((Date.now() + 86_400_000) / 1000) * 1000;
   await assert.rejects(refreshApplicationSession('old-refresh-token', {
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      json: async () => ({
+    fetchImpl: async () => jsonResponse({
         accessToken: testJWT('google:user-a', expiresAt, 'session-a'),
         expiresAt,
         refreshToken: testJWT('google:user-b', refreshExpiresAt, 'session-b'),
         refreshExpiresAt
-      })
     })
   }), (error) => error.code === 'AUTH_RESPONSE_INVALID');
 
@@ -191,10 +223,9 @@ test('mobile rejects mixed-account token pairs and unsafe backend URLs', async (
 
 test('mobile auth refresh exposes rejection status without leaking a token', async () => {
   await assert.rejects(refreshApplicationSession('sensitive-refresh-token', {
-    fetchImpl: async () => ({
-      ok: false,
-      status: 401,
-      json: async () => ({ error: 'Refresh session is invalid or expired' })
-    })
+    fetchImpl: async () => jsonResponse(
+      { error: 'Refresh session is invalid or expired' },
+      { ok: false, status: 401 }
+    )
   }), (error) => error.code === 'AUTH_HTTP_401' && !error.message.includes('sensitive-refresh-token'));
 });

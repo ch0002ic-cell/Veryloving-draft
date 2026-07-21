@@ -1,11 +1,27 @@
 import { storage } from './storage';
 import { createOpaqueSessionId } from '../utils/session-id';
 import { runLocalUserDataMutation } from './local-mutation-coordinator';
+import { normalizeVoiceText } from '../utils/voice-text';
 
 export const CONVERSATION_HISTORY_KEY = 'veryloving.conversationHistory';
 const MAX_SESSIONS = 50;
 const MAX_MESSAGES_PER_SESSION = 200;
 let mutationQueue = Promise.resolve();
+
+function normalizedSessions(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, MAX_SESSIONS).flatMap((session) => {
+    if (!session || typeof session !== 'object' || !session.id) return [];
+    const messages = Array.isArray(session.messages)
+      ? session.messages.slice(-MAX_MESSAGES_PER_SESSION).flatMap((message) => {
+        if (!message || typeof message !== 'object') return [];
+        const text = normalizeVoiceText(message.text, { truncate: true });
+        return text ? [{ ...message, text }] : [];
+      })
+      : [];
+    return [{ ...session, messages }];
+  });
+}
 
 function randomSuffix() {
   return Math.random().toString(36).slice(2, 10);
@@ -19,8 +35,8 @@ function runMutation(mutator) {
   const previousMutation = mutationQueue;
   const operation = runLocalUserDataMutation(async () => {
     await previousMutation.catch(() => {});
-    const sessions = await storage.getJSON(CONVERSATION_HISTORY_KEY, []);
-    const next = await mutator(Array.isArray(sessions) ? sessions : []);
+    const sessions = normalizedSessions(await storage.getJSON(CONVERSATION_HISTORY_KEY, []));
+    const next = normalizedSessions(await mutator(sessions));
     await storage.setJSON(CONVERSATION_HISTORY_KEY, next);
     return next;
   });
@@ -35,7 +51,7 @@ export async function drainConversationHistoryMutations() {
 export async function loadConversationHistory() {
   await drainConversationHistoryMutations();
   const sessions = await storage.getJSON(CONVERSATION_HISTORY_KEY, []);
-  return Array.isArray(sessions) ? sessions : [];
+  return normalizedSessions(sessions);
 }
 
 export async function loadConversationSession(sessionId) {
@@ -58,14 +74,15 @@ export function ensureConversationSession({ sessionId, voiceId, voiceName }) {
 }
 
 export function appendConversationMessage(message) {
-  if (!message?.text?.trim()) return Promise.resolve([]);
+  const text = normalizeVoiceText(message?.text);
+  if (!text) return Promise.resolve([]);
   return runMutation((sessions) => {
     const sessionId = message.sessionId || createConversationSessionId();
     const now = new Date().toISOString();
     const nextMessage = {
       id: message.id || `${sessionId}-${Date.now()}-${randomSuffix()}`,
       role: message.role,
-      text: message.text.trim(),
+      text,
       voiceId: message.voiceId,
       source: message.source,
       deliveryStatus: message.deliveryStatus,

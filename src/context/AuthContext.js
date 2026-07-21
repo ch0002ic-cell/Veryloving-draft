@@ -56,6 +56,7 @@ import {
   restorePhoneVerificationState
 } from '../utils/phone-verification-state';
 import { ensureAccountDataOwner } from '../services/account-data-boundary';
+import { retryPendingPushTokenUnregister } from '../services/notifications';
 const AuthContext = createContext(null);
 const SESSION_KEY = 'veryloving.auth.session.v1';
 const SIGNED_OUT_KEY = 'veryloving.auth.signedOut';
@@ -91,14 +92,16 @@ async function removeLegacySessionKeys() {
   return Promise.allSettled(LEGACY_SESSION_KEYS.map((key) => secureStorage.deleteItemAsync(key)));
 }
 
-async function invalidatePersistedSession() {
-  let tombstoneStored = false;
+async function invalidatePersistedSession({ tombstoneAlreadyStored = false } = {}) {
+  let tombstoneStored = tombstoneAlreadyStored;
   let tombstoneError;
-  try {
-    await storage.setJSON(SIGNED_OUT_KEY, { version: 1, signedOutAt: Date.now() });
-    tombstoneStored = true;
-  } catch (error) {
-    tombstoneError = error;
+  if (!tombstoneStored) {
+    try {
+      await storage.setJSON(SIGNED_OUT_KEY, { version: 1, signedOutAt: Date.now() });
+      tombstoneStored = true;
+    } catch (error) {
+      tombstoneError = error;
+    }
   }
   const results = await Promise.allSettled([
     secureStorage.deleteItemAsync(SESSION_KEY),
@@ -430,9 +433,14 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active' && sessionStatus === 'offline') refreshSession().catch(() => {});
+      if (nextState === 'active') retryPendingPushTokenUnregister().catch(() => {});
     });
     return () => subscription.remove();
   }, [refreshSession, sessionStatus]);
+
+  useEffect(() => {
+    retryPendingPushTokenUnregister().catch(() => {});
+  }, []);
 
   useEffect(() => () => {
     if (refreshRetryTimerRef.current) clearTimeout(refreshRetryTimerRef.current);
@@ -472,20 +480,30 @@ export function AuthProvider({ children }) {
     if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
       warningCount: boundary.warnings
     });
-    if (authGeneration !== authGenerationRef.current) {
-      throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
-    }
-    await runSessionMutation(async () => {
+    const assertAuthenticationCurrent = () => {
       if (authGeneration !== authGenerationRef.current) {
         throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
       }
+    };
+    assertAuthenticationCurrent();
+    await runSessionMutation(async () => {
+      assertAuthenticationCurrent();
       try {
         await secureStorage.deleteItemAsync(ONBOARDING_KEY);
+        assertAuthenticationCurrent();
         await secureStorage.setItemAsync(SESSION_KEY, serializedEnvelope);
+        assertAuthenticationCurrent();
         await secureStorage.setItemAsync(ONBOARDING_PROGRESS_KEY, JSON.stringify(initialProgress));
+        assertAuthenticationCurrent();
         await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
+        // signOut writes this tombstone before it queues persisted-session
+        // invalidation. Never let a superseded sign-in remove that marker
+        // after the user has already requested sign-out.
+        assertAuthenticationCurrent();
         await storage.remove(SIGNED_OUT_KEY);
+        assertAuthenticationCurrent();
         await removeLegacySessionKeys();
+        assertAuthenticationCurrent();
       } catch (error) {
         await invalidatePersistedSession().catch(() => {});
         if (authGeneration === authGenerationRef.current) {
@@ -498,9 +516,7 @@ export function AuthProvider({ children }) {
         }
         throw error;
       }
-      if (authGeneration !== authGenerationRef.current) {
-        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
-      }
+      assertAuthenticationCurrent();
       setUser(nextEnvelope.user);
       setAccessToken(nextEnvelope.accessToken);
       setSessionStatus('active');
@@ -667,6 +683,15 @@ export function AuthProvider({ children }) {
         'Demo mode is available only in a VeryLoving development build running on the iOS Simulator.'
       );
     }
+    // Demo mode is a signed-out onboarding path, not an account-switching
+    // shortcut. Preserving a real session envelope while publishing the demo
+    // user would restore the old account after process death.
+    if (user || accessToken || sessionStatus !== 'signed-out') {
+      throw createAuthError(
+        'DEMO_AUTH_ACTIVE_SESSION',
+        'Sign out of the current account before entering demo mode.'
+      );
+    }
     authGenerationRef.current += 1;
     const authGeneration = authGenerationRef.current;
     if (refreshRetryTimerRef.current) {
@@ -688,7 +713,7 @@ export function AuthProvider({ children }) {
     setSessionStatus('demo');
     setAuthError(null);
     return DEVELOPMENT_DEMO_USER;
-  }, []);
+  }, [accessToken, sessionStatus, user]);
 
   const signInWithPhone = useCallback(async ({ e164, countryCode }) => {
     setAuthError(null);
@@ -745,6 +770,7 @@ export function AuthProvider({ children }) {
   const signOut = useCallback(async () => {
     const signedInProvider = user?.provider;
     const tokenToRevoke = accessToken;
+    const pushUnregistration = retryPendingPushTokenUnregister().catch(() => false);
     // Start revocation while the access token is still available. Local
     // invalidation remains authoritative when the network is unavailable.
     const revocation = tokenToRevoke
@@ -755,6 +781,22 @@ export function AuthProvider({ children }) {
     if (refreshRetryTimerRef.current) {
       clearTimeout(refreshRetryTimerRef.current);
       refreshRetryTimerRef.current = null;
+    }
+    // This durable marker is the first local sign-out mutation. Settings may
+    // subsequently sweep every account-bound store, but a process death at
+    // any point after this await can no longer restore a residual Keychain
+    // session.
+    let tombstoneStored = false;
+    try {
+      await storage.setJSON(SIGNED_OUT_KEY, {
+        version: 1,
+        signedOutAt: Date.now()
+      });
+      tombstoneStored = true;
+    } catch {
+      // AsyncStorage can be unavailable during low-storage/native failures.
+      // Continue immediately to Keychain deletion; invalidatePersistedSession
+      // fails only if neither durable barrier can be established.
     }
     if (signedInProvider === 'demo') {
       setUser(null);
@@ -768,14 +810,9 @@ export function AuthProvider({ children }) {
       await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
       return;
     }
-    // Publish the non-sensitive signed-out marker before waiting behind any
-    // in-flight Keychain mutation. A process restart must never resurrect the
-    // session the user just left.
-    await storage.setJSON(SIGNED_OUT_KEY, {
-      version: 1,
-      signedOutAt: Date.now()
-    }).catch(() => {});
-    const cleanup = await runSessionMutation(() => invalidatePersistedSession());
+    const cleanup = await runSessionMutation(() => invalidatePersistedSession({
+      tombstoneAlreadyStored: tombstoneStored
+    }));
     if (authGeneration === authGenerationRef.current) {
       setUser(null);
       setAccessToken(null);
@@ -810,6 +847,11 @@ export function AuthProvider({ children }) {
       revocation,
       PROVIDER_SIGN_OUT_TIMEOUT_MS,
       'Backend session revocation timed out.'
+    ).catch(() => false);
+    await withTimeout(
+      pushUnregistration,
+      PROVIDER_SIGN_OUT_TIMEOUT_MS,
+      'Push token unregistration timed out.'
     ).catch(() => false);
     if (cleanup.residualFailures) {
       logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {

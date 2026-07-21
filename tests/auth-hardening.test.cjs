@@ -251,6 +251,8 @@ test('development demo auth is volatile, internally guarded, and never creates a
   const demo = auth.slice(demoStart, demoEnd);
 
   assert.match(demo, /authenticationRuntime\.isDemoModeAvailable\(\)/);
+  assert.match(demo, /DEMO_AUTH_ACTIVE_SESSION/);
+  assert.match(demo, /sessionStatus !== 'signed-out'/);
   assert.match(demo, /setAccessToken\(null\)/);
   assert.match(demo, /setUser\(DEVELOPMENT_DEMO_USER\)/);
   assert.match(demo, /setOnboardingComplete\(true\)/);
@@ -296,6 +298,18 @@ test('auth persistence writes one account-bound secure envelope', () => {
   assert.match(persist, /setUser\(null\)[\s\S]*setAccessToken\(null\)[\s\S]*setSessionStatus\('signed-out'\)/);
 });
 
+test('a superseded sign-in cannot erase a newer sign-out tombstone', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const persist = auth.slice(auth.indexOf('const persist = useCallback'), auth.indexOf('const completeOnboarding'));
+  const tombstoneRemoval = persist.indexOf('await storage.remove(SIGNED_OUT_KEY)');
+  const precedingFence = persist.lastIndexOf('assertAuthenticationCurrent();', tombstoneRemoval);
+  const phoneCleanup = persist.indexOf('await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY)');
+
+  assert.notEqual(tombstoneRemoval, -1);
+  assert.ok(precedingFence > phoneCleanup && precedingFence < tombstoneRemoval);
+  assert.match(persist.slice(tombstoneRemoval), /await storage\.remove\(SIGNED_OUT_KEY\);\s*assertAuthenticationCurrent\(\);/);
+});
+
 test('auth restore migrates only validated legacy sessions and refresh stays atomic', () => {
   const { readFileSync } = require('node:fs');
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
@@ -314,12 +328,35 @@ test('Google logout is bounded and completes after local session invalidation', 
     auth.indexOf('const signOut = useCallback'),
     auth.indexOf('\n\n  const value = useMemo')
   );
-  const invalidatesLocalSession = signOut.indexOf('await runSessionMutation(() => invalidatePersistedSession())');
+  const invalidatesLocalSession = signOut.indexOf('await runSessionMutation(() => invalidatePersistedSession({');
   const awaitsProvider = signOut.indexOf("import('@react-native-google-signin/google-signin')");
 
   assert.ok(invalidatesLocalSession >= 0 && invalidatesLocalSession < awaitsProvider);
   assert.match(signOut, /await withTimeout\([\s\S]*GoogleSignin\?\.signOut\?\.\(\)[\s\S]*PROVIDER_SIGN_OUT_TIMEOUT_MS/);
   assert.match(signOut, /catch \(error\)[\s\S]*Google provider sign-out could not be confirmed/);
+});
+
+test('settings writes and preserves the sign-out tombstone before sweeping account data', () => {
+  const settings = readFileSync(path.resolve(process.cwd(), 'app/settings.js'), 'utf8');
+  const signOutHandler = settings.slice(
+    settings.indexOf('const handleSignOut = async'),
+    settings.indexOf('\n\n  return (', settings.indexOf('const handleSignOut = async'))
+  );
+  const durableSignOut = signOutHandler.indexOf('await signOut()');
+  const localSweep = signOutHandler.indexOf('await deleteLocalUserData({');
+  assert.ok(durableSignOut >= 0 && durableSignOut < localSweep);
+  assert.match(signOutHandler, /preserveSignedOutTombstone: true/);
+
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const signOut = auth.slice(
+    auth.indexOf('const signOut = useCallback'),
+    auth.indexOf('\n\n  const value = useMemo')
+  );
+  const marker = signOut.indexOf('await storage.setJSON(SIGNED_OUT_KEY');
+  const secureCleanup = signOut.indexOf('await runSessionMutation');
+  assert.ok(marker >= 0 && marker < secureCleanup);
+  const markerWrite = signOut.slice(marker, signOut.indexOf("if (signedInProvider === 'demo')", marker));
+  assert.doesNotMatch(markerWrite, /\.catch\(/);
 });
 
 test('privacy deletion keeps sign-out progressing after protected Keychain cleanup failures', () => {

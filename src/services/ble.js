@@ -25,6 +25,7 @@ import { isExpoGoRuntime } from '../utils/runtime-environment';
 const DEFAULT_SCAN_TIMEOUT_MS = 10000;
 const CONNECT_TIMEOUT_MS = 10000;
 const GATT_OPERATION_TIMEOUT_MS = 5000;
+const NATIVE_DISCONNECT_TIMEOUT_MS = 5000;
 const BLUETOOTH_STATE_TIMEOUT_MS = 3000;
 const MAX_GATT_WRITE_BYTES = 20;
 const BLE_RESTORE_IDENTIFIER = 'com.veryloving.vl01.central';
@@ -131,6 +132,8 @@ export class BLEService {
   scanning = false;
   activeScan = null;
   sessions = new Map();
+  connectionAttempts = new Map();
+  disconnectOperations = new Map();
   eventHandler = {};
   eventHandlers = new Set();
   restoredDevices = [];
@@ -138,10 +141,17 @@ export class BLEService {
   constructor({
     protocol = CONFIGURED_VL01_PROTOCOL,
     gattOperationTimeoutMs = GATT_OPERATION_TIMEOUT_MS,
+    nativeDisconnectTimeoutMs = NATIVE_DISCONNECT_TIMEOUT_MS,
     expoGo = isExpoGoRuntime()
   } = {}) {
     this.protocol = protocol;
     this.gattOperationTimeoutMs = gattOperationTimeoutMs;
+    this.nativeDisconnectTimeoutMs = Number(nativeDisconnectTimeoutMs);
+    if (!Number.isSafeInteger(this.nativeDisconnectTimeoutMs)
+      || this.nativeDisconnectTimeoutMs < 1
+      || this.nativeDisconnectTimeoutMs > 30000) {
+      throw new TypeError('BLE disconnect timeout is invalid');
+    }
     this.expoGo = expoGo;
   }
 
@@ -161,7 +171,9 @@ export class BLEService {
   }
 
   emitEvent(name, ...args) {
-    this.eventHandler[name]?.(...args);
+    try { this.eventHandler[name]?.(...args); } catch (error) {
+      logBLEFailure('[BLE] Primary event listener failed', error, { eventName: name });
+    }
     for (const handler of this.eventHandlers) {
       try { handler[name]?.(...args); } catch (error) {
         logBLEFailure('[BLE] Event listener failed', error, { eventName: name });
@@ -208,6 +220,20 @@ export class BLEService {
       this.manager = false;
     }
     return this.manager;
+  }
+
+  async cancelNativeConnection(deviceId, nativeDevice) {
+    const manager = this.getManager();
+    if (!manager || Platform.OS === 'web') return;
+    const cancellation = typeof nativeDevice?.cancelConnection === 'function'
+      ? nativeDevice.cancelConnection()
+      : manager.cancelDeviceConnection?.(deviceId);
+    if (!cancellation) return;
+    await withTimeout(
+      cancellation,
+      this.nativeDisconnectTimeoutMs,
+      translate('jewelry.connectFailed')
+    );
   }
 
   async scanForDevices(onDevice, { onError, onComplete, timeoutMs = DEFAULT_SCAN_TIMEOUT_MS } = {}) {
@@ -358,6 +384,53 @@ export class BLEService {
 
   async connect(device, { allowSimulation = true } = {}) {
     if (!device?.id) throw createBLEError(BLE_ERROR_CODES.invalidDevice, null, 'connect');
+    // A native cancellation can resolve after a replacement object begins its
+    // handshake. Serialize same-peripheral lifecycles so an old account's
+    // delayed cancel cannot tear down the new account's connection.
+    const disconnecting = this.disconnectOperations.get(device.id);
+    if (disconnecting) await disconnecting.catch(() => {});
+    const established = this.sessions.get(device.id);
+    if (!established?.failed && established?.connectionResult) {
+      if (!allowSimulation && established.connectionResult.simulated) {
+        throw createBLEError(BLE_ERROR_CODES.unavailable, null, 'connect');
+      }
+      return established.connectionResult;
+    }
+
+    // Registry rehydration and the legacy primary-wearable restore can request
+    // the same peripheral concurrently. One native GATT handshake per device
+    // prevents duplicate monitors, disconnect callbacks, and racing cleanup.
+    const inFlight = this.connectionAttempts.get(device.id);
+    if (inFlight) {
+      if (inFlight.cancelled) {
+        try { await inFlight.promise; } catch {}
+        return this.connect(device, { allowSimulation });
+      }
+      const connected = await inFlight.promise;
+      if (!allowSimulation && connected?.simulated) {
+        throw createBLEError(BLE_ERROR_CODES.unavailable, null, 'connect');
+      }
+      return connected;
+    }
+
+    const attempt = { promise: null, cancelled: false };
+    const promise = this.connectDevice(device, { allowSimulation }).then(async (connected) => {
+      if (!attempt.cancelled) return connected;
+      this.cleanupSession(device.id);
+      try { await this.cancelNativeConnection(device.id); } catch {}
+      throw createBLEError(BLE_ERROR_CODES.connectFailed, null, 'connect');
+    });
+    attempt.promise = promise;
+    this.connectionAttempts.set(device.id, attempt);
+    try {
+      return await promise;
+    } finally {
+      if (this.connectionAttempts.get(device.id) === attempt) this.connectionAttempts.delete(device.id);
+    }
+  }
+
+  async connectDevice(device, { allowSimulation = true } = {}) {
+    if (!device?.id) throw createBLEError(BLE_ERROR_CODES.invalidDevice, null, 'connect');
     const manager = this.getManager();
     if (!manager || Platform.OS === 'web') {
       if (!allowSimulation || !DEVELOPMENT_RUNTIME || this.expoGo) {
@@ -423,7 +496,7 @@ export class BLEService {
         logBLEFailure(`[BLE] ${eventName} monitor failed`, session.failure, { hasDeviceId: true });
         this.cleanupSession(connected.id);
         this.emitEvent('onConnectionDegraded', connected.id, session.failure, eventName);
-        Promise.resolve(manager.cancelDeviceConnection?.(connected.id)).catch(() => {});
+        this.cancelNativeConnection(connected.id, connected).catch(() => {});
       };
       const monitor = (characteristicUUID, eventName) => {
         if (!characteristicUUID || typeof connected.monitorCharacteristicForService !== 'function') return;
@@ -474,6 +547,10 @@ export class BLEService {
       }
       if (typeof manager.onDeviceDisconnected === 'function') {
         addSubscription(manager.onDeviceDisconnected(connected.id, (disconnectError) => {
+          // Native callbacks may already be queued when an old subscription is
+          // removed. Never let that stale callback clean up a newer same-ID
+          // session.
+          if (this.sessions.get(connected.id) !== session) return;
           session.failed = true;
           session.failure = disconnectError || new Error('VL01 disconnected.');
           this.cleanupSession(connected.id);
@@ -483,7 +560,7 @@ export class BLEService {
       if (session.failed || this.sessions.get(connected.id) !== session) {
         throw session.failure || new Error('VL01 disconnected during setup.');
       }
-      return {
+      const connectionResult = {
         id: connected.id,
         name: connected.name || device.name || 'NorthStar VL01',
         battery,
@@ -492,12 +569,11 @@ export class BLEService {
         autoReconnect: true,
         simulated: false
       };
+      session.connectionResult = connectionResult;
+      return connectionResult;
     } catch (error) {
       this.cleanupSession(device.id);
-      try {
-        if (typeof device.cancelConnection === 'function') await device.cancelConnection();
-        else await manager.cancelDeviceConnection?.(device.id);
-      } catch {}
+      try { await this.cancelNativeConnection(device.id, device); } catch {}
       const protocolFailure = /VL01|characteristic|service|battery/i.test(error?.message || '');
       const errorCode = error instanceof OperationTimeoutError
         ? BLE_ERROR_CODES.connectTimeout
@@ -586,18 +662,35 @@ export class BLEService {
 
   async disconnect(deviceId) {
     if (!deviceId) return;
+    const attempt = this.connectionAttempts.get(deviceId);
+    if (attempt) attempt.cancelled = true;
+    const existing = this.disconnectOperations.get(deviceId);
+    if (existing) return existing;
     this.cleanupSession(deviceId);
-    const manager = this.getManager();
-    if (!manager || Platform.OS === 'web') return;
-    try {
-      await manager.cancelDeviceConnection(deviceId);
-    } catch (error) {
-      // A device that is already disconnected has reached the requested state.
-      if (Number(error?.errorCode) === 205) return;
-      const typedError = createBLEError(classifyNativeBLEError(error, 'disconnect'), error, 'disconnect');
-      logBLEFailure('[BLE] Disconnect failed', typedError, { hasDeviceId: true });
-      throw typedError;
-    }
+    const operation = (async () => {
+      const manager = this.getManager();
+      if (!manager || Platform.OS === 'web') return;
+      try {
+        await this.cancelNativeConnection(deviceId);
+      } catch (error) {
+        // A device that is already disconnected has reached the requested state.
+        if (Number(error?.errorCode) === 205) return;
+        const errorCode = error instanceof OperationTimeoutError
+          ? BLE_ERROR_CODES.disconnectFailed
+          : classifyNativeBLEError(error, 'disconnect');
+        const typedError = createBLEError(errorCode, error, 'disconnect');
+        logBLEFailure('[BLE] Disconnect failed', typedError, { hasDeviceId: true });
+        throw typedError;
+      }
+    })();
+    let tracked;
+    tracked = operation.finally(() => {
+      if (this.disconnectOperations.get(deviceId) === tracked) {
+        this.disconnectOperations.delete(deviceId);
+      }
+    });
+    this.disconnectOperations.set(deviceId, tracked);
+    return tracked;
   }
 }
 

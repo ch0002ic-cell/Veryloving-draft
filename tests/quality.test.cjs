@@ -208,6 +208,14 @@ test('BLE and voice screens localize typed failures at the render boundary', () 
   assert.match(safetyCallSource, /error\?\.translationKey \? t\(error\.translationKey\)/);
   assert.doesNotMatch(safetyCallSource, /message=\{error\?\.message\}/);
   assert.match(voiceHookSource, /userFacingVoiceErrorKey/);
+  assert.match(voiceHookSource, /connectionGenerationRef\.current \+= 1/);
+  assert.match(voiceHookSource, /VOICE_OPERATION_CANCELLED/);
+  assert.match(voiceHookSource, /await assertCurrent\(\)/);
+  assert.match(voiceHookSource, /MAX_SUPPRESSED_USER_ECHOES/);
+  assert.match(safetyCallSource, /maxLength=\{MAX_VOICE_TEXT_CHARACTERS\}/);
+  const audioSource = fs.readFileSync(path.resolve('src/services/audio.js'), 'utf8');
+  assert.match(audioSource, /MAX_PLAYBACK_QUEUE_SEGMENTS/);
+  assert.match(audioSource, /MAX_PLAYBACK_QUEUE_BYTES/);
 });
 
 test('offline companion returns actionable safety guidance for the safety-tips prompt', () => {
@@ -223,6 +231,9 @@ test('diagnostic logging recursively redacts credential fields and bearer values
     email: 'care@example.test',
     phoneNumber: '+6591234567',
     hardwareSerial: 'VL01-SECRET-001',
+    deviceId: 'wearable-private-1',
+    sourceDeviceRef: 'robot-private-1',
+    parameters: { medicationName: 'private-medication' },
     location: { latitude: 1.3, longitude: 103.8 },
     connection: {
       api_key: 'nested-secret',
@@ -235,6 +246,9 @@ test('diagnostic logging recursively redacts credential fields and bearer values
   assert.equal(sanitized.email, '[REDACTED]');
   assert.equal(sanitized.phoneNumber, '[REDACTED]');
   assert.equal(sanitized.hardwareSerial, '[REDACTED]');
+  assert.equal(sanitized.deviceId, '[REDACTED]');
+  assert.equal(sanitized.sourceDeviceRef, '[REDACTED]');
+  assert.equal(sanitized.parameters, '[REDACTED]');
   assert.equal(sanitized.location, '[REDACTED]');
   assert.equal(sanitized.connection.api_key, '[REDACTED]');
   assert.equal(
@@ -247,7 +261,7 @@ test('diagnostic logging recursively redacts credential fields and bearer values
   );
   assert.doesNotMatch(
     JSON.stringify(sanitized),
-    /top-level-secret|nested-secret|embedded-secret|query-secret|care@example|6591234567|VL01-SECRET/
+    /top-level-secret|nested-secret|embedded-secret|query-secret|care@example|6591234567|VL01-SECRET|wearable-private|robot-private|private-medication/
   );
 });
 

@@ -128,6 +128,52 @@ test('concurrent Pat-Pat duplicates cannot start a second SOS operation and fail
   assert.equal((await retryRouter.routeWearableEvent(event, { deviceId: 'w1' })).status, 'sos_dispatched');
 });
 
+test('a burst of unique safety event IDs coalesces into one active incident', async () => {
+  let activations = 0;
+  let releaseActivation;
+  const active = new Promise((resolve) => { releaseActivation = resolve; });
+  const router = createSafetyEventRouter({
+    now: () => 3_000_000,
+    decodeWearableEvent: async (value) => value,
+    activateSOS: async () => {
+      activations += 1;
+      await active;
+      return { status: 'accepted' };
+    }
+  });
+
+  const requests = Array.from({ length: 300 }, (_, index) => router.routeWearableEvent({
+    type: 'pat_pat',
+    eventId: `unique-event-${String(index).padStart(4, '0')}`,
+    occurredAt: 3_000_000
+  }, { deviceId: 'w-flood' }));
+  while (activations === 0) await Promise.resolve();
+  releaseActivation();
+  const results = await Promise.all(requests);
+
+  assert.equal(activations, 1);
+  assert.equal(results.filter((result) => result.status === 'sos_dispatched').length, 1);
+  assert.equal(results.filter((result) => result.status === 'incident_in_flight').length, 299);
+});
+
+test('a coalesced incident can dispatch again after its bounded cooldown', async () => {
+  let timestamp = 4_000_000;
+  let activations = 0;
+  const router = createSafetyEventRouter({
+    now: () => timestamp,
+    incidentCooldownMs: 1000,
+    decodeWearableEvent: async (value) => value,
+    activateSOS: async () => { activations += 1; return { status: 'accepted' }; }
+  });
+  const event = (eventId) => ({ type: 'pat_pat', eventId, occurredAt: timestamp });
+
+  assert.equal((await router.routeWearableEvent(event('cooldown-event-01'), { deviceId: 'w-cooldown' })).status, 'sos_dispatched');
+  assert.equal((await router.routeWearableEvent(event('cooldown-event-02'), { deviceId: 'w-cooldown' })).status, 'incident_coalesced');
+  timestamp += 1001;
+  assert.equal((await router.routeWearableEvent(event('cooldown-event-03'), { deviceId: 'w-cooldown' })).status, 'sos_dispatched');
+  assert.equal(activations, 2);
+});
+
 test('fall events normalize consistently across wearable and home robot sources', async () => {
   const falls = [];
   const router = createSafetyEventRouter({

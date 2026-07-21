@@ -37,9 +37,10 @@ export class WearableDevice extends BaseDevice {
     }, { priority, bypass: stop });
   }
 
-  onTelemetry(callback) {
-    const unsubscribe = super.onTelemetry(callback);
-    this.removeBLEHandler?.();
+  ensureBLETelemetryBridge() {
+    if (this.removeBLEHandler || this.disposed) return;
+    const registerHandler = this.bleClient.addEventHandler || this.bleClient.setEventHandler;
+    if (typeof registerHandler !== 'function') return;
     this.removeBLEHandler = (this.bleClient.addEventHandler || this.bleClient.setEventHandler).call(this.bleClient, {
       onBattery: (deviceId, battery) => deviceId === this.deviceId && this.emitTelemetry({ type: 'battery', battery }),
       onStatus: (deviceId, value) => deviceId === this.deviceId && this.emitTelemetry({ type: 'status', value }),
@@ -50,7 +51,21 @@ export class WearableDevice extends BaseDevice {
         this.emitTelemetry({ type: 'connection', online: false });
       }
     });
-    return () => { unsubscribe(); this.removeBLEHandler?.(); this.removeBLEHandler = null; };
+  }
+
+  onTelemetry(callback) {
+    const unsubscribe = super.onTelemetry(callback);
+    this.ensureBLETelemetryBridge();
+    let subscribed = true;
+    return () => {
+      if (!subscribed) return;
+      subscribed = false;
+      unsubscribe();
+      if (this.telemetryListeners.size === 0) {
+        this.removeBLEHandler?.();
+        this.removeBLEHandler = null;
+      }
+    };
   }
 
   dispose() {

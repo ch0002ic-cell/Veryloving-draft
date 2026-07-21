@@ -9,10 +9,28 @@ export const COMMAND_PRIORITIES = Object.freeze({
   background: 2
 });
 
+export const DEFAULT_DEVICE_COMMAND_QUEUE_DEPTH = 100;
+
+function commandQueueFullError() {
+  const error = new Error('Device command queue is full.');
+  error.code = 'DEVICE_COMMAND_QUEUE_FULL';
+  return error;
+}
+
 export class BaseDevice {
-  constructor({ deviceId, deviceType, name } = {}) {
+  constructor({
+    deviceId,
+    deviceType,
+    name,
+    maxCommandQueueDepth = DEFAULT_DEVICE_COMMAND_QUEUE_DEPTH
+  } = {}) {
     if (!deviceId || typeof deviceId !== 'string') throw new TypeError('deviceId is required');
     if (!Object.values(DEVICE_TYPES).includes(deviceType)) throw new TypeError('deviceType is invalid');
+    if (!Number.isSafeInteger(maxCommandQueueDepth)
+      || maxCommandQueueDepth < 1
+      || maxCommandQueueDepth > 1000) {
+      throw new TypeError('maxCommandQueueDepth is invalid');
+    }
     this.deviceId = deviceId;
     this.deviceType = deviceType;
     this.name = name || deviceId;
@@ -26,8 +44,10 @@ export class BaseDevice {
     // and background work without blocking a different device instance.
     this.pendingCommands = [];
     this.commandActive = false;
+    this.commandQueuePaused = false;
     this.commandSequence = 0;
     this.commandDrainWaiters = new Set();
+    this.maxCommandQueueDepth = maxCommandQueueDepth;
   }
 
   async connect() { throw new Error('connect() must be implemented'); }
@@ -43,6 +63,9 @@ export class BaseDevice {
       return operation();
     });
     if (!(priority in COMMAND_PRIORITIES)) throw new TypeError('Command priority is invalid');
+    if (this.pendingCommands.length + (this.commandActive ? 1 : 0) >= this.maxCommandQueueDepth) {
+      return Promise.reject(commandQueueFullError());
+    }
     return new Promise((resolve, reject) => {
       this.pendingCommands.push({
         operation,
@@ -58,7 +81,7 @@ export class BaseDevice {
   }
 
   pumpCommandQueue() {
-    if (this.commandActive || this.disposed) return;
+    if (this.commandActive || this.commandQueuePaused || this.disposed) return;
     const next = this.pendingCommands.shift();
     if (!next) {
       for (const resolve of this.commandDrainWaiters) resolve();
@@ -80,6 +103,16 @@ export class BaseDevice {
     return new Promise((resolve) => this.commandDrainWaiters.add(resolve));
   }
 
+  pauseCommandQueue() {
+    this.commandQueuePaused = true;
+  }
+
+  resumeCommandQueue() {
+    if (this.disposed || !this.commandQueuePaused) return;
+    this.commandQueuePaused = false;
+    this.pumpCommandQueue();
+  }
+
   disposedError() {
     const error = new Error('Device is no longer active.');
     error.code = 'DEVICE_DISPOSED';
@@ -89,6 +122,7 @@ export class BaseDevice {
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
+    this.commandQueuePaused = false;
     this.commandGeneration += 1;
     const error = this.disposedError();
     for (const command of this.pendingCommands.splice(0)) command.reject(error);
@@ -105,7 +139,12 @@ export class BaseDevice {
   }
 
   emitTelemetry(telemetry) {
-    for (const listener of this.telemetryListeners) listener(telemetry);
+    // A consumer is not part of the hardware transport. Isolate callback
+    // failures so one screen or analytics subscriber cannot terminate a robot
+    // telemetry poll or a wearable notification fan-out for every listener.
+    for (const listener of this.telemetryListeners) {
+      try { listener(telemetry); } catch {}
+    }
   }
 
   getStatus() { return { ...this.status }; }

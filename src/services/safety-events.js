@@ -4,7 +4,9 @@ const DEVICE_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 const DEFAULT_MAX_EVENT_AGE_MS = 5 * 60 * 1000;
 const DEFAULT_FUTURE_TOLERANCE_MS = 30 * 1000;
 const DEFAULT_DEDUPE_TTL_MS = 15 * 60 * 1000;
+const DEFAULT_INCIDENT_COOLDOWN_MS = 30 * 1000;
 const MAX_DEDUPE_ENTRIES = 256;
+const DEFAULT_MAX_CONCURRENT_INCIDENTS = 32;
 
 export const SAFETY_EVENT_TYPES = Object.freeze({
   patPat: 'pat_pat',
@@ -122,10 +124,14 @@ export function createSafetyEventRouter({
   now = Date.now,
   maxEventAgeMs = DEFAULT_MAX_EVENT_AGE_MS,
   futureToleranceMs = DEFAULT_FUTURE_TOLERANCE_MS,
-  dedupeTTLms = DEFAULT_DEDUPE_TTL_MS
+  dedupeTTLms = DEFAULT_DEDUPE_TTL_MS,
+  incidentCooldownMs = DEFAULT_INCIDENT_COOLDOWN_MS,
+  maxConcurrentIncidents = DEFAULT_MAX_CONCURRENT_INCIDENTS
 } = {}) {
   const acceptedEvents = new Map();
   const inFlightEvents = new Map();
+  const inFlightIncidents = new Map();
+  const recentIncidents = new Map();
 
   async function routeDecoded(decoded, deviceType, deviceId) {
     const event = normalizeSafetyEvent(decoded, {
@@ -136,10 +142,21 @@ export function createSafetyEventRouter({
       futureToleranceMs
     });
     const dedupeKey = `${event.deviceType}:${event.deviceId}:${event.eventId}`;
+    const incidentKey = `${event.deviceType}:${event.deviceId}:${event.type}`;
     const timestamp = now();
     pruneDedupeRecords(acceptedEvents, timestamp);
+    pruneDedupeRecords(recentIncidents, timestamp);
     if (acceptedEvents.has(dedupeKey)) return { status: 'duplicate', event };
     if (inFlightEvents.has(dedupeKey)) return { status: 'duplicate_in_flight', event };
+    const activeIncident = inFlightIncidents.get(incidentKey);
+    if (activeIncident) {
+      return { status: 'incident_in_flight', event, activeEventId: activeIncident.eventId };
+    }
+    if (recentIncidents.has(incidentKey)) return { status: 'incident_coalesced', event };
+    const boundedIncidentLimit = Math.max(1, Math.min(256, Number(maxConcurrentIncidents) || 1));
+    if (inFlightIncidents.size >= boundedIncidentLimit) {
+      return { status: 'capacity_limited', event };
+    }
 
     const operation = (async () => {
       let result;
@@ -155,18 +172,22 @@ export function createSafetyEventRouter({
           idempotencyKey: event.eventId
         });
         acceptedEvents.set(dedupeKey, now() + Math.max(1, dedupeTTLms));
+        recentIncidents.set(incidentKey, now() + Math.max(1, incidentCooldownMs));
         return { status: 'sos_dispatched', event, result };
       }
 
       if (typeof reportFall === 'function') result = await reportFall(event);
       acceptedEvents.set(dedupeKey, now() + Math.max(1, dedupeTTLms));
+      recentIncidents.set(incidentKey, now() + Math.max(1, incidentCooldownMs));
       return { status: result === undefined ? 'fall_detected' : 'fall_reported', event, result };
     })();
     inFlightEvents.set(dedupeKey, operation);
+    inFlightIncidents.set(incidentKey, { eventId: event.eventId, operation });
     try {
       return await operation;
     } finally {
       if (inFlightEvents.get(dedupeKey) === operation) inFlightEvents.delete(dedupeKey);
+      if (inFlightIncidents.get(incidentKey)?.operation === operation) inFlightIncidents.delete(incidentKey);
     }
   }
 

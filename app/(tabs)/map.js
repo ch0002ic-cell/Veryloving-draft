@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import { AppState, Linking, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
@@ -114,6 +115,8 @@ export default function MapScreen() {
   const [sharing, setSharing] = useState(false);
   const [shareError, setShareError] = useState(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [liveLocationAllowed, setLiveLocationAllowed] = useState(false);
+  const [appIsActive, setAppIsActive] = useState(() => !['background', 'inactive'].includes(AppState.currentState));
   const [savedPlaces, setSavedPlaces] = useState(null);
   const [savedPlaceAction, setSavedPlaceAction] = useState(null);
   const [savedPlaceFeedback, setSavedPlaceFeedback] = useState(null);
@@ -213,6 +216,7 @@ export default function MapScreen() {
       const nextLocation = await requestCurrentLocation();
       if (mountedRef.current && requestId === requestIdRef.current) {
         setPermissionDenied(false);
+        setLiveLocationAllowed(true);
         setLocation(nextLocation);
         if (nextLocation.isCached) {
           setError({
@@ -226,6 +230,7 @@ export default function MapScreen() {
       }
     } catch (locationError) {
       if (mountedRef.current && requestId === requestIdRef.current) {
+        setLiveLocationAllowed(false);
         setPermissionDenied(locationError?.code === 'LOCATION_PERMISSION_DENIED');
         setError({
           prefixTranslationKey: Mapbox ? undefined : 'releaseCritical.mapUnavailable',
@@ -252,7 +257,10 @@ export default function MapScreen() {
     setShareError(null);
     try {
       const shareLocation = location || await requestCurrentLocation();
-      if (mountedRef.current && !location) setLocation(shareLocation);
+      if (mountedRef.current) {
+        setLiveLocationAllowed(true);
+        if (!location) setLocation(shareLocation);
+      }
       await shareQuickLocation(shareLocation, { locale });
     } catch (shareLocationError) {
       logger.warn('[Mapbox] Could not open the location share sheet', {
@@ -275,7 +283,10 @@ export default function MapScreen() {
     setSavedPlaceFeedback(null);
     try {
       const currentLocation = location || await requestCurrentLocation();
-      if (mountedRef.current && !location) setLocation(currentLocation);
+      if (mountedRef.current) {
+        setLiveLocationAllowed(true);
+        if (!location) setLocation(currentLocation);
+      }
       const next = await saveCurrentPlace(user.id, currentLocation);
       if (mountedRef.current) {
         setPermissionDenied(false);
@@ -322,7 +333,16 @@ export default function MapScreen() {
   }, [refreshLocation]);
 
   useEffect(() => {
-    if (loading || permissionDenied) return undefined;
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      setAppIsActive(nextState === 'active');
+    });
+    return () => subscription.remove();
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    // Do not turn a declined in-app rationale into an immediate native prompt,
+    // and do not retain a location watcher while this tab/app is inactive.
+    if (loading || !liveLocationAllowed || !appIsActive) return undefined;
     let active = true;
     let liveSubscription;
     watchLiveLocation((nextLocation) => {
@@ -330,14 +350,20 @@ export default function MapScreen() {
     }).then((subscription) => {
       if (active) liveSubscription = subscription;
       else subscription?.remove?.();
-    }).catch((liveError) => logger.warn('[Mapbox] Live location updates are unavailable', {
-      errorCode: liveError?.code || liveError?.name || 'LIVE_LOCATION_UNAVAILABLE'
-    }));
+    }).catch((liveError) => {
+      logger.warn('[Mapbox] Live location updates are unavailable', {
+        errorCode: liveError?.code || liveError?.name || 'LIVE_LOCATION_UNAVAILABLE'
+      });
+      if (active && mountedRef.current) {
+        setLiveLocationAllowed(false);
+        setPermissionDenied(liveError?.code === 'LOCATION_PERMISSION_DENIED');
+      }
+    });
     return () => {
       active = false;
       liveSubscription?.remove?.();
     };
-  }, [loading, permissionDenied]);
+  }, [appIsActive, liveLocationAllowed, loading]));
 
   useEffect(() => {
     let active = true;
