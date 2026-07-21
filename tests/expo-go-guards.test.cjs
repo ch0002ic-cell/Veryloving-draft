@@ -12,6 +12,7 @@ const {
 const {
   createSecureStorage,
   detectSecureStorageMemoryReason,
+  isExpectedEphemeralStorageReason,
   SECURE_STORAGE_MEMORY_REASON
 } = require('../src/services/secure-storage');
 const {
@@ -222,6 +223,7 @@ test('Expo Go uses process memory without evaluating native SecureStore', async 
   });
 
   assert.equal(storage.isVolatile, true);
+  assert.equal(storage.volatileReason, SECURE_STORAGE_MEMORY_REASON.EXPO_GO);
   assert.deepEqual(await Promise.all([
     storage.getItemAsync('veryloving.auth.token'),
     storage.getItemAsync('veryloving.auth.refreshToken'),
@@ -282,10 +284,12 @@ test('secure-storage preflight selects memory before native Keychain loading on 
   });
 
   assert.equal(storage.isVolatile, false);
+  assert.equal(storage.volatileReason, null);
   assert.equal(await storage.getItemAsync('session'), null);
   await storage.setItemAsync('session', 'volatile');
   assert.equal(await storage.getItemAsync('session'), 'volatile');
   assert.equal(storage.isVolatile, true);
+  assert.equal(storage.volatileReason, SECURE_STORAGE_MEMORY_REASON.IOS_SIMULATOR);
   assert.equal(applicationLoads, 1);
   assert.equal(nativeLoads, 0);
   assert.equal(memoryModeLogs, 1);
@@ -342,7 +346,15 @@ test('secure-storage iOS preflight fails closed when application metadata is una
   });
   assert.equal(await storage.getItemAsync('session'), null);
   assert.equal(storage.isVolatile, true);
+  assert.equal(storage.volatileReason, SECURE_STORAGE_MEMORY_REASON.IOS_PREFLIGHT_FAILED);
   assert.equal(nativeLoads, 0);
+});
+
+test('only expected development hosts may recover ciphertext after an ephemeral key reset', () => {
+  assert.equal(isExpectedEphemeralStorageReason(SECURE_STORAGE_MEMORY_REASON.EXPO_GO), true);
+  assert.equal(isExpectedEphemeralStorageReason(SECURE_STORAGE_MEMORY_REASON.IOS_SIMULATOR), true);
+  assert.equal(isExpectedEphemeralStorageReason(SECURE_STORAGE_MEMORY_REASON.IOS_PREFLIGHT_FAILED), false);
+  assert.equal(isExpectedEphemeralStorageReason(null), false);
 });
 
 test('development and production storage delegate to native SecureStore without fallback', async () => {

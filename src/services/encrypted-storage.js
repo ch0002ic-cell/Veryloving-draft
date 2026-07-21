@@ -58,8 +58,18 @@ function parseEnvelope(raw) {
  * read. A failed migration is fail-closed: callers never continue using a
  * sensitive plaintext value that could not be encrypted.
  */
-export function createEncryptedStorage({ backend, keyStore, randomBytes }) {
-  if (!backend || !keyStore || typeof randomBytes !== 'function') {
+export function createEncryptedStorage({
+  backend,
+  keyStore,
+  randomBytes,
+  recoverAuthenticationFailure = () => false
+}) {
+  if (
+    !backend
+    || !keyStore
+    || typeof randomBytes !== 'function'
+    || typeof recoverAuthenticationFailure !== 'function'
+  ) {
     throw new TypeError('Encrypted storage requires a backend, key store, and secure random source.');
   }
   let keyPromise = null;
@@ -119,7 +129,21 @@ export function createEncryptedStorage({ backend, keyStore, randomBytes }) {
   const getItem = async (storageKey) => {
     const raw = await backend.getItem(storageKey);
     if (raw === null || raw === undefined) return null;
-    if (String(raw).startsWith(ENCRYPTED_STORAGE_PREFIX)) return decrypt(storageKey, raw);
+    if (String(raw).startsWith(ENCRYPTED_STORAGE_PREFIX)) {
+      try {
+        return await decrypt(storageKey, raw);
+      } catch (error) {
+        if (
+          error?.code !== 'LOCAL_STORAGE_AUTHENTICATION_FAILED'
+          || !await recoverAuthenticationFailure({ error, storageKey })
+        ) throw error;
+        // Demo sessions intentionally lose their key when the simulator or
+        // Expo Go process reloads. Remove only the now-unrecoverable value;
+        // malformed and key-swapped envelopes still fail closed above.
+        if (await backend.getItem(storageKey) === raw) await backend.removeItem(storageKey);
+        return null;
+      }
+    }
     try {
       await backend.setItem(storageKey, await encrypt(storageKey, String(raw)));
     } catch (error) {

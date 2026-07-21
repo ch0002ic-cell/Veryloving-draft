@@ -7,6 +7,11 @@ export const SECURE_STORAGE_MEMORY_REASON = Object.freeze({
   IOS_PREFLIGHT_FAILED: 'ios-preflight-failed'
 });
 
+export function isExpectedEphemeralStorageReason(reason) {
+  return reason === SECURE_STORAGE_MEMORY_REASON.EXPO_GO
+    || reason === SECURE_STORAGE_MEMORY_REASON.IOS_SIMULATOR;
+}
+
 function createMemoryBackend(memory) {
   return {
     getItemAsync: async (key) => memory.get(key) ?? null,
@@ -148,6 +153,9 @@ export function createSecureStorage({
   return {
     get isVolatile() {
       return Boolean(memoryReason);
+    },
+    get volatileReason() {
+      return memoryReason;
     },
     async getItemAsync(key, options) {
       return invoke('getItemAsync', [key, options]);

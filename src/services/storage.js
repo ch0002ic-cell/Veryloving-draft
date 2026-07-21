@@ -1,7 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import nacl from 'tweetnacl';
 import { createEncryptedStorage } from './encrypted-storage';
-import { secureStorage } from './secure-storage';
+import {
+  isExpectedEphemeralStorageReason,
+  secureStorage
+} from './secure-storage';
 
 const isNodeRuntime = typeof process !== 'undefined' && process?.release?.name === 'node';
 const nodeKeyMemory = new Map();
@@ -20,7 +23,10 @@ async function secureRandomBytes(length) {
 const encryptedBackend = createEncryptedStorage({
   backend: AsyncStorage,
   keyStore: isNodeRuntime ? nodeKeyStore : secureStorage,
-  randomBytes: secureRandomBytes
+  randomBytes: secureRandomBytes,
+  recoverAuthenticationFailure: ({ storageKey }) => !isNodeRuntime
+    && storageKey.startsWith('veryloving.')
+    && isExpectedEphemeralStorageReason(secureStorage.volatileReason)
 });
 
 export const storage = {
