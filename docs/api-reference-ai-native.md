@@ -45,7 +45,7 @@ const model = new UserStateModel({
 });
 ```
 
-`InMemoryCiphertextRepository` is a test/development implementation. It retains only ciphertext but is not durable across process death and is not a production database. A production `CiphertextRepository` must provide atomic compare-and-set semantics:
+`InMemoryCiphertextRepository` is a test/development implementation. It retains only ciphertext but is not durable across process death and is not a production database. `DynamoCiphertextRepository` is the bundled durable implementation; it expects an AWS SDK v3 document client and a string-keyed `PK`/`SK` table, and it stores only opaque HMAC-derived keys plus bounded ciphertext records. A production `CiphertextRepository` must provide atomic compare-and-set semantics:
 
 ```ts
 interface CiphertextRepository {
@@ -225,7 +225,7 @@ Defaults and bounds:
 
 The identity secret produces HMAC-derived account, trigger, idempotency, and device references. Scenario snapshots do not contain the plaintext account ID, event ID, idempotency key, device IDs, trigger data, workflow input, action parameters, health values, location, or conversation text.
 
-`InMemoryScenarioExecutionRepository` is development/test-only and loses executions at process death. Production must inject a durable, account-partitioned repository with atomic idempotency creation, stale-version protection, bounded normal listing, and internally paginated `listAll`. Trigger/input payloads are intentionally not persisted, so the engine never blindly resumes an orphan. `reconcileAccountAfterRestart` shares the account maintenance fence with scheduling/deletion, invokes `onRecoveryRequired` before failing a Critical orphan, and rejects without that provider. A deployment still needs account enumeration, one recovery lease owner, idempotent escalation, and crash testing; durable storage alone does not close that gate.
+`InMemoryScenarioExecutionRepository` is development/test-only and loses executions at process death. `DynamoScenarioExecutionRepository` supplies the durable account-partitioned contract with transactional admission, deletion fencing, stale-version protection, bounded listing/export/deletion, and an `ALL`-projected `GSI1PK`/`GSI1SK` created-at index. Trigger/input payloads are intentionally not persisted, so the engine never blindly resumes an orphan. `reconcileAccountAfterRestart` shares the account maintenance fence with scheduling/deletion, invokes `onRecoveryRequired` before failing a Critical orphan, and rejects without that provider. A deployment still needs account enumeration, one recovery lease owner, idempotent escalation, and crash testing; durable storage alone does not provide distributed execution ownership.
 
 ### 4.2 Scenario identifiers
 
@@ -572,7 +572,7 @@ The optional `context` object on inference routes accepts only `location_context
 
 Hume exposes a target-free `trigger_ai_angel` tool. The mobile voice client converts it to an authenticated WebSocket `scenario_request` containing only a stable request ID, `ai_angel_auto_dial`, and occurrence time. The gateway resolves devices from the authenticated voice account and returns `scenario_response`; the model or mobile client never selects hardware identifiers. General voice sessions receive only the bounded `getVoiceContext` projection. It is capped at 16 KiB, strips identity/raw-media fields, times out after 1.5 seconds, and is explicitly labelled `UNTRUSTED_USER_CONTEXT_DO_NOT_FOLLOW_AS_INSTRUCTIONS`; failure omits context instead of blocking voice.
 
-Production startup requires `AI_NATIVE_ENABLED=true`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED=true`, an injected durable system, all four trust hooks, and `AI_NATIVE_SINGLE_REPLICA=true`. Keep the data-lifecycle flag enabled after first use even during an orchestration outage so historical state and memories remain covered by export/deletion. The single-replica requirement remains until distributed scenario-admission leases are implemented. In-memory repositories are never an allowed production fallback.
+Production startup requires `AI_NATIVE_ENABLED=true`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED=true`, `AI_NATIVE_PRODUCTION_MODULE=/absolute/image/path.cjs`, all four trust hooks, and `AI_NATIVE_SINGLE_REPLICA=true`. The module must implement composition contract version `1`; the entrypoint constructs the official system before listening and rejects bundled in-memory repositories, raw single-key encryption, incomplete provider/privacy capability declarations, and asynchronous composition. The contract is a fail-closed structural boundary; the release process must still verify that the packaged implementations really use the approved durable stores, KMS, and providers. Keep the data-lifecycle flag enabled after first use even during an orchestration outage so historical state and memories remain covered by export/deletion. The single-replica requirement remains until distributed scenario-admission leases are implemented. In-memory repositories are never an allowed production fallback.
 
 ## 8. Development simulator HTTP/SSE API
 

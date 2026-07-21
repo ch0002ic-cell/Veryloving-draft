@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:22.23.1-alpine3.24@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2 AS build
 
 WORKDIR /app/server
 COPY server/package.json server/package-lock.json ./
@@ -8,7 +8,7 @@ COPY server/tsconfig.ai-native.json ./
 COPY server/src ./src
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:22.23.1-alpine3.24@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2
 
 WORKDIR /app
 COPY server/package.json server/package-lock.json ./

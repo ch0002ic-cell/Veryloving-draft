@@ -2,6 +2,10 @@
   "name": "veryloving-expo-rebuild",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@10.9.8",
+  "engines": {
+    "node": "22.23.1"
+  },
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
@@ -27,6 +31,10 @@
     "mock:manufacturer": "npm run build:manufacturer-mock && node --env-file-if-exists=server/.env server/dist-mocks/mocks/ManufacturerMockServer.js",
     "validate-env": "node scripts/validate-env.cjs",
     "validate-env:server": "node scripts/validate-env.cjs --file .env.example --server-file server/.env.example --server-dry-run --no-color",
+    "validate:supply-chain": "node scripts/release-supply-chain.cjs validate",
+    "sbom:production": "node scripts/release-supply-chain.cjs sbom",
+    "validate:production": "node scripts/validate-production.cjs",
+    "validate:production:release": "node scripts/validate-production.cjs --release",
     "validate": "node scripts/validate.cjs",
     "clm:start": "npm run build:adapters && npm run build:ai-native && node server/clm-server.cjs",
     "hume:provision": "node scripts/provision-hume.mjs",

@@ -75,10 +75,11 @@ async function invokeVercel({
 test('standalone HTTP listener starts the existing handler without mounting raw WebSocket upgrades', () => {
   assert.match(entrypointSource, /require\(['"]node:http['"]\)/);
   assert.match(entrypointSource, /require\(['"]\.\/clm-server\.cjs['"]\)/);
-  assert.match(entrypointSource, /require\(['"]\.\/ai-native-demo\.cjs['"]\)/);
+  assert.match(entrypointSource, /require\(['"]\.\/ai-native-composition\.cjs['"]\)/);
   assert.match(entrypointSource, /process\.loadEnvFile\(/);
   // The standalone entrypoint may compose the CLM handler with local-only
-  // middleware (for example, the AI-native demo injector). Keep this guard
+  // middleware (for example, the fail-closed AI-native composition boundary).
+  // Keep this guard
   // focused on the deployment boundary instead of requiring one exact source
   // expression.
   assert.match(entrypointSource, /httpOnlyDeployment:\s*true/);
@@ -114,7 +115,7 @@ test('Vercel uses one HTTP-only function behind a namespaced catch-all rewrite',
     destination: '/api/index?__veryloving_route=:path*'
   }]);
   assert.equal(packageConfig.type, 'commonjs');
-  assert.equal(packageConfig.engines.node, '22.x');
+  assert.equal(packageConfig.engines.node, '22.23.1');
   assert.equal(typeof packageConfig.dependencies['@aws-sdk/client-dynamodb'], 'string');
   assert.equal(typeof packageConfig.dependencies.ws, 'string');
 });

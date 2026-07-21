@@ -2116,12 +2116,26 @@ function createVeryLovingCLMServer(options = {}) {
 }
 
 if (require.main === module) {
+  const { createAINativeRuntimeComposition } = require('./ai-native-composition.cjs');
   const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
   const port = parseListenPort(process.env.PORT, DEFAULT_PORT);
-  const server = createVeryLovingCLMServer();
-  const shutdown = createGracefulShutdown(server, { cleanup: () => server.closeVoiceGateway() });
+  const aiNativeRuntime = createAINativeRuntimeComposition();
+  const server = createVeryLovingCLMServer(aiNativeRuntime?.config);
+  const shutdown = createGracefulShutdown(server, {
+    cleanup: async () => {
+      const results = await Promise.allSettled([
+        Promise.resolve().then(() => server.closeVoiceGateway()),
+        Promise.resolve().then(() => aiNativeRuntime?.close?.())
+      ]);
+      const failed = results.find((result) => result.status === 'rejected');
+      if (failed) throw failed.reason;
+    }
+  });
   installProcessSignalHandlers(shutdown);
-  server.listen(port, () => console.log(`[VeryLovingCLM] listening on ${port}`));
+  server.listen(port, () => {
+    if (aiNativeRuntime) console.info('[AI-Native] System injected');
+    console.log(`[VeryLovingCLM] listening on ${port}`);
+  });
 }
 
 module.exports = {

@@ -1,0 +1,105 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const test = require('node:test');
+const {
+  createCycloneDxBom,
+  validateBom,
+  validateDockerfile,
+  validateEAS,
+  validateManifestAndLock,
+  validatePolicy,
+  validateSupplyChain,
+  writeProductionSboms
+} = require('../scripts/release-supply-chain.cjs');
+
+const projectRoot = path.resolve(__dirname, '..');
+const load = (relativePath) => JSON.parse(fs.readFileSync(path.join(projectRoot, relativePath), 'utf8'));
+
+test('release supply-chain policy pins tools, container stages, locks, and EAS builds', () => {
+  const result = validateSupplyChain(projectRoot);
+  assert.match(result.nodeImage, /^node:22\.23\.1-alpine3\.24@sha256:[0-9a-f]{64}$/);
+  assert.equal(result.easCliVersion, '21.0.2');
+  assert.ok(result.rootPackages > 900);
+  assert.ok(result.serverPackages > 30);
+});
+
+test('release policy rejects mutable tools and container images', () => {
+  const policy = load('release-policy.json');
+  assert.throws(() => validatePolicy({ ...policy, easCliVersion: '>= 21.0.0' }), /must be exact/);
+  assert.throws(() => validatePolicy({ ...policy, nodeImage: 'node:22-alpine' }), /exact Node\/Alpine tag/);
+
+  const dockerfile = fs.readFileSync(path.join(projectRoot, 'server/Dockerfile'), 'utf8');
+  assert.throws(() => validateDockerfile(dockerfile.replace(policy.nodeImage, 'node:22-alpine'), policy), /immutable Node image/);
+  assert.throws(() => validateEAS({ cli: { version: '>= 20.0.0', requireCommit: true }, build: {} }, policy), /exact EAS CLI/);
+});
+
+test('lock validation rejects manifest drift, alternate registries, and missing integrity', () => {
+  const policy = load('release-policy.json');
+  const manifest = load('server/package.json');
+  const lockfile = load('server/package-lock.json');
+  validateManifestAndLock(manifest, lockfile, 'server', policy);
+
+  const driftedManifest = structuredClone(manifest);
+  driftedManifest.dependencies.ws = '^8.0.0';
+  assert.throws(() => validateManifestAndLock(driftedManifest, lockfile, 'server', policy), /dependencies differ/);
+
+  const unsafeLockfile = structuredClone(lockfile);
+  const packagePath = Object.keys(unsafeLockfile.packages).find((entry) => entry);
+  unsafeLockfile.packages[packagePath].resolved = 'http://registry.example.invalid/package.tgz';
+  delete unsafeLockfile.packages[packagePath].integrity;
+  assert.throws(() => validateManifestAndLock(manifest, unsafeLockfile, 'server', policy), /HTTPS npm registry/);
+});
+
+test('CycloneDX production SBOMs are deterministic, exclude dev-only packages, and validate', () => {
+  const manifest = load('server/package.json');
+  const lockfile = load('server/package-lock.json');
+  const first = createCycloneDxBom(manifest, lockfile, 'server');
+  const second = createCycloneDxBom(manifest, lockfile, 'server');
+  assert.deepEqual(first, second);
+  validateBom(first, manifest);
+  assert.equal(first.bomFormat, 'CycloneDX');
+  assert.equal(first.specVersion, '1.5');
+  assert.ok(first.components.every((component) => component.scope === 'required'));
+
+  const devOnlyVersion = lockfile.packages['node_modules/typescript']?.version;
+  if (devOnlyVersion) {
+    assert.equal(first.components.some((component) => component.name === 'typescript' && component.version === devOnlyVersion), false);
+  }
+});
+
+test('SBOM writer emits private, parseable mobile and server inventories', () => {
+  const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'veryloving-sbom-test-'));
+  try {
+    const written = writeProductionSboms(outputRoot, projectRoot);
+    assert.deepEqual(written.map(({ outputPath }) => path.basename(outputPath)), ['mobile-root.cdx.json', 'server.cdx.json']);
+    for (const artifact of written) {
+      const stat = fs.statSync(artifact.outputPath);
+      assert.equal(stat.mode & 0o077, 0);
+      const bom = JSON.parse(fs.readFileSync(artifact.outputPath, 'utf8'));
+      assert.equal(bom.bomFormat, 'CycloneDX');
+      assert.equal(bom.components.length, artifact.components);
+    }
+  } finally {
+    fs.rmSync(outputRoot, { recursive: true, force: true });
+  }
+});
+
+test('local and live production gates remain distinct and CI actions are commit pinned', () => {
+  const packageJSON = load('package.json');
+  assert.equal(packageJSON.scripts['validate:production'], 'node scripts/validate-production.cjs');
+  assert.equal(packageJSON.scripts['validate:production:release'], 'node scripts/validate-production.cjs --release');
+  const workflow = fs.readFileSync(path.join(projectRoot, '.github/workflows/production-validation.yml'), 'utf8');
+  assert.match(workflow, /npm run validate:production:release/);
+  assert.match(workflow, /actions\/checkout@[0-9a-f]{40}/);
+  assert.match(workflow, /actions\/setup-node@[0-9a-f]{40}/);
+  assert.match(workflow, /aquasecurity\/trivy-action@[0-9a-f]{40}/);
+  assert.match(workflow, /image-ref:\s+veryloving-clm:production-validation/);
+  assert.match(workflow, /severity:\s+CRITICAL,HIGH/);
+  assert.match(workflow, /exit-code:\s+'1'/);
+  assert.match(workflow, /actions\/upload-artifact@[0-9a-f]{40}/);
+  assert.doesNotMatch(workflow, /uses:\s+[^\s]+@v\d/);
+});

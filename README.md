@@ -541,7 +541,7 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
 | Phone verification | `PHONE_AUTH_ENABLED`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `PHONE_AUTH_CHALLENGE_TTL_SECONDS`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | Independent secrets; stable subject derivation; Twilio credentials remain server-only. |
 | Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. |
-| AI-native orchestration | `AI_NATIVE_ENABLED`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED`, `AI_NATIVE_SINGLE_REPLICA` | Runtime enablement requires an injected durable `createAINativeSystem(...)`, durable privacy lifecycle, and all four authenticated ingress/binding hooks. Once an environment stores AI-native data, keep the lifecycle flag enabled during runtime outages so export/deletion cannot omit it. Production intentionally fails closed unless the current single-replica admission gate is explicit. |
+| AI-native orchestration | `AI_NATIVE_ENABLED`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED`, `AI_NATIVE_SINGLE_REPLICA`, `AI_NATIVE_PRODUCTION_MODULE` | Runtime enablement requires a reviewed absolute-path production composition module, durable privacy lifecycle, rotation-safe external keyring, provider capability contract, and all four authenticated ingress/binding hooks. The entrypoint rejects bundled in-memory repositories and incomplete composition before listening. Once an environment stores AI-native data, keep the lifecycle flag enabled during runtime outages so export/deletion cannot omit it. Production intentionally fails closed unless the current single-replica admission gate is explicit. |
 | Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ROBOT_RESET_RECOVERY_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `ROBOT_PAIRING_TOKEN_SECRET`, `ACTION_GATEWAY_SINGLE_REPLICA`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI uses `user_index_pk`/`user_index_sk`; the reset-recovery GSI uses `resetRecoveryPk`/`resetRecoveryAt`. Pairing HMAC and action-signing keys are independent server secrets. Current production delivery must explicitly select one ActionGateway replica until distributed per-device leases exist. |
 | Legacy manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | Historical `manufacturer-default` bindings only. HTTPS endpoints and API key are server-only; modern vendor bindings never fall back to this shared client. |
 | Vendor robot adapters/lifecycle | `YONGYIDA_ADAPTER_ENABLED`, `YONGYIDA_ADAPTER_ID`, `YONGYIDA_BRIDGE_URL`, `YONGYIDA_BRIDGE_API_KEY`, `YONGYIDA_CALLBACK_API_KEY`, `YONGYIDA_PAIRING_VERIFY_URL`, `YONGYIDA_RESET_URL`, `YONGYIDA_PRIVACY_EXPORT_URL`, `YONGYIDA_PRIVACY_DELETE_URL`, and the corresponding `JIANGZHI_*` variables | Both adapters can be enabled simultaneously. Each modern binding uses only its immutable adapter's bridge, callback credential, pairing verifier, reset, export, and deletion handlers; missing handlers fail closed without cross-vendor fallback or local deletion. These are provisional Veryloving bridge settings, not published manufacturer endpoints. |
@@ -840,6 +840,34 @@ npm run validate
 
 This is the development/source gate. It does not run or waive the production environment profile.
 
+The credential-free production source/supply-chain gate is:
+
+```bash
+npm run validate:production
+```
+
+It builds and tests the production AI-native composition boundary and durable repository layer,
+then fails on a mutable Docker base image or EAS/Node/npm tool version, manifest/lockfile drift,
+non-HTTPS npm tarballs, missing lockfile integrity, a malformed production profile, cached high
+severity advisories, or an invalid CycloneDX 1.5 inventory. Its dependency audit is deliberately
+offline and is not release evidence.
+
+In an approved networked CI runner with Docker Buildx, run the fail-closed artifact gate:
+
+```bash
+npm run validate:production:release
+```
+
+That command repeats current registry-backed audits, retains mobile/server production SBOMs under
+the ignored `release-artifacts/` directory, builds the digest-pinned server image with BuildKit SBOM
+and provenance attestations enabled, verifies the non-root/health/entrypoint policy, proves that a
+credentials-free production start fails closed, and smoke-tests `/health` plus graceful shutdown in
+credential-free development mode. The SHA-pinned workflow in
+[`production-validation.yml`](./.github/workflows/production-validation.yml) runs this gate and
+then applies a commit-pinned Trivy high/critical vulnerability scan to the built server image before
+archiving the SBOMs. Passing it does not substitute for signed EAS artifact, provider, or deployment
+acceptance.
+
 Run the production configuration gate separately:
 
 ```bash
@@ -874,15 +902,16 @@ For Vercel, import `server/` as the project root. Its [`api/index.js`](./server/
 
 The raw `/api/voice/hume-ws` upgrade gateway must run on a reviewed long-lived container host. The committed [`railway.toml`](./railway.toml) selects the Dockerfile and health check, but operators must still configure environment-scoped secrets, TLS/domain, ingress restrictions, WebSocket limits, alerts, source/deployment identifiers, and rollback. Never point `EXPO_PUBLIC_HUME_WS_PROXY_URL` at the HTTP-only Vercel adapter.
 
-The committed Docker/Railway entrypoint does not construct the production
-AI-native dependency graph. Keep `AI_NATIVE_ENABLED=false` and
-`AI_NATIVE_DATA_LIFECYCLE_ENABLED=false` there until the deployment injects
-durable encrypted state and scenario repositories, privacy lifecycle support,
-binding resolvers, and the approved Hume/notification/SMS/analytics providers.
-The loopback in-memory composition in `server/server.cjs` is development-only;
-production intentionally fails closed rather than persisting care data in
-process memory. After an environment has stored AI-native data, its lifecycle
-flag must remain enabled even during an orchestration outage.
+The committed Docker/Railway entrypoints use the versioned production
+composition boundary in `server/ai-native-composition.cjs`. Package a reviewed
+CommonJS provider inside the immutable image and set its absolute path through
+`AI_NATIVE_PRODUCTION_MODULE`; it must supply durable encrypted state and
+scenario repositories, a rotation-safe external keyring, privacy lifecycle,
+binding resolvers, and approved Hume/notification/SMS/analytics providers. The
+listener fails closed before binding if that contract is missing or if the
+bundled in-memory repositories/raw demo key are supplied. The loopback demo is
+development/test-only. After an environment has stored AI-native data, its
+lifecycle flag must remain enabled even during an orchestration outage.
 
 Recommended split topology:
 

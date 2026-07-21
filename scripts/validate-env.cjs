@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { existsSync, readFileSync } = require('node:fs');
-const { resolve } = require('node:path');
+const { isAbsolute, resolve } = require('node:path');
 const { URL } = require('node:url');
 const {
   SERVER_INTEGER_ENVIRONMENT,
@@ -387,6 +387,7 @@ function validateServerEnvironment(env, { profile = 'development', dryRun = fals
   };
 
   const nodeEnvironment = env.NODE_ENV || 'development';
+  const productionServerRuntime = nodeEnvironment === 'production';
   if (!['development', 'test', 'production'].includes(nodeEnvironment)) {
     results.push(makeResult('NODE_ENV', 'error', 'must be development, test, or production'));
   } else if (production && nodeEnvironment !== 'production') {
@@ -466,7 +467,39 @@ function validateServerEnvironment(env, { profile = 'development', dryRun = fals
   if (env.AI_NATIVE_ENABLED === 'true' && env.AI_NATIVE_DATA_LIFECYCLE_ENABLED !== 'true') {
     results.push(makeResult('AI_NATIVE_DATA_LIFECYCLE_ENABLED', 'error', 'must be true when AI_NATIVE_ENABLED=true'));
   }
-  if (production && env.AI_NATIVE_ENABLED === 'true' && env.AI_NATIVE_SINGLE_REPLICA !== 'true') {
+  const aiNativeStateEnabled = env.AI_NATIVE_ENABLED === 'true'
+    || env.AI_NATIVE_DATA_LIFECYCLE_ENABLED === 'true';
+  if (isConfigured(env.AI_NATIVE_PRODUCTION_MODULE)) {
+    const modulePath = env.AI_NATIVE_PRODUCTION_MODULE;
+    if (!productionServerRuntime) {
+      results.push(makeResult(
+        'AI_NATIVE_PRODUCTION_MODULE',
+        'warn',
+        'ignored outside production and TestFlight server validation'
+      ));
+    } else {
+      addConfiguredResult('AI_NATIVE_PRODUCTION_MODULE', (
+        modulePath.length <= 1024
+        && !/[\u0000-\u001f\u007f]/u.test(modulePath)
+        && isAbsolute(modulePath)
+      ) ? null : 'must be a bounded absolute path');
+    }
+  } else if (productionServerRuntime && aiNativeStateEnabled) {
+    results.push(makeResult(
+      'AI_NATIVE_PRODUCTION_MODULE',
+      dryRun ? 'warn' : 'error',
+      `required for production AI-native runtime or data lifecycle state${dryRun
+        ? '; image-owned path presence is deferred by dry-run mode'
+        : ''}`
+    ));
+  } else {
+    results.push(makeResult(
+      'AI_NATIVE_PRODUCTION_MODULE',
+      'warn',
+      'optional unless production AI-native runtime or lifecycle state is enabled'
+    ));
+  }
+  if (productionServerRuntime && env.AI_NATIVE_ENABLED === 'true' && env.AI_NATIVE_SINGLE_REPLICA !== 'true') {
     results.push(makeResult('AI_NATIVE_SINGLE_REPLICA', 'error', 'must be true for the current production scheduler'));
   }
   if (dryRun) {

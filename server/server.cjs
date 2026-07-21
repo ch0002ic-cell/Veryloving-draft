@@ -2,7 +2,7 @@
 
 const http = require('node:http');
 const path = require('node:path');
-const { createAINativeDemoRuntime } = require('./ai-native-demo.cjs');
+const { createAINativeRuntimeComposition } = require('./ai-native-composition.cjs');
 const { createHandler } = require('./clm-server.cjs');
 const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
 
@@ -19,28 +19,32 @@ try {
 // Node server. Vercel invokes the same handler through api/index.js. The raw
 // Hume WebSocket upgrade gateway remains on the container entrypoint in
 // clm-server.cjs until that transport is adapted and load-tested for its host.
-const aiNativeDemo = createAINativeDemoRuntime();
+const aiNativeRuntime = createAINativeRuntimeComposition();
 const clmHandler = createHandler({
   httpOnlyDeployment: true,
-  ...(aiNativeDemo?.config ?? {})
+  ...(aiNativeRuntime?.config ?? {})
 });
-const handler = aiNativeDemo ? aiNativeDemo.wrapHandler(clmHandler) : clmHandler;
+const handler = aiNativeRuntime?.wrapHandler
+  ? aiNativeRuntime.wrapHandler(clmHandler)
+  : clmHandler;
 const server = http.createServer(handler);
 server.requestTimeout = 35000;
 server.headersTimeout = 10000;
 server.keepAliveTimeout = 5000;
 const port = parseListenPort(process.env.PORT, 8787);
-if (aiNativeDemo) {
+if (aiNativeRuntime?.mode === 'demo') {
   // The credential-free demo route is intentionally unreachable off-host.
   server.listen(port, '127.0.0.1', () => {
     console.info('[AI-Native] System injected');
   });
 } else {
-  server.listen(port);
+  server.listen(port, () => {
+    if (aiNativeRuntime) console.info('[AI-Native] System injected');
+  });
 }
 
 const shutdown = createGracefulShutdown(server, {
-  cleanup: async () => aiNativeDemo?.close?.()
+  cleanup: async () => aiNativeRuntime?.close?.()
 });
 server.shutdown = shutdown;
 if (require.main === module) installProcessSignalHandlers(shutdown);

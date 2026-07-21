@@ -108,6 +108,68 @@ test('server environment dry-run validates structure and timing bounds without r
   );
 });
 
+test('production AI-native state requires an absolute image-owned composition module', () => {
+  const enabledProduction = {
+    NODE_ENV: 'production',
+    AI_NATIVE_ENABLED: 'true',
+    AI_NATIVE_DATA_LIFECYCLE_ENABLED: 'true',
+    AI_NATIVE_SINGLE_REPLICA: 'true'
+  };
+  const missing = validateServerEnvironment(enabledProduction, { profile: 'production' });
+  assert.equal(
+    missing.find((result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE')?.level,
+    'error'
+  );
+
+  const dryRun = validateServerEnvironment(enabledProduction, {
+    profile: 'production',
+    dryRun: true
+  });
+  assert.equal(
+    dryRun.find((result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE')?.level,
+    'warn'
+  );
+
+  const relative = validateServerEnvironment({
+    ...enabledProduction,
+    AI_NATIVE_PRODUCTION_MODULE: './production-ai-native.cjs'
+  }, { profile: 'production' });
+  assert.equal(
+    relative.find((result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE')?.level,
+    'error'
+  );
+
+  const configured = validateServerEnvironment({
+    ...enabledProduction,
+    AI_NATIVE_PRODUCTION_MODULE: '/app/production/ai-native.cjs'
+  }, { profile: 'production' });
+  assert.equal(
+    configured.find((result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE')?.level,
+    'ok'
+  );
+
+  const productionRuntimeWithDefaultProfile = validateServerEnvironment({
+    ...enabledProduction,
+    AI_NATIVE_PRODUCTION_MODULE: './production-ai-native.cjs'
+  }, { profile: 'development' });
+  assert.equal(
+    productionRuntimeWithDefaultProfile.find(
+      (result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE'
+    )?.level,
+    'error'
+  );
+
+  const development = validateServerEnvironment({
+    NODE_ENV: 'development',
+    AI_NATIVE_PRODUCTION_MODULE: '/app/production/ai-native.cjs'
+  }, { profile: 'development' });
+  const developmentResult = development.find(
+    (result) => result.name === 'AI_NATIVE_PRODUCTION_MODULE'
+  );
+  assert.equal(developmentResult?.level, 'warn');
+  assert.match(developmentResult?.message || '', /ignored outside production/);
+});
+
 test('development endpoints allow only HTTP or WS on loopback, including IPv6', () => {
   assert.equal(endpointProblem('http://localhost:8787', 'https:', { allowLocalDevelopment: true }), null);
   assert.equal(endpointProblem('ws://[::1]:8787', 'wss:', { allowLocalDevelopment: true }), null);

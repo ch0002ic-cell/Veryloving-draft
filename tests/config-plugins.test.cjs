@@ -465,10 +465,12 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   const eas = JSON.parse(fs.readFileSync('eas.json', 'utf8'));
   const packageJSON = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
-  assert.equal(eas.cli.version, '>= 20.0.0');
+  assert.equal(eas.cli.version, '21.0.2');
+  assert.equal(eas.cli.requireCommit, true);
   assert.equal(packageJSON.scripts.doctor, 'npx --yes expo-doctor@1.20.1');
   assert.equal(eas.cli.appVersionSource, 'remote');
   assert.equal(eas.build.development.developmentClient, true);
+  assert.equal(eas.build.development.node, '22.23.1');
   assert.equal(eas.build.development.distribution, 'internal');
   assert.equal(eas.build.development.environment, 'development');
   assert.equal(eas.build.development.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
@@ -476,9 +478,11 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build['development-simulator'].extends, 'development');
   assert.equal(eas.build['development-simulator'].ios.simulator, true);
   assert.equal(eas.build.preview.environment, 'preview');
+  assert.equal(eas.build.preview.node, '22.23.1');
   assert.equal(eas.build.preview.android.buildType, 'apk');
   assert.equal(eas.build.preview.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
   assert.equal(eas.build.production.environment, 'production');
+  assert.equal(eas.build.production.node, '22.23.1');
   assert.equal(eas.build.production.distribution, 'store');
   assert.equal(eas.build.production.autoIncrement, true);
   assert.equal(eas.build.production.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'false');

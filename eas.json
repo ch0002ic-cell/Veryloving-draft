@@ -1,10 +1,12 @@
 {
   "cli": {
-    "version": ">= 20.0.0",
+    "version": "21.0.2",
+    "requireCommit": true,
     "appVersionSource": "remote"
   },
   "build": {
     "development": {
+      "node": "22.23.1",
       "developmentClient": true,
       "distribution": "internal",
       "environment": "development",
@@ -21,6 +23,7 @@
       }
     },
     "preview": {
+      "node": "22.23.1",
       "distribution": "internal",
       "environment": "preview",
       "env": {
@@ -33,6 +36,7 @@
       }
     },
     "production": {
+      "node": "22.23.1",
       "distribution": "store",
       "environment": "production",
       "env": {
