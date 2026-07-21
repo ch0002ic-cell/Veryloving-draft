@@ -116,6 +116,26 @@ describe('EdgeScenarioRouter', () => {
     expect(requests[0]).toMatchObject({ scenarioId, trigger: { type: triggerType } });
   });
 
+  it('prioritizes a simultaneous robot fall over an unauthenticated local cancel intent', async () => {
+    const { router, requests } = createHarness();
+    const edge = new RobotEdgeAI({ clockNow: () => NOW, random: createRobotSeededRandom(181) });
+    const frame = edge.generateFrame({ deviceRef: 'robot-1', sequence: 22, profile: 'fall' });
+    const inference = edge.infer({
+      ...frame,
+      audio: { ...frame.audio, voiceActivity: true, keyword: 'stop' }
+    });
+    expect(inference.inference).toMatchObject({
+      vision: { fallDetected: true },
+      voice: { intent: 'cancel' }
+    });
+
+    await expect(router.ingestRobotInference('account-1', inference, BINDING)).resolves.toMatchObject({
+      started: [expect.objectContaining({ accepted: true })]
+    });
+    expect(requests).toHaveLength(1);
+    expect(requests[0]).toMatchObject({ scenarioId: 'fall_detection', trigger: { type: 'robot_fall' } });
+  });
+
   it('requires explicit authenticated confirmation before a local cancel intent stops a workflow', async () => {
     const { router, cancellations, executions } = createHarness();
     executions.push(
@@ -142,6 +162,43 @@ describe('EdgeScenarioRouter', () => {
     expect(cancellations).toEqual(['active-critical']);
   });
 
+  it('keeps wearable and robot episode sources distinct when vendor identifiers collide', async () => {
+    let now = NOW;
+    const { scenarioEngine } = createHarness();
+    const router = new EdgeScenarioRouter({
+      scenarioEngine,
+      now: () => now,
+      fallEpisodeCooldownMs: 5_000,
+      episodeSourceStaleMs: 30_000
+    });
+    const robotEdge = new RobotEdgeAI({
+      clockNow: () => now,
+      random: createRobotSeededRandom(191)
+    });
+    const wearableEdge = new WearableEdgeAI({
+      clockNow: () => now,
+      random: createWearableSeededRandom(193)
+    });
+    const binding: EdgeDeviceBinding = {
+      targets: BINDING.targets,
+      wearableSourceRef: 'shared-vendor-id',
+      homeRobotSourceRef: 'shared-vendor-id'
+    };
+
+    await router.ingestRobotInference('account-1', robotEdge.infer(robotEdge.generateFrame({
+      deviceRef: 'shared-vendor-id', sequence: 1, profile: 'fall'
+    })), binding);
+    now += 5_001;
+    await router.ingestWearableInference('account-1', wearableEdge.infer(wearableEdge.generateFrame({
+      deviceRef: 'shared-vendor-id', sequence: 1, profile: 'resting'
+    })), binding);
+    await router.ingestRobotInference('account-1', robotEdge.infer(robotEdge.generateFrame({
+      deviceRef: 'shared-vendor-id', sequence: 2, profile: 'fall'
+    })), binding);
+
+    expect(scenarioEngine.startScenario).toHaveBeenCalledTimes(1);
+  });
+
   it('allows an identical safety envelope to retry after transient scenario admission failure', async () => {
     const { router, scenarioEngine } = createHarness();
     scenarioEngine.startScenario.mockRejectedValueOnce(Object.assign(new Error('temporary store failure'), {
@@ -160,6 +217,32 @@ describe('EdgeScenarioRouter', () => {
     expect(scenarioEngine.startScenario.mock.calls[1]?.[1]).toEqual(
       scenarioEngine.startScenario.mock.calls[0]?.[1]
     );
+  });
+
+  it('keeps safety routing independent from telemetry observability failures', async () => {
+    const { scenarioEngine, requests } = createHarness();
+    const persistenceFailure = jest.fn(() => {
+      throw new Error('metrics sink failed');
+    });
+    const router = new EdgeScenarioRouter({
+      scenarioEngine,
+      now: () => NOW,
+      telemetryStateIngestor: {
+        ingestWearable: async () => { throw new Error('state store failed'); },
+        ingestRobot: async () => { throw new Error('state store failed'); }
+      },
+      onTelemetryPersistenceFailure: persistenceFailure
+    });
+    const edge = new WearableEdgeAI({ clockNow: () => NOW, random: createWearableSeededRandom(30) });
+    const fall = edge.infer(edge.generateFrame({
+      deviceRef: 'wearable-1', sequence: 41, profile: 'fall'
+    }));
+
+    await expect(router.ingestWearableInference('account-1', fall, BINDING)).resolves.toMatchObject({
+      started: [expect.objectContaining({ accepted: true })]
+    });
+    expect(persistenceFailure).toHaveBeenCalledWith('TELEMETRY_STATE_PERSIST_FAILED');
+    expect(requests).toHaveLength(1);
   });
 
   it('serializes increasing sequences per source and rejects stale or mutated sequence reuse', async () => {

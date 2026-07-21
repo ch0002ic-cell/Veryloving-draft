@@ -10,6 +10,8 @@ const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:@-]{0,127}$/;
 const ACTION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const RETRYABLE_STATUS = new Set([408, 425, 429, 500, 502, 503, 504]);
 const MAX_EXECUTION_RESULTS = 50;
+const MAX_SCENARIO_REQUEST_RECORDS = 500;
+const IDEMPOTENCY_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const DEMO_SCENARIOS = Object.freeze({
   'fall-detection': Object.freeze({
     scenarioId: 'fall_detection',
@@ -108,6 +110,21 @@ function createSafeError(message, code, statusCode) {
   return Object.assign(new Error(message), { code, statusCode });
 }
 
+function requestIdempotencyKey(request) {
+  const value = request.headers?.['idempotency-key'];
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string' || !IDEMPOTENCY_PATTERN.test(value)) {
+    throw createSafeError('Idempotency-Key is invalid', 'IDEMPOTENCY_KEY_INVALID', 400);
+  }
+  return value;
+}
+
+function derivedIdempotencyKey(seed, purpose) {
+  return `demo-${createHash('sha256')
+    .update(`${seed}\0${purpose}`)
+    .digest('base64url')}`;
+}
+
 function delay(milliseconds, signal) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
@@ -128,7 +145,7 @@ function delay(milliseconds, signal) {
   });
 }
 
-async function readBoundedResponseText(response) {
+async function readBoundedResponseText(response, signal) {
   const advertised = Number(response.headers?.get?.('content-length'));
   if (Number.isFinite(advertised) && advertised > MAX_RESPONSE_BYTES) {
     try { await response.body?.cancel?.(); } catch {}
@@ -144,6 +161,9 @@ async function readBoundedResponseText(response) {
   const reader = response.body.getReader();
   const chunks = [];
   let total = 0;
+  const cancelOnAbort = () => { void Promise.resolve(reader.cancel?.()).catch(() => {}); };
+  if (signal?.aborted) cancelOnAbort();
+  else signal?.addEventListener?.('abort', cancelOnAbort, { once: true });
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -158,16 +178,21 @@ async function readBoundedResponseText(response) {
     }
     return Buffer.concat(chunks, total).toString('utf8');
   } finally {
+    signal?.removeEventListener?.('abort', cancelOnAbort);
     reader.releaseLock?.();
   }
 }
 
 class MockManufacturerClient {
-  constructor({ baseUrl, apiKey, fetchImpl }) {
+  constructor({ baseUrl, apiKey, fetchImpl, requestTimeoutMs = MOCK_REQUEST_TIMEOUT_MS }) {
     if (typeof fetchImpl !== 'function') throw new TypeError('AI-native demo requires fetch');
+    if (!Number.isSafeInteger(requestTimeoutMs) || requestTimeoutMs < 1 || requestTimeoutMs > 30_000) {
+      throw new TypeError('AI-native demo manufacturer timeout is invalid');
+    }
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
     this.fetchImpl = fetchImpl;
+    this.requestTimeoutMs = requestTimeoutMs;
     this.accessTokenPromise = undefined;
     this.shutdownController = new AbortController();
   }
@@ -235,21 +260,28 @@ class MockManufacturerClient {
     return response;
   }
 
-  recordDeviceEvent(deviceId, deviceType, eventType, signal) {
+  recordDeviceEvent(deviceId, deviceType, eventType, signal, idempotencyKey) {
     return this.postAuthenticated('/api/v1/simulation/events', {
       device_id: deviceId,
       device_type: deviceType,
       event_type: eventType
-    }, { signal });
+    }, { signal, idempotencyKey });
   }
 
-  recordScenarioLifecycle(scenarioId, status, wearableDeviceId, robotDeviceId, signal) {
+  recordScenarioLifecycle(
+    scenarioId,
+    status,
+    wearableDeviceId,
+    robotDeviceId,
+    signal,
+    idempotencyKey
+  ) {
     return this.postAuthenticated('/api/v1/simulation/scenarios', {
       scenario_id: scenarioId,
       status,
       wearable_device_id: wearableDeviceId,
       robot_device_id: robotDeviceId
-    }, { signal });
+    }, { signal, idempotencyKey });
   }
 
   async request(pathname, { authorization, body, signal, idempotencyKey }) {
@@ -263,26 +295,58 @@ class MockManufacturerClient {
       const abort = () => controller.abort();
       if (requestSignal.aborted) controller.abort();
       else requestSignal.addEventListener('abort', abort, { once: true });
-      const timeout = setTimeout(() => controller.abort(), MOCK_REQUEST_TIMEOUT_MS);
+      let timedOut = false;
+      let timeout;
+      const timeoutFailure = new Promise((_, reject) => {
+        timeout = setTimeout(() => {
+          timedOut = true;
+          controller.abort();
+          reject(createSafeError(
+            'Mock manufacturer request timed out',
+            'MOCK_UNAVAILABLE',
+            502
+          ));
+        }, this.requestTimeoutMs);
+      });
       try {
-        const response = await this.fetchImpl(new URL(pathname, `${this.baseUrl.href}/`), {
-          method: 'POST',
-          headers: {
-            Authorization: authorization,
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {})
-          },
-          body: JSON.stringify(body),
-          signal: controller.signal
+        const transport = Promise.resolve().then(() => this.fetchImpl(
+          new URL(pathname, `${this.baseUrl.href}/`),
+          {
+            method: 'POST',
+            headers: {
+              Authorization: authorization,
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {})
+            },
+            body: JSON.stringify(body),
+            redirect: 'error',
+            signal: controller.signal
+          }
+        )).then(async (response) => {
+          // A custom transport used by tests may ignore AbortSignal and settle
+          // after the deadline. Release its body instead of allowing a late
+          // stream to retain a socket indefinitely.
+          if (timedOut || requestSignal.aborted) {
+            try { await response?.body?.cancel?.(); } catch {}
+            throw createSafeError('Mock manufacturer request was cancelled', 'MOCK_UNAVAILABLE', 502);
+          }
+          const text = await readBoundedResponseText(response, controller.signal);
+          if (timedOut || requestSignal.aborted) {
+            throw createSafeError('Mock manufacturer request was cancelled', 'MOCK_UNAVAILABLE', 502);
+          }
+          let parsed;
+          try {
+            parsed = text ? JSON.parse(text) : {};
+          } catch {
+            throw createSafeError('Mock manufacturer returned malformed JSON', 'MOCK_RESPONSE_INVALID', 502);
+          }
+          return { response, parsed };
         });
-        const text = await readBoundedResponseText(response);
-        let parsed;
-        try {
-          parsed = text ? JSON.parse(text) : {};
-        } catch {
-          throw createSafeError('Mock manufacturer returned malformed JSON', 'MOCK_RESPONSE_INVALID', 502);
-        }
+        // Promise.race observes this rejection; this explicit observer also
+        // protects an intentionally detached, non-compliant transport.
+        void transport.catch(() => {});
+        const { response, parsed } = await Promise.race([transport, timeoutFailure]);
         if (response.ok && isPlainObject(parsed)) return parsed;
         const statusError = createSafeError(
           'Mock manufacturer request was rejected',
@@ -459,7 +523,7 @@ function writePreflight(response, allowedOrigin, allowedMethod) {
   response.writeHead(204, {
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': `${allowedMethod}, OPTIONS`,
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, Idempotency-Key',
     'Access-Control-Max-Age': '600',
     'Cache-Control': 'no-store',
     Vary: 'Origin, Access-Control-Request-Method, Access-Control-Request-Headers'
@@ -478,7 +542,8 @@ function createAINativeDemoRuntime({
   env = process.env,
   fetchImpl = globalThis.fetch,
   logger = console,
-  shutdownDrainGraceMs = 2_000
+  shutdownDrainGraceMs = 2_000,
+  mockRequestTimeoutMs = MOCK_REQUEST_TIMEOUT_MS
 } = {}) {
   if (!enabled(env.AI_NATIVE_ENABLED)) return null;
   if (env.NODE_ENV === 'production') {
@@ -505,7 +570,8 @@ function createAINativeDemoRuntime({
   const mockClient = new MockManufacturerClient({
     baseUrl,
     apiKey: env.MOCK_MANUFACTURER_API_KEY || DEFAULT_MOCK_API_KEY,
-    fetchImpl
+    fetchImpl,
+    requestTimeoutMs: mockRequestTimeoutMs
   });
   const modules = loadAINativeModules();
   const actionGateway = createDemoActionGateway(mockClient);
@@ -549,6 +615,7 @@ function createAINativeDemoRuntime({
   let closing = false;
   let closePromise;
   const backgroundTasks = new Set();
+  const scenarioRequests = new Map();
 
   const trackBackgroundTask = (task) => {
     const tracked = Promise.resolve(task);
@@ -597,7 +664,7 @@ function createAINativeDemoRuntime({
     );
   };
 
-  const triggerScenario = async (body, requestSignal) => {
+  const triggerScenario = async (body, callerIdempotencyKey) => {
     if (!hasExactKeys(
       body,
       ['scenarioId', 'userId', 'deviceId'],
@@ -630,15 +697,6 @@ function createAINativeDemoRuntime({
       wearableSourceRef: 'demo-wearable-edge',
       homeRobotSourceRef: 'demo-home-robot-edge'
     });
-
-    await Promise.all([
-      mockClient.recordDeviceEvent(
-        body.deviceId, 'wearable', definition.wearableEvent, requestSignal
-      ),
-      mockClient.recordDeviceEvent(
-        robotDeviceId, 'home_robot', definition.robotEvent, requestSignal
-      )
-    ]);
 
     let routed;
     if (definition.route === 'wearable_fall') {
@@ -675,7 +733,9 @@ function createAINativeDemoRuntime({
           { locationContext: 'home', locationRef: 'last-known-location' }
         );
       }
-      const eventId = `demo-${randomBytes(12).toString('hex')}`;
+      const eventId = callerIdempotencyKey
+        ? derivedIdempotencyKey(callerIdempotencyKey, 'edge-context')
+        : `demo-${randomBytes(12).toString('hex')}`;
       const data = definition.route === 'medication_due'
         ? { medicationId: 'scheduled-medication', scheduledAt: occurredAt }
         : definition.route === 'panic_button'
@@ -692,8 +752,37 @@ function createAINativeDemoRuntime({
       throw createSafeError('Scenario trigger was suppressed as a duplicate', 'SCENARIO_NOT_STARTED', 409);
     }
 
+    // Scenario admission is durable before simulator-only mirroring starts.
+    // Once admitted, a browser disconnect must not cancel care orchestration.
+    const mirrorSeed = callerIdempotencyKey || execution.executionId;
+    trackBackgroundTask(Promise.all([
+      mockClient.recordDeviceEvent(
+        body.deviceId,
+        'wearable',
+        definition.wearableEvent,
+        undefined,
+        derivedIdempotencyKey(mirrorSeed, 'wearable-event')
+      ),
+      mockClient.recordDeviceEvent(
+        robotDeviceId,
+        'home_robot',
+        definition.robotEvent,
+        undefined,
+        derivedIdempotencyKey(mirrorSeed, 'robot-event')
+      )
+    ]).catch((error) => {
+      logger.error?.('[AI-Native] Demo device-event sync failed', {
+        code: safeErrorCode(error)
+      });
+    }));
+
     const startedLifecycle = mockClient.recordScenarioLifecycle(
-      definition.scenarioId, 'started', body.deviceId, robotDeviceId
+      definition.scenarioId,
+      'started',
+      body.deviceId,
+      robotDeviceId,
+      undefined,
+      derivedIdempotencyKey(mirrorSeed, 'scenario-started')
     ).catch((error) => {
       logger.error?.('[AI-Native] Demo scenario lifecycle sync failed', {
         code: safeErrorCode(error)
@@ -715,7 +804,9 @@ function createAINativeDemoRuntime({
           definition.scenarioId,
           lifecycleStatus(completed.state),
           body.deviceId,
-          robotDeviceId
+          robotDeviceId,
+          undefined,
+          derivedIdempotencyKey(mirrorSeed, `scenario-${lifecycleStatus(completed.state)}`)
         );
       })
       .catch((error) => {
@@ -729,6 +820,48 @@ function createAINativeDemoRuntime({
       scenarioId: body.scenarioId,
       executionId: execution.executionId
     });
+  };
+
+  const triggerIdempotentScenario = (body, idempotencyKey) => {
+    if (!idempotencyKey) return triggerScenario(body, undefined);
+    const accountScope = isPlainObject(body) && typeof body.userId === 'string'
+      ? body.userId
+      : 'invalid';
+    const scope = `${accountScope}\0${idempotencyKey}`;
+    const fingerprint = createHash('sha256').update(JSON.stringify(body)).digest('base64url');
+    const previous = scenarioRequests.get(scope);
+    if (previous) {
+      if (previous.fingerprint !== fingerprint) {
+        throw createSafeError(
+          'Idempotency-Key was reused with a different scenario request',
+          'IDEMPOTENCY_CONFLICT',
+          409
+        );
+      }
+      return previous.promise;
+    }
+    if (scenarioRequests.size >= MAX_SCENARIO_REQUEST_RECORDS) {
+      const settled = [...scenarioRequests].find(([, entry]) => entry.settled === true);
+      if (!settled) {
+        throw createSafeError(
+          'Scenario request capacity is exhausted',
+          'SCENARIO_REQUEST_CAPACITY',
+          503
+        );
+      }
+      scenarioRequests.delete(settled[0]);
+    }
+    const promise = triggerScenario(body, idempotencyKey);
+    const record = { fingerprint, promise, settled: false };
+    scenarioRequests.set(scope, record);
+    void promise.then(
+      () => { record.settled = true; },
+      () => {
+        const current = scenarioRequests.get(scope);
+        if (current?.promise === promise) scenarioRequests.delete(scope);
+      }
+    );
+    return promise;
   };
 
   const listScenarioExecutions = async (userId) => {
@@ -813,7 +946,21 @@ function createAINativeDemoRuntime({
           // Let accepted work finish first, but abort a stalled manufacturer
           // request after the bounded grace period so shutdown cannot hang.
           mockClient.close();
-          await drain;
+          // A deliberately injected transport can violate AbortSignal. Do not
+          // let such a provider hold process shutdown open forever; all
+          // background promises retain rejection observers above.
+          let abortDrainTimer;
+          try {
+            await Promise.race([
+              drain,
+              new Promise((resolve) => {
+                abortDrainTimer = setTimeout(resolve, Math.max(10, shutdownDrainGraceMs));
+                abortDrainTimer.unref?.();
+              })
+            ]);
+          } finally {
+            if (abortDrainTimer) clearTimeout(abortDrainTimer);
+          }
         })();
       }
       return closePromise;
@@ -922,25 +1069,19 @@ function createAINativeDemoRuntime({
         }
         try {
           const body = await readJson(request);
-          const controller = new AbortController();
-          const abort = () => controller.abort();
-          request.once('aborted', abort);
-          response.once('close', abort);
-          try {
-            if (closing) {
-              throw createSafeError(
-                'AI-native demo is shutting down',
-                'DEMO_SHUTTING_DOWN',
-                503
-              );
-            }
-            const result = await trackBackgroundTask(triggerScenario(body, controller.signal));
-            if (controller.signal.aborted || response.destroyed) return;
-            writeJson(response, 202, result, responseCorsHeaders);
-          } finally {
-            request.removeListener('aborted', abort);
-            response.removeListener('close', abort);
+          const idempotencyKey = requestIdempotencyKey(request);
+          if (closing) {
+            throw createSafeError(
+              'AI-native demo is shutting down',
+              'DEMO_SHUTTING_DOWN',
+              503
+            );
           }
+          const result = await trackBackgroundTask(
+            triggerIdempotentScenario(body, idempotencyKey)
+          );
+          if (response.destroyed) return;
+          writeJson(response, 202, result, responseCorsHeaders);
         } catch (error) {
           logger.error?.('[AI-Native] Demo scenario request failed', { code: safeErrorCode(error) });
           if (response.destroyed || response.writableEnded) return;

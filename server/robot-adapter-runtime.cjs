@@ -236,7 +236,7 @@ class RobotAdapterRuntime {
     return factory.create(adapterConfiguration);
   }
 
-  async deliverSignedAction(adapterId, signedAction, { onAttempt } = {}) {
+  async deliverSignedAction(adapterId, signedAction, { onAttempt, signal } = {}) {
     const configuration = this.requireConfiguration(adapterId);
     if (signedAction?.envelope?.adapter_id !== adapterId
       || signedAction?.envelope?.version !== 2
@@ -249,8 +249,11 @@ class RobotAdapterRuntime {
       });
     }
     const adapter = this.createAdapter(configuration, onAttempt);
-    await adapter.initialize({ deviceId: signedAction.envelope.manufacturer_device_id });
-    const result = await adapter.deliverSignedAction(signedAction);
+    await adapter.initialize(
+      { deviceId: signedAction.envelope.manufacturer_device_id },
+      { signal }
+    );
+    const result = await adapter.deliverSignedAction(signedAction, { signal });
     return Object.freeze({ status: result.statusCode, acknowledged: result.acknowledged });
   }
 

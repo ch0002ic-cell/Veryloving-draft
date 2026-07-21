@@ -210,6 +210,24 @@ class TransientCancellationFailureRepository extends InMemoryScenarioExecutionRe
   }
 }
 
+class AccountDeletionCancellationFailureRepository extends InMemoryScenarioExecutionRepository {
+  cancellationPutAttempts = 0;
+  deleteCalls = 0;
+
+  override async put(execution: ScenarioExecutionSnapshot): Promise<void> {
+    if (execution.state === 'cancelled' && execution.errorCode === 'ACCOUNT_DATA_DELETED') {
+      this.cancellationPutAttempts += 1;
+      throw Object.assign(new Error('cancellation audit store unavailable'), { code: 'STORE_UNAVAILABLE' });
+    }
+    await super.put(execution);
+  }
+
+  override async deleteAccount(accountRef: string): Promise<number> {
+    this.deleteCalls += 1;
+    return super.deleteAccount(accountRef);
+  }
+}
+
 function singleStepDefinition(
   id: ScenarioDefinition['id'],
   priority: ScenarioPriority,
@@ -466,6 +484,52 @@ describe('ScenarioEngine', () => {
       'hume_fall_voice_check',
       'cancel_robot_emergency_stop'
     ]);
+  });
+
+  it('bounds cancellation compensation when a provider ignores AbortSignal', async () => {
+    jest.useFakeTimers();
+    try {
+      let voiceCheckStarted!: () => void;
+      const voiceStarted = new Promise<void>((resolve) => { voiceCheckStarted = resolve; });
+      let emergencyStopStarted!: () => void;
+      const stopStarted = new Promise<void>((resolve) => { emergencyStopStarted = resolve; });
+      const runtime = new RecordingRuntime(async (operation, context) => {
+        if (operation.id === 'hume_fall_voice_check') {
+          voiceCheckStarted();
+          return new Promise((_resolve, reject) => {
+            context.signal.addEventListener('abort', () => reject(Object.assign(new Error('cancelled'), {
+              code: 'OPERATION_CANCELLED'
+            })), { once: true });
+          });
+        }
+        if (operation.id === 'cancel_robot_emergency_stop') {
+          emergencyStopStarted();
+          return new Promise<ScenarioOperationResult>(() => undefined);
+        }
+        return { status: 'succeeded', data: { delivered: true } };
+      });
+      const engine = new ScenarioEngine({
+        definitions: createDefaultScenarioDefinitions(), runtime, identitySecret: SECRET, now: () => NOW
+      });
+      const start = await engine.startScenario(
+        'account-1',
+        request('fall_detection', 'cancel-stop-timeout', { robotSafeToMove: true })
+      );
+      await voiceStarted;
+
+      const cancellation = engine.cancelScenario('account-1', start.execution.executionId);
+      await stopStarted;
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      await expect(cancellation).resolves.toMatchObject({
+        state: 'cancelled',
+        cancellation: {
+          robotEmergencyStop: { state: 'failed', errorCode: 'STEP_TIMEOUT' }
+        }
+      });
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('prioritizes queued critical work without interrupting active work', async () => {
@@ -796,6 +860,40 @@ describe('ScenarioEngine', () => {
     release();
     await active;
   });
+
+  it('continues account erasure when an intermediate cancellation audit write is unavailable', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const runtime = new RecordingRuntime(async (operation) => {
+      if (operation.id === 'block') await gate;
+      return { status: 'succeeded' };
+    });
+    const definition = singleStepDefinition('cognitive_engagement', 'background', {
+      id: 'block', kind: 'analytics', event: 'block'
+    });
+    const repository = new AccountDeletionCancellationFailureRepository();
+    const engine = new ScenarioEngine({
+      definitions: [definition], runtime, repository, identitySecret: SECRET, now: () => NOW,
+      maxConcurrentExecutions: 1
+    });
+    const active = engine.executeScenario('other-account', request('cognitive_engagement', 'erase-active'));
+    await Promise.resolve();
+    const queued = engine.executeScenario('delete-account', request('cognitive_engagement', 'erase-queued'));
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      if ((await engine.listExecutions('delete-account')).length === 1) break;
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    await expect(engine.deleteAccountData('delete-account')).resolves.toBe(1);
+    await expect(queued).resolves.toMatchObject({
+      state: 'cancelled', errorCode: 'ACCOUNT_DATA_DELETED'
+    });
+    expect(repository.cancellationPutAttempts).toBe(3);
+    expect(repository.deleteCalls).toBe(1);
+    await expect(engine.listExecutions('delete-account')).resolves.toEqual([]);
+    release();
+    await active;
+  });
 });
 
 describe('InMemoryScenarioExecutionRepository', () => {
@@ -933,5 +1031,18 @@ describe('ActionGatewayScenarioRuntime', () => {
     await expect(invalidReader.execute(
       { id: 'read', kind: 'read_state', selector: 'steps_today' }, baseContext
     )).rejects.toThrow('User state result is invalid');
+
+    const invalidOutcome = new ActionGatewayScenarioRuntime({
+      actionGateway: {
+        route: async () => ({
+          status: 'accepted', action_id: '11111111-1111-4111-8111-111111111111'
+        }),
+        waitForActionOutcome: async () => ({ status: 'failed' })
+      }
+    });
+    await expect(invalidOutcome.execute(
+      { id: 'robot', kind: 'device_action', target: 'home_robot', action: 'navigate' },
+      baseContext
+    )).rejects.toMatchObject({ code: 'ACTION_OUTCOME_UNTRACKABLE' });
   });
 });

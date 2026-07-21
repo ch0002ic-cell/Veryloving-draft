@@ -19,6 +19,11 @@ export interface RobotCredentials {
   readonly pairingToken?: string;
 }
 
+export interface RobotAdapterOperationOptions {
+  /** Cancels local queueing, retry waits, and the active HTTP transport. */
+  readonly signal?: AbortSignal;
+}
+
 export interface Medication {
   readonly id: string;
   readonly name: string;
@@ -186,7 +191,7 @@ export interface RobotAdapter {
   readonly adapterId: string;
   readonly vendor: RobotVendor;
 
-  initialize(credentials: RobotCredentials): Promise<void>;
+  initialize(credentials: RobotCredentials, options?: RobotAdapterOperationOptions): Promise<void>;
 
   sendMedicationReminder(medication: Medication, user: User): Promise<CommandResult>;
   activateFallAlert(location: string): Promise<CommandResult>;
@@ -207,5 +212,8 @@ export interface RobotAdapter {
    * The initialized manufacturer device ID must match manufacturer_device_id;
    * device_id remains the private Veryloving account/session identity.
    */
-  deliverSignedAction(action: SignedRobotAction): Promise<SignedActionDeliveryResult>;
+  deliverSignedAction(
+    action: SignedRobotAction,
+    options?: RobotAdapterOperationOptions
+  ): Promise<SignedActionDeliveryResult>;
 }

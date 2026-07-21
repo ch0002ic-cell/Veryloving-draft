@@ -99,7 +99,7 @@ test('factory reset retries a stable downstream idempotency key after failure an
     resetHandler: {
       async resetRobot(adapterId, request) {
         resetCalls.push({ adapterId, request });
-        if (fail) throw Object.assign(new Error('private manufacturer failure'), { code: 'REMOTE_TIMEOUT' });
+        if (fail) throw Object.assign(new Error('private manufacturer failure'), { code: 'API_KEY_SUPER_SECRET' });
       }
     },
     logger: {
@@ -144,6 +144,8 @@ test('factory reset retries a stable downstream idempotency key after failure an
   });
   assert.deepEqual(gatewayCalls[0], ['user-private-account', 'robot-private-id', 14]);
   assert.doesNotMatch(JSON.stringify(logs), /user-private-account|robot-private-id|manufacturer-private-route|private manufacturer failure/);
+  assert.doesNotMatch(JSON.stringify(logs), /API_KEY_SUPER_SECRET/);
+  assert.equal(logs[0].context.code, 'ROBOT_RESET_REMOTE_FAILED');
 });
 
 test('recovery finalizes a remote-complete checkpoint without issuing a second physical reset', async () => {

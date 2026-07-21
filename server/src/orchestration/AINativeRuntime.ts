@@ -77,8 +77,24 @@ export class AINativeAccountLifecycle {
         throw Object.assign(new Error('AI-native operation was cancelled'), { code: 'OPERATION_CANCELLED' });
       }
       let result: T;
+      let rejectAbort!: (error: Error) => void;
+      const abortWait = new Promise<never>((_resolve, reject) => {
+        rejectAbort = reject;
+      });
+      const stopWaiting = (): void => {
+        rejectAbort(Object.assign(new Error('AI-native operation was cancelled'), {
+          code: 'OPERATION_CANCELLED'
+        }));
+      };
+      controller.signal.addEventListener('abort', stopWaiting, { once: true });
       try {
-        result = await operation(controller.signal);
+        // Providers receive the signal so they can release their own resources,
+        // but account erasure must not depend on every provider implementing
+        // cancellation correctly. Observe the provider promise after the race
+        // so a late rejection cannot become an unhandled process rejection.
+        const providerOperation = Promise.resolve(operation(controller.signal));
+        void providerOperation.catch(() => {});
+        result = await Promise.race([providerOperation, abortWait]);
       } catch (error) {
         if (this.fenced.has(accountRef)) throw this.deletedError();
         if (controller.signal.aborted) {
@@ -88,6 +104,8 @@ export class AINativeAccountLifecycle {
           });
         }
         throw error;
+      } finally {
+        controller.signal.removeEventListener('abort', stopWaiting);
       }
       if (this.fenced.has(accountRef)) throw this.deletedError();
       if (controller.signal.aborted) {

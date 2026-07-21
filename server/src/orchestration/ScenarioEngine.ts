@@ -546,6 +546,14 @@ export class ActionGatewayScenarioRuntime implements ScenarioRuntime {
             signal: context.signal
           });
         }
+        const delivered = result && typeof result === 'object'
+          ? result as Readonly<{ status?: unknown }>
+          : undefined;
+        if (delivered?.status !== 'delivered') {
+          throw Object.assign(new Error('Robot action did not return a delivered outcome'), {
+            code: 'ACTION_OUTCOME_UNTRACKABLE'
+          });
+        }
       }
       if (operation.action === 'share_camera_view') {
         if (!cameraSessionRef) throw Object.assign(new Error('Camera session scope is missing'), {
@@ -1177,7 +1185,13 @@ export class ScenarioEngine {
           : step)
       });
       runtime.snapshot = cancelled;
-      await this.repository.put(cancelled);
+      try {
+        await this.persistTerminalSnapshot(cancelled);
+      } catch {
+        // The account-wide erase below is authoritative. A transient audit
+        // state write must never prevent deletion or strand this removed queue
+        // entry and its reserved capacity.
+      }
       runtime.resolve(cancelled);
       this.completions.delete(runtime.snapshot.executionId);
       this.releaseCapacity(runtime.accountRef, runtime.definition.priority);
@@ -1719,33 +1733,41 @@ export class ScenarioEngine {
     }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3_000);
-    timeout.unref?.();
+    let timeout: NodeJS.Timeout | undefined;
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        controller.abort();
+        reject(Object.assign(new Error('Robot emergency stop timed out'), { code: 'STEP_TIMEOUT' }));
+      }, 3_000);
+    });
     let stopResult: NonNullable<ScenarioExecutionSnapshot['cancellation']>['robotEmergencyStop'];
     try {
-      const result = await this.options.runtime.execute({
-        id: 'cancel_robot_emergency_stop',
-        idempotencyScope: 'cancel-robot-emergency-stop',
-        kind: 'device_action',
-        target: 'home_robot',
-        action: 'emergency_stop',
-        parameters: {},
-        timeoutMs: 3_000
-      }, {
-        accountId: runtime.accountId,
-        executionId: runtime.snapshot.executionId,
-        scenarioId: runtime.request.scenarioId,
-        trigger: runtime.request.trigger,
-        input: runtime.request.input ?? Object.freeze({}),
-        devices: runtime.request.devices,
-        results,
-        signal: controller.signal,
-        operationStartedAt: requestedAt,
-        opaqueReference: (scope: string) => `scenario_${opaqueReference(
-          `${runtime.snapshot.accountRef}:${runtime.snapshot.executionId}:${scope}`,
-          this.options.identitySecret
-        )}`
-      });
+      const result = await Promise.race([
+        this.options.runtime.execute({
+          id: 'cancel_robot_emergency_stop',
+          idempotencyScope: 'cancel-robot-emergency-stop',
+          kind: 'device_action',
+          target: 'home_robot',
+          action: 'emergency_stop',
+          parameters: {},
+          timeoutMs: 3_000
+        }, {
+          accountId: runtime.accountId,
+          executionId: runtime.snapshot.executionId,
+          scenarioId: runtime.request.scenarioId,
+          trigger: runtime.request.trigger,
+          input: runtime.request.input ?? Object.freeze({}),
+          devices: runtime.request.devices,
+          results,
+          signal: controller.signal,
+          operationStartedAt: requestedAt,
+          opaqueReference: (scope: string) => `scenario_${opaqueReference(
+            `${runtime.snapshot.accountRef}:${runtime.snapshot.executionId}:${scope}`,
+            this.options.identitySecret
+          )}`
+        }),
+        timeoutPromise
+      ]);
       if (result.status !== 'succeeded') {
         throw Object.assign(new Error('Robot emergency stop did not succeed'), {
           code: result.code ?? 'SCENARIO_STEP_FAILED'
@@ -1759,7 +1781,7 @@ export class ScenarioEngine {
         errorCode: controller.signal.aborted ? 'STEP_TIMEOUT' : safeErrorCode(error)
       });
     } finally {
-      clearTimeout(timeout);
+      if (timeout) clearTimeout(timeout);
     }
     return Object.freeze({
       requestedAt,
@@ -1804,7 +1826,6 @@ export class ScenarioEngine {
         controller.abort();
         reject(Object.assign(new Error('Scenario operation timed out'), { code: 'STEP_TIMEOUT' }));
       }, timeoutMs);
-      timeout.unref?.();
     });
     const cancellationPromise = new Promise<never>((_resolve, reject) => {
       rejectCancellation = reject;

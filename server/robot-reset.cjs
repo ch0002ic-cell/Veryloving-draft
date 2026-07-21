@@ -154,7 +154,7 @@ function createRobotResetCoordinator({
       logger.error?.('[RobotReset] Manufacturer reset failed', {
         robotReference: resetLogReference(robotId, 'robot'),
         resetReference: resetLogReference(checkpoint.resetId, 'reset'),
-        code: typeof error?.code === 'string' ? error.code : 'ROBOT_RESET_REMOTE_FAILED'
+        code: 'ROBOT_RESET_REMOTE_FAILED'
       });
       throw Object.assign(new Error('Robot factory reset could not reach the manufacturer'), {
         statusCode: 502,
@@ -211,7 +211,7 @@ function createRobotResetCoordinator({
           userId: checkpoint.userId,
           robotId: checkpoint.robotId,
           ok: false,
-          code: typeof error?.code === 'string' ? error.code : 'ROBOT_RESET_RECOVERY_FAILED'
+          code: 'ROBOT_RESET_RECOVERY_FAILED'
         });
       }
     }
@@ -241,7 +241,7 @@ function createRobotResetCoordinator({
         return await recover({ limit });
       } catch (error) {
         logger.error?.('[RobotReset] Recovery pass failed', {
-          code: typeof error?.code === 'string' ? error.code : 'ROBOT_RESET_RECOVERY_FAILED'
+          code: 'ROBOT_RESET_RECOVERY_FAILED'
         });
         if (propagateFailure) throw error;
         return [];

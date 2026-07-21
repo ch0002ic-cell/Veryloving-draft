@@ -38,6 +38,21 @@ function activeRobotOptions({
   };
 }
 
+test('action gateway rejects unsafe transport and acknowledgement timing configuration', () => {
+  assert.throws(
+    () => new ActionGateway({ requestTimeoutMs: 120001 }),
+    /ACTION_REQUEST_TIMEOUT_MS/
+  );
+  assert.throws(
+    () => new ActionGateway({ robotAckTimeoutMs: Number.POSITIVE_INFINITY }),
+    /ROBOT_ACK_TIMEOUT_MS/
+  );
+  assert.throws(
+    () => new ActionGateway({ wearableAckTimeoutMs: 60000.5 }),
+    /WEARABLE_ACK_TIMEOUT_MS/
+  );
+});
+
 function acknowledgeRobot(gateway, actionId, acknowledgement = { ok: true }, {
   adapterId = 'manufacturer-default',
   bindingEpoch = defaultBindingEpoch
@@ -1366,6 +1381,103 @@ test('account fence joins an underlying HAL transport that ignored AbortSignal',
   releaseTransport();
   assert.equal((await fence).fenced, true);
   assert.equal(gateway.pendingRobotTransports.size, 0);
+});
+
+test('manufacturer timeout remains fenced until an AbortSignal-ignoring transport settles', async () => {
+  const outboxRepository = createMemoryOutbox({
+    async failPendingForUser() { return { failed: 0 }; }
+  });
+  let releaseTransport;
+  let responseBodyCancels = 0;
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    requestTimeoutMs: 5,
+    retries: 1,
+    outboxRepository,
+    fetchImpl: async () => new Promise((resolve) => {
+      releaseTransport = () => resolve({
+        ok: true,
+        status: 200,
+        body: { async cancel() { responseBodyCancels += 1; } }
+      });
+    }),
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'timeout-fence-join'
+  });
+  await gateway.waitForDeliveries();
+  assert.equal(gateway.pendingRobotTransports.size, 1);
+
+  let fenceSettled = false;
+  const fence = gateway.fenceUserActions('user-1').then((result) => {
+    fenceSettled = true;
+    return result;
+  });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(fenceSettled, false);
+  releaseTransport();
+  assert.equal((await fence).fenced, true);
+  assert.equal(gateway.pendingRobotTransports.size, 0);
+  assert.equal(responseBodyCancels, 1);
+});
+
+test('account fence fails closed within a deadline when a transport never settles', async () => {
+  const outboxRepository = createMemoryOutbox({
+    async failPendingForUser() { return { failed: 0 }; }
+  });
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    requestTimeoutMs: 5,
+    transportFenceTimeoutMs: 5,
+    retries: 1,
+    outboxRepository,
+    fetchImpl: async () => new Promise(() => {}),
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'hung-fence-transport'
+  });
+  await gateway.waitForDeliveries();
+  assert.equal(gateway.pendingRobotTransports.size, 1);
+  await assert.rejects(
+    gateway.fenceUserActions('user-1'),
+    (error) => error.statusCode === 503 && error.code === 'ACCOUNT_FENCE_DRAIN_TIMEOUT'
+  );
+  assert.equal(gateway.fencedUserActions.size, 1);
+});
+
+test('manufacturer command responses release unused streaming bodies', async () => {
+  const outboxRepository = createMemoryOutbox();
+  let responseBodyCancels = 0;
+  const gateway = new ActionGateway({
+    ...activeRobotOptions(),
+    signingPrivateKey: secret,
+    manufacturerWebhookURL: 'https://manufacturer.example.test',
+    manufacturerApiKey: 'key',
+    retries: 1,
+    outboxRepository,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      body: { async cancel() { responseBodyCancels += 1; } }
+    }),
+    logger: { error() {} }
+  });
+  gateway.registerSession('user-1', null, [{ device_id: 'r1', device_type: 'home_robot', online: true }]);
+  await gateway.route('user-1', {
+    action: 'check_medication', device_type: 'home_robot', device_id: 'r1', idempotency_key: 'response-body-release'
+  });
+  await gateway.waitForDeliveries();
+  assert.equal(responseBodyCancels, 1);
 });
 
 test('delivery transitions fail closed before send and before installing an ACK timer', async () => {

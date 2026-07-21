@@ -25,6 +25,16 @@ const configs = [
   })
 ];
 
+function boundedJsonResponse(payload, status = 200) {
+  const body = JSON.stringify(payload);
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: (name) => String(name).toLowerCase() === 'content-length' ? String(Buffer.byteLength(body)) : null },
+    async text() { return body; }
+  };
+}
+
 class FakeFactory {
   constructor(dependencies) { this.dependencies = dependencies; }
   create(configuration) {
@@ -83,6 +93,37 @@ describe('RobotAdapterRuntime', () => {
     }, { onAttempt: (attempt) => attempts.push(attempt) });
     assert.deepEqual(result, { status: 202, acknowledged: false });
     assert.deepEqual(attempts, [1]);
+  });
+
+  test('forwards caller cancellation through initialization and signed delivery', async () => {
+    const observed = [];
+    class CancellationFactory extends FakeFactory {
+      create(configuration) {
+        return {
+          async initialize(_credentials, options) { observed.push(['initialize', options?.signal]); },
+          async deliverSignedAction(_signed, options) {
+            observed.push(['deliver', options?.signal]);
+            return { statusCode: 202, acknowledged: false };
+          },
+          configuration
+        };
+      }
+    }
+    const controller = new AbortController();
+    const runtime = new RobotAdapterRuntime({ configurations: configs, factoryClass: CancellationFactory });
+    await runtime.deliverSignedAction('jiangzhi-edge', {
+      envelope: {
+        version: 2,
+        contract_version: 'vl-robot-action/2',
+        binding_epoch: 3,
+        adapter_id: 'jiangzhi-edge',
+        manufacturer_device_id: 'robot-1'
+      }
+    }, { signal: controller.signal });
+    assert.deepEqual(observed, [
+      ['initialize', controller.signal],
+      ['deliver', controller.signal]
+    ]);
   });
 
   test('fails closed on unknown and cross-adapter routing', async () => {
@@ -334,22 +375,16 @@ describe('RobotAdapterRuntime', () => {
     const fetchImpl = async (url, options) => {
       calls.push({ url, options });
       if (url.endsWith('/privacy/export')) {
-        return { ok: true, status: 200, async text() { return JSON.stringify({ records: ['owned'] }); } };
+        return boundedJsonResponse({ records: ['owned'] });
       }
       if (url.endsWith('/reset')) {
-        return {
-          ok: true,
-          status: 200,
-          async text() {
-            return JSON.stringify({
+        return boundedJsonResponse({
               reset_id: 'reset-operation-0001',
               binding_epoch: 4,
               state: 'completed',
               erased: true,
               fenced: true
             });
-          }
-        };
       }
       return { ok: true, status: 204, async text() { return ''; } };
     };

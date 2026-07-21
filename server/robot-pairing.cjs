@@ -545,7 +545,7 @@ function createDynamoRobotRepository({
     robotId,
     resetId,
     bindingEpoch,
-    error,
+    _error,
     failedAt = Date.now(),
     nextAttemptAt = failedAt,
     leaseOwner
@@ -553,9 +553,11 @@ function createDynamoRobotRepository({
     validateResetId(resetId);
     validateTimestamp(failedAt);
     validateTimestamp(nextAttemptAt, 'Next reset attempt');
-    const errorCode = typeof error?.code === 'string' && /^[A-Z0-9_:-]{1,64}$/.test(error.code)
-      ? error.code
-      : 'ROBOT_RESET_REMOTE_FAILED';
+    // Adapter/provider error values are outside this trust boundary and can
+    // contain credentials despite looking like an uppercase "code". Persist a
+    // stable local classification rather than copying an arbitrary value into
+    // durable state or subsequent logs.
+    const errorCode = 'ROBOT_RESET_REMOTE_FAILED';
     const record = await findBoundRobot(userId, robotId);
     const checkpoint = resetCheckpoint(record);
     if (!checkpoint || checkpoint.resetId !== resetId || checkpoint.bindingEpoch !== bindingEpoch) return null;
@@ -988,7 +990,7 @@ async function pairRobot({
   } catch (error) {
     if (error?.statusCode === 410) logger.warn('[RobotPairing] Pairing replay rejected', {
       claimFingerprint: pairingCodeHash.slice(0, 12),
-      code: error.code || 'ROBOT_PAIRING_REPLAY'
+      code: 'ROBOT_PAIRING_REPLAY'
     });
     throw error;
   }
@@ -999,7 +1001,7 @@ async function pairRobot({
     if (error?.statusCode === 410) {
       logger.warn('[RobotPairing] Pairing replay rejected', {
         claimFingerprint: pairingCodeHash.slice(0, 12),
-        code: error.code || 'ROBOT_PAIRING_REPLAY'
+        code: 'ROBOT_PAIRING_REPLAY'
       });
     }
     throw error;
@@ -1044,7 +1046,7 @@ async function pairRobot({
     if (Number.isSafeInteger(stored?.bindingEpoch)) record.bindingEpoch = stored.bindingEpoch;
   } catch (error) {
     if (error?.statusCode === 410) logger.warn('[RobotPairing] Pairing replay rejected', {
-      hardwareSerial: redactSerial(verified.hardwareSerial), code: error.code || 'ROBOT_PAIRING_REPLAY'
+      hardwareSerial: redactSerial(verified.hardwareSerial), code: 'ROBOT_PAIRING_REPLAY'
     });
     throw error;
   }

@@ -25,10 +25,14 @@ export interface AdapterFactoryDependencies {
   readonly logger?: AdapterLogSink;
   readonly onMetric?: (metric: AdapterMetric) => void;
   readonly now?: () => number;
-  readonly sleep?: (milliseconds: number) => Promise<void>;
+  readonly sleep?: (milliseconds: number, signal?: AbortSignal) => Promise<void>;
   readonly random?: () => number;
   readonly idGenerator?: () => string;
-  readonly onAttempt?: (operation: string, attempt: number) => void | Promise<void>;
+  readonly onAttempt?: (
+    operation: string,
+    attempt: number,
+    signal?: AbortSignal
+  ) => void | Promise<void>;
   readonly wallClockNow?: () => number;
 }
 

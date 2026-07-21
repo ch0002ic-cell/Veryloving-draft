@@ -471,6 +471,7 @@ export class EdgeScenarioRouter {
         'wearable_fall',
         envelope.observedAtMs,
         envelope.sourceDeviceRef,
+        `wearable:${envelope.sourceDeviceRef}`,
         envelope.sequence,
         binding.targets,
         {
@@ -485,7 +486,8 @@ export class EdgeScenarioRouter {
       return Object.freeze({ started: Object.freeze([]) });
     }
     if (!isFall) this.shouldStartEpisode(
-      accountId, 'fall_detection', envelope.sourceDeviceRef, false, envelope.observedAtMs, this.fallEpisodeCooldownMs
+      accountId, 'fall_detection', `wearable:${envelope.sourceDeviceRef}`,
+      false, envelope.observedAtMs, this.fallEpisodeCooldownMs
     );
     const isStressed = envelope.inference.stressScore >= this.stressThreshold;
     if (isStressed) {
@@ -495,6 +497,7 @@ export class EdgeScenarioRouter {
         'wearable_stress',
         envelope.observedAtMs,
         envelope.sourceDeviceRef,
+        `wearable:${envelope.sourceDeviceRef}`,
         envelope.sequence,
         binding.targets,
         { ...commonInput, stressScore: envelope.inference.stressScore },
@@ -503,7 +506,8 @@ export class EdgeScenarioRouter {
       if (started) return Object.freeze({ started: Object.freeze([started]) });
     }
     if (!isStressed) this.shouldStartEpisode(
-      accountId, 'emotional_check_in', envelope.sourceDeviceRef, false, envelope.observedAtMs, this.stressEpisodeCooldownMs
+      accountId, 'emotional_check_in', `wearable:${envelope.sourceDeviceRef}`,
+      false, envelope.observedAtMs, this.stressEpisodeCooldownMs
     );
     return Object.freeze({ started: Object.freeze([]) });
   }
@@ -563,11 +567,6 @@ export class EdgeScenarioRouter {
         signal
       ));
     }
-    if (envelope.inference.voice.intent === 'cancel') {
-      // Local speech inference is not sufficient authority to suppress a
-      // life-safety flow. The authenticated app must correlate and confirm it.
-      return Object.freeze({ started: Object.freeze([]), cancellationRequested: true });
-    }
     const commonInput = this.contextInput(context);
     const isFall = envelope.inference.vision.fallDetected
       && envelope.inference.vision.fallConfidence >= this.fallConfidenceThreshold;
@@ -575,6 +574,7 @@ export class EdgeScenarioRouter {
       const started = await this.startEpisode(
         accountId, 'fall_detection', 'robot_fall', envelope.observedAtMs,
         envelope.sourceDeviceRef,
+        `home_robot:${envelope.sourceDeviceRef}`,
         envelope.sequence,
         binding.targets,
         { ...commonInput, robotSafeToMove: envelope.inference.motor.safeToMove },
@@ -586,13 +586,21 @@ export class EdgeScenarioRouter {
       return Object.freeze({ started: Object.freeze([]) });
     }
     if (!isFall) this.shouldStartEpisode(
-      accountId, 'fall_detection', envelope.sourceDeviceRef, false, envelope.observedAtMs, this.fallEpisodeCooldownMs
+      accountId, 'fall_detection', `home_robot:${envelope.sourceDeviceRef}`,
+      false, envelope.observedAtMs, this.fallEpisodeCooldownMs
     );
+    if (envelope.inference.voice.intent === 'cancel') {
+      // Local speech inference is not sufficient authority to suppress a
+      // life-safety flow. A simultaneous authenticated fall always wins; only
+      // a non-fall frame can request later app/caregiver confirmation.
+      return Object.freeze({ started: Object.freeze([]), cancellationRequested: true });
+    }
     if (envelope.inference.voice.intent === 'request_help'
       && envelope.inference.voice.confidence >= this.helpConfidenceThreshold) {
       const started = await this.startEpisode(
         accountId, 'ai_angel_auto_dial', 'robot_help_request', envelope.observedAtMs,
-        envelope.sourceDeviceRef, envelope.sequence, binding.targets, commonInput,
+        envelope.sourceDeviceRef, `home_robot:${envelope.sourceDeviceRef}`,
+        envelope.sequence, binding.targets, commonInput,
         this.helpEpisodeCooldownMs
       );
       if (started) {
@@ -603,7 +611,7 @@ export class EdgeScenarioRouter {
     this.shouldStartEpisode(
       accountId,
       'ai_angel_auto_dial',
-      envelope.sourceDeviceRef,
+      `home_robot:${envelope.sourceDeviceRef}`,
       false,
       envelope.observedAtMs,
       this.helpEpisodeCooldownMs
@@ -671,6 +679,7 @@ export class EdgeScenarioRouter {
     triggerType: string,
     occurredAt: number,
     sourceRef: string,
+    episodeSourceRef: string,
     sequence: number,
     devices: ScenarioDeviceTargets,
     input: Readonly<Record<string, ScenarioJson>>,
@@ -686,7 +695,7 @@ export class EdgeScenarioRouter {
       }
       : undefined;
     const admitted = this.shouldStartEpisode(
-      accountId, scenarioId, sourceRef, true, occurredAt, cooldownMs
+      accountId, scenarioId, episodeSourceRef, true, occurredAt, cooldownMs
     );
     // Every continuing positive source must be registered even while another
     // source owns admission. Otherwise a later negative from the first source
@@ -915,11 +924,15 @@ export class EdgeScenarioRouter {
             code: 'TELEMETRY_STATE_PERSIST_FAILED'
           }));
         }, this.telemetryPersistenceTimeoutMs);
-        timeout.unref?.();
       });
       await Promise.race([operation(controller.signal), timeoutPromise]);
     } catch {
-      this.options.onTelemetryPersistenceFailure?.('TELEMETRY_STATE_PERSIST_FAILED');
+      try {
+        this.options.onTelemetryPersistenceFailure?.('TELEMETRY_STATE_PERSIST_FAILED');
+      } catch {
+        // Observability is best effort. A broken metric/log callback must not
+        // suppress an otherwise authenticated life-safety inference.
+      }
     } finally {
       if (timeout) clearTimeout(timeout);
     }

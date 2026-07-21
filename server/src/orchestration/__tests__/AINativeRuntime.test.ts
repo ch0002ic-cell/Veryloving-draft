@@ -95,6 +95,38 @@ describe('AI-native runtime composition', () => {
     expect(provider).not.toHaveBeenCalled();
   });
 
+  it('does not let an abort-ignoring provider block account deletion', async () => {
+    const lifecycle = new AINativeAccountLifecycle();
+    const repository = new InMemoryCiphertextRepository();
+    const userState = new UserStateModel({ repository, encryptionKey: ENCRYPTION_KEY });
+    const memoryNet = new MemoryNet({ repository, encryptionKey: ENCRYPTION_KEY });
+    let providerStarted!: () => void;
+    const started = new Promise<void>((resolve) => { providerStarted = resolve; });
+    const pending = lifecycle.run('account-stuck-provider', undefined, async () => {
+      providerStarted();
+      return new Promise<never>(() => undefined);
+    });
+    await started;
+
+    const deletion = lifecycle.deleteAccountData('account-stuck-provider', {
+      actionGateway: {
+        route: async () => undefined,
+        waitForActionOutcome: async () => undefined,
+        fenceUserActions: async () => undefined
+      },
+      scenarioEngine: { deleteAccountData: async () => 0 },
+      userState,
+      memoryNet,
+      deleteExternalProviderData: async () => undefined
+    });
+
+    await expect(Promise.race([
+      deletion,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('deletion timed out')), 250))
+    ])).resolves.toMatchObject({ externalProviderDataDeleted: true });
+    await expect(pending).rejects.toMatchObject({ code: 'ACCOUNT_DATA_DELETED' });
+  });
+
   it('sends only bounded summaries—not device IDs or precise coordinates—to Hume', async () => {
     const repository = new InMemoryCiphertextRepository();
     const userState = new UserStateModel({ repository, encryptionKey: ENCRYPTION_KEY });

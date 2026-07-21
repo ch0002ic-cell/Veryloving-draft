@@ -1,7 +1,9 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { EventEmitter } = require('node:events');
 const http = require('node:http');
+const { Readable } = require('node:stream');
 const { test } = require('node:test');
 
 const {
@@ -103,7 +105,7 @@ function createRuntimeEnvironment(manufacturerUrl) {
 }
 
 function createCaptureResponse() {
-  return {
+  return Object.assign(new EventEmitter(), {
     destroyed: false,
     writableEnded: false,
     statusCode: undefined,
@@ -117,7 +119,16 @@ function createCaptureResponse() {
       this.writableEnded = true;
       this.body = body ? JSON.parse(Buffer.from(body).toString('utf8')) : undefined;
     }
-  };
+  });
+}
+
+function createJsonRequest(pathname, body) {
+  const request = Readable.from([Buffer.from(JSON.stringify(body))]);
+  request.method = 'POST';
+  request.url = pathname;
+  request.headers = { 'content-type': 'application/json' };
+  request.socket = { remoteAddress: '127.0.0.1' };
+  return request;
 }
 
 test('AI-native demo is disabled without changing the legacy entrypoint configuration', () => {
@@ -140,7 +151,7 @@ test('AI-native demo accepts only credential-free loopback manufacturer URLs', (
   assert.throws(() => parseLoopbackMockURL('http://user:secret@127.0.0.1:3001'), /credential-free/);
 });
 
-test('AI-native demo rejects an incrementally oversized manufacturer response', async (context) => {
+test('AI-native demo contains an incrementally oversized best-effort manufacturer response', async (context) => {
   const manufacturer = http.createServer((_request, response) => {
     response.writeHead(200, { 'Content-Type': 'application/json' });
     for (let index = 0; index < 70; index += 1) response.write('x'.repeat(1024));
@@ -174,11 +185,69 @@ test('AI-native demo rejects an incrementally oversized manufacturer response', 
       deviceId: 'wearable-1'
     })
   });
-  assert.equal(response.status, 502);
-  assert.deepEqual(await response.json(), {
-    error: 'AI-native demo scenario failed',
-    code: 'MOCK_RESPONSE_TOO_LARGE'
+  assert.equal(response.status, 202);
+  assert.equal((await response.json()).status, 'started');
+  await runtime.close();
+});
+
+test('AI-native demo admits scenarios before a manufacturer transport that ignores AbortSignal', async () => {
+  const runtime = createAINativeDemoRuntime({
+    env: createRuntimeEnvironment('http://127.0.0.1:9'),
+    mockRequestTimeoutMs: 10,
+    fetchImpl: () => new Promise(() => {}),
+    logger: { error() {} }
   });
+  const response = createCaptureResponse();
+  const request = createJsonRequest('/v1/scenarios', {
+    scenarioId: 'fall-detection',
+    userId: 'test-user-1',
+    deviceId: 'wearable-1'
+  });
+
+  await Promise.race([
+    runtime.wrapHandler(() => assert.fail('scenario route fell through'))(request, response),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('request did not time out')), 500))
+  ]);
+
+  assert.equal(response.statusCode, 202);
+  assert.equal(response.body.status, 'started');
+  await runtime.close();
+});
+
+test('AI-native demo cancels a stalled best-effort manufacturer response after admission', async () => {
+  let readerCancels = 0;
+  const runtime = createAINativeDemoRuntime({
+    env: createRuntimeEnvironment('http://127.0.0.1:9'),
+    mockRequestTimeoutMs: 10,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader() {
+          return {
+            async read() { return new Promise(() => {}); },
+            async cancel() { readerCancels += 1; },
+            releaseLock() {}
+          };
+        },
+        async cancel() {}
+      }
+    }),
+    logger: { error() {} }
+  });
+  const response = createCaptureResponse();
+  const request = createJsonRequest('/v1/scenarios', {
+    scenarioId: 'fall-detection',
+    userId: 'test-user-1',
+    deviceId: 'wearable-1'
+  });
+
+  await runtime.wrapHandler(() => assert.fail('scenario route fell through'))(request, response);
+  assert.equal(response.statusCode, 202);
+  await runtime.close();
+  assert.ok(readerCancels >= 3);
+  assert.ok(readerCancels <= 9);
 });
 
 test('AI-native demo shutdown aborts stalled manufacturer work and drains promptly', async (context) => {
@@ -220,11 +289,8 @@ test('AI-native demo shutdown aborts stalled manufacturer work and drains prompt
     new Promise((_, reject) => setTimeout(() => reject(new Error('shutdown did not drain')), 500))
   ]);
   const response = await scenarioRequest;
-  assert.equal(response.status, 503);
-  assert.deepEqual(await response.json(), {
-    error: 'AI-native demo scenario failed',
-    code: 'DEMO_SHUTTING_DOWN'
-  });
+  assert.equal(response.status, 202);
+  assert.equal((await response.json()).status, 'started');
 });
 
 test('exact local fall-detection curl starts the injected system and drives the mock backend', async (context) => {
@@ -294,6 +360,113 @@ test('exact local fall-detection curl starts the injected system and drives the 
     .map((entry) => entry.body.status);
   assert.deepEqual(lifecycles, ['started', 'completed']);
   assert.deepEqual(logErrors, []);
+});
+
+test('scenario Idempotency-Key deduplicates concurrent retries and rejects payload reuse', async (context) => {
+  const manufacturer = createManufacturerProbe();
+  const manufacturerUrl = await listen(manufacturer.server);
+  context.after(() => close(manufacturer.server));
+  const runtime = createAINativeDemoRuntime({
+    env: createRuntimeEnvironment(manufacturerUrl),
+    logger: { error() {} }
+  });
+  const appServer = http.createServer(runtime.wrapHandler((_request, response) => {
+    sendJson(response, 404, { error: 'NOT_FOUND' });
+  }));
+  const appUrl = await listen(appServer);
+  context.after(async () => {
+    await runtime.close();
+    await close(appServer);
+  });
+  const body = {
+    scenarioId: 'medication-adherence',
+    userId: 'test-user-1',
+    deviceId: 'wearable-idempotent-1',
+    robotDeviceId: 'robot-idempotent-1',
+    occurredAt: Date.now()
+  };
+  const send = (requestBody) => fetch(`${appUrl}/v1/scenarios`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'dashboard-click-idempotent-001'
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  const [first, duplicate] = await Promise.all([send(body), send(body)]);
+  assert.equal(first.status, 202);
+  assert.equal(duplicate.status, 202);
+  const firstPayload = await first.json();
+  assert.deepEqual(await duplicate.json(), firstPayload);
+
+  const conflict = await send({ ...body, robotDeviceId: 'robot-idempotent-2' });
+  assert.equal(conflict.status, 409);
+  assert.equal((await conflict.json()).code, 'IDEMPOTENCY_CONFLICT');
+
+  await runtime.close();
+  const mirrored = manufacturer.requests.filter((entry) => (
+    entry.path === '/api/v1/simulation/events'
+  ));
+  assert.equal(mirrored.length, 2);
+  assert.ok(mirrored.every((entry) => typeof entry.idempotencyKey === 'string'));
+  const lifecycles = manufacturer.requests.filter((entry) => (
+    entry.path === '/api/v1/simulation/scenarios'
+  ));
+  assert.equal(lifecycles.length, 2);
+  assert.ok(lifecycles.every((entry) => typeof entry.idempotencyKey === 'string'));
+});
+
+test('scenario admission survives simulator mirroring failure and response disconnect', async (context) => {
+  let commandSequence = 0;
+  const manufacturer = http.createServer(async (request, response) => {
+    const body = await readBody(request);
+    if (request.url === '/api/v1/authenticate') {
+      sendJson(response, 200, { access_token: ACCESS_TOKEN });
+      return;
+    }
+    if (request.url === '/api/v1/simulation/events') {
+      sendJson(response, 500, { error: 'SIMULATED_MIRROR_FAILURE' });
+      return;
+    }
+    if (request.url === '/api/v1/command') {
+      commandSequence += 1;
+      sendJson(response, 202, { success: true, command_id: `command-${commandSequence}` });
+      return;
+    }
+    if (request.url === '/api/v1/simulation/scenarios') {
+      sendJson(response, 201, { accepted: true });
+      return;
+    }
+    assert.ok(body);
+    sendJson(response, 404, { error: 'NOT_FOUND' });
+  });
+  const manufacturerUrl = await listen(manufacturer);
+  context.after(() => close(manufacturer));
+  const runtime = createAINativeDemoRuntime({
+    env: createRuntimeEnvironment(manufacturerUrl),
+    logger: { error() {} }
+  });
+  const request = createJsonRequest('/v1/scenarios', {
+    scenarioId: 'medication-adherence',
+    userId: 'test-user-1',
+    deviceId: 'wearable-disconnected-1',
+    occurredAt: Date.now()
+  });
+  request.headers['idempotency-key'] = 'disconnected-after-admission-001';
+  const response = createCaptureResponse();
+  const handling = runtime.wrapHandler(() => assert.fail('scenario route fell through'))(
+    request,
+    response
+  );
+  response.destroyed = true;
+  response.emit('close');
+  await handling;
+
+  const executions = await runtime.system.scenarioEngine.listExecutions('test-user-1', 10);
+  assert.equal(executions.length, 1);
+  assert.equal(executions[0].scenarioId, 'medication_adherence');
+  await runtime.close();
 });
 
 test('all dashboard scenarios use the real router paths and expose sanitized executions', async (context) => {
@@ -426,6 +599,7 @@ test('dashboard CORS, strict request validation, and loopback locality are enfor
   assert.equal(preflight.status, 204);
   assert.equal(preflight.headers.get('access-control-allow-origin'), manufacturerUrl);
   assert.match(preflight.headers.get('access-control-allow-methods'), /POST/);
+  assert.match(preflight.headers.get('access-control-allow-headers'), /Idempotency-Key/);
   const alternateDashboardOrigin = manufacturerUrl.replace('127.0.0.1', 'localhost');
   const alternatePreflight = await fetch(`${appUrl}/v1/scenarios/executions`, {
     method: 'OPTIONS',
@@ -474,6 +648,21 @@ test('dashboard CORS, strict request validation, and loopback locality are enfor
     })
   });
   assert.equal(invalidMediaType.status, 415);
+
+  const invalidIdempotencyKey = await fetch(`${appUrl}/v1/scenarios`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'spaces are rejected'
+    },
+    body: JSON.stringify({
+      scenarioId: 'fall-detection',
+      userId: 'test-user-1',
+      deviceId: 'wearable-1'
+    })
+  });
+  assert.equal(invalidIdempotencyKey.status, 400);
+  assert.equal((await invalidIdempotencyKey.json()).code, 'IDEMPOTENCY_KEY_INVALID');
 
   const duplicateQuery = await fetch(
     `${appUrl}/v1/scenarios/executions?userId=test-user-1&userId=test-user-1`

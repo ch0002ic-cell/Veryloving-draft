@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const { createManufacturerPrivacyDeletionCoordinator } = require('./manufacturer-privacy-deletion.cjs');
+const { readBoundedResponseText: readBoundedProviderResponseText } = require('./bounded-response.cjs');
 
 const MAX_MANUFACTURER_RESPONSE_BYTES = 1024 * 1024;
 const INDOOR_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
@@ -62,34 +63,26 @@ async function manufacturerRequest({ fetchImpl, url, init, timeoutMs, consume })
 }
 
 async function readBoundedResponseText(response, context, signal) {
-  const contentLength = Number(response.headers?.get?.('content-length'));
-  if (Number.isFinite(contentLength) && contentLength > MAX_MANUFACTURER_RESPONSE_BYTES) {
+  const contentLengthHeader = response.headers?.get?.('content-length');
+  const hasBoundedContentLength = typeof contentLengthHeader === 'string'
+    && /^\d{1,12}$/.test(contentLengthHeader);
+  const contentLength = hasBoundedContentLength ? Number(contentLengthHeader) : undefined;
+  if (contentLength !== undefined && contentLength > MAX_MANUFACTURER_RESPONSE_BYTES) {
     await cancelManufacturerResponse(response);
     throw new Error(`${context} response is too large`);
   }
-  if (response.body?.getReader) {
-    const reader = response.body.getReader();
-    const cancelOnAbort = () => { void reader.cancel().catch(() => {}); };
-    if (signal?.aborted) cancelOnAbort();
-    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
-    const chunks = [];
-    let received = 0;
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        received += value?.byteLength || 0;
-        if (received > MAX_MANUFACTURER_RESPONSE_BYTES) {
-          await reader.cancel().catch(() => {});
-          throw new Error(`${context} response is too large`);
-        }
-        chunks.push(Buffer.from(value));
-      }
-    } finally {
-      signal?.removeEventListener('abort', cancelOnAbort);
-      reader.releaseLock?.();
-    }
-    return Buffer.concat(chunks, received).toString('utf8');
+  if (response.body?.getReader) return readBoundedProviderResponseText(response, {
+    context,
+    maxBytes: MAX_MANUFACTURER_RESPONSE_BYTES,
+    signal
+  });
+  // A non-streaming response materializes its complete body inside text/json
+  // before this client can inspect its size. Require an advertised bound before
+  // invoking those fallbacks; standards-compliant Node fetch responses use the
+  // streaming branch above.
+  if (contentLength === undefined) {
+    await cancelManufacturerResponse(response);
+    throw new Error(`${context} response cannot be read within the configured limit`);
   }
   let text;
   if (typeof response.text === 'function') text = await response.text();
@@ -117,8 +110,12 @@ async function readBoundedObjectResponse(response, context, signal) {
 }
 
 async function requireSynchronousCompletion(response, context, signal) {
-  if (response.status === 204) return { completed: true };
+  if (response.status === 204) {
+    await cancelManufacturerResponse(response);
+    return { completed: true };
+  }
   if (!response.ok || response.status !== 200) {
+    await cancelManufacturerResponse(response);
     throw new Error(`${context} returned ${response.status}`);
   }
   const payload = await readBoundedObjectResponse(response, context, signal);
@@ -253,14 +250,21 @@ function createManufacturerPairingVerifier({
         })
       },
       consume: async (response, signal) => {
-        if (response.status === 404) return null;
+        if (response.status === 404) {
+          await cancelManufacturerResponse(response);
+          return null;
+        }
         if (response.status === 409 || response.status === 410) {
+          await cancelManufacturerResponse(response);
           const replay = new Error('Manufacturer pairing claim has already been used');
           replay.statusCode = 410;
           replay.code = 'ROBOT_PAIRING_REPLAY';
           throw replay;
         }
-        if (!response.ok) throw new Error(`Manufacturer pairing service returned ${response.status}`);
+        if (!response.ok || response.status !== 200) {
+          await cancelManufacturerResponse(response);
+          throw new Error(`Manufacturer pairing service returned ${response.status}`);
+        }
         const body = await readBoundedObjectResponse(response, 'Manufacturer pairing service', signal);
         if (body.claim_id !== claimId) {
           throw new Error('Manufacturer pairing service returned an uncorrelated claim');
@@ -300,6 +304,9 @@ function createManufacturerRobotStatusClient({
     throw new Error('Manufacturer status freshness configuration is invalid');
   }
   return async function getRobotStatus(robotId) {
+    if (!MANUFACTURER_DEVICE_ID_PATTERN.test(robotId || '')) {
+      throw new Error('Manufacturer device id is invalid');
+    }
     return manufacturerRequest({
       fetchImpl,
       url,
@@ -310,8 +317,14 @@ function createManufacturerRobotStatusClient({
         body: JSON.stringify({ robot_id: robotId })
       },
       consume: async (response, signal) => {
-        if (response.status === 404) return { online: false, hardware_status: 'offline' };
-        if (!response.ok) throw new Error(`Manufacturer status service returned ${response.status}`);
+        if (response.status === 404) {
+          await cancelManufacturerResponse(response);
+          return { online: false, hardware_status: 'offline' };
+        }
+        if (!response.ok || response.status !== 200) {
+          await cancelManufacturerResponse(response);
+          throw new Error(`Manufacturer status service returned ${response.status}`);
+        }
         const body = await readBoundedObjectResponse(response, 'Manufacturer status service', signal);
         const observedNow = now();
         if (!Number.isSafeInteger(observedNow) || observedNow <= 0) {
@@ -413,6 +426,7 @@ function createManufacturerRobotResetClient({ url, apiKey, fetchImpl = globalThi
         // local unbinding. The bridge must prove that this exact binding epoch
         // was erased and fenced under the caller's stable reset identity.
         if (!response.ok || response.status !== 200) {
+          await cancelManufacturerResponse(response);
           throw new Error(`Manufacturer reset service returned ${response.status}`);
         }
         const payload = await readBoundedObjectResponse(response, 'Manufacturer reset service', signal);
@@ -472,10 +486,14 @@ function createManufacturerPrivacyClient({
         if (operation === 'deletion') {
           return requireSynchronousCompletion(response, 'Manufacturer privacy deletion', signal);
         }
-        if (!response.ok) {
+        if (!response.ok || (response.status !== 200 && response.status !== 204)) {
+          await cancelManufacturerResponse(response);
           throw new Error(`Manufacturer privacy ${operation} returned ${response.status}`);
         }
-        if (response.status === 204) return { completed: true };
+        if (response.status === 204) {
+          await cancelManufacturerResponse(response);
+          return { completed: true };
+        }
         const text = await readBoundedResponseText(response, 'Manufacturer privacy', signal);
         if (!text) return { completed: true };
         let payload;

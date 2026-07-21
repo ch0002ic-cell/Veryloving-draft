@@ -383,7 +383,9 @@ main{max-width:1180px;margin:0 auto;padding:24px 22px 50px}.metrics{display:grid
   var dashboardUserId=${JSON.stringify(dashboardUserId)};
   var snapshot={devices:[],scenarioExecutions:[],lastEvents:[],generatedAt:0};
   var realExecutions=[];
+  var clickSequence=0;
   var refreshTimer;
+  var refreshPromise=null;
   var names={'fall-detection':'Fall response','fall_detection':'Fall response','medication-adherence':'Medication adherence','medication_adherence':'Medication adherence','emotional-check-in':'Emotional check-in','emotional_check_in':'Emotional check-in','cognitive-engagement':'Cognitive engagement','cognitive_engagement':'Cognitive engagement','ai-angel-auto-dial':'AI Angel auto-dial','ai_angel_auto_dial':'AI Angel auto-dial'};
   function el(tag,className,text){var node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=String(text);return node}
   function time(value){var date=new Date(Number(value));return Number.isFinite(date.getTime())?date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—'}
@@ -397,9 +399,11 @@ main{max-width:1180px;margin:0 auto;padding:24px 22px 50px}.metrics{display:grid
   function renderMetrics(){var devices=Array.isArray(snapshot.devices)?snapshot.devices:[];document.getElementById('online-count').textContent=devices.filter(function(x){return x.online}).length+' / '+devices.length;var all=realExecutions.concat(Array.isArray(snapshot.scenarioExecutions)?snapshot.scenarioExecutions:[]);document.getElementById('active-count').textContent=String(all.filter(function(x){return ['started','queued','running'].includes(x.status||x.state)}).length);document.getElementById('event-count').textContent=String(Array.isArray(snapshot.lastEvents)?snapshot.lastEvents.length:0);document.getElementById('updated-at').textContent=time(snapshot.generatedAt)}
   function render(){renderDevices();renderScenarios();renderEvents();renderMetrics()}
   function connection(connected){document.getElementById('stream-dot').className='dot'+(connected?' connected':'');document.getElementById('stream-status').textContent=connected?'Live':'Reconnecting'}
-  async function post(path,body){var response=await fetch(path,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)});var payload;try{payload=await response.json()}catch(_error){payload={error:'INVALID_RESPONSE'}}if(!response.ok){throw new Error(String(payload.error||'REQUEST_FAILED'))}return payload}
-  async function refreshReal(){try{var payload=await post('/api/v1/simulation/executions',{userId:dashboardUserId});realExecutions=normalizeExecutions(payload);renderScenarios();renderMetrics()}catch(_error){realExecutions=[];renderScenarios();renderMetrics()}}
-  document.getElementById('scenario-buttons').addEventListener('click',async function(event){var button=event.target.closest('button[data-scenario]');if(!button)return;var result=document.getElementById('trigger-result');button.disabled=true;result.className='result visible';result.textContent='Starting '+label(button.dataset.scenario)+'…';try{var payload=await post('/api/v1/simulation/trigger',{scenarioId:button.dataset.scenario,userId:dashboardUserId,deviceId:'wearable-1',robotDeviceId:'home-robot-1',occurredAt:Date.now()});var upstream=payload.response||payload;result.textContent='Started '+label(button.dataset.scenario)+(upstream.executionId?' · '+shortRef(upstream.executionId):'');await refreshReal()}catch(error){result.className='result visible error';result.textContent='Could not start scenario: '+String(error.message||'REQUEST_FAILED')}finally{button.disabled=false}});
+  async function post(path,body,idempotencyKey){var controller=new AbortController();var timer=setTimeout(function(){controller.abort()},8000);try{var headers={'Content-Type':'application/json','Accept':'application/json'};if(idempotencyKey)headers['Idempotency-Key']=idempotencyKey;var response=await fetch(path,{method:'POST',credentials:'same-origin',redirect:'error',headers:headers,body:JSON.stringify(body),signal:controller.signal});var text=await response.text();if(text.length>65536)throw new Error('RESPONSE_TOO_LARGE');var payload;try{payload=text?JSON.parse(text):{}}catch(_error){payload={error:'INVALID_RESPONSE'}}if(!response.ok){throw new Error(String(payload.error||'REQUEST_FAILED'))}return payload}finally{clearTimeout(timer)}}
+  function requestKey(scenario){if(globalThis.crypto&&typeof globalThis.crypto.randomUUID==='function')return 'dashboard-'+globalThis.crypto.randomUUID();clickSequence+=1;return 'dashboard-'+scenario+'-'+Date.now()+'-'+clickSequence}
+  function refreshReal(){if(refreshPromise)return refreshPromise;refreshPromise=(async function(){try{var payload=await post('/api/v1/simulation/executions',{userId:dashboardUserId});realExecutions=normalizeExecutions(payload);renderScenarios();renderMetrics()}catch(_error){realExecutions=[];renderScenarios();renderMetrics()}finally{refreshPromise=null}})();return refreshPromise}
+  async function refreshAfterMutation(){var joined=refreshPromise!==null;await refreshReal();if(joined)await refreshReal()}
+  document.getElementById('scenario-buttons').addEventListener('click',async function(event){var button=event.target.closest('button[data-scenario]');if(!button)return;var result=document.getElementById('trigger-result');var idempotencyKey=requestKey(button.dataset.scenario);button.disabled=true;result.className='result visible';result.textContent='Starting '+label(button.dataset.scenario)+'…';try{var payload=await post('/api/v1/simulation/trigger',{scenarioId:button.dataset.scenario,userId:dashboardUserId,deviceId:'wearable-1',robotDeviceId:'home-robot-1',occurredAt:Date.now()},idempotencyKey);var upstream=payload.response||payload;result.textContent='Started '+label(button.dataset.scenario)+(upstream.executionId?' · '+shortRef(upstream.executionId):'');await refreshAfterMutation()}catch(error){result.className='result visible error';result.textContent='Could not start scenario: '+String(error.message||'REQUEST_FAILED')}finally{button.disabled=false}});
   var stream=new EventSource('/api/v1/simulation/dashboard/events',{withCredentials:true});stream.addEventListener('dashboard',function(event){try{snapshot=JSON.parse(event.data);render();connection(true)}catch(_error){connection(false)}});stream.onopen=function(){connection(true)};stream.onerror=function(){connection(false)};
   refreshReal();refreshTimer=setInterval(refreshReal,3000);window.addEventListener('beforeunload',function(){clearInterval(refreshTimer);stream.close()},{once:true});
 }());
@@ -593,11 +597,15 @@ export class ManufacturerMockServer {
   private readonly sockets = new Set<Socket>();
   private readonly telemetryIntervals = new Set<NodeJS.Timeout>();
   private readonly dashboardStreams = new Set<ServerResponse>();
+  private readonly pendingRequests = new Set<Promise<void>>();
+  private readonly pendingMainServerRequests = new Set<Promise<unknown>>();
   private readonly mainServerControllers = new Set<AbortController>();
+  private readonly mainServerTimeouts = new Set<NodeJS.Timeout>();
   private readonly pendingDelays = new Map<NodeJS.Timeout, () => void>();
   private readonly pendingAsyncAckTimers = new Set<NodeJS.Timeout>();
   private readonly pendingAsyncAcks = new Set<Promise<void>>();
   private readonly asyncAckControllers = new Set<AbortController>();
+  private readonly asyncAckTimeouts = new Set<NodeJS.Timeout>();
   private readonly queueTails = new Map<string, Promise<void>>();
   private readonly queueDepths = new Map<string, number>();
   private readonly commands: ManufacturerMockCommandRecord[] = [];
@@ -611,6 +619,7 @@ export class ManufacturerMockServer {
   private commandSequence = 0;
   private simulationEventSequence = 0;
   private scenarioExecutionSequence = 0;
+  private lifecycleGeneration = 0;
   private activeRequests = 0;
   private activeTelemetryStreams = 0;
   private queuedCommandsTotal = 0;
@@ -837,7 +846,12 @@ export class ManufacturerMockServer {
     this.logSink = options.log ?? ((entry) => process.stdout.write(`${JSON.stringify(entry)}\n`));
 
     this.server = createServer((request, response) => {
-      void this.handleRequest(request, response);
+      const pending = this.handleRequest(request, response);
+      this.pendingRequests.add(pending);
+      void pending.then(
+        () => this.pendingRequests.delete(pending),
+        () => this.pendingRequests.delete(pending)
+      );
     });
     const transportTimeoutMs = Math.min(120_000, this.requestTimeoutMs + 1_000);
     this.server.maxConnections = this.maxConnections;
@@ -987,7 +1001,8 @@ export class ManufacturerMockServer {
       for (const response of this.dashboardStreams) response.destroy();
       this.dashboardStreams.clear();
       for (const controller of this.mainServerControllers) controller.abort();
-      this.mainServerControllers.clear();
+      for (const timeout of this.mainServerTimeouts) clearTimeout(timeout);
+      this.mainServerTimeouts.clear();
       for (const [timeout, release] of this.pendingDelays) {
         clearTimeout(timeout);
         release();
@@ -996,12 +1011,28 @@ export class ManufacturerMockServer {
       for (const timeout of this.pendingAsyncAckTimers) clearTimeout(timeout);
       this.pendingAsyncAckTimers.clear();
       for (const controller of this.asyncAckControllers) controller.abort();
+      for (const timeout of this.asyncAckTimeouts) clearTimeout(timeout);
+      this.asyncAckTimeouts.clear();
       await new Promise<void>((resolve) => {
         this.server.close(() => resolve());
         this.server.closeAllConnections?.();
         for (const socket of this.sockets) socket.destroy();
       });
-      await Promise.allSettled([...this.pendingAsyncAcks]);
+      let drainTimeout: NodeJS.Timeout | undefined;
+      try {
+        await Promise.race([
+          Promise.allSettled([
+            ...this.pendingRequests,
+            ...this.pendingMainServerRequests,
+            ...this.pendingAsyncAcks
+          ]),
+          new Promise<void>((resolve) => {
+            drainTimeout = setTimeout(resolve, Math.min(2_000, this.asyncAckTimeoutMs));
+          })
+        ]);
+      } finally {
+        if (drainTimeout) clearTimeout(drainTimeout);
+      }
     })().finally(() => {
       this.startedAddress = undefined;
       this.stoppingPromise = undefined;
@@ -1012,15 +1043,20 @@ export class ManufacturerMockServer {
       this.simulationEvents.length = 0;
       this.scenarioExecutions.length = 0;
       this.queuedCommandsTotal = 0;
+      this.activeRequests = 0;
       this.activeTelemetryStreams = 0;
       this.pendingAsyncAcks.clear();
+      this.pendingRequests.clear();
+      this.pendingMainServerRequests.clear();
       this.asyncAckControllers.clear();
       this.mainServerControllers.clear();
+      this.lifecycleGeneration += 1;
     });
     return this.stoppingPromise;
   }
 
   private async handleRequest(request: IncomingMessage, response: ServerResponse): Promise<void> {
+    const requestGeneration = this.lifecycleGeneration;
     const startedAt = this.now();
     const requestId = `mock-request-${++this.requestSequence}`;
     let route = 'unknown';
@@ -1067,9 +1103,11 @@ export class ManufacturerMockServer {
         this.requireDashboardMutationAccess(request);
         const body = await this.readJson(request);
         const scenario = this.parseDashboardScenarioRequest(body);
+        const idempotencyKey = this.readOptionalIdempotencyKey(request);
         const upstream = await this.requestMainServer('/v1/scenarios', {
           method: 'POST',
-          body: scenario
+          body: scenario,
+          idempotencyKey
         });
         writeJson(response, upstream.statusCode, {
           upstreamStatus: upstream.statusCode,
@@ -1097,9 +1135,21 @@ export class ManufacturerMockServer {
         this.requireBearer(request, this.accessToken);
         const body = await this.readJson(request);
         deviceId = requiredIdentifier(body.device_id, 'device_id');
+        const idempotencyKey = this.readOptionalIdempotencyKey(request);
         await this.simulateTransport();
+        const replay = idempotencyKey
+          ? this.replayMutation(`simulation-event\0${idempotencyKey}`, body)
+          : undefined;
+        if (replay) {
+          writeJson(response, 201, replay);
+          return;
+        }
         const event = this.injectSimulationEvent(body, deviceId);
-        writeJson(response, 201, { accepted: true, event });
+        const payload = { accepted: true, event };
+        if (idempotencyKey) {
+          this.rememberMutation(`simulation-event\0${idempotencyKey}`, body, payload);
+        }
+        writeJson(response, 201, payload);
         return;
       }
 
@@ -1108,9 +1158,21 @@ export class ManufacturerMockServer {
         this.requireBearer(request, this.accessToken);
         const body = await this.readJson(request);
         const input = this.parseScenarioExecutionRequest(body);
+        const idempotencyKey = this.readOptionalIdempotencyKey(request);
         await this.simulateTransport();
+        const replay = idempotencyKey
+          ? this.replayMutation(`simulation-scenario\0${idempotencyKey}`, body)
+          : undefined;
+        if (replay) {
+          writeJson(response, 201, replay);
+          return;
+        }
         const scenario = this.recordScenarioExecution(input);
-        writeJson(response, 201, { accepted: true, scenario });
+        const payload = { accepted: true, scenario };
+        if (idempotencyKey) {
+          this.rememberMutation(`simulation-scenario\0${idempotencyKey}`, body, payload);
+        }
+        writeJson(response, 201, payload);
         return;
       }
 
@@ -1237,7 +1299,9 @@ export class ManufacturerMockServer {
         else writeJson(response, 500, { error: 'MOCK_SERVER_ERROR' });
       }
     } finally {
-      if (admitted) this.activeRequests -= 1;
+      if (admitted && requestGeneration === this.lifecycleGeneration) {
+        this.activeRequests = Math.max(0, this.activeRequests - 1);
+      }
       const elapsed = Math.max(0, Math.round(this.now() - startedAt));
       const entry = Object.freeze({
         event: 'manufacturer_mock.request' as const,
@@ -1463,7 +1527,7 @@ export class ManufacturerMockServer {
     return body.userId;
   }
 
-  private async readMainServerJson(response: Response): Promise<JsonObject> {
+  private async readMainServerJson(response: Response, signal?: AbortSignal): Promise<JsonObject> {
     const advertised = response.headers.get('content-length');
     if (advertised && /^\d{1,12}$/.test(advertised)
       && Number(advertised) > this.maxMainServerResponseBytes) {
@@ -1474,9 +1538,21 @@ export class ManufacturerMockServer {
     const reader = response.body.getReader();
     const chunks: Buffer[] = [];
     let total = 0;
+    const cancelOnAbort = (): void => { void Promise.resolve(reader.cancel()).catch(() => undefined); };
+    const abortFailure = signal
+      ? new Promise<never>((_resolve, reject) => {
+        const rejectAbort = (): void => reject(new MockRequestError(504, 'MAIN_SERVER_TIMEOUT'));
+        if (signal.aborted) rejectAbort();
+        else signal.addEventListener('abort', rejectAbort, { once: true });
+      })
+      : undefined;
+    if (signal?.aborted) cancelOnAbort();
+    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
     try {
       while (true) {
-        const chunk = await reader.read();
+        const read = reader.read();
+        void read.catch(() => undefined);
+        const chunk = abortFailure ? await Promise.race([read, abortFailure]) : await read;
         if (chunk.done) break;
         total += chunk.value.byteLength;
         if (total > this.maxMainServerResponseBytes) {
@@ -1486,6 +1562,7 @@ export class ManufacturerMockServer {
         chunks.push(Buffer.from(chunk.value));
       }
     } finally {
+      signal?.removeEventListener('abort', cancelOnAbort);
       try { reader.releaseLock(); } catch {}
     }
     let parsed: unknown;
@@ -1500,55 +1577,97 @@ export class ManufacturerMockServer {
 
   private async requestMainServer(
     pathname: string,
-    input: { readonly method: 'GET' | 'POST'; readonly body?: JsonObject }
+    input: {
+      readonly method: 'GET' | 'POST';
+      readonly body?: JsonObject;
+      readonly idempotencyKey?: string;
+    }
   ): Promise<{ readonly statusCode: number; readonly payload: JsonObject }> {
     const controller = new AbortController();
     this.mainServerControllers.add(controller);
-    const timeout = setTimeout(() => controller.abort(), this.mainServerTimeoutMs);
-    timeout.unref?.();
-    try {
-      let response: Response;
+    let response: Response | undefined;
+    let timedOut = false;
+    let timeout: NodeJS.Timeout | undefined;
+    const timeoutError = (): MockRequestError => new MockRequestError(504, 'MAIN_SERVER_TIMEOUT');
+    const operation = (async (): Promise<{ readonly statusCode: number; readonly payload: JsonObject }> => {
       try {
         response = await fetch(new URL(pathname, this.mainServerUrl), {
           method: input.method,
           redirect: 'error',
           headers: {
             Accept: 'application/json',
-            ...(input.body ? { 'Content-Type': 'application/json' } : {})
+            ...(input.body ? { 'Content-Type': 'application/json' } : {}),
+            ...(input.idempotencyKey ? { 'Idempotency-Key': input.idempotencyKey } : {})
           },
           ...(input.body ? { body: JSON.stringify(input.body) } : {}),
           signal: controller.signal
         });
       } catch {
-        throw new MockRequestError(
-          controller.signal.aborted ? 504 : 502,
-          controller.signal.aborted ? 'MAIN_SERVER_TIMEOUT' : 'MAIN_SERVER_UNAVAILABLE'
-        );
+        throw timedOut || controller.signal.aborted
+          ? timeoutError()
+          : new MockRequestError(502, 'MAIN_SERVER_UNAVAILABLE');
       }
-      if (!String(response.headers.get('content-type') ?? '').toLowerCase()
-        .startsWith('application/json')) {
-        try { await response.body?.cancel(); } catch {}
+      if (!response) throw new MockRequestError(502, 'MAIN_SERVER_UNAVAILABLE');
+      const mainResponse = response;
+      if (timedOut) {
+        try { await mainResponse.body?.cancel(); } catch {}
+        throw timeoutError();
+      }
+      const mediaType = (String(mainResponse.headers.get('content-type') ?? '')
+        .split(';', 1)[0] ?? '')
+        .trim()
+        .toLowerCase();
+      if (mediaType !== 'application/json') {
+        try { await mainResponse.body?.cancel(); } catch {}
         throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_INVALID');
       }
       let payload: JsonObject;
       try {
-        payload = await this.readMainServerJson(response);
+        payload = await this.readMainServerJson(mainResponse, controller.signal);
       } catch (error) {
+        if (timedOut || controller.signal.aborted) throw timeoutError();
         if (error instanceof MockRequestError) throw error;
-        throw new MockRequestError(
-          controller.signal.aborted ? 504 : 502,
-          controller.signal.aborted ? 'MAIN_SERVER_TIMEOUT' : 'MAIN_SERVER_RESPONSE_INVALID'
-        );
+        throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_INVALID');
       }
-      if (!response.ok) {
+      if (timedOut) throw timeoutError();
+      if (!mainResponse.ok) {
         throw new MockRequestError(
-          response.status >= 500 ? 502 : response.status,
+          mainResponse.status >= 500 ? 502 : mainResponse.status,
           'MAIN_SERVER_REJECTED'
         );
       }
-      return Object.freeze({ statusCode: response.status, payload });
+      return Object.freeze({ statusCode: mainResponse.status, payload });
+    })();
+    this.pendingMainServerRequests.add(operation);
+    void operation.then(
+      () => this.pendingMainServerRequests.delete(operation),
+      () => this.pendingMainServerRequests.delete(operation)
+    );
+    void operation.catch(() => undefined);
+    let rejectAborted: ((error: MockRequestError) => void) | undefined;
+    const aborted = new Promise<never>((_resolve, reject) => {
+      rejectAborted = reject;
+    });
+    const onAbort = (): void => rejectAborted?.(timeoutError());
+    if (controller.signal.aborted) onAbort();
+    else controller.signal.addEventListener('abort', onAbort, { once: true });
+    const deadline = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+        void Promise.resolve(response?.body?.cancel()).catch(() => undefined);
+        reject(timeoutError());
+      }, this.mainServerTimeoutMs);
+      this.mainServerTimeouts.add(timeout);
+    });
+    try {
+      return await Promise.race([operation, deadline, aborted]);
     } finally {
-      clearTimeout(timeout);
+      controller.signal.removeEventListener('abort', onAbort);
+      if (timeout) {
+        clearTimeout(timeout);
+        this.mainServerTimeouts.delete(timeout);
+      }
       this.mainServerControllers.delete(controller);
     }
   }
@@ -1561,6 +1680,15 @@ export class ManufacturerMockServer {
       throw new MockRequestError(409, 'IDEMPOTENCY_CONFLICT');
     }
     const candidate = typeof headerValue === 'string' ? headerValue : bodyValue;
+    if (typeof candidate !== 'string' || !IDEMPOTENCY_PATTERN.test(candidate)) {
+      throw new MockRequestError(400, 'IDEMPOTENCY_KEY_INVALID');
+    }
+    return candidate;
+  }
+
+  private readOptionalIdempotencyKey(request: IncomingMessage): string | undefined {
+    const candidate = request.headers['idempotency-key'];
+    if (candidate === undefined) return undefined;
     if (typeof candidate !== 'string' || !IDEMPOTENCY_PATTERN.test(candidate)) {
       throw new MockRequestError(400, 'IDEMPOTENCY_KEY_INVALID');
     }
@@ -1679,7 +1807,7 @@ export class ManufacturerMockServer {
     this.pendingAsyncAckTimers.add(timer);
   }
 
-  private async readBoundedCallbackResponse(response: Response): Promise<void> {
+  private async readBoundedCallbackResponse(response: Response, signal?: AbortSignal): Promise<void> {
     const advertisedLength = response.headers.get('content-length');
     if (advertisedLength && /^\d{1,12}$/.test(advertisedLength)
       && Number(advertisedLength) > this.maxAsyncAckResponseBytes) {
@@ -1689,9 +1817,21 @@ export class ManufacturerMockServer {
     if (!response.body) return;
     const reader = response.body.getReader();
     let total = 0;
+    const cancelOnAbort = (): void => { void Promise.resolve(reader.cancel()).catch(() => undefined); };
+    const abortFailure = signal
+      ? new Promise<never>((_resolve, reject) => {
+        const rejectAbort = (): void => reject(new Error('ACK_CALLBACK_TIMEOUT'));
+        if (signal.aborted) rejectAbort();
+        else signal.addEventListener('abort', rejectAbort, { once: true });
+      })
+      : undefined;
+    if (signal?.aborted) cancelOnAbort();
+    else signal?.addEventListener('abort', cancelOnAbort, { once: true });
     try {
       while (true) {
-        const chunk = await reader.read();
+        const read = reader.read();
+        void read.catch(() => undefined);
+        const chunk = abortFailure ? await Promise.race([read, abortFailure]) : await read;
         if (chunk.done) break;
         total += chunk.value.byteLength;
         if (total > this.maxAsyncAckResponseBytes) {
@@ -1700,6 +1840,7 @@ export class ManufacturerMockServer {
         }
       }
     } finally {
+      signal?.removeEventListener('abort', cancelOnAbort);
       try { reader.releaseLock(); } catch {}
     }
   }
@@ -1730,10 +1871,11 @@ export class ManufacturerMockServer {
 
     const controller = new AbortController();
     this.asyncAckControllers.add(controller);
-    const timeout = setTimeout(() => controller.abort(), this.asyncAckTimeoutMs);
-    timeout.unref?.();
-    try {
-      const response = await fetch(callbackUrl, {
+    let response: Response | undefined;
+    let timedOut = false;
+    let timeout: NodeJS.Timeout | undefined;
+    const operation = (async (): Promise<void> => {
+      response = await fetch(callbackUrl, {
         method: 'POST',
         redirect: 'error',
         headers: {
@@ -1744,11 +1886,40 @@ export class ManufacturerMockServer {
         body,
         signal: controller.signal
       });
+      if (timedOut) {
+        try { await response.body?.cancel(); } catch {}
+        throw new Error('ACK_CALLBACK_TIMEOUT');
+      }
       statusCode = response.status;
-      await this.readBoundedCallbackResponse(response);
+      await this.readBoundedCallbackResponse(response, controller.signal);
+      if (timedOut) throw new Error('ACK_CALLBACK_TIMEOUT');
       if (response.status !== 204) throw new Error('ACK_CALLBACK_REJECTED');
+    })();
+    void operation.catch(() => undefined);
+    let rejectAborted: ((error: Error) => void) | undefined;
+    const aborted = new Promise<never>((_resolve, reject) => {
+      rejectAborted = reject;
+    });
+    const onAbort = (): void => rejectAborted?.(new Error('ACK_CALLBACK_TIMEOUT'));
+    if (controller.signal.aborted) onAbort();
+    else controller.signal.addEventListener('abort', onAbort, { once: true });
+    const deadline = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+        void Promise.resolve(response?.body?.cancel()).catch(() => undefined);
+        reject(new Error('ACK_CALLBACK_TIMEOUT'));
+      }, this.asyncAckTimeoutMs);
+      this.asyncAckTimeouts.add(timeout);
+    });
+    try {
+      await Promise.race([operation, deadline, aborted]);
     } finally {
-      clearTimeout(timeout);
+      controller.signal.removeEventListener('abort', onAbort);
+      if (timeout) {
+        clearTimeout(timeout);
+        this.asyncAckTimeouts.delete(timeout);
+      }
       this.asyncAckControllers.delete(controller);
       const elapsed = Math.max(0, Math.round(this.now() - startedAt));
       try {
@@ -1886,6 +2057,23 @@ export class ManufacturerMockServer {
       const oldest = this.idempotency.keys().next().value as string | undefined;
       if (oldest !== undefined) this.idempotency.delete(oldest);
     }
+  }
+
+  private mutationFingerprint(body: JsonObject): string {
+    return createHash('sha256').update(JSON.stringify(body)).digest('base64url');
+  }
+
+  private replayMutation(scope: string, body: JsonObject): JsonObject | undefined {
+    const previous = this.idempotency.get(scope);
+    if (!previous) return undefined;
+    if (previous.fingerprint !== this.mutationFingerprint(body)) {
+      throw new MockRequestError(409, 'IDEMPOTENCY_CONFLICT');
+    }
+    return { ...previous.payload };
+  }
+
+  private rememberMutation(scope: string, body: JsonObject, payload: JsonObject): void {
+    this.rememberIdempotency(scope, this.mutationFingerprint(body), payload);
   }
 
   private commandResponse(

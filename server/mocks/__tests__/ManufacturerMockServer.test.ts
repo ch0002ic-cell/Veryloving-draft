@@ -333,7 +333,11 @@ describe('ManufacturerMockServer', () => {
     expect(unauthorizedInjection.status).toBe(401);
     const injection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
       method: 'POST',
-      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'simulation-event-001'
+      },
       body: JSON.stringify({
         device_id: rawWearableId,
         device_type: 'wearable',
@@ -341,10 +345,26 @@ describe('ManufacturerMockServer', () => {
       })
     });
     expect(injection.status).toBe(201);
-    expect(await json(injection)).toMatchObject({
+    const injectionPayload = await json(injection);
+    expect(injectionPayload).toMatchObject({
       accepted: true,
       event: { eventType: 'fall_detected', severity: 'critical', synthetic: true }
     });
+    const duplicateInjection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'simulation-event-001'
+      },
+      body: JSON.stringify({
+        device_id: rawWearableId,
+        device_type: 'wearable',
+        event_type: 'fall_detected'
+      })
+    });
+    expect(duplicateInjection.status).toBe(201);
+    expect(await json(duplicateInjection)).toEqual(injectionPayload);
     const invalidInjection = await fetch(new URL('/api/v1/simulation/events', baseUrl), {
       method: 'POST',
       headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
@@ -468,7 +488,11 @@ describe('ManufacturerMockServer', () => {
 
     const started = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
       method: 'POST',
-      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'scenario-lifecycle-started-001'
+      },
       body: JSON.stringify(body)
     });
     expect(started.status).toBe(201);
@@ -487,6 +511,30 @@ describe('ManufacturerMockServer', () => {
     });
     expect(JSON.stringify(startedPayload)).not.toContain(rawWearableId);
     expect(JSON.stringify(startedPayload)).not.toContain(rawRobotId);
+
+    const duplicateStarted = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'scenario-lifecycle-started-001'
+      },
+      body: JSON.stringify(body)
+    });
+    expect(duplicateStarted.status).toBe(201);
+    expect(await json(duplicateStarted)).toEqual(startedPayload);
+
+    const lifecycleConflict = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'scenario-lifecycle-started-001'
+      },
+      body: JSON.stringify({ ...body, status: 'failed' })
+    });
+    expect(lifecycleConflict.status).toBe(409);
+    expect(await json(lifecycleConflict)).toEqual({ error: 'IDEMPOTENCY_CONFLICT' });
 
     const completed = await fetch(new URL('/api/v1/simulation/scenarios', baseUrl), {
       method: 'POST',
@@ -521,15 +569,77 @@ describe('ManufacturerMockServer', () => {
     expect(JSON.stringify(logs)).not.toContain(rawRobotId);
   });
 
+  test('coalesces concurrent retries of simulator event and lifecycle mutations', async () => {
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 15,
+      latencyMaxMs: 15,
+      log: () => undefined
+    });
+    const { baseUrl } = await activeServer.start();
+    const postMutation = (pathname: string, idempotencyKey: string, body: object) => fetch(
+      new URL(pathname, baseUrl),
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Idempotency-Key': idempotencyKey
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    const eventBody = {
+      device_id: 'concurrent-wearable-1',
+      device_type: 'wearable',
+      event_type: 'fall_detected'
+    };
+    const eventResponses = await Promise.all([
+      postMutation('/api/v1/simulation/events', 'concurrent-event-001', eventBody),
+      postMutation('/api/v1/simulation/events', 'concurrent-event-001', eventBody)
+    ]);
+    expect(eventResponses.map(({ status }) => status)).toEqual([201, 201]);
+    expect(await json(eventResponses[0]!)).toEqual(await json(eventResponses[1]!));
+
+    const lifecycleBody = {
+      scenario_id: 'fall_detection',
+      status: 'started',
+      wearable_device_id: 'concurrent-wearable-1',
+      robot_device_id: 'concurrent-robot-1'
+    };
+    const lifecycleResponses = await Promise.all([
+      postMutation('/api/v1/simulation/scenarios', 'concurrent-lifecycle-001', lifecycleBody),
+      postMutation('/api/v1/simulation/scenarios', 'concurrent-lifecycle-001', lifecycleBody)
+    ]);
+    expect(lifecycleResponses.map(({ status }) => status)).toEqual([201, 201]);
+    expect(await json(lifecycleResponses[0]!)).toEqual(await json(lifecycleResponses[1]!));
+
+    const dashboard = activeServer.getSimulationDashboard();
+    expect(dashboard.scenarioExecutions).toHaveLength(1);
+    expect(dashboard.lastEvents.filter(({ eventType }) => eventType === 'fall_detected')).toHaveLength(1);
+    expect(dashboard.lastEvents.filter(({ eventType }) => eventType === 'scenario_execution')).toHaveLength(1);
+  });
+
   test('serves a cookie-protected live dashboard and proxies only strict loopback scenario requests', async () => {
-    const upstreamRequests: Array<{ readonly method: string; readonly url: string; readonly body?: unknown }> = [];
+    const upstreamRequests: Array<{
+      readonly method: string;
+      readonly url: string;
+      readonly body?: unknown;
+      readonly idempotencyKey?: string;
+    }> = [];
     const upstreamServer = createServer((request, response) => {
       void (async () => {
         if (request.method === 'POST' && request.url === '/v1/scenarios') {
           const chunks: Buffer[] = [];
           for await (const chunk of request) chunks.push(Buffer.from(chunk));
           const body = JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
-          upstreamRequests.push({ method: 'POST', url: request.url, body });
+          upstreamRequests.push({
+            method: 'POST',
+            url: request.url,
+            body,
+            idempotencyKey: request.headers['idempotency-key'] as string | undefined
+          });
           const payload = JSON.stringify({
             status: 'started',
             scenarioId: body.scenarioId,
@@ -587,7 +697,14 @@ describe('ManufacturerMockServer', () => {
       const setCookie = page.headers.get('set-cookie');
       expect(setCookie).toBeTruthy();
       const cookie = String(setCookie).split(';', 1)[0];
-      expect(await page.text()).toContain('var dashboardUserId="demo-account-2"');
+      const dashboardHtml = await page.text();
+      expect(dashboardHtml).toContain('var dashboardUserId="demo-account-2"');
+      expect(dashboardHtml).toContain('if(refreshPromise)return refreshPromise');
+      expect(dashboardHtml).toContain('var joined=refreshPromise!==null');
+      expect(dashboardHtml).toContain('new AbortController()');
+      expect(dashboardHtml).toContain("redirect:'error'");
+      expect(dashboardHtml).toContain("headers['Idempotency-Key']=idempotencyKey");
+      expect(dashboardHtml).toContain('requestKey(button.dataset.scenario)');
 
       const cookieDashboard = await fetch(new URL('/api/v1/simulation/dashboard', baseUrl), {
         headers: { Cookie: cookie }
@@ -628,7 +745,7 @@ describe('ManufacturerMockServer', () => {
       };
       const trigger = await fetch(new URL('/api/v1/simulation/trigger', baseUrl), {
         method: 'POST',
-        headers,
+        headers: { ...headers, 'Idempotency-Key': 'dashboard-click-001' },
         body: JSON.stringify(triggerBody)
       });
       expect(trigger.status).toBe(202);
@@ -643,7 +760,8 @@ describe('ManufacturerMockServer', () => {
       expect(upstreamRequests[0]).toEqual({
         method: 'POST',
         url: '/v1/scenarios',
-        body: triggerBody
+        body: triggerBody,
+        idempotencyKey: 'dashboard-click-001'
       });
 
       const executions = await fetch(new URL('/api/v1/simulation/executions', baseUrl), {
@@ -706,6 +824,107 @@ describe('ManufacturerMockServer', () => {
       environment: 'test',
       mainServerUrl: 'http://127.0.0.1:8787/path'
     })).toThrow('main-server URL must be credential-free and loopback-only');
+  });
+
+  test('dashboard proxy hard-times-out and cancels a stalled main-server response stream', async () => {
+    let readerCancels = 0;
+    const originalFetch = globalThis.fetch;
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      mainServerUrl: 'http://127.0.0.1:8787',
+      mainServerTimeoutMs: 100,
+      log: () => undefined
+    });
+    globalThis.fetch = (async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: (name: string) => name.toLowerCase() === 'content-type' ? 'application/json' : null },
+      body: {
+        getReader: () => ({
+          read: async () => new Promise<never>(() => undefined),
+          cancel: async () => { readerCancels += 1; },
+          releaseLock: () => undefined
+        }),
+        cancel: async () => undefined
+      }
+    }) as unknown as Response) as typeof fetch;
+    try {
+      const proxy = activeServer as unknown as {
+        requestMainServer(
+          pathname: string,
+          input: { readonly method: 'GET' }
+        ): Promise<{ readonly statusCode: number }>;
+      };
+      await expect(proxy.requestMainServer('/v1/scenarios/executions', { method: 'GET' }))
+        .rejects.toMatchObject({ statusCode: 504, code: 'MAIN_SERVER_TIMEOUT' });
+      expect(readerCancels).toBe(1);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
+  test('stop aborts and drains stalled dashboard proxy and ACK response readers', async () => {
+    let readerCancels = 0;
+    const originalFetch = globalThis.fetch;
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      mainServerUrl: 'http://127.0.0.1:8787',
+      mainServerTimeoutMs: 120_000,
+      asyncAckCallbackUrl: 'http://127.0.0.1:8787/v1/manufacturer/robot/ack',
+      asyncAckCallbackCredentials: { 'yongyida-cloud': 'callback-only-secret' },
+      asyncAckTimeoutMs: 120_000,
+      log: () => undefined
+    });
+    globalThis.fetch = (async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: (name: string) => name.toLowerCase() === 'content-type' ? 'application/json' : null },
+      body: {
+        getReader: () => ({
+          read: async () => new Promise<never>(() => undefined),
+          cancel: async () => { readerCancels += 1; },
+          releaseLock: () => undefined
+        }),
+        cancel: async () => undefined
+      }
+    }) as unknown as Response) as typeof fetch;
+    try {
+      await activeServer.start();
+      const internals = activeServer as unknown as {
+        requestMainServer(
+          pathname: string,
+          input: { readonly method: 'GET' }
+        ): Promise<unknown>;
+        postAsyncAcknowledgement(
+          acknowledgement: {
+            readonly actionId: string;
+            readonly adapterId: string;
+            readonly bindingEpoch: number;
+          },
+          credential: string
+        ): Promise<void>;
+      };
+      const proxy = internals.requestMainServer('/v1/scenarios/executions', { method: 'GET' });
+      const acknowledgement = internals.postAsyncAcknowledgement({
+        actionId: '123e4567-e89b-42d3-a456-426614174000',
+        adapterId: 'yongyida-cloud',
+        bindingEpoch: 1
+      }, 'callback-only-secret');
+      await new Promise((resolve) => setImmediate(resolve));
+      await expect(Promise.race([
+        activeServer.stop(),
+        new Promise<never>((_resolve, reject) => setTimeout(
+          () => reject(new Error('simulator stop did not drain')),
+          500
+        ))
+      ])).resolves.toBeUndefined();
+      await expect(proxy).rejects.toMatchObject({ code: 'MAIN_SERVER_TIMEOUT' });
+      await expect(acknowledgement).rejects.toThrow('ACK_CALLBACK_TIMEOUT');
+      expect(readerCancels).toBe(2);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 
   test('uses deterministic configured fall frequency and validates event configuration', async () => {
@@ -1180,6 +1399,7 @@ describe('ManufacturerMockServer', () => {
       latencyMinMs: 50,
       latencyMaxMs: 50,
       requestTimeoutMs: 100,
+      maxConnections: 2,
       maxConcurrentRequests: 1,
       maxQueueKeys: 1,
       maxQueuedCommandsTotal: 1,
@@ -1187,6 +1407,7 @@ describe('ManufacturerMockServer', () => {
       log: () => undefined
     });
     const { baseUrl, port } = await activeServer.start();
+    expect((activeServer as unknown as { server: Server }).server.maxConnections).toBe(2);
     const statusRequest = () => fetch(new URL('/api/v1/status/capacity-device-001', baseUrl), {
       headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
     });

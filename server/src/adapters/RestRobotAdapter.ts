@@ -9,6 +9,7 @@ import {
   type NavigationCoordinate,
   type Medication,
   type RobotAdapter,
+  type RobotAdapterOperationOptions,
   type RobotConfig,
   type RobotCredentials,
   type RobotLocation,
@@ -88,11 +89,15 @@ export interface RestRobotAdapterOptions {
   readonly logger?: AdapterLogSink;
   readonly onMetric?: (metric: AdapterMetric) => void;
   readonly now?: () => number;
-  readonly sleep?: (milliseconds: number) => Promise<void>;
+  readonly sleep?: (milliseconds: number, signal?: AbortSignal) => Promise<void>;
   readonly random?: () => number;
   readonly idGenerator?: () => string;
   /** Awaited immediately before each physical transport attempt. */
-  readonly onAttempt?: (operation: string, attempt: number) => void | Promise<void>;
+  readonly onAttempt?: (
+    operation: string,
+    attempt: number,
+    signal?: AbortSignal
+  ) => void | Promise<void>;
   /** Epoch clock for signed-action freshness; kept separate from metric time. */
   readonly wallClockNow?: () => number;
 }
@@ -108,6 +113,7 @@ interface RequestOptions<T> {
   readonly idempotencyKey?: string;
   readonly allowUninitialized?: boolean;
   readonly expiresAt?: number;
+  readonly signal?: AbortSignal;
   /** Parse the operation schema before transport success is recorded. */
   readonly parseResponse: (payload: JsonObject, statusCode: number) => T;
 }
@@ -233,6 +239,12 @@ async function readBoundedBytes(
   }
 
   if (typeof response.arrayBuffer === 'function') {
+    if (advertisedLength === undefined) {
+      throw new RobotAdapterError(
+        'ADAPTER_RESPONSE_INVALID',
+        'Robot bridge response cannot be read within the configured limit'
+      );
+    }
     const bytes = new Uint8Array(await response.arrayBuffer());
     if (bytes.byteLength > maximumBytes) {
       throw new RobotAdapterError('ADAPTER_RESPONSE_TOO_LARGE', 'Robot bridge response exceeds the configured limit');
@@ -241,6 +253,12 @@ async function readBoundedBytes(
   }
 
   if (typeof response.text === 'function') {
+    if (advertisedLength === undefined) {
+      throw new RobotAdapterError(
+        'ADAPTER_RESPONSE_INVALID',
+        'Robot bridge response cannot be read within the configured limit'
+      );
+    }
     const text = await response.text();
     const bytes = new TextEncoder().encode(text);
     if (bytes.byteLength > maximumBytes) {
@@ -277,8 +295,46 @@ function defaultNow(): number {
     : Date.now();
 }
 
-function defaultSleep(milliseconds: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+function defaultSleep(milliseconds: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(cancelledError());
+      return;
+    }
+    const timeout = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, milliseconds);
+    const onAbort = (): void => {
+      clearTimeout(timeout);
+      signal?.removeEventListener('abort', onAbort);
+      reject(cancelledError());
+    };
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+function cancelledError(): RobotAdapterError {
+  return new RobotAdapterError('ADAPTER_CANCELLED', 'Robot adapter operation was cancelled');
+}
+
+function throwIfCancelled(signal?: AbortSignal): void {
+  if (signal?.aborted) throw cancelledError();
+}
+
+async function awaitWithCancellation<T>(operation: Promise<T>, signal?: AbortSignal): Promise<T> {
+  if (!signal) return operation;
+  throwIfCancelled(signal);
+  let rejectCancellation: ((error: RobotAdapterError) => void) | undefined;
+  const cancellation = new Promise<never>((_resolve, reject) => { rejectCancellation = reject; });
+  const onAbort = (): void => rejectCancellation?.(cancelledError());
+  signal.addEventListener('abort', onAbort, { once: true });
+  void operation.catch(() => undefined);
+  try {
+    return await Promise.race([operation, cancellation]);
+  } finally {
+    signal.removeEventListener('abort', onAbort);
+  }
 }
 
 function defaultIdGenerator(): string {
@@ -592,10 +648,14 @@ export abstract class RestRobotAdapter implements RobotAdapter {
   private readonly logger: StructuredAdapterLogger;
   private readonly onMetric?: (metric: AdapterMetric) => void;
   private readonly now: () => number;
-  private readonly sleep: (milliseconds: number) => Promise<void>;
+  private readonly sleep: (milliseconds: number, signal?: AbortSignal) => Promise<void>;
   private readonly random: () => number;
   private readonly idGenerator: () => string;
-  private readonly onAttempt?: (operation: string, attempt: number) => void | Promise<void>;
+  private readonly onAttempt?: (
+    operation: string,
+    attempt: number,
+    signal?: AbortSignal
+  ) => void | Promise<void>;
   private readonly wallClockNow: () => number;
   private readonly allowProvisionalUnsignedCommands: boolean;
 
@@ -667,7 +727,11 @@ export abstract class RestRobotAdapter implements RobotAdapter {
     this.allowProvisionalUnsignedCommands = options.allowProvisionalUnsignedCommands === true;
   }
 
-  async initialize(credentials: RobotCredentials): Promise<void> {
+  async initialize(
+    credentials: RobotCredentials,
+    options: RobotAdapterOperationOptions = {}
+  ): Promise<void> {
+    throwIfCancelled(options.signal);
     assertString(credentials?.deviceId, 'deviceId', 256, IDENTIFIER_PATTERN);
     if (credentials.pairingToken !== undefined) {
       assertString(credentials.pairingToken, 'pairingToken', 4096);
@@ -679,6 +743,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
           'Robot adapter is already bound to another device'
         );
       }
+      throwIfCancelled(options.signal);
       return;
     }
 
@@ -690,11 +755,11 @@ export abstract class RestRobotAdapter implements RobotAdapter {
           'Robot adapter initialization is already in progress'
         );
       }
-      return this.initializationPromise;
+      return awaitWithCancellation(this.initializationPromise, options.signal);
     }
 
     this.initializationKey = key;
-    this.initializationPromise = this.performInitialization(credentials)
+    this.initializationPromise = this.performInitialization(credentials, options.signal)
       .finally(() => {
         // A failed attempt must not poison future initialization. The one-time
         // claim is not retained in adapter state after either outcome.
@@ -704,11 +769,12 @@ export abstract class RestRobotAdapter implements RobotAdapter {
     return this.initializationPromise;
   }
 
-  private async performInitialization(credentials: RobotCredentials): Promise<void> {
+  private async performInitialization(credentials: RobotCredentials, signal?: AbortSignal): Promise<void> {
     const sessionToken = await this.requestJson({
       operation: 'initialize',
       path: 'session',
       allowUninitialized: true,
+      signal,
       body: {
         schema_version: 'veryloving.robot-bridge.v1',
         device_id: credentials.deviceId,
@@ -723,6 +789,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
           : requiredString(payload.session_token, 4096);
       }
     });
+    throwIfCancelled(signal);
     this.initializedDeviceId = credentials.deviceId;
     this.sessionToken = sessionToken;
   }
@@ -845,7 +912,10 @@ export abstract class RestRobotAdapter implements RobotAdapter {
     return this.sendCommand('set_config', { values: config.values }, config.requestId);
   }
 
-  async deliverSignedAction(action: SignedRobotAction): Promise<SignedActionDeliveryResult> {
+  async deliverSignedAction(
+    action: SignedRobotAction,
+    operationOptions: RobotAdapterOperationOptions = {}
+  ): Promise<SignedActionDeliveryResult> {
     this.requireInitialized();
     if (!isObject(action)
       || !isObject(action.envelope)
@@ -888,6 +958,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
       // envelope or translate its action into a vendor command here.
       body: action as unknown as Readonly<Record<string, unknown>>,
       expiresAt: action.envelope.expires_at,
+      signal: operationOptions.signal,
       parseResponse: (result, statusCode) => {
         const actionId = requiredString(result.action_id, 128);
         const state = requiredString(result.state, 32);
@@ -977,6 +1048,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
   }
 
   private async requestJson<T>(options: RequestOptions<T>): Promise<T> {
+    throwIfCancelled(options.signal);
     if (!options.allowUninitialized) this.requireInitialized();
     const body = this.serializeBody(options.body);
     const idempotencyKey = this.createIdempotencyKey(options.idempotencyKey);
@@ -988,7 +1060,21 @@ export abstract class RestRobotAdapter implements RobotAdapter {
           attempts: Math.max(0, attempt - 1)
         });
       }
-      await this.onAttempt?.(options.operation, attempt);
+      throwIfCancelled(options.signal);
+      if (this.onAttempt) {
+        const attemptHook = Promise.resolve().then(() => (
+          this.onAttempt?.(options.operation, attempt, options.signal)
+        ));
+        await awaitWithCancellation(attemptHook, options.signal);
+      }
+      // The awaited hook can represent queue admission, a circuit breaker, or
+      // a rate limiter. Never transmit a safety action that expired while it
+      // was waiting at that boundary.
+      if (options.expiresAt !== undefined && options.expiresAt <= this.wallClockNow()) {
+        throw new RobotAdapterError('ADAPTER_ACTION_EXPIRED', 'Signed robot action has expired', {
+          attempts: Math.max(0, attempt - 1)
+        });
+      }
       const startedAt = this.now();
       let response: BridgeResponse | undefined;
       let failure: RobotAdapterError | undefined;
@@ -1028,7 +1114,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
             responsePayload: await readBoundedJsonObject(candidate, this.maxResponseBytes, signal),
             statusCode: candidate.status
           };
-        });
+        }, options.signal);
         const payload = options.parseResponse(successful.responsePayload, successful.statusCode);
         this.report('success', options.operation, attempt, startedAt, successful.statusCode);
         return payload;
@@ -1055,7 +1141,10 @@ export abstract class RestRobotAdapter implements RobotAdapter {
         }
         throw failure;
       }
-      await this.sleep(this.retryDelay(attempt, response));
+      await awaitWithCancellation(
+        this.sleep(this.retryDelay(attempt, response), options.signal),
+        options.signal
+      );
     }
 
     throw new RobotAdapterError('ADAPTER_UNAVAILABLE', 'Robot bridge is temporarily unavailable');
@@ -1064,14 +1153,29 @@ export abstract class RestRobotAdapter implements RobotAdapter {
   private async fetchWithTimeout<T>(
     url: string,
     init: BridgeRequestInit,
-    consume: (response: BridgeResponse, signal: AbortSignal) => Promise<T>
+    consume: (response: BridgeResponse, signal: AbortSignal) => Promise<T>,
+    externalSignal?: AbortSignal
   ): Promise<T> {
+    throwIfCancelled(externalSignal);
     const controller = new AbortController();
     let timedOut = false;
+    let externallyCancelled = false;
     let response: BridgeResponse | undefined;
     let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    let rejectCancellation: ((error: RobotAdapterError) => void) | undefined;
+    const cancel = (): void => {
+      externallyCancelled = true;
+      controller.abort();
+      if (response) void this.cancelResponseBody(response);
+      rejectCancellation?.(cancelledError());
+    };
+    externalSignal?.addEventListener('abort', cancel, { once: true });
     const request = (async () => {
       response = await this.fetchImpl(url, { ...init, signal: controller.signal });
+      if (externallyCancelled) {
+        await this.cancelResponseBody(response);
+        throw cancelledError();
+      }
       if (timedOut) {
         await this.cancelResponseBody(response);
         throw new RobotAdapterError('ADAPTER_TIMEOUT', 'Robot bridge request timed out', { retryable: true });
@@ -1094,13 +1198,19 @@ export abstract class RestRobotAdapter implements RobotAdapter {
         reject(new RobotAdapterError('ADAPTER_TIMEOUT', 'Robot bridge request timed out', { retryable: true }));
       }, this.timeoutMs);
     });
+    const cancellation = new Promise<never>((_resolve, reject) => {
+      rejectCancellation = reject;
+      if (externalSignal?.aborted) cancel();
+    });
     try {
       return await Promise.race([
         request,
-        timeout
+        timeout,
+        cancellation
       ]);
     } finally {
       if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
+      externalSignal?.removeEventListener('abort', cancel);
     }
   }
 

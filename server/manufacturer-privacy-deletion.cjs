@@ -71,7 +71,12 @@ function normalizeRecord(item, expected = {}) {
     || !OPERATION_ID_PATTERN.test(item.operation_id || '')
     || !OPERATION_ID_PATTERN.test(item.plan_fingerprint || '')
     || !Array.isArray(item.adapter_ids)
+    || item.adapter_ids.length > MAX_ADAPTERS
     || item.adapter_ids.some((adapterId) => !ADAPTER_ID_PATTERN.test(adapterId))
+    || new Set(item.adapter_ids).size !== item.adapter_ids.length
+    || !Array.isArray(item.completed_adapters)
+    || item.completed_adapters.length > MAX_ADAPTERS
+    || completedAdapters.length !== item.completed_adapters.length
     || completedAdapters.some((adapterId) => !item.adapter_ids.includes(adapterId))
     || !['in_progress', 'completed'].includes(item.deletion_state)
   ) {

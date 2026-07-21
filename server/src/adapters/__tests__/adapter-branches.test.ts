@@ -74,6 +74,7 @@ describe('adapter hardening branches', () => {
     const arrayResponse: BridgeResponse = {
       ok: true,
       status: 200,
+      headers: { get: () => String(arrayBytes.byteLength) },
       body: null,
       arrayBuffer: async () => arrayBytes.buffer as ArrayBuffer
     };
@@ -85,6 +86,7 @@ describe('adapter hardening branches', () => {
     const textOnly: BridgeResponse = {
       ok: true,
       status: 200,
+      headers: { get: () => String(new TextEncoder().encode('{"source":"text"}').byteLength) },
       body: null,
       text: async () => '{"source":"text"}'
     };
@@ -98,6 +100,7 @@ describe('adapter hardening branches', () => {
     const empty: BridgeResponse = {
       ok: true,
       status: 200,
+      headers: { get: () => '0' },
       body: null,
       arrayBuffer: async () => new ArrayBuffer(0)
     };
@@ -108,9 +111,20 @@ describe('adapter hardening branches', () => {
     await expect(readBoundedJsonObject({
       ok: true,
       status: 200,
+      headers: { get: () => String(arrayPayload.byteLength) },
       body: null,
       arrayBuffer: async () => arrayPayload.buffer as ArrayBuffer
     }, 128)).rejects.toMatchObject({ code: 'ADAPTER_RESPONSE_INVALID' });
+
+    const unboundedText = jest.fn(async () => '{"source":"unbounded"}');
+    await expect(readBoundedJsonObject({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: null,
+      text: unboundedText
+    }, 128)).rejects.toMatchObject({ code: 'ADAPTER_RESPONSE_INVALID' });
+    expect(unboundedText).not.toHaveBeenCalled();
 
     const invalidCancel = jest.fn(async () => undefined);
     await expect(readBoundedJsonObject({
@@ -363,6 +377,7 @@ describe('adapter hardening branches', () => {
     const wallClockNow = jest.fn<() => number>()
       .mockReturnValueOnce(600)
       .mockReturnValueOnce(600)
+      .mockReturnValueOnce(600)
       .mockReturnValue(2_000);
     const attempts: number[] = [];
     const retryFetch = jest.fn<FetchLike>()
@@ -382,7 +397,68 @@ describe('adapter hardening branches', () => {
     await expect(expiring.deliverSignedAction(signedAction()))
       .rejects.toMatchObject({ code: 'ADAPTER_ACTION_EXPIRED', attempts: 1 });
     expect(attempts).toEqual([1]);
-    expect(sleep).toHaveBeenCalledWith(2_000);
+    expect(sleep).toHaveBeenCalledWith(2_000, undefined);
+
+    let hookClock = 1_000;
+    const delayedFetch = jest.fn<FetchLike>()
+      .mockResolvedValueOnce(jsonResponse({ authenticated: true }));
+    const expiresAtAttemptBoundary = new YongyidaAdapter(options(delayedFetch, {
+      wallClockNow: () => hookClock,
+      onAttempt: (operation: string) => {
+        if (operation === 'deliver_signed_action') hookClock = 2_000;
+      }
+    }));
+    await expiresAtAttemptBoundary.initialize({ deviceId: 'robot-device-001' });
+    await expect(expiresAtAttemptBoundary.deliverSignedAction(signedAction()))
+      .rejects.toMatchObject({ code: 'ADAPTER_ACTION_EXPIRED', attempts: 0 });
+    expect(delayedFetch).toHaveBeenCalledTimes(1);
+  });
+
+  test('caller cancellation aborts an active signed-action transport without retrying', async () => {
+    let transportSignal: AbortSignal | undefined;
+    const fetchImpl = jest.fn<FetchLike>()
+      .mockResolvedValueOnce(jsonResponse({ authenticated: true }))
+      .mockImplementationOnce(async (_url, init) => {
+        transportSignal = init.signal as AbortSignal;
+        return new Promise<BridgeResponse>(() => undefined);
+      });
+    const adapter = new YongyidaAdapter(options(fetchImpl, { timeoutMs: 30_000, maxAttempts: 3 }));
+    await adapter.initialize({ deviceId: 'robot-device-001' });
+    const controller = new AbortController();
+    const delivery = adapter.deliverSignedAction(signedAction(), { signal: controller.signal });
+    await Promise.resolve();
+    controller.abort();
+    await expect(delivery).rejects.toMatchObject({ code: 'ADAPTER_CANCELLED', retryable: false });
+    expect(transportSignal?.aborted).toBe(true);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+
+  test('caller cancellation exits a retry wait and forwards its signal to the sleeper', async () => {
+    let releaseSleepStart!: () => void;
+    const sleepStarted = new Promise<void>((resolve) => { releaseSleepStart = resolve; });
+    let sleepSignal: AbortSignal | undefined;
+    const sleep = jest.fn((_milliseconds: number, signal?: AbortSignal) => {
+      sleepSignal = signal;
+      releaseSleepStart();
+      return new Promise<void>(() => undefined);
+    });
+    const fetchImpl = jest.fn<FetchLike>()
+      .mockResolvedValueOnce(jsonResponse({ authenticated: true }))
+      .mockResolvedValueOnce(jsonResponse({ error: 'retry' }, 503));
+    const adapter = new YongyidaAdapter(options(fetchImpl, {
+      maxAttempts: 3,
+      retryBaseDelayMs: 1_000,
+      retryMaxDelayMs: 1_000,
+      sleep
+    }));
+    await adapter.initialize({ deviceId: 'robot-device-001' });
+    const controller = new AbortController();
+    const delivery = adapter.deliverSignedAction(signedAction(), { signal: controller.signal });
+    await sleepStarted;
+    controller.abort();
+    await expect(delivery).rejects.toMatchObject({ code: 'ADAPTER_CANCELLED' });
+    expect(sleepSignal).toBe(controller.signal);
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
   });
 
   test('non-retryable responses tolerate cancellation failures and logger fallback is safe', async () => {

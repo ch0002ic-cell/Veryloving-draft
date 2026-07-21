@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const { ActionGateway, signEnvelope } = require('./action-gateway.cjs');
 const {
+  createManufacturerPrivacyClient,
   createManufacturerPrivacyRepository,
   createManufacturerPairingVerifier,
   createManufacturerRobotResetClient,
@@ -20,6 +21,22 @@ const RESET_REQUEST = Object.freeze({
   manufacturerDeviceId: 'manufacturer-1',
   bindingEpoch: 4
 });
+
+function boundedTextResponse(text, status = 200) {
+  const body = String(text);
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: {
+      get(name) { return String(name).toLowerCase() === 'content-length' ? String(Buffer.byteLength(body)) : null; }
+    },
+    async text() { return body; }
+  };
+}
+
+function boundedJsonResponse(payload, status = 200) {
+  return boundedTextResponse(JSON.stringify(payload), status);
+}
 
 test('manufacturer mock receives the signed production webhook contract', async (t) => {
   const signingPrivateKey = crypto.generateKeyPairSync('ed25519').privateKey.export({ format: 'pem', type: 'pkcs8' });
@@ -57,11 +74,7 @@ test('manufacturer status bounds navigation paths and reset keeps its API key se
   const fetchImpl = async (url, options) => {
     calls.push({ url, options });
     if (url.endsWith('/status')) {
-      return {
-        ok: true,
-        status: 200,
-        async json() {
-          return {
+      return boundedJsonResponse({
             online: true,
             reported_at: 1000,
             navigation_path: [[103.8, 1.3], { longitude: 103.81, latitude: 1.31 }, [999, 999]],
@@ -80,23 +93,15 @@ test('manufacturer status bounds navigation paths and reset keeps its API key se
               captured_at: 998,
               raw_camera_frame: 'must-not-pass-through'
             }
-          };
-        }
-      };
+          });
     }
-    return {
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+    return boundedJsonResponse({
           reset_id: RESET_REQUEST.resetId,
           binding_epoch: RESET_REQUEST.bindingEpoch,
           state: 'completed',
           erased: true,
           fenced: true
         });
-      }
-    };
   };
   const statusClient = createManufacturerRobotStatusClient({
     url: 'https://manufacturer.test/status', apiKey: 'private-key', fetchImpl, now: () => 1000
@@ -137,10 +142,8 @@ test('manufacturer telemetry without a trustworthy timestamp fails closed', asyn
   const statusClient = createManufacturerRobotStatusClient({
     url: 'https://manufacturer.test/status',
     apiKey: 'private-key',
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      async text() { return JSON.stringify({ online: true, location: { longitude: 103.8, latitude: 1.3 } }); }
+    fetchImpl: async () => boundedJsonResponse({
+      online: true, location: { longitude: 103.8, latitude: 1.3 }
     })
   });
   assert.deepEqual(await statusClient('manufacturer-1'), {
@@ -158,11 +161,7 @@ test('manufacturer status rejects stale clocks and drops invalid safety event ti
     maxStatusAgeMs: 1_000,
     statusFutureSkewMs: 100,
     maxMedicationAcknowledgementAgeMs: 1_000,
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+    fetchImpl: async () => boundedJsonResponse({
           online: true,
           reported_at: 10_000,
           safety_events: [
@@ -178,9 +177,7 @@ test('manufacturer status rejects stale clocks and drops invalid safety event ti
             { reminder_id: 'reminder-future-1', receipt_id: 'receipt-future-1', delivered_at: 10_101 }
           ],
           indoor_position: { room_id: 'bedroom', captured_at: 8_999 }
-        });
-      }
-    })
+        })
   });
 
   const fresh = await statusClient('manufacturer-1');
@@ -197,11 +194,7 @@ test('manufacturer status rejects stale clocks and drops invalid safety event ti
     apiKey: 'private-key',
     now: () => 10_000,
     maxStatusAgeMs: 1_000,
-    fetchImpl: async () => ({
-      ok: true,
-      status: 200,
-      async text() { return JSON.stringify({ online: true, reported_at: 8_999 }); }
-    })
+    fetchImpl: async () => boundedJsonResponse({ online: true, reported_at: 8_999 })
   });
   assert.deepEqual(await staleClient('manufacturer-1'), {
     online: false,
@@ -242,12 +235,45 @@ test('manufacturer clients reject unsafe timeout configuration before transport'
     timeoutMs: 0,
     fetchImpl: async () => {
       called = true;
-      return { ok: true, status: 200, async text() { return '{}'; } };
+      return boundedJsonResponse({});
     }
   });
 
   await assert.rejects(statusClient('manufacturer-r1'), /timeout is invalid/);
   assert.equal(called, false);
+});
+
+test('manufacturer status rejects an invalid device identifier before transport', async () => {
+  let called = false;
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'server-only-key',
+    fetchImpl: async () => {
+      called = true;
+      return boundedJsonResponse({});
+    }
+  });
+  await assert.rejects(statusClient('../other-device'), /device id is invalid/);
+  assert.equal(called, false);
+});
+
+test('manufacturer clients release response bodies on status-only branches', async () => {
+  let cancelled = 0;
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'server-only-key',
+    fetchImpl: async () => ({
+      ok: false,
+      status: 404,
+      body: { async cancel() { cancelled += 1; } }
+    })
+  });
+
+  assert.deepEqual(await statusClient('manufacturer-r1'), {
+    online: false,
+    hardware_status: 'offline'
+  });
+  assert.equal(cancelled, 1);
 });
 
 test('manufacturer timeout cancels a response stream whose body read stalls', async () => {
@@ -291,13 +317,43 @@ test('manufacturer timeout cancels a response stream whose body read stalls', as
   assert.ok(elapsedMs < 500, `stalled response timeout took ${elapsedMs}ms`);
 });
 
+test('manufacturer timeout releases a reader even when cancel does not settle its read', async () => {
+  let cancelCount = 0;
+  let releaseCount = 0;
+  const statusClient = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'private-key',
+    timeoutMs: 10,
+    fetchImpl: async () => ({
+      ok: true,
+      status: 200,
+      headers: { get: () => null },
+      body: {
+        getReader() {
+          return {
+            read: () => new Promise(() => {}),
+            cancel() { cancelCount += 1; },
+            releaseLock() { releaseCount += 1; }
+          };
+        },
+        async cancel() {}
+      }
+    })
+  });
+
+  await assert.rejects(statusClient('manufacturer-1'), { code: 'MANUFACTURER_TIMEOUT' });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(cancelCount, 1);
+  assert.equal(releaseCount, 1);
+});
+
 test('manufacturer privacy sends only bound robot identifiers and requires completed deletion', async () => {
   const calls = [];
   const fetchImpl = async (url, options) => {
     calls.push({ url, options });
     return url.endsWith('/delete')
-      ? { ok: true, status: 204, async text() { return ''; } }
-      : { ok: true, status: 200, async text() { return JSON.stringify({ robots: [{ status: 'erased' }] }); } };
+      ? boundedTextResponse('', 204)
+      : boundedJsonResponse({ robots: [{ status: 'erased' }] });
   };
   const repository = createManufacturerPrivacyRepository({
     exportURL: 'https://manufacturer.test/privacy/export',
@@ -353,7 +409,7 @@ test('manufacturer privacy does not treat an asynchronous deletion receipt as er
     deleteURL: 'https://manufacturer.test/privacy/delete',
     apiKey: 'server-only-key',
     listManufacturerDeviceIds: async () => ['manufacturer-r1'],
-    fetchImpl: async () => ({ ok: true, status: 202, async text() { return ''; } })
+    fetchImpl: async () => boundedTextResponse('', 202)
   });
   await assert.rejects(repository.deleteUserData('user-private'), /returned 202/);
 });
@@ -480,11 +536,7 @@ test('mixed-fleet routed deletion resumes at the failed adapter with a stable ve
 });
 
 test('manufacturer reset and privacy deletion require explicit synchronous completion', async () => {
-  const completedResponse = () => ({
-    ok: true,
-    status: 200,
-    async text() {
-      return JSON.stringify({
+  const completedResponse = () => boundedJsonResponse({
         completed: true,
         reset_id: RESET_REQUEST.resetId,
         binding_epoch: RESET_REQUEST.bindingEpoch,
@@ -492,8 +544,6 @@ test('manufacturer reset and privacy deletion require explicit synchronous compl
         erased: true,
         fenced: true
       });
-    }
-  });
   const reset = createManufacturerRobotResetClient({
     url: 'https://manufacturer.test/reset',
     apiKey: 'server-only-key',
@@ -511,9 +561,9 @@ test('manufacturer reset and privacy deletion require explicit synchronous compl
   assert.deepEqual(await deletion.deleteUserData('user-private'), { deleted: 1 });
 
   for (const incomplete of [
-    { ok: true, status: 200, async text() { return ''; } },
-    { ok: true, status: 200, async text() { return JSON.stringify({ completed: false }); } },
-    { ok: true, status: 206, async text() { return JSON.stringify({ completed: true }); } }
+    boundedTextResponse('', 200),
+    boundedJsonResponse({ completed: false }, 200),
+    boundedJsonResponse({ completed: true }, 206)
   ]) {
     const incompleteReset = createManufacturerRobotResetClient({
       url: 'https://manufacturer.test/reset',
@@ -587,75 +637,103 @@ test('manufacturer pairing preserves replay semantics and reset rejects an async
   await assert.rejects(reset(RESET_REQUEST), /returned 202/);
 });
 
-test('manufacturer reset rejects empty, malformed, or uncorrelated completion responses', async () => {
-  const responses = [
-    { ok: true, status: 204, async text() { return ''; } },
-    { ok: true, status: 200, async text() { return '{"broken":'; } },
-    {
+test('manufacturer clients reject provisional success statuses for final contracts', async () => {
+  const qrCode = 'one-time-code';
+  const apiKey = 'server-only-key';
+  const claimId = crypto.createHmac('sha256', apiKey)
+    .update('veryloving.robot-pairing-verify.v1\0', 'utf8')
+    .update('manufacturer-default', 'utf8')
+    .update('\0', 'utf8')
+    .update(qrCode, 'utf8')
+    .digest('base64url');
+  const verifier = createManufacturerPairingVerifier({
+    url: 'https://manufacturer.test/pair',
+    apiKey,
+    fetchImpl: async () => boundedJsonResponse({
+      claim_id: claimId,
+      hardware_serial: 'PRIVATE-SERIAL-1',
+      manufacturer_device_id: 'manufacturer-r1',
+      one_time: true,
+      expires_at: Date.now() + 60_000
+    }, 202)
+  });
+  await assert.rejects(verifier(qrCode), /returned 202/);
+
+  const status = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey,
+    now: () => 1_000,
+    fetchImpl: async () => boundedJsonResponse({ online: true, reported_at: 1_000 }, 202)
+  });
+  await assert.rejects(status('manufacturer-r1'), /returned 202/);
+
+  const privacy = createManufacturerPrivacyClient({
+    exportURL: 'https://manufacturer.test/privacy/export',
+    deleteURL: 'https://manufacturer.test/privacy/delete',
+    apiKey,
+    fetchImpl: async () => boundedJsonResponse({ job_id: 'pending-export' }, 202)
+  });
+  await assert.rejects(privacy.exportRobotData(['manufacturer-r1']), /returned 202/);
+});
+
+test('manufacturer clients do not materialize an unbounded non-stream response', async () => {
+  let bodyRead = false;
+  const status = createManufacturerRobotStatusClient({
+    url: 'https://manufacturer.test/status',
+    apiKey: 'server-only-key',
+    fetchImpl: async () => ({
       ok: true,
       status: 200,
+      headers: { get: () => null },
       async text() {
-        return JSON.stringify({
+        bodyRead = true;
+        return JSON.stringify({ online: true, reported_at: Date.now() });
+      }
+    })
+  });
+  await assert.rejects(status('manufacturer-r1'), /cannot be read within the configured limit/);
+  assert.equal(bodyRead, false);
+});
+
+test('manufacturer reset rejects empty, malformed, or uncorrelated completion responses', async () => {
+  const responses = [
+    boundedTextResponse('', 204),
+    boundedTextResponse('{"broken":', 200),
+    boundedJsonResponse({
           reset_id: 'another-reset-operation',
           binding_epoch: RESET_REQUEST.bindingEpoch,
           state: 'completed',
           erased: true,
           fenced: true
-        });
-      }
-    },
-    {
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+        }),
+    boundedJsonResponse({
           reset_id: RESET_REQUEST.resetId,
           binding_epoch: RESET_REQUEST.bindingEpoch + 1,
           state: 'completed',
           erased: true,
           fenced: true
-        });
-      }
-    },
-    {
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+        }),
+    boundedJsonResponse({
           reset_id: RESET_REQUEST.resetId,
           binding_epoch: RESET_REQUEST.bindingEpoch,
           state: 'accepted',
           erased: true,
           fenced: true
-        });
-      }
-    },
-    {
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+        }),
+    boundedJsonResponse({
           reset_id: RESET_REQUEST.resetId,
           binding_epoch: RESET_REQUEST.bindingEpoch,
           state: 'completed',
           erased: false,
           fenced: true
-        });
-      }
-    },
-    {
-      ok: true,
-      status: 200,
-      async text() {
-        return JSON.stringify({
+        }),
+    boundedJsonResponse({
           reset_id: RESET_REQUEST.resetId,
           binding_epoch: RESET_REQUEST.bindingEpoch,
           state: 'completed',
           erased: true,
           fenced: false
-        });
-      }
-    }
+        })
   ];
 
   for (const response of responses) {

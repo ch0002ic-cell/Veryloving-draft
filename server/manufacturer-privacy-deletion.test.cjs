@@ -165,3 +165,29 @@ test('Dynamo checkpoint uses an opaque account key and persists no robot identif
     { code: 'PRIVACY_DELETE_PLAN_CHANGED', statusCode: 409 }
   );
 });
+
+test('Dynamo checkpoint rejects duplicate or oversized durable adapter state', async () => {
+  const operationId = 'o'.repeat(43);
+  const fingerprint = 'f'.repeat(43);
+  const client = {
+    async send(command) {
+      assert.equal(command.constructor.name, 'GetCommand');
+      return { Item: {
+        operation_id: operationId,
+        plan_fingerprint: fingerprint,
+        adapter_ids: ['jiangzhi-edge', 'jiangzhi-edge'],
+        completed_adapters: [],
+        deletion_state: 'in_progress'
+      } };
+    }
+  };
+  const repository = createDynamoManufacturerPrivacyDeletionRepository({
+    tableName: 'devices',
+    secret: 'privacy-checkpoint-secret-at-least-32-characters',
+    client
+  });
+  await assert.rejects(
+    repository.begin('user-private', PLAN),
+    { code: 'PRIVACY_DELETE_CHECKPOINT_INVALID' }
+  );
+});

@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
+const { validateServerIntegerConfig } = require('./environment-schema.cjs');
 
 const DEVICE_TYPES = new Set(['wearable', 'home_robot']);
 const ACTIONS = Object.freeze({
@@ -697,6 +698,7 @@ class ActionGateway {
     retries = 3,
     retryDelayMs = 500,
     requestTimeoutMs = 5000,
+    transportFenceTimeoutMs,
     robotAckTimeoutMs = 30000,
     wearableAckTimeoutMs = 5000,
     maxQueueDepthPerDevice = 25,
@@ -731,7 +733,19 @@ class ActionGateway {
     this.fetchImpl = fetchImpl;
     this.retries = retries;
     this.retryDelayMs = retryDelayMs;
+    validateServerIntegerConfig({
+      actionRequestTimeoutMs: requestTimeoutMs,
+      robotAckTimeoutMs,
+      wearableAckTimeoutMs
+    });
     this.requestTimeoutMs = requestTimeoutMs;
+    const selectedFenceTimeout = transportFenceTimeoutMs === undefined
+      ? Math.max(1000, Math.min(30000, Number(requestTimeoutMs) || 5000))
+      : Number(transportFenceTimeoutMs);
+    if (!Number.isSafeInteger(selectedFenceTimeout) || selectedFenceTimeout < 1 || selectedFenceTimeout > 30000) {
+      throw new Error('Transport fence timeout is invalid');
+    }
+    this.transportFenceTimeoutMs = selectedFenceTimeout;
     this.robotAckTimeoutMs = robotAckTimeoutMs;
     this.wearableAckTimeoutMs = wearableAckTimeoutMs;
     this.maxQueueDepthPerDevice = maxQueueDepthPerDevice;
@@ -766,6 +780,7 @@ class ActionGateway {
     this.pendingDeliveries = new Set();
     this.pendingRobotDeliveries = new Map();
     this.pendingRobotTransports = new Map();
+    this.trackedTransportOperations = new WeakSet();
     this.pendingRobotAcks = new Map();
     this.pendingWearableAcks = new Map();
     this.robotActionOwners = new Map();
@@ -1193,7 +1208,7 @@ class ActionGateway {
         .map((entry) => entry.promise);
       const active = [...activeDeliveries, ...activeTransports];
       if (!active.length) break;
-      await Promise.allSettled(active);
+      await this.waitForFenceOperations(active, 'BINDING_FENCE_DRAIN_TIMEOUT');
     }
     cancelledAcknowledgements += this.cancelPendingRobotAcknowledgements(matchesBinding);
     if (persistenceError) {
@@ -1245,7 +1260,7 @@ class ActionGateway {
         .map((entry) => entry.promise);
       const active = [...activeDeliveries, ...activeTransports];
       if (!active.length) break;
-      await Promise.allSettled(active);
+      await this.waitForFenceOperations(active, 'ACCOUNT_FENCE_DRAIN_TIMEOUT');
     }
     cancelledAcknowledgements += this.cancelPendingRobotAcknowledgements(matchesUser);
 
@@ -2264,10 +2279,33 @@ class ActionGateway {
 
   async waitForDeliveries() { await Promise.allSettled([...this.pendingDeliveries]); }
 
+  async waitForFenceOperations(operations, code) {
+    let timeout;
+    const deadline = new Promise((_, reject) => {
+      timeout = this.setTimeoutImpl(() => reject(Object.assign(
+        new Error('In-flight device transport did not settle before the safety fence deadline'),
+        { statusCode: 503, code }
+      )), this.transportFenceTimeoutMs);
+    });
+    try {
+      await Promise.race([Promise.allSettled(operations), deadline]);
+    } finally {
+      this.clearTimeoutImpl(timeout);
+    }
+  }
+
   trackNonRetractableTransport(operation, context) {
     if (!context || typeof context.userId !== 'string') return;
+    if ((typeof operation === 'object' && operation !== null) || typeof operation === 'function') {
+      if (this.trackedTransportOperations.has(operation)) return;
+      this.trackedTransportOperations.add(operation);
+    }
     const key = Symbol(context.actionId || 'robot-transport');
-    const tracked = Promise.resolve(operation).catch(() => {}).finally(() => {
+    const tracked = Promise.resolve(operation).then(async (response) => {
+      // A transport that ignored cancellation may eventually yield a streaming
+      // response after its caller has moved on. Release it here as well.
+      try { await response?.body?.cancel?.(); } catch {}
+    }).catch(() => {}).finally(() => {
       this.pendingRobotTransports.delete(key);
     });
     this.pendingRobotTransports.set(key, { ...context, promise: tracked });
@@ -2312,6 +2350,10 @@ class ActionGateway {
     const timeoutFailure = new Promise((_, reject) => {
       timeout = setTimeout(() => {
         controller.abort();
+        // Some injected/vendor transports do not honor AbortSignal. Keep the
+        // underlying operation visible to account/binding fences until it
+        // actually settles so reset/deletion cannot race an on-wire command.
+        if (fetchOperation) this.trackNonRetractableTransport(fetchOperation, transportContext);
         const error = new Error('Manufacturer webhook timed out');
         error.name = 'TimeoutError';
         reject(error);
@@ -2381,8 +2423,14 @@ class ActionGateway {
         await onAttempt?.(attempt + 1);
         throwIfActionCancelled(signal, 'Robot command was cancelled before dispatch');
         const response = await this.postManufacturer(signed, signal, transportContext);
-        if (response.status !== 202 && !response.ok) throw new Error(`Manufacturer returned ${response.status}`);
-        return { acknowledged: response.status !== 202, status: response.status };
+        try {
+          if (response.status !== 202 && !response.ok) throw new Error(`Manufacturer returned ${response.status}`);
+          return { acknowledged: response.status !== 202, status: response.status };
+        } finally {
+          // Command endpoints do not consume response payloads. Cancel the body
+          // explicitly so keep-alive sockets and streaming bodies are released.
+          try { await response.body?.cancel?.(); } catch {}
+        }
       } catch (error) {
         lastError = error;
         if (['BINDING_FENCED', 'ACCOUNT_FENCED', 'ACTION_CANCELLED', 'OUTBOX_DELIVERY_LEASE_LOST', 'OUTBOX_ACTION_TERMINAL'].includes(error?.code)) break;
