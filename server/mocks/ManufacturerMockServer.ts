@@ -10,6 +10,8 @@
 import {
   createHash,
   createPublicKey,
+  randomBytes,
+  timingSafeEqual,
   verify as verifySignature,
   type KeyObject
 } from 'node:crypto';
@@ -35,6 +37,10 @@ const DEFAULT_MAX_QUEUED_COMMANDS_TOTAL = 5_000;
 const DEFAULT_MAX_CONNECTIONS = 100;
 const DEFAULT_MAX_CONCURRENT_REQUESTS = 200;
 const DEFAULT_MAX_TELEMETRY_STREAMS = 25;
+const DEFAULT_MAX_DASHBOARD_STREAMS = 10;
+const DEFAULT_MAIN_SERVER_URL = 'http://127.0.0.1:8787/';
+const DEFAULT_MAIN_SERVER_TIMEOUT_MS = 5_000;
+const DEFAULT_MAX_MAIN_SERVER_RESPONSE_BYTES = 64 * 1024;
 const DEFAULT_SIGNED_ACTION_FUTURE_SKEW_MS = 60_000;
 const DEFAULT_FALL_EVENT_RATE = 0.001;
 const DEFAULT_STRESS_EVENT_RATE = 0.01;
@@ -46,6 +52,8 @@ const DEFAULT_MAX_ASYNC_ACK_REQUEST_BYTES = 4 * 1024;
 const DEFAULT_MAX_ASYNC_ACK_RESPONSE_BYTES = 4 * 1024;
 const MAX_SIMULATION_EVENTS = 10;
 const MAX_SCENARIO_EXECUTIONS = 10;
+const DASHBOARD_COOKIE_NAME = 'vl_mock_dashboard_session';
+const DASHBOARD_COOKIE_MAX_AGE_SECONDS = 60 * 60;
 const IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/;
 const COMMAND_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const IDEMPOTENCY_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -54,6 +62,13 @@ const SCENARIO_PATTERN = /^[a-z][a-z0-9_:-]{0,63}$/;
 const SCENARIO_STATUSES: readonly ManufacturerScenarioStatus[] = Object.freeze([
   'started', 'completed', 'fallback', 'failed', 'cancelled'
 ]);
+const DASHBOARD_SCENARIO_IDS = Object.freeze([
+  'fall-detection',
+  'medication-adherence',
+  'emotional-check-in',
+  'cognitive-engagement',
+  'ai-angel-auto-dial'
+] as const);
 const ACTION_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BASE64URL_PATTERN = /^[A-Za-z0-9_-]+$/;
 const ED25519_SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
@@ -170,6 +185,7 @@ export interface ManufacturerMockServerOptions {
   readonly maxConnections?: number;
   readonly maxConcurrentRequests?: number;
   readonly maxTelemetryStreams?: number;
+  readonly maxDashboardStreams?: number;
   readonly signedActionFutureSkewMs?: number;
   /** Per emitted wearable/robot frame. Deterministic when seed/random is supplied. */
   readonly fallEventRate?: number;
@@ -196,6 +212,12 @@ export interface ManufacturerMockServerOptions {
   /** Placeholder bearer returned by /api/v1/authenticate. */
   readonly accessToken?: string;
   readonly sessionToken?: string;
+  /** Loopback-only Veryloving server used by the development dashboard proxy. */
+  readonly mainServerUrl?: string;
+  readonly mainServerTimeoutMs?: number;
+  readonly maxMainServerResponseBytes?: number;
+  /** Fixed account accepted by the local dashboard and its main-server proxy. */
+  readonly dashboardUserId?: string;
   readonly seed?: number;
   readonly random?: () => number;
   readonly now?: () => number;
@@ -213,6 +235,7 @@ export interface ManufacturerMockResourceSnapshot {
   readonly connections: number;
   readonly activeRequests: number;
   readonly telemetryStreams: number;
+  readonly dashboardStreams: number;
   readonly queueKeys: number;
   readonly queuedCommands: number;
 }
@@ -315,36 +338,81 @@ function writeJson(response: ServerResponse, statusCode: number, payload: JsonOb
   response.end(body);
 }
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[character] as string);
-}
-
 function writeDashboardHtml(
   response: ServerResponse,
-  dashboard: ManufacturerSimulationDashboard
+  dashboardSessionToken: string,
+  dashboardUserId: string
 ): void {
   if (response.destroyed || response.writableEnded) return;
-  const snapshot = escapeHtml(JSON.stringify(dashboard, null, 2));
+  const nonce = randomBytes(18).toString('base64url');
   const body = `<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="2">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Veryloving dual-device simulator</title></head>
-<body><main><h1>Veryloving dual-device simulator</h1>
-<p>Local synthetic data only. Refreshes every two seconds.</p>
-<h2>Device states, scenario logs, and last 10 events</h2><pre>${snapshot}</pre>
-</main></body></html>`;
+<meta name="color-scheme" content="light">
+<title>Veryloving Care Orchestration Lab</title>
+<style nonce="${nonce}">
+:root{--ink:#17213b;--muted:#667085;--panel:#fff;--line:#e6eaf0;--pink:#ed5377;--pink2:#ff7897;--blue:#4568dc;--green:#18a66a;--amber:#e78b12;--red:#d84b4b;--shadow:0 10px 30px rgba(25,36,66,.08)}
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:var(--ink);font:15px/1.45 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit}
+.hero{background:linear-gradient(120deg,#17213b,#35446d);color:#fff;padding:28px max(22px,calc((100vw - 1180px)/2));box-shadow:0 4px 20px rgba(15,23,42,.2)}
+.brand{display:flex;align-items:center;gap:14px}.heart{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,var(--pink2),var(--pink));font-size:23px;box-shadow:0 8px 20px rgba(237,83,119,.35)}h1{font-size:25px;margin:0}.subtitle{margin:3px 0 0;color:#ced6ed}.live{margin-left:auto;display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid rgba(255,255,255,.2);border-radius:999px;font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#f8b84e}.dot.connected{background:#55db92;box-shadow:0 0 0 4px rgba(85,219,146,.12)}
+main{max-width:1180px;margin:0 auto;padding:24px 22px 50px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:-9px}.metric,.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.metric{padding:17px}.metric-label{color:var(--muted);font-size:12px;font-weight:650;text-transform:uppercase;letter-spacing:.05em}.metric-value{font-size:25px;font-weight:750;margin-top:4px}
+.panel{margin-top:18px;padding:20px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}h2{font-size:18px;margin:0}.hint{color:var(--muted);font-size:13px;margin:3px 0 0}.scenario-buttons{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px}.scenario-button{min-height:80px;text-align:left;border:1px solid #e1e6ef;background:#fafbfe;border-radius:13px;padding:13px;color:var(--ink);cursor:pointer;transition:.15s ease}.scenario-button:hover{transform:translateY(-1px);border-color:#bdc8df;box-shadow:0 6px 16px rgba(33,49,86,.08)}.scenario-button:focus-visible{outline:3px solid rgba(69,104,220,.3);outline-offset:2px}.scenario-button:disabled{cursor:wait;opacity:.55;transform:none}.scenario-icon{font-size:21px;display:block;margin-bottom:5px}.scenario-name{font-size:13px;font-weight:700;display:block}.scenario-priority{color:var(--muted);font-size:11px}.result{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:#eaf8f1;color:#126a47;font-size:13px}.result.visible{display:block}.result.error{background:#fff0f0;color:#a33333}
+.device-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}.device{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.device-top{display:flex;align-items:center;gap:11px}.device-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#eef2ff;font-size:22px}.device-title{font-weight:700}.reference{font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}.status{margin-left:auto;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#edf9f3;color:#128557}.status.offline{background:#f2f3f5;color:#68707e}.device-state{margin:14px 0 9px;display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.battery{display:block;width:100%;height:7px;border:0;border-radius:99px;overflow:hidden;background:#edf0f5;appearance:none}.battery::-webkit-progress-bar{background:#edf0f5}.battery::-webkit-progress-value{background:linear-gradient(90deg,var(--green),#50cf94)}.battery::-moz-progress-bar{background:linear-gradient(90deg,var(--green),#50cf94)}.battery.low::-webkit-progress-value{background:linear-gradient(90deg,var(--red),#ee7c6f)}.battery.low::-moz-progress-bar{background:linear-gradient(90deg,var(--red),#ee7c6f)}.last-seen{margin-top:9px;color:var(--muted);font-size:11px}
+.empty{border:1px dashed #ced5e1;border-radius:12px;padding:24px;text-align:center;color:var(--muted)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);font-size:12px}th{background:#f8f9fc;color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.04em}tbody tr:last-child td{border-bottom:0}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e9efff;color:#3155ba;font-weight:700}.badge.completed{background:#eaf8f1;color:#14794f}.badge.failed,.badge.fallback{background:#fff1e5;color:#9a520e}.source{font-weight:650;color:#4a5b88}.events{display:grid;gap:8px}.event{display:grid;grid-template-columns:10px minmax(150px,1fr) auto;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding:9px 2px}.event:last-child{border-bottom:0}.severity{width:8px;height:8px;border-radius:50%;background:var(--blue)}.severity.warning{background:var(--amber)}.severity.critical{background:var(--red)}.event-title{font-weight:650;font-size:13px}.event-meta,.event-time{color:var(--muted);font-size:11px}.footer{text-align:center;color:var(--muted);font-size:11px;margin-top:20px}
+@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.scenario-buttons{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.hero{padding:22px}.live{display:none}main{padding:18px 14px 36px}.metrics{grid-template-columns:1fr 1fr}.scenario-buttons{grid-template-columns:1fr}.panel{padding:16px}.metric-value{font-size:21px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style></head>
+<body><header class="hero"><div class="brand"><div class="heart" aria-hidden="true">♥</div><div><h1>Care Orchestration Lab</h1><p class="subtitle">Wearable + home robot simulation</p></div><div class="live"><span id="stream-dot" class="dot"></span><span id="stream-status">Connecting</span></div></div></header>
+<main>
+<section class="metrics" aria-label="Simulation summary"><article class="metric"><div class="metric-label">Devices online</div><div id="online-count" class="metric-value">0 / 0</div></article><article class="metric"><div class="metric-label">Active scenarios</div><div id="active-count" class="metric-value">0</div></article><article class="metric"><div class="metric-label">Recent events</div><div id="event-count" class="metric-value">0</div></article><article class="metric"><div class="metric-label">Last update</div><div id="updated-at" class="metric-value">—</div></article></section>
+<section class="panel"><div class="panel-head"><div><h2>Launch a care scenario</h2><p class="hint">Development-only controls execute against the local AI-native server.</p></div></div><div class="scenario-buttons" id="scenario-buttons">
+<button class="scenario-button" data-scenario="fall-detection"><span class="scenario-icon" aria-hidden="true">⚠️</span><span class="scenario-name">Fall response</span><span class="scenario-priority">Critical</span></button>
+<button class="scenario-button" data-scenario="medication-adherence"><span class="scenario-icon" aria-hidden="true">💊</span><span class="scenario-name">Medication reminder</span><span class="scenario-priority">Standard</span></button>
+<button class="scenario-button" data-scenario="emotional-check-in"><span class="scenario-icon" aria-hidden="true">💗</span><span class="scenario-name">Emotional check-in</span><span class="scenario-priority">Standard</span></button>
+<button class="scenario-button" data-scenario="cognitive-engagement"><span class="scenario-icon" aria-hidden="true">🧠</span><span class="scenario-name">Cognitive engagement</span><span class="scenario-priority">Background</span></button>
+<button class="scenario-button" data-scenario="ai-angel-auto-dial"><span class="scenario-icon" aria-hidden="true">📞</span><span class="scenario-name">AI Angel auto-dial</span><span class="scenario-priority">Critical</span></button>
+</div><div id="trigger-result" class="result" role="status" aria-live="polite"></div></section>
+<section class="panel"><div class="panel-head"><div><h2>Connected devices</h2><p class="hint">Redacted references and live synthetic telemetry.</p></div></div><div id="devices" class="device-grid"><div class="empty">Waiting for device telemetry…</div></div></section>
+<section class="panel"><div class="panel-head"><div><h2>Scenario executions</h2><p class="hint">AI-native executions and simulator lifecycle events.</p></div></div><div class="table-wrap"><table><thead><tr><th>Scenario</th><th>Source</th><th>Status</th><th>Execution</th><th>Devices</th><th>Observed</th></tr></thead><tbody id="scenario-rows"><tr><td colspan="6">No scenario executions yet.</td></tr></tbody></table></div></section>
+<section class="panel"><div class="panel-head"><div><h2>Recent events</h2><p class="hint">The latest ten safety, wellness, and lifecycle events.</p></div></div><div id="events" class="events"><div class="empty">Waiting for events…</div></div></section>
+<p class="footer">Local synthetic data only · Raw media, device identifiers, and credentials are never displayed</p>
+</main>
+<script nonce="${nonce}">
+'use strict';
+(function(){
+  var dashboardUserId=${JSON.stringify(dashboardUserId)};
+  var snapshot={devices:[],scenarioExecutions:[],lastEvents:[],generatedAt:0};
+  var realExecutions=[];
+  var refreshTimer;
+  var names={'fall-detection':'Fall response','fall_detection':'Fall response','medication-adherence':'Medication adherence','medication_adherence':'Medication adherence','emotional-check-in':'Emotional check-in','emotional_check_in':'Emotional check-in','cognitive-engagement':'Cognitive engagement','cognitive_engagement':'Cognitive engagement','ai-angel-auto-dial':'AI Angel auto-dial','ai_angel_auto_dial':'AI Angel auto-dial'};
+  function el(tag,className,text){var node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=String(text);return node}
+  function time(value){var date=new Date(Number(value));return Number.isFinite(date.getTime())?date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—'}
+  function label(value){return names[value]||String(value||'Unknown').replace(/[_-]+/g,' ')}
+  function shortRef(value){var text=String(value||'—');return text.length>20?text.slice(0,10)+'…'+text.slice(-6):text}
+  function normalizeExecutions(payload){var body=payload&&payload.response?payload.response:payload;var list=body&&(body.executions||body.items||body.started);return Array.isArray(list)?list:[]}
+  function renderDevices(){var root=document.getElementById('devices');root.replaceChildren();var devices=Array.isArray(snapshot.devices)?snapshot.devices:[];if(!devices.length){root.append(el('div','empty','Waiting for device telemetry…'));return}devices.forEach(function(device){var card=el('article','device');var top=el('div','device-top');top.append(el('div','device-icon',device.deviceType==='wearable'?'⌚':'🤖'));var title=el('div');title.append(el('div','device-title',device.deviceType==='wearable'?'Safety wearable':'Home companion robot'));title.append(el('div','reference',shortRef(device.deviceReference)));top.append(title);top.append(el('span','status'+(device.online?'':' offline'),device.online?'Online':'Offline'));card.append(top);var state=el('div','device-state');state.append(el('span','',label(device.status)));state.append(el('span','',String(device.batteryPercent)+'% battery'));card.append(state);var battery=el('progress','battery'+(Number(device.batteryPercent)<20?' low':''));battery.max=100;battery.value=Math.max(0,Math.min(100,Number(device.batteryPercent)||0));battery.setAttribute('aria-label','Battery '+String(device.batteryPercent)+' percent');card.append(battery);card.append(el('div','last-seen','Last seen '+time(device.observedAt)));root.append(card)})}
+  function executionRecord(item,source){var scenario=item.scenarioId||item.scenario_id;var execution=item.executionId||item.execution_id||item.executionReference||item.id;var status=item.status||item.state||'started';var observed=item.updatedAt||item.updated_at||item.observedAt||item.observed_at||item.startedAt||item.started_at||item.createdAt||item.created_at||Date.now();var refs=item.deviceReferences||item.device_references||[];if(!Array.isArray(refs)&&refs&&typeof refs==='object')refs=Object.values(refs).filter(function(value){return typeof value==='string'});return {scenario:scenario,execution:execution,status:status,observed:observed,refs:Array.isArray(refs)?refs:[],source:source}}
+  function renderScenarios(){var root=document.getElementById('scenario-rows');root.replaceChildren();var synthetic=(Array.isArray(snapshot.scenarioExecutions)?snapshot.scenarioExecutions:[]).map(function(x){return executionRecord(x,'Simulator')});var real=realExecutions.map(function(x){return executionRecord(x,'AI-native')});var rows=real.concat(synthetic).sort(function(a,b){return Number(b.observed)-Number(a.observed)}).slice(0,30);if(!rows.length){var tr=el('tr');var td=el('td','','No scenario executions yet.');td.colSpan=6;tr.append(td);root.append(tr);return}rows.forEach(function(item){var tr=el('tr');tr.append(el('td','',label(item.scenario)));tr.append(el('td','source',item.source));var statusCell=el('td');statusCell.append(el('span','badge '+String(item.status),String(item.status)));tr.append(statusCell);tr.append(el('td','reference',shortRef(item.execution)));tr.append(el('td','reference',item.refs.length?item.refs.map(shortRef).join(', '):'—'));tr.append(el('td','',time(item.observed)));root.append(tr)})}
+  function renderEvents(){var root=document.getElementById('events');root.replaceChildren();var events=Array.isArray(snapshot.lastEvents)?snapshot.lastEvents.slice().reverse():[];if(!events.length){root.append(el('div','empty','Waiting for events…'));return}events.forEach(function(item){var row=el('article','event');row.append(el('span','severity '+String(item.severity||'info')));var detail=el('div');detail.append(el('div','event-title',label(item.eventType)));detail.append(el('div','event-meta',[item.deviceType,label(item.scenarioId),item.scenarioStatus].filter(Boolean).join(' · ')));row.append(detail);row.append(el('time','event-time',time(item.occurredAt)));root.append(row)})}
+  function renderMetrics(){var devices=Array.isArray(snapshot.devices)?snapshot.devices:[];document.getElementById('online-count').textContent=devices.filter(function(x){return x.online}).length+' / '+devices.length;var all=realExecutions.concat(Array.isArray(snapshot.scenarioExecutions)?snapshot.scenarioExecutions:[]);document.getElementById('active-count').textContent=String(all.filter(function(x){return ['started','queued','running'].includes(x.status||x.state)}).length);document.getElementById('event-count').textContent=String(Array.isArray(snapshot.lastEvents)?snapshot.lastEvents.length:0);document.getElementById('updated-at').textContent=time(snapshot.generatedAt)}
+  function render(){renderDevices();renderScenarios();renderEvents();renderMetrics()}
+  function connection(connected){document.getElementById('stream-dot').className='dot'+(connected?' connected':'');document.getElementById('stream-status').textContent=connected?'Live':'Reconnecting'}
+  async function post(path,body){var response=await fetch(path,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)});var payload;try{payload=await response.json()}catch(_error){payload={error:'INVALID_RESPONSE'}}if(!response.ok){throw new Error(String(payload.error||'REQUEST_FAILED'))}return payload}
+  async function refreshReal(){try{var payload=await post('/api/v1/simulation/executions',{userId:dashboardUserId});realExecutions=normalizeExecutions(payload);renderScenarios();renderMetrics()}catch(_error){realExecutions=[];renderScenarios();renderMetrics()}}
+  document.getElementById('scenario-buttons').addEventListener('click',async function(event){var button=event.target.closest('button[data-scenario]');if(!button)return;var result=document.getElementById('trigger-result');button.disabled=true;result.className='result visible';result.textContent='Starting '+label(button.dataset.scenario)+'…';try{var payload=await post('/api/v1/simulation/trigger',{scenarioId:button.dataset.scenario,userId:dashboardUserId,deviceId:'wearable-1',robotDeviceId:'home-robot-1',occurredAt:Date.now()});var upstream=payload.response||payload;result.textContent='Started '+label(button.dataset.scenario)+(upstream.executionId?' · '+shortRef(upstream.executionId):'');await refreshReal()}catch(error){result.className='result visible error';result.textContent='Could not start scenario: '+String(error.message||'REQUEST_FAILED')}finally{button.disabled=false}});
+  var stream=new EventSource('/api/v1/simulation/dashboard/events',{withCredentials:true});stream.addEventListener('dashboard',function(event){try{snapshot=JSON.parse(event.data);render();connection(true)}catch(_error){connection(false)}});stream.onopen=function(){connection(true)};stream.onerror=function(){connection(false)};
+  refreshReal();refreshTimer=setInterval(refreshReal,3000);window.addEventListener('beforeunload',function(){clearInterval(refreshTimer);stream.close()},{once:true});
+}());
+</script></body></html>`;
   response.writeHead(200, {
     'Cache-Control': 'no-store',
     'Content-Length': Buffer.byteLength(body),
-    'Content-Security-Policy': "default-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    'Content-Security-Policy': `default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'; connect-src 'self'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}'`,
     'Content-Type': 'text/html; charset=utf-8',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
     'Referrer-Policy': 'no-referrer',
+    'Set-Cookie': `${DASHBOARD_COOKIE_NAME}=${dashboardSessionToken}; HttpOnly; SameSite=Strict; Path=/api/v1/simulation; Max-Age=${DASHBOARD_COOKIE_MAX_AGE_SECONDS}`,
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY'
   });
@@ -432,6 +500,26 @@ function normalizeAsyncAckCallbackUrl(value: string | undefined): string | undef
   return parsed.toString();
 }
 
+function normalizeLoopbackMainServerUrl(value: string | undefined): URL {
+  let parsed: URL;
+  try {
+    parsed = new URL(value ?? DEFAULT_MAIN_SERVER_URL);
+  } catch {
+    throw new TypeError('Mock dashboard main-server URL is invalid');
+  }
+  const hostname = parsed.hostname.replace(/^\[|\]$/g, '');
+  if (!['127.0.0.1', 'localhost', '::1'].includes(hostname)
+    || !['http:', 'https:'].includes(parsed.protocol)
+    || parsed.pathname !== '/'
+    || parsed.username
+    || parsed.password
+    || parsed.search
+    || parsed.hash) {
+    throw new TypeError('Mock dashboard main-server URL must be credential-free and loopback-only');
+  }
+  return parsed;
+}
+
 function normalizeAsyncAckCredentials(
   value: Readonly<Record<string, string>> | undefined,
   outboundSecrets: readonly string[]
@@ -477,6 +565,7 @@ export class ManufacturerMockServer {
   private readonly maxConnections: number;
   private readonly maxConcurrentRequests: number;
   private readonly maxTelemetryStreams: number;
+  private readonly maxDashboardStreams: number;
   private readonly signedActionFutureSkewMs: number;
   private readonly fallEventRate: number;
   private readonly stressEventRate: number;
@@ -486,6 +575,11 @@ export class ManufacturerMockServer {
   private readonly apiKey: string;
   private readonly accessToken: string;
   private readonly sessionToken: string;
+  private readonly dashboardSessionToken: string;
+  private readonly mainServerUrl: URL;
+  private readonly mainServerTimeoutMs: number;
+  private readonly maxMainServerResponseBytes: number;
+  private readonly dashboardUserId: string;
   private readonly asyncAckCallbackUrl?: string;
   private readonly asyncAckCallbackCredentials: ReadonlyMap<string, string>;
   private readonly asyncAckDelayMs: number;
@@ -498,6 +592,8 @@ export class ManufacturerMockServer {
   private readonly server: Server;
   private readonly sockets = new Set<Socket>();
   private readonly telemetryIntervals = new Set<NodeJS.Timeout>();
+  private readonly dashboardStreams = new Set<ServerResponse>();
+  private readonly mainServerControllers = new Set<AbortController>();
   private readonly pendingDelays = new Map<NodeJS.Timeout, () => void>();
   private readonly pendingAsyncAckTimers = new Set<NodeJS.Timeout>();
   private readonly pendingAsyncAcks = new Set<Promise<void>>();
@@ -521,6 +617,9 @@ export class ManufacturerMockServer {
   private startedAddress?: ManufacturerMockAddress;
   private startingPromise?: Promise<ManufacturerMockAddress>;
   private stoppingPromise?: Promise<void>;
+  private simulationHeartbeat?: NodeJS.Timeout;
+  private dashboardHeartbeat?: NodeJS.Timeout;
+  private dashboardBroadcastImmediate?: NodeJS.Immediate;
 
   constructor(options: ManufacturerMockServerOptions = {}) {
     const environment = options.environment ?? process.env.NODE_ENV ?? 'development';
@@ -633,6 +732,13 @@ export class ManufacturerMockServer {
       10_000,
       'Mock manufacturer telemetry-stream limit'
     );
+    this.maxDashboardStreams = boundedInteger(
+      options.maxDashboardStreams,
+      DEFAULT_MAX_DASHBOARD_STREAMS,
+      1,
+      100,
+      'Mock manufacturer dashboard-stream limit'
+    );
     this.signedActionFutureSkewMs = boundedInteger(
       options.signedActionFutureSkewMs,
       DEFAULT_SIGNED_ACTION_FUTURE_SKEW_MS,
@@ -668,6 +774,28 @@ export class ManufacturerMockServer {
     this.apiKey = normalizeSecret(options.apiKey, 'mock-server-only-api-key', 'Mock manufacturer API key');
     this.accessToken = normalizeSecret(options.accessToken, 'mock-development-access-token', 'Mock manufacturer access token');
     this.sessionToken = normalizeSecret(options.sessionToken, 'mock-development-session-token', 'Mock bridge session token');
+    // Ephemeral per process: the dashboard cookie must not be derivable from
+    // the intentionally public development defaults used by this simulator.
+    this.dashboardSessionToken = randomBytes(32).toString('base64url');
+    this.mainServerUrl = normalizeLoopbackMainServerUrl(options.mainServerUrl);
+    this.mainServerTimeoutMs = boundedInteger(
+      options.mainServerTimeoutMs,
+      DEFAULT_MAIN_SERVER_TIMEOUT_MS,
+      100,
+      120_000,
+      'Mock dashboard main-server timeout'
+    );
+    this.maxMainServerResponseBytes = boundedInteger(
+      options.maxMainServerResponseBytes,
+      DEFAULT_MAX_MAIN_SERVER_RESPONSE_BYTES,
+      128,
+      1024 * 1024,
+      'Mock dashboard main-server response limit'
+    );
+    this.dashboardUserId = options.dashboardUserId ?? 'test-user-1';
+    if (!IDENTIFIER_PATTERN.test(this.dashboardUserId)) {
+      throw new TypeError('Mock dashboard user identifier is invalid');
+    }
     this.asyncAckCallbackUrl = normalizeAsyncAckCallbackUrl(options.asyncAckCallbackUrl);
     this.asyncAckCallbackCredentials = normalizeAsyncAckCredentials(
       options.asyncAckCallbackCredentials,
@@ -742,6 +870,7 @@ export class ManufacturerMockServer {
       connections: this.sockets.size,
       activeRequests: this.activeRequests,
       telemetryStreams: this.activeTelemetryStreams,
+      dashboardStreams: this.dashboardStreams.size,
       queueKeys: this.queueDepths.size,
       queuedCommands: this.queuedCommandsTotal
     });
@@ -828,6 +957,12 @@ export class ManufacturerMockServer {
       const port = (address as AddressInfo).port;
       const urlHost = this.host === '::1' ? '[::1]' : this.host;
       this.startedAddress = Object.freeze({ host: this.host, port, baseUrl: `http://${urlHost}:${port}/` });
+      this.refreshDefaultSimulationDevices();
+      this.simulationHeartbeat = setInterval(
+        () => this.refreshDefaultSimulationDevices(),
+        Math.max(100, this.telemetryIntervalMs)
+      );
+      this.simulationHeartbeat.unref?.();
       return this.startedAddress;
     })().finally(() => { this.startingPromise = undefined; });
     return this.startingPromise;
@@ -841,8 +976,18 @@ export class ManufacturerMockServer {
         try { await pendingStart; } catch { return; }
       }
       if (!this.server.listening) return;
+      if (this.simulationHeartbeat) clearInterval(this.simulationHeartbeat);
+      this.simulationHeartbeat = undefined;
       for (const interval of this.telemetryIntervals) clearInterval(interval);
       this.telemetryIntervals.clear();
+      if (this.dashboardHeartbeat) clearInterval(this.dashboardHeartbeat);
+      this.dashboardHeartbeat = undefined;
+      if (this.dashboardBroadcastImmediate) clearImmediate(this.dashboardBroadcastImmediate);
+      this.dashboardBroadcastImmediate = undefined;
+      for (const response of this.dashboardStreams) response.destroy();
+      this.dashboardStreams.clear();
+      for (const controller of this.mainServerControllers) controller.abort();
+      this.mainServerControllers.clear();
       for (const [timeout, release] of this.pendingDelays) {
         clearTimeout(timeout);
         release();
@@ -870,6 +1015,7 @@ export class ManufacturerMockServer {
       this.activeTelemetryStreams = 0;
       this.pendingAsyncAcks.clear();
       this.asyncAckControllers.clear();
+      this.mainServerControllers.clear();
     });
     return this.stoppingPromise;
   }
@@ -890,6 +1036,7 @@ export class ManufacturerMockServer {
       if (!request.url || request.url.length > 2_048) throw new MockRequestError(414, 'URL_TOO_LONG');
       const url = new URL(request.url, 'http://manufacturer-mock.local');
       if (url.search || url.hash) throw new MockRequestError(400, 'QUERY_NOT_ALLOWED');
+      if (request.method === 'POST') this.requireJsonContentType(request);
       const statusDevice = parseDevicePath(url.pathname, '/api/v1/status/');
       const telemetryDevice = parseDevicePath(url.pathname, '/api/v1/telemetry/');
       const wearableTelemetryDevice = parseDevicePath(url.pathname, '/api/v1/wearable/telemetry/');
@@ -897,14 +1044,51 @@ export class ManufacturerMockServer {
 
       if (request.method === 'GET' && url.pathname === '/dashboard') {
         route = '/dashboard';
-        writeDashboardHtml(response, this.getSimulationDashboard());
+        writeDashboardHtml(response, this.dashboardSessionToken, this.dashboardUserId);
         return;
       }
 
       if (request.method === 'GET' && url.pathname === '/api/v1/simulation/dashboard') {
         route = '/api/v1/simulation/dashboard';
-        this.requireBearer(request, this.accessToken);
+        this.requireDashboardAccess(request);
         writeJson(response, 200, { ...this.getSimulationDashboard() });
+        return;
+      }
+
+      if (request.method === 'GET' && url.pathname === '/api/v1/simulation/dashboard/events') {
+        route = '/api/v1/simulation/dashboard/events';
+        this.requireDashboardAccess(request);
+        this.startDashboardStream(request, response);
+        return;
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/v1/simulation/trigger') {
+        route = '/api/v1/simulation/trigger';
+        this.requireDashboardMutationAccess(request);
+        const body = await this.readJson(request);
+        const scenario = this.parseDashboardScenarioRequest(body);
+        const upstream = await this.requestMainServer('/v1/scenarios', {
+          method: 'POST',
+          body: scenario
+        });
+        writeJson(response, upstream.statusCode, {
+          upstreamStatus: upstream.statusCode,
+          response: upstream.payload
+        });
+        return;
+      }
+
+      if (request.method === 'POST' && url.pathname === '/api/v1/simulation/executions') {
+        route = '/api/v1/simulation/executions';
+        this.requireDashboardMutationAccess(request);
+        const body = await this.readJson(request);
+        const userId = this.parseDashboardExecutionsRequest(body);
+        const pathname = `/v1/scenarios/executions?userId=${encodeURIComponent(userId)}`;
+        const upstream = await this.requestMainServer(pathname, { method: 'GET' });
+        writeJson(response, upstream.statusCode, {
+          upstreamStatus: upstream.statusCode,
+          response: upstream.payload
+        });
         return;
       }
 
@@ -934,6 +1118,9 @@ export class ManufacturerMockServer {
         route = '/api/v1/authenticate';
         this.requireBearer(request, this.apiKey);
         const body = await this.readJson(request);
+        if (!hasOnlyKeys(body, ['device_id']) || Object.keys(body).length !== 1) {
+          throw new MockRequestError(400, 'AUTHENTICATION_REQUEST_INVALID');
+        }
         deviceId = requiredIdentifier(body.device_id, 'device_id');
         await this.simulateTransport();
         writeJson(response, 200, {
@@ -948,6 +1135,11 @@ export class ManufacturerMockServer {
         route = '/api/v1/command';
         this.requireBearer(request, this.accessToken);
         const body = await this.readJson(request);
+        if (!hasOnlyKeys(body, ['device_id', 'command', 'parameters', 'idempotency_key'])
+          || !Object.hasOwn(body, 'device_id')
+          || !Object.hasOwn(body, 'command')) {
+          throw new MockRequestError(400, 'COMMAND_INVALID');
+        }
         deviceId = requiredIdentifier(body.device_id, 'device_id');
         const command = requiredCommand(body.command);
         if (body.parameters !== undefined && !isObject(body.parameters)) {
@@ -1069,7 +1261,17 @@ export class ManufacturerMockServer {
   ): Promise<void> {
     this.requireBearer(request, this.apiKey);
     if (endpoint === 'session') {
-      if (body.schema_version !== BRIDGE_PROTOCOL) throw new MockRequestError(400, 'SESSION_INVALID');
+      const pairingToken = body.pairing_token;
+      if (!hasOnlyKeys(body, ['schema_version', 'device_id', 'pairing_token'])
+        || !Object.hasOwn(body, 'schema_version')
+        || !Object.hasOwn(body, 'device_id')
+        || body.schema_version !== BRIDGE_PROTOCOL
+        || (pairingToken !== undefined
+          && (typeof pairingToken !== 'string'
+            || pairingToken.length < 1
+            || pairingToken.length > 4_096))) {
+        throw new MockRequestError(400, 'SESSION_INVALID');
+      }
       requiredIdentifier(body.device_id, 'device_id');
       await this.simulateTransport();
       writeJson(response, 200, { authenticated: true, session_token: this.sessionToken });
@@ -1080,7 +1282,10 @@ export class ManufacturerMockServer {
     }
 
     if (endpoint === 'commands') {
-      if (body.schema_version !== BRIDGE_PROTOCOL || !isObject(body.parameters)) {
+      if (!hasOnlyKeys(body, ['schema_version', 'device_id', 'command', 'parameters'])
+        || Object.keys(body).length !== 4
+        || body.schema_version !== BRIDGE_PROTOCOL
+        || !isObject(body.parameters)) {
         throw new MockRequestError(400, 'COMMAND_INVALID');
       }
       const deviceId = requiredIdentifier(body.device_id, 'device_id');
@@ -1180,6 +1385,174 @@ export class ManufacturerMockServer {
     }
   }
 
+  private requireJsonContentType(request: IncomingMessage): void {
+    const contentType = String(request.headers['content-type'] ?? '').toLowerCase();
+    if (!/^application\/json(?:\s*;|$)/.test(contentType)) {
+      throw new MockRequestError(415, 'CONTENT_TYPE_INVALID');
+    }
+  }
+
+  private hasDashboardCookie(request: IncomingMessage): boolean {
+    const header = request.headers.cookie;
+    if (typeof header !== 'string' || header.length > 4_096) return false;
+    const prefix = `${DASHBOARD_COOKIE_NAME}=`;
+    const value = header.split(';', 32)
+      .map((entry) => entry.trim())
+      .find((entry) => entry.startsWith(prefix))
+      ?.slice(prefix.length);
+    if (!value || !BASE64URL_PATTERN.test(value)) return false;
+    const actual = Buffer.from(value);
+    const expected = Buffer.from(this.dashboardSessionToken);
+    return actual.byteLength === expected.byteLength && timingSafeEqual(actual, expected);
+  }
+
+  private requireDashboardAccess(request: IncomingMessage): void {
+    if (request.headers.authorization === `Bearer ${this.accessToken}`) return;
+    if (!this.hasDashboardCookie(request)) throw new MockRequestError(401, 'UNAUTHORIZED');
+  }
+
+  private requireDashboardMutationAccess(request: IncomingMessage): void {
+    if (request.headers.authorization === `Bearer ${this.accessToken}`) return;
+    if (!this.hasDashboardCookie(request)) throw new MockRequestError(401, 'UNAUTHORIZED');
+    const expectedOrigin = this.startedAddress?.baseUrl.replace(/\/$/, '');
+    const fetchSite = request.headers['sec-fetch-site'];
+    if (!expectedOrigin
+      || request.headers.origin !== expectedOrigin
+      || (fetchSite !== undefined && fetchSite !== 'same-origin')) {
+      throw new MockRequestError(403, 'DASHBOARD_ORIGIN_REJECTED');
+    }
+  }
+
+  private parseDashboardScenarioRequest(body: JsonObject): JsonObject {
+    if (!hasOnlyKeys(body, ['scenarioId', 'userId', 'deviceId', 'robotDeviceId', 'occurredAt'])
+      || Object.keys(body).length !== 5
+      || typeof body.scenarioId !== 'string'
+      || !(DASHBOARD_SCENARIO_IDS as readonly string[]).includes(body.scenarioId)
+      || typeof body.userId !== 'string'
+      || !IDENTIFIER_PATTERN.test(body.userId)
+      || typeof body.deviceId !== 'string'
+      || !IDENTIFIER_PATTERN.test(body.deviceId)
+      || typeof body.robotDeviceId !== 'string'
+      || !IDENTIFIER_PATTERN.test(body.robotDeviceId)
+      || !Number.isSafeInteger(body.occurredAt)
+      || Math.abs(Number(body.occurredAt) - this.simulationNow()) > 5 * 60_000) {
+      throw new MockRequestError(400, 'DASHBOARD_SCENARIO_INVALID');
+    }
+    if (body.userId !== this.dashboardUserId) {
+      throw new MockRequestError(403, 'DASHBOARD_ACCOUNT_REJECTED');
+    }
+    return Object.freeze({
+      scenarioId: body.scenarioId,
+      userId: body.userId,
+      deviceId: body.deviceId,
+      robotDeviceId: body.robotDeviceId,
+      occurredAt: body.occurredAt
+    });
+  }
+
+  private parseDashboardExecutionsRequest(body: JsonObject): string {
+    if (!hasOnlyKeys(body, ['userId'])
+      || Object.keys(body).length !== 1
+      || typeof body.userId !== 'string'
+      || !IDENTIFIER_PATTERN.test(body.userId)) {
+      throw new MockRequestError(400, 'DASHBOARD_EXECUTIONS_INVALID');
+    }
+    if (body.userId !== this.dashboardUserId) {
+      throw new MockRequestError(403, 'DASHBOARD_ACCOUNT_REJECTED');
+    }
+    return body.userId;
+  }
+
+  private async readMainServerJson(response: Response): Promise<JsonObject> {
+    const advertised = response.headers.get('content-length');
+    if (advertised && /^\d{1,12}$/.test(advertised)
+      && Number(advertised) > this.maxMainServerResponseBytes) {
+      try { await response.body?.cancel(); } catch {}
+      throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_TOO_LARGE');
+    }
+    if (!response.body) return {};
+    const reader = response.body.getReader();
+    const chunks: Buffer[] = [];
+    let total = 0;
+    try {
+      while (true) {
+        const chunk = await reader.read();
+        if (chunk.done) break;
+        total += chunk.value.byteLength;
+        if (total > this.maxMainServerResponseBytes) {
+          await reader.cancel();
+          throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_TOO_LARGE');
+        }
+        chunks.push(Buffer.from(chunk.value));
+      }
+    } finally {
+      try { reader.releaseLock(); } catch {}
+    }
+    let parsed: unknown;
+    try {
+      parsed = total === 0 ? {} : JSON.parse(Buffer.concat(chunks, total).toString('utf8'));
+    } catch {
+      throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_INVALID');
+    }
+    if (!isObject(parsed)) throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_INVALID');
+    return parsed;
+  }
+
+  private async requestMainServer(
+    pathname: string,
+    input: { readonly method: 'GET' | 'POST'; readonly body?: JsonObject }
+  ): Promise<{ readonly statusCode: number; readonly payload: JsonObject }> {
+    const controller = new AbortController();
+    this.mainServerControllers.add(controller);
+    const timeout = setTimeout(() => controller.abort(), this.mainServerTimeoutMs);
+    timeout.unref?.();
+    try {
+      let response: Response;
+      try {
+        response = await fetch(new URL(pathname, this.mainServerUrl), {
+          method: input.method,
+          redirect: 'error',
+          headers: {
+            Accept: 'application/json',
+            ...(input.body ? { 'Content-Type': 'application/json' } : {})
+          },
+          ...(input.body ? { body: JSON.stringify(input.body) } : {}),
+          signal: controller.signal
+        });
+      } catch {
+        throw new MockRequestError(
+          controller.signal.aborted ? 504 : 502,
+          controller.signal.aborted ? 'MAIN_SERVER_TIMEOUT' : 'MAIN_SERVER_UNAVAILABLE'
+        );
+      }
+      if (!String(response.headers.get('content-type') ?? '').toLowerCase()
+        .startsWith('application/json')) {
+        try { await response.body?.cancel(); } catch {}
+        throw new MockRequestError(502, 'MAIN_SERVER_RESPONSE_INVALID');
+      }
+      let payload: JsonObject;
+      try {
+        payload = await this.readMainServerJson(response);
+      } catch (error) {
+        if (error instanceof MockRequestError) throw error;
+        throw new MockRequestError(
+          controller.signal.aborted ? 504 : 502,
+          controller.signal.aborted ? 'MAIN_SERVER_TIMEOUT' : 'MAIN_SERVER_RESPONSE_INVALID'
+        );
+      }
+      if (!response.ok) {
+        throw new MockRequestError(
+          response.status >= 500 ? 502 : response.status,
+          'MAIN_SERVER_REJECTED'
+        );
+      }
+      return Object.freeze({ statusCode: response.status, payload });
+    } finally {
+      clearTimeout(timeout);
+      this.mainServerControllers.delete(controller);
+    }
+  }
+
   private readIdempotencyKey(request: IncomingMessage, bodyValue?: unknown): string {
     const headerValue = request.headers['idempotency-key'];
     if (typeof headerValue === 'string'
@@ -1204,7 +1577,15 @@ export class ManufacturerMockServer {
       throw new MockRequestError(503, 'SIGNING_KEY_NOT_CONFIGURED');
     }
     const envelope = isObject(body.envelope) ? body.envelope : undefined;
-    if (!envelope
+    if (!hasOnlyKeys(body, ['envelope', 'payload', 'signature', 'algorithm'])
+      || Object.keys(body).length !== 4
+      || !envelope
+      || !hasOnlyKeys(envelope, [
+        'version', 'id', 'issued_at', 'expires_at', 'action', 'device_type',
+        'device_id', 'manufacturer_device_id', 'binding_epoch', 'adapter_id',
+        'contract_version', 'parameters'
+      ])
+      || Object.keys(envelope).length !== 12
       || body.algorithm !== 'Ed25519'
       || typeof body.payload !== 'string'
       || body.payload.length < 1
@@ -1641,6 +2022,7 @@ export class ManufacturerMockServer {
     });
     this.simulationEvents.push(event);
     this.trimToLimit(this.simulationEvents, MAX_SIMULATION_EVENTS);
+    this.scheduleDashboardBroadcast();
     return Object.freeze({ ...event, deviceReferences: Object.freeze([...event.deviceReferences]) });
   }
 
@@ -1649,6 +2031,27 @@ export class ManufacturerMockServer {
     const next = (this.simulationTicks.get(key) ?? 0) + 1;
     this.simulationTicks.set(key, next);
     return next;
+  }
+
+  private refreshDefaultSimulationDevices(): void {
+    if (this.stoppingPromise) return;
+    const observedAt = this.simulationNow();
+    const wearableReference = safeReference('wearable-1');
+    const wearableTick = this.nextSimulationTick('wearable', wearableReference);
+    this.updateSimulatedDeviceState('wearable', wearableReference, {
+      online: true,
+      batteryPercent: Math.max(15, Math.round((92 - (wearableTick % 770) * 0.1) * 10) / 10),
+      status: wearableTick % 4 === 0 ? 'walking' : 'resting',
+      observedAt
+    });
+    const robotReference = safeReference('home-robot-1');
+    const robotTick = this.nextSimulationTick('home_robot', robotReference);
+    this.updateSimulatedDeviceState('home_robot', robotReference, {
+      online: true,
+      batteryPercent: 78,
+      status: robotTick % 3 === 0 ? 'navigating' : 'idle',
+      observedAt
+    });
   }
 
   private updateSimulatedDeviceState(
@@ -1669,6 +2072,7 @@ export class ManufacturerMockServer {
     // Refresh insertion order so the least recently observed device is evicted.
     this.simulatedDeviceStates.delete(key);
     this.simulatedDeviceStates.set(key, record);
+    this.scheduleDashboardBroadcast();
     return record;
   }
 
@@ -1852,6 +2256,91 @@ export class ManufacturerMockServer {
     };
   }
 
+  private scheduleDashboardBroadcast(): void {
+    if (this.dashboardStreams.size === 0 || this.dashboardBroadcastImmediate) return;
+    this.dashboardBroadcastImmediate = setImmediate(() => {
+      this.dashboardBroadcastImmediate = undefined;
+      if (this.stoppingPromise) return;
+      let frame: string;
+      try {
+        frame = `event: dashboard\ndata: ${JSON.stringify(this.getSimulationDashboard())}\n\n`;
+      } catch {
+        for (const response of this.dashboardStreams) response.destroy();
+        return;
+      }
+      for (const response of [...this.dashboardStreams]) {
+        if (response.destroyed || response.writableEnded) {
+          this.dashboardStreams.delete(response);
+          continue;
+        }
+        try {
+          // A slow dashboard must never create an unbounded socket buffer.
+          if (!response.write(frame)) response.destroy();
+        } catch {
+          response.destroy();
+        }
+      }
+    });
+    this.dashboardBroadcastImmediate.unref?.();
+  }
+
+  private startDashboardStream(request: IncomingMessage, response: ServerResponse): void {
+    if (this.dashboardStreams.size >= this.maxDashboardStreams) {
+      throw new MockRequestError(429, 'DASHBOARD_STREAM_CAPACITY_EXCEEDED');
+    }
+    response.writeHead(200, {
+      'Cache-Control': 'no-cache, no-store',
+      Connection: 'keep-alive',
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'X-Accel-Buffering': 'no',
+      'X-Content-Type-Options': 'nosniff'
+    });
+    request.socket.setTimeout(0);
+    this.dashboardStreams.add(response);
+    let cleanedUp = false;
+    const cleanup = (): void => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      this.dashboardStreams.delete(response);
+      if (!request.socket.destroyed) {
+        request.socket.setTimeout(Math.min(120_000, this.requestTimeoutMs + 1_000));
+      }
+      if (this.dashboardStreams.size === 0 && this.dashboardHeartbeat) {
+        clearInterval(this.dashboardHeartbeat);
+        this.dashboardHeartbeat = undefined;
+      }
+    };
+    request.once('aborted', cleanup);
+    response.once('close', cleanup);
+    response.once('error', cleanup);
+    try {
+      const frame = `event: dashboard\ndata: ${JSON.stringify(this.getSimulationDashboard())}\n\n`;
+      if (!response.write(frame)) {
+        response.destroy();
+        return;
+      }
+    } catch {
+      response.destroy();
+      return;
+    }
+    if (!this.dashboardHeartbeat) {
+      this.dashboardHeartbeat = setInterval(() => {
+        for (const stream of [...this.dashboardStreams]) {
+          if (stream.destroyed || stream.writableEnded) {
+            this.dashboardStreams.delete(stream);
+            continue;
+          }
+          try {
+            if (!stream.write(': keepalive\n\n')) stream.destroy();
+          } catch {
+            stream.destroy();
+          }
+        }
+      }, Math.min(15_000, Math.max(1_000, this.requestTimeoutMs)));
+      this.dashboardHeartbeat.unref?.();
+    }
+  }
+
   private startTelemetryStream(
     request: IncomingMessage,
     response: ServerResponse,
@@ -1876,9 +2365,11 @@ export class ManufacturerMockServer {
     let backpressured = false;
     let cleanedUp = false;
     let interval: NodeJS.Timeout | undefined;
+    const onDrain = (): void => { backpressured = false; };
     const cleanup = (): void => {
       if (cleanedUp) return;
       cleanedUp = true;
+      response.removeListener('drain', onDrain);
       if (interval) {
         clearInterval(interval);
         this.telemetryIntervals.delete(interval);
@@ -1899,18 +2390,28 @@ export class ManufacturerMockServer {
           response.destroy();
           return;
         }
-        backpressured = !response.write(`event: ${eventName}\ndata: ${JSON.stringify(payload)}\n\n`);
-        if (backpressured) response.once('drain', () => { backpressured = false; });
+        try {
+          backpressured = !response.write(`event: ${eventName}\ndata: ${JSON.stringify(payload)}\n\n`);
+          if (backpressured) response.once('drain', onDrain);
+        } catch {
+          cleanup();
+          response.destroy();
+        }
       }
     };
+    request.once('aborted', cleanup);
+    response.once('close', cleanup);
+    response.once('error', cleanup);
+    if (request.aborted || response.destroyed || response.writableEnded) {
+      cleanup();
+      return;
+    }
     send();
-    if (!cleanedUp) {
+    if (!cleanedUp && !request.aborted && !response.destroyed && !response.writableEnded) {
       interval = setInterval(send, this.telemetryIntervalMs);
       interval.unref?.();
       this.telemetryIntervals.add(interval);
     }
-    request.once('aborted', cleanup);
-    response.once('close', cleanup);
   }
 }
 
@@ -1966,6 +2467,20 @@ async function runFromCommandLine(): Promise<void> {
       'MOCK_MANUFACTURER_MAX_TELEMETRY_STREAMS',
       DEFAULT_MAX_TELEMETRY_STREAMS
     ),
+    maxDashboardStreams: numericEnvironment(
+      'MOCK_MANUFACTURER_MAX_DASHBOARD_STREAMS',
+      DEFAULT_MAX_DASHBOARD_STREAMS
+    ),
+    mainServerUrl: process.env.MOCK_MAIN_SERVER_URL,
+    dashboardUserId: process.env.AI_NATIVE_DEMO_USER_ID,
+    mainServerTimeoutMs: numericEnvironment(
+      'MOCK_MAIN_SERVER_TIMEOUT_MS',
+      DEFAULT_MAIN_SERVER_TIMEOUT_MS
+    ),
+    maxMainServerResponseBytes: numericEnvironment(
+      'MOCK_MAIN_SERVER_MAX_RESPONSE_BYTES',
+      DEFAULT_MAX_MAIN_SERVER_RESPONSE_BYTES
+    ),
     asyncAckCallbackUrl: process.env.MOCK_MANUFACTURER_ACK_CALLBACK_URL,
     asyncAckCallbackCredentials: Object.keys(asyncAckCallbackCredentials).length
       ? asyncAckCallbackCredentials
@@ -2000,7 +2515,14 @@ async function runFromCommandLine(): Promise<void> {
     ],
     failureRate: numericEnvironment('MOCK_MANUFACTURER_FAILURE_RATE', DEFAULT_FAILURE_RATE)
   })}\n`);
-  const shutdown = (): void => { void simulator.stop().then(() => process.exit(0)); };
+  let stopPromise: Promise<void> | undefined;
+  const shutdown = (): void => {
+    if (stopPromise) return;
+    stopPromise = simulator.stop().catch(() => {
+      process.stderr.write('Manufacturer mock shutdown failed\n');
+      process.exitCode = 1;
+    });
+  };
   process.once('SIGINT', shutdown);
   process.once('SIGTERM', shutdown);
 }

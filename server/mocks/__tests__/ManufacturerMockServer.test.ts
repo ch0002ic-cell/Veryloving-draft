@@ -3,6 +3,7 @@ import { generateKeyPairSync, sign } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { connect, type AddressInfo } from 'node:net';
+import { Script } from 'node:vm';
 import { JiangzhiAdapter } from '../../src/adapters/JiangzhiAdapter';
 import type { FetchLike } from '../../src/adapters/RestRobotAdapter';
 import { YongyidaAdapter } from '../../src/adapters/YongyidaAdapter';
@@ -104,6 +105,33 @@ describe('ManufacturerMockServer', () => {
     ]));
   });
 
+  test('starts and advances the two default dashboard devices without an external telemetry consumer', async () => {
+    let currentTime = 1_750_000_000_000;
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      telemetryIntervalMs: 10,
+      now: () => currentTime,
+      log: () => undefined
+    });
+    await activeServer.start();
+    const first = activeServer.getSimulationDashboard();
+    expect(first.devices).toHaveLength(2);
+    expect(new Set(first.devices.map(({ deviceType }) => deviceType)))
+      .toEqual(new Set(['wearable', 'home_robot']));
+    const firstObserved = new Map(first.devices.map(({ deviceType, observedAt }) => [deviceType, observedAt]));
+
+    currentTime += 1_000;
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const advanced = activeServer.getSimulationDashboard();
+    expect(advanced.devices).toHaveLength(2);
+    expect(advanced.devices.every(({ deviceType, observedAt }) => (
+      observedAt > Number(firstObserved.get(deviceType))
+    ))).toBe(true);
+  });
+
   test('acknowledges camera readiness with only the exact opaque session reference', async () => {
     activeServer = createManufacturerMockServer({
       environment: 'test',
@@ -176,6 +204,46 @@ describe('ManufacturerMockServer', () => {
     expect(publicUrlAttempt.status).toBe(400);
     expect(await json(publicUrlAttempt)).toEqual({ error: 'CAMERA_SESSION_INVALID' });
     expect(activeServer.getCommandRecords()).toHaveLength(1);
+  });
+
+  test('requires JSON content types and exact core request fields', async () => {
+    activeServer = createManufacturerMockServer({
+      environment: 'test',
+      port: 0,
+      latencyMinMs: 0,
+      latencyMaxMs: 0,
+      failureRate: 0,
+      log: () => undefined
+    });
+    const { baseUrl } = await activeServer.start();
+    const wrongContentType = await fetch(new URL('/api/v1/authenticate', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${API_KEY}`, 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ device_id: 'device-001' })
+    });
+    expect(wrongContentType.status).toBe(415);
+    expect(await json(wrongContentType)).toEqual({ error: 'CONTENT_TYPE_INVALID' });
+
+    const unknownAuthenticationField = await fetch(new URL('/api/v1/authenticate', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: 'device-001', api_key: 'must-not-be-accepted' })
+    });
+    expect(unknownAuthenticationField.status).toBe(400);
+    expect(await json(unknownAuthenticationField)).toEqual({ error: 'AUTHENTICATION_REQUEST_INVALID' });
+
+    const unknownCommandField = await fetch(new URL('/api/v1/command', baseUrl), {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_id: 'device-001',
+        command: 'ACTIVATE_FALL_ALERT',
+        parameters: {},
+        private_note: 'must-not-be-accepted'
+      })
+    });
+    expect(unknownCommandField.status).toBe(400);
+    expect(await json(unknownCommandField)).toEqual({ error: 'COMMAND_INVALID' });
   });
 
   test('streams both edge devices simultaneously and exposes only a redacted bounded dashboard', async () => {
@@ -324,7 +392,7 @@ describe('ManufacturerMockServer', () => {
       contractVersion: 'vl-manufacturer-simulation-dashboard/1',
       synthetic: true
     });
-    expect((dashboard.devices as unknown[])).toHaveLength(2);
+    expect((dashboard.devices as unknown[])).toHaveLength(4);
     expect(dashboard.devices).toEqual(expect.arrayContaining([
       expect.objectContaining({ deviceType: 'home_robot', online: false, status: 'offline' })
     ]));
@@ -338,11 +406,28 @@ describe('ManufacturerMockServer', () => {
     const htmlResponse = await fetch(new URL('/dashboard', baseUrl));
     expect(htmlResponse.status).toBe(200);
     expect(htmlResponse.headers.get('content-security-policy')).toContain("default-src 'none'");
+    expect(htmlResponse.headers.get('content-security-policy')).toMatch(/script-src 'nonce-[A-Za-z0-9_-]+'/);
+    expect(htmlResponse.headers.get('content-security-policy')).not.toContain("'unsafe-inline'");
+    expect(htmlResponse.headers.get('set-cookie')).toMatch(
+      /^vl_mock_dashboard_session=[A-Za-z0-9_-]+; HttpOnly; SameSite=Strict; Path=\/api\/v1\/simulation;/
+    );
     const html = await htmlResponse.text();
-    expect(html).toContain('Device states, scenario logs, and last 10 events');
+    expect(html).toContain('Care Orchestration Lab');
+    expect(html).toContain('Connected devices');
+    expect(html).toContain('Scenario executions');
+    expect(html).toContain('Recent events');
+    expect(html.match(/data-scenario=/g)).toHaveLength(5);
+    expect(html).toContain("new EventSource('/api/v1/simulation/dashboard/events'");
+    expect(html).toContain("post('/api/v1/simulation/trigger'");
+    expect(html).toContain("post('/api/v1/simulation/executions'");
+    expect(html).not.toContain('http-equiv="refresh"');
     expect(html).not.toContain(rawWearableId);
     expect(html).not.toContain(rawRobotId);
-    expect(html).not.toContain('<script');
+    expect(html).not.toContain(ACCESS_TOKEN);
+    expect(html).not.toContain(SESSION_TOKEN);
+    const clientScript = html.match(/<script nonce="[A-Za-z0-9_-]+">([\s\S]+)<\/script>/)?.[1];
+    expect(clientScript).toBeTruthy();
+    expect(() => new Script(clientScript as string)).not.toThrow();
 
     expect(logs.map(({ route }) => route)).toEqual(expect.arrayContaining([
       '/api/v1/wearable/telemetry/{deviceId}',
@@ -436,6 +521,193 @@ describe('ManufacturerMockServer', () => {
     expect(JSON.stringify(logs)).not.toContain(rawRobotId);
   });
 
+  test('serves a cookie-protected live dashboard and proxies only strict loopback scenario requests', async () => {
+    const upstreamRequests: Array<{ readonly method: string; readonly url: string; readonly body?: unknown }> = [];
+    const upstreamServer = createServer((request, response) => {
+      void (async () => {
+        if (request.method === 'POST' && request.url === '/v1/scenarios') {
+          const chunks: Buffer[] = [];
+          for await (const chunk of request) chunks.push(Buffer.from(chunk));
+          const body = JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<string, unknown>;
+          upstreamRequests.push({ method: 'POST', url: request.url, body });
+          const payload = JSON.stringify({
+            status: 'started',
+            scenarioId: body.scenarioId,
+            executionId: 'execution-dashboard-001'
+          });
+          response.writeHead(202, {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(payload)
+          });
+          response.end(payload);
+          return;
+        }
+        if (request.method === 'GET'
+          && request.url === '/v1/scenarios/executions?userId=demo-account-2') {
+          upstreamRequests.push({ method: 'GET', url: request.url });
+          const payload = JSON.stringify({
+            executions: [{
+              executionId: 'execution-dashboard-001',
+              scenarioId: 'fall_detection',
+              status: 'started',
+              observedAt: Date.now(),
+              deviceReferences: { wearable: 'device_safe_wearable', homeRobot: 'device_safe_robot' }
+            }]
+          });
+          response.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(payload)
+          });
+          response.end(payload);
+          return;
+        }
+        response.writeHead(404).end();
+      })().catch(() => response.destroy());
+    });
+    await new Promise<void>((resolve, reject) => {
+      upstreamServer.once('error', reject);
+      upstreamServer.listen(0, '127.0.0.1', resolve);
+    });
+    const upstreamAddress = upstreamServer.address() as AddressInfo;
+
+    try {
+      activeServer = createManufacturerMockServer({
+        environment: 'test',
+        port: 0,
+        latencyMinMs: 0,
+        latencyMaxMs: 0,
+        maxDashboardStreams: 1,
+        dashboardUserId: 'demo-account-2',
+        mainServerUrl: `http://127.0.0.1:${upstreamAddress.port}/`,
+        log: () => undefined
+      });
+      const { baseUrl } = await activeServer.start();
+      const origin = baseUrl.replace(/\/$/, '');
+      const page = await fetch(new URL('/dashboard', baseUrl));
+      const setCookie = page.headers.get('set-cookie');
+      expect(setCookie).toBeTruthy();
+      const cookie = String(setCookie).split(';', 1)[0];
+      expect(await page.text()).toContain('var dashboardUserId="demo-account-2"');
+
+      const cookieDashboard = await fetch(new URL('/api/v1/simulation/dashboard', baseUrl), {
+        headers: { Cookie: cookie }
+      });
+      expect(cookieDashboard.status).toBe(200);
+      expect(await json(cookieDashboard)).toMatchObject({
+        contractVersion: 'vl-manufacturer-simulation-dashboard/1'
+      });
+
+      const live = await fetch(new URL('/api/v1/simulation/dashboard/events', baseUrl), {
+        headers: { Cookie: cookie }
+      });
+      expect(live.status).toBe(200);
+      expect(live.headers.get('content-type')).toContain('text/event-stream');
+      const overflow = await fetch(new URL('/api/v1/simulation/dashboard/events', baseUrl), {
+        headers: { Cookie: cookie }
+      });
+      expect(overflow.status).toBe(429);
+      expect(await json(overflow)).toEqual({ error: 'DASHBOARD_STREAM_CAPACITY_EXCEEDED' });
+      expect(await firstSsePayload(live)).toMatchObject({
+        contractVersion: 'vl-manufacturer-simulation-dashboard/1'
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(activeServer.getResourceSnapshot().dashboardStreams).toBe(0);
+
+      const headers = {
+        Cookie: cookie,
+        Origin: origin,
+        'Sec-Fetch-Site': 'same-origin',
+        'Content-Type': 'application/json'
+      };
+      const triggerBody = {
+        scenarioId: 'fall-detection',
+        userId: 'demo-account-2',
+        deviceId: 'wearable-1',
+        robotDeviceId: 'home-robot-1',
+        occurredAt: Date.now()
+      };
+      const trigger = await fetch(new URL('/api/v1/simulation/trigger', baseUrl), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(triggerBody)
+      });
+      expect(trigger.status).toBe(202);
+      expect(await json(trigger)).toEqual({
+        upstreamStatus: 202,
+        response: {
+          status: 'started',
+          scenarioId: 'fall-detection',
+          executionId: 'execution-dashboard-001'
+        }
+      });
+      expect(upstreamRequests[0]).toEqual({
+        method: 'POST',
+        url: '/v1/scenarios',
+        body: triggerBody
+      });
+
+      const executions = await fetch(new URL('/api/v1/simulation/executions', baseUrl), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ userId: 'demo-account-2' })
+      });
+      expect(executions.status).toBe(200);
+      expect(await json(executions)).toMatchObject({
+        upstreamStatus: 200,
+        response: {
+          executions: [expect.objectContaining({
+            scenarioId: 'fall_detection',
+            deviceReferences: {
+              wearable: 'device_safe_wearable',
+              homeRobot: 'device_safe_robot'
+            }
+          })]
+        }
+      });
+      expect(upstreamRequests[1]).toEqual({
+        method: 'GET',
+        url: '/v1/scenarios/executions?userId=demo-account-2'
+      });
+
+      const requestCount = upstreamRequests.length;
+      const invalidScenario = await fetch(new URL('/api/v1/simulation/trigger', baseUrl), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ ...triggerBody, scenarioId: 'arbitrary-command' })
+      });
+      expect(invalidScenario.status).toBe(400);
+      expect(await json(invalidScenario)).toEqual({ error: 'DASHBOARD_SCENARIO_INVALID' });
+      expect(upstreamRequests).toHaveLength(requestCount);
+
+      const noSession = await fetch(new URL('/api/v1/simulation/trigger', baseUrl), {
+        method: 'POST',
+        headers: { Origin: origin, 'Content-Type': 'application/json' },
+        body: JSON.stringify(triggerBody)
+      });
+      expect(noSession.status).toBe(401);
+      const crossOrigin = await fetch(new URL('/api/v1/simulation/trigger', baseUrl), {
+        method: 'POST',
+        headers: { ...headers, Origin: 'http://127.0.0.1:65530' },
+        body: JSON.stringify(triggerBody)
+      });
+      expect(crossOrigin.status).toBe(403);
+      expect(await json(crossOrigin)).toEqual({ error: 'DASHBOARD_ORIGIN_REJECTED' });
+    } finally {
+      await new Promise<void>((resolve) => upstreamServer.close(() => resolve()));
+    }
+  });
+
+  test('rejects non-loopback dashboard proxy destinations', () => {
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      mainServerUrl: 'https://example.com/'
+    })).toThrow('main-server URL must be credential-free and loopback-only');
+    expect(() => createManufacturerMockServer({
+      environment: 'test',
+      mainServerUrl: 'http://127.0.0.1:8787/path'
+    })).toThrow('main-server URL must be credential-free and loopback-only');
+  });
+
   test('uses deterministic configured fall frequency and validates event configuration', async () => {
     expect(() => createManufacturerMockServer({ environment: 'test', fallEventRate: 1.1 }))
       .toThrow('fall-event rate is invalid');
@@ -523,8 +795,10 @@ describe('ManufacturerMockServer', () => {
   });
 
   test('both adapters execute their real provisional bridge contract against the simulator', async () => {
+    const logs: ManufacturerMockLogEntry[] = [];
     activeServer = createManufacturerMockServer({
-      environment: 'test', port: 0, latencyMinMs: 0, latencyMaxMs: 0, log: () => undefined
+      environment: 'test', port: 0, latencyMinMs: 0, latencyMaxMs: 0,
+      log: (entry) => logs.push(entry)
     });
     const { baseUrl } = await activeServer.start();
     const shared = {
@@ -538,10 +812,16 @@ describe('ManufacturerMockServer', () => {
     };
     const yongyida = new YongyidaAdapter({ ...shared, adapterId: 'yongyida-cloud' });
     const jiangzhi = new JiangzhiAdapter({ ...shared, adapterId: 'jiangzhi-edge' });
+    const yongyidaPairingToken = 'one-time-yongyida-pairing-claim';
+    const jiangzhiPairingToken = 'one-time-jiangzhi-pairing-claim';
 
     await Promise.all([
-      yongyida.initialize({ deviceId: 'shared-device-001' }),
-      jiangzhi.initialize({ deviceId: 'shared-device-001' })
+      yongyida.initialize({
+        deviceId: 'shared-device-001', pairingToken: yongyidaPairingToken
+      }),
+      jiangzhi.initialize({
+        deviceId: 'shared-device-001', pairingToken: jiangzhiPairingToken
+      })
     ]);
     await expect(yongyida.sendMedicationReminder({
       id: 'medicine-001', name: 'Synthetic medicine', requestId: 'adapter-command-001'
@@ -557,6 +837,33 @@ describe('ManufacturerMockServer', () => {
     expect(snapshot.vitals).toEqual(expect.arrayContaining([
       expect.objectContaining({ kind: 'heart_rate', value: 72 })
     ]));
+    const serializedLogs = JSON.stringify(logs);
+    expect(serializedLogs).not.toContain(yongyidaPairingToken);
+    expect(serializedLogs).not.toContain(jiangzhiPairingToken);
+  });
+
+  test('bridge session rejects malformed pairing claims without reflecting them', async () => {
+    const logs: ManufacturerMockLogEntry[] = [];
+    activeServer = createManufacturerMockServer({
+      environment: 'test', port: 0, latencyMinMs: 0, latencyMaxMs: 0,
+      log: (entry) => logs.push(entry)
+    });
+    const { baseUrl } = await activeServer.start();
+    const response = await fetch(new URL('/v1/veryloving/yongyida-cloud/session', baseUrl), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        schema_version: 'veryloving.robot-bridge.v1',
+        device_id: 'shared-device-001',
+        pairing_token: ''
+      })
+    });
+    expect(response.status).toBe(400);
+    expect(await json(response)).toEqual({ error: 'SESSION_INVALID' });
+    expect(JSON.stringify(logs)).not.toContain('pairing_token');
   });
 
   test('supports deterministic failures and cannot run in production', async () => {
@@ -591,6 +898,8 @@ describe('ManufacturerMockServer', () => {
       readonly scripts?: Readonly<Record<string, string>>;
     };
     expect(packageJson.scripts?.['mock:manufacturer']).not.toContain('NODE_ENV=development');
+    expect(packageJson.scripts?.['mock:manufacturer'])
+      .toContain('node --env-file-if-exists=server/.env');
 
     activeServer = createManufacturerMockServer({
       environment: 'test',
@@ -697,6 +1006,21 @@ describe('ManufacturerMockServer', () => {
     const forged = await send({ ...action, signature: 'a'.repeat(86) });
     expect(forged.status).toBe(401);
     expect(await json(forged)).toEqual({ error: 'SIGNED_ACTION_UNVERIFIED' });
+
+    const extraTopLevel = await send({ ...action, private_note: 'must-not-be-accepted' });
+    expect(extraTopLevel.status).toBe(400);
+    expect(await json(extraTopLevel)).toEqual({ error: 'SIGNED_ACTION_INVALID' });
+
+    const envelopeWithExtra = { ...action.envelope, private_note: 'must-not-be-accepted' };
+    const extraPayload = Buffer.from(JSON.stringify(envelopeWithExtra)).toString('base64url');
+    const extraEnvelope = await send({
+      envelope: envelopeWithExtra,
+      payload: extraPayload,
+      signature: sign(null, Buffer.from(extraPayload, 'ascii'), keyPair.privateKey).toString('base64url'),
+      algorithm: 'Ed25519'
+    });
+    expect(extraEnvelope.status).toBe(400);
+    expect(await json(extraEnvelope)).toEqual({ error: 'SIGNED_ACTION_INVALID' });
 
     const crossVendor = await send(createAction('check_medication', { adapterId: 'jiangzhi-edge' }));
     expect(crossVendor.status).toBe(400);
@@ -913,6 +1237,26 @@ describe('ManufacturerMockServer', () => {
     expect(secondStream.status).toBe(429);
     expect(await json(secondStream)).toEqual({ error: 'TELEMETRY_STREAM_CAPACITY_EXCEEDED' });
     firstController.abort();
+    for (let attempt = 0; attempt < 20 && activeServer.getResourceSnapshot().telemetryStreams > 0; attempt += 1) {
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const socket = connect(secondAddress.port, secondAddress.host, () => {
+        socket.write([
+          'GET /api/v1/telemetry/disconnect-before-first-frame HTTP/1.1',
+          `Host: ${secondAddress.host}`,
+          `Authorization: Bearer ${ACCESS_TOKEN}`,
+          '',
+          ''
+        ].join('\r\n'), () => socket.destroy());
+      });
+      socket.once('error', (error) => {
+        if ((error as NodeJS.ErrnoException).code === 'ECONNRESET') resolve();
+        else reject(error);
+      });
+      socket.once('close', () => resolve());
+    });
 
     const slowResponse = await new Promise<string>((resolve, reject) => {
       const chunks: Buffer[] = [];
