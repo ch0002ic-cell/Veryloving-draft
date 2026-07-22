@@ -228,6 +228,16 @@ Expo Go and the iOS Simulator use explicit volatile or unavailable fallbacks for
 
 This UI section is the canonical framework summary; update it whenever the implementation or signed-device evidence changes.
 
+### Mobile design system and polish QA
+
+The mobile foundation uses semantic color/tone, typography, spacing, radius, elevation, motion, control-size, and layout tokens from [`src/constants/theme.js`](./src/constants/theme.js). Shared `Screen`, `Header`, onboarding-progress, `Button`, `Card`, `TextField`, `ActionTile`, banner/snackbar feedback, empty/loading/skeleton, status, and dual-device patterns keep ordinary, offline, and life-safety states consistent while older screens migrate incrementally.
+
+- [`docs/design-system.md`](./docs/design-system.md) is the implementation and contribution guide, including component usage, device-state language, accessibility, Dynamic Type, RTL, responsive layout, and motion rules.
+- [`docs/mobile-polish-qa.md`](./docs/mobile-polish-qa.md) is the execution matrix. It distinguishes source/automated PASS evidence from simulator, emulator, signed-build, provider, and physical-device requirements; a JS export is never native-interaction evidence.
+- [`docs/demo-script.md`](./docs/demo-script.md) is the 2–3 minute polished mobile walkthrough with honest mock/offline variants and recording guardrails.
+
+Do not call the mobile UI signed-build accepted until the applicable physical-device rows are recorded against the exact build. Source-level design-system adoption and production JavaScript exports are necessary but insufficient evidence for BLE, camera, audio routes, notifications, screen-reader order, background behavior, or persistence.
+
 ### Consolidated hardening history
 
 The following material defects were reproduced and corrected during the July audit sequence. Older reports remain available in Git history, but the current behavior is summarized here.
