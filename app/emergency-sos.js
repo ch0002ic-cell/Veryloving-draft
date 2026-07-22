@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -7,6 +7,7 @@ import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
+import { LoadingState } from '../src/components/LoadingState';
 import { StatusPill } from '../src/components/StatusPill';
 import { images } from '../src/constants/assets';
 import { triggerSOS } from '../src/services/emergency';
@@ -36,27 +37,53 @@ export default function EmergencySOS() {
   const [activating, setActivating] = useState(false);
   const [feedbackKey, setFeedbackKey] = useState(null);
   const [lastSOSStatus, setLastSOSStatus] = useState(null);
+  const [statusLoadState, setStatusLoadState] = useState('loading');
+  const statusRequestRef = useRef(0);
+  const activationInFlightRef = useRef(false);
+  const lifecycleEpochRef = useRef(0);
+  const mountedRef = useRef(false);
   const callableContact = useMemo(() => contacts.find((contact) => contact?.phone), [contacts]);
 
-  useEffect(() => {
-    let active = true;
-    loadSOSStatus().then((status) => {
-      if (active) setLastSOSStatus(status);
-    }).catch(() => {});
-    return () => {
-      active = false;
-    };
+  const refreshLastStatus = useCallback(async () => {
+    if (!mountedRef.current) return null;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    const requestId = ++statusRequestRef.current;
+    setStatusLoadState('loading');
+    const requestIsCurrent = () => mountedRef.current
+      && lifecycleEpoch === lifecycleEpochRef.current
+      && requestId === statusRequestRef.current;
+    try {
+      const status = await loadSOSStatus();
+      if (!requestIsCurrent()) return null;
+      setLastSOSStatus(status);
+      setStatusLoadState('ready');
+      return status;
+    } catch {
+      if (requestIsCurrent()) setStatusLoadState('error');
+      return null;
+    }
   }, []);
 
-  const refreshLastStatus = async () => {
-    const status = await loadSOSStatus().catch(() => null);
-    setLastSOSStatus(status);
-  };
+  useEffect(() => {
+    mountedRef.current = true;
+    lifecycleEpochRef.current += 1;
+    refreshLastStatus();
+    return () => {
+      mountedRef.current = false;
+      lifecycleEpochRef.current += 1;
+      statusRequestRef.current += 1;
+      activationInFlightRef.current = false;
+    };
+  }, [refreshLastStatus]);
 
   const activate = async () => {
-    if (activating) return;
+    if (!mountedRef.current || activationInFlightRef.current) return;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    activationInFlightRef.current = true;
     setActivating(true);
     setFeedbackKey(null);
+    const operationIsCurrent = () => mountedRef.current
+      && lifecycleEpoch === lifecycleEpochRef.current;
     try {
       const location = await loadLastKnownLocation().catch(() => null);
       const medicalAttachment = await loadEmergencyMedicalAttachment(user?.id).catch(() => null);
@@ -66,17 +93,24 @@ export default function EmergencySOS() {
         location,
         medicalAttachment
       });
+      if (!operationIsCurrent()) return;
       await refreshLastStatus();
+      if (!operationIsCurrent()) return;
       if (result.status === 'contact_required') {
         setFeedbackKey('emergency.addContact');
       } else if (result.backendStatus === 'failed') {
         setFeedbackKey('settings.updateFailedMessage');
       }
     } catch {
-      await refreshLastStatus();
-      setFeedbackKey('settings.linkFailed');
+      if (operationIsCurrent()) {
+        await refreshLastStatus();
+        if (operationIsCurrent()) setFeedbackKey('settings.linkFailed');
+      }
     } finally {
-      setActivating(false);
+      if (lifecycleEpoch === lifecycleEpochRef.current) {
+        activationInFlightRef.current = false;
+        if (mountedRef.current) setActivating(false);
+      }
     }
   };
 
@@ -100,6 +134,7 @@ export default function EmergencySOS() {
         </View>
         <View style={[styles.readinessRow, isRTL && styles.rtlRow]}>
           <Ionicons
+            accessible={false}
             name={callableContact ? 'checkmark-circle' : 'alert-circle'}
             size={22}
             color={callableContact ? colors.greenAccessible : colors.goldAccessible}
@@ -121,12 +156,23 @@ export default function EmergencySOS() {
       ) : null}
       {lastSOSStatus ? (
         <Card style={styles.statusCard}>
-          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('releaseCritical.lastSOSAttempt')}</Text>
+          <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('releaseCritical.lastSOSAttempt')}</Text>
           <Text style={[styles.body, isRTL && styles.rtlText]}>{t(sosStatusTranslationKey(lastSOSStatus.status))}</Text>
           <Text style={[styles.timestamp, isRTL && styles.rtlText]}>
             {new Date(lastSOSStatus.recordedAt).toLocaleString(locale)}
           </Text>
         </Card>
+      ) : null}
+      {statusLoadState === 'loading' && !lastSOSStatus ? (
+        <LoadingState compact message={t('common.loading')} />
+      ) : null}
+      {statusLoadState === 'error' ? (
+        <FeedbackBanner
+          message={t('releaseCritical.sosUnknown')}
+          tone="error"
+          actionLabel={t('common.retry')}
+          onAction={refreshLastStatus}
+        />
       ) : null}
       <Button
         title={t('emergency.activate')}
@@ -151,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 42,
-    backgroundColor: colors.paper
+    backgroundColor: colors.surfaceRaised
   },
   star: { width: 56, height: 56 },
   heroCopy: { flex: 1, alignItems: 'flex-start', gap: spacing.xs },
@@ -164,7 +210,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.mdSm,
     borderRadius: radii.lg,
-    backgroundColor: colors.paper
+    backgroundColor: colors.surfaceRaised
   },
   readinessCopy: { flex: 1, ...typography.label, color: colors.textPrimary },
   statusCard: { gap: spacing.xs },

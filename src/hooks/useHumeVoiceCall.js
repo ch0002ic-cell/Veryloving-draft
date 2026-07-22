@@ -64,6 +64,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
   const serviceRef = useRef(forcedOffline ? offlineEVIService : humeEVIService);
   const sessionIdRef = useRef(normalizeSessionId(initialSessionId) || createConversationSessionId());
+  // A durable conversation may be resumed many times, while the authenticated
+  // feedback proof is deliberately single-use. Keep those identities separate
+  // so resuming history never replays a completed voice interaction.
+  const interactionIdRef = useRef(createConversationSessionId());
   const suppressedUserEchoesRef = useRef(new Map());
   const mountedRef = useRef(true);
   const startInFlightRef = useRef(false);
@@ -367,7 +371,9 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       voiceId: config.humeWSProxyURL ? undefined : voiceOverride(selectedVoice),
       personaId: selectedVoice.id,
       locale,
-      customSessionId: sessionIdRef.current,
+      customSessionId: config.humeWSProxyURL
+        ? interactionIdRef.current
+        : sessionIdRef.current,
       resumedChatGroupId: session?.chatGroupId,
       systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Be concise, emotionally attuned, honest about actions, and practical.`,
       devices: [...wearableEntities, ...robotEntities]
@@ -452,13 +458,34 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     }
   }, [connectService, forcedOffline, isOnline, presentError]);
 
-  const stop = useCallback(() => {
+  const stop = useCallback(async () => {
+    const service = serviceRef.current;
+    let interactionFeedbackEligible = false;
+    const completedInteractionId = service === humeEVIService && config.humeWSProxyURL
+      ? interactionIdRef.current
+      : null;
+    if (service === humeEVIService && config.humeWSProxyURL && service.getState() === 'connected') {
+      const microphoneStop = service.stopMicrophone().catch(() => {});
+      try {
+        interactionFeedbackEligible = await service.completeInteraction(completedInteractionId) === true;
+      } catch (completionError) {
+        logger.warn('[VoiceCall] Secure interaction completion was not acknowledged', {
+          errorCode: completionError?.code || completionError?.name || 'VOICE_INTERACTION_COMPLETION_FAILED'
+        });
+      }
+      await microphoneStop;
+    }
     connectionGenerationRef.current += 1;
     if (queueRetryTimerRef.current) {
       clearTimeout(queueRetryTimerRef.current);
       queueRetryTimerRef.current = null;
     }
-    return serviceRef.current.disconnect();
+    await service.disconnect();
+    if (completedInteractionId) interactionIdRef.current = createConversationSessionId();
+    return Object.freeze({
+      interactionFeedbackEligible,
+      interactionId: interactionFeedbackEligible ? completedInteractionId : null
+    });
   }, []);
 
   const sendText = useCallback(async (rawText) => {

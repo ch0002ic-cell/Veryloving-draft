@@ -42,7 +42,7 @@ export default function CapybearSetup() {
 
 const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: spacing.md, borderRadius: radii.xl },
-  halo: { width: 220, height: 220, alignItems: 'center', justifyContent: 'center', borderRadius: 110, backgroundColor: colors.paper },
+  halo: { width: 220, height: 220, alignItems: 'center', justifyContent: 'center', borderRadius: radii.pill, backgroundColor: colors.surfaceRaised },
   image: { width: 205, height: 205 },
   body: { ...typography.bodyLarge, color: colors.textPrimary },
   rtlText: { textAlign: 'right' }

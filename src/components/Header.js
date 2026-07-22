@@ -37,7 +37,7 @@ export function Header({
             accessible={false}
             name={isRTL ? 'chevron-forward' : 'chevron-back'}
             size={26}
-            color={colors.ink}
+            color={colors.textPrimary}
           />
         </Pressable>
       ) : (
@@ -66,6 +66,6 @@ const styles = StyleSheet.create({
   logo: { width: 40, height: 18 },
   eyebrow: { ...typography.caption, fontFamily: typography.label.fontFamily, color: colors.actionAccent, marginBottom: spacing.xs },
   title: { ...typography.display, color: colors.textPrimary },
-  subtitle: { ...typography.bodySmall, color: colors.textSecondary, marginTop: 2 },
+  subtitle: { ...typography.bodySmall, color: colors.textSecondary, marginTop: spacing.xs },
   trailing: { minWidth: sizes.touchTarget, minHeight: sizes.touchTarget, alignItems: 'flex-end', justifyContent: 'center' }
 });

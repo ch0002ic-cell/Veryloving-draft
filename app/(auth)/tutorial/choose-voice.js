@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { Screen } from '../../../src/components/Screen';
 import { Header } from '../../../src/components/Header';
 import { Card } from '../../../src/components/Card';
@@ -8,7 +8,7 @@ import { StatusPill } from '../../../src/components/StatusPill';
 import { voiceProfiles } from '../../../src/constants/voiceProfiles';
 import { useAppState } from '../../../src/context/AppContext';
 import { useI18n } from '../../../src/context/I18nContext';
-import { colors, fonts } from '../../../src/constants/theme';
+import { colors, spacing, tones, typography } from '../../../src/constants/theme';
 import { logger } from '../../../src/utils/logger';
 import { FeedbackBanner } from '../../../src/components/FeedbackBanner';
 import { useOnboardingNavigation } from '../../../src/hooks/useOnboardingNavigation';
@@ -18,9 +18,11 @@ export default function ChooseVoiceTutorial() {
   const { isRTL, t } = useI18n();
   const { advanceTo, advancing, navigationError } = useOnboardingNavigation();
   const [savingVoiceId, setSavingVoiceId] = useState(null);
+  const [selectionErrorVoiceId, setSelectionErrorVoiceId] = useState(null);
 
   const selectVoice = async (voiceId) => {
     if (savingVoiceId || settings.selectedVoiceId === voiceId) return;
+    setSelectionErrorVoiceId(null);
     setSavingVoiceId(voiceId);
     try {
       await updateSettings({ selectedVoiceId: voiceId });
@@ -29,7 +31,7 @@ export default function ChooseVoiceTutorial() {
         errorCode: error?.code || error?.name || 'VOICE_SELECTION_PERSIST_FAILED',
         voiceId
       });
-      Alert.alert(t('voices.selectionFailedTitle'), t('voices.selectionFailedMessage'));
+      setSelectionErrorVoiceId(voiceId);
     } finally {
       setSavingVoiceId(null);
     }
@@ -38,11 +40,18 @@ export default function ChooseVoiceTutorial() {
   return (
     <Screen>
       <Header title={t('tutorial.chooseVoiceTitle')} subtitle={t('tutorial.chooseVoiceSubtitle')} />
+      <FeedbackBanner
+        message={selectionErrorVoiceId ? t('voices.selectionFailedMessage') : null}
+        actionLabel={selectionErrorVoiceId ? t('common.retry') : undefined}
+        onAction={selectionErrorVoiceId ? () => selectVoice(selectionErrorVoiceId) : undefined}
+        dismissLabel={t('common.close')}
+        onDismiss={() => setSelectionErrorVoiceId(null)}
+      />
       {voiceProfiles.map((voice) => {
         const selected = settings.selectedVoiceId === voice.id;
         return (
           <Card key={voice.id} style={[styles.voiceCard, isRTL && styles.rtlRow, selected && styles.selectedCard]}>
-            <Image source={voice.avatar} style={styles.avatar} resizeMode="contain" />
+            <Image accessible={false} source={voice.avatar} style={styles.avatar} resizeMode="contain" />
             <View style={styles.voiceCopy}>
               <Text style={[styles.voiceName, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.name`)}</Text>
               <Text style={[styles.voiceDescription, isRTL && styles.rtlText]}>{t(`voices.profiles.${voice.id}.description`)}</Text>
@@ -77,12 +86,12 @@ export default function ChooseVoiceTutorial() {
 }
 
 const styles = StyleSheet.create({
-  voiceCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  voiceCard: { flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  selectedCard: { borderColor: colors.orangeAccessible, borderWidth: 2, backgroundColor: colors.orangeSoft },
+  selectedCard: { borderColor: colors.actionAccent, borderWidth: 2, backgroundColor: tones.accent.background },
   avatar: { width: 100, height: 100 },
-  voiceCopy: { flex: 1, alignItems: 'stretch', gap: 7 },
-  voiceName: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
-  voiceDescription: { fontFamily: fonts.regular, color: colors.inkSoft, lineHeight: 20 }
+  voiceCopy: { flex: 1, alignItems: 'stretch', gap: spacing.sm },
+  voiceName: { ...typography.heading, color: colors.textPrimary },
+  voiceDescription: { ...typography.bodySmall, color: colors.textSecondary }
 });

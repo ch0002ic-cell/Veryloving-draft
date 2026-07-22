@@ -12,6 +12,7 @@ const {
   assertVoicePersonaConfig,
   buildHumeUpstreamURL,
   hasScope,
+  isVoiceInteractionActivityFrame,
   loadAINativeVoiceContext,
   parseVoiceAuthenticationMessage,
   prepareUpstreamMessage,
@@ -427,6 +428,181 @@ test('authenticated action and presence frames stay on the long-lived voice gate
     result: { status: 'accepted', action_id: 'action-1' }
   });
   client.emit('close');
+});
+
+test('voice interaction completion rejects settings-only sessions and accepts observed Hume activity', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  const forwarded = [];
+  upstream.send = (payload) => forwarded.push(JSON.parse(payload));
+  upstream.close = () => {};
+  const registryCalls = [];
+  let activityObserved = false;
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-owner',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    voiceInteractionCompletionRepository: {
+      begin(accountId, interactionId) {
+        registryCalls.push(['begin', accountId, interactionId]);
+        return true;
+      },
+      hasActivity() {
+        return activityObserved;
+      },
+      observeActivity(accountId, interactionId) {
+        registryCalls.push(['activity', accountId, interactionId]);
+        activityObserved = true;
+        return true;
+      },
+      complete(accountId, interactionId) {
+        registryCalls.push(['complete', accountId, interactionId]);
+        return true;
+      }
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() {} }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+      this.sent = [];
+    }
+    send(payload) { this.sent.push(JSON.parse(payload)); }
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate', access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'session_settings', custom_session_id: 'voice-session-proof-1'
+  })), false);
+  assert.deepEqual(registryCalls, [[
+    'begin', 'google:voice-owner', 'voice-session-proof-1'
+  ]]);
+  assert.equal(forwarded.at(-1).custom_session_id, 'voice-session-proof-1');
+
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'interaction_complete', interaction_id: 'voice-session-proof-1'
+  })), false);
+  assert.deepEqual(client.sent.at(-1), {
+    type: 'interaction_completed',
+    interaction_id: 'voice-session-proof-1',
+    ok: false
+  });
+  assert.equal(registryCalls.some(([operation]) => operation === 'complete'), false);
+
+  upstream.emit('message', Buffer.from(JSON.stringify({
+    type: 'user_message',
+    message: { content: 'Hello' }
+  })), false);
+  assert.deepEqual(registryCalls.at(-1), [
+    'activity', 'google:voice-owner', 'voice-session-proof-1'
+  ]);
+
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'interaction_complete', interaction_id: 'voice-session-proof-1'
+  })), false);
+  assert.deepEqual(registryCalls.at(-1), [
+    'complete', 'google:voice-owner', 'voice-session-proof-1'
+  ]);
+  assert.deepEqual(client.sent.at(-1), {
+    type: 'interaction_completed',
+    interaction_id: 'voice-session-proof-1',
+    ok: true
+  });
+  assert.equal(forwarded.some((message) => message.type === 'interaction_complete'), false);
+  client.emit('close');
+  assert.equal(registryCalls.filter(([operation]) => operation === 'complete').length, 1);
+});
+
+test('only non-empty upstream Hume user or assistant messages count as interaction activity', () => {
+  assert.equal(isVoiceInteractionActivityFrame(Buffer.from(JSON.stringify({
+    type: 'user_message', message: { content: 'A real turn' }
+  })), false), true);
+  assert.equal(isVoiceInteractionActivityFrame(JSON.stringify({
+    type: 'assistant_message', message: { content: 'A response' }
+  }), false), true);
+  for (const frame of [
+    { type: 'session_settings' },
+    { type: 'chat_metadata', chat_id: 'chat-1' },
+    { type: 'audio_output', data: 'private-audio' },
+    { type: 'user_message', message: { content: '   ' } },
+    { type: 'assistant_message', message: {} }
+  ]) {
+    assert.equal(isVoiceInteractionActivityFrame(JSON.stringify(frame), false), false);
+  }
+  assert.equal(isVoiceInteractionActivityFrame(Buffer.from('not-json'), false), false);
+  assert.equal(isVoiceInteractionActivityFrame(Buffer.from(JSON.stringify({
+    type: 'assistant_message', message: { content: 'binary is not inspected' }
+  })), true), false);
+});
+
+test('abrupt voice disconnect never falls back to a completion-only repository', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = () => {};
+  let completionCalls = 0;
+  const warnings = [];
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-owner',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    voiceInteractionCompletionRepository: {
+      begin() { return true; },
+      complete() {
+        completionCalls += 1;
+        return true;
+      }
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn(message, context) { warnings.push([message, context]); } }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+    }
+    send() {}
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate', access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'session_settings', custom_session_id: 'voice-session-abrupt-1'
+  })), false);
+
+  client.emit('close');
+
+  assert.equal(completionCalls, 0);
+  assert.equal(
+    warnings.some(([, context]) => context?.code === 'VOICE_INTERACTION_DISCONNECT_UNAVAILABLE'),
+    true
+  );
 });
 
 test('voice control admission is shared across actions and scenarios and releases in finally', async () => {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
-import { AppState, Linking, Text } from 'react-native';
+import { AppState, Linking, StyleSheet, Text } from 'react-native';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
@@ -10,7 +10,7 @@ import {
   notificationsAvailableInRuntime,
   requestNotificationPermission
 } from '../../src/services/notifications';
-import { fonts } from '../../src/constants/theme';
+import { colors, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { useAuth } from '../../src/context/AuthContext';
 
@@ -133,7 +133,7 @@ export default function NotificationPermission() {
   return (
     <Screen>
       <Header title={t('permissions.notificationsTitle')} subtitle={t('permissions.notificationsSubtitle')} />
-      <Card><Text style={{ fontFamily: fonts.regular }}>{t('permissions.notificationsBody')}</Text></Card>
+      <Card variant="tinted"><Text style={styles.body}>{t('permissions.notificationsBody')}</Text></Card>
       <FeedbackBanner
         message={errorKey ? t(errorKey) : null}
         tone="info"
@@ -157,3 +157,7 @@ export default function NotificationPermission() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  body: { ...typography.bodyLarge, color: colors.textPrimary }
+});

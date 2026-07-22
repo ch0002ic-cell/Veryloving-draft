@@ -23,7 +23,9 @@ export const colors = {
   goldSoft: '#FFF7E2',
   focus: '#1C5FBF',
   scrim: 'rgba(20, 37, 49, 0.42)',
+  scrimStrong: 'rgba(48, 69, 87, 0.86)',
   skeleton: '#DCE4E8',
+  surfaceMapFallback: '#DDEBE7',
 
   // Semantic aliases keep product intent separate from the underlying palette.
   textPrimary: '#304557',
@@ -87,7 +89,9 @@ export const typography = {
   body: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22 },
   bodySmall: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 20 },
   label: { fontFamily: fonts.semibold, fontSize: 15, lineHeight: 21 },
-  caption: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18 }
+  caption: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18 },
+  emoji: { fontSize: 26, lineHeight: 34 },
+  emojiLarge: { fontSize: 30, lineHeight: 38 }
 };
 
 export const sizes = {

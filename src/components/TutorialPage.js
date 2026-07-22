@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.xl,
-    backgroundColor: colors.paper
+    backgroundColor: colors.surfaceRaised
   },
   art: { width: '88%', height: 200 },
   copyCard: { gap: spacing.sm },

@@ -58,6 +58,9 @@ const {
   validatePushToken
 } = require('./push-notifications.cjs');
 const { createDynamoAuthSessionRepository } = require('./auth-session-repository.cjs');
+const {
+  createVoiceInteractionCompletionRegistry
+} = require('./voice-interaction-registry.cjs');
 const { ACTION_TOOL_SCHEMAS } = require('./device-action-tools.cjs');
 const {
   SAFETY_SYSTEM_PROMPT,
@@ -78,9 +81,22 @@ const MAX_PUSH_RECEIPT_RATE_KEYS = 10000;
 const MAX_UPSTREAM_SSE_EVENT_BYTES = 256 * 1024;
 const MAX_UPSTREAM_JSON_BYTES = 256 * 1024;
 const MAX_AUTH_RESPONSE_BYTES = 64 * 1024;
+const DEFAULT_SCENARIO_EXECUTION_LIMIT = 50;
+const MAX_SCENARIO_EXECUTION_LIMIT = 100;
+const AI_ANGEL_RATE_WINDOW_MS = 60 * 1000;
+const AI_ANGEL_UNIQUE_START_LIMIT = 3;
+const INTERACTION_FEEDBACK_RATE_WINDOW_MS = 60 * 1000;
+const INTERACTION_FEEDBACK_RATE_LIMIT = 10;
+const MAX_AI_NATIVE_RATE_KEYS = 10000;
+const MAX_AI_ANGEL_ACTIVE_ACCOUNTS = 10000;
+const MAX_AI_ANGEL_ADMISSION_ACCOUNTS = 10000;
+const MAX_AI_ANGEL_ACCOUNT_EXECUTIONS_SCAN = 10000;
+const MAX_AI_ANGEL_PENDING_ADMISSIONS_PER_ACCOUNT = 8;
 const DEFAULT_PORT = 8787;
 const HUME_API_BASE_URL = 'https://api.hume.ai';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const AI_NATIVE_TERMINAL_STATES = new Set(['completed', 'fallback_completed', 'failed', 'cancelled']);
+const AI_NATIVE_FEEDBACK_ELIGIBLE_STATES = new Set(['completed', 'fallback_completed']);
 const ROBOT_RESET_REPOSITORY_METHODS = Object.freeze([
   'beginFactoryReset',
   'claimFactoryReset',
@@ -400,7 +416,7 @@ function validatePreparedServices(config) {
   }
   if (config.aiNativeEnabled) {
     requireMethods(config.scenarioEngine, 'Production AI-native scenario engine', [
-      'startScenario', 'getExecution', 'cancelScenario'
+      'startScenario', 'getExecution', 'listExecutions', 'exportExecutions', 'cancelScenario'
     ]);
     requireMethods(config.edgeScenarioRouter, 'Production AI-native edge router', [
       'ingestWearableInference', 'ingestRobotInference', 'ingestContextEvent', 'confirmCancellation'
@@ -408,6 +424,11 @@ function validatePreparedServices(config) {
     requireMethods(config.aiNativePrivacyRepository, 'Production AI-native privacy repository', [
       'exportUserData', 'deleteUserData'
     ]);
+    requireMethods(
+      config.voiceInteractionCompletionRepository,
+      'Production voice interaction completion repository',
+      ['begin', 'observeActivity', 'hasActivity', 'complete', 'disconnect', 'verifyCompleted']
+    );
   }
   return config;
 }
@@ -460,6 +481,64 @@ function allowPushReceiptAttempt(rateState, req, now = Date.now()) {
   if (current.attempts >= PUSH_RECEIPT_RATE_LIMIT) return false;
   current.attempts += 1;
   return true;
+}
+
+function touchBoundedMap(map, key, value, maximum) {
+  map.delete(key);
+  map.set(key, value);
+  while (map.size > maximum) map.delete(map.keys().next().value);
+}
+
+function allowUniqueAccountAttempt(rateState, accountId, requestId, {
+  limit,
+  windowMs,
+  now = Date.now()
+}) {
+  let current = rateState.get(accountId);
+  if (!current || now < current.startedAt || now - current.startedAt >= windowMs) {
+    current = { startedAt: now, requestIds: new Set() };
+  }
+  if (current.requestIds.has(requestId)) {
+    touchBoundedMap(rateState, accountId, current, MAX_AI_NATIVE_RATE_KEYS);
+    return true;
+  }
+  if (current.requestIds.size >= limit) {
+    touchBoundedMap(rateState, accountId, current, MAX_AI_NATIVE_RATE_KEYS);
+    return false;
+  }
+  current.requestIds.add(requestId);
+  touchBoundedMap(rateState, accountId, current, MAX_AI_NATIVE_RATE_KEYS);
+  return true;
+}
+
+function allowAccountAttempt(rateState, accountId, { limit, windowMs, now = Date.now() }) {
+  let current = rateState.get(accountId);
+  if (!current || now < current.startedAt || now - current.startedAt >= windowMs) {
+    current = { startedAt: now, attempts: 0 };
+  }
+  if (current.attempts >= limit) {
+    touchBoundedMap(rateState, accountId, current, MAX_AI_NATIVE_RATE_KEYS);
+    return false;
+  }
+  current.attempts += 1;
+  touchBoundedMap(rateState, accountId, current, MAX_AI_NATIVE_RATE_KEYS);
+  return true;
+}
+
+function parseScenarioExecutionLimit(url) {
+  if ([...url.searchParams.keys()].some((key) => key !== 'limit')
+    || url.searchParams.getAll('limit').length > 1) return null;
+  const raw = url.searchParams.get('limit');
+  if (raw === null) return DEFAULT_SCENARIO_EXECUTION_LIMIT;
+  if (!/^[1-9][0-9]*$/.test(raw)) return null;
+  const limit = Number(raw);
+  return Number.isSafeInteger(limit) && limit <= MAX_SCENARIO_EXECUTION_LIMIT ? limit : null;
+}
+
+function duplicateScenarioExecution(execution) {
+  return {
+    started: [{ accepted: true, duplicate: true, execution }]
+  };
 }
 
 const AI_NATIVE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -518,21 +597,79 @@ function normalizeInferenceContext(raw) {
   return Object.freeze({ locationContext: raw.location_context });
 }
 
+function normalizeUserScenarioContext(scenarioId, raw) {
+  if (raw === undefined) {
+    if (scenarioId === 'emotional_check_in' || scenarioId === 'cognitive_engagement') {
+      throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Scenario context is required');
+    }
+    return Object.freeze({});
+  }
+  if (scenarioId === 'emotional_check_in') {
+    assertExactObjectKeys(raw, new Set(['mood_key', 'reflection_summary']), 'Emotional check-in context');
+    const moodKey = raw.mood_key;
+    if (!['very_low', 'low', 'okay', 'good', 'great'].includes(moodKey)) {
+      throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Emotional check-in context is invalid');
+    }
+    let reflectionSummary;
+    if (raw.reflection_summary !== undefined) {
+      if (typeof raw.reflection_summary !== 'string'
+        || raw.reflection_summary.length < 1
+        || raw.reflection_summary.length > 280
+        || /[\u0000-\u001f\u007f]/u.test(raw.reflection_summary)) {
+        throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Emotional check-in context is invalid');
+      }
+      reflectionSummary = raw.reflection_summary.replace(/\s+/gu, ' ').trim();
+      if (!reflectionSummary) {
+        throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Emotional check-in context is invalid');
+      }
+    }
+    return Object.freeze({
+      moodKey,
+      ...(reflectionSummary ? { reflectionSummary } : {})
+    });
+  }
+  if (scenarioId === 'cognitive_engagement') {
+    assertExactObjectKeys(raw, new Set(['activity']), 'Cognitive engagement context');
+    if (!['memory', 'trivia', 'conversation'].includes(raw.activity)) {
+      throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Cognitive engagement context is invalid');
+    }
+    return Object.freeze({ activity: raw.activity });
+  }
+  throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Scenario context is not supported');
+}
+
 function parseUserScenarioRequest(body) {
-  assertExactObjectKeys(body, new Set(['scenario_id', 'request_id', 'occurred_at']), 'Scenario request');
-  if (body.scenario_id !== 'ai_angel_auto_dial'
+  assertExactObjectKeys(
+    body,
+    new Set(['scenario_id', 'request_id', 'occurred_at', 'intent', 'context']),
+    'Scenario request'
+  );
+  const userIntents = Object.freeze({
+    fall_detection: Object.freeze({ intent: 'practice_drill', triggerType: 'user_fall_drill' }),
+    medication_adherence: Object.freeze({ intent: 'review_reminder', triggerType: 'user_medication_reminder' }),
+    emotional_check_in: Object.freeze({ intent: 'self_check_in', triggerType: 'user_emotional_check_in' }),
+    cognitive_engagement: Object.freeze({ intent: 'start_activity', triggerType: 'user_cognitive_engagement' }),
+    ai_angel_auto_dial: Object.freeze({ intent: undefined, triggerType: 'panic_button' })
+  });
+  const definition = userIntents[body.scenario_id];
+  if (!definition
     || !AI_NATIVE_IDENTIFIER_PATTERN.test(body.request_id ?? '')
-    || !Number.isSafeInteger(body.occurred_at)) {
+    || !Number.isSafeInteger(body.occurred_at)
+    || Math.abs(Date.now() - body.occurred_at) > 5 * 60_000
+    || (definition.intent === undefined ? body.intent !== undefined : body.intent !== definition.intent)) {
     throw httpError(400, 'AI_NATIVE_REQUEST_INVALID', 'Scenario request is invalid');
   }
+  const context = normalizeUserScenarioContext(body.scenario_id, body.context);
   return Object.freeze({
-    scenarioId: 'ai_angel_auto_dial',
+    scenarioId: body.scenario_id,
     event: Object.freeze({
       eventId: body.request_id,
-      type: 'panic_button',
+      type: definition.triggerType,
       occurredAt: body.occurred_at,
       data: Object.freeze({})
-    })
+    }),
+    idempotencyKey: body.request_id,
+    input: Object.freeze({ userInitiated: true, ...context })
   });
 }
 
@@ -1227,6 +1364,9 @@ function prepareDeviceServices(config) {
       config.aiNativePrivacyRepository = system.privacyRepository;
     }
   }
+  if (config.aiNativeEnabled && !config.voiceInteractionCompletionRepository) {
+    config.voiceInteractionCompletionRepository = createVoiceInteractionCompletionRegistry();
+  }
   if (!config.robotAdapterRuntime && Array.isArray(config.robotAdapterConfigurations) && config.robotAdapterConfigurations.length) {
     config.robotAdapterRuntime = createRobotAdapterRuntime({
       configurations: config.robotAdapterConfigurations,
@@ -1489,6 +1629,104 @@ function prepareDeviceServices(config) {
 function createHandler(overrides = {}) {
   const config = prepareDeviceServices(validateServerConfig(envConfig(overrides)));
   const pushReceiptRateState = new Map();
+  const aiAngelRateState = new Map();
+  const aiAngelActiveByAccount = new Map();
+  const aiAngelAdmissionTails = new Map();
+  const aiAngelPendingAdmissions = new Map();
+  const interactionFeedbackRateState = new Map();
+
+  const serializeAIAngelAdmission = (accountId, admission) => {
+    const existing = aiAngelAdmissionTails.get(accountId);
+    const pending = aiAngelPendingAdmissions.get(accountId) || 0;
+    if (pending >= MAX_AI_ANGEL_PENDING_ADMISSIONS_PER_ACCOUNT) {
+      throw httpError(503, 'AI_ANGEL_ADMISSION_BUSY', 'Emergency admission is temporarily busy');
+    }
+    if (!existing && aiAngelAdmissionTails.size >= MAX_AI_ANGEL_ADMISSION_ACCOUNTS) {
+      throw httpError(503, 'AI_ANGEL_ADMISSION_BUSY', 'Emergency admission is temporarily busy');
+    }
+    aiAngelPendingAdmissions.set(accountId, pending + 1);
+    const operation = (existing || Promise.resolve()).catch(() => {}).then(admission);
+    const tail = operation.then(() => undefined, () => undefined);
+    aiAngelAdmissionTails.set(accountId, tail);
+    tail.then(() => {
+      const remaining = (aiAngelPendingAdmissions.get(accountId) || 1) - 1;
+      if (remaining > 0) aiAngelPendingAdmissions.set(accountId, remaining);
+      else aiAngelPendingAdmissions.delete(accountId);
+      if (aiAngelAdmissionTails.get(accountId) === tail) aiAngelAdmissionTails.delete(accountId);
+    });
+    return operation;
+  };
+
+  const rememberActiveAIAngel = (accountId, execution) => {
+    if (!execution?.executionId || AI_NATIVE_TERMINAL_STATES.has(execution.state)) return;
+    touchBoundedMap(
+      aiAngelActiveByAccount,
+      accountId,
+      { executionId: execution.executionId },
+      MAX_AI_ANGEL_ACTIVE_ACCOUNTS
+    );
+  };
+
+  const findActiveAIAngel = async (accountId) => {
+    const cached = aiAngelActiveByAccount.get(accountId);
+    if (cached) {
+      if (typeof config.scenarioEngine?.getExecution !== 'function') {
+        throw httpError(503, 'AI_ANGEL_STATE_UNAVAILABLE', 'Emergency state is temporarily unavailable');
+      }
+      const execution = await config.scenarioEngine.getExecution(accountId, cached.executionId);
+      if (!execution) {
+        throw httpError(503, 'AI_ANGEL_STATE_UNAVAILABLE', 'Emergency state is temporarily unavailable');
+      }
+      if (!AI_NATIVE_TERMINAL_STATES.has(execution.state)) {
+        rememberActiveAIAngel(accountId, execution);
+        return execution;
+      }
+      aiAngelActiveByAccount.delete(accountId);
+    }
+    if (typeof config.scenarioEngine?.exportExecutions !== 'function') {
+      throw httpError(503, 'AI_ANGEL_STATE_UNAVAILABLE', 'Emergency state is temporarily unavailable');
+    }
+    const executions = await config.scenarioEngine.exportExecutions(accountId);
+    if (!Array.isArray(executions)
+      || executions.length > MAX_AI_ANGEL_ACCOUNT_EXECUTIONS_SCAN
+      || executions.some((execution) => !execution
+        || typeof execution !== 'object'
+        || !AI_NATIVE_IDENTIFIER_PATTERN.test(execution.executionId ?? '')
+        || typeof execution.scenarioId !== 'string'
+        || typeof execution.state !== 'string')) {
+      throw httpError(503, 'AI_ANGEL_STATE_UNAVAILABLE', 'Emergency state is temporarily unavailable');
+    }
+    const active = executions.find((execution) => execution.scenarioId === 'ai_angel_auto_dial'
+      && execution.executionId
+      && !AI_NATIVE_TERMINAL_STATES.has(execution.state));
+    if (active) rememberActiveAIAngel(accountId, active);
+    return active || null;
+  };
+
+  const routeUserAIAngel = (accountId, request) => serializeAIAngelAdmission(accountId, async () => {
+    const active = await findActiveAIAngel(accountId);
+    if (active) return duplicateScenarioExecution(active);
+    if (!allowUniqueAccountAttempt(aiAngelRateState, accountId, request.event.eventId, {
+      limit: AI_ANGEL_UNIQUE_START_LIMIT,
+      windowMs: AI_ANGEL_RATE_WINDOW_MS
+    })) {
+      throw httpError(429, 'AI_ANGEL_RATE_LIMITED', 'Too many emergency starts were requested');
+    }
+    const binding = normalizeScenarioBinding(await config.resolveScenarioDevices({
+      accountId,
+      scenarioId: request.scenarioId,
+      source: 'authenticated_app'
+    }));
+    const result = await config.edgeScenarioRouter.ingestContextEvent(
+      accountId,
+      request.event,
+      binding
+    );
+    const admitted = result?.started?.find((item) => item?.execution?.scenarioId === 'ai_angel_auto_dial');
+    if (admitted?.execution) rememberActiveAIAngel(accountId, admitted.execution);
+    return result;
+  });
+
   return async function handler(req, res) {
     const url = new URL(req.url, 'http://localhost');
     try {
@@ -1641,16 +1879,42 @@ function createHandler(overrides = {}) {
         }
         const body = await readJson(req);
         const request = parseUserScenarioRequest(body);
+        if (request.scenarioId === 'ai_angel_auto_dial') {
+          json(res, 202, await routeUserAIAngel(principal.sub, request));
+          return;
+        }
         const binding = normalizeScenarioBinding(await config.resolveScenarioDevices({
           accountId: principal.sub,
           scenarioId: request.scenarioId,
           source: 'authenticated_app'
         }));
-        json(res, 202, await config.edgeScenarioRouter.ingestContextEvent(
-          principal.sub,
-          request.event,
-          binding
-        ));
+        if (typeof config.scenarioEngine?.startScenario !== 'function') {
+          json(res, 503, { error: 'AI-native scenario execution is not configured' }); return;
+        }
+        const started = await config.scenarioEngine.startScenario(principal.sub, {
+          scenarioId: request.scenarioId,
+          trigger: request.event,
+          devices: binding.targets,
+          idempotencyKey: request.idempotencyKey,
+          input: request.input
+        });
+        json(res, 202, { started: [started] });
+        return;
+      }
+
+      if (req.method === 'GET' && url.pathname === '/v1/scenarios/executions') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled || typeof config.scenarioEngine?.listExecutions !== 'function') {
+          json(res, 503, { error: 'AI-native scenario execution is not configured' }); return;
+        }
+        const limit = parseScenarioExecutionLimit(url);
+        if (limit === null) { json(res, 400, { error: 'Scenario execution limit is invalid' }); return; }
+        const executions = await config.scenarioEngine.listExecutions(principal.sub, limit);
+        if (!Array.isArray(executions) || executions.length > limit) {
+          throw httpError(503, 'SCENARIO_EXECUTIONS_UNAVAILABLE', 'Scenario executions are unavailable');
+        }
+        json(res, 200, { executions });
         return;
       }
 
@@ -1664,6 +1928,94 @@ function createHandler(overrides = {}) {
         const execution = await config.scenarioEngine.getExecution(principal.sub, scenarioMatch[1]);
         if (!execution) { json(res, 404, { error: 'Scenario execution was not found' }); return; }
         json(res, 200, execution);
+        return;
+      }
+
+      const scenarioFeedbackMatch = /^\/v1\/scenarios\/([0-9a-f-]{36})\/feedback$/i.exec(url.pathname);
+      if (req.method === 'POST' && scenarioFeedbackMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled
+          || typeof config.scenarioEngine?.getExecution !== 'function'
+          || typeof config.aiNativeSystem?.memory?.store !== 'function') {
+          json(res, 503, { error: 'AI-native feedback is not configured' }); return;
+        }
+        const body = await readJson(req);
+        assertExactObjectKeys(body, new Set(['rating', 'occurred_at']), 'Scenario feedback');
+        const occurredAt = body.occurred_at;
+        if (!['helpful', 'not_helpful'].includes(body.rating)
+          || !Number.isSafeInteger(occurredAt)
+          || Math.abs(Date.now() - occurredAt) > 5 * 60_000) {
+          json(res, 400, { error: 'Scenario feedback is invalid' }); return;
+        }
+        const execution = await config.scenarioEngine.getExecution(
+          principal.sub,
+          scenarioFeedbackMatch[1]
+        );
+        if (!execution) { json(res, 404, { error: 'Scenario execution was not found' }); return; }
+        if (!AI_NATIVE_FEEDBACK_ELIGIBLE_STATES.has(execution.state)) {
+          json(res, 409, { error: 'Scenario feedback requires a successful execution' }); return;
+        }
+        await config.aiNativeSystem.memory.store(principal.sub, {
+          id: `scenario-feedback-${execution.executionId}`,
+          kind: 'preference',
+          source: 'user',
+          category: 'scenario_feedback',
+          value: `${execution.scenarioId}:${body.rating}`
+        }, {
+          idempotencyKey: `scenario_feedback_${execution.executionId}_${body.rating}`
+        });
+        json(res, 201, { recorded: true, rating: body.rating });
+        return;
+      }
+
+      if (req.method === 'POST' && url.pathname === '/v1/interaction-feedback') {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        if (!config.aiNativeEnabled
+          || typeof config.aiNativeSystem?.memory?.store !== 'function'
+          || typeof config.voiceInteractionCompletionRepository?.verifyCompleted !== 'function') {
+          json(res, 503, { error: 'AI-native feedback is not configured' }); return;
+        }
+        const body = await readJson(req);
+        assertExactObjectKeys(
+          body,
+          new Set(['interaction_type', 'interaction_id', 'rating', 'occurred_at']),
+          'Interaction feedback'
+        );
+        const occurredAt = body.occurred_at;
+        if (body.interaction_type !== 'voice_call'
+          || !AI_NATIVE_IDENTIFIER_PATTERN.test(body.interaction_id ?? '')
+          || body.interaction_id.length > 80
+          || !['helpful', 'not_helpful'].includes(body.rating)
+          || !Number.isSafeInteger(occurredAt)
+          || Math.abs(Date.now() - occurredAt) > 5 * 60_000) {
+          json(res, 400, { error: 'Interaction feedback is invalid' }); return;
+        }
+        if (!allowAccountAttempt(interactionFeedbackRateState, principal.sub, {
+          limit: INTERACTION_FEEDBACK_RATE_LIMIT,
+          windowMs: INTERACTION_FEEDBACK_RATE_WINDOW_MS
+        })) {
+          json(res, 429, { error: 'Too many feedback requests' }); return;
+        }
+        const verified = await Promise.resolve(
+          config.voiceInteractionCompletionRepository.verifyCompleted(
+            principal.sub,
+            body.interaction_id,
+            { occurredAt }
+          )
+        );
+        if (!verified) { json(res, 404, { error: 'Voice interaction was not found' }); return; }
+        await config.aiNativeSystem.memory.store(principal.sub, {
+          id: `interaction-feedback-${body.interaction_id}`,
+          kind: 'preference',
+          source: 'user',
+          category: 'interaction_feedback',
+          value: `${body.interaction_type}:${body.rating}`
+        }, {
+          idempotencyKey: `interaction_feedback_${body.interaction_id}_${body.rating}`
+        });
+        json(res, 201, { recorded: true, rating: body.rating });
         return;
       }
 

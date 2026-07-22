@@ -5,6 +5,7 @@ import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
 import { DeviceStatusCard } from '../src/components/DeviceStatusCard';
+import { EmptyState } from '../src/components/EmptyState';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { useAppState } from '../src/context/AppContext';
 import { colors, spacing, typography } from '../src/constants/theme';
@@ -133,7 +134,7 @@ export default function DeviceManagement() {
           onPress={retryDeviceHydration}
         />
       ) : null}
-      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.sections.deviceSafety')}</Text>
+      <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.sections.deviceSafety')}</Text>
       {entities.map((entity) => (
         <DeviceStatusCard
           key={`${entity.deviceType}:${entity.deviceId}`}
@@ -183,7 +184,15 @@ export default function DeviceManagement() {
           ) : null}
         </DeviceStatusCard>
       ))}
-      {!entities.length ? <Text style={[styles.empty, isRTL && styles.rtlText]}>{t('device.none')}</Text> : null}
+      {!entities.length ? (
+        <EmptyState
+          compact
+          title={t('device.none')}
+          message={t('device.subtitle')}
+          actionLabel={t('auth.setupJewelry')}
+          onAction={addWearable}
+        />
+      ) : null}
       <View style={[styles.addRow, isRTL && styles.rtlRow]}>
         <Button
           title={`${t('common.add')} · ${t('medication.robot')}`}
@@ -207,7 +216,6 @@ export default function DeviceManagement() {
 const styles = StyleSheet.create({
   sectionTitle: { ...typography.title, color: colors.textPrimary },
   telemetry: { flex: 1, ...typography.caption, color: colors.textSecondary },
-  empty: { paddingVertical: spacing.lg, ...typography.body, color: colors.textSecondary, textAlign: 'center' },
   addRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   addButton: { minWidth: 148, flexBasis: '47%', flexGrow: 1 },
   rtlRow: { flexDirection: 'row-reverse' },

@@ -5,7 +5,7 @@ import { Screen } from '../../src/components/Screen';
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { images } from '../../src/constants/assets';
-import { colors, motion, radii, shadows, spacing, typography } from '../../src/constants/theme';
+import { colors, layout, motion, radii, shadows, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 
 const HERO_ENTERING = FadeInDown.duration(motion.durationEmphasis).reduceMotion(ReduceMotion.System);
@@ -46,22 +46,22 @@ const styles = StyleSheet.create({
     height: 244,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 122,
-    backgroundColor: 'rgba(255, 255, 255, 0.58)',
+    borderRadius: radii.pill,
+    backgroundColor: colors.surfaceRaised,
     ...shadows.raised
   },
   capy: { width: 220, height: 220 },
   copyPanel: {
     width: '100%',
-    maxWidth: 640,
+    maxWidth: layout.readableMaxWidth,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     alignItems: 'center',
     gap: spacing.sm,
     borderRadius: radii.xl,
-    backgroundColor: 'rgba(255, 248, 239, 0.94)'
+    backgroundColor: colors.surfaceCanvas
   },
   title: { ...typography.displayLarge, color: colors.textPrimary, textAlign: 'center' },
   subtitle: { ...typography.bodyLarge, color: colors.textPrimary, textAlign: 'center' },
-  ctaCard: { gap: spacing.sm, backgroundColor: 'rgba(255, 255, 255, 0.94)' }
+  ctaCard: { gap: spacing.sm, backgroundColor: colors.surfaceRaised }
 });

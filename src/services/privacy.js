@@ -3,6 +3,15 @@ import * as Sharing from 'expo-sharing';
 import { AUTH_STORAGE_KEYS } from '../context/AuthContext';
 import { CONVERSATION_HISTORY_KEY, loadConversationHistory } from './conversation-history';
 import {
+  loadScenarioActivity,
+  SCENARIO_ACTIVITY_KEY,
+  SCENARIO_PENDING_INTENT_KEY_PREFIX
+} from './scenario-activity-store';
+import {
+  listMoodCheckIns,
+  MOOD_CHECKIN_HISTORY_KEY
+} from './mood-checkin-store';
+import {
   deleteLocalUserStores,
   hasLocalUserDataDeletionWarnings,
   LOCAL_USER_DATA_PREFIX
@@ -59,7 +68,11 @@ function parseStoredValue(raw) {
 
 async function collectLocalStorageSnapshot() {
   const keys = (await storage.keys()).filter(
-    (key) => key.startsWith(LOCAL_USER_DATA_PREFIX) && key !== CONVERSATION_HISTORY_KEY
+    (key) => key.startsWith(LOCAL_USER_DATA_PREFIX)
+      && key !== CONVERSATION_HISTORY_KEY
+      && key !== SCENARIO_ACTIVITY_KEY
+      && !key.startsWith(SCENARIO_PENDING_INTENT_KEY_PREFIX)
+      && key !== MOOD_CHECKIN_HISTORY_KEY
   );
   const entries = await Promise.all(keys.map(async (key) => [key, parseStoredValue(await storage.getRaw(key))]));
   return Object.fromEntries(entries);
@@ -83,6 +96,12 @@ export async function buildUserDataExport({ accessToken } = {}) {
     loadSavedPlaces,
     loadMedicalProfile: loadMedicalEmergencyProfile
   });
+  const [scenarioActivity, moodCheckIns] = account?.id
+    ? await Promise.all([
+      loadScenarioActivity(account.id),
+      listMoodCheckIns(account.id)
+    ])
+    : [{ executions: [], feedback: [] }, []];
   const localSnapshot = {
     schemaVersion: 1,
     exportedAt: new Date().toISOString(),
@@ -96,6 +115,8 @@ export async function buildUserDataExport({ accessToken } = {}) {
     savedPlaces,
     medicalProfile,
     conversations,
+    scenarioActivity,
+    moodCheckIns,
     localStorage,
     permissionRationales: Object.fromEntries(
       Object.entries(localStorage).filter(([key]) => key.startsWith(RATIONALE_PREFIX))

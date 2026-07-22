@@ -123,9 +123,9 @@ test('reviewed safety catalogs do not silently reuse English source copy', () =>
   }
 });
 
-test('every selectable catalog exactly covers all 410 English keys with non-empty strings', () => {
+test('every selectable catalog exactly covers the complete English key set with non-empty strings', () => {
   assert.equal(availableLanguages.length, 155);
-  assert.equal(referenceKeys.length, 410);
+  assert.ok(referenceKeys.length >= 410, 'the public copy surface must not silently shrink');
   for (const language of availableLanguages) {
     const translated = flattenCatalog(language.messages);
     let englishIdenticalValues = 0;

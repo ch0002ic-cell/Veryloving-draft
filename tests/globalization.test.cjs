@@ -323,7 +323,7 @@ test('language selector persists before publishing and visibly marks the current
   assert.match(selector, /await setLanguage\(languageCode\)/);
   assert.match(selector, /const selected = item\.code === languagePreference/);
   assert.match(selector, /accessibilityState=\{\{ checked: selected/);
-  assert.match(selector, /selected \? <Ionicons name="checkmark-circle"/);
+  assert.match(selector, /selected \? <Ionicons[^>]*name="checkmark-circle"/);
   assert.match(selector, /<FlatList/);
   assert.match(selector, /initialNumToRender=\{24\}/);
   assert.match(selector, /filterLanguageOptions/);

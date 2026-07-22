@@ -40,17 +40,32 @@ function operationSucceeded(context: ScenarioConditionContext, stepId: string): 
   return context.results.get(stepId)?.status === 'succeeded';
 }
 
+const COGNITIVE_ACTIVITIES = new Set(['memory', 'trivia', 'conversation']);
+
+function requestedActivity(request: ScenarioStartRequest): string {
+  if (request.trigger.type !== 'user_cognitive_engagement') return 'memory';
+  const activity = request.input?.activity;
+  if (typeof activity !== 'string' || !COGNITIVE_ACTIVITIES.has(activity)) {
+    throw new TypeError('User cognitive activity is invalid');
+  }
+  return activity;
+}
+
 export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
   id: 'cognitive_engagement',
-  version: 1,
+  version: 3,
   priority: 'background',
-  description: 'Low morning movement prompts a gentle activity or game and records only a bounded response summary.',
-  allowedTriggerTypes: Object.freeze(['bedroom_inactivity']),
+  description: 'Low morning movement or an explicit user request starts a gentle activity and records only a bounded response summary.',
+  allowedTriggerTypes: Object.freeze(['bedroom_inactivity', 'user_cognitive_engagement']),
   buildSteps(request: ScenarioStartRequest) {
+    const userInitiated = request.trigger.type === 'user_cognitive_engagement';
+    const activity = requestedActivity(request);
+    const shouldEngage = (context: ScenarioConditionContext): boolean => userInitiated || lowActivity(context);
     const observedAt = new Date(request.trigger.occurredAt).toISOString();
     const scenarioSteps: readonly ScenarioStepDefinition[] = [
       {
         id: 'read_step_state',
+        when: () => !userInitiated,
         operation: {
           id: 'query_steps_today',
           kind: 'read_state',
@@ -61,13 +76,13 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'suggest_activity',
-        when: lowActivity,
+        when: shouldEngage,
         operation: {
           id: 'robot_cognitive_engagement',
           kind: 'device_action',
           target: 'home_robot',
           action: 'cognitive_engagement',
-          parameters: { activity: 'memory_game' },
+          parameters: { activity },
           timeoutMs: 5_000
         },
         fallback: [{
@@ -81,19 +96,22 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'start_cognitive_game',
-        when: lowActivity,
+        when: shouldEngage,
         operation: {
           id: 'hume_cognitive_game',
           kind: 'hume_session',
           target: 'home_robot',
           mode: 'cognitive_game',
+          ...(userInitiated ? {
+            interactionContext: { source: 'user_selected', activity }
+          } : {}),
           timeoutMs: 5_000
         },
         continueOnFailure: true
       },
       {
         id: 'await_cognitive_response',
-        when: (context) => lowActivity(context)
+        when: (context) => shouldEngage(context)
           && operationSucceeded(context, 'suggest_activity')
           && operationSucceeded(context, 'start_cognitive_game'),
         operation: {
@@ -106,7 +124,7 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'record_cognitive_typical_pattern',
-        when: (context) => observedSteps(context) !== undefined && !lowActivity(context),
+        when: (context) => !userInitiated && observedSteps(context) !== undefined && !lowActivity(context),
         operation: {
           id: 'append_cognitive_summary',
           kind: 'append_memory',
@@ -127,7 +145,7 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'record_cognitive_response',
-        when: (context) => lowActivity(context)
+        when: (context) => shouldEngage(context)
           && operationSucceeded(context, 'suggest_activity')
           && operationSucceeded(context, 'start_cognitive_game')
           && userResponded(context),
@@ -143,7 +161,9 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
             periodStart: observedAt,
             periodEnd: observedAt,
             direction: 'stable',
-            summary: 'Low simulated activity prompted a cognitive engagement and received a response.'
+            summary: userInitiated
+              ? 'The user started a cognitive engagement and the observer received a response.'
+              : 'Low simulated activity prompted a cognitive engagement and received a response.'
           },
           timeoutMs: 2_000
         },
@@ -151,7 +171,7 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'record_cognitive_no_response',
-        when: (context) => lowActivity(context)
+        when: (context) => shouldEngage(context)
           && operationSucceeded(context, 'suggest_activity')
           && operationSucceeded(context, 'start_cognitive_game')
           && observerConfirmedNoResponse(context),
@@ -169,7 +189,9 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
             // One observation is not a clinical trend. Trend direction is only
             // derived by the longitudinal analysis layer across multiple windows.
             direction: 'stable',
-            summary: 'Low simulated activity prompted engagement and the observer explicitly reported no response.'
+            summary: userInitiated
+              ? 'The user started a cognitive engagement and the observer explicitly reported no response.'
+              : 'Low simulated activity prompted engagement and the observer explicitly reported no response.'
           },
           timeoutMs: 2_000
         },
@@ -177,7 +199,7 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'record_cognitive_observer_unavailable',
-        when: (context) => lowActivity(context)
+        when: (context) => shouldEngage(context)
           && operationSucceeded(context, 'suggest_activity')
           && operationSucceeded(context, 'start_cognitive_game')
           && responseObserverUnavailable(context),
@@ -191,7 +213,7 @@ export const cognitiveEngagementScenario: ScenarioDefinition = Object.freeze({
       },
       {
         id: 'record_cognitive_signal_unavailable',
-        when: (context) => observedSteps(context) === undefined,
+        when: (context) => !userInitiated && observedSteps(context) === undefined,
         operation: {
           id: 'cognitive_signal_unavailable_analytics',
           kind: 'analytics',

@@ -11,7 +11,7 @@ import { useAppState } from '../src/context/AppContext';
 import { useI18n } from '../src/context/I18nContext';
 import { callNumber } from '../src/services/emergency';
 import { formatE164ForDisplay, phoneValueFromE164 } from '../src/utils/phone';
-import { colors, fonts } from '../src/constants/theme';
+import { colors, radii, sizes, spacing, typography } from '../src/constants/theme';
 import { images } from '../src/constants/assets';
 
 export default function EmergencyContacts() {
@@ -46,7 +46,14 @@ export default function EmergencyContacts() {
 
   const save = async () => {
     setSubmitted(true);
-    if (!nameValid || !phone?.isValid) return;
+    if (!nameValid || !phone?.isValid) {
+      if (!nameValid) nameInputRef.current?.focus();
+      const validationKey = !nameValid
+        ? 'contacts.nameRequired'
+        : `phone.${phone?.validationError || 'invalid'}`;
+      AccessibilityInfo.announceForAccessibility?.(t(validationKey));
+      return;
+    }
     setSaving(true);
     setFeedback(null);
     const editId = editingId;
@@ -141,13 +148,17 @@ export default function EmergencyContacts() {
         <Text style={styles.label}>{t('contacts.name')}</Text>
         <TextInput
           ref={nameInputRef}
+          aria-invalid={submitted && !nameValid}
+          aria-required
           accessibilityLabel={t('contacts.name')}
+          accessibilityState={{ busy: saving, disabled: saving }}
           autoCapitalize="words"
           autoCorrect={false}
+          editable={!saving}
           maxLength={100}
           onChangeText={setName}
           placeholder={t('contacts.namePlaceholder')}
-          placeholderTextColor={colors.inkSoft}
+          placeholderTextColor={colors.textSecondary}
           style={[styles.nameInput, submitted && !nameValid && styles.invalidInput]}
           value={name}
         />
@@ -162,7 +173,7 @@ export default function EmergencyContacts() {
           title={editingId ? t('common.save') : t('contacts.add')}
           icon={editingId ? 'checkmark' : 'person-add'}
           loading={saving}
-          disabled={!nameValid || !phone?.isValid}
+          disabled={saving}
           onPress={save}
         />
         {editingId ? (
@@ -224,16 +235,25 @@ export default function EmergencyContacts() {
 }
 
 const styles = StyleSheet.create({
-  form: { gap: 10 },
-  title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
-  label: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
-  nameInput: { minHeight: 50, paddingHorizontal: 12, borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff', fontFamily: fonts.regular, color: colors.ink },
-  invalidInput: { borderColor: colors.redAccessible },
-  error: { fontFamily: fonts.regular, color: colors.redAccessible, fontSize: 12 },
-  list: { paddingVertical: 4, paddingBottom: 20, gap: 10 },
-  contactCard: { gap: 12 },
-  contactCopy: { gap: 4 },
-  contactName: { fontFamily: fonts.bold, color: colors.ink, fontSize: 17 },
-  phone: { fontFamily: fonts.regular, color: colors.inkSoft },
-  actions: { gap: 8 }
+  form: { gap: spacing.sm },
+  title: { ...typography.heading, color: colors.textPrimary },
+  label: { ...typography.label, color: colors.textPrimary },
+  nameInput: {
+    minHeight: sizes.control,
+    paddingHorizontal: spacing.mdSm,
+    borderWidth: 1,
+    borderColor: colors.borderControl,
+    borderRadius: radii.lg,
+    backgroundColor: colors.surfaceRaised,
+    ...typography.bodyLarge,
+    color: colors.textPrimary
+  },
+  invalidInput: { borderWidth: 2, borderColor: colors.redAccessible },
+  error: { ...typography.caption, color: colors.redAccessible },
+  list: { paddingVertical: spacing.xs, paddingBottom: spacing.lg, gap: spacing.sm },
+  contactCard: { gap: spacing.mdSm },
+  contactCopy: { gap: spacing.xs },
+  contactName: { ...typography.heading, color: colors.textPrimary },
+  phone: { ...typography.body, color: colors.textSecondary },
+  actions: { gap: spacing.sm }
 });

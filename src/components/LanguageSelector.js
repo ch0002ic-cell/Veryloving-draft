@@ -1,9 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  AccessibilityInfo,
+  ActivityIndicator,
+  findNodeHandle,
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useI18n } from '../context/I18nContext';
-import { colors, fonts, spacing } from '../constants/theme';
+import { colors, layout, motion, radii, sizes, spacing, tones, typography } from '../constants/theme';
 import { filterLanguageOptions } from '../i18n/core';
 
 export function LanguageSelector({ onError }) {
@@ -11,6 +22,9 @@ export function LanguageSelector({ onError }) {
   const [savingLanguage, setSavingLanguage] = useState(null);
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
+  const titleRef = useRef(null);
+  const triggerRef = useRef(null);
+  const wasVisibleRef = useRef(false);
   const selectedLanguage = languageOptions.find((language) => language.code === languagePreference)
     || languageOptions[0];
   const languageLabel = (language) => language.code === 'system'
@@ -27,6 +41,18 @@ export function LanguageSelector({ onError }) {
 
   useEffect(() => {
     if (!visible) setQuery('');
+  }, [visible]);
+
+  useEffect(() => {
+    const shouldRestore = !visible && wasVisibleRef.current;
+    wasVisibleRef.current = visible;
+    if (!visible && !shouldRestore) return undefined;
+    const timer = setTimeout(() => {
+      const target = visible ? titleRef.current : triggerRef.current;
+      const node = findNodeHandle(target);
+      if (node) AccessibilityInfo.setAccessibilityFocus?.(node);
+    }, visible ? 120 : 180);
+    return () => clearTimeout(timer);
   }, [visible]);
 
   const chooseLanguage = async (languageCode) => {
@@ -49,7 +75,11 @@ export function LanguageSelector({ onError }) {
   return (
     <>
       <Pressable
+        ref={triggerRef}
+        accessibilityLabel={`${t('languages.title')}: ${languageLabel(selectedLanguage)}`}
         accessibilityRole="button"
+        accessibilityState={{ busy: Boolean(savingLanguage), disabled: Boolean(savingLanguage), expanded: visible }}
+        android_ripple={{ color: colors.borderSubtle }}
         disabled={Boolean(savingLanguage)}
         onPress={() => setVisible(true)}
         style={({ pressed }) => [styles.trigger, isRTL && styles.rtlRow, pressed && styles.pressed]}
@@ -60,13 +90,19 @@ export function LanguageSelector({ onError }) {
         </View>
         {savingLanguage
           ? <ActivityIndicator size="small" color={colors.orangeAccessible} />
-          : <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={20} color={colors.inkSoft} />}
+          : <Ionicons accessible={false} name={isRTL ? 'chevron-back' : 'chevron-forward'} size={sizes.icon} color={colors.textSecondary} />}
       </Pressable>
       <Modal animationType="slide" presentationStyle="pageSheet" visible={visible} onRequestClose={() => setVisible(false)}>
         <SafeAreaProvider>
-          <SafeAreaView style={styles.safe}>
+          <SafeAreaView accessibilityViewIsModal style={styles.safe}>
             <View style={[styles.header, isRTL && styles.rtlRow]}>
-              <Text style={[styles.title, isRTL && styles.rtlText]}>{t('languages.title')}</Text>
+              <Text
+                accessibilityRole="header"
+                ref={titleRef}
+                style={[styles.title, isRTL && styles.rtlText]}
+              >
+                {t('languages.title')}
+              </Text>
               <Pressable
                 accessibilityLabel={t('common.close')}
                 accessibilityRole="button"
@@ -74,11 +110,11 @@ export function LanguageSelector({ onError }) {
                 onPress={() => setVisible(false)}
                 style={({ pressed }) => [styles.closeButton, pressed && styles.pressed]}
               >
-                <Ionicons name="close" size={26} color={colors.ink} />
+                <Ionicons accessible={false} name="close" size={sizes.iconLarge} color={colors.textPrimary} />
               </Pressable>
             </View>
             <View style={[styles.searchRow, isRTL && styles.rtlRow]}>
-              <Ionicons name="search" size={20} color={colors.inkSoft} />
+              <Ionicons accessible={false} name="search" size={sizes.icon} color={colors.textSecondary} />
               <TextInput
                 accessibilityLabel={t('languages.search')}
                 autoCapitalize="none"
@@ -86,7 +122,7 @@ export function LanguageSelector({ onError }) {
                 clearButtonMode="while-editing"
                 onChangeText={setQuery}
                 placeholder={t('languages.search')}
-                placeholderTextColor={colors.inkSoft}
+                placeholderTextColor={colors.textSecondary}
                 returnKeyType="search"
                 style={[styles.searchInput, isRTL && styles.rtlText]}
                 value={query}
@@ -97,13 +133,15 @@ export function LanguageSelector({ onError }) {
               initialNumToRender={24}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(language) => language.code}
-              ListEmptyComponent={<Text style={styles.empty}>{t('languages.noResults')}</Text>}
+              ListEmptyComponent={<Text accessibilityRole="summary" style={styles.empty}>{t('languages.noResults')}</Text>}
               renderItem={({ item }) => {
                 const selected = item.code === languagePreference;
                 return (
                   <Pressable
+                    accessibilityLabel={languageLabel(item)}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: selected, disabled: Boolean(savingLanguage) }}
+                    android_ripple={{ color: colors.borderSubtle }}
                     disabled={Boolean(savingLanguage)}
                     onPress={() => chooseLanguage(item.code)}
                     style={({ pressed }) => [styles.row, isRTL && styles.rtlRow, selected && styles.selected, pressed && styles.pressed]}
@@ -117,7 +155,7 @@ export function LanguageSelector({ onError }) {
                         </View>
                       ) : null}
                     </View>
-                    {selected ? <Ionicons name="checkmark-circle" size={21} color={colors.greenAccessible} /> : null}
+                    {selected ? <Ionicons accessible={false} name="checkmark-circle" size={sizes.icon} color={colors.greenAccessible} /> : null}
                   </Pressable>
                 );
               }}
@@ -130,25 +168,25 @@ export function LanguageSelector({ onError }) {
 }
 
 const styles = StyleSheet.create({
-  trigger: { minHeight: 52, paddingHorizontal: spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
+  trigger: { minHeight: sizes.control, paddingHorizontal: spacing.mdSm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: colors.borderControl, borderRadius: radii.lg, backgroundColor: colors.surfaceRaised },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  triggerCopy: { flex: 1, gap: 2 },
-  code: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12 },
-  safe: { flex: 1, backgroundColor: colors.cream },
-  header: { minHeight: 60, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  title: { flex: 1, fontFamily: fonts.bold, color: colors.ink, fontSize: 22 },
-  closeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  searchRow: { minHeight: 50, marginHorizontal: 20, marginBottom: 10, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, backgroundColor: '#fff' },
-  searchInput: { flex: 1, minWidth: 0, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
-  row: { minHeight: 56, paddingHorizontal: 20, paddingVertical: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.line },
-  languageCopy: { flex: 1, minWidth: 0 },
-  metadataRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
-  selected: { backgroundColor: '#F2F8F5' },
-  label: { flex: 1, fontFamily: fonts.regular, color: colors.ink, fontSize: 16 },
-  selectedLabel: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 16 },
-  englishName: { flexShrink: 1, fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 12 },
-  qaBadge: { overflow: 'hidden', paddingHorizontal: 5, paddingVertical: 1, borderRadius: 4, backgroundColor: '#FFF1D6', fontFamily: fonts.semibold, color: colors.orangeAccessible, fontSize: 10 },
-  empty: { padding: 32, fontFamily: fonts.regular, color: colors.inkSoft, textAlign: 'center' },
-  pressed: { opacity: 0.65 }
+  triggerCopy: { flex: 1, gap: spacing.xs },
+  code: { ...typography.caption, color: colors.textSecondary },
+  safe: { flex: 1, backgroundColor: colors.surfaceCanvas },
+  header: { minHeight: sizes.controlLarge + spacing.xs, paddingHorizontal: layout.screenPadding, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  title: { flex: 1, ...typography.titleLarge, color: colors.textPrimary },
+  closeButton: { width: sizes.touchTarget, height: sizes.touchTarget, alignItems: 'center', justifyContent: 'center' },
+  searchRow: { minHeight: sizes.control, marginHorizontal: layout.screenPadding, marginBottom: spacing.sm, paddingHorizontal: spacing.mdSm, flexDirection: 'row', alignItems: 'center', gap: spacing.sm, borderWidth: 1, borderColor: colors.borderControl, borderRadius: radii.lg, backgroundColor: colors.surfaceRaised },
+  searchInput: { flex: 1, minWidth: 0, ...typography.bodyLarge, color: colors.textPrimary },
+  row: { minHeight: sizes.controlLarge, paddingHorizontal: layout.screenPadding, paddingVertical: spacing.sm, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderSubtle },
+  languageCopy: { flex: 1, minWidth: 0, gap: spacing.xs },
+  metadataRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  selected: { backgroundColor: tones.success.background },
+  label: { flex: 1, ...typography.bodyLarge, color: colors.textPrimary },
+  selectedLabel: { ...typography.label, color: colors.textPrimary },
+  englishName: { flexShrink: 1, ...typography.caption, color: colors.textSecondary },
+  qaBadge: { overflow: 'hidden', paddingHorizontal: spacing.xs, paddingVertical: spacing.xs, borderRadius: radii.sm, backgroundColor: tones.warning.background, ...typography.caption, fontFamily: typography.label.fontFamily, color: tones.warning.foreground },
+  empty: { padding: spacing.xl, ...typography.body, color: colors.textSecondary, textAlign: 'center' },
+  pressed: { opacity: 0.72, transform: [{ scale: motion.pressedScale }] }
 });

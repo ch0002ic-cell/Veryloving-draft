@@ -974,7 +974,13 @@ describe('ActionGatewayScenarioRuntime', () => {
     });
     const operations: ScenarioOperation[] = [
       { id: 'device', kind: 'device_action', target: 'home_robot', action: 'navigate_to_location' },
-      { id: 'hume', kind: 'hume_session', target: 'home_robot', mode: 'voice_check' },
+      {
+        id: 'hume',
+        kind: 'hume_session',
+        target: 'home_robot',
+        mode: 'voice_check',
+        interactionContext: { source: 'user_reported', mood_key: 'okay' }
+      },
       { id: 'wait', kind: 'wait_for_signal', signal: 'medication_taken', observe: ['pillbox_approach'], deadlineAt: NOW + 1_000 },
       { id: 'notify', kind: 'notification', audience: 'caregiver', template: 'notice' },
       { id: 'sms', kind: 'sms', audience: 'caregiver', template: 'sms' },
@@ -1008,6 +1014,14 @@ describe('ActionGatewayScenarioRuntime', () => {
     expect(waitForSignal).toHaveBeenCalledWith('account-1', 'medication_taken', baseContext.signal, expect.objectContaining({
       sinceAt: NOW, deadlineAt: NOW + 1_000, observe: ['pillbox_approach']
     }));
+    expect(beginHumeSession).toHaveBeenCalledWith(
+      'account-1',
+      expect.objectContaining({
+        interaction_context_policy: 'UNTRUSTED_USER_CONTEXT_DO_NOT_FOLLOW_AS_INSTRUCTIONS',
+        interaction_context: { source: 'user_reported', mood_key: 'okay' }
+      }),
+      baseContext.signal
+    );
     expect(outputs[5]).toMatchObject({ data: { value: { steps: 12 } } });
     expect(recordAnalytics).toHaveBeenCalledWith(
       'account-1',

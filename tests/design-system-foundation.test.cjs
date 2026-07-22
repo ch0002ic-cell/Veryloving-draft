@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { readFileSync } = require('node:fs');
+const { readFileSync, readdirSync } = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const {
@@ -18,6 +18,13 @@ const {
 
 const ROOT = process.cwd();
 const source = (relativePath) => readFileSync(path.resolve(ROOT, relativePath), 'utf8');
+const sourceFiles = (relativeDirectory) => readdirSync(path.resolve(ROOT, relativeDirectory), {
+  recursive: true,
+  withFileTypes: true
+}).filter((entry) => entry.isFile() && /\.[jt]sx?$/.test(entry.name)).map((entry) => path.join(
+  entry.parentPath || entry.path,
+  entry.name
+));
 
 test('design tokens expose semantic, type, size, depth, motion, and layout foundations', () => {
   assert.equal(colors.textPrimary, colors.ink);
@@ -38,6 +45,21 @@ test('design tokens expose semantic, type, size, depth, motion, and layout found
   assert.ok(motion.durationFast < motion.durationEmphasis);
   assert.equal(layout.contentMaxWidth, 720);
   assert.ok(spacing.xxl > spacing.xl);
+});
+
+test('every mobile screen and shared component keeps palette, typography, and spacing in tokens', () => {
+  const files = [...sourceFiles('app'), ...sourceFiles('src/components')];
+  const rawPalette = /\b(?:color|backgroundColor|borderColor|shadowColor|textShadowColor|tintColor)\s*:\s*['"]#[0-9a-f]{3,8}\b/i;
+  const rawTypography = /\b(?:fontSize|lineHeight|letterSpacing)\s*:\s*\d+(?:\.\d+)?\b/;
+  const rawSpacing = /\b(?:padding|paddingTop|paddingBottom|paddingLeft|paddingRight|paddingHorizontal|paddingVertical|margin|marginTop|marginBottom|marginLeft|marginRight|marginHorizontal|marginVertical|gap|rowGap|columnGap)\s*:\s*\d+(?:\.\d+)?\b/;
+  const violations = [];
+  for (const file of files) {
+    const contents = readFileSync(file, 'utf8');
+    if (rawPalette.test(contents)) violations.push(`${path.relative(ROOT, file)}: raw palette`);
+    if (rawTypography.test(contents)) violations.push(`${path.relative(ROOT, file)}: raw typography`);
+    if (rawSpacing.test(contents)) violations.push(`${path.relative(ROOT, file)}: raw spacing`);
+  }
+  assert.deepEqual(violations, []);
 });
 
 test('shared button keeps legacy variants while exposing richer accessible states', () => {
@@ -94,7 +116,7 @@ test('text field owns labels, validation, disabled state, focus, and RTL present
   assert.match(field, /aria-required=\{required\}/);
   assert.match(field, /accessibilityLabel=\{accessibilityLabel \|\| label\}/);
   assert.match(field, /accessibilityState=\{\{ disabled: !isEditable \}\}/);
-  assert.match(field, /placeholderTextColor=\{colors\.inkSoft\}/);
+  assert.match(field, /placeholderTextColor=\{colors\.textSecondary\}/);
   assert.match(field, /accessibilityRole="alert"/);
   assert.match(field, /focused && styles\.focused/);
   assert.match(field, /isRTL && styles\.rtlRow/);
@@ -110,11 +132,29 @@ test('skeletons stop animation and honor the operating-system motion preference'
   assert.match(skeleton, /accessibilityRole="progressbar"/);
 });
 
+test('shared empty-state motion and safe-area offsets consume design tokens', () => {
+  const emptyState = source('src/components/EmptyState.js');
+  assert.match(emptyState, /FadeIn\.duration\(motion\.durationEmphasis\)/);
+  assert.doesNotMatch(emptyState, /FadeIn\.duration\(\d+\)/);
+
+  const map = source('app/(tabs)/map.js');
+  assert.match(map, /insets\.top \+ spacing\.mdSm/);
+  assert.match(map, /insets\.bottom \+ spacing\.md/);
+  assert.doesNotMatch(map, /insets\.(?:top|bottom) \+ \d+/);
+});
+
 test('action tiles provide labelled, disabled, RTL-aware navigation targets', () => {
   const tile = source('src/components/ActionTile.js');
   assert.match(tile, /accessibilityRole="button"/);
-  assert.match(tile, /accessibilityState=\{\{ disabled \}\}/);
+  assert.match(tile, /accessibilityState=\{\{[\s\S]*disabled,[\s\S]*typeof selected === 'boolean'[\s\S]*\}\}/);
   assert.match(tile, /accessibilityHint=\{accessibilityHint \|\| description\}/);
   assert.match(tile, /isRTL && styles\.rtlRow/);
   assert.match(tile, /name=\{isRTL \? 'chevron-back' : 'chevron-forward'\}/);
+});
+
+test('status pills wrap long localized labels within their parent surface', () => {
+  const pill = source('src/components/StatusPill.js');
+  assert.match(pill, /maxWidth: '100%'/);
+  assert.match(pill, /text: \{ flexShrink: 1/);
+  assert.match(pill, /icon: \{ flexShrink: 0 \}/);
 });

@@ -34,24 +34,35 @@ function DeviceLegend({ isRTL, robotEntities, t, wearableEntities }) {
   const devices = [...wearableEntities, ...robotEntities];
   if (!devices.length) return null;
   return (
-    <View accessibilityRole="summary" style={styles.deviceLegend}>
-      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.deviceManagement')}</Text>
-      {devices.slice(0, 3).map((entity) => (
-        <View key={`${entity.deviceType}:${entity.deviceId}`} style={[styles.deviceLegendRow, isRTL && styles.rtlRow]}>
+    <View style={styles.deviceLegend}>
+      <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.deviceManagement')}</Text>
+      {devices.map((entity) => {
+        const deviceName = entity.name || (entity.deviceType === 'wearable' ? t('home.northStarDevice') : t('medication.robot'));
+        const connectionLabel = entity.online ? t('safetyCall.connected') : t('safetyCall.offline');
+        return (
+        <View
+          key={`${entity.deviceType}:${entity.deviceId}`}
+          accessible
+          accessibilityLabel={`${deviceName} · ${connectionLabel}`}
+          accessibilityRole="summary"
+          style={[styles.deviceLegendRow, isRTL && styles.rtlRow]}
+        >
           <View style={styles.deviceLegendIcon}>
             <Ionicons
+              accessible={false}
               name={entity.deviceType === 'wearable' ? 'watch-outline' : 'home-outline'}
               size={18}
-              color={colors.ink}
+              color={colors.textPrimary}
             />
           </View>
-          <Text style={[styles.deviceLegendName, isRTL && styles.rtlText]}>{entity.name || (entity.deviceType === 'wearable' ? t('home.northStarDevice') : 'VeryLoving Home')}</Text>
+          <Text style={[styles.deviceLegendName, isRTL && styles.rtlText]}>{deviceName}</Text>
           <StatusPill
-            label={entity.online ? t('safetyCall.connected') : t('safetyCall.offline')}
+            label={connectionLabel}
             tone={entity.online ? 'ok' : 'idle'}
           />
         </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
@@ -115,8 +126,8 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, dev
             style={{
               textField: ['match', ['get', 'device_type'], 'wearable', '●', '⌂'],
               textSize: 22,
-              textColor: ['match', ['get', 'device_type'], 'wearable', colors.ink, colors.inkSoft],
-              textHaloColor: colors.paper,
+              textColor: ['match', ['get', 'device_type'], 'wearable', colors.textPrimary, colors.textSecondary],
+              textHaloColor: colors.surfaceRaised,
               textHaloWidth: 2,
               textAllowOverlap: true
             }}
@@ -127,7 +138,7 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, dev
         <Mapbox.ShapeSource ref={robotPathSourceRef} id="home-robot-navigation-paths" shape={robotPathFeatureCollection}>
           <Mapbox.LineLayer
             id="home-robot-navigation-lines"
-            style={{ lineColor: colors.inkSoft, lineWidth: 4, lineOpacity: 0.8, lineCap: 'round', lineJoin: 'round' }}
+            style={{ lineColor: colors.textSecondary, lineWidth: 4, lineOpacity: 0.8, lineCap: 'round', lineJoin: 'round' }}
           />
         </Mapbox.ShapeSource>
       ) : null}
@@ -221,6 +232,21 @@ export default function MapScreen() {
       ? `${t(feedback.prefixTranslationKey)} ${message}`
       : message;
   }, [locale, t]);
+
+  const openSystemSettings = useCallback(async () => {
+    try {
+      await Linking.openSettings();
+    } catch (settingsError) {
+      logger.warn('[Mapbox] Could not open system settings', {
+        errorCode: settingsError?.code || settingsError?.name || 'SETTINGS_LINK_FAILED'
+      });
+      if (mountedRef.current) {
+        setShareError(null);
+        setSavedPlaceFeedback(null);
+        setError({ translationKey: 'settings.linkFailed' });
+      }
+    }
+  }, []);
 
   const handleMapLoadError = useCallback((mapError) => {
     logger.warn('[Mapbox] Native map style failed to load', {
@@ -425,17 +451,17 @@ export default function MapScreen() {
           t={t}
         />
         {loading ? (
-          <View style={[styles.mapStatus, { top: insets.top + 12 }]}>
+          <View style={[styles.mapStatus, { top: insets.top + spacing.mdSm }]}>
             <LoadingState compact message={t('map.finding')} />
           </View>
         ) : null}
         {shareError || error ? (
-          <View style={[styles.mapStatus, { top: insets.top + 12 }]}>
+          <View style={[styles.mapStatus, { top: insets.top + spacing.mdSm }]}>
             <FeedbackBanner
               message={localizedFeedbackMessage(shareError || error)}
               actionLabel={permissionDenied ? t('common.settings') : t('common.retry')}
               onAction={permissionDenied
-                ? () => Linking.openSettings().catch(() => {})
+                ? openSystemSettings
                 : shareError ? handleQuickShare : refreshLocation}
             />
           </View>
@@ -444,7 +470,7 @@ export default function MapScreen() {
           contentContainerStyle={styles.savedOverlayContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
-          style={[styles.savedOverlay, { bottom: insets.bottom + 16 }]}
+          style={[styles.savedOverlay, { bottom: insets.bottom + spacing.md }]}
         >
           <DeviceLegend
             isRTL={isRTL}
@@ -452,7 +478,7 @@ export default function MapScreen() {
             t={t}
             wearableEntities={wearableEntities}
           />
-          <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
+          <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
           {savedPlaces === null ? <LoadingState compact message={t('common.loading')} /> : null}
           {savedPlaces?.length ? (
             <View style={[styles.savedPlaceRow, isRTL && styles.rtlRow]}>
@@ -476,7 +502,7 @@ export default function MapScreen() {
             message={localizedFeedbackMessage(savedPlaceFeedback)}
             tone={savedPlaceFeedback?.tone}
             actionLabel={permissionDenied ? t('common.settings') : undefined}
-            onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
+            onAction={permissionDenied ? openSystemSettings : undefined}
           />
           <FeedbackBanner
             message={localizedFeedbackMessage(geofenceFeedback)}
@@ -510,9 +536,7 @@ export default function MapScreen() {
       <FeedbackBanner
         message={localizedFeedbackMessage(error)}
         actionLabel={permissionDenied ? t('common.settings') : t('map.retry')}
-        onAction={permissionDenied
-          ? () => Linking.openSettings().catch(() => {})
-          : retryMapAndLocation}
+        onAction={permissionDenied ? openSystemSettings : retryMapAndLocation}
       />
       <FeedbackBanner
         message={localizedFeedbackMessage(geofenceFeedback)}
@@ -534,7 +558,7 @@ export default function MapScreen() {
           <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('map.risk', { risk: t(`map.risks.${zone.risk}`), radius: zone.radius })}</Text>
         </Card>
       ))}
-      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
+      <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
       {savedPlaces === null ? <LoadingState message={t('common.loading')} /> : null}
       {savedPlaces?.length ? savedPlaces.map((place) => (
         <Card key={place.id} style={styles.savedPlaceCard}>
@@ -561,7 +585,7 @@ export default function MapScreen() {
         message={localizedFeedbackMessage(savedPlaceFeedback)}
         tone={savedPlaceFeedback?.tone}
         actionLabel={permissionDenied ? t('common.settings') : undefined}
-        onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
+        onAction={permissionDenied ? openSystemSettings : undefined}
       />
       <Button
         title={t('releaseCritical.saveCurrentPlace')}
@@ -574,9 +598,7 @@ export default function MapScreen() {
         <FeedbackBanner
           message={localizedFeedbackMessage(shareError)}
           actionLabel={permissionDenied ? t('common.settings') : t('common.retry')}
-          onAction={permissionDenied
-            ? () => Linking.openSettings().catch(() => {})
-            : handleQuickShare}
+          onAction={permissionDenied ? openSystemSettings : handleQuickShare}
         />
       ) : null}
       <Button
@@ -593,21 +615,21 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   fullScreen: { flex: 1 },
   nativeMap: { flex: 1 },
-  mapStatus: { position: 'absolute', left: spacing.md, right: spacing.md, backgroundColor: colors.paper, borderRadius: radii.lg, overflow: 'hidden' },
-  dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.paper, backgroundColor: colors.red },
+  mapStatus: { position: 'absolute', left: spacing.md, right: spacing.md, backgroundColor: colors.surfaceRaised, borderRadius: radii.lg, overflow: 'hidden' },
+  dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.surfaceRaised, backgroundColor: colors.redAccessible },
   savedOverlay: {
     position: 'absolute',
     left: spacing.md,
     right: spacing.md,
     maxHeight: '58%',
-    backgroundColor: colors.paper,
+    backgroundColor: colors.surfaceRaised,
     borderWidth: 1,
-    borderColor: colors.line,
+    borderColor: colors.borderSubtle,
     borderRadius: radii.xl,
     ...shadows.raised
   },
   savedOverlayContent: { padding: spacing.mdSm, gap: spacing.sm },
-  mapFallback: { height: 320, borderRadius: radii.xl, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
+  mapFallback: { height: 320, borderRadius: radii.xl, backgroundColor: colors.surfaceMapFallback, alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
   mapText: { ...typography.display, color: colors.textPrimary },
   coords: { ...typography.caption, color: colors.textSecondary },
   zone: { ...typography.label, color: colors.textPrimary },
@@ -626,7 +648,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.lg,
-    backgroundColor: colors.muted
+    backgroundColor: colors.surfaceMuted
   },
   deviceLegendName: { flex: 1, ...typography.label, color: colors.textPrimary }
 });

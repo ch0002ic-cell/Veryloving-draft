@@ -5,7 +5,7 @@ import { Screen } from '../src/components/Screen';
 import { StatusPill } from '../src/components/StatusPill';
 import { useAppState } from '../src/context/AppContext';
 import { useI18n } from '../src/context/I18nContext';
-import { colors, fonts } from '../src/constants/theme';
+import { colors, spacing, typography } from '../src/constants/theme';
 
 function closeExcuseCall() {
   if (router.canGoBack()) router.back();
@@ -18,9 +18,9 @@ export default function ExcuseCall() {
   const voiceName = t(`voices.profiles.${selectedVoice.id}.name`);
 
   return (
-    <Screen scroll={false} style={styles.screen}>
+    <Screen style={styles.screen}>
       <View style={styles.caller} accessibilityRole="summary">
-        <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
+        <Image accessible={false} source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
         <StatusPill label={t('safetyCall.ready')} tone="active" />
         <Text style={[styles.name, isRTL && styles.rtlText]}>{voiceName}</Text>
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('tutorial.excuseTitle')}</Text>
@@ -46,12 +46,12 @@ export default function ExcuseCall() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, justifyContent: 'space-between', paddingVertical: 32 },
-  caller: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
+  screen: { flex: 1, justifyContent: 'space-between', paddingVertical: spacing.xl },
+  caller: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.mdSm },
   avatar: { width: 164, height: 164 },
-  name: { color: colors.ink, fontFamily: fonts.bold, fontSize: 30, textAlign: 'center' },
-  title: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 20, textAlign: 'center' },
-  copy: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 16, lineHeight: 24, textAlign: 'center' },
-  actions: { gap: 12 },
+  name: { ...typography.display, color: colors.textPrimary, textAlign: 'center' },
+  title: { ...typography.title, color: colors.textPrimary, textAlign: 'center' },
+  copy: { ...typography.bodyLarge, color: colors.textSecondary, textAlign: 'center' },
+  actions: { gap: spacing.mdSm },
   rtlText: { textAlign: 'right' }
 });

@@ -66,7 +66,12 @@ test('modal close actions return home when there is no navigation history', () =
     assert.match(screen, /function closeScreen\(\)/, `${relativePath} must share a guarded close action`);
     assert.match(screen, /if \(router\.canGoBack\(\)\) \{[\s\S]*?router\.back\(\);[\s\S]*?return;[\s\S]*?\}/);
     assert.match(screen, /router\.replace\('\/\(tabs\)'\)/);
-    assert.match(screen, /onPress=\{closeScreen\}/);
+    if (relativePath === 'app/safety-call.js') {
+      assert.match(screen, /const requestClose = useCallback\(\(\) => finishCall\(\{ closeAfter: true \}\)/);
+      assert.match(screen, /onPress=\{requestClose\}/);
+    } else {
+      assert.match(screen, /onPress=\{closeScreen\}/);
+    }
   }
 });
 
@@ -281,7 +286,8 @@ test('demo and tokenless sessions keep connected safety and voice services offli
   const voice = readFileSync(path.resolve(process.cwd(), 'src/hooks/useHumeVoiceCall.js'), 'utf8');
 
   assert.match(appContext, /syncRemote = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
-  assert.match(home, /config\.safetyBackendEnabled && accessToken/);
+  assert.match(home, /if \(!config\.safetyBackendEnabled \|\| !accessToken/);
+  assert.match(home, /if \(config\.safetyBackendEnabled && token\) await activateSafetyMode/);
   assert.match(emergency, /backendEnabled = config\.safetyBackendEnabled && Boolean\(accessToken\)/);
   assert.match(privacy, /if \(config\.safetyBackendEnabled\)[\s\S]*if \(!accessToken\)[\s\S]*PRIVACY_AUTHENTICATION_REQUIRED/);
   assert.match(voice, /forcedOffline = isDemoMode \|\| config\.enableOfflineMode/);

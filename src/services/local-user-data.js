@@ -1,5 +1,7 @@
 import { drainConversationHistoryMutations } from './conversation-history';
+import { drainMoodCheckInMutations } from './mood-checkin-store';
 import { drainOfflineMessageQueueMutations } from './offline-message-queue';
+import { drainScenarioActivityMutations } from './scenario-activity-store';
 import { lockAndDrainLocalUserDataMutations } from './local-mutation-coordinator';
 import {
   DEFAULT_SETTINGS,
@@ -41,7 +43,9 @@ export async function deleteLocalUserStores({
     // would be rejected while the deletion lock is held.
     const drainResults = await Promise.allSettled([
       drainConversationHistoryMutations(),
+      drainMoodCheckInMutations(),
       drainOfflineMessageQueueMutations(),
+      drainScenarioActivityMutations(),
       drainSettingsMutations()
     ]);
     let retainedLanguage = DEFAULT_SETTINGS.language;

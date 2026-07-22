@@ -37,12 +37,12 @@ function LocalizedNavigation() {
   }
   const navigation = (
     <>
-      <StatusBar style="dark" backgroundColor={colors.cream} />
+      <StatusBar style="dark" backgroundColor={colors.surfaceCanvas} />
       <NavigationPersistenceTracker />
       <Stack
         screenOptions={{
           animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'simple_push',
-          contentStyle: { backgroundColor: colors.cream },
+          contentStyle: { backgroundColor: colors.surfaceCanvas },
           gestureEnabled: true,
           headerShown: false
         }}
@@ -55,7 +55,11 @@ function LocalizedNavigation() {
               key={name}
               name={name}
               options={name === 'safety-call' || name === 'excuse-call' || name === 'emergency-sos'
-                ? { animation: 'slide_from_bottom', presentation: 'modal' }
+                ? {
+                    animation: 'slide_from_bottom',
+                    presentation: 'modal',
+                    ...(name === 'safety-call' ? { gestureEnabled: false } : {})
+                  }
                 : undefined}
             />
           ))}

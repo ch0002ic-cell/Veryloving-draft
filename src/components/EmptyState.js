@@ -1,10 +1,10 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 import { Button } from './Button';
-import { colors, spacing, typography } from '../constants/theme';
+import { colors, motion, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
-const EMPTY_ENTERING = FadeIn.duration(220).reduceMotion(ReduceMotion.System);
+const EMPTY_ENTERING = FadeIn.duration(motion.durationEmphasis).reduceMotion(ReduceMotion.System);
 
 export function EmptyState({ image, title, message, actionLabel, onAction, compact = false }) {
   const { isRTL } = useI18n();
@@ -16,7 +16,7 @@ export function EmptyState({ image, title, message, actionLabel, onAction, compa
     >
       {image ? <Image accessible={false} source={image} resizeMode="contain" style={[styles.image, compact && styles.compactImage]} /> : null}
       <View style={[styles.copy, compact && styles.compactCopy]}>
-        <Text style={[styles.title, compact && styles.compactText, compact && isRTL && styles.rtlText]}>{title}</Text>
+        <Text accessibilityRole="header" style={[styles.title, compact && styles.compactText, compact && isRTL && styles.rtlText]}>{title}</Text>
         <Text style={[styles.message, compact && styles.compactText, compact && isRTL && styles.rtlText]}>{message}</Text>
       </View>
       {actionLabel && onAction ? <Button title={actionLabel} variant="ghost" compact onPress={onAction} /> : null}

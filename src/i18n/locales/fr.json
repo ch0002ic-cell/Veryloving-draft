@@ -123,7 +123,8 @@
     "safetyCallTitle": "Appel de sécurité",
     "safetyCallSubtitle": "Démarrez un appel en temps réel lorsque vous avez besoin de soutien.",
     "practiceTitle": "Scène d'entraînement",
-    "practiceSubtitle": "Essayez les parcours de sécurité dans une démonstration sans pression."
+    "practiceSubtitle": "Essayez les parcours de sécurité dans une démonstration sans pression.",
+    "progressAccessibility": "Progression de la configuration"
   },
   "jewelry": {
     "pairTitle": "Associer NorthStar",
@@ -328,7 +329,8 @@
     "connected": "Connecté · %{battery} % de batterie",
     "none": "Aucun appareil connecté",
     "disconnect": "Déconnecter l'appareil",
-    "connect": "Connecter l'appareil"
+    "connect": "Connecter l'appareil",
+    "lastSeen": "Dernière activité : %{date}"
   },
   "friends": {
     "title": "Amis",
@@ -493,6 +495,219 @@
       "escalated": "Aidant alerté",
       "acknowledged": "Confirmé",
       "cancelled": "Annulé"
+    }
+  },
+  "wellness": {
+    "title": "Bien-être et accompagnement connecté",
+    "subtitle": "Activités douces, bilans émotionnels et soutien coordonné entre appareils.",
+    "eyebrow": "Accompagnement connecté",
+    "connectedCareUnavailable": "L’accompagnement connecté nécessite une session ouverte et l’accès au service VeryLoving. Les activités locales et l’historique de l’humeur restent disponibles sur cet appareil.",
+    "scenarioStarted": "L’accompagnement connecté a démarré.",
+    "scenarioStarting": "Démarrage de l’accompagnement connecté...",
+    "scenarioFailed": "Impossible de démarrer ou de mettre à jour l’accompagnement connecté. Vérifiez votre connexion et réessayez.",
+    "cognitive": {
+      "eyebrow": "Un moment pour stimuler votre esprit",
+      "title": "Stimulation cognitive",
+      "subtitle": "Choisissez un jeu de mémoire léger, une question de culture générale ou un sujet de conversation.",
+      "connectedTitle": "Invitez votre compagnon",
+      "connectedBody": "Demandez à votre compagnon à domicile de lancer une activité douce et suivez ici sa progression.",
+      "connectedHint": "Lance le scénario de stimulation cognitive sur les appareils associés à votre compte.",
+      "startCompanion": "Commencer avec mon compagnon",
+      "activityTitle": "Choisissez une activité",
+      "activitySubtitle": "Il n’y a aucun score à battre. Choisissez ce qui vous convient aujourd’hui.",
+      "emptyTitle": "Choisissez une activité douce",
+      "emptyMessage": "Mémoire, questions et conversation sont à votre disposition dès que vous le souhaitez.",
+      "nextRound": "Essayer autre chose",
+      "modes": {
+        "memory": {
+          "title": "Cartes mémoire",
+          "description": "Observez trois symboles, puis rappelez-vous celui du milieu."
+        },
+        "trivia": {
+          "title": "Quiz convivial",
+          "description": "Répondez à une question familière, à votre rythme."
+        },
+        "conversation": {
+          "title": "Sujet de conversation",
+          "description": "Appuyez-vous sur une question bienveillante pour vous souvenir d’une histoire et la partager."
+        }
+      },
+      "memory": {
+        "title": "Retrouvez le symbole du milieu",
+        "instruction": "Prenez un moment pour observer cette séquence.",
+        "sequenceLabel": "Séquence à mémoriser : %{sequence}",
+        "ready": "J’ai mémorisé",
+        "question": "Quel symbole se trouvait au milieu ?",
+        "answerLabel": "Réponse : %{answer}",
+        "correct": "C’est bien cela. Votre mémoire vous a bien servi.",
+        "incorrect": "Bien essayé. Regardez encore une fois et prenez votre temps."
+      },
+      "trivia": {
+        "title": "Quiz convivial",
+        "correct": "Bonne réponse. Bravo.",
+        "incorrect": "Pas cette fois, et ce n’est absolument pas grave.",
+        "questions": {
+          "one": {
+            "prompt": "De quelle couleur est le ciel lorsqu’il est dégagé en journée ?",
+            "choices": {
+              "blue": "Bleu",
+              "green": "Vert",
+              "red": "Rouge"
+            }
+          },
+          "two": {
+            "prompt": "Quel est le plus grand organe du corps humain ?",
+            "choices": {
+              "heart": "Le cœur",
+              "lungs": "Les poumons",
+              "skin": "La peau"
+            }
+          },
+          "three": {
+            "prompt": "Combien de jours compte une semaine ?",
+            "choices": {
+              "seven": "Sept",
+              "eight": "Huit",
+              "nine": "Neuf"
+            }
+          }
+        }
+      },
+      "conversation": {
+        "title": "Une histoire à partager",
+        "another": "Une autre question",
+        "prompts": {
+          "one": "Quel repas vous rappelle un souvenir heureux ?",
+          "two": "Qui vous a appris quelque chose qui vous sert encore aujourd’hui ?",
+          "three": "Quelle chanson vous remonte toujours le moral ?",
+          "four": "Quel endroit aimeriez-vous visiter de nouveau ?"
+        }
+      }
+    },
+    "emotional": {
+      "eyebrow": "Un moment rien que pour vous",
+      "title": "Bilan émotionnel",
+      "subtitle": "Prenez conscience de votre ressenti, enregistrez une courte réflexion ou invitez votre compagnon à échanger.",
+      "moodQuestion": "Comment vous sentez-vous en ce moment ?",
+      "moodHint": "Choisissez la réponse qui se rapproche le plus de votre ressenti. Il n’y a pas de mauvais choix.",
+      "moodPickerLabel": "Choix d’humeur",
+      "reflectionLabel": "Courte réflexion (facultatif)",
+      "reflectionHint": "Restez bref. Aucun enregistrement audio ni aucune transcription ne sont sauvegardés ici.",
+      "reflectionPlaceholder": "Quelques mots sur ce moment...",
+      "characterCount": "%{count} caractères sur %{max}",
+      "privacyNote": "Votre historique d’humeur est associé à votre compte, inclus dans l’export de vos données et supprimé lors de la suppression des données du compte.",
+      "save": "Enregistrer le bilan",
+      "saving": "Enregistrement du bilan...",
+      "saved": "Votre bilan a été enregistré.",
+      "saveFailed": "Impossible d’enregistrer ce bilan. Réessayez.",
+      "connectedTitle": "Échangez avec votre compagnon",
+      "connectedBody": "Lancez, par l’intermédiaire de votre compagnon à domicile, une conversation Hume qui respecte votre consentement. Un bilan lancé à votre initiative n’attribue jamais de mesure de stress fictive.",
+      "connectedHint": "Lance un bilan émotionnel sur le compagnon à domicile associé à votre compte.",
+      "startReflection": "Commencer une réflexion avec l’IA",
+      "historyTitle": "Bilans récents",
+      "historySubtitle": "Seuls vos 90 derniers bilans privés sont conservés sur cet appareil.",
+      "historyLoadFailed": "Impossible de charger l’historique de vos bilans.",
+      "historyEmptyTitle": "Aucun bilan pour le moment",
+      "historyEmptyMessage": "Choisissez une humeur ci-dessus lorsque vous vous sentez prêt.",
+      "deleteTitle": "Supprimer ce bilan ?",
+      "deleteMessage": "Cette action supprime de cet appareil l’humeur et la courte réflexion associée.",
+      "deleted": "Le bilan a été supprimé.",
+      "deleteFailed": "Impossible de supprimer ce bilan. Réessayez.",
+      "moods": {
+        "very_low": "Très mal",
+        "low": "Pas très bien",
+        "okay": "Ça va",
+        "good": "Bien",
+        "great": "Très bien"
+      },
+      "showMore": "Afficher plus",
+      "humeContextNotice": "Lorsque vous lancez la réflexion, l’humeur choisie et le résumé facultatif sont transmis temporairement à Hume comme contexte. Ils ne sont pas considérés comme une mesure de stress."
+    },
+    "scenarios": {
+      "title": "Scénarios d’accompagnement connecté",
+      "subtitle": "Coordonnez votre bracelet et votre compagnon à domicile dans un cadre de sécurité clair.",
+      "connectedCare": "Un plan d’accompagnement, deux appareils",
+      "connectedCareBody": "VeryLoving identifie sur le serveur les appareils associés à votre compte, évite les actions en double et suit chaque exécution.",
+      "connected": "Service connecté",
+      "offline": "Service indisponible",
+      "demoOffline": "Le mode démo ne crée jamais de jeton d’accès ; les scénarios connectés restent donc hors ligne. Connectez-vous avec un véritable compte de développement pour tester le parcours serveur.",
+      "signInRequired": "Reconnectez-vous pour utiliser les scénarios d’accompagnement connecté.",
+      "notConfigured": "L’accompagnement connecté n’est pas configuré dans cette version.",
+      "networkError": "Le service d’accompagnement connecté est inaccessible. Votre bracelet peut toujours fonctionner en Bluetooth.",
+      "stillRunning": "Ce scénario est toujours en cours. Actualisez bientôt son statut.",
+      "genericError": "L’action d’accompagnement connecté n’a pas pu aboutir. Réessayez.",
+      "chooseAction": "Actions rapides",
+      "chooseActionBody": "Les actions ayant des conséquences sur votre sécurité expliquent toujours ce qui va se passer avant de démarrer.",
+      "names": {
+        "fall_detection": "Réponse à une chute",
+        "medication_adherence": "Suivi de la prise de médicaments",
+        "emotional_check_in": "Bilan émotionnel",
+        "cognitive_engagement": "Stimulation cognitive",
+        "ai_angel_auto_dial": "Aide d’urgence AI Angel"
+      },
+      "descriptions": {
+        "fall_detection": "Effectuez un exercice d’analyse uniquement. Il ne déplace jamais le robot et n’alerte aucun contact.",
+        "medication_adherence": "Demandez au robot de vous rappeler votre médicament maintenant ; si la prise n’est pas confirmée, une alerte peut être envoyée à un aidant.",
+        "emotional_check_in": "Invitez Hume à mener une conversation apaisante qui respecte votre consentement.",
+        "cognitive_engagement": "Invitez le robot à proposer une activité douce et un jeu vocal.",
+        "ai_angel_auto_dial": "Lancez le parcours d’urgence confirmé sur vos deux appareils."
+      },
+      "actions": {
+        "fall_detection": "Simuler une réponse à une chute",
+        "medication_adherence": "Envoyer le rappel maintenant",
+        "emotional_check_in": "Commencer le bilan émotionnel",
+        "cognitive_engagement": "Commencer l’activité cognitive",
+        "ai_angel_auto_dial": "Activer AI Angel"
+      },
+      "starting": "Démarrage...",
+      "confirmations": {
+        "practiceTitle": "Simuler une réponse à une chute ?",
+        "practiceBody": "Cette action enregistre uniquement un exercice. Le robot ne se déplacera pas, personne ne sera appelé et aucune alerte d’urgence ne sera envoyée.",
+        "practiceAction": "Commencer l’exercice",
+        "medicationTitle": "Envoyer maintenant le rappel de médicament ?",
+        "medicationBody": "Le robot vous rappellera votre médicament maintenant. Si vous ne confirmez pas dans le délai prévu, la procédure d’alerte configurée à destination de l’aidant pourra se déclencher.",
+        "medicationAction": "Envoyer le rappel",
+        "emergencyTitle": "Activer l’aide d’urgence AI Angel ?",
+        "emergencyBody": "Cette action lance le véritable parcours d’urgence sur vos appareils associés et peut contacter la personne à prévenir que vous avez configurée.",
+        "emergencyAction": "Activer l’aide d’urgence",
+        "cancelCriticalTitle": "Annuler ce scénario critique ?",
+        "cancelCriticalBody": "L’arrêt d’un scénario critique peut mettre fin à des étapes d’urgence actives. Continuez uniquement si vous êtes certain de ne plus avoir besoin d’aide.",
+        "cancelCriticalAction": "Arrêter le scénario critique"
+      },
+      "wellnessTools": "Outils de bien-être",
+      "wellnessToolsBody": "Faites un bilan en privé ou choisissez une activité avant de faire intervenir les appareils connectés.",
+      "recentActivity": "Activité récente des scénarios",
+      "recentActivityBody": "Le statut est chiffré, associé à votre compte et actualisé tant que l’action est en cours.",
+      "loading": "Chargement de l’activité des scénarios",
+      "emptyTitle": "Aucune activité de scénario pour le moment",
+      "emptyMessage": "Commencez un bilan de bien-être ou une autre action rapide lorsque vous vous sentez prêt.",
+      "startFirst": "Commencer un bilan",
+      "started": "Scénario accepté. Le statut est actualisé en direct.",
+      "statusAccessibility": "%{scenario}, %{status}, mis à jour le %{date}",
+      "updated": "Mis à jour le %{date}",
+      "statuses": {
+        "queued": "En attente",
+        "running": "En cours",
+        "completed": "Terminé",
+        "fallback_completed": "Terminé avec une solution de repli",
+        "failed": "Intervention requise",
+        "cancelled": "Annulé"
+      },
+      "fallbackNote": "Une solution de repli prévue a abouti car une étape privilégiée n’était pas disponible.",
+      "failedNote": "Le scénario n’a pas pu aller jusqu’au bout. Vérifiez la connexion des appareils et réessayez si vous pouvez le faire en toute sécurité.",
+      "cancel": "Annuler le scénario",
+      "refreshStatus": "Actualiser le statut"
+    },
+    "feedback": {
+      "title": "Cela vous a-t-il aidé ?",
+      "message": "Indiquez-nous si %{interaction} vous a aidé. Nous enregistrons uniquement l’évaluation, sans réponse en texte libre.",
+      "helpful": "Utile",
+      "helpfulHint": "Enregistre une évaluation positive pour cette interaction terminée.",
+      "notHelpful": "Pas utile",
+      "notHelpfulHint": "Enregistre une évaluation négative pour cette interaction terminée.",
+      "notNow": "Pas maintenant",
+      "error": "Impossible d’enregistrer votre avis. Réessayez.",
+      "thanks": "Merci — votre avis a été enregistré."
     }
   }
 }

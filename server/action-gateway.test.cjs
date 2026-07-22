@@ -138,6 +138,16 @@ test('AI-native robot action schemas reject excess or malformed parameters', () 
     action: 'play_soothing_audio', device_type: 'home_robot', device_id: 'r1',
     parameters: { audio_id: 'guided-breathing', volume: 35 }
   }).parameters, { audio_id: 'guided-breathing', volume: 35 });
+  for (const activity of ['memory', 'trivia', 'conversation']) {
+    assert.deepEqual(validateAction({
+      action: 'cognitive_engagement', device_type: 'home_robot', device_id: 'r1',
+      parameters: { activity }
+    }).parameters, { activity });
+  }
+  assert.throws(() => validateAction({
+    action: 'cognitive_engagement', device_type: 'home_robot', device_id: 'r1',
+    parameters: { activity: 'diagnostic_assessment' }
+  }), /invalid/);
   assert.throws(() => validateAction({
     action: 'navigate_to_location', device_type: 'wearable', device_id: 'w1',
     parameters: { location_ref: 'bedroom-zone' }

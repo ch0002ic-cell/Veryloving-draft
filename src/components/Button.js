@@ -17,7 +17,7 @@ export function Button({
   icon,
   variant = 'primary',
   disabled,
-  selected = false,
+  selected,
   loading = false,
   compact = false,
   accessibilityLabel,
@@ -41,7 +41,11 @@ export function Button({
       accessibilityLabel={accessibilityLabel || title}
       accessibilityHint={accessibilityHint}
       accessibilityRole="button"
-      accessibilityState={{ busy: loading, disabled: inactive, selected }}
+      accessibilityState={{
+        busy: loading,
+        disabled: inactive,
+        ...(typeof selected === 'boolean' ? { selected } : {})
+      }}
       android_ripple={{ color: palette.ripple }}
       disabled={inactive}
       onPress={onPress}
@@ -49,7 +53,7 @@ export function Button({
         styles.base,
         compact && styles.compact,
         styles[resolvedVariant],
-        selected && styles.selected,
+        selected === true && styles.selected,
         pressed && !inactive && styles.pressed,
         inactive && styles.disabled,
         style
@@ -82,7 +86,7 @@ const styles = StyleSheet.create({
   ghost: { backgroundColor: colors.surfaceRaised, borderColor: colors.borderControl },
   secondary: { backgroundColor: colors.blueSoft, borderColor: colors.blueAccessible },
   success: { backgroundColor: colors.greenSoft, borderColor: colors.greenAccessible },
-  selected: { borderWidth: 2, borderColor: colors.gold },
+  selected: { borderWidth: 2, borderColor: colors.focus },
   disabled: { opacity: 0.5 },
   pressed: { opacity: 0.9, transform: [{ scale: motion.pressedScale }] },
   row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexShrink: 1, gap: spacing.sm },

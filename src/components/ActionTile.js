@@ -19,6 +19,7 @@ export function ActionTile({
   tone = 'default',
   onPress,
   disabled = false,
+  selected,
   accessibilityLabel,
   accessibilityHint,
   style,
@@ -32,7 +33,10 @@ export function ActionTile({
       accessibilityLabel={accessibilityLabel || title}
       accessibilityHint={accessibilityHint || description}
       accessibilityRole="button"
-      accessibilityState={{ disabled }}
+      accessibilityState={{
+        disabled,
+        ...(typeof selected === 'boolean' ? { selected } : {})
+      }}
       android_ripple={{ color: colors.borderSubtle }}
       disabled={disabled}
       onPress={onPress}
@@ -42,6 +46,7 @@ export function ActionTile({
           backgroundColor: resolvedTone.background,
           borderColor: resolvedTone.border
         },
+        selected === true && styles.selected,
         pressed && !disabled && styles.pressed,
         disabled && styles.disabled,
         style
@@ -85,5 +90,6 @@ const styles = StyleSheet.create({
   description: { ...typography.caption, color: colors.textSecondary },
   value: { ...typography.label, color: colors.textPrimary, flexShrink: 1 },
   pressed: { opacity: 0.9, transform: [{ scale: motion.pressedScale }] },
+  selected: { borderWidth: 2, borderColor: colors.focus },
   disabled: { opacity: 0.5 }
 });

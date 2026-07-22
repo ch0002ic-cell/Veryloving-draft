@@ -31,7 +31,7 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         animation: Platform.OS === 'android' ? 'fade_from_bottom' : 'simple_push',
-        contentStyle: { backgroundColor: colors.cream },
+        contentStyle: { backgroundColor: colors.surfaceCanvas },
         gestureEnabled: true,
         headerShown: false
       }}

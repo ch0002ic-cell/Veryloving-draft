@@ -123,7 +123,8 @@
     "safetyCallTitle": "Chamada de seguridade",
     "safetyCallSubtitle": "Comeza unha chamada de compañeiro en tempo real cando precises apoio.",
     "practiceTitle": "Escena de práctica",
-    "practiceSubtitle": "Proba os fluxos de seguridade nunha demostración de baixa presión."
+    "practiceSubtitle": "Proba os fluxos de seguridade nunha demostración de baixa presión.",
+    "progressAccessibility": "Onboarding progress"
   },
   "jewelry": {
     "pairTitle": "Parella NorthStar",
@@ -328,7 +329,8 @@
     "connected": "Conectado · %{battery}% de batería",
     "none": "Ningún dispositivo conectado",
     "disconnect": "Dispositivo de desconexión",
-    "connect": "Conectar dispositivo"
+    "connect": "Conectar dispositivo",
+    "lastSeen": "Last seen: %{date}"
   },
   "friends": {
     "title": "Amigos",
@@ -493,6 +495,219 @@
       "escalated": "Caregiver alerted",
       "acknowledged": "Acknowledged",
       "cancelled": "Cancelled"
+    }
+  },
+  "wellness": {
+    "title": "Wellbeing & connected care",
+    "subtitle": "Gentle activities, emotional check-ins, and coordinated device support.",
+    "eyebrow": "Connected care",
+    "connectedCareUnavailable": "Connected care needs a signed-in account and the VeryLoving service. Local activities and mood history still work on this device.",
+    "scenarioStarted": "Connected care started.",
+    "scenarioStarting": "Starting connected care...",
+    "scenarioFailed": "Connected care could not start or update. Check your connection and try again.",
+    "cognitive": {
+      "eyebrow": "A moment for your mind",
+      "title": "Cognitive engagement",
+      "subtitle": "Choose a light memory game, a trivia question, or a conversation prompt.",
+      "connectedTitle": "Invite your companion",
+      "connectedBody": "Ask your home companion to start a gentle activity and follow its progress here.",
+      "connectedHint": "Starts the cognitive engagement scenario on your account-bound devices.",
+      "startCompanion": "Start with my companion",
+      "activityTitle": "Choose an activity",
+      "activitySubtitle": "There is no score to chase. Pick what feels comfortable today.",
+      "emptyTitle": "Choose a gentle activity",
+      "emptyMessage": "Memory, trivia, and conversation are ready whenever you are.",
+      "nextRound": "Try another",
+      "modes": {
+        "memory": {
+          "title": "Memory cards",
+          "description": "Notice three symbols, then recall the middle one."
+        },
+        "trivia": {
+          "title": "Friendly trivia",
+          "description": "Answer a familiar question at your own pace."
+        },
+        "conversation": {
+          "title": "Conversation prompt",
+          "description": "Use a warm prompt to recall and share a story."
+        }
+      },
+      "memory": {
+        "title": "Remember the middle symbol",
+        "instruction": "Take a moment to look at this sequence.",
+        "sequenceLabel": "Memory sequence: %{sequence}",
+        "ready": "I am ready",
+        "question": "Which symbol was in the middle?",
+        "answerLabel": "Answer %{answer}",
+        "correct": "That is it. Nicely remembered.",
+        "incorrect": "Good try. Take another look and go at your own pace."
+      },
+      "trivia": {
+        "title": "Friendly trivia",
+        "correct": "Correct. Nicely done.",
+        "incorrect": "Not this time—and that is completely okay.",
+        "questions": {
+          "one": {
+            "prompt": "What color is a clear daytime sky?",
+            "choices": {
+              "blue": "Blue",
+              "green": "Green",
+              "red": "Red"
+            }
+          },
+          "two": {
+            "prompt": "What is the largest organ of the human body?",
+            "choices": {
+              "heart": "Heart",
+              "lungs": "Lungs",
+              "skin": "Skin"
+            }
+          },
+          "three": {
+            "prompt": "How many days are in a week?",
+            "choices": {
+              "seven": "Seven",
+              "eight": "Eight",
+              "nine": "Nine"
+            }
+          }
+        }
+      },
+      "conversation": {
+        "title": "A story to share",
+        "another": "Another prompt",
+        "prompts": {
+          "one": "What is a meal that brings back a happy memory?",
+          "two": "Who taught you something you still use today?",
+          "three": "What song always lifts your mood?",
+          "four": "What is a place you would enjoy visiting again?"
+        }
+      }
+    },
+    "emotional": {
+      "eyebrow": "A private moment for you",
+      "title": "Emotional check-in",
+      "subtitle": "Notice how you feel, save a short reflection, or invite your companion to talk.",
+      "moodQuestion": "How are you feeling right now?",
+      "moodHint": "Choose the closest answer. There is no wrong choice.",
+      "moodPickerLabel": "Mood choices",
+      "reflectionLabel": "Short reflection (optional)",
+      "reflectionHint": "Keep it brief. Raw voice audio and transcripts are not saved here.",
+      "reflectionPlaceholder": "A few words about this moment...",
+      "characterCount": "%{count} of %{max} characters",
+      "privacyNote": "Your mood history is account-bound, included in privacy export, and removed with account data deletion.",
+      "save": "Save check-in",
+      "saving": "Saving check-in...",
+      "saved": "Your check-in was saved.",
+      "saveFailed": "We could not save this check-in. Please try again.",
+      "connectedTitle": "Reflect with your companion",
+      "connectedBody": "Start a consent-aware Hume conversation through your home companion. A user-started check-in never invents a stress reading.",
+      "connectedHint": "Starts an emotional check-in on your account-bound home companion.",
+      "startReflection": "Start AI reflection",
+      "historyTitle": "Recent check-ins",
+      "historySubtitle": "Only your last 90 private check-ins are retained on this device.",
+      "historyLoadFailed": "We could not load your check-in history.",
+      "historyEmptyTitle": "No check-ins yet",
+      "historyEmptyMessage": "Choose a mood above when you are ready.",
+      "deleteTitle": "Delete this check-in?",
+      "deleteMessage": "This removes the mood and short reflection from this device.",
+      "deleted": "The check-in was deleted.",
+      "deleteFailed": "We could not delete this check-in. Please try again.",
+      "moods": {
+        "very_low": "Very low",
+        "low": "Low",
+        "okay": "Okay",
+        "good": "Good",
+        "great": "Great"
+      },
+      "showMore": "Show more",
+      "humeContextNotice": "When you start reflection, your selected mood and optional summary are shared as temporary Hume context. They are not treated as a stress reading."
+    },
+    "scenarios": {
+      "title": "Connected care scenarios",
+      "subtitle": "Coordinate your wearable and home companion with clear safety boundaries.",
+      "connectedCare": "One care plan, two devices",
+      "connectedCareBody": "VeryLoving resolves your paired devices on the server, prevents duplicate actions, and tracks every execution.",
+      "connected": "Service connected",
+      "offline": "Service unavailable",
+      "demoOffline": "Demo mode never creates a bearer token, so connected scenarios stay offline. Sign in with a real development account to test the server flow.",
+      "signInRequired": "Sign in again to use connected care scenarios.",
+      "notConfigured": "Connected care is not configured in this build.",
+      "networkError": "The connected care service could not be reached. Your wearable can still work over Bluetooth.",
+      "stillRunning": "This scenario is still running. Refresh its status shortly.",
+      "genericError": "The connected care action could not be completed. Please retry.",
+      "chooseAction": "Quick actions",
+      "chooseActionBody": "Actions with safety consequences always explain what will happen before they start.",
+      "names": {
+        "fall_detection": "Fall response",
+        "medication_adherence": "Medication adherence",
+        "emotional_check_in": "Emotional check-in",
+        "cognitive_engagement": "Cognitive engagement",
+        "ai_angel_auto_dial": "AI Angel emergency help"
+      },
+      "descriptions": {
+        "fall_detection": "Run an analytics-only practice. It never moves a robot or alerts a contact.",
+        "medication_adherence": "Ask the robot to remind you now; unconfirmed reminders can escalate to a caregiver.",
+        "emotional_check_in": "Invite a calming, consent-aware Hume conversation.",
+        "cognitive_engagement": "Invite a gentle robot activity and voice game.",
+        "ai_angel_auto_dial": "Start the confirmed cross-device emergency flow."
+      },
+      "actions": {
+        "fall_detection": "Practice fall response",
+        "medication_adherence": "Send reminder now",
+        "emotional_check_in": "Start emotional check-in",
+        "cognitive_engagement": "Start cognitive activity",
+        "ai_angel_auto_dial": "Activate AI Angel"
+      },
+      "starting": "Starting...",
+      "confirmations": {
+        "practiceTitle": "Practice fall response?",
+        "practiceBody": "This records a practice event only. It will not move the robot, call anyone, or send an emergency alert.",
+        "practiceAction": "Start practice",
+        "medicationTitle": "Send medication reminder now?",
+        "medicationBody": "The robot will remind you now. If you do not confirm within the adherence window, the configured caregiver escalation can run.",
+        "medicationAction": "Send reminder",
+        "emergencyTitle": "Activate AI Angel emergency help?",
+        "emergencyBody": "This starts the real emergency workflow across your paired devices and may contact your configured emergency contact.",
+        "emergencyAction": "Activate emergency help",
+        "cancelCriticalTitle": "Cancel this critical scenario?",
+        "cancelCriticalBody": "Stopping a critical scenario can end active emergency steps. Continue only if you are sure help is no longer needed.",
+        "cancelCriticalAction": "Stop critical scenario"
+      },
+      "wellnessTools": "Wellbeing tools",
+      "wellnessToolsBody": "Check in privately or choose an activity before involving connected devices.",
+      "recentActivity": "Recent scenario activity",
+      "recentActivityBody": "Status is encrypted, account-bound, and refreshed while work is active.",
+      "loading": "Loading scenario activity",
+      "emptyTitle": "No scenario activity yet",
+      "emptyMessage": "Start a wellbeing check-in or another quick action when you are ready.",
+      "startFirst": "Start a check-in",
+      "started": "Scenario accepted. Live status is updating.",
+      "statusAccessibility": "%{scenario}, %{status}, updated %{date}",
+      "updated": "Updated %{date}",
+      "statuses": {
+        "queued": "Queued",
+        "running": "Running",
+        "completed": "Completed",
+        "fallback_completed": "Completed with fallback",
+        "failed": "Needs attention",
+        "cancelled": "Cancelled"
+      },
+      "fallbackNote": "A planned fallback completed because a preferred step was unavailable.",
+      "failedNote": "The scenario could not finish. Check device connectivity and try again if it is safe.",
+      "cancel": "Cancel scenario",
+      "refreshStatus": "Refresh status"
+    },
+    "feedback": {
+      "title": "Was this helpful?",
+      "message": "Tell us whether %{interaction} supported you. We save only the rating, not a free-text response.",
+      "helpful": "Helpful",
+      "helpfulHint": "Records a thumbs-up rating for this completed interaction.",
+      "notHelpful": "Not helpful",
+      "notHelpfulHint": "Records a thumbs-down rating for this completed interaction.",
+      "notNow": "Not now",
+      "error": "We could not save your rating. Please try again.",
+      "thanks": "Thanks — your feedback was saved."
     }
   }
 }

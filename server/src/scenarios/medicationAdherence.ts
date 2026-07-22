@@ -23,10 +23,10 @@ function fallbackExecuted(context: ScenarioConditionContext, key: string): boole
 
 export const medicationAdherenceScenario: ScenarioDefinition = Object.freeze({
   id: 'medication_adherence',
-  version: 1,
+  version: 2,
   priority: 'standard',
   description: 'Robot reminder is correlated with wearable movement and bounded caregiver escalation.',
-  allowedTriggerTypes: Object.freeze(['medication_due']),
+  allowedTriggerTypes: Object.freeze(['medication_due', 'user_medication_reminder']),
   buildSteps(request: ScenarioStartRequest) {
     const medicationId = safeIdentifier(request.input?.medicationId, 'scheduled-medication');
     const reminderId = `medication-reminder-${request.trigger.eventId}`.slice(0, 80).padEnd(16, '0');

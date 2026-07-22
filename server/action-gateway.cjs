@@ -90,7 +90,11 @@ function normalizeActionParameters(action, parameters) {
     return { reminder_id: reminderId, medication_id: medicationId, scheduled_at: scheduledAt };
   }
   if (action === 'cognitive_engagement') {
-    if (Object.keys(parameters).some((key) => key !== 'activity') || !['conversation', 'memory_game', 'music'].includes(parameters.activity)) {
+    // Keep the established device activities while accepting the three
+    // canonical mobile wellbeing activities. Vendor adapters remain
+    // responsible for translating these bounded values to a manufacturer SDK.
+    if (Object.keys(parameters).some((key) => key !== 'activity')
+      || !['conversation', 'memory', 'trivia', 'memory_game', 'music'].includes(parameters.activity)) {
       throw Object.assign(new Error('Cognitive engagement parameters are invalid'), { statusCode: 400 });
     }
     return { activity: parameters.activity };

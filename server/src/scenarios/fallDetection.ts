@@ -36,11 +36,26 @@ function operationSucceeded(context: ScenarioConditionContext, id: string): bool
 
 export const fallDetectionScenario: ScenarioDefinition = Object.freeze({
   id: 'fall_detection',
-  version: 1,
+  version: 2,
   priority: 'critical',
   description: 'Wearable fall event routes a robot check and escalates when no safe response is confirmed.',
-  allowedTriggerTypes: Object.freeze(['wearable_fall', 'robot_fall']),
+  allowedTriggerTypes: Object.freeze(['wearable_fall', 'robot_fall', 'user_fall_drill']),
   buildSteps(request: ScenarioStartRequest) {
+    if (request.trigger.type === 'user_fall_drill') {
+      // A user-started practice must never impersonate authenticated fall
+      // telemetry, move hardware, call a contact, or trigger an emergency.
+      const practiceSteps: readonly ScenarioStepDefinition[] = Object.freeze([{
+        id: 'record_fall_practice',
+        operation: {
+          id: 'fall_practice_analytics',
+          kind: 'analytics',
+          event: 'fall_practice_completed',
+          timeoutMs: 1_000
+        },
+        continueOnFailure: true
+      }]);
+      return practiceSteps;
+    }
     const locationRef = stringInput(request, 'locationRef', 'last-known-location');
     const contactId = stringInput(request, 'contactId', 'primary-emergency-contact');
     // Navigation is a physical safety action. Missing or stale safety telemetry

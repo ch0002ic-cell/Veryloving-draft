@@ -251,7 +251,7 @@ function memoryRobotResetRepository({
   };
 }
 
-async function invoke(options, { method = 'GET', url = '/', headers = {}, body, rawBody } = {}) {
+async function invokeHandler(handler, { method = 'GET', url = '/', headers = {}, body, rawBody } = {}) {
   const requestBody = rawBody === undefined
     ? (body === undefined ? undefined : JSON.stringify(body))
     : rawBody;
@@ -281,7 +281,7 @@ async function invoke(options, { method = 'GET', url = '/', headers = {}, body, 
       this.finished = true;
     }
   };
-  await createHandler({ logger: silentLogger, ...options })(req, res);
+  await handler(req, res);
   const text = Buffer.concat(chunks).toString('utf8');
   const contentType = res.headers['Content-Type'] || res.headers['content-type'] || '';
   return {
@@ -290,6 +290,10 @@ async function invoke(options, { method = 'GET', url = '/', headers = {}, body, 
     text,
     json: text && contentType.includes('application/json') ? JSON.parse(text) : null
   };
+}
+
+async function invoke(options, request = {}) {
+  return invokeHandler(createHandler({ logger: silentLogger, ...options }), request);
 }
 
 test('health endpoint reports the CLM service', async () => {
@@ -607,6 +611,47 @@ test('production AI-native configuration fails closed for process-local admissio
   assert.throws(
     () => validateServerConfig({ ...complete, authenticateScenarioIngress: undefined }),
     /scheduled context ingress/
+  );
+});
+
+test('production AI-native startup rejects legacy voice completion repositories', async () => {
+  const aiNativeSystem = {
+    scenarioEngine: {
+      startScenario() {},
+      getExecution() {},
+      listExecutions() {},
+      exportExecutions() {},
+      cancelScenario() {}
+    },
+    edgeScenarioRouter: {
+      ingestWearableInference() {},
+      ingestRobotInference() {},
+      ingestContextEvent() {},
+      confirmCancellation() {}
+    },
+    getVoiceContext() {},
+    memory: { list() {}, delete() {}, deleteAll() {} },
+    privacyRepository: { exportUserData() {}, deleteUserData() {} }
+  };
+  const config = productionHTTPConfig({
+    aiNativeEnabled: true,
+    aiNativeDataLifecycleEnabled: true,
+    aiNativeSingleReplica: true,
+    aiNativeSystem,
+    resolveEdgeDeviceBinding() {},
+    authenticateRobotEdgeIngress() {},
+    resolveScenarioDevices() {},
+    authenticateScenarioIngress() {},
+    voiceInteractionCompletionRepository: {
+      begin() {},
+      complete() {},
+      verifyCompleted() {}
+    }
+  });
+
+  await assert.rejects(
+    async () => invoke(config, { url: '/health' }),
+    /Production voice interaction completion repository is missing required methods: observeActivity, hasActivity, disconnect/
   );
 });
 
@@ -1495,21 +1540,28 @@ test('safety tips endpoint validates app auth and returns curated guidance', asy
 
 test('user scenario ingress derives trigger and devices server-side and rejects forged safety inputs', async () => {
   const calls = [];
+  const starts = [];
   const edgeScenarioRouter = {
     async ingestContextEvent(accountId, event, binding) {
       calls.push({ accountId, event, binding });
       return { started: [{ executionId: 'execution-user-1' }] };
     }
   };
+  const scenarioEngine = {
+    async exportExecutions(accountId) {
+      assert.equal(accountId, 'google:user-scenario');
+      return [];
+    },
+    async startScenario(accountId, request) {
+      starts.push({ accountId, request });
+      return { accepted: true, duplicate: false, execution: { executionId: `execution-${request.scenarioId}` } };
+    }
+  };
   const config = {
-    ...aiNativeTestConfig(edgeScenarioRouter),
+    ...aiNativeTestConfig(edgeScenarioRouter, { scenarioEngine }),
     verifyAppToken: async (token) => token === 'valid-user-token' && { sub: 'google:user-scenario' },
     async resolveScenarioDevices(request) {
-      assert.deepEqual(request, {
-        accountId: 'google:user-scenario',
-        scenarioId: 'ai_angel_auto_dial',
-        source: 'authenticated_app'
-      });
+      calls.push({ resolve: request });
       return { targets: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' } };
     }
   };
@@ -1525,11 +1577,59 @@ test('user scenario ingress derives trigger and devices server-side and rejects 
     }
   });
   assert.equal(accepted.status, 202);
-  assert.deepEqual(calls, [{
+  assert.deepEqual(calls, [{ resolve: {
+    accountId: 'google:user-scenario',
+    scenarioId: 'ai_angel_auto_dial',
+    source: 'authenticated_app'
+  } }, {
     accountId: 'google:user-scenario',
     event: { eventId: 'panic-request-1', type: 'panic_button', occurredAt, data: {} },
     binding: { targets: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' } }
   }]);
+
+  for (const [scenarioId, intent, triggerType] of [
+    ['fall_detection', 'practice_drill', 'user_fall_drill'],
+    ['medication_adherence', 'review_reminder', 'user_medication_reminder'],
+    ['emotional_check_in', 'self_check_in', 'user_emotional_check_in'],
+    ['cognitive_engagement', 'start_activity', 'user_cognitive_engagement']
+  ]) {
+    const response = await invoke(config, {
+      method: 'POST',
+      url: '/v1/scenarios',
+      headers: { Authorization: 'Bearer valid-user-token' },
+      body: {
+        scenario_id: scenarioId,
+        request_id: `user-${scenarioId}`,
+        occurred_at: occurredAt,
+        intent,
+        ...(scenarioId === 'emotional_check_in'
+          ? { context: { mood_key: 'okay' } }
+          : scenarioId === 'cognitive_engagement'
+            ? { context: { activity: 'memory' } }
+            : {})
+      }
+    });
+    assert.equal(response.status, 202);
+    assert.deepEqual(starts.at(-1), {
+      accountId: 'google:user-scenario',
+      request: {
+        scenarioId,
+        trigger: {
+          eventId: `user-${scenarioId}`,
+          type: triggerType,
+          occurredAt,
+          data: {}
+        },
+        devices: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' },
+        idempotencyKey: `user-${scenarioId}`,
+        input: {
+          userInitiated: true,
+          ...(scenarioId === 'emotional_check_in' ? { moodKey: 'okay' } : {}),
+          ...(scenarioId === 'cognitive_engagement' ? { activity: 'memory' } : {})
+        }
+      }
+    });
+  }
 
   for (const forged of [{
     scenario_id: 'fall_detection',
@@ -1546,6 +1646,15 @@ test('user scenario ingress derives trigger and devices server-side and rejects 
     request_id: 'forged-safety',
     occurred_at: occurredAt,
     input: { robotSafeToMove: true }
+  }, {
+    scenario_id: 'ai_angel_auto_dial',
+    request_id: 'stale-emergency',
+    occurred_at: occurredAt - 6 * 60_000
+  }, {
+    scenario_id: 'emotional_check_in',
+    request_id: 'future-check-in',
+    occurred_at: occurredAt + 6 * 60_000,
+    intent: 'self_check_in'
   }]) {
     const rejected = await invoke(config, {
       method: 'POST',
@@ -1555,7 +1664,505 @@ test('user scenario ingress derives trigger and devices server-side and rejects 
     });
     assert.equal(rejected.status, 400);
   }
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 6);
+  assert.equal(starts.length, 4);
+});
+
+test('user wellness scenario context is exact, bounded, normalized, and privacy-minimal', async () => {
+  const starts = [];
+  const scenarioEngine = {
+    async startScenario(accountId, request) {
+      starts.push({ accountId, request });
+      return { accepted: true, duplicate: false, execution: { executionId: `execution-${starts.length}` } };
+    }
+  };
+  const config = aiNativeTestConfig({}, { scenarioEngine });
+  config.verifyAppToken = async () => ({ sub: 'google:wellness-owner' });
+  config.resolveScenarioDevices = async () => ({
+    targets: { wearableId: 'wearable-bound', homeRobotId: 'robot-bound' }
+  });
+  const occurredAt = Date.now();
+
+  const emotional = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer token' },
+    body: {
+      scenario_id: 'emotional_check_in',
+      request_id: 'mood-request-1',
+      occurred_at: occurredAt,
+      intent: 'self_check_in',
+      context: { mood_key: 'good', reflection_summary: '  A calm   afternoon.  ' }
+    }
+  });
+  assert.equal(emotional.status, 202);
+  assert.deepEqual(starts.at(-1).request.input, {
+    userInitiated: true,
+    moodKey: 'good',
+    reflectionSummary: 'A calm afternoon.'
+  });
+
+  const cognitive = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer token' },
+    body: {
+      scenario_id: 'cognitive_engagement',
+      request_id: 'cognitive-request-1',
+      occurred_at: occurredAt,
+      intent: 'start_activity',
+      context: { activity: 'trivia' }
+    }
+  });
+  assert.equal(cognitive.status, 202);
+  assert.deepEqual(starts.at(-1).request.input, { userInitiated: true, activity: 'trivia' });
+
+  for (const body of [{
+    scenario_id: 'fall_detection', request_id: 'fall-with-context', occurred_at: occurredAt,
+    intent: 'practice_drill', context: { activity: 'trivia' }
+  }, {
+    scenario_id: 'emotional_check_in', request_id: 'mood-missing-context', occurred_at: occurredAt,
+    intent: 'self_check_in'
+  }, {
+    scenario_id: 'cognitive_engagement', request_id: 'activity-missing-context', occurred_at: occurredAt,
+    intent: 'start_activity'
+  }, {
+    scenario_id: 'emotional_check_in', request_id: 'mood-unknown-key', occurred_at: occurredAt,
+    intent: 'self_check_in', context: { mood_key: 'good', notes: 'private' }
+  }, {
+    scenario_id: 'emotional_check_in', request_id: 'mood-invalid', occurred_at: occurredAt,
+    intent: 'self_check_in', context: { mood_key: 'excellent' }
+  }, {
+    scenario_id: 'cognitive_engagement', request_id: 'activity-invalid', occurred_at: occurredAt,
+    intent: 'start_activity', context: { activity: 'chess' }
+  }]) {
+    assert.equal((await invoke(config, {
+      method: 'POST',
+      url: '/v1/scenarios',
+      headers: { Authorization: 'Bearer token' },
+      body
+    })).status, 400);
+  }
+  assert.equal(starts.length, 2);
+});
+
+test('scenario execution listing is authenticated, account-bound, and strictly bounded', async () => {
+  const calls = [];
+  const executions = [{
+    executionId: '11111111-1111-4111-8111-111111111111',
+    scenarioId: 'fall_detection',
+    state: 'completed'
+  }];
+  const scenarioEngine = {
+    async listExecutions(accountId, limit) {
+      calls.push({ accountId, limit });
+      return executions.slice(0, limit);
+    }
+  };
+  const config = aiNativeTestConfig({}, { scenarioEngine });
+  config.verifyAppToken = async (token) => token === 'list-token' && { sub: 'google:list-owner' };
+
+  const response = await invoke(config, {
+    url: '/v1/scenarios/executions?limit=1',
+    headers: { Authorization: 'Bearer list-token' }
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(response.json, { executions });
+  assert.deepEqual(calls, [{ accountId: 'google:list-owner', limit: 1 }]);
+  assert.equal((await invoke(config, { url: '/v1/scenarios/executions?limit=101', headers: { Authorization: 'Bearer list-token' } })).status, 400);
+  assert.equal((await invoke(config, { url: '/v1/scenarios/executions?limit=1&limit=2', headers: { Authorization: 'Bearer list-token' } })).status, 400);
+  assert.equal((await invoke(config, { url: '/v1/scenarios/executions?other=1', headers: { Authorization: 'Bearer list-token' } })).status, 400);
+  assert.equal((await invoke(config, { url: '/v1/scenarios/executions' })).status, 401);
+});
+
+test('AI Angel starts coalesce per account while active and recover active state', async () => {
+  let active;
+  let routerCalls = 0;
+  const executionId = '22222222-2222-4222-8222-222222222222';
+  const scenarioEngine = {
+    async exportExecutions(accountId) {
+      assert.equal(accountId, 'google:emergency-owner');
+      return active ? [active] : [];
+    },
+    async getExecution(accountId, requestedId) {
+      assert.equal(accountId, 'google:emergency-owner');
+      return requestedId === active?.executionId ? active : undefined;
+    }
+  };
+  const edgeScenarioRouter = {
+    async ingestContextEvent() {
+      routerCalls += 1;
+      await Promise.resolve();
+      active = { executionId, scenarioId: 'ai_angel_auto_dial', state: 'running' };
+      return { started: [{ accepted: true, duplicate: false, execution: active }] };
+    }
+  };
+  const config = aiNativeTestConfig(edgeScenarioRouter, { scenarioEngine });
+  config.verifyAppToken = async () => ({ sub: 'google:emergency-owner' });
+  config.resolveScenarioDevices = async () => ({ targets: { wearableId: 'wearable-1', homeRobotId: 'robot-1' } });
+  const handler = createHandler({ logger: silentLogger, ...config });
+  const occurredAt = Date.now();
+  const request = (requestId) => ({
+    method: 'POST', url: '/v1/scenarios', headers: { Authorization: 'Bearer token' },
+    body: { scenario_id: 'ai_angel_auto_dial', request_id: requestId, occurred_at: occurredAt }
+  });
+
+  const [first, second] = await Promise.all([
+    invokeHandler(handler, request('panic-one')),
+    invokeHandler(handler, request('panic-two'))
+  ]);
+  assert.equal(first.status, 202);
+  assert.equal(second.status, 202);
+  assert.equal(routerCalls, 1);
+  assert.equal(second.json.started[0].duplicate, true);
+  assert.equal(second.json.started[0].execution.executionId, executionId);
+});
+
+test('AI Angel restart recovery exhaustively finds active executions older than the public history window', async () => {
+  const executionId = '24444444-4444-4444-8444-444444444444';
+  const active = { executionId, scenarioId: 'ai_angel_auto_dial', state: 'running' };
+  const newerTerminalExecutions = Array.from({ length: 100 }, (_, index) => ({
+    executionId: `terminal-${index}`,
+    scenarioId: 'cognitive_engagement',
+    state: 'completed'
+  }));
+  let exportCalls = 0;
+  let routerCalls = 0;
+  const scenarioEngine = {
+    async exportExecutions(accountId) {
+      assert.equal(accountId, 'google:restart-emergency-owner');
+      exportCalls += 1;
+      return [...newerTerminalExecutions, active];
+    },
+    async listExecutions() {
+      throw new Error('bounded public history must not be used for emergency recovery');
+    }
+  };
+  const edgeScenarioRouter = {
+    async ingestContextEvent() {
+      routerCalls += 1;
+      throw new Error('an active emergency must be coalesced');
+    }
+  };
+  const config = aiNativeTestConfig(edgeScenarioRouter, { scenarioEngine });
+  config.verifyAppToken = async () => ({ sub: 'google:restart-emergency-owner' });
+  config.resolveScenarioDevices = async () => ({ targets: { wearableId: 'wearable-1' } });
+  const response = await invoke(config, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer token' },
+    body: {
+      scenario_id: 'ai_angel_auto_dial',
+      request_id: 'panic-after-process-restart',
+      occurred_at: Date.now()
+    }
+  });
+
+  assert.equal(response.status, 202);
+  assert.equal(response.json.started[0].duplicate, true);
+  assert.equal(response.json.started[0].execution.executionId, executionId);
+  assert.equal(exportCalls, 1);
+  assert.equal(routerCalls, 0);
+});
+
+test('AI Angel admission queue is bounded per account and recovers after pressure drains', async () => {
+  let releaseFirstScan;
+  let markFirstScanStarted;
+  const firstScanStarted = new Promise((resolve) => { markFirstScanStarted = resolve; });
+  const firstScanGate = new Promise((resolve) => { releaseFirstScan = resolve; });
+  let active;
+  let exportCalls = 0;
+  let routerCalls = 0;
+  const executionId = '25555555-5555-4555-8555-555555555555';
+  const scenarioEngine = {
+    async exportExecutions(accountId) {
+      assert.equal(accountId, 'google:queued-emergency-owner');
+      exportCalls += 1;
+      if (exportCalls === 1) {
+        markFirstScanStarted();
+        await firstScanGate;
+      }
+      return active ? [active] : [];
+    },
+    async getExecution(accountId, requestedId) {
+      assert.equal(accountId, 'google:queued-emergency-owner');
+      return requestedId === active?.executionId ? active : undefined;
+    }
+  };
+  const edgeScenarioRouter = {
+    async ingestContextEvent() {
+      routerCalls += 1;
+      active = { executionId, scenarioId: 'ai_angel_auto_dial', state: 'running' };
+      return { started: [{ accepted: true, duplicate: false, execution: active }] };
+    }
+  };
+  const config = aiNativeTestConfig(edgeScenarioRouter, { scenarioEngine });
+  config.verifyAppToken = async () => ({ sub: 'google:queued-emergency-owner' });
+  config.resolveScenarioDevices = async () => ({ targets: { wearableId: 'wearable-1' } });
+  const handler = createHandler({ logger: silentLogger, ...config });
+  const occurredAt = Date.now();
+  const send = (index) => invokeHandler(handler, {
+    method: 'POST',
+    url: '/v1/scenarios',
+    headers: { Authorization: 'Bearer token' },
+    body: {
+      scenario_id: 'ai_angel_auto_dial',
+      request_id: `queued-panic-${index}`,
+      occurred_at: occurredAt
+    }
+  });
+
+  const admitted = [send(0)];
+  await firstScanStarted;
+  for (let index = 1; index < 8; index += 1) {
+    admitted.push(send(index));
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+  const overflow = await send(8);
+  assert.equal(overflow.status, 503);
+
+  releaseFirstScan();
+  const admittedResponses = await Promise.all(admitted);
+  assert.equal(admittedResponses.every(({ status }) => status === 202), true);
+  assert.equal(routerCalls, 1);
+  assert.equal(exportCalls, 1);
+
+  const afterDrain = await send(9);
+  assert.equal(afterDrain.status, 202);
+  assert.equal(afterDrain.json.started[0].duplicate, true);
+});
+
+test('AI Angel unique terminal retries are rate-bounded without blocking idempotent retries', async () => {
+  let routerCalls = 0;
+  const scenarioEngine = { async exportExecutions() { return []; } };
+  const edgeScenarioRouter = {
+    async ingestContextEvent(_accountId, event) {
+      routerCalls += 1;
+      return { started: [{
+        accepted: true,
+        duplicate: routerCalls > 3,
+        execution: {
+          executionId: '33333333-3333-4333-8333-333333333333',
+          scenarioId: 'ai_angel_auto_dial',
+          state: 'completed',
+          triggerEventId: event.eventId
+        }
+      }] };
+    }
+  };
+  const config = aiNativeTestConfig(edgeScenarioRouter, { scenarioEngine });
+  config.verifyAppToken = async () => ({ sub: 'google:rate-owner' });
+  config.resolveScenarioDevices = async () => ({ targets: { wearableId: 'wearable-1' } });
+  const handler = createHandler({ logger: silentLogger, ...config });
+  const occurredAt = Date.now();
+  const send = (id) => invokeHandler(handler, {
+    method: 'POST', url: '/v1/scenarios', headers: { Authorization: 'Bearer token' },
+    body: { scenario_id: 'ai_angel_auto_dial', request_id: id, occurred_at: occurredAt }
+  });
+  assert.equal((await send('panic-rate-1')).status, 202);
+  assert.equal((await send('panic-rate-2')).status, 202);
+  assert.equal((await send('panic-rate-3')).status, 202);
+  assert.equal((await send('panic-rate-4')).status, 429);
+  assert.equal((await send('panic-rate-1')).status, 202);
+  assert.equal(routerCalls, 4);
+});
+
+test('scenario feedback is successful-terminal, account-bound, bounded, and stored in encrypted memory', async () => {
+  const executionId = '11111111-1111-4111-8111-111111111111';
+  const stores = [];
+  let executionState = 'completed';
+  const scenarioEngine = {
+    async getExecution(accountId, requestedExecutionId) {
+      assert.equal(accountId, 'google:feedback-owner');
+      if (requestedExecutionId !== executionId) return undefined;
+      return {
+        executionId,
+        scenarioId: 'emotional_check_in',
+        state: executionState
+      };
+    }
+  };
+  const config = aiNativeTestConfig({}, { scenarioEngine });
+  config.verifyAppToken = async (token) => token === 'feedback-token' && { sub: 'google:feedback-owner' };
+  config.aiNativeSystem.memory.store = async (...args) => {
+    stores.push(args);
+    return { id: `scenario-feedback-${executionId}` };
+  };
+  const occurredAt = Date.now();
+  const accepted = await invoke(config, {
+    method: 'POST',
+    url: `/v1/scenarios/${executionId}/feedback`,
+    headers: { Authorization: 'Bearer feedback-token' },
+    body: { rating: 'helpful', occurred_at: occurredAt }
+  });
+  assert.equal(accepted.status, 201);
+  assert.deepEqual(accepted.json, { recorded: true, rating: 'helpful' });
+  assert.deepEqual(stores, [[
+    'google:feedback-owner',
+    {
+      id: `scenario-feedback-${executionId}`,
+      kind: 'preference',
+      source: 'user',
+      category: 'scenario_feedback',
+      value: 'emotional_check_in:helpful'
+    },
+    { idempotencyKey: `scenario_feedback_${executionId}_helpful` }
+  ]]);
+
+  for (const body of [
+    { rating: 'five-stars', occurred_at: occurredAt },
+    { rating: 'helpful', occurred_at: occurredAt - 6 * 60_000 },
+    { rating: 'helpful', occurred_at: occurredAt, comment: 'private free text' }
+  ]) {
+    assert.equal((await invoke(config, {
+      method: 'POST',
+      url: `/v1/scenarios/${executionId}/feedback`,
+      headers: { Authorization: 'Bearer feedback-token' },
+      body
+    })).status, 400);
+  }
+  assert.equal(stores.length, 1);
+
+  executionState = 'fallback_completed';
+  const acceptedFallback = await invoke(config, {
+    method: 'POST',
+    url: `/v1/scenarios/${executionId}/feedback`,
+    headers: { Authorization: 'Bearer feedback-token' },
+    body: { rating: 'not_helpful', occurred_at: occurredAt }
+  });
+  assert.equal(acceptedFallback.status, 201);
+  assert.deepEqual(acceptedFallback.json, { recorded: true, rating: 'not_helpful' });
+  assert.equal(stores.length, 2);
+
+  for (const state of ['failed', 'cancelled', 'queued', 'running']) {
+    executionState = state;
+    const rejected = await invoke(config, {
+      method: 'POST',
+      url: `/v1/scenarios/${executionId}/feedback`,
+      headers: { Authorization: 'Bearer feedback-token' },
+      body: { rating: 'helpful', occurred_at: occurredAt }
+    });
+    assert.equal(rejected.status, 409);
+    assert.deepEqual(rejected.json, {
+      error: 'Scenario feedback requires a successful execution'
+    });
+  }
+  assert.equal(stores.length, 2);
+});
+
+test('voice-call feedback is authenticated, bounded, and stored without free text', async () => {
+  const stores = [];
+  const config = aiNativeTestConfig({});
+  config.verifyAppToken = async (token) => token === 'voice-feedback-token'
+    && { sub: 'google:voice-feedback-owner' };
+  config.voiceInteractionCompletionRepository = {
+    begin() { return true; },
+    complete() { return true; },
+    verifyCompleted(accountId, interactionId, { occurredAt: verifiedAt }) {
+      return accountId === 'google:voice-feedback-owner'
+        && interactionId === 'voice-session-1'
+        && verifiedAt === occurredAt;
+    }
+  };
+  config.aiNativeSystem.memory.store = async (...args) => {
+    stores.push(args);
+    return { id: 'interaction-feedback-voice-session-1' };
+  };
+  const occurredAt = Date.now();
+  const accepted = await invoke(config, {
+    method: 'POST',
+    url: '/v1/interaction-feedback',
+    headers: { Authorization: 'Bearer voice-feedback-token' },
+    body: {
+      interaction_type: 'voice_call',
+      interaction_id: 'voice-session-1',
+      rating: 'helpful',
+      occurred_at: occurredAt
+    }
+  });
+  assert.equal(accepted.status, 201);
+  assert.deepEqual(accepted.json, { recorded: true, rating: 'helpful' });
+  assert.deepEqual(stores, [[
+    'google:voice-feedback-owner',
+    {
+      id: 'interaction-feedback-voice-session-1',
+      kind: 'preference',
+      source: 'user',
+      category: 'interaction_feedback',
+      value: 'voice_call:helpful'
+    },
+    { idempotencyKey: 'interaction_feedback_voice-session-1_helpful' }
+  ]]);
+
+  for (const body of [
+    {
+      interaction_type: 'raw_transcript', interaction_id: 'voice-session-2',
+      rating: 'helpful', occurred_at: occurredAt
+    },
+    {
+      interaction_type: 'voice_call', interaction_id: 'voice-session-2',
+      rating: 'stars', occurred_at: occurredAt
+    },
+    {
+      interaction_type: 'voice_call', interaction_id: 'voice-session-2',
+      rating: 'helpful', occurred_at: occurredAt, comment: 'private text'
+    },
+    {
+      interaction_type: 'voice_call', interaction_id: 'voice-session-2',
+      rating: 'helpful', occurred_at: occurredAt - 6 * 60_000
+    }
+  ]) {
+    assert.equal((await invoke(config, {
+      method: 'POST',
+      url: '/v1/interaction-feedback',
+      headers: { Authorization: 'Bearer voice-feedback-token' },
+      body
+    })).status, 400);
+  }
+  assert.equal((await invoke(config, {
+    method: 'POST',
+    url: '/v1/interaction-feedback',
+    body: {
+      interaction_type: 'voice_call', interaction_id: 'voice-session-2',
+      rating: 'helpful', occurred_at: occurredAt
+    }
+  })).status, 401);
+  assert.equal((await invoke(config, {
+    method: 'POST',
+    url: '/v1/interaction-feedback',
+    headers: { Authorization: 'Bearer voice-feedback-token' },
+    body: {
+      interaction_type: 'voice_call', interaction_id: 'unowned-session',
+      rating: 'helpful', occurred_at: occurredAt
+    }
+  })).status, 404);
+  assert.equal(stores.length, 1);
+});
+
+test('voice-call feedback writes are rate-bounded per authenticated account', async () => {
+  const config = aiNativeTestConfig({});
+  config.verifyAppToken = async () => ({ sub: 'google:voice-rate-owner' });
+  config.voiceInteractionCompletionRepository = {
+    begin() { return true; },
+    complete() { return true; },
+    verifyCompleted() { return true; }
+  };
+  config.aiNativeSystem.memory.store = async () => ({ id: 'feedback' });
+  const handler = createHandler({ logger: silentLogger, ...config });
+  const occurredAt = Date.now();
+  const send = (index) => invokeHandler(handler, {
+    method: 'POST',
+    url: '/v1/interaction-feedback',
+    headers: { Authorization: 'Bearer voice-feedback-token' },
+    body: {
+      interaction_type: 'voice_call',
+      interaction_id: `voice-session-${index}`,
+      rating: 'helpful',
+      occurred_at: occurredAt
+    }
+  });
+  for (let index = 0; index < 10; index += 1) assert.equal((await send(index)).status, 201);
+  assert.equal((await send(10)).status, 429);
 });
 
 test('wearable edge ingress uses app identity while robot ingress requires device credentials', async () => {

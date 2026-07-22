@@ -508,3 +508,108 @@ test('a failed secure voice handshake send reports a typed error and closes safe
   assert.equal(service.state, 'error');
   assert.equal(closeCode, 4000);
 });
+
+test('voice interaction completion is coalesced and requires the matching gateway acknowledgement', async () => {
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+
+  const first = service.completeInteraction('voice-session-1');
+  const duplicate = service.completeInteraction('voice-session-1');
+  assert.equal(duplicate, first);
+  assert.deepEqual(sent, [{
+    type: 'interaction_complete',
+    interaction_id: 'voice-session-1'
+  }]);
+
+  service.handleInteractionCompleted({
+    type: 'interaction_completed',
+    interaction_id: 'another-session',
+    ok: true
+  });
+  assert.notEqual(service.pendingInteractionCompletion, null);
+
+  await service.handleMessage({ data: JSON.stringify({
+    type: 'interaction_completed',
+    interaction_id: 'voice-session-1',
+    ok: true
+  }) }, service.socket);
+  assert.equal(await first, true);
+  assert.equal(service.pendingInteractionCompletion, null);
+});
+
+test('voice interaction completion fails closed on rejection and timeout', async () => {
+  const rejectedService = readyService();
+  rejectedService.usesProxy = true;
+  rejectedService.proxyAuthenticated = true;
+  rejectedService.socket.send = () => {};
+  const rejected = rejectedService.completeInteraction('voice-session-rejected');
+  rejectedService.handleInteractionCompleted({
+    type: 'interaction_completed',
+    interaction_id: 'voice-session-rejected',
+    ok: false
+  });
+  await assert.rejects(rejected, (error) => (
+    error.code === 'VOICE_INTERACTION_COMPLETION_REJECTED'
+  ));
+  assert.equal(rejectedService.pendingInteractionCompletion, null);
+
+  const timeoutService = readyService();
+  timeoutService.usesProxy = true;
+  timeoutService.proxyAuthenticated = true;
+  timeoutService.socket.send = () => {};
+  await assert.rejects(
+    timeoutService.completeInteraction('voice-session-timeout', { timeoutMs: 5 }),
+    (error) => error.code === 'VOICE_INTERACTION_COMPLETION_TIMEOUT'
+  );
+  assert.equal(timeoutService.pendingInteractionCompletion, null);
+});
+
+test('voice interaction completion is cancelled and cleaned up when the transport disconnects', async () => {
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = async () => {};
+  fakeAudioService.cancelAndClearQueue = async () => {};
+  const service = readyService();
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  service.socket.send = () => {};
+
+  const pending = service.completeInteraction('voice-session-disconnect', { timeoutMs: 30_000 });
+  const rejected = assert.rejects(pending, (error) => (
+    error.code === 'VOICE_INTERACTION_COMPLETION_CANCELLED'
+  ));
+  await service.disconnect();
+  await rejected;
+
+  assert.equal(service.pendingInteractionCompletion, null);
+  assert.equal(service.getState(), 'disconnected');
+});
+
+test('voice interaction completion rejects invalid, unauthenticated, and overlapping requests', async () => {
+  const service = readyService();
+  await assert.rejects(
+    service.completeInteraction('voice-session-not-authenticated'),
+    (error) => error.code === 'VOICE_INTERACTION_NOT_CONNECTED'
+  );
+
+  service.usesProxy = true;
+  service.proxyAuthenticated = true;
+  service.socket.send = () => {};
+  await assert.rejects(
+    service.completeInteraction('../invalid interaction'),
+    (error) => error.code === 'VOICE_INTERACTION_INVALID'
+  );
+
+  const pending = service.completeInteraction('voice-session-first', { timeoutMs: 30_000 });
+  await assert.rejects(
+    service.completeInteraction('voice-session-second'),
+    (error) => error.code === 'VOICE_INTERACTION_COMPLETION_BUSY'
+  );
+  service.cancelPendingInteractionCompletion();
+  await assert.rejects(pending, (error) => (
+    error.code === 'VOICE_INTERACTION_COMPLETION_CANCELLED'
+  ));
+  assert.equal(service.pendingInteractionCompletion, null);
+});

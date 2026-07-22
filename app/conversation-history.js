@@ -10,7 +10,7 @@ import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { LoadingState } from '../src/components/LoadingState';
 import { clearConversationHistory, deleteConversationSession, loadConversationHistory } from '../src/services/conversation-history';
 import { clearOfflineMessageQueue, deleteQueuedMessagesForSession } from '../src/services/offline-message-queue';
-import { colors, fonts } from '../src/constants/theme';
+import { colors, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { images } from '../src/constants/assets';
 
@@ -18,6 +18,7 @@ export default function ConversationHistory() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorKey, setErrorKey] = useState(null);
+  const [busyAction, setBusyAction] = useState(null);
   const { isRTL, locale, t } = useI18n();
 
   const refresh = useCallback(async () => {
@@ -36,22 +37,47 @@ export default function ConversationHistory() {
     refresh();
   }, [refresh]);
 
+  const clearAll = async () => {
+    if (busyAction) return;
+    setBusyAction('clear');
+    setErrorKey(null);
+    try {
+      const results = await Promise.allSettled([
+        clearConversationHistory(),
+        clearOfflineMessageQueue()
+      ]);
+      if (results[0].status === 'fulfilled') setSessions([]);
+      if (results.some((result) => result.status === 'rejected')) throw new Error('HISTORY_CLEAR_INCOMPLETE');
+    } catch {
+      setErrorKey('history.clearFailed');
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
   const confirmClear = () => {
     Alert.alert(t('history.clearTitle'), t('history.clearMessage'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('common.clear'),
         style: 'destructive',
-        onPress: async () => {
-          try {
-            await Promise.all([clearConversationHistory(), clearOfflineMessageQueue()]);
-            await refresh();
-          } catch {
-            setErrorKey('history.clearFailed');
-          }
-        }
+        onPress: clearAll
       }
     ]);
+  };
+
+  const deleteSession = async (sessionId) => {
+    if (busyAction) return;
+    setBusyAction(`delete:${sessionId}`);
+    setErrorKey(null);
+    try {
+      await deleteQueuedMessagesForSession(sessionId);
+      setSessions(await deleteConversationSession(sessionId));
+    } catch {
+      setErrorKey('history.deleteFailed');
+    } finally {
+      setBusyAction(null);
+    }
   };
 
   const removeSession = (sessionId) => {
@@ -60,14 +86,7 @@ export default function ConversationHistory() {
       {
         text: t('common.delete'),
         style: 'destructive',
-        onPress: async () => {
-          try {
-            await deleteQueuedMessagesForSession(sessionId);
-            setSessions(await deleteConversationSession(sessionId));
-          } catch {
-            setErrorKey('history.deleteFailed');
-          }
-        }
+        onPress: () => deleteSession(sessionId)
       }
     ]);
   };
@@ -75,7 +94,13 @@ export default function ConversationHistory() {
   return (
     <Screen scroll={false}>
       <Header title={t('history.title')} subtitle={t('history.subtitle')} showBack backLabel={t('common.back')} />
-      <FeedbackBanner message={errorKey ? t(errorKey) : null} actionLabel={t('common.retry')} onAction={refresh} />
+      <FeedbackBanner
+        message={errorKey ? t(errorKey) : null}
+        actionLabel={errorKey === 'history.loadFailed' ? t('common.retry') : undefined}
+        onAction={errorKey === 'history.loadFailed' ? refresh : undefined}
+        dismissLabel={t('common.close')}
+        onDismiss={() => setErrorKey(null)}
+      />
       <FlatList
         data={sessions}
         keyExtractor={(item) => item.id}
@@ -91,16 +116,20 @@ export default function ConversationHistory() {
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
           const preview = item.messages?.slice(-2) || [];
+          const companionName = item.voiceId
+            ? t(`voices.profiles.${item.voiceId}.name`)
+            : item.voiceName || t('history.aiCompanion');
+          const deleting = busyAction === `delete:${item.id}`;
           return (
             <Card style={styles.card}>
               <View style={[styles.row, isRTL && styles.rtlRow]}>
                 <View style={styles.titleGroup}>
-                  <Text style={[styles.title, isRTL && styles.rtlText]}>{item.voiceId ? t(`voices.profiles.${item.voiceId}.name`) : item.voiceName || t('history.aiCompanion')}</Text>
+                  <Text style={[styles.title, isRTL && styles.rtlText]}>{companionName}</Text>
                   <Text style={[styles.muted, isRTL && styles.rtlText]}>{new Date(item.updatedAt || item.startedAt).toLocaleString(locale)}</Text>
                 </View>
                 <View style={[styles.actions, isRTL && styles.rtlActions]}>
-                  <Button title={t('history.resume')} variant="ghost" onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
-                  <Button title={t('common.delete')} variant="ghost" onPress={() => removeSession(item.id)} />
+                  <Button accessibilityLabel={`${t('history.resume')}: ${companionName}`} title={t('history.resume')} variant="ghost" disabled={Boolean(busyAction)} onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
+                  <Button accessibilityLabel={`${t('common.delete')}: ${companionName}`} title={t('common.delete')} variant="ghost" loading={deleting} disabled={Boolean(busyAction)} onPress={() => removeSession(item.id)} />
                 </View>
               </View>
               {preview.map((message) => (
@@ -112,22 +141,22 @@ export default function ConversationHistory() {
           );
         }}
       />
-      {!loading && sessions.length ? <Button title={t('history.clearAll')} variant="danger" onPress={confirmClear} /> : null}
+      {!loading && sessions.length ? <Button title={t('history.clearAll')} variant="danger" loading={busyAction === 'clear'} disabled={Boolean(busyAction)} onPress={confirmClear} /> : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  list: { flexGrow: 1, gap: 12, paddingBottom: 16 },
-  card: { gap: 10, marginBottom: 12 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', gap: 10, alignItems: 'center' },
+  list: { flexGrow: 1, gap: spacing.mdSm, paddingBottom: spacing.md },
+  card: { gap: spacing.sm, marginBottom: spacing.mdSm },
+  row: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm, alignItems: 'center' },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
   titleGroup: { flex: 1 },
-  actions: { gap: 4, alignItems: 'flex-end' },
+  actions: { flexShrink: 1, gap: spacing.xs, alignItems: 'flex-end' },
   rtlActions: { alignItems: 'flex-start' },
-  title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
-  muted: { fontFamily: fonts.regular, color: colors.inkSoft },
-  message: { fontFamily: fonts.regular, color: colors.ink },
-  role: { fontFamily: fonts.semibold, color: colors.inkSoft }
+  title: { ...typography.heading, color: colors.textPrimary },
+  muted: { ...typography.caption, color: colors.textSecondary },
+  message: { ...typography.bodySmall, color: colors.textPrimary },
+  role: { fontFamily: typography.label.fontFamily, color: colors.textSecondary }
 });

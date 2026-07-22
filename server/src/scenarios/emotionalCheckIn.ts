@@ -20,18 +20,44 @@ function observerConfirmedNoResponse(context: ScenarioConditionContext): boolean
     && result.data?.responded === false;
 }
 
-function stressScore(request: ScenarioStartRequest): number {
+const USER_MOODS = new Set(['very_low', 'low', 'okay', 'good', 'great']);
+const MAX_REFLECTION_SUMMARY_LENGTH = 280;
+
+function stressScore(request: ScenarioStartRequest): number | undefined {
   const value = Number(request.input?.stressScore);
-  return Number.isFinite(value) ? Math.max(0, Math.min(100, Math.round(value))) : 70;
+  return Number.isFinite(value) ? Math.max(0, Math.min(100, Math.round(value))) : undefined;
+}
+
+function validateUserContext(request: ScenarioStartRequest): void {
+  if (request.trigger.type !== 'user_emotional_check_in') return;
+  const moodKey = request.input?.moodKey;
+  const summary = request.input?.reflectionSummary;
+  if (typeof moodKey !== 'string' || !USER_MOODS.has(moodKey)) {
+    throw new TypeError('User emotional check-in mood is invalid');
+  }
+  if (summary !== undefined && (
+    typeof summary !== 'string'
+    || !summary.trim()
+    || summary !== summary.replace(/\s+/g, ' ').trim()
+    || summary.length > MAX_REFLECTION_SUMMARY_LENGTH
+  )) {
+    throw new TypeError('User emotional check-in summary is invalid');
+  }
 }
 
 export const emotionalCheckInScenario: ScenarioDefinition = Object.freeze({
   id: 'emotional_check_in',
-  version: 1,
+  version: 3,
   priority: 'standard',
-  description: 'Elevated wearable stress signal starts a consent-aware Hume check-in and records a bounded trend event.',
-  allowedTriggerTypes: Object.freeze(['wearable_stress']),
+  description: 'A wearable stress signal or explicit user request starts a consent-aware Hume check-in.',
+  allowedTriggerTypes: Object.freeze(['wearable_stress', 'user_emotional_check_in']),
   buildSteps(request: ScenarioStartRequest) {
+    const userInitiated = request.trigger.type === 'user_emotional_check_in';
+    validateUserContext(request);
+    const moodKey = typeof request.input?.moodKey === 'string' ? request.input.moodKey : undefined;
+    const reflectionSummary = typeof request.input?.reflectionSummary === 'string'
+      ? request.input.reflectionSummary
+      : undefined;
     const score = stressScore(request);
     const observedAt = new Date(request.trigger.occurredAt).toISOString();
     const memoryId = `stress-${request.trigger.eventId}`.slice(0, 128);
@@ -43,6 +69,13 @@ export const emotionalCheckInScenario: ScenarioDefinition = Object.freeze({
           kind: 'hume_session',
           target: 'home_robot',
           mode: 'calming',
+          ...(userInitiated && (moodKey || reflectionSummary) ? {
+            interactionContext: {
+              source: 'user_reported',
+              ...(moodKey ? { mood_key: moodKey } : {}),
+              ...(reflectionSummary ? { reflection_summary: reflectionSummary } : {})
+            }
+          } : {}),
           timeoutMs: 5_000
         },
         fallback: [{
@@ -90,7 +123,7 @@ export const emotionalCheckInScenario: ScenarioDefinition = Object.freeze({
         },
         continueOnFailure: true
       },
-      {
+      ...(score === undefined || userInitiated ? [] : [{
         id: 'update_emotional_state',
         operation: {
           id: 'store_stress_checkin',
@@ -99,8 +132,8 @@ export const emotionalCheckInScenario: ScenarioDefinition = Object.freeze({
           timeoutMs: 2_000
         },
         continueOnFailure: true
-      },
-      {
+      } as const]),
+      ...(score === undefined || userInitiated ? [] : [{
         id: 'record_emotional_memory',
         operation: {
           id: 'append_emotional_summary',
@@ -121,7 +154,17 @@ export const emotionalCheckInScenario: ScenarioDefinition = Object.freeze({
           timeoutMs: 2_000
         },
         continueOnFailure: true
-      },
+      } as const]),
+      ...(score !== undefined || userInitiated ? [] : [{
+        id: 'record_emotional_signal_unavailable',
+        operation: {
+          id: 'emotional_signal_unavailable_analytics',
+          kind: 'analytics',
+          event: 'emotional_stress_signal_unavailable',
+          timeoutMs: 1_000
+        },
+        continueOnFailure: true
+      } as const]),
       {
         id: 'record_emotional_analytics',
         alwaysRun: true,

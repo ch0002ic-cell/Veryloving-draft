@@ -123,7 +123,8 @@
     "safetyCallTitle": "安全通话",
     "safetyCallSubtitle": "需要支持时，发起实时伙伴通话。",
     "practiceTitle": "练习场景",
-    "practiceSubtitle": "在轻松的演示中熟悉安全流程。"
+    "practiceSubtitle": "在轻松的演示中熟悉安全流程。",
+    "progressAccessibility": "新手引导进度"
   },
   "jewelry": {
     "pairTitle": "配对 NorthStar",
@@ -328,7 +329,8 @@
     "connected": "已连接 · 电量%{battery}%",
     "none": "未连接设备",
     "disconnect": "断开设备",
-    "connect": "连接设备"
+    "connect": "连接设备",
+    "lastSeen": "上次在线：%{date}"
   },
   "friends": {
     "title": "好友",
@@ -493,6 +495,219 @@
       "escalated": "已通知照护者",
       "acknowledged": "已确认",
       "cancelled": "已取消"
+    }
+  },
+  "wellness": {
+    "title": "身心关怀与设备协作",
+    "subtitle": "轻松活动、情绪记录，以及穿戴设备与居家陪伴机器人的协同支持。",
+    "eyebrow": "协同关怀",
+    "connectedCareUnavailable": "协同关怀需要登录账户并连接 VeryLoving 服务。本机活动和情绪记录仍可使用。",
+    "scenarioStarted": "协同关怀已启动。",
+    "scenarioStarting": "正在启动协同关怀…",
+    "scenarioFailed": "无法启动或更新协同关怀。请检查网络后重试。",
+    "cognitive": {
+      "eyebrow": "给大脑一点轻松时光",
+      "title": "认知互动",
+      "subtitle": "选择轻松的记忆游戏、知识问答或聊天话题。",
+      "connectedTitle": "邀请陪伴机器人",
+      "connectedBody": "让居家陪伴机器人发起一项轻松活动，并在此查看进度。",
+      "connectedHint": "将在与你账户绑定的设备上启动认知互动场景。",
+      "startCompanion": "与陪伴机器人一起开始",
+      "activityTitle": "选择一项活动",
+      "activitySubtitle": "无需追求分数，选择今天让你感到舒适的活动。",
+      "emptyTitle": "选择一项轻松活动",
+      "emptyMessage": "记忆、问答和聊天活动随时等你开始。",
+      "nextRound": "再试一个",
+      "modes": {
+        "memory": {
+          "title": "记忆卡片",
+          "description": "记住三个图标，然后回想中间的图标。"
+        },
+        "trivia": {
+          "title": "轻松问答",
+          "description": "按照自己的节奏回答一道熟悉的问题。"
+        },
+        "conversation": {
+          "title": "聊天话题",
+          "description": "通过温暖的话题回忆并分享一段故事。"
+        }
+      },
+      "memory": {
+        "title": "记住中间的图标",
+        "instruction": "花一点时间看看这组图标。",
+        "sequenceLabel": "记忆顺序：%{sequence}",
+        "ready": "我准备好了",
+        "question": "中间的是哪个图标？",
+        "answerLabel": "选择 %{answer}",
+        "correct": "答对了，你记得真好。",
+        "incorrect": "很好的尝试。再看一遍，按自己的节奏来。"
+      },
+      "trivia": {
+        "title": "轻松问答",
+        "correct": "答对了，做得很好。",
+        "incorrect": "这次没有答对，也完全没关系。",
+        "questions": {
+          "one": {
+            "prompt": "晴朗的白天天空是什么颜色？",
+            "choices": {
+              "blue": "蓝色",
+              "green": "绿色",
+              "red": "红色"
+            }
+          },
+          "two": {
+            "prompt": "人体最大的器官是什么？",
+            "choices": {
+              "heart": "心脏",
+              "lungs": "肺",
+              "skin": "皮肤"
+            }
+          },
+          "three": {
+            "prompt": "一周有多少天？",
+            "choices": {
+              "seven": "七天",
+              "eight": "八天",
+              "nine": "九天"
+            }
+          }
+        }
+      },
+      "conversation": {
+        "title": "分享一段故事",
+        "another": "换个话题",
+        "prompts": {
+          "one": "哪一道饭菜会让你想起快乐的回忆？",
+          "two": "谁曾教会你一件至今仍在使用的技能？",
+          "three": "哪首歌总能让你的心情变好？",
+          "four": "你最想再次去哪个地方？"
+        }
+      }
+    },
+    "emotional": {
+      "eyebrow": "属于你的私密时刻",
+      "title": "情绪签到",
+      "subtitle": "留意此刻感受，保存简短想法，或邀请陪伴机器人聊一聊。",
+      "moodQuestion": "你现在感觉怎么样？",
+      "moodHint": "请选择最接近的感受，没有错误答案。",
+      "moodPickerLabel": "情绪选项",
+      "reflectionLabel": "简短感想（可选）",
+      "reflectionHint": "请简短填写。此处不会保存原始语音或文字转录。",
+      "reflectionPlaceholder": "用几句话记录此刻的感受…",
+      "characterCount": "已输入 %{count} 个字符，最多 %{max} 个字符",
+      "privacyNote": "你的情绪记录与账户绑定，会包含在隐私数据导出中，并在删除账户数据时一并移除。",
+      "save": "保存签到",
+      "saving": "正在保存…",
+      "saved": "情绪签到已保存。",
+      "saveFailed": "无法保存这次情绪签到，请重试。",
+      "connectedTitle": "和陪伴机器人一起梳理感受",
+      "connectedBody": "通过居家陪伴机器人发起一段基于你同意的 Hume 对话。由用户主动发起的情绪签到绝不会伪造压力读数。",
+      "connectedHint": "将在与你账户绑定的居家陪伴机器人上启动情绪签到。",
+      "startReflection": "开始 AI 情绪梳理",
+      "historyTitle": "最近签到",
+      "historySubtitle": "本设备仅保留最近 90 条私密情绪签到。",
+      "historyLoadFailed": "无法加载情绪签到记录。",
+      "historyEmptyTitle": "还没有签到",
+      "historyEmptyMessage": "准备好后，请在上方选择此刻的心情。",
+      "deleteTitle": "删除这次情绪签到？",
+      "deleteMessage": "这会从本设备删除所选心情和简短感想。",
+      "deleted": "这次情绪签到已删除。",
+      "deleteFailed": "无法删除这次情绪签到，请重试。",
+      "moods": {
+        "very_low": "很低落",
+        "low": "低落",
+        "okay": "还可以",
+        "good": "不错",
+        "great": "很好"
+      },
+      "showMore": "显示更多",
+      "humeContextNotice": "开始 AI 情绪梳理时，你选择的心情和可选感想会作为临时上下文提供给 Hume，不会被当作压力读数。"
+    },
+    "scenarios": {
+      "title": "协同关怀场景",
+      "subtitle": "在清晰的安全边界下协调穿戴设备和居家陪伴机器人。",
+      "connectedCare": "一个关怀计划，两台设备协同",
+      "connectedCareBody": "VeryLoving 会在服务器端识别已配对设备，避免重复操作，并跟踪每次场景执行。",
+      "connected": "服务已连接",
+      "offline": "服务不可用",
+      "demoOffline": "演示模式不会创建 Bearer 令牌，因此协同关怀场景将保持离线。请使用真实的开发账户登录，以测试服务器流程。",
+      "signInRequired": "请重新登录，以使用协同关怀场景。",
+      "notConfigured": "此版本尚未配置协同关怀服务。",
+      "networkError": "无法连接协同关怀服务。穿戴设备仍可通过蓝牙工作。",
+      "stillRunning": "此场景仍在进行中，请稍后刷新状态。",
+      "genericError": "无法完成协同关怀操作，请重试。",
+      "chooseAction": "快捷操作",
+      "chooseActionBody": "涉及安全后果的操作会在开始前明确说明将会发生什么。",
+      "names": {
+        "fall_detection": "跌倒响应",
+        "medication_adherence": "按时服药",
+        "emotional_check_in": "情绪签到",
+        "cognitive_engagement": "认知互动",
+        "ai_angel_auto_dial": "AI Angel 紧急援助"
+      },
+      "descriptions": {
+        "fall_detection": "仅运行用于分析的演练；不会移动机器人，也不会通知联系人。",
+        "medication_adherence": "让机器人立即提醒你服药；若未确认提醒，系统可能升级通知照护者。",
+        "emotional_check_in": "在获得你同意后，发起一段舒缓的 Hume 对话。",
+        "cognitive_engagement": "让机器人发起轻松活动和语音游戏。",
+        "ai_angel_auto_dial": "启动经确认的跨设备紧急流程。"
+      },
+      "actions": {
+        "fall_detection": "演练跌倒响应",
+        "medication_adherence": "立即发送提醒",
+        "emotional_check_in": "开始情绪签到",
+        "cognitive_engagement": "开始认知活动",
+        "ai_angel_auto_dial": "启动 AI Angel"
+      },
+      "starting": "正在启动…",
+      "confirmations": {
+        "practiceTitle": "开始跌倒响应演练？",
+        "practiceBody": "这只会记录一次演练事件，不会移动机器人、拨打电话或发送紧急警报。",
+        "practiceAction": "开始演练",
+        "medicationTitle": "立即发送服药提醒？",
+        "medicationBody": "机器人会立即提醒你服药。如果你未在确认时限内确认，系统可能执行已配置的照护者升级通知。",
+        "medicationAction": "发送提醒",
+        "emergencyTitle": "启动 AI Angel 紧急援助？",
+        "emergencyBody": "这将启动已配对设备间的真实紧急流程，并可能联系你设置的紧急联系人。",
+        "emergencyAction": "启动紧急援助",
+        "cancelCriticalTitle": "取消此关键场景？",
+        "cancelCriticalBody": "停止关键场景可能会终止正在进行的紧急步骤。只有在你确认不再需要援助时才继续。",
+        "cancelCriticalAction": "停止关键场景"
+      },
+      "wellnessTools": "身心关怀工具",
+      "wellnessToolsBody": "先私密记录感受或选择一项活动，再决定是否使用已连接设备。",
+      "recentActivity": "最近场景记录",
+      "recentActivityBody": "状态信息已加密并与账户绑定，场景进行期间会持续刷新。",
+      "loading": "正在加载场景记录",
+      "emptyTitle": "还没有场景记录",
+      "emptyMessage": "准备好后，可以开始身心签到或其他快捷操作。",
+      "startFirst": "开始签到",
+      "started": "场景请求已接受，实时状态正在更新。",
+      "statusAccessibility": "%{scenario}，%{status}，更新于 %{date}",
+      "updated": "更新于 %{date}",
+      "statuses": {
+        "queued": "排队中",
+        "running": "进行中",
+        "completed": "已完成",
+        "fallback_completed": "已通过备用方案完成",
+        "failed": "需要处理",
+        "cancelled": "已取消"
+      },
+      "fallbackNote": "由于首选步骤不可用，系统已完成预设的备用方案。",
+      "failedNote": "场景未能完成。请检查设备连接，并在确保安全的情况下重试。",
+      "cancel": "取消场景",
+      "refreshStatus": "刷新状态"
+    },
+    "feedback": {
+      "title": "这次体验有帮助吗？",
+      "message": "请告诉我们，%{interaction} 是否对你有帮助。我们只保存评价，不保存自由填写的文字。",
+      "helpful": "有帮助",
+      "helpfulHint": "为这次已完成的互动记录好评。",
+      "notHelpful": "没有帮助",
+      "notHelpfulHint": "为这次已完成的互动记录差评。",
+      "notNow": "暂不评价",
+      "error": "无法保存评价，请重试。",
+      "thanks": "感谢反馈，评价已保存。"
     }
   }
 }

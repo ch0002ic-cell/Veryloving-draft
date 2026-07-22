@@ -21,7 +21,9 @@ const VOICE_CONTROL_RATE_WINDOW_MS = 60 * 1000;
 const HUME_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const PERSONA_ID_PATTERN = /^[A-Za-z0-9_-]{1,40}$/;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+const INTERACTION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/;
 const VOICE_LOCALES = new Set(VOICE_LOCALE_CODES);
+const VOICE_INTERACTION_ACTIVITY_TYPES = new Set(['user_message', 'assistant_message']);
 const FORBIDDEN_AI_CONTEXT_KEY = /(?:device_?id|serial|latitude|longitude|coordinates?|raw|transcript|token|secret|api[_-]?key)/i;
 
 function boundedString(value, maxLength) {
@@ -318,6 +320,22 @@ function prepareUpstreamMessage(data, isBinary, config) {
   return { payload: JSON.stringify(sanitized), binary: false };
 }
 
+function isVoiceInteractionActivityFrame(payload, isBinary) {
+  if (isBinary) return false;
+  let message;
+  try {
+    message = JSON.parse(typeof payload === 'string' ? payload : payload.toString('utf8'));
+  } catch {
+    return false;
+  }
+  if (!VOICE_INTERACTION_ACTIVITY_TYPES.has(message?.type)) return false;
+  // Hume's user/assistant protocol frames include a bounded transcript. We do
+  // not retain or log it; checking for non-empty content prevents metadata,
+  // audio-only, or fabricated empty frames from authorizing feedback.
+  return typeof message.message?.content === 'string'
+    && message.message.content.trim().length > 0;
+}
+
 function buildHumeUpstreamURL(auth, config) {
   if (!config.humeApiKey) throw new Error('Hume gateway credentials are not configured');
   const voiceSession = config.voiceSessionResolved ? auth : resolveVoiceSession(auth, config);
@@ -423,6 +441,9 @@ function attachVoiceGateway(server, config) {
     let unregisterActionSession = null;
     let principal = null;
     let voiceSession = null;
+    let voiceInteractionId = null;
+    let voiceInteractionActivityObserved = false;
+    let voiceInteractionCompleted = false;
     let controlRequestsInFlight = 0;
     let controlRequestsInWindow = 0;
     let controlWindowStartedAt = Date.now();
@@ -463,6 +484,26 @@ function attachVoiceGateway(server, config) {
       }
       unregisterActionSession?.();
       unregisterActionSession = null;
+      if (principal?.sub && voiceInteractionId && !voiceInteractionCompleted) {
+        try {
+          const completionRepository = config.voiceInteractionCompletionRepository;
+          if (typeof completionRepository?.disconnect === 'function') {
+            completionRepository.disconnect(principal.sub, voiceInteractionId);
+          } else {
+            // Transport loss is not proof that the interaction completed. A
+            // legacy repository without an explicit disconnect transition
+            // must fail closed instead of turning an abrupt close into a
+            // completion record that could authorize feedback.
+            config.logger?.warn?.('[VoiceGateway] Interaction disconnect proof unavailable', {
+              code: 'VOICE_INTERACTION_DISCONNECT_UNAVAILABLE'
+            });
+          }
+        } catch {
+          config.logger?.warn?.('[VoiceGateway] Interaction completion proof unavailable', {
+            code: 'VOICE_INTERACTION_COMPLETION_FAILED'
+          });
+        }
+      }
       if (upstream) {
         const socketToClose = upstream;
         upstream = null;
@@ -522,6 +563,21 @@ function attachVoiceGateway(server, config) {
           });
           upstream.on('message', (payload, upstreamBinary) => {
             if (client.readyState !== WebSocket.OPEN) return;
+            if (principal?.sub
+              && voiceInteractionId
+              && !voiceInteractionCompleted
+              && isVoiceInteractionActivityFrame(payload, upstreamBinary)) {
+              try {
+                const completionRepository = config.voiceInteractionCompletionRepository;
+                voiceInteractionActivityObserved = completionRepository
+                  ?.observeActivity?.(principal.sub, voiceInteractionId) === true
+                  || voiceInteractionActivityObserved;
+              } catch {
+                config.logger?.warn?.('[VoiceGateway] Interaction activity proof unavailable', {
+                  code: 'VOICE_INTERACTION_ACTIVITY_FAILED'
+                });
+              }
+            }
             if (client.bufferedAmount > MAX_BUFFERED_BYTES) {
               closeSocket(client, 4000, 'client backpressure limit');
               return;
@@ -547,6 +603,61 @@ function attachVoiceGateway(server, config) {
       if (!isBinary) {
         let message;
         try { message = JSON.parse(typeof data === 'string' ? data : data.toString('utf8')); } catch {}
+        if (message?.type === 'session_settings') {
+          const interactionId = message.custom_session_id;
+          if (interactionId !== undefined) {
+            if (!INTERACTION_ID_PATTERN.test(interactionId)
+              || (voiceInteractionId && voiceInteractionId !== interactionId)) {
+              closeSocket(client, 4000, 'invalid voice interaction');
+              return;
+            }
+            if (!voiceInteractionId && config.voiceInteractionCompletionRepository) {
+              try {
+                const completionRepository = config.voiceInteractionCompletionRepository;
+                if (completionRepository.begin(principal.sub, interactionId) !== true) {
+                  closeSocket(client, 4000, 'invalid voice interaction');
+                  return;
+                }
+                voiceInteractionActivityObserved = completionRepository
+                  .hasActivity?.(principal.sub, interactionId) === true;
+              } catch {
+                closeSocket(client, 1011, 'voice interaction unavailable');
+                return;
+              }
+            }
+            voiceInteractionId = interactionId;
+          }
+        }
+        if (message?.type === 'interaction_complete') {
+          const shapeAllowed = message
+            && Object.keys(message).every((key) => ['type', 'interaction_id'].includes(key));
+          if (!shapeAllowed
+            || !voiceInteractionId
+            || message.interaction_id !== voiceInteractionId
+            || !voiceInteractionActivityObserved
+            || voiceInteractionCompleted) {
+            safeSendSocket(client, JSON.stringify({
+              type: 'interaction_completed',
+              interaction_id: INTERACTION_ID_PATTERN.test(message?.interaction_id ?? '')
+                ? message.interaction_id
+                : 'invalid',
+              ok: false
+            }));
+            return;
+          }
+          try {
+            voiceInteractionCompleted = config.voiceInteractionCompletionRepository
+              ?.complete?.(principal.sub, voiceInteractionId) === true;
+          } catch {
+            voiceInteractionCompleted = false;
+          }
+          safeSendSocket(client, JSON.stringify({
+            type: 'interaction_completed',
+            interaction_id: voiceInteractionId,
+            ok: voiceInteractionCompleted
+          }));
+          return;
+        }
         if (message?.type === 'devices_update') {
           const devices = normalizeDevices(message.devices);
           config.actionGateway?.updateSessionDevices?.(principal?.sub, client, devices);
@@ -683,6 +794,7 @@ module.exports = {
   parsePersonaMap,
   parseVoiceAuthenticationMessage,
   prepareUpstreamMessage,
+  isVoiceInteractionActivityFrame,
   resolveVoiceSession,
   sanitizeAINativeVoiceContext
 };

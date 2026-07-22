@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Button } from '../src/components/Button';
@@ -10,7 +10,7 @@ import { EmptyState } from '../src/components/EmptyState';
 import { SkeletonGroup, SkeletonText } from '../src/components/Skeleton';
 import { StatusPill } from '../src/components/StatusPill';
 import { TextField } from '../src/components/TextField';
-import { colors, fonts, radii, spacing } from '../src/constants/theme';
+import { colors, motion, radii, sizes, spacing, typography } from '../src/constants/theme';
 import { useAppState } from '../src/context/AppContext';
 import { useI18n } from '../src/context/I18nContext';
 import {
@@ -33,6 +33,13 @@ export default function MedicationReminders() {
   const [robotDeviceId, setRobotDeviceId] = useState(robotEntities[0]?.deviceId || '');
   const [busyAction, setBusyAction] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const loadRequestRef = useRef(0);
+  const loadInFlightRef = useRef(false);
+  const mutationInFlightRef = useRef(false);
+  const mutationEpochRef = useRef(0);
+  const lifecycleEpochRef = useRef(0);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
     if (!robotEntities.some((robot) => robot.deviceId === robotDeviceId)) {
@@ -40,21 +47,53 @@ export default function MedicationReminders() {
     }
   }, [robotDeviceId, robotEntities]);
 
-  useEffect(() => {
-    let active = true;
+  const loadReminders = useCallback(async () => {
+    if (!mountedRef.current || loadInFlightRef.current || mutationInFlightRef.current) return;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    const requestId = ++loadRequestRef.current;
+    loadInFlightRef.current = true;
     setBusyAction('load');
-    listMedicationReminders().catch(() => {
-      if (active) setFeedback({ tone: 'error', message: t('medication.loadFailed') });
-    }).finally(() => {
-      if (active) setBusyAction(null);
-    });
-    return () => { active = false; };
-  }, [listMedicationReminders, t]);
+    setLoadFailed(false);
+    const requestIsCurrent = () => mountedRef.current
+      && lifecycleEpoch === lifecycleEpochRef.current
+      && requestId === loadRequestRef.current;
+    try {
+      await listMedicationReminders();
+    } catch {
+      if (requestIsCurrent()) setLoadFailed(true);
+    } finally {
+      if (requestId === loadRequestRef.current) {
+        loadInFlightRef.current = false;
+        if (requestIsCurrent()) setBusyAction(null);
+      }
+    }
+  }, [listMedicationReminders]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    lifecycleEpochRef.current += 1;
+    loadReminders();
+    return () => {
+      mountedRef.current = false;
+      lifecycleEpochRef.current += 1;
+      loadRequestRef.current += 1;
+      loadInFlightRef.current = false;
+      mutationEpochRef.current += 1;
+      mutationInFlightRef.current = false;
+    };
+  }, [loadReminders]);
 
   const createReminder = async () => {
-    if (busyAction) return;
+    if (!mountedRef.current || loadInFlightRef.current
+      || mutationInFlightRef.current || busyAction) return;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    const mutationEpoch = ++mutationEpochRef.current;
+    mutationInFlightRef.current = true;
     setBusyAction('create');
     setFeedback(null);
+    const operationIsCurrent = () => mountedRef.current
+      && lifecycleEpoch === lifecycleEpochRef.current
+      && mutationEpoch === mutationEpochRef.current;
     try {
       const input = createMedicationReminderInput({
         medicationReference,
@@ -63,26 +102,46 @@ export default function MedicationReminders() {
         escalationDelayMinutes
       });
       await scheduleMedicationReminder(input);
+      if (!operationIsCurrent()) return;
       setMedicationReference('');
       setFeedback({ tone: 'success', message: t('medication.saved') });
     } catch {
-      setFeedback({ tone: 'error', message: t('medication.saveFailed') });
+      if (operationIsCurrent()) {
+        setFeedback({ tone: 'error', message: t('medication.saveFailed') });
+      }
     } finally {
-      setBusyAction(null);
+      if (mutationEpoch === mutationEpochRef.current) {
+        mutationInFlightRef.current = false;
+        if (operationIsCurrent()) setBusyAction(null);
+      }
     }
   };
 
   const acknowledge = async (reminderId) => {
-    if (busyAction) return;
+    if (!mountedRef.current || loadInFlightRef.current
+      || mutationInFlightRef.current || busyAction) return;
+    const lifecycleEpoch = lifecycleEpochRef.current;
+    const mutationEpoch = ++mutationEpochRef.current;
+    mutationInFlightRef.current = true;
     setBusyAction(reminderId);
     setFeedback(null);
+    const operationIsCurrent = () => mountedRef.current
+      && lifecycleEpoch === lifecycleEpochRef.current
+      && mutationEpoch === mutationEpochRef.current;
     try {
       await acknowledgeMedicationReminder(reminderId);
-      setFeedback({ tone: 'success', message: t('medication.acknowledged') });
+      if (operationIsCurrent()) {
+        setFeedback({ tone: 'success', message: t('medication.acknowledged') });
+      }
     } catch {
-      setFeedback({ tone: 'error', message: t('medication.acknowledgeFailed') });
+      if (operationIsCurrent()) {
+        setFeedback({ tone: 'error', message: t('medication.acknowledgeFailed') });
+      }
     } finally {
-      setBusyAction(null);
+      if (mutationEpoch === mutationEpochRef.current) {
+        mutationInFlightRef.current = false;
+        if (operationIsCurrent()) setBusyAction(null);
+      }
     }
   };
 
@@ -97,7 +156,7 @@ export default function MedicationReminders() {
       <FeedbackBanner message={feedback?.message} tone={feedback?.tone} />
 
       <Card style={styles.form}>
-        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.create')}</Text>
+        <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.create')}</Text>
         <TextField
           label={t('medication.reference')}
           accessibilityLabel={t('medication.reference')}
@@ -181,7 +240,7 @@ export default function MedicationReminders() {
         />
       </Card>
 
-      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.upcoming')}</Text>
+      <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.upcoming')}</Text>
       {busyAction === 'load' ? (
         <Card>
           <SkeletonGroup label={t('common.loading')}>
@@ -189,7 +248,15 @@ export default function MedicationReminders() {
           </SkeletonGroup>
         </Card>
       ) : null}
-      {!busyAction && !medicationReminders.length ? (
+      {!busyAction && loadFailed ? (
+        <FeedbackBanner
+          message={t('medication.loadFailed')}
+          tone="error"
+          actionLabel={t('common.retry')}
+          onAction={loadReminders}
+        />
+      ) : null}
+      {!busyAction && !loadFailed && !medicationReminders.length ? (
         <EmptyState compact title={t('medication.empty')} message={t('medication.subtitle')} />
       ) : null}
       {medicationReminders.map((reminder) => {
@@ -226,29 +293,29 @@ export default function MedicationReminders() {
 
 const styles = StyleSheet.create({
   form: { gap: spacing.mdSm },
-  sectionTitle: { color: colors.ink, fontFamily: fonts.bold, fontSize: 20 },
-  label: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 14 },
+  sectionTitle: { ...typography.title, color: colors.textPrimary },
+  label: { ...typography.label, color: colors.textPrimary },
   robotChoice: {
-    minHeight: 54,
+    minHeight: sizes.controlLarge,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.controlBorder,
+    borderColor: colors.borderControl,
     borderRadius: radii.md,
     padding: spacing.mdSm
   },
   robotSelected: { borderColor: colors.blueAccessible, backgroundColor: colors.blueSoft },
-  robotName: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 15 },
-  selectionMark: { color: colors.blueAccessible, fontSize: 20 },
+  robotName: { ...typography.label, color: colors.textPrimary },
+  selectionMark: { ...typography.title, color: colors.blueAccessible },
   timeRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: spacing.mdSm },
   timeField: { flexGrow: 1, flexBasis: 168 },
   reminderCard: { gap: spacing.sm },
   reminderHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
-  reminderName: { color: colors.ink, fontFamily: fonts.bold, fontSize: 17 },
-  muted: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 14, lineHeight: 20 },
+  reminderName: { ...typography.heading, color: colors.textPrimary },
+  muted: { ...typography.bodySmall, color: colors.textSecondary },
   flex: { flex: 1 },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  pressed: { opacity: 0.7 }
+  pressed: { opacity: 0.72, transform: [{ scale: motion.pressedScale }] }
 });

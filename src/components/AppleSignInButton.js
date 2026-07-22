@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Button } from './Button';
-import { colors } from '../constants/theme';
+import { colors, radii, sizes } from '../constants/theme';
 
 export function AppleSignInButton({ disabled, loading, nativeModuleAllowed = true, onPress, title }) {
   const [runtime, setRuntime] = useState({ status: 'loading', module: null });
@@ -35,8 +35,15 @@ export function AppleSignInButton({ disabled, loading, nativeModuleAllowed = tru
 
   if (runtime.status === 'loading') {
     return (
-      <View accessibilityLabel={title} style={styles.loading}>
-        <ActivityIndicator color={colors.ink} />
+      <View
+        accessible
+        accessibilityLabel={title}
+        accessibilityLiveRegion="polite"
+        accessibilityRole="progressbar"
+        accessibilityState={{ busy: true, disabled: true }}
+        style={styles.loading}
+      >
+        <ActivityIndicator color={colors.textPrimary} />
       </View>
     );
   }
@@ -54,17 +61,26 @@ export function AppleSignInButton({ disabled, loading, nativeModuleAllowed = tru
     AppleAuthenticationButtonType
   } = runtime.module;
   return (
-    <View pointerEvents={disabled ? 'none' : 'auto'} style={[styles.wrap, disabled && styles.disabled]}>
+    <View
+      accessible
+      accessibilityLabel={title}
+      accessibilityRole="button"
+      accessibilityState={{ busy: Boolean(loading), disabled: Boolean(disabled || loading) }}
+      onAccessibilityTap={disabled || loading ? undefined : onPress}
+      pointerEvents={disabled || loading ? 'none' : 'auto'}
+      style={[styles.wrap, disabled && styles.disabled]}
+    >
       <AppleAuthenticationButton
+        accessible={false}
         buttonStyle={AppleAuthenticationButtonStyle.BLACK}
         buttonType={AppleAuthenticationButtonType.SIGN_IN}
-        cornerRadius={8}
+        cornerRadius={radii.md}
         onPress={onPress}
         style={styles.button}
       />
       {loading ? (
         <View pointerEvents="none" style={styles.overlay}>
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colors.textInverse} />
         </View>
       ) : null}
     </View>
@@ -72,23 +88,23 @@ export function AppleSignInButton({ disabled, loading, nativeModuleAllowed = tru
 }
 
 const styles = StyleSheet.create({
-  button: { width: '100%', height: 50 },
+  button: { width: '100%', height: sizes.control },
   disabled: { opacity: 0.45 },
   loading: {
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderColor: colors.controlBorder,
-    borderRadius: 8,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.borderControl,
+    borderRadius: radii.md,
     borderWidth: 1,
-    height: 50,
+    height: sizes.control,
     justifyContent: 'center'
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    borderRadius: 8,
+    backgroundColor: colors.scrim,
+    borderRadius: radii.md,
     justifyContent: 'center'
   },
-  wrap: { height: 50 }
+  wrap: { height: sizes.control }
 });

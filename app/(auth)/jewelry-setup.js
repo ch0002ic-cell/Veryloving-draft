@@ -8,7 +8,7 @@ import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { wearableBLE as bleService } from '../../src/services/device-manager/WearableDevice';
 import { useAppState } from '../../src/context/AppContext';
-import { colors, radii, spacing, typography } from '../../src/constants/theme';
+import { colors, radii, sizes, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
@@ -144,15 +144,25 @@ export default function JewelrySetup() {
     }
   }, [additional, finishSetup, setDevice, setWearableEntities, stopScan]);
 
+  const openSystemSettings = useCallback(async () => {
+    try {
+      await Linking.openSettings();
+    } catch {
+      if (mountedRef.current) {
+        setError({ code: 'SETTINGS_LINK_FAILED', translationKey: 'settings.linkFailed' });
+      }
+    }
+  }, []);
+
   return (
     <Screen scroll={false}>
       <Header title={t('jewelry.pairTitle')} subtitle={t('jewelry.pairSubtitle')} />
       <Card variant="tinted" style={styles.scanSummary}>
         <View style={styles.scanIcon}>
-          <Ionicons name="bluetooth" size={26} color={colors.orangeAccessible} />
+          <Ionicons accessible={false} name="bluetooth" size={sizes.iconLarge} color={colors.actionAccent} />
         </View>
         <View style={styles.scanCopy} accessibilityLiveRegion="polite">
-          <Text style={styles.scanTitle}>{scanning ? t('jewelry.scanning') : t('jewelry.pairTitle')}</Text>
+          <Text accessibilityRole="header" style={styles.scanTitle}>{scanning ? t('jewelry.scanning') : t('jewelry.pairTitle')}</Text>
           <Text style={styles.scanMessage}>{scanning ? t('jewelry.searchingMessage') : t('jewelry.pairSubtitle')}</Text>
         </View>
         <StatusPill
@@ -170,9 +180,7 @@ export default function JewelrySetup() {
         message={error?.translationKey ? t(error.translationKey) : error}
         tone={error?.code === 'BLE_UNAVAILABLE' ? 'info' : 'error'}
         actionLabel={error?.code === 'BLE_PERMISSION_DENIED' ? t('common.settings') : t('common.retry')}
-        onAction={error?.code === 'BLE_PERMISSION_DENIED'
-          ? () => Linking.openSettings().catch(() => {})
-          : scan}
+        onAction={error?.code === 'BLE_PERMISSION_DENIED' ? openSystemSettings : scan}
       />
       <FlatList
         data={devices}
@@ -181,7 +189,7 @@ export default function JewelrySetup() {
           <Card style={styles.deviceCard}>
             <View style={styles.deviceHeading}>
               <View style={styles.deviceIcon}>
-                <Ionicons name="watch-outline" size={22} color={colors.ink} />
+                <Ionicons accessible={false} name="watch-outline" size={sizes.icon} color={colors.textPrimary} />
               </View>
               <View style={styles.scanCopy}>
                 <Text style={styles.deviceName}>{item.name || item.id}</Text>
@@ -223,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.pill,
-    backgroundColor: colors.paper
+    backgroundColor: colors.surfaceRaised
   },
   scanCopy: { flex: 1, minWidth: 0 },
   scanTitle: { ...typography.heading, color: colors.textPrimary },
@@ -236,7 +244,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.lg,
-    backgroundColor: colors.muted
+    backgroundColor: colors.surfaceMuted
   },
   deviceName: { ...typography.label, color: colors.textPrimary },
   deviceMeta: { ...typography.caption, color: colors.textSecondary, marginTop: spacing.xs }

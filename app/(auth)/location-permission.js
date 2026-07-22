@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from 'react';
 import { router } from 'expo-router';
-import { Linking, Text } from 'react-native';
+import { Linking, StyleSheet, Text } from 'react-native';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
 import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { requestLocationPermission } from '../../src/services/mapbox';
-import { fonts } from '../../src/constants/theme';
+import { colors, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { useAuth } from '../../src/context/AuthContext';
 
@@ -55,14 +55,22 @@ export default function LocationPermission() {
     }
   }, [continueOnboarding]);
 
+  const openSystemSettings = useCallback(async () => {
+    try {
+      await Linking.openSettings();
+    } catch {
+      setErrorKey('settings.linkFailed');
+    }
+  }, []);
+
   return (
     <Screen>
       <Header title={t('permissions.locationTitle')} subtitle={t('permissions.locationSubtitle')} />
-      <Card><Text style={{ fontFamily: fonts.regular }}>{t('permissions.locationBody')}</Text></Card>
+      <Card variant="tinted"><Text style={styles.body}>{t('permissions.locationBody')}</Text></Card>
       <FeedbackBanner
         message={errorKey ? t(errorKey) : null}
         actionLabel={permissionDenied ? t('common.settings') : undefined}
-        onAction={permissionDenied ? () => Linking.openSettings().catch(() => {}) : undefined}
+        onAction={permissionDenied ? openSystemSettings : undefined}
       />
       <Button
         title={t('permissions.allowLocation')}
@@ -79,3 +87,7 @@ export default function LocationPermission() {
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  body: { ...typography.bodyLarge, color: colors.textPrimary }
+});

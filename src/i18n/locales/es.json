@@ -123,7 +123,8 @@
     "safetyCallTitle": "Llamada de seguridad",
     "safetyCallSubtitle": "Inicia una llamada en tiempo real cuando necesites apoyo.",
     "practiceTitle": "Escena de práctica",
-    "practiceSubtitle": "Prueba los flujos de seguridad en una demostración sin presión."
+    "practiceSubtitle": "Prueba los flujos de seguridad en una demostración sin presión.",
+    "progressAccessibility": "Progreso de la configuración"
   },
   "jewelry": {
     "pairTitle": "Vincular NorthStar",
@@ -328,7 +329,8 @@
     "connected": "Conectado · %{battery}% de batería",
     "none": "Ningún dispositivo conectado",
     "disconnect": "Desconectar dispositivo",
-    "connect": "Conectar dispositivo"
+    "connect": "Conectar dispositivo",
+    "lastSeen": "Última conexión: %{date}"
   },
   "friends": {
     "title": "Amigos",
@@ -493,6 +495,219 @@
       "escalated": "Cuidador avisado",
       "acknowledged": "Confirmado",
       "cancelled": "Cancelado"
+    }
+  },
+  "wellness": {
+    "title": "Bienestar y atención conectada",
+    "subtitle": "Actividades tranquilas, registros emocionales y apoyo coordinado entre dispositivos.",
+    "eyebrow": "Atención conectada",
+    "connectedCareUnavailable": "La atención conectada requiere haber iniciado sesión y tener acceso al servicio VeryLoving. Las actividades locales y el historial de ánimo siguen disponibles en este dispositivo.",
+    "scenarioStarted": "La atención conectada ha comenzado.",
+    "scenarioStarting": "Iniciando atención conectada...",
+    "scenarioFailed": "No se pudo iniciar o actualizar la atención conectada. Comprueba la conexión e inténtalo de nuevo.",
+    "cognitive": {
+      "eyebrow": "Un momento para tu mente",
+      "title": "Estimulación cognitiva",
+      "subtitle": "Elige un juego de memoria, una pregunta de trivia o un tema de conversación.",
+      "connectedTitle": "Invita a tu acompañante",
+      "connectedBody": "Pide a tu acompañante doméstico que inicie una actividad tranquila y sigue su progreso aquí.",
+      "connectedHint": "Inicia el escenario de estimulación cognitiva en los dispositivos vinculados a tu cuenta.",
+      "startCompanion": "Empezar con mi acompañante",
+      "activityTitle": "Elige una actividad",
+      "activitySubtitle": "No tienes que conseguir ninguna puntuación. Elige lo que te resulte cómodo hoy.",
+      "emptyTitle": "Elige una actividad tranquila",
+      "emptyMessage": "La memoria, las preguntas y la conversación están listas cuando tú quieras.",
+      "nextRound": "Probar otra",
+      "modes": {
+        "memory": {
+          "title": "Tarjetas de memoria",
+          "description": "Observa tres símbolos y luego recuerda el del medio."
+        },
+        "trivia": {
+          "title": "Trivia amena",
+          "description": "Responde una pregunta familiar a tu propio ritmo."
+        },
+        "conversation": {
+          "title": "Tema de conversación",
+          "description": "Usa una pregunta cercana para recordar y compartir una historia."
+        }
+      },
+      "memory": {
+        "title": "Recuerda el símbolo del medio",
+        "instruction": "Tómate un momento para observar esta secuencia.",
+        "sequenceLabel": "Secuencia de memoria: %{sequence}",
+        "ready": "Ya puedo empezar",
+        "question": "¿Qué símbolo estaba en el medio?",
+        "answerLabel": "Respuesta: %{answer}",
+        "correct": "Eso es. Lo has recordado muy bien.",
+        "incorrect": "Buen intento. Vuelve a mirarlo y hazlo a tu propio ritmo."
+      },
+      "trivia": {
+        "title": "Trivia amena",
+        "correct": "Correcto. Muy bien.",
+        "incorrect": "Esta vez no, y no pasa nada.",
+        "questions": {
+          "one": {
+            "prompt": "¿De qué color es el cielo despejado durante el día?",
+            "choices": {
+              "blue": "Azul",
+              "green": "Verde",
+              "red": "Rojo"
+            }
+          },
+          "two": {
+            "prompt": "¿Cuál es el órgano más grande del cuerpo humano?",
+            "choices": {
+              "heart": "Corazón",
+              "lungs": "Pulmones",
+              "skin": "Piel"
+            }
+          },
+          "three": {
+            "prompt": "¿Cuántos días tiene una semana?",
+            "choices": {
+              "seven": "Siete",
+              "eight": "Ocho",
+              "nine": "Nueve"
+            }
+          }
+        }
+      },
+      "conversation": {
+        "title": "Una historia para compartir",
+        "another": "Otro tema",
+        "prompts": {
+          "one": "¿Qué comida te trae un recuerdo feliz?",
+          "two": "¿Quién te enseñó algo que aún utilizas hoy?",
+          "three": "¿Qué canción siempre te anima?",
+          "four": "¿Qué lugar te gustaría volver a visitar?"
+        }
+      }
+    },
+    "emotional": {
+      "eyebrow": "Un momento privado para ti",
+      "title": "Registro emocional",
+      "subtitle": "Observa cómo te sientes, guarda una reflexión breve o conversa con tu acompañante.",
+      "moodQuestion": "¿Cómo te sientes ahora?",
+      "moodHint": "Elige la opción más cercana. No hay respuestas incorrectas.",
+      "moodPickerLabel": "Opciones de estado de ánimo",
+      "reflectionLabel": "Reflexión breve (opcional)",
+      "reflectionHint": "Sé breve. Aquí no se guardan el audio de voz original ni las transcripciones.",
+      "reflectionPlaceholder": "Escribe unas palabras sobre este momento...",
+      "characterCount": "%{count} de %{max} caracteres",
+      "privacyNote": "Tu historial de ánimo está vinculado a tu cuenta, se incluye en la exportación de datos y se elimina al borrar los datos de la cuenta.",
+      "save": "Guardar registro",
+      "saving": "Guardando...",
+      "saved": "Tu registro se guardó.",
+      "saveFailed": "No pudimos guardar este registro. Inténtalo de nuevo.",
+      "connectedTitle": "Reflexiona con tu acompañante",
+      "connectedBody": "Inicia una conversación con Hume, con tu consentimiento, a través de tu acompañante doméstico. Un registro iniciado por ti nunca simula ni atribuye una lectura de estrés.",
+      "connectedHint": "Inicia un registro emocional en el acompañante doméstico vinculado a tu cuenta.",
+      "startReflection": "Iniciar reflexión con IA",
+      "historyTitle": "Registros recientes",
+      "historySubtitle": "En este dispositivo solo se conservan tus 90 registros privados más recientes.",
+      "historyLoadFailed": "No pudimos cargar tu historial de registros.",
+      "historyEmptyTitle": "Aún no hay registros",
+      "historyEmptyMessage": "Cuando quieras, elige arriba cómo te sientes.",
+      "deleteTitle": "¿Eliminar este registro?",
+      "deleteMessage": "Esto elimina de este dispositivo el estado de ánimo y la reflexión breve.",
+      "deleted": "El registro se eliminó.",
+      "deleteFailed": "No pudimos eliminar este registro. Inténtalo de nuevo.",
+      "moods": {
+        "very_low": "Muy mal",
+        "low": "Mal",
+        "okay": "Más o menos",
+        "good": "Bien",
+        "great": "Muy bien"
+      },
+      "showMore": "Mostrar más",
+      "humeContextNotice": "Al iniciar la reflexión, el estado de ánimo elegido y el resumen opcional se comparten temporalmente con Hume como contexto. No se consideran una lectura de estrés."
+    },
+    "scenarios": {
+      "title": "Escenarios de atención conectada",
+      "subtitle": "Coordina el wearable y el robot doméstico con límites de seguridad claros.",
+      "connectedCare": "Un plan de atención para dos dispositivos",
+      "connectedCareBody": "VeryLoving identifica en el servidor los dispositivos que has vinculado, evita acciones duplicadas y realiza el seguimiento de cada ejecución.",
+      "connected": "Servicio conectado",
+      "offline": "Servicio no disponible",
+      "demoOffline": "El modo demo nunca crea un token de acceso, por lo que los escenarios conectados permanecen sin conexión. Inicia sesión con una cuenta de desarrollo real para probar el flujo del servidor.",
+      "signInRequired": "Vuelve a iniciar sesión para usar los escenarios de atención conectada.",
+      "notConfigured": "La atención conectada no está configurada en esta compilación.",
+      "networkError": "No se pudo contactar con el servicio de atención conectada. Tu dispositivo wearable puede seguir funcionando por Bluetooth.",
+      "stillRunning": "Este escenario sigue en curso. Actualiza su estado dentro de unos instantes.",
+      "genericError": "No se pudo completar la acción de atención conectada. Inténtalo de nuevo.",
+      "chooseAction": "Acciones rápidas",
+      "chooseActionBody": "Las acciones que afectan a la seguridad siempre explican qué ocurrirá antes de comenzar.",
+      "names": {
+        "fall_detection": "Respuesta ante caídas",
+        "medication_adherence": "Adherencia a la medicación",
+        "emotional_check_in": "Registro emocional",
+        "cognitive_engagement": "Estimulación cognitiva",
+        "ai_angel_auto_dial": "Ayuda de emergencia de AI Angel"
+      },
+      "descriptions": {
+        "fall_detection": "Realiza una práctica solo para análisis. No mueve el robot ni alerta a ningún contacto.",
+        "medication_adherence": "Pide al robot que te recuerde la medicación ahora; si no confirmas el recordatorio, puede avisarse a un cuidador.",
+        "emotional_check_in": "Inicia una conversación relajante con Hume, siempre con tu consentimiento.",
+        "cognitive_engagement": "Inicia una actividad tranquila y un juego de voz con el robot.",
+        "ai_angel_auto_dial": "Inicia el flujo de emergencia confirmado entre los dispositivos."
+      },
+      "actions": {
+        "fall_detection": "Practicar la respuesta ante caídas",
+        "medication_adherence": "Enviar recordatorio ahora",
+        "emotional_check_in": "Iniciar registro emocional",
+        "cognitive_engagement": "Iniciar actividad cognitiva",
+        "ai_angel_auto_dial": "Activar AI Angel"
+      },
+      "starting": "Iniciando...",
+      "confirmations": {
+        "practiceTitle": "¿Practicar la respuesta ante caídas?",
+        "practiceBody": "Esto solo registra un evento de práctica. No moverá el robot, no llamará a nadie ni enviará una alerta de emergencia.",
+        "practiceAction": "Iniciar práctica",
+        "medicationTitle": "¿Enviar ahora el recordatorio de medicación?",
+        "medicationBody": "El robot te recordará la medicación ahora. Si no confirmas dentro del plazo de adherencia, puede activarse el aviso configurado al cuidador.",
+        "medicationAction": "Enviar recordatorio",
+        "emergencyTitle": "¿Activar la ayuda de emergencia de AI Angel?",
+        "emergencyBody": "Esto inicia el flujo de emergencia real entre tus dispositivos vinculados y puede contactar con el contacto de emergencia que hayas configurado.",
+        "emergencyAction": "Activar ayuda de emergencia",
+        "cancelCriticalTitle": "¿Cancelar este escenario crítico?",
+        "cancelCriticalBody": "Detener un escenario crítico puede finalizar pasos de emergencia activos. Continúa solo si estás seguro de que ya no necesitas ayuda.",
+        "cancelCriticalAction": "Detener escenario crítico"
+      },
+      "wellnessTools": "Herramientas de bienestar",
+      "wellnessToolsBody": "Registra en privado cómo te sientes o elige una actividad antes de involucrar a los dispositivos conectados.",
+      "recentActivity": "Actividad reciente",
+      "recentActivityBody": "El estado está cifrado, vinculado a tu cuenta y se actualiza mientras la actividad esté en curso.",
+      "loading": "Cargando la actividad de los escenarios",
+      "emptyTitle": "Aún no hay actividad de escenarios",
+      "emptyMessage": "Cuando quieras, inicia un registro de bienestar u otra acción rápida.",
+      "startFirst": "Iniciar un registro",
+      "started": "El escenario se aceptó. El estado en directo se está actualizando.",
+      "statusAccessibility": "%{scenario}, %{status}, actualizado el %{date}",
+      "updated": "Actualizado el %{date}",
+      "statuses": {
+        "queued": "En cola",
+        "running": "En curso",
+        "completed": "Completado",
+        "fallback_completed": "Completado con alternativa",
+        "failed": "Requiere atención",
+        "cancelled": "Cancelado"
+      },
+      "fallbackNote": "Se completó una alternativa prevista porque un paso preferido no estaba disponible.",
+      "failedNote": "El escenario no pudo finalizar. Comprueba la conexión de los dispositivos y, si es seguro hacerlo, inténtalo de nuevo.",
+      "cancel": "Cancelar escenario",
+      "refreshStatus": "Actualizar estado"
+    },
+    "feedback": {
+      "title": "¿Te resultó útil?",
+      "message": "Cuéntanos si %{interaction} te resultó de ayuda. Solo guardamos la valoración, no una respuesta de texto libre.",
+      "helpful": "Útil",
+      "helpfulHint": "Registra una valoración positiva para esta interacción completada.",
+      "notHelpful": "No fue útil",
+      "notHelpfulHint": "Registra una valoración negativa para esta interacción completada.",
+      "notNow": "Ahora no",
+      "error": "No pudimos guardar tu valoración. Inténtalo de nuevo.",
+      "thanks": "Gracias. Tu valoración se guardó."
     }
   }
 }

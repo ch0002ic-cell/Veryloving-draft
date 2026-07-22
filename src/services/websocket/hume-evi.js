@@ -22,10 +22,12 @@ const SOCKET_OPEN = 1;
 const CHAT_METADATA_TIMEOUT_MS = 10000;
 const MAX_AUDIO_BUFFERED_BYTES = 256 * 1024;
 const DEVICE_ACTION_REQUEST_TIMEOUT_MS = 20000;
+const INTERACTION_COMPLETION_TIMEOUT_MS = 5000;
 const AI_ANGEL_TOOL_NAME = 'trigger_ai_angel';
 const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
 const ACTION_ERROR_CODE_PATTERN = /^[A-Z][A-Z0-9_:-]{0,79}$/;
 const ACTION_ID_PATTERN = /^[A-Za-z0-9._:-]{1,160}$/;
+const INTERACTION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/;
 
 function stableActionRequestId(scope, toolCallId) {
   const hash = (value) => {
@@ -62,6 +64,7 @@ export class HumeEVIService {
     this.chatGroupId = null;
     this.activeToolAbortControllers = new Map();
     this.pendingActionRequests = new Map();
+    this.pendingInteractionCompletion = null;
     this.scenarioRequestTimes = new Map();
     this.inFlightDeviceActionIds = new Set();
     this.processedDeviceActionIds = new Set();
@@ -166,6 +169,15 @@ export class HumeEVIService {
     }
     this.pendingActionRequests.clear();
     this.inFlightDeviceActionIds.clear();
+  }
+
+  cancelPendingInteractionCompletion(error = Object.assign(
+    new Error('The voice interaction completion could not be confirmed.'),
+    { code: 'VOICE_INTERACTION_COMPLETION_CANCELLED' }
+  )) {
+    const pending = this.pendingInteractionCompletion;
+    if (!pending) return;
+    pending.reject(error);
   }
 
   buildWebSocketURL({ humeAccessToken, apiKey, configId, voiceId, resumedChatGroupId }) {
@@ -444,6 +456,9 @@ export class HumeEVIService {
       case 'scenario_response':
         this.handleActionResponse(message);
         break;
+      case 'interaction_completed':
+        this.handleInteractionCompleted(message);
+        break;
       case 'devices_updated':
         break;
       case 'device_action': {
@@ -627,6 +642,80 @@ export class HumeEVIService {
     }
   }
 
+  completeInteraction(
+    interactionId = this.sessionConfig?.customSessionId,
+    { timeoutMs = INTERACTION_COMPLETION_TIMEOUT_MS } = {}
+  ) {
+    if (!INTERACTION_ID_PATTERN.test(interactionId ?? '')
+      || !Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 30_000) {
+      return Promise.reject(Object.assign(
+        new Error('The voice interaction identity is invalid.'),
+        { code: 'VOICE_INTERACTION_INVALID' }
+      ));
+    }
+    if (!this.usesProxy || !this.proxyAuthenticated || !this.chatMetadataReceived
+      || this.socket?.readyState !== SOCKET_OPEN) {
+      return Promise.reject(Object.assign(
+        new Error('The secure voice interaction is not connected.'),
+        { code: 'VOICE_INTERACTION_NOT_CONNECTED' }
+      ));
+    }
+    if (this.pendingInteractionCompletion) {
+      if (this.pendingInteractionCompletion.interactionId === interactionId) {
+        return this.pendingInteractionCompletion.promise;
+      }
+      return Promise.reject(Object.assign(
+        new Error('Another voice interaction completion is pending.'),
+        { code: 'VOICE_INTERACTION_COMPLETION_BUSY' }
+      ));
+    }
+
+    let pending;
+    const promise = new Promise((resolve, reject) => {
+      const finish = (callback, value) => {
+        if (this.pendingInteractionCompletion !== pending) return;
+        this.pendingInteractionCompletion = null;
+        clearTimeout(pending.timeout);
+        callback(value);
+      };
+      pending = {
+        interactionId,
+        resolve: (value) => finish(resolve, value),
+        reject: (error) => finish(reject, error),
+        timeout: setTimeout(() => finish(reject, Object.assign(
+          new Error('The voice interaction completion timed out.'),
+          { code: 'VOICE_INTERACTION_COMPLETION_TIMEOUT' }
+        )), timeoutMs),
+        promise: null
+      };
+      this.pendingInteractionCompletion = pending;
+      if (!this.sendSocketPayload({
+        type: 'interaction_complete',
+        interaction_id: interactionId
+      }, { operation: 'interaction-complete' })) {
+        finish(reject, Object.assign(
+          new Error('The voice interaction completion could not be sent.'),
+          { code: 'VOICE_INTERACTION_COMPLETION_SEND_FAILED' }
+        ));
+      }
+    });
+    pending.promise = promise;
+    return promise;
+  }
+
+  handleInteractionCompleted(message) {
+    const pending = this.pendingInteractionCompletion;
+    if (!pending || message?.interaction_id !== pending.interactionId) return;
+    if (message.ok === true) {
+      pending.resolve(true);
+      return;
+    }
+    pending.reject(Object.assign(
+      new Error('The voice interaction completion was rejected.'),
+      { code: 'VOICE_INTERACTION_COMPLETION_REJECTED' }
+    ));
+  }
+
   sendDeviceActionAcknowledgement(actionId, ok, targetSocket = this.socket, errorCode) {
     if (typeof actionId !== 'string' || !ACTION_ID_PATTERN.test(actionId)) return false;
     const normalizedErrorCode = typeof errorCode === 'string' && ACTION_ERROR_CODE_PATTERN.test(errorCode)
@@ -724,6 +813,7 @@ export class HumeEVIService {
     this.clearChatMetadataTimeout();
     this.cancelActiveToolCall();
     this.cancelPendingActionRequests();
+    this.cancelPendingInteractionCompletion();
     this.chatMetadataReceived = false;
     this.stopMicrophone().catch((error) => logger.warn('[HumeEVIService] Microphone cleanup after close failed:', error));
 
@@ -911,6 +1001,7 @@ export class HumeEVIService {
     this.clearReconnectTimer();
     this.cancelActiveToolCall();
     this.cancelPendingActionRequests();
+    this.cancelPendingInteractionCompletion();
     this.resetChatReadiness();
     // Detach the transport before awaiting native microphone cleanup. An iOS
     // audio stop can take time during interruption/background transitions;

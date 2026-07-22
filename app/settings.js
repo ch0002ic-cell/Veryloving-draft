@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
+import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { SettingsSection } from '../src/components/SettingsSection';
 import { useAppState } from '../src/context/AppContext';
 import { useAuth } from '../src/context/AuthContext';
@@ -15,7 +16,7 @@ import {
   hasLocalUserDataDeletionWarnings,
   PRIVACY_POLICY_URL
 } from '../src/services/privacy';
-import { colors, fonts, spacing } from '../src/constants/theme';
+import { colors, motion, sizes, spacing, typography } from '../src/constants/theme';
 import { LanguageSelector } from '../src/components/LanguageSelector';
 import { useI18n } from '../src/context/I18nContext';
 import { setCapybearReminderEnabled } from '../src/services/capybear-reminder';
@@ -25,13 +26,16 @@ export default function Settings() {
   const { accessToken, signOut, user } = useAuth();
   const { isRTL, t } = useI18n();
   const [busyAction, setBusyAction] = useState(null);
+  const [feedback, setFeedback] = useState(null);
 
   const handleExport = async () => {
+    if (busyAction) return;
     try {
+      setFeedback(null);
       setBusyAction('export');
       await exportUserData({ accessToken });
     } catch {
-      Alert.alert(t('settings.exportFailedTitle'), t('settings.exportFailedMessage'));
+      setFeedback({ messageKey: 'settings.exportFailedMessage', retry: 'export' });
     } finally {
       setBusyAction(null);
     }
@@ -70,21 +74,32 @@ export default function Settings() {
     );
   };
 
-  const openPrivacyPolicy = () => Linking.openURL(PRIVACY_POLICY_URL).catch(() => {
-    Alert.alert(t('settings.linkFailed'), PRIVACY_POLICY_URL);
-  });
+  const openPrivacyPolicy = async () => {
+    setFeedback(null);
+    try {
+      await Linking.openURL(PRIVACY_POLICY_URL);
+    } catch {
+      setFeedback({ messageKey: 'settings.linkFailed', retry: 'privacy' });
+    }
+  };
 
   const updatePreference = async (patch) => {
+    if (busyAction) return;
     try {
+      setFeedback(null);
+      setBusyAction('preference');
       await updateSettings(patch);
     } catch {
-      Alert.alert(t('settings.updateFailedTitle'), t('settings.updateFailedMessage'));
+      setFeedback({ messageKey: 'settings.updateFailedMessage' });
+    } finally {
+      setBusyAction(null);
     }
   };
 
   const updateReminderPreference = async (enabled) => {
     if (busyAction) return;
     setBusyAction('reminder');
+    setFeedback(null);
     try {
       const result = await setCapybearReminderEnabled(enabled);
       if (enabled && !result.enabled) {
@@ -98,7 +113,7 @@ export default function Settings() {
         throw error;
       }
     } catch {
-      Alert.alert(t('settings.updateFailedTitle'), t('settings.updateFailedMessage'));
+      setFeedback({ messageKey: 'settings.updateFailedMessage' });
     } finally {
       setBusyAction(null);
     }
@@ -135,16 +150,30 @@ export default function Settings() {
     }
   };
 
+  const retryFeedback = () => {
+    const retry = feedback?.retry;
+    setFeedback(null);
+    if (retry === 'export') void handleExport();
+    else if (retry === 'privacy') void openPrivacyPolicy();
+  };
+
   return (
     <Screen>
       <Header title={t('common.settings')} subtitle={user?.name || t('common.user')} showBack backLabel={t('common.back')} />
+      <FeedbackBanner
+        message={feedback?.messageKey ? t(feedback.messageKey) : null}
+        actionLabel={feedback?.retry ? t('common.retry') : undefined}
+        onAction={feedback?.retry ? retryFeedback : undefined}
+        dismissLabel={t('common.close')}
+        onDismiss={() => setFeedback(null)}
+      />
 
       <SettingsSection
         icon="language-outline"
         title={t('settings.sections.language')}
         subtitle={t('settings.sections.languageSubtitle')}
       >
-        <LanguageSelector onError={() => Alert.alert(t('settings.updateFailedTitle'), t('settings.updateFailedMessage'))} />
+        <LanguageSelector onError={() => setFeedback({ messageKey: 'settings.updateFailedMessage' })} />
       </SettingsSection>
 
       <SettingsSection
@@ -162,6 +191,7 @@ export default function Settings() {
         <SettingToggle
           title={t('settings.showCompanion')}
           value={settings.showCompanion}
+          disabled={busyAction !== null}
           onValueChange={(showCompanion) => updatePreference({ showCompanion })}
         />
         <View style={styles.divider} />
@@ -169,6 +199,7 @@ export default function Settings() {
           title={t('settings.offlineMode')}
           subtitle={t('settings.offlineModeSubtitle')}
           value={settings.offlineMode}
+          disabled={busyAction !== null}
           onValueChange={(offlineMode) => updatePreference({ offlineMode })}
         />
         <View style={styles.divider} />
@@ -203,6 +234,33 @@ export default function Settings() {
         <SettingLink icon="medkit-outline" title={t('medication.title')} onPress={() => router.push('/medication-reminders')} />
         <View style={styles.divider} />
         <SettingLink icon="people-outline" title={t('common.friends')} onPress={() => router.push('/friends')} />
+      </SettingsSection>
+
+      <SettingsSection
+        icon="sparkles-outline"
+        title={t('wellness.title')}
+        subtitle={t('wellness.subtitle')}
+      >
+        <SettingLink
+          icon="git-network-outline"
+          title={t('wellness.scenarios.title')}
+          subtitle={t('wellness.scenarios.subtitle')}
+          onPress={() => router.push('/scenario-center')}
+        />
+        <View style={styles.divider} />
+        <SettingLink
+          icon="heart-outline"
+          title={t('wellness.emotional.title')}
+          subtitle={t('wellness.emotional.subtitle')}
+          onPress={() => router.push('/emotional-check-in')}
+        />
+        <View style={styles.divider} />
+        <SettingLink
+          icon="extension-puzzle-outline"
+          title={t('wellness.cognitive.title')}
+          subtitle={t('wellness.cognitive.subtitle')}
+          onPress={() => router.push('/cognitive-engagement')}
+        />
       </SettingsSection>
 
       <SettingsSection
@@ -241,17 +299,19 @@ function SettingLink({ icon, title, subtitle, onPress }) {
   const { isRTL } = useI18n();
   return (
     <Pressable
+      accessibilityLabel={title}
+      accessibilityHint={subtitle}
       accessibilityRole="button"
-      android_ripple={{ color: colors.line }}
+      android_ripple={{ color: colors.borderSubtle }}
       onPress={onPress}
       style={({ pressed }) => [styles.linkRow, isRTL && styles.rtlRow, pressed && styles.pressed]}
     >
-      <Ionicons name={icon} size={20} color={colors.inkSoft} />
+      <Ionicons accessible={false} name={icon} size={sizes.icon} color={colors.textSecondary} />
       <View style={styles.linkCopy}>
         <Text style={[styles.linkTitle, isRTL && styles.rtlText]}>{title}</Text>
         {subtitle ? <Text style={[styles.muted, isRTL && styles.rtlText]}>{subtitle}</Text> : null}
       </View>
-      <Ionicons name={isRTL ? 'chevron-back' : 'chevron-forward'} size={18} color={colors.inkSoft} />
+      <Ionicons accessible={false} name={isRTL ? 'chevron-back' : 'chevron-forward'} size={sizes.iconSmall} color={colors.textSecondary} />
     </Pressable>
   );
 }
@@ -267,6 +327,7 @@ function SettingToggle({ title, subtitle, value, disabled = false, onValueChange
       <Switch
         accessibilityLabel={title}
         accessibilityHint={subtitle}
+        accessibilityState={{ checked: value, disabled }}
         disabled={disabled}
         value={value}
         onValueChange={onValueChange}
@@ -276,17 +337,17 @@ function SettingToggle({ title, subtitle, value, disabled = false, onValueChange
 }
 
 const styles = StyleSheet.create({
-  body: { fontFamily: fonts.regular, color: colors.inkSoft, lineHeight: 20 },
-  accountName: { fontFamily: fonts.bold, color: colors.ink, fontSize: 17 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.line },
-  linkRow: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm, overflow: 'hidden' },
+  body: { ...typography.bodySmall, color: colors.textSecondary },
+  accountName: { ...typography.heading, color: colors.textPrimary },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.borderSubtle },
+  linkRow: { minHeight: sizes.headerControl, flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
   linkCopy: { flex: 1 },
-  linkTitle: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 15 },
-  pressed: { opacity: 0.65 },
-  toggleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
+  linkTitle: { ...typography.label, color: colors.textPrimary },
+  pressed: { opacity: 0.72, transform: [{ scale: motion.pressedScale }] },
+  toggleRow: { minHeight: sizes.touchTarget, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.mdSm },
   toggleText: { flex: 1 },
-  toggleTitle: { fontFamily: fonts.bold, color: colors.ink },
-  muted: { fontFamily: fonts.regular, color: colors.inkSoft, marginTop: 4 }
+  toggleTitle: { ...typography.label, color: colors.textPrimary },
+  muted: { ...typography.caption, color: colors.textSecondary, marginTop: spacing.xs }
 });

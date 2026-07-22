@@ -22,13 +22,14 @@ export function StatusPill({ label, tone = 'idle', icon = true, accessibilityLab
         { borderColor: resolvedPalette.border, backgroundColor: resolvedPalette.background }
       ]}
     >
-      {icon ? <Ionicons accessible={false} name={resolvedPalette.icon} size={sizes.iconSmall} color={resolvedPalette.text} /> : null}
+      {icon ? <Ionicons accessible={false} name={resolvedPalette.icon} size={sizes.iconSmall} color={resolvedPalette.text} style={styles.icon} /> : null}
       <Text style={[styles.text, { color: resolvedPalette.text }]}>{label}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  pill: { alignSelf: 'flex-start', minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radii.pill },
-  text: { ...typography.caption, fontFamily: typography.label.fontFamily }
+  pill: { alignSelf: 'flex-start', maxWidth: '100%', minHeight: sizes.iconLarge + spacing.xs, flexDirection: 'row', alignItems: 'center', gap: spacing.xs, borderWidth: 1, paddingHorizontal: spacing.mdSm, paddingVertical: spacing.xs, borderRadius: radii.pill },
+  icon: { flexShrink: 0 },
+  text: { flexShrink: 1, ...typography.caption, fontFamily: typography.label.fontFamily }
 });

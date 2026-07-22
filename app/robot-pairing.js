@@ -125,7 +125,7 @@ export default function RobotPairingScreen() {
     );
   }
   return (
-    <Screen scroll={false}>
+    <Screen>
       <Header title={title} subtitle={t('jewelry.scan')} showBack backLabel={t('common.back')} />
       <View accessibilityRole="radiogroup" style={[styles.vendorButtons, isRTL && styles.rtlRow]}>
         {[
@@ -151,7 +151,7 @@ export default function RobotPairingScreen() {
                 accessible={false}
                 name={selected ? 'radio-button-on' : 'radio-button-off'}
                 size={20}
-                color={selected ? colors.blueAccessible : colors.inkSoft}
+                color={selected ? colors.blueAccessible : colors.textSecondary}
               />
               <Text style={[styles.vendorLabel, selected && styles.vendorLabelSelected]}>{vendor.label}</Text>
             </Pressable>
@@ -160,6 +160,7 @@ export default function RobotPairingScreen() {
       </View>
       <View style={styles.cameraFrame}>
         <CameraView
+          accessible={false}
           barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
           onBarcodeScanned={busy ? undefined : pair}
           style={StyleSheet.absoluteFill}
@@ -178,7 +179,7 @@ export default function RobotPairingScreen() {
             accessibilityState={{ busy: true }}
             style={styles.progressOverlay}
           >
-            <ActivityIndicator color={colors.paper} />
+            <ActivityIndicator color={colors.textInverse} />
             <Text style={styles.progressText}>{t('common.connecting')}</Text>
           </View>
         ) : null}
@@ -190,7 +191,7 @@ export default function RobotPairingScreen() {
 }
 
 const styles = StyleSheet.create({
-  cameraFrame: { flex: 1, minHeight: 240, overflow: 'hidden', borderRadius: radii.xl, backgroundColor: colors.ink },
+  cameraFrame: { flex: 1, minHeight: 240, overflow: 'hidden', borderRadius: radii.xl, backgroundColor: colors.textPrimary },
   vendorButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   vendorChoice: { minHeight: 48, minWidth: 140, flexBasis: '47%', flexGrow: 1, paddingHorizontal: spacing.mdSm, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, borderWidth: 1, borderColor: colors.borderControl, borderRadius: radii.lg, backgroundColor: colors.surfaceRaised },
   vendorSelected: { borderColor: colors.blueAccessible, borderWidth: 2, backgroundColor: colors.blueSoft },
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   topRight: { top: 0, right: 0, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: radii.lg },
   bottomLeft: { bottom: 0, left: 0, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: radii.lg },
   bottomRight: { right: 0, bottom: 0, borderRightWidth: 4, borderBottomWidth: 4, borderBottomRightRadius: radii.lg },
-  progressOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: 'rgba(48, 69, 87, 0.86)' },
+  progressOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: colors.scrimStrong },
   progressText: { ...typography.bodyLarge, color: colors.textInverse, fontFamily: typography.label.fontFamily },
   permissionGraphic: { minHeight: 160, alignItems: 'center', justifyContent: 'center', borderRadius: radii.xl, backgroundColor: colors.blueSoft },
   copy: { ...typography.bodyLarge, color: colors.textPrimary },

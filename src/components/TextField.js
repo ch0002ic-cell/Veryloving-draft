@@ -65,7 +65,7 @@ export const TextField = forwardRef(function TextField({
             onFocus?.(event);
           }}
           placeholder={placeholder}
-          placeholderTextColor={colors.inkSoft}
+          placeholderTextColor={colors.textSecondary}
           style={[
             styles.input,
             multiline && styles.multilineInput,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   invalid: { borderWidth: 2, borderColor: colors.redAccessible },
   disabled: { backgroundColor: colors.surfaceMuted, opacity: 0.68 },
   input: { flex: 1, minWidth: 0, minHeight: sizes.touchTarget, paddingVertical: spacing.sm, ...typography.bodyLarge, color: colors.textPrimary },
-  multilineInput: { minHeight: 86, paddingVertical: 0 },
+  multilineInput: { minHeight: 86, paddingVertical: spacing.none },
   hint: { ...typography.caption, color: colors.textSecondary },
   error: { ...typography.caption, color: colors.redAccessible },
   rtlRow: { flexDirection: 'row-reverse' },

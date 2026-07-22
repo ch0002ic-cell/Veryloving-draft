@@ -1,6 +1,6 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts } from '../constants/theme';
+import { colors, motion, radii, sizes, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
 export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry, retrying = false }) {
@@ -8,6 +8,7 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
   const user = role === 'user';
   const failed = user && deliveryStatus === 'failed';
   const queued = user && deliveryStatus === 'queued';
+  const retryDisabled = retrying || typeof onRetry !== 'function';
   const deliveryErrorKey = typeof deliveryError === 'string'
     && /^(?:errors|releaseCritical)\.[A-Za-z0-9_.]+$/.test(deliveryError)
     ? deliveryError
@@ -19,24 +20,30 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
         ? (isRTL ? styles.userGroupRTL : styles.userGroup)
         : (isRTL ? styles.assistantGroupRTL : styles.assistantGroup)
     ]}>
-      <View style={[styles.bubble, user ? styles.user : styles.assistant, failed && styles.failedBubble]}>
+      <View
+        accessible
+        accessibilityLabel={`${t(user ? 'chat.roles.user' : 'chat.roles.assistant')}: ${text}`}
+        style={[styles.bubble, user ? styles.user : styles.assistant, failed && styles.failedBubble]}
+      >
         <Text style={[styles.text, isRTL && styles.rtlText, user && styles.userText]}>{text}</Text>
       </View>
-      {queued ? <Text style={[styles.delivery, isRTL && styles.rtlText]}>{t('chat.waiting')}</Text> : null}
+      {queued ? <Text accessibilityLiveRegion="polite" style={[styles.delivery, isRTL && styles.rtlText]}>{t('chat.waiting')}</Text> : null}
       {failed ? (
         <View style={[styles.failureRow, isRTL && styles.rtlRow]}>
-          <Text style={[styles.failureText, isRTL && styles.rtlText]}>{deliveryErrorKey ? t(deliveryErrorKey) : t('chat.notSent')}</Text>
+          <Text accessibilityLiveRegion="assertive" accessibilityRole="alert" style={[styles.failureText, isRTL && styles.rtlText]}>{deliveryErrorKey ? t(deliveryErrorKey) : t('chat.notSent')}</Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('chat.retryAccessibility')}
-            disabled={retrying}
+            accessibilityState={{ busy: retrying, disabled: retryDisabled }}
+            android_ripple={{ color: colors.redSoft }}
+            disabled={retryDisabled}
             onPress={onRetry}
             hitSlop={8}
             style={({ pressed }) => [styles.retry, isRTL && styles.rtlRow, pressed && styles.retryPressed]}
           >
             {retrying
               ? <ActivityIndicator size="small" color={colors.redAccessible} />
-              : <Ionicons name="refresh" size={16} color={colors.redAccessible} />}
+              : <Ionicons accessible={false} name="refresh" size={sizes.iconSmall} color={colors.redAccessible} />}
             <Text style={styles.retryText}>{retrying ? t('common.retrying') : t('common.retry')}</Text>
           </Pressable>
         </View>
@@ -46,23 +53,23 @@ export function ChatBubble({ role, text, deliveryStatus, deliveryError, onRetry,
 }
 
 const styles = StyleSheet.create({
-  group: { maxWidth: '90%', marginVertical: 4 },
+  group: { maxWidth: '90%', marginVertical: spacing.xs },
   userGroup: { alignSelf: 'flex-end', alignItems: 'flex-end' },
   assistantGroup: { alignSelf: 'flex-start', alignItems: 'flex-start' },
   userGroupRTL: { alignSelf: 'flex-start', alignItems: 'flex-start' },
   assistantGroupRTL: { alignSelf: 'flex-end', alignItems: 'flex-end' },
-  bubble: { maxWidth: '100%', padding: 12, borderRadius: 18 },
-  user: { backgroundColor: colors.ink },
-  assistant: { backgroundColor: '#fff', borderWidth: 1, borderColor: colors.line },
+  bubble: { maxWidth: '100%', padding: spacing.mdSm, borderRadius: radii.bubble },
+  user: { backgroundColor: colors.actionPrimary },
+  assistant: { backgroundColor: colors.surfaceRaised, borderWidth: 1, borderColor: colors.borderSubtle },
   failedBubble: { borderWidth: 2, borderColor: colors.redAccessible },
-  text: { fontFamily: fonts.regular, color: colors.ink, lineHeight: 20 },
-  userText: { color: '#fff' },
-  delivery: { marginTop: 4, fontFamily: fonts.regular, fontSize: 12, color: colors.inkSoft },
-  failureRow: { maxWidth: 300, marginTop: 5, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 },
+  text: { ...typography.bodySmall, color: colors.textPrimary },
+  userText: { color: colors.textInverse },
+  delivery: { marginTop: spacing.xs, ...typography.caption, color: colors.textSecondary },
+  failureRow: { marginTop: spacing.xs, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: spacing.sm },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  failureText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12, color: colors.redAccessible, textAlign: 'auto' },
-  retry: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8 },
-  retryPressed: { opacity: 0.6 },
-  retryText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.redAccessible }
+  failureText: { flexShrink: 1, ...typography.caption, color: colors.redAccessible, textAlign: 'auto' },
+  retry: { minHeight: sizes.touchTarget, flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm, borderRadius: radii.md },
+  retryPressed: { opacity: 0.72, transform: [{ scale: motion.pressedScale }] },
+  retryText: { ...typography.caption, fontFamily: typography.label.fontFamily, color: colors.redAccessible }
 });

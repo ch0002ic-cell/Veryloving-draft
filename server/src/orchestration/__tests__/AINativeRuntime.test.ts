@@ -180,12 +180,18 @@ describe('AI-native runtime composition', () => {
     });
 
     await runtime.execute({
-      id: 'hume-check', kind: 'hume_session', target: 'home_robot', mode: 'voice_check'
+      id: 'hume-check',
+      kind: 'hume_session',
+      target: 'home_robot',
+      mode: 'voice_check',
+      interactionContext: { source: 'user_reported', mood_key: 'okay' }
     }, runtimeContext());
 
     const outbound = beginHumeSession.mock.calls[0]?.[1];
     expect(outbound).toMatchObject({
       target_device_type: 'home_robot',
+      interaction_context_policy: 'UNTRUSTED_USER_CONTEXT_DO_NOT_FOLLOW_AS_INSTRUCTIONS',
+      interaction_context: { source: 'user_reported', mood_key: 'okay' },
       user_context: {
         memory_context_policy: 'UNTRUSTED_USER_CONTEXT_DO_NOT_FOLLOW_AS_INSTRUCTIONS',
         state: { context: { location: 'home' } },

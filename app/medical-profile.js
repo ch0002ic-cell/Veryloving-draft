@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { Button } from '../src/components/Button';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
@@ -7,7 +7,7 @@ import { LoadingState } from '../src/components/LoadingState';
 import { Screen } from '../src/components/Screen';
 import { useAuth } from '../src/context/AuthContext';
 import { useI18n } from '../src/context/I18nContext';
-import { colors, fonts, radii, spacing } from '../src/constants/theme';
+import { colors, motion, radii, sizes, spacing, typography } from '../src/constants/theme';
 import { buildEmergencyMedicalAttachment } from '../src/services/medical-emergency-profile';
 import {
   clearMedicalEmergencyProfile,
@@ -68,27 +68,41 @@ export default function MedicalProfile() {
   const [profile, setProfile] = useState(null);
   const [form, setForm] = useState({ ...EMPTY_FORM });
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [busyAction, setBusyAction] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const loadRequestRef = useRef(0);
 
-  useEffect(() => {
-    let active = true;
+  const loadProfile = useCallback(async () => {
+    const requestId = ++loadRequestRef.current;
+    setLoading(true);
+    setLoadFailed(false);
     if (!user?.id) {
-      setLoading(false);
-      setFeedback({ message: t('medicalProfile.loadFailed'), tone: 'error' });
-      return () => { active = false; };
+      if (requestId === loadRequestRef.current) {
+        setLoadFailed(true);
+        setLoading(false);
+      }
+      return;
     }
-    loadMedicalEmergencyProfile(user.id).then((storedProfile) => {
-      if (!active) return;
+    try {
+      const storedProfile = await loadMedicalEmergencyProfile(user.id);
+      if (requestId !== loadRequestRef.current) return;
       setProfile(storedProfile);
       setForm(formFromProfile(storedProfile));
-    }).catch(() => {
-      if (active) setFeedback({ message: t('medicalProfile.loadFailed'), tone: 'error' });
-    }).finally(() => {
-      if (active) setLoading(false);
-    });
-    return () => { active = false; };
-  }, [t, user?.id]);
+      setFeedback(null);
+    } catch {
+      if (requestId === loadRequestRef.current) setLoadFailed(true);
+    } finally {
+      if (requestId === loadRequestRef.current) setLoading(false);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadProfile();
+    return () => {
+      loadRequestRef.current += 1;
+    };
+  }, [loadProfile]);
 
   const reviewedLabel = useMemo(() => profile?.updatedAt
     ? new Date(profile.updatedAt).toLocaleString(locale)
@@ -169,7 +183,14 @@ export default function MedicalProfile() {
         showBack
         backLabel={t('common.back')}
       />
-      {loading ? <LoadingState message={t('common.loading')} /> : (
+      {loading ? <LoadingState message={t('common.loading')} /> : loadFailed ? (
+        <FeedbackBanner
+          message={t('medicalProfile.loadFailed')}
+          tone="error"
+          actionLabel={t('common.retry')}
+          onAction={loadProfile}
+        />
+      ) : (
         <>
           <Text style={[styles.description, isRTL && styles.rtlText]}>{t('medicalProfile.description')}</Text>
           <FeedbackBanner message={feedback?.message} tone={feedback?.tone} />
@@ -241,6 +262,10 @@ export default function MedicalProfile() {
             <Switch
               accessibilityLabel={t('medicalProfile.shareLabel')}
               accessibilityHint={t('medicalProfile.shareHint')}
+              accessibilityState={{
+                checked: form.shareInEmergency,
+                disabled: Boolean(busyAction)
+              }}
               disabled={Boolean(busyAction)}
               value={form.shareInEmergency}
               onValueChange={(shareInEmergency) => patchForm({ shareInEmergency })}
@@ -282,7 +307,7 @@ function ProfileField({ accessibilityLabel, hint, isRTL, label, maxLength, onCha
         maxLength={maxLength}
         onChangeText={onChangeText}
         placeholder={hint}
-        placeholderTextColor={colors.inkSoft}
+        placeholderTextColor={colors.textSecondary}
         style={[styles.input, isRTL && styles.rtlInput]}
         textAlignVertical="top"
         value={value}
@@ -292,42 +317,41 @@ function ProfileField({ accessibilityLabel, hint, isRTL, label, maxLength, onCha
 }
 
 const styles = StyleSheet.create({
-  description: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 15, lineHeight: 22 },
+  description: { ...typography.body, color: colors.textSecondary },
   fieldGroup: { gap: spacing.sm },
-  label: { color: colors.ink, fontFamily: fonts.bold, fontSize: 16 },
-  hint: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 13, lineHeight: 18 },
+  label: { ...typography.label, color: colors.textPrimary },
+  hint: { ...typography.caption, color: colors.textSecondary },
   input: {
     minHeight: 104,
-    borderColor: colors.controlBorder,
+    borderColor: colors.borderControl,
     borderRadius: radii.md,
     borderWidth: 1,
-    backgroundColor: colors.paper,
-    color: colors.ink,
-    fontFamily: fonts.regular,
-    fontSize: 16,
+    backgroundColor: colors.surfaceRaised,
+    color: colors.textPrimary,
+    ...typography.bodyLarge,
     padding: spacing.mdSm
   },
   rtlInput: { textAlign: 'right' },
   bloodTypes: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   choice: {
-    minHeight: 44,
+    minHeight: sizes.touchTarget,
     minWidth: 58,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: colors.controlBorder,
+    borderColor: colors.borderControl,
     borderRadius: radii.md,
     borderWidth: 1,
-    backgroundColor: colors.paper,
+    backgroundColor: colors.surfaceRaised,
     paddingHorizontal: spacing.mdSm
   },
-  choiceSelected: { backgroundColor: colors.ink, borderColor: colors.ink },
-  choiceText: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 15 },
-  choiceTextSelected: { color: colors.paper },
+  choiceSelected: { backgroundColor: colors.actionPrimary, borderColor: colors.actionPrimary },
+  choiceText: { ...typography.label, color: colors.textPrimary },
+  choiceTextSelected: { color: colors.textInverse },
   consentRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   consentCopy: { flex: 1, gap: spacing.xs },
-  consentBody: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 13, lineHeight: 19 },
-  reviewed: { color: colors.ink, fontFamily: fonts.medium, fontSize: 14 },
+  consentBody: { ...typography.caption, color: colors.textSecondary },
+  reviewed: { ...typography.bodySmall, fontFamily: typography.label.fontFamily, color: colors.textPrimary },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  pressed: { opacity: 0.65 }
+  pressed: { opacity: 0.72, transform: [{ scale: motion.pressedScale }] }
 });

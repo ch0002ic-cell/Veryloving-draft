@@ -3,7 +3,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from './Card';
 import { StatusPill } from './StatusPill';
-import { colors, radii, spacing, typography } from '../constants/theme';
+import { colors, radii, sizes, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
 export function DeviceStatusCard({
@@ -54,7 +54,7 @@ export function DeviceStatusCard({
           <Ionicons
             accessible={false}
             name={wearable ? 'watch-outline' : 'home-outline'}
-            size={22}
+            size={sizes.icon}
             color={wearable ? colors.orangeAccessible : colors.blueAccessible}
           />
         </View>
@@ -81,15 +81,15 @@ export function DeviceStatusCard({
 
       {Number.isFinite(entity?.battery) ? (
         <View style={[styles.detailRow, isRTL && styles.rtlRow]}>
-          <Ionicons accessible={false} name="battery-half-outline" size={17} color={colors.inkSoft} />
+          <Ionicons accessible={false} name="battery-half-outline" size={sizes.iconSmall} color={colors.textSecondary} />
           <Text style={[styles.detail, isRTL && styles.rtlText]}>{entity.battery}%</Text>
         </View>
       ) : null}
       {Number.isFinite(entity?.lastSeenAt) ? (
         <View style={[styles.detailRow, isRTL && styles.rtlRow]}>
-          <Ionicons accessible={false} name="time-outline" size={17} color={colors.inkSoft} />
+          <Ionicons accessible={false} name="time-outline" size={sizes.iconSmall} color={colors.textSecondary} />
           <Text style={[styles.detail, isRTL && styles.rtlText]}>
-            {t('safetyCall.connected')} · {new Date(entity.lastSeenAt).toLocaleString(locale)}
+            {t('device.lastSeen', { date: new Date(entity.lastSeenAt).toLocaleString(locale) })}
           </Text>
         </View>
       ) : null}

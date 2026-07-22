@@ -1,6 +1,6 @@
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 import { images } from '../constants/assets';
-import { colors, spacing } from '../constants/theme';
+import { colors, radii, spacing, tones, typography } from '../constants/theme';
 
 export function AppLoadingState({ message = 'Preparing VeryLoving…' }) {
   return (
@@ -17,7 +17,7 @@ export function AppLoadingState({ message = 'Preparing VeryLoving…' }) {
       </View>
       <Text style={styles.brand}>VeryLoving</Text>
       <Text style={styles.message}>{message}</Text>
-      <ActivityIndicator color={colors.orangeAccessible} size="small" />
+      <ActivityIndicator accessible={false} color={colors.actionAccent} size="small" />
     </View>
   );
 }
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.sm,
     padding: spacing.lg,
-    backgroundColor: colors.cream
+    backgroundColor: colors.surfaceCanvas
   },
   brandMark: {
     width: 104,
@@ -37,10 +37,10 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 52,
-    backgroundColor: colors.orangeSoft
+    borderRadius: radii.pill,
+    backgroundColor: tones.accent.background
   },
   image: { width: 88, height: 88 },
-  brand: { color: colors.ink, fontSize: 28, fontWeight: '700', letterSpacing: -0.5 },
-  message: { color: colors.inkSoft, fontSize: 15, lineHeight: 21, textAlign: 'center' }
+  brand: { ...typography.display, color: colors.textPrimary, textAlign: 'center' },
+  message: { ...typography.body, color: colors.textSecondary, textAlign: 'center' }
 });
