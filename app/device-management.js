@@ -175,13 +175,6 @@ export default function DeviceManagement() {
             </>
           )}
         >
-          {entity.deviceType === 'home_robot' && entity.location ? (
-            <View style={[styles.telemetryRow, isRTL && styles.rtlRow]}>
-              <Text style={[styles.telemetry, isRTL && styles.rtlText]}>
-                {t('permissions.locationTitle')} · {Number(entity.location.latitude).toFixed(5)}, {Number(entity.location.longitude).toFixed(5)}
-              </Text>
-            </View>
-          ) : null}
           {entity.deviceType === 'home_robot' && entity.indoorPosition ? (
             <Text style={[styles.telemetry, isRTL && styles.rtlText]}>
               {entity.indoorPosition.roomId || entity.indoorPosition.mapId}
@@ -213,7 +206,6 @@ export default function DeviceManagement() {
 
 const styles = StyleSheet.create({
   sectionTitle: { ...typography.title, color: colors.textPrimary },
-  telemetryRow: { flexDirection: 'row' },
   telemetry: { flex: 1, ...typography.caption, color: colors.textSecondary },
   empty: { paddingVertical: spacing.lg, ...typography.body, color: colors.textSecondary, textAlign: 'center' },
   addRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },

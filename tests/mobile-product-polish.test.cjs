@@ -28,6 +28,7 @@ test('My Devices renders the canonical entity collection without a legacy primar
   assert.match(management, /<DeviceStatusCard/);
   assert.doesNotMatch(management, /<Card\b/);
   assert.doesNotMatch(management, /images\.jewelryConnected|images\.jewelryDisconnected/);
+  assert.doesNotMatch(management, /entity\.location\.(latitude|longitude)|toFixed\(5\)/);
   assert.match(management, /isRTL && styles\.rtlRow/);
 });
 
