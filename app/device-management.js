@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { Alert, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
-import { Card } from '../src/components/Card';
+import { DeviceStatusCard } from '../src/components/DeviceStatusCard';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
-import { images } from '../src/constants/assets';
 import { useAppState } from '../src/context/AppContext';
-import { fonts } from '../src/constants/theme';
+import { colors, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { bleErrorTranslationKey } from '../src/services/ble-errors';
 import { factoryResetHomeRobot } from '../src/services/robot-pairing';
@@ -16,16 +15,11 @@ import { useAuth } from '../src/context/AuthContext';
 
 export default function DeviceManagement() {
   const { device, setDevice, reconnectPairedDevice, removePairedDevice, wearableEntities, setWearableEntities, robotEntities, setRobotEntities, deviceHydrationErrorCode, retryDeviceHydration } = useAppState();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   const { accessToken, user } = useAuth();
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
   const reconnecting = device.connectionState === 'reconnecting';
-  const status = device.connected
-    ? (Number.isFinite(device.battery)
-      ? t('device.connected', { battery: device.battery })
-      : t('safetyCall.connected'))
-    : (reconnecting ? t('common.connecting') : t('device.none'));
   const connectionErrorKey = device.lastErrorCode
     ? bleErrorTranslationKey({ code: device.lastErrorCode }, 'connect')
     : null;
@@ -104,15 +98,27 @@ export default function DeviceManagement() {
     );
   };
 
-  const entities = [...wearableEntities, ...robotEntities];
+  const addWearable = () => {
+    if (device.id) router.push('/jewelry-setup?mode=additional');
+    else router.push('/jewelry-setup?mode=standalone');
+  };
+
+  const entities = useMemo(() => {
+    const unique = new Map();
+    for (const entity of [...wearableEntities, ...robotEntities]) {
+      const key = `${entity.deviceType}:${entity.deviceId}`;
+      if (!unique.has(key)) unique.set(key, entity);
+    }
+    return [...unique.values()];
+  }, [robotEntities, wearableEntities]);
 
   return (
     <Screen>
-      <Header title={t('device.title')} subtitle={t('device.subtitle')} showBack backLabel={t('common.back')} />
-      <Image
-        source={device.connected ? images.jewelryConnected : images.jewelryDisconnected}
-        style={{ width: '100%', height: 220 }}
-        resizeMode="contain"
+      <Header
+        title={t('settings.deviceManagement')}
+        subtitle={`${t('home.northStarDevice')} · ${t('medication.robot')}`}
+        showBack
+        backLabel={t('common.back')}
       />
       <FeedbackBanner message={errorKey
         ? t(errorKey)
@@ -127,104 +133,91 @@ export default function DeviceManagement() {
           onPress={retryDeviceHydration}
         />
       ) : null}
-      <Text style={styles.sectionTitle}>{t('settings.deviceManagement')}</Text>
+      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.sections.deviceSafety')}</Text>
       {entities.map((entity) => (
-        <Card key={`${entity.deviceType}:${entity.deviceId}`}>
-          <View style={styles.deviceRow}>
-            <View style={styles.deviceCopy}>
-              <Text style={styles.deviceType}>
-                {entity.deviceType === 'wearable' ? t('home.northStarDevice') : 'VeryLoving Home'}
-              </Text>
-              <TextInput
-                accessibilityLabel={`${t('contacts.name')} ${entity.name}`}
-                defaultValue={entity.name}
-                maxLength={80}
-                onEndEditing={(event) => rename(entity, event.nativeEvent.text).catch(() => setErrorKey('settings.updateFailedMessage'))}
-                style={styles.nameInput}
-              />
-              {entity.deviceType === 'home_robot' && Number.isFinite(entity.lastSeenAt) ? (
-                <Text style={styles.telemetry}>
-                  {t('safetyCall.connected')} · {new Date(entity.lastSeenAt).toLocaleString()}
-                </Text>
-              ) : null}
-              {entity.deviceType === 'home_robot' && entity.location ? (
-                <Text style={styles.telemetry}>
-                  {t('permissions.locationTitle')} · {Number(entity.location.latitude).toFixed(5)}, {Number(entity.location.longitude).toFixed(5)}
-                </Text>
-              ) : null}
-              {entity.deviceType === 'home_robot' && entity.indoorPosition ? (
-                <Text style={styles.telemetry}>
-                  {entity.indoorPosition.roomId || entity.indoorPosition.mapId}
-                  {entity.indoorPosition.floorId ? ` · ${entity.indoorPosition.floorId}` : ''}
-                </Text>
-              ) : null}
-              {entity.deviceType === 'wearable' ? (
+        <DeviceStatusCard
+          key={`${entity.deviceType}:${entity.deviceId}`}
+          entity={entity}
+          editable
+          disabled={busy}
+          onRename={async (name) => {
+            setErrorKey(null);
+            try {
+              await rename(entity, name);
+            } catch (error) {
+              setErrorKey('settings.updateFailedMessage');
+              throw error;
+            }
+          }}
+          actions={(
+            <>
+              {entity.deviceType === 'wearable' && entity.deviceId === device.id && !device.connected ? (
                 <Button
-                  title={t('common.remove')}
+                  title={t('safetyCall.reconnect')}
+                  icon="refresh-outline"
                   variant="ghost"
                   compact
-                  disabled={busy}
-                  onPress={() => removeSecondaryWearable(entity)}
+                  loading={reconnecting}
+                  disabled={busy || reconnecting}
+                  onPress={reconnect}
                 />
               ) : null}
-              {entity.deviceType === 'home_robot' ? (
-                <Button
-                  title={t('common.remove')}
-                  variant="danger"
-                  compact
-                  disabled={busy}
-                  onPress={() => resetRobot(entity)}
-                />
-              ) : null}
+              <Button
+                title={t('common.remove')}
+                accessibilityLabel={`${t('common.remove')} ${entity.name}`}
+                variant={entity.deviceType === 'home_robot' ? 'danger' : 'ghost'}
+                compact
+                disabled={busy}
+                onPress={() => entity.deviceType === 'home_robot'
+                  ? resetRobot(entity)
+                  : removeSecondaryWearable(entity)}
+              />
+            </>
+          )}
+        >
+          {entity.deviceType === 'home_robot' && entity.location ? (
+            <View style={[styles.telemetryRow, isRTL && styles.rtlRow]}>
+              <Text style={[styles.telemetry, isRTL && styles.rtlText]}>
+                {t('permissions.locationTitle')} · {Number(entity.location.latitude).toFixed(5)}, {Number(entity.location.longitude).toFixed(5)}
+              </Text>
             </View>
-            <Text style={entity.online ? styles.online : styles.offline}>
-              {entity.online ? t('safetyCall.connected') : t('safetyCall.offline')}
+          ) : null}
+          {entity.deviceType === 'home_robot' && entity.indoorPosition ? (
+            <Text style={[styles.telemetry, isRTL && styles.rtlText]}>
+              {entity.indoorPosition.roomId || entity.indoorPosition.mapId}
+              {entity.indoorPosition.floorId ? ` · ${entity.indoorPosition.floorId}` : ''}
             </Text>
-          </View>
-        </Card>
+          ) : null}
+        </DeviceStatusCard>
       ))}
-      {!entities.length ? <Text>{t('device.none')}</Text> : null}
-      <Button title={t('common.add')} icon="qr-code-outline" variant="ghost" onPress={() => router.push('/robot-pairing')} />
-      {device.id ? (
+      {!entities.length ? <Text style={[styles.empty, isRTL && styles.rtlText]}>{t('device.none')}</Text> : null}
+      <View style={[styles.addRow, isRTL && styles.rtlRow]}>
         <Button
-          title={t('device.connect')}
+          title={`${t('common.add')} · ${t('medication.robot')}`}
+          icon="qr-code-outline"
+          variant="ghost"
+          style={styles.addButton}
+          onPress={() => router.push('/robot-pairing')}
+        />
+        <Button
+          title={t('auth.setupJewelry')}
           icon="bluetooth"
           variant="ghost"
-          onPress={() => router.push('/jewelry-setup?mode=additional')}
+          style={styles.addButton}
+          onPress={addWearable}
         />
-      ) : null}
-      <Card>
-        <Text style={{ fontFamily: fonts.bold }}>{device.name}</Text>
-        <Text>{status}</Text>
-      </Card>
-      {device.id && !device.connected ? (
-        <Button
-          title={t('safetyCall.reconnect')}
-          icon="refresh-outline"
-          loading={reconnecting}
-          disabled={busy || reconnecting}
-          onPress={reconnect}
-        />
-      ) : null}
-      <Button
-        title={device.id ? t('common.remove') : t('device.connect')}
-        accessibilityLabel={device.id ? `${t('common.remove')} ${device.name}` : t('device.connect')}
-        variant={device.id ? 'danger' : 'primary'}
-        loading={busy}
-        disabled={busy}
-        onPress={() => device.id ? remove() : router.push('/jewelry-setup?mode=standalone')}
-      />
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionTitle: { fontFamily: fonts.bold, fontSize: 20 },
-  deviceRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  deviceCopy: { flex: 1 },
-  deviceType: { fontFamily: fonts.regular, opacity: 0.7 },
-  nameInput: { fontFamily: fonts.bold, fontSize: 16, paddingVertical: 8 },
-  telemetry: { fontFamily: fonts.regular, fontSize: 13, opacity: 0.75 },
-  online: { color: '#257A43', fontFamily: fonts.bold },
-  offline: { color: '#7A3340', fontFamily: fonts.bold }
+  sectionTitle: { ...typography.title, color: colors.textPrimary },
+  telemetryRow: { flexDirection: 'row' },
+  telemetry: { flex: 1, ...typography.caption, color: colors.textSecondary },
+  empty: { paddingVertical: spacing.lg, ...typography.body, color: colors.textSecondary, textAlign: 'center' },
+  addRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  addButton: { minWidth: 148, flexBasis: '47%', flexGrow: 1 },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' }
 });

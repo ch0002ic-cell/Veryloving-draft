@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, FlatList, Linking, StyleSheet, Text } from 'react-native';
+import { AppState, FlatList, Linking, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Header } from '../../src/components/Header';
@@ -7,11 +8,12 @@ import { Button } from '../../src/components/Button';
 import { Card } from '../../src/components/Card';
 import { wearableBLE as bleService } from '../../src/services/device-manager/WearableDevice';
 import { useAppState } from '../../src/context/AppContext';
-import { colors, fonts } from '../../src/constants/theme';
+import { colors, radii, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { LoadingState } from '../../src/components/LoadingState';
+import { StatusPill } from '../../src/components/StatusPill';
 import { images } from '../../src/constants/assets';
 import { useAuth } from '../../src/context/AuthContext';
 import { bleErrorTranslationKey } from '../../src/services/ble-errors';
@@ -145,6 +147,19 @@ export default function JewelrySetup() {
   return (
     <Screen scroll={false}>
       <Header title={t('jewelry.pairTitle')} subtitle={t('jewelry.pairSubtitle')} />
+      <Card variant="tinted" style={styles.scanSummary}>
+        <View style={styles.scanIcon}>
+          <Ionicons name="bluetooth" size={26} color={colors.orangeAccessible} />
+        </View>
+        <View style={styles.scanCopy} accessibilityLiveRegion="polite">
+          <Text style={styles.scanTitle}>{scanning ? t('jewelry.scanning') : t('jewelry.pairTitle')}</Text>
+          <Text style={styles.scanMessage}>{scanning ? t('jewelry.searchingMessage') : t('jewelry.pairSubtitle')}</Text>
+        </View>
+        <StatusPill
+          label={scanning ? t('jewelry.scanning') : String(devices.length)}
+          tone={scanning ? 'active' : devices.length ? 'ok' : 'idle'}
+        />
+      </Card>
       <Button
         title={scanning ? t('jewelry.scanning') : t('jewelry.scan')}
         icon="bluetooth"
@@ -153,6 +168,7 @@ export default function JewelrySetup() {
       />
       <FeedbackBanner
         message={error?.translationKey ? t(error.translationKey) : error}
+        tone={error?.code === 'BLE_UNAVAILABLE' ? 'info' : 'error'}
         actionLabel={error?.code === 'BLE_PERMISSION_DENIED' ? t('common.settings') : t('common.retry')}
         onAction={error?.code === 'BLE_PERMISSION_DENIED'
           ? () => Linking.openSettings().catch(() => {})
@@ -163,7 +179,15 @@ export default function JewelrySetup() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Card style={styles.deviceCard}>
-            <Text style={styles.deviceName}>{item.name || item.id}</Text>
+            <View style={styles.deviceHeading}>
+              <View style={styles.deviceIcon}>
+                <Ionicons name="watch-outline" size={22} color={colors.ink} />
+              </View>
+              <View style={styles.scanCopy}>
+                <Text style={styles.deviceName}>{item.name || item.id}</Text>
+                {Number.isFinite(item.rssi) ? <Text style={styles.deviceMeta}>{item.rssi} dBm</Text> : null}
+              </View>
+            </View>
             <Button
               title={connectingId === item.id ? t('common.connecting') : t('common.connect')}
               onPress={() => connect(item)}
@@ -179,6 +203,8 @@ export default function JewelrySetup() {
               image={images.jewelryDisconnected}
               title={t('jewelry.emptyTitle')}
               message={t('jewelry.emptyMessage')}
+              actionLabel={t('jewelry.scan')}
+              onAction={scan}
             />
           )}
         contentContainerStyle={styles.list}
@@ -189,8 +215,29 @@ export default function JewelrySetup() {
 }
 
 const styles = StyleSheet.create({
-  list: { flexGrow: 1, paddingVertical: 10 },
-  deviceCard: { marginBottom: 10, gap: 10 },
-  deviceName: { fontFamily: fonts.semibold, color: colors.ink },
-  error: { fontFamily: fonts.regular, color: colors.redAccessible, lineHeight: 20, textAlign: 'center' }
+  list: { flexGrow: 1, paddingVertical: spacing.sm },
+  scanSummary: { flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm },
+  scanIcon: {
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radii.pill,
+    backgroundColor: colors.paper
+  },
+  scanCopy: { flex: 1, minWidth: 0 },
+  scanTitle: { ...typography.heading, color: colors.textPrimary },
+  scanMessage: { ...typography.caption, color: colors.textSecondary, marginTop: spacing.xs },
+  deviceCard: { marginBottom: spacing.sm, gap: spacing.mdSm },
+  deviceHeading: { flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm },
+  deviceIcon: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radii.lg,
+    backgroundColor: colors.muted
+  },
+  deviceName: { ...typography.label, color: colors.textPrimary },
+  deviceMeta: { ...typography.caption, color: colors.textSecondary, marginTop: spacing.xs }
 });

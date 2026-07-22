@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Linking, StyleSheet, Text, View } from 'react-native';
+import { AppState, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen } from '../../src/components/Screen';
@@ -13,11 +14,12 @@ import {
     requestCurrentLocation,
     watchLiveLocation
 } from '../../src/services/mapbox';
-import { colors, fonts } from '../../src/constants/theme';
+import { colors, radii, shadows, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
 import { EmptyState } from '../../src/components/EmptyState';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { LoadingState } from '../../src/components/LoadingState';
+import { StatusPill } from '../../src/components/StatusPill';
 import { images } from '../../src/constants/assets';
 import { logger } from '../../src/utils/logger';
 import { shareQuickLocation } from '../../src/services/emergency';
@@ -27,6 +29,32 @@ import { useAppState } from '../../src/context/AppContext';
 import { evaluateGeofence } from '../../src/services/geofence-evaluator';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
+
+function DeviceLegend({ isRTL, robotEntities, t, wearableEntities }) {
+  const devices = [...wearableEntities, ...robotEntities];
+  if (!devices.length) return null;
+  return (
+    <View accessibilityRole="summary" style={styles.deviceLegend}>
+      <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('settings.deviceManagement')}</Text>
+      {devices.slice(0, 3).map((entity) => (
+        <View key={`${entity.deviceType}:${entity.deviceId}`} style={[styles.deviceLegendRow, isRTL && styles.rtlRow]}>
+          <View style={styles.deviceLegendIcon}>
+            <Ionicons
+              name={entity.deviceType === 'wearable' ? 'watch-outline' : 'home-outline'}
+              size={18}
+              color={colors.ink}
+            />
+          </View>
+          <Text style={[styles.deviceLegendName, isRTL && styles.rtlText]}>{entity.name || (entity.deviceType === 'wearable' ? t('home.northStarDevice') : 'VeryLoving Home')}</Text>
+          <StatusPill
+            label={entity.online ? t('safetyCall.connected') : t('safetyCall.offline')}
+            tone={entity.online ? 'ok' : 'idle'}
+          />
+        </View>
+      ))}
+    </View>
+  );
+}
 
 function locationErrorTranslationKey(error) {
   if (error?.code === 'LOCATION_PERMISSION_DENIED') return 'map.permissionOff';
@@ -412,7 +440,18 @@ export default function MapScreen() {
             />
           </View>
         ) : null}
-        <View style={[styles.savedOverlay, { bottom: insets.bottom + 16 }]}>
+        <ScrollView
+          contentContainerStyle={styles.savedOverlayContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          style={[styles.savedOverlay, { bottom: insets.bottom + 16 }]}
+        >
+          <DeviceLegend
+            isRTL={isRTL}
+            robotEntities={robotEntities}
+            t={t}
+            wearableEntities={wearableEntities}
+          />
           <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
           {savedPlaces === null ? <LoadingState compact message={t('common.loading')} /> : null}
           {savedPlaces?.length ? (
@@ -456,7 +495,7 @@ export default function MapScreen() {
             onPress={handleQuickShare}
             loading={sharing}
           />
-        </View>
+        </ScrollView>
       </View>
     );
   }
@@ -479,6 +518,16 @@ export default function MapScreen() {
         message={localizedFeedbackMessage(geofenceFeedback)}
         tone={geofenceFeedback?.tone}
       />
+      {wearableEntities.length || robotEntities.length ? (
+        <Card>
+          <DeviceLegend
+            isRTL={isRTL}
+            robotEntities={robotEntities}
+            t={t}
+            wearableEntities={wearableEntities}
+          />
+        </Card>
+      ) : null}
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
           <Text style={[styles.zone, isRTL && styles.rtlText]}>{t(zone.nameKey)}</Text>
@@ -544,18 +593,40 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   fullScreen: { flex: 1 },
   nativeMap: { flex: 1 },
-  mapStatus: { position: 'absolute', left: 16, right: 16, backgroundColor: colors.paper, borderRadius: 8, overflow: 'hidden' },
+  mapStatus: { position: 'absolute', left: spacing.md, right: spacing.md, backgroundColor: colors.paper, borderRadius: radii.lg, overflow: 'hidden' },
   dangerMarker: { width: 18, height: 18, borderRadius: 9, borderWidth: 3, borderColor: colors.paper, backgroundColor: colors.red },
-  savedOverlay: { position: 'absolute', left: 16, right: 16, paddingHorizontal: 8, paddingBottom: 8, gap: 8, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line, borderRadius: 8, elevation: 2, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 3 } },
-  mapFallback: { height: 320, borderRadius: 8, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  mapText: { fontFamily: fonts.bold, color: colors.ink, fontSize: 28 },
-  coords: { fontFamily: fonts.regular, color: colors.inkSoft },
-  zone: { fontFamily: fonts.bold, color: colors.ink },
-  sectionTitle: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
-  muted: { fontFamily: fonts.regular, color: colors.inkSoft },
-  savedPlaceRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  savedOverlay: {
+    position: 'absolute',
+    left: spacing.md,
+    right: spacing.md,
+    maxHeight: '58%',
+    backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radii.xl,
+    ...shadows.raised
+  },
+  savedOverlayContent: { padding: spacing.mdSm, gap: spacing.sm },
+  mapFallback: { height: 320, borderRadius: radii.xl, backgroundColor: '#DDEBE7', alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
+  mapText: { ...typography.display, color: colors.textPrimary },
+  coords: { ...typography.caption, color: colors.textSecondary },
+  zone: { ...typography.label, color: colors.textPrimary },
+  sectionTitle: { ...typography.heading, color: colors.textPrimary },
+  muted: { ...typography.caption, color: colors.textSecondary },
+  savedPlaceRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
   savedPlaceCopy: { flex: 1, minWidth: 0 },
-  savedPlaceCard: { gap: 8 }
+  savedPlaceCard: { gap: spacing.sm },
+  deviceLegend: { gap: spacing.sm },
+  deviceLegendRow: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  deviceLegendIcon: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radii.lg,
+    backgroundColor: colors.muted
+  },
+  deviceLegendName: { flex: 1, ...typography.label, color: colors.textPrimary }
 });

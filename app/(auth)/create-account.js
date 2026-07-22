@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Alert, Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
 import { Button } from '../../src/components/Button';
 import { Header } from '../../src/components/Header';
+import { Card } from '../../src/components/Card';
 import { useAuth } from '../../src/context/AuthContext';
 import { images } from '../../src/constants/assets';
-import { colors, fonts } from '../../src/constants/theme';
+import { colors, spacing, typography } from '../../src/constants/theme';
 import { GlobalPhoneInput } from '../../src/components/GlobalPhoneInput';
 import { useI18n } from '../../src/context/I18nContext';
 import { FeedbackBanner } from '../../src/components/FeedbackBanner';
@@ -32,6 +33,7 @@ export default function CreateAccount() {
   const { t } = useI18n();
   const [phone, setPhone] = useState(null);
   const [busyAction, setBusyAction] = useState(null);
+  const [localErrorKey, setLocalErrorKey] = useState(null);
   const appleSignInAvailable = authCapabilities.apple.enabled;
   const googleSignInAvailable = authCapabilities.google.enabled;
   const configurationMessages = [...new Set([
@@ -43,13 +45,12 @@ export default function CreateAccount() {
   const startSocial = async (provider, signIn) => {
     if (busyAction) return;
     clearAuthError();
+    setLocalErrorKey(null);
     setBusyAction(provider);
     try {
       await signIn();
     } catch (error) {
-      if (!isAuthenticationCancellation(error)) {
-        Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
-      }
+      if (!isAuthenticationCancellation(error)) setLocalErrorKey(authenticationErrorTranslationKey(error));
     } finally {
       setBusyAction(null);
     }
@@ -58,12 +59,13 @@ export default function CreateAccount() {
   const startPhone = async () => {
     if (busyAction || !phone?.isValid || !authCapabilities.phone.enabled) return;
     clearAuthError();
+    setLocalErrorKey(null);
     setBusyAction('phone');
     try {
       await signInWithPhone(phone);
       router.push('/(auth)/verify-code');
     } catch (error) {
-      Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
+      setLocalErrorKey(authenticationErrorTranslationKey(error));
     } finally {
       setBusyAction(null);
     }
@@ -72,11 +74,12 @@ export default function CreateAccount() {
   const startDemo = async () => {
     if (busyAction || !demoModeAvailable) return;
     clearAuthError();
+    setLocalErrorKey(null);
     setBusyAction('demo');
     try {
       await continueAsDemo();
     } catch (error) {
-      Alert.alert(t('auth.signInFailedTitle'), t(authenticationErrorTranslationKey(error)));
+      setLocalErrorKey(authenticationErrorTranslationKey(error));
     } finally {
       setBusyAction(null);
     }
@@ -84,12 +87,13 @@ export default function CreateAccount() {
 
   return (
     <Screen>
-      <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} />
+      <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} showBack backLabel={t('common.back')} />
       <FeedbackBanner message={authError ? t(authError) : null} />
+      <FeedbackBanner message={!authError && localErrorKey ? t(localErrorKey) : null} />
       {configurationMessages.length ? (
         <FeedbackBanner message={configurationMessages.join('\n')} tone="info" />
       ) : null}
-      {appleSignInAvailable || googleSignInAvailable ? <View style={styles.socialRow}>
+      {appleSignInAvailable || googleSignInAvailable ? <Card style={styles.socialRow}>
         {appleSignInAvailable ? (
           <AppleSignInButton
             title={t('common.apple')}
@@ -102,14 +106,15 @@ export default function CreateAccount() {
         {googleSignInAvailable ? (
           <Button title={t('common.google')} variant="ghost" loading={busyAction === 'google'} disabled={Boolean(busyAction)} onPress={() => startSocial('google', signInWithGoogle)} />
         ) : null}
-      </View> : null}
-      <View style={styles.inputCard}>
+      </Card> : null}
+      <Card style={styles.inputCard}>
         <Text style={styles.label}>{t('auth.phoneVerification')}</Text>
         <GlobalPhoneInput
           value={phone}
           onChange={(value) => {
             setPhone(value);
             clearAuthError();
+            setLocalErrorKey(null);
           }}
         />
         <Button
@@ -118,9 +123,9 @@ export default function CreateAccount() {
           onPress={startPhone}
           disabled={Boolean(busyAction) || !phone?.isValid || !authCapabilities.phone.enabled}
         />
-      </View>
+      </Card>
       {demoModeAvailable ? (
-        <View style={styles.demoCard}>
+        <Card variant="tinted" style={styles.demoCard}>
           <FeedbackBanner message={t('releaseCritical.demoModeNotice')} tone="info" />
           <Button
             title={t('releaseCritical.continueAsDemo')}
@@ -130,17 +135,17 @@ export default function CreateAccount() {
             disabled={Boolean(busyAction)}
             onPress={startDemo}
           />
-        </View>
+        </Card>
       ) : null}
-      <Image source={images.mapOnboarding} style={styles.image} resizeMode="contain" />
+      <Image accessible={false} source={images.mapOnboarding} style={styles.image} resizeMode="contain" />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  socialRow: { gap: 10 },
-  inputCard: { backgroundColor: '#fff', borderRadius: 8, padding: 16, gap: 12, borderWidth: 1, borderColor: colors.line },
-  demoCard: { gap: 10 },
-  label: { fontFamily: fonts.semibold, color: colors.ink, fontSize: 16 },
-  image: { width: '100%', height: 180 }
+  socialRow: { gap: spacing.sm },
+  inputCard: { gap: spacing.mdSm },
+  demoCard: { gap: spacing.sm },
+  label: { ...typography.heading, color: colors.textPrimary },
+  image: { width: '100%', height: 150, marginTop: spacing.xs }
 });

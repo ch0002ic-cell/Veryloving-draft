@@ -3,10 +3,12 @@ import { ActivityIndicator, FlatList, Image, Keyboard, Linking, StyleSheet, Text
 import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Button } from '../src/components/Button';
+import { Card } from '../src/components/Card';
 import { ChatBubble } from '../src/components/ChatBubble';
+import { StatusPill } from '../src/components/StatusPill';
 import { VoiceActivityIndicator } from '../src/components/VoiceActivityIndicator';
 import { useHumeVoiceCall } from '../src/hooks/useHumeVoiceCall';
-import { colors, fonts } from '../src/constants/theme';
+import { colors, radii, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 import { EmptyState } from '../src/components/EmptyState';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
@@ -56,6 +58,10 @@ export default function SafetyCall() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const messageListRef = useRef(null);
   const active = status === 'connected';
+  const connectionTone = active
+    ? 'ok'
+    : isConnecting ? 'active' : status === 'error' ? 'danger' : isOfflineCompanion ? 'warn' : 'idle';
+  const statusLabel = connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t });
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
@@ -94,21 +100,23 @@ export default function SafetyCall() {
     <Screen scroll={false}>
       <View style={[styles.header, isRTL && styles.rtlRow]}>
         <Button title={t('common.close')} variant="ghost" compact onPress={closeScreen} />
-        <View style={[styles.connectionStatus, isRTL && styles.rtlRow]}>
+        <View accessibilityLiveRegion="polite" style={[styles.connectionStatus, isRTL && styles.rtlRow]}>
           {isConnecting ? <ActivityIndicator size="small" color={colors.orangeAccessible} /> : null}
-          <Text style={[styles.status, isRTL && styles.rtlText]}>
-            {connectionLabel({ isConnecting, isOfflineCompanion, isOnline, status, t })}
-          </Text>
+          <StatusPill label={statusLabel} tone={connectionTone} />
         </View>
       </View>
 
-      <View style={[styles.center, keyboardVisible && styles.centerCompact]}>
-        {!keyboardVisible ? <Image source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" /> : null}
+      <Card variant={active ? 'tinted' : 'raised'} style={[styles.center, keyboardVisible && styles.centerCompact]}>
+        {!keyboardVisible ? (
+          <View style={[styles.avatarHalo, active && styles.avatarHaloActive]}>
+            <Image accessible={false} source={selectedVoice.avatar} style={styles.avatar} resizeMode="contain" />
+          </View>
+        ) : null}
         {!keyboardVisible ? <VoiceActivityIndicator active={active} /> : null}
         <Text style={styles.name}>{t(`voices.profiles.${selectedVoice.id}.name`)}</Text>
         {isConnecting ? <Text style={styles.connecting}>{t('safetyCall.connectingSecurely')}</Text> : null}
         {pendingMessageCount ? (
-          <Text style={styles.queued}>{t('safetyCall.messagesWaiting', { count: pendingMessageCount })}</Text>
+          <Text accessibilityLiveRegion="polite" style={styles.queued}>{t('safetyCall.messagesWaiting', { count: pendingMessageCount })}</Text>
         ) : null}
         <FeedbackBanner message={notice ? t(notice) : null} tone="info" />
         <FeedbackBanner
@@ -122,7 +130,7 @@ export default function SafetyCall() {
         />
         {fallbackAvailable ? <Button title={t('safetyCall.useOffline')} variant="ghost" onPress={startOfflineFallback} loading={isConnecting} /> : null}
         {canRetryOnline ? <Button title={t('safetyCall.reconnect')} variant="ghost" onPress={retryOnline} loading={isConnecting} /> : null}
-      </View>
+      </Card>
 
       <FlatList
         ref={messageListRef}
@@ -164,7 +172,7 @@ export default function SafetyCall() {
           submitBehavior="submit"
           style={[styles.input, isRTL && styles.rtlInput]}
         />
-        <Button title={t('common.send')} onPress={submitText} disabled={!text.trim()} />
+        <Button title={t('common.send')} icon="arrow-up" compact onPress={submitText} disabled={!text.trim()} />
       </View>
       <View style={styles.actions}>
         {active
@@ -179,18 +187,38 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  connectionStatus: { minHeight: 24, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  status: { fontFamily: fonts.semibold, color: colors.inkSoft },
-  center: { alignItems: 'center', gap: 8 },
-  centerCompact: { gap: 4 },
-  avatar: { width: 86, height: 86 },
-  name: { fontFamily: fonts.bold, color: colors.ink, fontSize: 24 },
-  connecting: { color: colors.ink, fontFamily: fonts.semibold, textAlign: 'center' },
-  queued: { color: colors.inkSoft, fontFamily: fonts.regular, textAlign: 'center' },
+  connectionStatus: { minHeight: 32, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  center: { alignItems: 'center', gap: spacing.sm, borderRadius: radii.xl },
+  centerCompact: { gap: spacing.xs, paddingVertical: spacing.sm },
+  avatarHalo: {
+    width: 108,
+    height: 108,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 54,
+    backgroundColor: colors.muted,
+    borderWidth: 2,
+    borderColor: colors.line
+  },
+  avatarHaloActive: { backgroundColor: colors.greenSoft, borderColor: colors.greenAccessible },
+  avatar: { width: 92, height: 92 },
+  name: { ...typography.titleLarge, color: colors.textPrimary },
+  connecting: { ...typography.label, color: colors.textPrimary, textAlign: 'center' },
+  queued: { ...typography.body, color: colors.textSecondary, textAlign: 'center' },
   messages: { flex: 1 },
-  messageContent: { flexGrow: 1, paddingVertical: 8 },
-  inputRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
-  input: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: colors.controlBorder, borderRadius: 8, minHeight: 50, paddingHorizontal: 12, fontFamily: fonts.regular, color: colors.ink },
+  messageContent: { flexGrow: 1, paddingVertical: spacing.sm },
+  inputRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
+  input: {
+    flex: 1,
+    backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.controlBorder,
+    borderRadius: radii.lg,
+    minHeight: 50,
+    paddingHorizontal: spacing.mdSm,
+    ...typography.bodyLarge,
+    color: colors.textPrimary
+  },
   rtlInput: { textAlign: 'right', writingDirection: 'rtl' },
-  actions: { gap: 8 }
+  actions: { gap: spacing.sm }
 });

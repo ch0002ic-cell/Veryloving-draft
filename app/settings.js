@@ -184,7 +184,7 @@ export default function Settings() {
       <SettingsSection
         icon="hardware-chip-outline"
         title={t('settings.deviceManagement')}
-        subtitle={t('device.subtitle')}
+        subtitle={`${t('home.northStarDevice')} · ${t('medication.robot')}`}
       >
         <SettingLink icon="watch-outline" title={t('settings.deviceManagement')} onPress={() => router.push('/device-management')} />
         <View style={styles.divider} />
@@ -201,8 +201,6 @@ export default function Settings() {
         <SettingLink icon="medical-outline" title={t('medicalProfile.title')} subtitle={t('medicalProfile.subtitle')} onPress={() => router.push('/medical-profile')} />
         <View style={styles.divider} />
         <SettingLink icon="medkit-outline" title={t('medication.title')} onPress={() => router.push('/medication-reminders')} />
-        <View style={styles.divider} />
-        <SettingLink icon="hardware-chip-outline" title={t('settings.deviceManagement')} onPress={() => router.push('/device-management')} />
         <View style={styles.divider} />
         <SettingLink icon="people-outline" title={t('common.friends')} onPress={() => router.push('/friends')} />
       </SettingsSection>

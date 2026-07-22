@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Button } from '../src/components/Button';
 import { Card } from '../src/components/Card';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
 import { Header } from '../src/components/Header';
 import { Screen } from '../src/components/Screen';
+import { EmptyState } from '../src/components/EmptyState';
+import { SkeletonGroup, SkeletonText } from '../src/components/Skeleton';
+import { StatusPill } from '../src/components/StatusPill';
+import { TextField } from '../src/components/TextField';
 import { colors, fonts, radii, spacing } from '../src/constants/theme';
 import { useAppState } from '../src/context/AppContext';
 import { useI18n } from '../src/context/I18nContext';
@@ -94,8 +98,8 @@ export default function MedicationReminders() {
 
       <Card style={styles.form}>
         <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.create')}</Text>
-        <Text style={[styles.label, isRTL && styles.rtlText]}>{t('medication.reference')}</Text>
-        <TextInput
+        <TextField
+          label={t('medication.reference')}
           accessibilityLabel={t('medication.reference')}
           accessibilityHint={t('medication.referenceHint')}
           autoCapitalize="none"
@@ -104,8 +108,6 @@ export default function MedicationReminders() {
           maxLength={100}
           onChangeText={setMedicationReference}
           placeholder={t('medication.referencePlaceholder')}
-          placeholderTextColor={colors.inkSoft}
-          style={[styles.input, isRTL && styles.rtlText]}
           value={medicationReference}
         />
 
@@ -146,23 +148,20 @@ export default function MedicationReminders() {
         )}
 
         <View style={[styles.timeRow, isRTL && styles.rtlRow]}>
-          <View style={styles.flex}>
-            <Text style={[styles.label, isRTL && styles.rtlText]}>{t('medication.reminderMinutes')}</Text>
-            <TextInput
+          <TextField
+              containerStyle={styles.timeField}
+              label={t('medication.reminderMinutes')}
               accessibilityLabel={t('medication.reminderMinutes')}
               editable={!busyAction}
               keyboardType="number-pad"
               maxLength={6}
               onChangeText={setReminderDelayMinutes}
               placeholder="5"
-              placeholderTextColor={colors.inkSoft}
-              style={[styles.input, isRTL && styles.rtlText]}
               value={reminderDelayMinutes}
             />
-          </View>
-          <View style={styles.flex}>
-            <Text style={[styles.label, isRTL && styles.rtlText]}>{t('medication.escalationMinutes')}</Text>
-            <TextInput
+          <TextField
+              containerStyle={styles.timeField}
+              label={t('medication.escalationMinutes')}
               accessibilityLabel={t('medication.escalationMinutes')}
               accessibilityHint={t('medication.escalationHint')}
               editable={!busyAction}
@@ -170,11 +169,8 @@ export default function MedicationReminders() {
               maxLength={4}
               onChangeText={setEscalationDelayMinutes}
               placeholder="15"
-              placeholderTextColor={colors.inkSoft}
-              style={[styles.input, isRTL && styles.rtlText]}
               value={escalationDelayMinutes}
             />
-          </View>
         </View>
         <Button
           title={t('medication.create')}
@@ -186,9 +182,15 @@ export default function MedicationReminders() {
       </Card>
 
       <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.upcoming')}</Text>
-      {busyAction === 'load' ? <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('common.loading')}</Text> : null}
+      {busyAction === 'load' ? (
+        <Card>
+          <SkeletonGroup label={t('common.loading')}>
+            <SkeletonText lines={3} />
+          </SkeletonGroup>
+        </Card>
+      ) : null}
       {!busyAction && !medicationReminders.length ? (
-        <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('medication.empty')}</Text>
+        <EmptyState compact title={t('medication.empty')} message={t('medication.subtitle')} />
       ) : null}
       {medicationReminders.map((reminder) => {
         const robot = robotEntities.find((entity) => entity.deviceId === reminder.robotDeviceId);
@@ -199,9 +201,7 @@ export default function MedicationReminders() {
                 <Text style={[styles.reminderName, isRTL && styles.rtlText]}>{reminder.medicationId}</Text>
                 <Text style={[styles.muted, isRTL && styles.rtlText]}>{robot?.name || t('medication.robot')}</Text>
               </View>
-              <Text style={[styles.status, isRTL && styles.rtlText]}>
-                {t(`medication.statuses.${reminder.status}`)}
-              </Text>
+              <StatusPill label={t(`medication.statuses.${reminder.status}`)} tone={reminder.status === 'acknowledged' ? 'ok' : 'active'} />
             </View>
             <Text style={[styles.muted, isRTL && styles.rtlText]}>
               {t('medication.due', { date: new Date(reminder.dueAt).toLocaleString(locale) })}
@@ -228,17 +228,6 @@ const styles = StyleSheet.create({
   form: { gap: spacing.mdSm },
   sectionTitle: { color: colors.ink, fontFamily: fonts.bold, fontSize: 20 },
   label: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 14 },
-  input: {
-    minHeight: 50,
-    borderWidth: 1,
-    borderColor: colors.controlBorder,
-    borderRadius: radii.md,
-    backgroundColor: colors.paper,
-    color: colors.ink,
-    fontFamily: fonts.regular,
-    fontSize: 16,
-    paddingHorizontal: spacing.mdSm
-  },
   robotChoice: {
     minHeight: 54,
     flexDirection: 'row',
@@ -252,15 +241,14 @@ const styles = StyleSheet.create({
   robotSelected: { borderColor: colors.blueAccessible, backgroundColor: colors.blueSoft },
   robotName: { color: colors.ink, fontFamily: fonts.semibold, fontSize: 15 },
   selectionMark: { color: colors.blueAccessible, fontSize: 20 },
-  timeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.mdSm },
+  timeRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: spacing.mdSm },
+  timeField: { flexGrow: 1, flexBasis: 168 },
   reminderCard: { gap: spacing.sm },
   reminderHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
   reminderName: { color: colors.ink, fontFamily: fonts.bold, fontSize: 17 },
-  status: { color: colors.blueAccessible, fontFamily: fonts.semibold, fontSize: 13, maxWidth: '48%' },
   muted: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: 14, lineHeight: 20 },
   flex: { flex: 1 },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
   pressed: { opacity: 0.7 }
 });
-

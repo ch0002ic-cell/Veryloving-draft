@@ -1,26 +1,31 @@
-import { useCallback, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, AppState, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { Header } from '../src/components/Header';
 import { Button } from '../src/components/Button';
 import { FeedbackBanner } from '../src/components/FeedbackBanner';
+import { LoadingState } from '../src/components/LoadingState';
 import { useAuth } from '../src/context/AuthContext';
 import { useAppState } from '../src/context/AppContext';
 import { pairHomeRobot } from '../src/services/robot-pairing';
-import { colors, fonts } from '../src/constants/theme';
+import { colors, radii, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
 
 export default function RobotPairingScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
+  const [permission, requestPermission, getCameraPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
   const [robotVendor, setRobotVendor] = useState('yongyida');
   const pairingInFlightRef = useRef(false);
+  const cameraAccessInFlightRef = useRef(false);
+  const awaitingSettingsReturnRef = useRef(false);
   const { accessToken, user } = useAuth();
   const { setRobotEntities } = useAppState();
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
+  const title = `${t('common.add')} · ${t('medication.robot')}`;
 
   const pair = useCallback(async ({ data }) => {
     // Camera callbacks can fire more than once in the same React render. A
@@ -49,34 +54,109 @@ export default function RobotPairingScreen() {
     }
   }, [accessToken, robotVendor, setRobotEntities, user?.id]);
 
-  if (!permission) return <Screen><Header title={t('settings.deviceManagement')} showBack /><Text>{t('common.loading')}</Text></Screen>;
+  const openCameraAccess = async () => {
+    if (cameraAccessInFlightRef.current) return;
+    cameraAccessInFlightRef.current = true;
+    setBusy(true);
+    setErrorKey(null);
+    try {
+      if (permission?.canAskAgain === false) {
+        awaitingSettingsReturnRef.current = true;
+        await Linking.openSettings();
+      }
+      else await requestPermission();
+    } catch {
+      awaitingSettingsReturnRef.current = false;
+      setErrorKey('settings.updateFailedMessage');
+    } finally {
+      cameraAccessInFlightRef.current = false;
+      setBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    let active = true;
+    const subscription = AppState.addEventListener('change', (nextState) => {
+      if (nextState !== 'active' || !awaitingSettingsReturnRef.current) return;
+      awaitingSettingsReturnRef.current = false;
+      getCameraPermission().catch(() => {
+        if (active) setErrorKey('settings.updateFailedMessage');
+      });
+    });
+    return () => {
+      active = false;
+      subscription.remove();
+    };
+  }, [getCameraPermission]);
+
+  const retryScan = () => {
+    pairingInFlightRef.current = false;
+    setErrorKey(null);
+    setBusy(false);
+  };
+
+  if (!permission) {
+    return (
+      <Screen>
+        <Header title={title} showBack backLabel={t('common.back')} />
+        <LoadingState message={t('common.loading')} />
+      </Screen>
+    );
+  }
   if (!permission.granted) {
     return (
       <Screen>
-        <Header title={t('settings.deviceManagement')} showBack />
-        <Text style={styles.copy}>{t('permissions.cameraRationaleMessage')}</Text>
-        <Button title={t('common.continue')} onPress={requestPermission} />
+        <Header title={title} subtitle={t('permissions.cameraRationaleTitle')} showBack backLabel={t('common.back')} />
+        <View style={styles.permissionGraphic}>
+          <Ionicons accessible={false} name="qr-code-outline" size={56} color={colors.blueAccessible} />
+        </View>
+        <Text style={[styles.copy, isRTL && styles.rtlText]}>
+          {t('jewelry.scan')} · {t('medication.robot')}
+        </Text>
+        <FeedbackBanner message={errorKey ? t(errorKey) : null} />
+        <Button
+          title={permission.canAskAgain === false ? t('common.settings') : t('common.continue')}
+          icon={permission.canAskAgain === false ? 'settings-outline' : 'camera-outline'}
+          loading={busy}
+          disabled={busy}
+          onPress={openCameraAccess}
+        />
       </Screen>
     );
   }
   return (
-    <Screen>
-      <Header title={t('settings.deviceManagement')} subtitle={t('jewelry.scan')} showBack />
-      <View style={styles.vendorButtons}>
-        <Button
-          title="Yongyida"
-          selected={robotVendor === 'yongyida'}
-          variant={robotVendor === 'yongyida' ? 'primary' : 'ghost'}
-          onPress={() => setRobotVendor('yongyida')}
-          disabled={busy}
-        />
-        <Button
-          title="Jiangzhi"
-          selected={robotVendor === 'jiangzhi'}
-          variant={robotVendor === 'jiangzhi' ? 'primary' : 'ghost'}
-          onPress={() => setRobotVendor('jiangzhi')}
-          disabled={busy}
-        />
+    <Screen scroll={false}>
+      <Header title={title} subtitle={t('jewelry.scan')} showBack backLabel={t('common.back')} />
+      <View accessibilityRole="radiogroup" style={[styles.vendorButtons, isRTL && styles.rtlRow]}>
+        {[
+          { id: 'yongyida', label: 'Yongyida' },
+          { id: 'jiangzhi', label: 'Jiangzhi' }
+        ].map((vendor) => {
+          const selected = robotVendor === vendor.id;
+          return (
+            <Pressable
+              key={vendor.id}
+              accessibilityLabel={vendor.label}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: selected, disabled: busy }}
+              disabled={busy}
+              onPress={() => setRobotVendor(vendor.id)}
+              style={({ pressed }) => [
+                styles.vendorChoice,
+                selected && styles.vendorSelected,
+                pressed && styles.pressed
+              ]}
+            >
+              <Ionicons
+                accessible={false}
+                name={selected ? 'radio-button-on' : 'radio-button-off'}
+                size={20}
+                color={selected ? colors.blueAccessible : colors.inkSoft}
+              />
+              <Text style={[styles.vendorLabel, selected && styles.vendorLabelSelected]}>{vendor.label}</Text>
+            </Pressable>
+          );
+        })}
       </View>
       <View style={styles.cameraFrame}>
         <CameraView
@@ -84,15 +164,49 @@ export default function RobotPairingScreen() {
           onBarcodeScanned={busy ? undefined : pair}
           style={StyleSheet.absoluteFill}
         />
+        <View accessible={false} pointerEvents="none" style={styles.scanGuide}>
+          <View style={[styles.corner, styles.topLeft]} />
+          <View style={[styles.corner, styles.topRight]} />
+          <View style={[styles.corner, styles.bottomLeft]} />
+          <View style={[styles.corner, styles.bottomRight]} />
+        </View>
+        {busy ? (
+          <View
+            accessibilityLabel={t('common.connecting')}
+            accessibilityLiveRegion="polite"
+            accessibilityRole="progressbar"
+            accessibilityState={{ busy: true }}
+            style={styles.progressOverlay}
+          >
+            <ActivityIndicator color={colors.paper} />
+            <Text style={styles.progressText}>{t('common.connecting')}</Text>
+          </View>
+        ) : null}
       </View>
       <FeedbackBanner message={errorKey ? t(errorKey) : null} />
-      {errorKey ? <Button title={t('common.retry')} onPress={() => { setErrorKey(null); setBusy(false); }} /> : null}
+      {errorKey ? <Button title={t('common.retry')} icon="refresh-outline" onPress={retryScan} /> : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  cameraFrame: { height: 360, overflow: 'hidden', borderRadius: 12, backgroundColor: colors.ink },
-  vendorButtons: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  copy: { fontFamily: fonts.regular, color: colors.ink }
+  cameraFrame: { flex: 1, minHeight: 240, overflow: 'hidden', borderRadius: radii.xl, backgroundColor: colors.ink },
+  vendorButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  vendorChoice: { minHeight: 48, minWidth: 140, flexBasis: '47%', flexGrow: 1, paddingHorizontal: spacing.mdSm, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, borderWidth: 1, borderColor: colors.borderControl, borderRadius: radii.lg, backgroundColor: colors.surfaceRaised },
+  vendorSelected: { borderColor: colors.blueAccessible, borderWidth: 2, backgroundColor: colors.blueSoft },
+  vendorLabel: { flexShrink: 1, ...typography.label, color: colors.textPrimary, textAlign: 'center' },
+  vendorLabelSelected: { color: colors.blueAccessible },
+  pressed: { opacity: 0.68 },
+  scanGuide: { position: 'absolute', top: '18%', right: '14%', bottom: '18%', left: '14%' },
+  corner: { position: 'absolute', width: 48, height: 48, borderColor: colors.surfaceRaised },
+  topLeft: { top: 0, left: 0, borderTopWidth: 4, borderLeftWidth: 4, borderTopLeftRadius: radii.lg },
+  topRight: { top: 0, right: 0, borderTopWidth: 4, borderRightWidth: 4, borderTopRightRadius: radii.lg },
+  bottomLeft: { bottom: 0, left: 0, borderBottomWidth: 4, borderLeftWidth: 4, borderBottomLeftRadius: radii.lg },
+  bottomRight: { right: 0, bottom: 0, borderRightWidth: 4, borderBottomWidth: 4, borderBottomRightRadius: radii.lg },
+  progressOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', gap: spacing.sm, backgroundColor: 'rgba(48, 69, 87, 0.86)' },
+  progressText: { ...typography.bodyLarge, color: colors.textInverse, fontFamily: typography.label.fontFamily },
+  permissionGraphic: { minHeight: 160, alignItems: 'center', justifyContent: 'center', borderRadius: radii.xl, backgroundColor: colors.blueSoft },
+  copy: { ...typography.bodyLarge, color: colors.textPrimary },
+  rtlRow: { flexDirection: 'row-reverse' },
+  rtlText: { textAlign: 'right' }
 });
