@@ -290,6 +290,7 @@ const config = {
     "bundleIdentifier": "com.veryloving.app",
     "buildNumber": "1",
     "infoPlist": {
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code.",
       "NSMicrophoneUsageDescription": "VeryLoving needs access to your microphone for safety calls",
       "NSLocationWhenInUseUsageDescription": "VeryLoving needs your location to show the map and provide safety features",
       "NSBluetoothAlwaysUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
@@ -486,7 +487,7 @@ const config = {
     [
       "expo-camera",
       {
-        "cameraPermission": "Allow VeryLoving to scan your home robot's one-time pairing QR code.",
+        "cameraPermission": "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code.",
         "recordAudioAndroid": false,
         "barcodeScannerEnabled": true
       }

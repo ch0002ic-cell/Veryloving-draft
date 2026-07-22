@@ -226,6 +226,31 @@ test('scan reports Bluetooth off with a typed error', async () => {
   assert.equal(completion, 'bluetooth-unavailable');
 });
 
+test('unsupported simulator Bluetooth is actionable UI state, not a LogBox error', async () => {
+  permissionGranted = true;
+  const service = new BLEService();
+  service.manager = { state: async () => 'Unsupported' };
+  const originalConsoleError = console.error;
+  const errorLogs = [];
+  console.error = (...args) => errorLogs.push(args);
+  let receivedError;
+  let completion;
+
+  try {
+    await service.scanForDevices(() => {}, {
+      onError: (error) => { receivedError = error; },
+      onComplete: (reason) => { completion = reason; }
+    });
+  } finally {
+    console.error = originalConsoleError;
+  }
+
+  assert.ok(receivedError instanceof BLEOperationError);
+  assert.equal(receivedError.code, BLE_ERROR_CODES.unavailable);
+  assert.equal(completion, 'bluetooth-unavailable');
+  assert.equal(errorLogs.length, 0);
+});
+
 test('declining the Bluetooth rationale stays retryable without claiming an OS denial', async () => {
   permissionGranted = false;
   const service = new BLEService();
@@ -290,10 +315,18 @@ test('connect failures retain a typed code and never invent battery data', async
     cancelDeviceConnection: async () => {}
   };
 
-  await assert.rejects(
-    service.connect({ id: 'VL01-failure', name: 'NorthStar VL01' }),
-    (error) => error instanceof BLEOperationError && error.code === BLE_ERROR_CODES.connectFailed
-  );
+  const originalConsoleError = console.error;
+  const errorLogs = [];
+  console.error = (...args) => errorLogs.push(args);
+  try {
+    await assert.rejects(
+      service.connect({ id: 'VL01-failure', name: 'NorthStar VL01' }),
+      (error) => error instanceof BLEOperationError && error.code === BLE_ERROR_CODES.connectFailed
+    );
+  } finally {
+    console.error = originalConsoleError;
+  }
+  assert.equal(errorLogs.length, 1);
 
   service.manager.connectToDevice = async () => ({
     id: 'VL01-success',

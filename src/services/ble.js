@@ -57,6 +57,17 @@ const BLE_ERROR_MESSAGE_KEYS = {
   [BLE_ERROR_CODES.disconnectFailed]: 'jewelry.connectFailed'
 };
 
+// Bluetooth capability and user-controlled radio states are normal runtime
+// outcomes. They already surface through typed UI feedback and must not be
+// reported as application faults in React Native LogBox.
+const EXPECTED_BLE_STATE_CODES = new Set([
+  BLE_ERROR_CODES.unavailable,
+  BLE_ERROR_CODES.notReady,
+  BLE_ERROR_CODES.poweredOff,
+  BLE_ERROR_CODES.permissionNotRequested,
+  BLE_ERROR_CODES.permissionDenied
+]);
+
 function createBLEError(code, cause, phase) {
   if (cause instanceof BLEOperationError && cause.code === code) return cause;
   const nativeErrorCode = Number(cause?.errorCode);
@@ -71,7 +82,8 @@ function createBLEError(code, cause, phase) {
 }
 
 function logBLEFailure(message, error, context = {}) {
-  logger.error(message, {
+  const log = EXPECTED_BLE_STATE_CODES.has(error?.code) ? logger.info : logger.error;
+  log(message, {
     errorCode: error?.code || 'BLE_OPERATION_FAILED',
     nativeErrorCode: error?.nativeErrorCode ?? error?.errorCode,
     phase: error?.phase,

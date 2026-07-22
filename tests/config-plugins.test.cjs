@@ -192,7 +192,14 @@ test('Expo config minimizes native permissions and owns launch appearance', () =
     false
   );
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSLocationAlwaysUsageDescription'), false);
-  assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSCameraUsageDescription'), false);
+  assert.equal(
+    config.ios.infoPlist.NSCameraUsageDescription,
+    "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code."
+  );
+  assert.equal(
+    plugins.get('expo-camera').cameraPermission,
+    "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code."
+  );
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSPhotoLibraryUsageDescription'), false);
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSBluetoothPeripheralUsageDescription'), false);
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'UIBackgroundModes'), false);
