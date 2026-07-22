@@ -235,6 +235,7 @@ The mobile foundation uses semantic color/tone, typography, spacing, radius, ele
 - [`docs/design-system.md`](./docs/design-system.md) is the implementation and contribution guide, including component usage, device-state language, accessibility, Dynamic Type, RTL, responsive layout, and motion rules.
 - [`docs/mobile-polish-qa.md`](./docs/mobile-polish-qa.md) is the execution matrix. It distinguishes source/automated PASS evidence from simulator, emulator, signed-build, provider, and physical-device requirements; a JS export is never native-interaction evidence.
 - [`docs/demo-script.md`](./docs/demo-script.md) is the 2–3 minute polished mobile walkthrough with honest mock/offline variants and recording guardrails.
+- [`docs/final-handoff-audit.md`](./docs/final-handoff-audit.md) maps Grace's feedback to implemented evidence, remaining product/visual acceptance work, external blockers, and the next handoff actions.
 
 Do not call the mobile UI signed-build accepted until the applicable physical-device rows are recorded against the exact build. Source-level design-system adoption and production JavaScript exports are necessary but insufficient evidence for BLE, camera, audio routes, notifications, screen-reader order, background behavior, or persistence.
 
