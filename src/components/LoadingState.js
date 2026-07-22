@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { colors, fonts, spacing } from '../constants/theme';
+import { colors, spacing, typography } from '../constants/theme';
 
 export function LoadingState({ message, compact = false }) {
   return (
@@ -20,5 +20,5 @@ export function LoadingState({ message, compact = false }) {
 const styles = StyleSheet.create({
   wrap: { minHeight: 150, padding: spacing.lg, alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
   compact: { minHeight: 64, padding: spacing.sm },
-  message: { fontFamily: fonts.medium, color: colors.inkSoft, textAlign: 'center' }
+  message: { ...typography.body, fontFamily: typography.label.fontFamily, color: colors.textSecondary, textAlign: 'center' }
 });

@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, ReduceMotion } from 'react-native-reanimated';
 import { Button } from './Button';
-import { colors, fonts, spacing } from '../constants/theme';
+import { colors, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
 const EMPTY_ENTERING = FadeIn.duration(220).reduceMotion(ReduceMotion.System);
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
   copy: { maxWidth: 420, alignItems: 'center', gap: spacing.xs },
   compactCopy: { flex: 1, alignItems: 'stretch' },
   compactText: { textAlign: 'auto' },
-  title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18, textAlign: 'center' },
-  message: { fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 14, lineHeight: 20, textAlign: 'center' }
+  title: { ...typography.heading, color: colors.textPrimary, textAlign: 'center' },
+  message: { ...typography.bodySmall, color: colors.textSecondary, textAlign: 'center' }
 });

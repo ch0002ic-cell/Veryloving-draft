@@ -1,6 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { colors, spacing } from '../constants/theme';
+import { colors, layout, spacing } from '../constants/theme';
 
 export function Screen({ children, scroll = true, background, style }) {
   const screenContent = (
@@ -38,10 +38,10 @@ export function Screen({ children, scroll = true, background, style }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.cream },
+  safe: { flex: 1, backgroundColor: colors.surfaceCanvas },
   transparent: { backgroundColor: 'transparent' },
   bg: { flex: 1 },
   scrollContent: { flexGrow: 1 },
-  content: { width: '100%', maxWidth: 720, alignSelf: 'center', padding: 20, gap: spacing.md },
+  content: { width: '100%', maxWidth: layout.contentMaxWidth, alignSelf: 'center', padding: layout.screenPadding, gap: spacing.md },
   flex: { flex: 1 }
 });

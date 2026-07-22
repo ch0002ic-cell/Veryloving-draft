@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from './Card';
-import { colors, fonts, radii, spacing } from '../constants/theme';
+import { colors, radii, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
 
 export function SettingsSection({ icon, title, subtitle, children }) {
@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
   heading: { minHeight: 42, flexDirection: 'row', alignItems: 'center', gap: spacing.mdSm },
   rtlRow: { flexDirection: 'row-reverse' },
   rtlText: { textAlign: 'right' },
-  iconBox: { width: 36, height: 36, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.muted },
+  iconBox: { width: 36, height: 36, borderRadius: radii.lg, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.muted },
   headingCopy: { flex: 1 },
-  title: { fontFamily: fonts.bold, color: colors.ink, fontSize: 18 },
-  subtitle: { marginTop: 2, fontFamily: fonts.regular, color: colors.inkSoft, fontSize: 13, lineHeight: 18 },
+  title: { ...typography.heading, color: colors.textPrimary },
+  subtitle: { marginTop: 2, ...typography.caption, color: colors.textSecondary },
   card: { gap: spacing.mdSm }
 });

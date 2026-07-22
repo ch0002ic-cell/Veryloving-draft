@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Redirect } from 'expo-router';
-import { ActivityIndicator, Linking, View } from 'react-native';
+import { Linking } from 'react-native';
 import { useAuth } from '../src/context/AuthContext';
+import { AppLoadingState } from '../src/components/AppLoadingState';
 import { restoreSafeNavigationDestination } from '../src/services/navigation-persistence';
 import { withTimeout } from '../src/utils/async';
 import { logger } from '../src/utils/logger';
@@ -43,13 +44,13 @@ export default function Index() {
     };
   }, [isDemoMode, loading, onboardingComplete, user?.id]);
 
-  if (loading) return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
+  if (loading) return <AppLoadingState />;
   if (!user && hasPendingPhoneVerification) return <Redirect href="/(auth)/verify-code" />;
   if (!user) return <Redirect href="/(auth)/onboarding" />;
   if (!onboardingComplete) return <Redirect href={onboardingRoute} />;
   if (isDemoMode) return <Redirect href="/(tabs)" />;
   if (restoration.accountId !== user.id || !restoration.ready) {
-    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
+    return <AppLoadingState />;
   }
   return <Redirect href={restoration.destination || '/(tabs)'} />;
 }

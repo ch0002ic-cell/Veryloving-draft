@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, I18nManager, Platform, View } from 'react-native';
+import { I18nManager, Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from '../src/context/AuthContext';
 import { AppProvider, useAppState } from '../src/context/AppContext';
@@ -13,6 +13,7 @@ import { PROTECTED_ROOT_ROUTES } from '../src/utils/auth-routing';
 import { AppErrorBoundary } from '../src/components/AppErrorBoundary';
 import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
 import { NavigationPersistenceTracker } from '../src/components/NavigationPersistenceTracker';
+import { AppLoadingState } from '../src/components/AppLoadingState';
 import { initializeNotifications } from '../src/services/notifications';
 import { logger } from '../src/utils/logger';
 
@@ -28,11 +29,11 @@ if (Platform.OS !== 'web') {
 }
 
 function LocalizedNavigation() {
-  const { isRTL } = useI18n();
+  const { isRTL, t } = useI18n();
   const { isHydrated } = useAppState();
   const { loading: authLoading, onboardingComplete, user } = useAuth();
   if (!isHydrated || authLoading) {
-    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}><ActivityIndicator color={colors.ink} /></View>;
+    return <AppLoadingState message={t('common.loading')} />;
   }
   const navigation = (
     <>
@@ -88,7 +89,7 @@ function RootRuntime() {
       });
     });
   }, []);
-  if (!fontsReady) return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}><ActivityIndicator color={colors.ink} /></View>;
+  if (!fontsReady) return <AppLoadingState />;
   return (
     <SafeAreaProvider>
       <AudioStreamBridge />

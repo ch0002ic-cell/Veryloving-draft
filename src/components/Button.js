@@ -1,6 +1,15 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fonts, radii } from '../constants/theme';
+import { colors, motion, radii, sizes, spacing, typography } from '../constants/theme';
+
+const variantPalette = {
+  primary: { content: colors.textInverse, ripple: colors.actionInversePressed },
+  orange: { content: colors.textInverse, ripple: colors.actionInversePressed },
+  danger: { content: colors.textInverse, ripple: colors.actionInversePressed },
+  ghost: { content: colors.textPrimary, ripple: colors.borderSubtle },
+  secondary: { content: colors.blueAccessible, ripple: colors.blueSoft },
+  success: { content: colors.greenAccessible, ripple: colors.greenSoft }
+};
 
 export function Button({
   title,
@@ -12,46 +21,70 @@ export function Button({
   loading = false,
   compact = false,
   accessibilityLabel,
-  style
+  accessibilityHint,
+  iconPosition = 'leading',
+  labelStyle,
+  loadingLabel,
+  style,
+  ...pressableProps
 }) {
   const inactive = disabled || loading;
-  const contentColor = variant === 'ghost' ? colors.ink : '#fff';
+  const resolvedVariant = variantPalette[variant] ? variant : 'primary';
+  const palette = variantPalette[resolvedVariant];
+  const visibleTitle = loading && loadingLabel ? loadingLabel : title;
+  const iconElement = !loading && icon
+    ? <Ionicons accessible={false} name={icon} size={sizes.iconSmall} color={palette.content} />
+    : null;
   return (
     <Pressable
-      accessibilityLabel={accessibilityLabel}
+      {...pressableProps}
+      accessibilityLabel={accessibilityLabel || title}
+      accessibilityHint={accessibilityHint}
       accessibilityRole="button"
       accessibilityState={{ busy: loading, disabled: inactive, selected }}
-      android_ripple={{ color: variant === 'ghost' ? colors.line : '#FFFFFF22' }}
+      android_ripple={{ color: palette.ripple }}
       disabled={inactive}
       onPress={onPress}
       style={({ pressed }) => [
         styles.base,
         compact && styles.compact,
-        styles[variant],
-        pressed && styles.pressed,
+        styles[resolvedVariant],
+        selected && styles.selected,
+        pressed && !inactive && styles.pressed,
         inactive && styles.disabled,
         style
       ]}
     >
       <View style={styles.row}>
-        {loading ? <ActivityIndicator size="small" color={contentColor} /> : null}
-        {!loading && icon ? <Ionicons name={icon} size={18} color={contentColor} /> : null}
-        <Text style={[styles.text, variant === 'ghost' && styles.ghostText]}>{title}</Text>
+        {loading ? <ActivityIndicator size="small" color={palette.content} /> : null}
+        {iconPosition === 'leading' ? iconElement : null}
+        <Text style={[styles.text, { color: palette.content }, labelStyle]}>{visibleTitle}</Text>
+        {iconPosition === 'trailing' ? iconElement : null}
       </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { minHeight: 50, borderRadius: radii.md, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18 },
-  compact: { minHeight: 44, paddingHorizontal: 12 },
-  primary: { backgroundColor: colors.ink },
-  orange: { backgroundColor: colors.orangeAccessible },
-  danger: { backgroundColor: colors.redAccessible },
-  ghost: { backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.controlBorder },
-  disabled: { opacity: 0.45 },
-  pressed: { transform: [{ scale: 0.98 }] },
-  row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexShrink: 1, gap: 8 },
-  text: { flexShrink: 1, color: '#fff', fontFamily: fonts.semibold, fontSize: 16, textAlign: 'center' },
-  ghostText: { color: colors.ink }
+  base: {
+    minHeight: sizes.control,
+    borderRadius: radii.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: 'transparent'
+  },
+  compact: { minHeight: sizes.controlCompact, paddingHorizontal: spacing.mdSm },
+  primary: { backgroundColor: colors.actionPrimary },
+  orange: { backgroundColor: colors.actionAccent },
+  danger: { backgroundColor: colors.actionDanger },
+  ghost: { backgroundColor: colors.surfaceRaised, borderColor: colors.borderControl },
+  secondary: { backgroundColor: colors.blueSoft, borderColor: colors.blueAccessible },
+  success: { backgroundColor: colors.greenSoft, borderColor: colors.greenAccessible },
+  selected: { borderWidth: 2, borderColor: colors.gold },
+  disabled: { opacity: 0.5 },
+  pressed: { opacity: 0.9, transform: [{ scale: motion.pressedScale }] },
+  row: { minHeight: 22, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexShrink: 1, gap: spacing.sm },
+  text: { flexShrink: 1, ...typography.bodyLarge, fontFamily: typography.label.fontFamily, textAlign: 'center' }
 });

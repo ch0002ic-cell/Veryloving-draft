@@ -1,7 +1,8 @@
 import { Redirect, Stack, useSegments } from 'expo-router';
-import { ActivityIndicator, Platform, View } from 'react-native';
+import { Platform } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { colors } from '../../src/constants/theme';
+import { AppLoadingState } from '../../src/components/AppLoadingState';
 import {
   AUTHENTICATED_ONBOARDING_ROUTES,
   PUBLIC_AUTH_ROUTES
@@ -12,11 +13,7 @@ export default function AuthLayout() {
   const { loading, onboardingComplete, onboardingRoute, user } = useAuth();
   const segments = useSegments();
   if (loading) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cream }}>
-        <ActivityIndicator color={colors.ink} />
-      </View>
-    );
+    return <AppLoadingState />;
   }
   // Navigate only after AuthContext has committed both pieces of state. An
   // imperative redirect from a sign-in handler can race React's state update
