@@ -1,17 +1,17 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { existsSync, readFileSync } = require('node:fs');
+const { existsSync, readFileSync, readdirSync } = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 
-const documentPath = path.resolve(process.cwd(), 'docs/final-handoff-audit.md');
+const documentPath = path.resolve(process.cwd(), 'docs/final-handoff-confirmation.md');
 const document = readFileSync(documentPath, 'utf8');
 
-test('Grace handoff audit covers every feedback theme with an honest disposition', () => {
+test('Grace handoff confirmation covers every feedback theme with an honest disposition', () => {
   const verdict = document.slice(
-    document.indexOf('## Executive verdict'),
-    document.indexOf('## Evidence and acceptance by feedback item')
+    document.indexOf('## 1. Grace feedback confirmation'),
+    document.indexOf('## 2. Final verification record')
   );
 
   for (const feedback of [
@@ -24,15 +24,15 @@ test('Grace handoff audit covers every feedback theme with an honest disposition
     assert.match(verdict, new RegExp(feedback));
   }
 
-  assert.match(verdict, /Two objective themes are \*\*COMPLETE\*\*/);
-  assert.match(verdict, /three experiential themes are \*\*PARTIAL\*\*/);
+  assert.match(verdict, /Two are \*\*COMPLETE\*\*/);
+  assert.match(verdict, /three remain \*\*PARTIAL\*\*/);
   assert.match(verdict, /none are \*\*MISSING\*\*/);
-  assert.match(document, /13 total, 2 PASS, 11 BLOCKED — EXTERNAL/);
-  assert.match(document, /ready to work directly with that team on future iterations/i);
+  assert.match(document, /13 tracked external dependencies: \*\*2 PASS\*\*.*\*\*11 BLOCKED — EXTERNAL\*\*/);
+  assert.match(document, /ready to work directly with Grace's PM\/UX team on future iterations/i);
   assert.match(document, /NO-GO.*production safety use/i);
 });
 
-test('Grace handoff audit contains no broken local Markdown links', () => {
+test('Grace handoff confirmation contains no broken local Markdown links', () => {
   for (const match of document.matchAll(/\]\(([^)]+)\)/g)) {
     const href = match[1];
     if (/^(?:https?:|mailto:)/.test(href)) continue;
@@ -43,5 +43,33 @@ test('Grace handoff audit contains no broken local Markdown links', () => {
       true,
       `Broken local link: ${href}`
     );
+  }
+});
+
+test('docs has one canonical Markdown deliverable with stable appendix markers', () => {
+  const markdownFiles = readdirSync(path.dirname(documentPath))
+    .filter((name) => name.endsWith('.md'))
+    .sort();
+  assert.deepEqual(markdownFiles, ['final-handoff-confirmation.md']);
+
+  for (const id of [
+    'design-system',
+    'mobile-polish-qa',
+    'demo-script',
+    'demo-dashboard',
+    'hardware-partner-research',
+    'hardware-partner-decision-matrix',
+    'manufacturer-api-requirements',
+    'external-dependencies-dashboard',
+    'integration-timeline',
+    'ask-templates',
+    'robot-hal-architecture',
+    'robot-adapter-integration-guide',
+    'ai-native-integration-guide',
+    'api-reference-ai-native',
+    'troubleshooting-ai-native'
+  ]) {
+    assert.match(document, new RegExp(`<!-- BEGIN:${id} -->`));
+    assert.match(document, new RegExp(`<!-- END:${id} -->`));
   }
 });

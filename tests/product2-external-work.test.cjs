@@ -8,13 +8,19 @@ const test = require('node:test');
 const ROOT = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
-const DOCUMENTS = Object.freeze([
-  'docs/hardware-partner-decision-matrix.md',
-  'docs/manufacturer-api-requirements.md',
-  'docs/external-dependencies-dashboard.md',
-  'docs/integration-timeline.md',
-  'docs/ask-templates.md'
-]);
+const CONFIRMATION = 'docs/final-handoff-confirmation.md';
+const DOCUMENTS = Object.freeze([CONFIRMATION]);
+const confirmation = read(CONFIRMATION);
+
+const extractSection = (id) => {
+  const startMarker = `<!-- BEGIN:${id} -->`;
+  const endMarker = `<!-- END:${id} -->`;
+  const start = confirmation.indexOf(startMarker);
+  const end = confirmation.indexOf(endMarker);
+  assert.ok(start >= 0, `missing canonical documentation marker: ${startMarker}`);
+  assert.ok(end > start, `missing canonical documentation marker: ${endMarker}`);
+  return confirmation.slice(start + startMarker.length, end);
+};
 
 const parseMarkdownRow = (row) => row
   .trim()
@@ -35,7 +41,7 @@ test('Product 2 decision and dependency documents are complete and status-explic
     assert.ok(contents.length > 1_000, `${relativePath} must contain a substantive deliverable`);
   }
 
-  const decision = read('docs/hardware-partner-decision-matrix.md');
+  const decision = extractSection('hardware-partner-decision-matrix');
   const criteria = decision.match(/^\| \d+ \|/gm) ?? [];
   assert.equal(criteria.length, 21, 'decision matrix must retain all 21 weighted criteria');
   const decisionRows = decision.split('\n').filter((row) => /^\| \d+ \|/.test(row));
@@ -80,7 +86,7 @@ test('Product 2 decision and dependency documents are complete and status-explic
     assert.deepEqual([...cited].sort(), [...defined].sort(), `${prefix} evidence references must be defined exactly once`);
   }
 
-  const requirements = read('docs/manufacturer-api-requirements.md');
+  const requirements = extractSection('manufacturer-api-requirements');
   for (const heading of [
     '## Core API',
     '## Telemetry',
@@ -117,7 +123,7 @@ test('Product 2 decision and dependency documents are complete and status-explic
 });
 
 test('external dashboard tracks two completed NDAs, 11 blocked dependencies, and six completed artifacts', () => {
-  const dashboard = read('docs/external-dependencies-dashboard.md');
+  const dashboard = extractSection('external-dependencies-dashboard');
   assert.match(dashboard, /\*\*Total External Dependencies:\*\* 13/);
   assert.match(dashboard, /\*\*✅ PASS \(Completed\):\*\* 2\/13/);
   assert.match(dashboard, /\*\*BLOCKED — EXTERNAL:\*\* 11\/13/);
@@ -154,7 +160,7 @@ test('external dashboard tracks two completed NDAs, 11 blocked dependencies, and
 });
 
 test('timeline preserves three scenarios while keeping external gates explicit', () => {
-  const timeline = read('docs/integration-timeline.md');
+  const timeline = extractSection('integration-timeline');
   assert.match(timeline, /Best Case \(All Docs Ready\)/);
   assert.match(timeline, /Realistic \(Delayed Docs\)/);
   assert.match(timeline, /Worst Case \(No Docs\)/);
@@ -182,7 +188,7 @@ test('timeline preserves three scenarios while keeping external gates explicit',
 });
 
 test('Grace ask templates are copy-ready and prohibit insecure credential delivery', () => {
-  const asks = read('docs/ask-templates.md');
+  const asks = extractSection('ask-templates');
   for (const subject of [
     'Request for Mutual NDA and Technical Collaboration',
     'Request for Product 2 Technical Integration Package',
@@ -198,7 +204,6 @@ test('new Product 2 artifacts contain no recognizable private key or cloud crede
   const files = [
     ...DOCUMENTS,
     'README.md',
-    'docs/robot-adapter-integration-guide.md',
     'server/mocks/ManufacturerMockServer.ts'
   ];
   const contents = files.map((relativePath) => read(relativePath)).join('\n');
@@ -210,8 +215,7 @@ test('new Product 2 artifacts contain no recognizable private key or cloud crede
 test('new Product 2 documentation contains no broken local Markdown links', () => {
   const files = [
     ...DOCUMENTS,
-    'README.md',
-    'docs/robot-adapter-integration-guide.md'
+    'README.md'
   ];
 
   for (const relativePath of files) {
