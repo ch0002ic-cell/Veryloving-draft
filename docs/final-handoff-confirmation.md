@@ -4,7 +4,7 @@ Confirmed on: 22 July 2026
 
 Branch: `features/dual-product-draft`
 
-Assurance boundary: **SOURCE-COMPLETE FOR ENGINEERING AND DESIGN-SYSTEM FOUNDATIONS; PARTIAL FOR FEATURE, PRODUCT, AND VISUAL ACCEPTANCE; NO-GO FOR PRODUCTION SAFETY USE UNTIL EXTERNAL AND PHYSICAL GATES PASS**
+Assurance boundary: **SOURCE-COMPLETE FOR ALL FIVE FEEDBACK THEMES; EXTERNAL PM/UX, ACCESSIBILITY, PROVIDER, MANUFACTURER, AND PHYSICAL ACCEPTANCE REMAINS; NO-GO FOR PRODUCTION SAFETY USE UNTIL THOSE GATES PASS**
 
 This is the single canonical document in `docs/`. It consolidates the former design, QA, architecture, API, simulator, manufacturer, dependency, research, audit, troubleshooting, and demo documents. Detailed deleted-file history remains recoverable through Git.
 
@@ -12,14 +12,14 @@ This is the single canonical document in `docs/`. It consolidates the former des
 
 ### Status summary
 
-Grace's five feedback themes all have implemented evidence. Two are **COMPLETE**, three remain **PARTIAL**, and none are **MISSING** at source-code level.
+Grace's five feedback themes are now **COMPLETE at source-code level**. That statement is deliberately narrower than product-market, signed-build, accessibility-device, clinical, or physical-hardware acceptance, which remains external/manual work.
 
 | ID | Original feedback | Status | Source-level confirmation | Remaining work |
 | --- | --- | --- | --- | --- |
-| GF-001 | “These are very basic features” | ⚠️ **PARTIAL** | Core mobile journeys are now substantial: dual-device Home, safety modes, isolated SOS, My Devices, BLE onboarding, QR robot pairing, Map, voice/offline fallback, medication, contacts, privacy, localization, and explicit async/recovery states. Five AI-native scenarios are registered server-side. | Cognitive engagement and emotional check-in remain backend-led scenarios without dedicated mobile history, controls, exercises, games, or explicit opt-in surfaces. Grace and PM/UX must decide the MVP experience, then accept the exact build. |
+| GF-001 | “These are very basic features” | ✅ **COMPLETE — SOURCE** | The existing dual-device, safety, pairing, Map, voice, medication, privacy, and localization journeys now include a dedicated Scenario Center for all five AI-native workflows, a Cognitive Engagement experience with memory/trivia/conversation activities, an Emotional Check-in experience with encrypted mood history and consent-aware Hume reflection, live execution states, cancellation, and interaction feedback. | Grace/PM/UX must validate scope and usefulness with representative users on an immutable build; this is external product acceptance, not missing source. |
 | GF-002 | “Strong engineering background” | ✅ **COMPLETE** | The source demonstrates fail-closed authentication, account isolation, encrypted/versioned state, replay and idempotency protection, bounded I/O/concurrency, per-device queues, durable ACKs, cancellation, lifecycle recovery, redacted logging, graceful shutdown, reproducible builds, and extensive deterministic tests. | Live cloud, provider, penetration, clinical, firmware, load, and physical-device acceptance are external release gates, not missing source foundations. |
-| GF-003 | “Product sense” | ⚠️ **PARTIAL** | The product uses progressive disclosure, truthful safety semantics, wearable/robot distinction beyond color, actionable permission/offline/error states, resumable onboarding, confirmed destructive actions, and privacy controls. | Representative elderly-user/caregiver research, PM/UX sign-off, native-speaker safety-copy review, notification-fatigue validation, and the cognitive/emotional surface decision remain. |
-| GF-004 | “Aesthetic quality” | ⚠️ **PARTIAL** | Key journeys use canonical color, typography, spacing, radii, elevation, layout, motion, status, loading, empty, and feedback patterns with reduced-motion and accessibility support. | Several lower-priority legacy surfaces still need complete semantic-token migration; retained iOS/Android screenshots, large-text/screen-reader walkthroughs, and Grace's visual acceptance are outstanding. |
+| GF-003 | “Product sense” | ✅ **COMPLETE — SOURCE** | The product uses progressive disclosure, truthful safety semantics, wearable/robot distinction beyond color, actionable permission/offline/error states, resumable onboarding, confirmed destructive actions, privacy lifecycle controls, honest demo-mode boundaries, safe scenario confirmations, and useful local wellbeing activities when connected care is unavailable. | Representative elderly-user/caregiver research, PM/UX sign-off, notification-fatigue validation, and native-speaker review remain external validation. |
+| GF-004 | “Aesthetic quality” | ✅ **COMPLETE — SOURCE** | All mobile surfaces now consume canonical semantic color, typography, spacing, radii, elevation, layout, motion, status, loading, empty, error, and feedback patterns. Shared touch feedback, reduced-motion behavior, loading skeletons, Dynamic Type-safe controls, and programmatic accessibility semantics are regression-tested. | Retained iOS/Android screenshots, maximum-text and screen-reader walkthroughs, and Grace's visual acceptance remain external/manual validation. |
 | GF-005 | “Worked with design system” | ✅ **COMPLETE** | A lightweight design system is implemented in `src/constants/theme.js` and `src/components/`, documented below, and protected by design/polish regression tests. | Continue governance and migration jointly with Grace's PM/UX team; this status describes the repository deliverable, not a claim about prior employment history. |
 
 ### GF-001 evidence — feature richness
@@ -30,8 +30,10 @@ Grace's five feedback themes all have implemented evidence. Two are **COMPLETE**
 - [`app/robot-pairing.js`](../app/robot-pairing.js) provides vendor selection, camera denial recovery, QR framing, synchronous duplicate-scan fencing, progress, and background recovery.
 - [`app/(tabs)/map.js`](../app/%28tabs%29/map.js), [`app/safety-call.js`](../app/safety-call.js), [`app/emergency-sos.js`](../app/emergency-sos.js), and [`app/medication-reminders.js`](../app/medication-reminders.js) provide explicit online/offline, loading, retry, accepted/delivered, and empty states.
 - [`server/src/scenarios/index.ts`](../server/src/scenarios/index.ts) registers fall detection, medication adherence, emotional check-in, cognitive engagement, and AI Angel auto-dial workflows.
-
-Source gap: no explicit consumer route currently exposes cognitive-engagement or emotional-check-in history/control/exercise/game experiences. Proposed resolution: PM/UX defines whether these proactive workflows need a mobile destination; implement the approved surface with consent, frequency controls, history, empty/error states, and analytics, or record an explicit MVP deferral.
+- [`app/scenario-center.js`](../app/scenario-center.js) exposes authenticated, server-bound triggers for all five workflows with honest confirmations and queued/running/terminal state.
+- [`app/cognitive-engagement.js`](../app/cognitive-engagement.js) provides accessible memory, trivia, and conversation activities plus the connected cognitive scenario.
+- [`app/emotional-check-in.js`](../app/emotional-check-in.js) provides bounded mood logging, encrypted account-bound history, deletion, and explicit Hume-backed reflection.
+- [`src/components/InteractionFeedbackModal.js`](../src/components/InteractionFeedbackModal.js) and [`app/safety-call.js`](../app/safety-call.js) collect bounded thumbs feedback after completed scenarios and voice calls without raw transcript or free-text analytics.
 
 ### GF-002 evidence — engineering strength
 
@@ -58,7 +60,7 @@ Acceptance gap: source review cannot validate comprehension, trust, stress behav
 - Motion is restrained, causal, and Reduce Motion-aware; content remains present without animation.
 - Critical controls meet minimum touch sizing, scale vertically with text, and expose accessibility roles/states; decorative art is silent.
 
-Source polish backlog: `app/voices.js`, `app/(auth)/verify-code.js`, `app/emergency-contacts.js`, `src/components/GlobalPhoneInput.js`, `CountryPicker`, `LanguageSelector`, and `ChatBubble` retain some local/raw styling. Proposed resolution: migrate the most visible PM/UX-prioritized surfaces to semantic tokens and shared primitives, then capture exact-candidate visual evidence.
+The legacy-surface migration is complete at source level. A whole-source audit plus focused regression contracts reject raw app palette/type/spacing values outside the canonical token module; media geometry and native scanner-frame geometry remain intentionally local. Exact-build visual acceptance remains a separate manual gate.
 
 ### GF-005 evidence — design-system implementation
 
@@ -73,27 +75,27 @@ Status: **PASS — FINAL SOURCE GATES EXECUTED ON 22 JULY 2026**
 
 | Gate | Expected command | Result |
 | --- | --- | --- |
-| Full repository suite | `npm test` | ✅ PASS — 978/978 (750 core, 44 adapter, 8 adapter integration, 176 AI-native) |
+| Full repository suite | `npm test` | ✅ PASS — 1,050/1,050 (815 core, 44 adapter, 8 adapter integration, 183 AI-native) |
 | ESLint | `npm run lint` | ✅ PASS — zero errors or warnings |
 | Expo project health | `npm run doctor -- --verbose` | ✅ PASS — Expo Doctor 1.20.1, 20/20 checks |
-| iOS production JavaScript export | `NODE_ENV=production npx expo export --platform ios` | ✅ PASS — Hermes bundle and 82 assets exported |
-| Android production JavaScript export | `NODE_ENV=production npx expo export --platform android` | ✅ PASS — Hermes bundle and 86 assets exported |
+| Consolidated source gate | `npm run validate` | ✅ PASS — environment dry-run, lint, all tests, Expo Doctor, and both exports completed using the credential-free non-routable production fixture |
+| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 45 production-boundary tests, two validated CycloneDX SBOMs, and zero cached dependency vulnerabilities; live registry/container evidence remains external |
+| iOS production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 82 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
+| Android production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 86 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
 | Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — one canonical Markdown file, stable appendix contracts, no broken local links |
 
 Passing JavaScript exports do not replace signed native builds, simulator/emulator interaction tests, VoiceOver/TalkBack checks, provider delivery, BLE validation, or physical robot acceptance.
 
-## 3. Remaining non-external acceptance work
+## 3. Remaining external and manual acceptance work
 
 | Gate | Status | Owner / action |
 | --- | --- | --- |
-| Cognitive/emotional mobile-surface decision | **PENDING PRODUCT DECISION** | Grace + PM/UX explicitly implement or defer dedicated consent, controls, history, exercises, and games. |
-| Remaining legacy-surface token migration | **PENDING POLISH** | PM/UX prioritizes the visible backlog; mobile engineering migrates agreed screens. |
 | iOS and Android visual walkthrough with retained screenshots | **PENDING ACCEPTANCE** | Mobile engineer + PM/UX execute the exact-candidate matrix below. |
 | VoiceOver, TalkBack, maximum text/display size, Reduce Motion, RTL, keyboard, compact/tablet layout | **PENDING ACCEPTANCE** | Accessibility tester retains pass/fail evidence. |
 | Elderly-user and caregiver usability study | **PENDING PRODUCT VALIDATION** | Grace/PM recruits representative participants and approves success criteria. |
 | Grace product/visual sign-off | **PENDING SIGN-OFF** | Review an immutable development/preview build and record decisions. |
 
-No item in Grace's feedback is wholly missing. The partial items require the product decisions or acceptance evidence above rather than speculative source expansion.
+No Grace-feedback item remains missing or partial at source-code level. The remaining rows require people, signed builds, representative users, provider accounts, or physical devices and therefore cannot be closed by additional repository code.
 
 ## 4. External blockers
 
@@ -116,7 +118,7 @@ Target-cloud IAM/TLS/WAF, signed store artifacts, provider receipts, monitoring/
 1. Send the Technical Package Request template below to Yongyida and Jiangzhi immediately; the NDA gate is complete.
 2. Request matching engineering units from both manufacturers in parallel.
 3. Ask the SV Lead to begin Apple/APNs, Google/FCM, Twilio, and Hume enterprise provisioning through approved secret channels.
-4. Nominate a PM/UX owner and schedule a 60–90 minute exact-build review, including the cognitive/emotional surface decision.
+4. Nominate a PM/UX owner and schedule a 60–90 minute exact-build review of the implemented Scenario Center, Emotional Check-in, Cognitive Engagement, and safety journeys.
 5. Schedule iOS, Android, accessibility, elderly-user, and caregiver walkthroughs using the QA appendix.
 6. Rebaseline the integration timeline when requests are actually sent; update dependency status only when the evidence rule below is satisfied.
 
@@ -145,7 +147,7 @@ We are ready to work directly with Grace's PM/UX team on future iterations.
 
 ## 7. Closed audit summary
 
-The repository-wide audit closed 68 source defects/source gates with zero open internal findings. Major corrected classes include authentication/deletion races, phone-token replay, push ownership, bounded provider I/O, SSE/WebSocket cleanup, action/outbox/ACK races, binding generation, pairing replay/recovery, multi-vendor isolation, AI-native cancellation and critical-event precedence, simulator limits, mobile account boundaries, BLE/voice/process-death recovery, map freshness, privacy export/delete, and release/supply-chain validation.
+The repository-wide audit closed the documented 66 source defects, passed its source-boundary check, and closed all three internal production gates. Subsequent final-polish review added and verified further mobile lifecycle, voice-completion, scenario, accessibility, and design-system hardening without changing those historical audit counts. Major corrected classes include authentication/deletion races, phone-token replay, push ownership, bounded provider I/O, SSE/WebSocket cleanup, action/outbox/ACK races, binding generation, pairing replay/recovery, multi-vendor isolation, AI-native cancellation and critical-event precedence, simulator limits, mobile account boundaries, BLE/voice/process-death recovery, map freshness, privacy export/delete, and release/supply-chain validation.
 
 The historical robot-adapter log contains 41 closed findings. Their identifiers and titles are preserved below; full reproduction narratives and old candidate outputs remain in Git history because they are no longer active operator documentation.
 
@@ -197,7 +199,7 @@ The former 101-item dual-product requirements audit is superseded by the current
 
 ## 8. Copy-ready summary for Grace
 
-VeryLoving now has substantially more than a basic feature demo: it has a coherent dual-device mobile journey, an implemented design system, accessible and honest safety interactions, AI-native cross-device orchestration, and a deeply hardened backend. Engineering strength and the design-system foundation are complete at source level. Feature richness, product sense, and aesthetic quality have strong implementation evidence but remain partial until PM/UX defines the cognitive/emotional mobile experience, the remaining legacy surfaces are prioritized, representative users are tested, and the exact build receives visual/accessibility acceptance. There are no wholly missing feedback items and no known open internal source gate. The immediate critical path is manufacturer technical packages, engineering hardware, production provider access, and joint PM/UX review.
+VeryLoving now has substantially more than a basic feature demo: it has a coherent dual-device mobile journey, a complete semantic design-system migration, accessible and honest safety interactions, dedicated Cognitive Engagement and Emotional Check-in experiences, authenticated all-five scenario control with live state/cancellation, privacy-bound wellbeing history, post-interaction feedback, AI-native cross-device orchestration, and a deeply hardened backend. All five of Grace's feedback themes are complete at source-code level, with no known open internal source gate. The remaining critical path is external: manufacturer technical packages, engineering hardware, production provider access, representative-user and accessibility testing, and joint PM/UX acceptance of the exact signed build.
 
 **GO** for handoff, PM/UX iteration, mock-backed investor/partner demonstration, and manufacturer conformance work.
 
@@ -221,7 +223,7 @@ Last reviewed: 22 July 2026
 
 VeryLoving supports a wearable safety product and a home companion robot in one mobile experience. This system gives both product lines one calm, recognizable interface while keeping life-safety actions unmistakable. The canonical token source is [`src/constants/theme.js`](../src/constants/theme.js); shared components live in [`src/components/`](../src/components/).
 
-This document describes the implemented foundation and the rules for extending it. It does not claim that every older screen has completed visual migration, or that source review replaces VoiceOver, Dynamic Type, emulator, or physical-device QA.
+This document describes the implemented foundation and the rules for extending it. Every current mobile screen has completed the semantic token and shared-state migration at source level. That does not mean source review replaces VoiceOver, TalkBack, maximum Dynamic Type, emulator, signed-build, or physical-device QA.
 
 ## 1. Product principles
 
@@ -677,7 +679,7 @@ The repository's `npm run validate` is the preferred combined source gate. It is
 | POLISH-CARE-001 | Simulator + emulator with mock backend | Open voice UI online, connecting, failed, offline text fallback, reconnecting, and ended; send/resume history. | Status is visually clear and announced without chatter; controls remain available; typed fallback queues once; history has useful loading/empty/error/retry states. | **REQUIRES SIMULATOR** / **REQUIRES EMULATOR** |
 | POLISH-CARE-002 | Physical phone + Hume staging | Exercise microphone permission, capture/playback, barge-in, Bluetooth route, interruption, lock/background, network split, reconnect, and repeated calls. | No overlapping playback, orphan recording, runaway reconnect, leaked temporary audio, or silent loss; state copy matches transport; latency is recorded. | **REQUIRES PHYSICAL DEVICE** and **BLOCKED — EXTERNAL** (Hume credentials) |
 | POLISH-CARE-003 | Simulator + emulator with mock robot | Create, edit, enable/disable, and delete a medication reminder; test no robot, offline robot, and scheduling failure. | The screen explains the robot dependency; time/medication labels are clear; mutation feedback is honest; failure retains the prior schedule; empty state is actionable. | **REQUIRES SIMULATOR** / **REQUIRES EMULATOR** |
-| POLISH-CARE-004 | Simulator + emulator | Walk through any exposed cognitive/emotional entry points; otherwise verify no control claims the capability exists. | Only implemented, reachable functionality is advertised. Scenario-engine capability is not presented as a completed mobile experience without a route and user controls. | **REQUIRES SIMULATOR** / **REQUIRES EMULATOR** |
+| POLISH-CARE-004 | Simulator + emulator | Walk through Scenario Center, Cognitive Engagement, and Emotional Check-in; trigger non-emergency workflows, exercise cancellation/status recovery, inspect mood history, and submit thumbs feedback. Verify the AI Angel warning before any emergency-path test. | All dedicated routes are reachable and understandable; local activities work offline; authenticated scenarios move through honest states; history and feedback remain account-bound; no practice fall drill moves a robot, calls, or alerts. | **REQUIRES SIMULATOR** / **REQUIRES EMULATOR** |
 
 ### Settings, privacy, and localization
 
@@ -3117,13 +3119,13 @@ npm test
 
 The command builds adapter TypeScript, runs the core `node:test` suite, runs adapter Jest tests with coverage gates, and runs the test-only manufacturer bridge integration flow.
 
-`npm run validate` is the development/source release gate. It does not run or waive the separate production environment gate:
+`npm run validate` is the consolidated source gate. It validates a deterministic, credential-free production export fixture in addition to development configuration, tests, lint, Doctor, and both platform bundles. It does not prove that the real release environment is provisioned or waive the separate candidate-environment gate:
 
 ```bash
 npm run validate-env -- --profile production
 ```
 
-The recorded local production-profile result on 18 July 2026 was intentionally fail-closed: 12 checks OK, 3 warnings, and 11 errors because production action/signing inputs, feature gates, and approved VL01 UUIDs were not provisioned. Re-run it with the candidate deployment environment and retain only redacted results.
+Run that command only with the authorized candidate deployment environment. It must continue to fail closed until action/signing configuration, approved VL01 UUIDs, provider values, and other required release inputs are provisioned; retain only redacted results. For credential-free source readiness, use `npm run validate:production`, whose live registry/container extension remains a separate external release action.
 
 Useful focused commands are:
 
@@ -4098,9 +4100,12 @@ These controllers are mounted by [clm-server.cjs](../server/clm-server.cjs) only
 
 | Route | Authentication | Exact purpose |
 | --- | --- | --- |
-| `POST /v1/scenarios` | First-party app JWT | Starts only `ai_angel_auto_dial`; body is exactly `{ scenario_id, request_id, occurred_at }` and device targets are resolved server-side |
+| `POST /v1/scenarios` | First-party app JWT | Starts one of the five fixed user intents. Every request supplies `scenario_id`, `request_id`, and `occurred_at`; fall, medication, emotional, and cognitive requests also supply their exact server-defined `intent`; emotional and cognitive requests require their bounded scenario-specific `context`. Device targets are always resolved server-side. |
+| `GET /v1/scenarios/executions?limit=` | First-party app JWT | Lists only the authenticated account's bounded execution snapshots for process recovery and live status reconciliation. |
 | `GET /v1/scenarios/{executionId}` | First-party app JWT | Returns that account's execution snapshot or 404 |
 | `POST /v1/scenarios/{executionId}/cancel` | First-party app JWT | Requires exactly `{ confirmed: true, occurred_at }`; the server supplies authenticated-user cancellation identity |
+| `POST /v1/scenarios/{executionId}/feedback` | First-party app JWT | Accepts only a bounded helpful/not-helpful rating for an account-owned terminal execution. |
+| `POST /v1/interaction-feedback` | First-party app JWT | Accepts a bounded voice-call rating only after the shared voice gateway proves the exact account-bound interaction completed explicitly. |
 | `POST /v1/edge/wearable/inference` | First-party app JWT | Accepts exactly `{ envelope, context? }`; `resolveEdgeDeviceBinding` must bind the relayed wearable source to the account |
 | `POST /v1/edge/robot/inference` | Robot callback headers | Requires `X-Robot-Adapter-Id` plus `X-Robot-Callback-Key`, no bearer token, and an `authenticateRobotEdgeIngress` result bound to the envelope source |
 | `POST /v1/scenarios/context-events` | Dedicated scheduler credential | Requires `X-Scenario-Ingress-Key`, no bearer token, and accepts only bounded `medication_due` or `bedroom_inactivity` events |
@@ -4278,7 +4283,7 @@ Check in order:
 
 `EDGE_SOURCE_MISMATCH` means an envelope source does not equal the authenticated binding; do not bypass it by copying the envelope's value into the binding. `EDGE_EVENT_STALE` means the clock or event pipeline is outside the configured window. `EDGE_EVENT_INVALID` means shape, bounds, account/target identity, or policy configuration failed validation.
 
-Use the correct ingress boundary: an app JWT may relay wearable inference, robot inference requires adapter/device callback authentication, and scheduled medication/occupancy events require the dedicated scheduler credential. Do not reuse one credential class for another route. `POST /v1/scenarios` intentionally accepts only the server-mapped AI Angel request and rejects client-selected devices or generic scenario triggers.
+Use the correct ingress boundary: an app JWT may relay wearable inference, robot inference requires adapter/device callback authentication, and scheduled medication/occupancy events require the dedicated scheduler credential. Do not reuse one credential class for another route. `POST /v1/scenarios` accepts only five server-mapped user intents: fall practice, medication reminder review, emotional check-in, cognitive engagement, and AI Angel. It rejects client-selected devices and arbitrary scenario actions. Emotional check-in requires `context.mood_key` plus an optional bounded `reflection_summary`; cognitive engagement requires an allowlisted `context.activity`. AI Angel has no client context and remains the only user action that starts the real emergency workflow.
 
 For local event injection, use `POST /api/v1/simulation/events` with the documented bounded simulator event shape, then let the trusted integration-test/demo driver map it to `ScenarioEngine.startScenario`. The injector alone does not start a workflow. The endpoint should reject malformed, oversized, unsupported, or unauthenticated input. It must not accept arbitrary commands, URLs, account selection, phone numbers, or manufacturer device identities.
 

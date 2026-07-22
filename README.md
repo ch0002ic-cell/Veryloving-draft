@@ -1,7 +1,7 @@
 # VeryLoving – Complete Handoff & Documentation
 
-- Consolidated: 18 July 2026
-- Repository evidence baseline: comprehensive `feature/dual-product-core` audit
+- Consolidated: 22 July 2026
+- Repository evidence baseline: source-complete `features/dual-product-draft` handoff
 - Audience: Grace, Product, Mobile QA, Engineering, Security, Privacy, Localization, and Release Operations
 - Primary iOS acceptance environment: signed TestFlight build on a physical device
 
@@ -58,7 +58,7 @@ When dated evidence or sections differ, use this precedence:
 4. [Executive status and risk summary](#2-executive-status) for the system risk register.
 5. [Evidence rules and current status](#1-document-authority-and-evidence-rules) and [Reconciled evidence history](#1-document-authority-and-evidence-rules) as dated runtime and bug-history evidence.
 
-Historical test totals remain valid only for their recorded snapshots. The current candidate was freshly validated on 21 July 2026 with 705 core/mobile/server JavaScript tests, 44 TypeScript-adapter/simulator tests, 8 manufacturer integration tests, and 160 AI-native tests (917 total). The delivery report binds those results to the immutable audited candidate and does not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
+Historical test totals remain valid only for their recorded snapshots. The current candidate's exact measured test, lint, project-health, validation, and export results are recorded in [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md); that record does not confuse simulated edge/bridge evidence with vendor, clinical, or hardware evidence.
 
 ### Reconciled documentation updates
 
@@ -77,10 +77,10 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 
 | Layer | Result | Qualification |
 | --- | --- | --- |
-| Deterministic core/mobile/server JavaScript tests | **PASS — 705/705** | Fresh full candidate run on 21 July 2026. |
-| TypeScript robot adapters and manufacturer simulator | **PASS — 44/44** | Fresh coverage: 98.55% statements/lines, 91.20% branches, and 97.26% functions; all enforced thresholds exceed 90%. |
-| Manufacturer bridge integration | **PASS — 8/8** | Test-only loopback bridge; includes dual-vendor signed routing, reset-generation fencing, one-time pairing response-loss recovery, and mocked acceptance p95 below 250 ms. This is not real-vendor or physical-execution latency evidence. |
-| AI-native state, memory, edge, orchestration, and scenario integration | **PASS — 160/160** | Five deterministic cross-device workflows, authenticated ingress contracts, account privacy lifecycle, edge simulation, and a real loopback manufacturer-ACK path; 97.62% statements/lines, 86.86% branches, and 98.57% functions. This is not clinical/model/hardware/provider validation. |
+| Deterministic repository tests | **PASS — current candidate** | See the final handoff verification record for the exact measured breakdown from the latest full run. |
+| TypeScript robot adapters and manufacturer simulator | **PASS — current candidate** | Coverage thresholds remain enforced by the adapter Jest configuration. |
+| Manufacturer bridge integration | **PASS — current candidate** | Test-only loopback bridge; this is not real-vendor or physical-execution latency evidence. |
+| AI-native state, memory, edge, orchestration, and scenario integration | **PASS — current candidate** | Five deterministic cross-device workflows and their authenticated ingress/privacy contracts are covered; this is not clinical/model/hardware/provider validation. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
 | Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
@@ -88,7 +88,7 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 | Android production JavaScript export | **PASS** | Release-optimized bundle generation only. |
 | iOS simulator supporting run | **PASS for named flows** | Spanish switching/persistence, selected UI flows, honest SOS fallback, Map/Saved Places/share, offline Safety Call, and selected responsive layouts were observed. |
 | Isolated backend staging/preview | **PARTIAL — EXTERNAL** | HTTP liveness/fail-closed behavior and a synthetic authenticated Hume handshake were recorded; no production approval is implied. |
-| Local production environment validation | **FAIL — recorded 18 July** | 12 checks OK, 3 warnings, and 11 errors. Required action-gateway/signing configuration, production feature gates, and five approved VL01 UUIDs are not provisioned in the local profile. No secret values are recorded. |
+| Production source-readiness validation | **PASS — source only** | `npm run validate:production` passes with mocks/cached audits and no real credentials. Release configuration, live registry/container evidence, approved firmware UUIDs, and provider credentials remain external gates. |
 | Signed EAS/TestFlight archive | **BLOCKED — EXTERNAL** | The recorded Expo account lacked project build access. |
 | Physical iPhone/iPad acceptance | **BLOCKED — EXTERNAL** | No connected physical iOS device was available for the audited commit. |
 | Production safety release | **NO-GO** | P1 security, delivery, hardware, provider, localization, privacy, and operations gates remain. |
@@ -174,7 +174,7 @@ The HTTP-only Vercel adapter is [`server/api/index.js`](./server/api/index.js). 
 | Emergency-contact routes | Scoped app JWT | Account-partitioned read/create/update/delete. |
 | Safety-session and SOS routes | Scoped app JWT | Idempotent current-state and durable SOS acceptance; no delivery claim. |
 | Privacy export/delete routes | Scoped app JWT | Coordinates account sessions, safety/device/action data, AI-native state/memory/scenarios, and configured manufacturer lifecycle providers behind deletion fences. |
-| `POST /v1/scenarios`, status, and confirmed cancellation routes | Scoped app JWT | Starts only the server-mapped AI Angel flow, derives devices server-side, and exposes account-scoped execution state. |
+| `POST /v1/scenarios`, status, cancellation, and feedback routes | Scoped app JWT | Accepts the five allowlisted user intents (fall-response practice, medication reminder, emotional check-in, cognitive engagement, and confirmed AI Angel), derives devices server-side, exposes account-scoped execution state, and accepts a bounded rating only after terminal execution. |
 | Wearable/robot inference and trusted context-event routes | App JWT, robot callback credential, or scheduler credential according to route | Separate trust boundaries validate source binding, freshness, shape, and account ownership before edge routing. |
 | `GET` upgrade `/api/voice/hume-ws` | JWT in first TLS frame with `voice:connect` | Opens Hume only after app authentication. |
 | `POST /v1/safety/tips` | Scoped app JWT | Curated safety guidance for tool calls. |
@@ -228,9 +228,21 @@ Expo Go and the iOS Simulator use explicit volatile or unavailable fallbacks for
 
 This UI section is the canonical framework summary; update it whenever the implementation or signed-device evidence changes.
 
+### Mobile AI-native wellbeing surfaces
+
+Three protected, localized routes turn the dual-device orchestration layer into explicit user journeys:
+
+- [`/scenario-center`](./app/scenario-center.js) presents all five allowlisted actions, explains safety consequences before execution, and displays account-scoped `queued` → `running` → terminal status. Active work uses bounded polling that aborts on unmount/account change, supports confirmed cancellation, survives navigation/process restoration through encrypted activity history, and asks for a thumbs-up/down rating only after completion.
+- [`/emotional-check-in`](./app/emotional-check-in.js) provides an accessible mood picker, an optional privacy-minimized reflection summary, bounded local history, deletion, and a consent-aware Hume/home-companion scenario. Raw voice audio and transcripts are not written to mood history, and a user-started check-in never fabricates a stress reading.
+- [`/cognitive-engagement`](./app/cognitive-engagement.js) provides low-pressure memory, trivia, and conversation activities plus an optional home-companion cognitive scenario. Local activities do not claim diagnosis, assessment, or clinical validation.
+
+The authenticated client never accepts device identifiers from the UI: the server resolves account-bound devices and maps each scenario to a fixed user intent. The fall action is an analytics-only practice that cannot move the robot, call anyone, or send an emergency alert; medication copy discloses the configured caregiver escalation; AI Angel requires an explicit confirmation because it starts the real emergency workflow. Development demo sessions intentionally have no bearer token, so local mood/cognitive tools remain usable while connected scenarios remain visibly offline.
+
+Mood history, scenario execution history, and ratings are bounded, encrypted through the account-bound local storage layer, included in account export, and removed by account deletion/account-switch cleanup. Server feedback is likewise account-scoped and stores a rating rather than free text.
+
 ### Mobile design system and polish QA
 
-The mobile foundation uses semantic color/tone, typography, spacing, radius, elevation, motion, control-size, and layout tokens from [`src/constants/theme.js`](./src/constants/theme.js). Shared `Screen`, `Header`, onboarding-progress, `Button`, `Card`, `TextField`, `ActionTile`, banner/snackbar feedback, empty/loading/skeleton, status, and dual-device patterns keep ordinary, offline, and life-safety states consistent while older screens migrate incrementally.
+The mobile source-level design-system migration is closed: tracked routes and shared components use semantic color/tone, typography, spacing, radius, elevation, motion, control-size, and layout tokens from [`src/constants/theme.js`](./src/constants/theme.js). Shared `Screen`, `Header`, onboarding-progress, `Button`, `Card`, `TextField`, `ActionTile`, banner/snackbar feedback, animated skeleton, empty/loading/error, scenario-status, feedback-modal, and dual-device patterns keep ordinary, offline, and life-safety states consistent. Press feedback and route/modal transitions honor the motion scale and reduced-motion preference; critical controls expose labels, roles, state, hints, scalable text, logical grouping, and minimum touch targets at source level.
 
 - [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md) is the single canonical handoff document. Its [Design System](./docs/final-handoff-confirmation.md#design-system), [Mobile Polish QA](./docs/final-handoff-confirmation.md#mobile-polish-qa), and [Demo Script](./docs/final-handoff-confirmation.md#demo-script) appendices preserve component guidance, environment-specific acceptance, and the polished walkthrough.
 
@@ -348,6 +360,7 @@ Refresh sessions use durable hashed families, compare-and-swap single-use rotati
 | Current safety/SOS | Account-bound resilience records | Optional authenticated DynamoDB persistence and account export/delete. |
 | Settings, navigation, device metadata | Local account-bound schemas | No complete cloud synchronization. |
 | Transcripts/history/offline queue | Authenticated encrypted local storage | Hume/CLM receives live conversation content when online; no complete cloud history sync. |
+| Mood and AI-native scenario activity | Bounded account-bound encrypted storage; raw voice/audio transcripts are excluded | Authenticated scenarios and ratings are account-scoped; configured AI-native repositories participate in export/delete. |
 | Cached location/map packs | Bounded local fallback and native cache | Recent coordinates may accompany confirmed SOS; provider tiles follow Mapbox policy. |
 
 Before a different account is published, [`account-data-boundary.js`](./src/services/account-data-boundary.js) purges previous or unowned local/secure/native surfaces and fails closed if required cleanup cannot complete. Sensitive AsyncStorage records use authenticated encryption with a SecureStore-backed key, which is rotated after account deletion.
@@ -846,6 +859,20 @@ The combined release-oriented source gate is:
 npm run validate
 ```
 
+For a focused mobile wellbeing/design-system regression pass during UI iteration:
+
+```bash
+node --require @babel/register --test \
+  tests/wellness-mobile-surfaces.test.cjs \
+  tests/ai-native-scenario-client.test.cjs \
+  tests/wellbeing-history.test.cjs \
+  tests/design-system-foundation.test.cjs \
+  tests/ui-accessibility.test.cjs \
+  tests/mobile-screen-resilience.test.cjs
+```
+
+This focused set verifies route wiring, all-five authenticated scenario contracts, status/cancellation/feedback lifecycle, bounded account data, privacy cleanup, token adoption, accessible controls, and explicit loading/empty/error states. It complements rather than replaces `npm test`, Expo Doctor, production exports, signed-device accessibility review, or PM/UX acceptance.
+
 This is the development/source gate. It does not run or waive the production environment profile.
 
 The credential-free production source/supply-chain gate is:
@@ -1001,6 +1028,8 @@ This README is the primary setup and release guide. [`docs/final-handoff-confirm
 - Backend: [`clm-server.cjs`](./server/clm-server.cjs), [`auth-session.cjs`](./server/auth-session.cjs), [`safety-api.cjs`](./server/safety-api.cjs), [`server/api/index.js`](./server/api/index.js)
 - Product 2 HAL: [`RobotAdapter.ts`](./server/src/adapters/RobotAdapter.ts), [`robot-adapter-runtime.cjs`](./server/robot-adapter-runtime.cjs), [architecture](./docs/final-handoff-confirmation.md#robot-hal-architecture), [integration guide](./docs/final-handoff-confirmation.md#robot-adapter-integration-guide), [manufacturer research](./docs/final-handoff-confirmation.md#hardware-partner-research), [decision matrix](./docs/final-handoff-confirmation.md#hardware-partner-decision-matrix), [API intake requirements](./docs/final-handoff-confirmation.md#manufacturer-api-requirements), [external-dependency dashboard](./docs/final-handoff-confirmation.md#external-dependencies-dashboard), [timeline](./docs/final-handoff-confirmation.md#integration-timeline), and [ask templates](./docs/final-handoff-confirmation.md#ask-templates)
 - AI-native dual-device layer: [`AINativeSystem.ts`](./server/src/orchestration/AINativeSystem.ts), [`ScenarioEngine.ts`](./server/src/orchestration/ScenarioEngine.ts), [`EdgeScenarioRouter.ts`](./server/src/orchestration/EdgeScenarioRouter.ts), [`UserState.ts`](./server/src/models/UserState.ts), [`MemoryNet.ts`](./server/src/memory/MemoryNet.ts), [integration guide](./docs/final-handoff-confirmation.md#ai-native-integration-guide), [API reference](./docs/final-handoff-confirmation.md#api-reference-ai-native), [troubleshooting](./docs/final-handoff-confirmation.md#troubleshooting-ai-native), and [demo script](./docs/final-handoff-confirmation.md#demo-script)
+- Mobile AI-native journeys: [`scenario-center.js`](./app/scenario-center.js), [`emotional-check-in.js`](./app/emotional-check-in.js), [`cognitive-engagement.js`](./app/cognitive-engagement.js), [`useScenarioRunner.js`](./src/hooks/useScenarioRunner.js), [`ai-native-scenarios.js`](./src/services/ai-native-scenarios.js), [`mood-checkin-store.js`](./src/services/mood-checkin-store.js), and [`scenario-activity-store.js`](./src/services/scenario-activity-store.js)
+- Mobile design system: [`theme.js`](./src/constants/theme.js), [`Button.js`](./src/components/Button.js), [`Skeleton.js`](./src/components/Skeleton.js), [`Snackbar.js`](./src/components/Snackbar.js), [`ScenarioStatusCard.js`](./src/components/ScenarioStatusCard.js), and [`InteractionFeedbackModal.js`](./src/components/InteractionFeedbackModal.js)
 - BLE: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services/vl01-protocol.js)
 - Native/build: [`app.config.js`](./app.config.js), [`eas.json`](./eas.json), [`plugins/`](./plugins), [`server/Dockerfile`](./server/Dockerfile), [`railway.toml`](./railway.toml)
 

@@ -24,12 +24,15 @@ test('Grace handoff confirmation covers every feedback theme with an honest disp
     assert.match(verdict, new RegExp(feedback));
   }
 
-  assert.match(verdict, /Two are \*\*COMPLETE\*\*/);
-  assert.match(verdict, /three remain \*\*PARTIAL\*\*/);
-  assert.match(verdict, /none are \*\*MISSING\*\*/);
+  assert.match(verdict, /five feedback themes are now \*\*COMPLETE at source-code level\*\*/);
+  assert.doesNotMatch(verdict, /⚠️\s*\*\*PARTIAL/);
+  assert.doesNotMatch(verdict, /❌\s*\*\*MISSING/);
+  assert.match(verdict, /external\/manual work/i);
   assert.match(document, /13 tracked external dependencies: \*\*2 PASS\*\*.*\*\*11 BLOCKED — EXTERNAL\*\*/);
   assert.match(document, /ready to work directly with Grace's PM\/UX team on future iterations/i);
   assert.match(document, /NO-GO.*production safety use/i);
+  assert.doesNotMatch(document, /starts only `ai_angel_auto_dial`/i);
+  assert.doesNotMatch(document, /accepts only the server-mapped AI Angel request/i);
 });
 
 test('Grace handoff confirmation contains no broken local Markdown links', () => {

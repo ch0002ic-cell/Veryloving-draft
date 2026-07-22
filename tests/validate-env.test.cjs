@@ -14,6 +14,7 @@ const {
   validateServerEnvironment,
   renderReport
 } = require('../scripts/validate-env.cjs');
+const { PRODUCTION_EXPORT_ENVIRONMENT } = require('../scripts/validate.cjs');
 
 function productionEnvironment(overrides = {}) {
   return {
@@ -198,6 +199,31 @@ test('complete production configuration passes without exposing values', () => {
     color: false
   });
   assert.doesNotMatch(report, /pk\.public-placeholder|sk\.download-placeholder|api\.example\.test/);
+});
+
+test('non-release production export fixture is complete, non-routable, and credential-free', () => {
+  const results = validateEnvironment(PRODUCTION_EXPORT_ENVIRONMENT, {
+    profile: 'production',
+    fileEnvironment: PRODUCTION_EXPORT_ENVIRONMENT
+  });
+  assert.deepEqual(
+    results.filter((result) => result.level === 'error'),
+    []
+  );
+
+  for (const name of [
+    'EXPO_PUBLIC_API_BASE_URL',
+    'EXPO_PUBLIC_ACTION_GATEWAY_URL',
+    'EXPO_PUBLIC_HUME_WS_PROXY_URL',
+    'EXPO_PUBLIC_HUME_CUSTOMIZATION_URL'
+  ]) {
+    assert.equal(new URL(PRODUCTION_EXPORT_ENVIRONMENT[name]).hostname.endsWith('.invalid'), true, name);
+  }
+
+  assert.equal(Object.isFrozen(PRODUCTION_EXPORT_ENVIRONMENT), true);
+  assert.equal(PRODUCTION_EXPORT_ENVIRONMENT.EAS_BUILD, 'false');
+  assert.equal(PRODUCTION_EXPORT_ENVIRONMENT.EXPO_PUBLIC_HUME_API_KEY, '');
+  assert.match(PRODUCTION_EXPORT_ENVIRONMENT.RNMAPBOX_MAPS_DOWNLOAD_TOKEN, /not-a-credential$/);
 });
 
 test('production reports missing requirements and rejects public secrets', () => {
