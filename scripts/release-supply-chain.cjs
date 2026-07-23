@@ -80,11 +80,17 @@ function validateDockerfile(source, policy) {
   invariant(fromLines.length === 2, 'Dockerfile must use exactly two stages');
   invariant(fromLines[0] === `FROM ${policy.nodeImage} AS build`, 'Docker build stage must use the reviewed immutable Node image');
   invariant(fromLines[1] === `FROM ${policy.nodeImage}`, 'Docker runtime stage must use the reviewed immutable Node image');
+  const runtimeStage = source.slice(source.lastIndexOf(`FROM ${policy.nodeImage}`));
   invariant(/RUN npm ci --ignore-scripts(?:\s|$)/.test(source), 'Docker build stage must use npm ci --ignore-scripts');
-  invariant(/RUN npm ci --omit=dev --ignore-scripts(?:\s|&&)/.test(source), 'Docker runtime stage must install only locked production dependencies');
-  invariant(/\nUSER node\s*(?:\n|$)/.test(source), 'Docker runtime must use the non-root node user');
-  invariant(/\nHEALTHCHECK\s/.test(source), 'Docker runtime must declare a health check');
-  invariant(/CMD \["node", "clm-server\.cjs"\]/.test(source), 'Docker runtime entrypoint is unexpected');
+  invariant(/RUN npm ci --omit=dev --ignore-scripts(?:\s|&&)/.test(runtimeStage), 'Docker runtime stage must install only locked production dependencies');
+  invariant(
+    /rm -rf \/usr\/local\/lib\/node_modules\/npm/.test(runtimeStage)
+      && /rm -f \/usr\/local\/bin\/npm \/usr\/local\/bin\/npx/.test(runtimeStage),
+    'Docker runtime must remove the unused bundled npm toolchain after installing production dependencies'
+  );
+  invariant(/\nUSER node\s*(?:\n|$)/.test(runtimeStage), 'Docker runtime must use the non-root node user');
+  invariant(/\nHEALTHCHECK\s/.test(runtimeStage), 'Docker runtime must declare a health check');
+  invariant(/CMD \["node", "clm-server\.cjs"\]/.test(runtimeStage), 'Docker runtime entrypoint is unexpected');
 }
 
 function validateEAS(eas, policy) {

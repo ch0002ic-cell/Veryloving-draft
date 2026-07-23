@@ -78,6 +78,12 @@ async function validateContainer() {
   if (user !== 'node' || health !== 'configured' || command !== '["node","clm-server.cjs"]') {
     throw new Error('Container runtime policy does not match the reviewed non-root health-checked entrypoint');
   }
+  execute('docker', [
+    'run', '--rm', '--network', 'none', '--entrypoint', 'sh', imageTag, '-c',
+    'test ! -d /usr/local/lib/node_modules/npm'
+      + ' && test ! -e /usr/local/bin/npm && test ! -L /usr/local/bin/npm'
+      + ' && test ! -e /usr/local/bin/npx && test ! -L /usr/local/bin/npx'
+  ]);
 
   // A credentials-free production container must fail closed before binding.
   const failClosed = spawnSync('docker', ['run', '--rm', '--network', 'none', imageTag], {

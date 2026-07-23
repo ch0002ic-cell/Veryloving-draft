@@ -39,6 +39,21 @@ test('release policy rejects mutable tools and container images', () => {
   assert.throws(() => validateEAS({ cli: { version: '>= 20.0.0', requireCommit: true }, build: {} }, policy), /exact EAS CLI/);
 });
 
+test('release policy requires the unused npm toolchain to be absent from the runtime image', () => {
+  const policy = load('release-policy.json');
+  const dockerfile = fs.readFileSync(path.join(projectRoot, 'server/Dockerfile'), 'utf8');
+  const retainedNpm = dockerfile
+    .replace('  && rm -rf /usr/local/lib/node_modules/npm \\\n', '')
+    .replace('  && rm -f /usr/local/bin/npm /usr/local/bin/npx\n', '');
+  const buildOnlyCleanup = retainedNpm.replace(
+    `FROM ${policy.nodeImage} AS build\n`,
+    `FROM ${policy.nodeImage} AS build\nRUN rm -rf /usr/local/lib/node_modules/npm && rm -f /usr/local/bin/npm /usr/local/bin/npx\n`
+  );
+
+  assert.throws(() => validateDockerfile(retainedNpm, policy), /remove the unused bundled npm toolchain/);
+  assert.throws(() => validateDockerfile(buildOnlyCleanup, policy), /remove the unused bundled npm toolchain/);
+});
+
 test('lock validation rejects manifest drift, alternate registries, and missing integrity', () => {
   const policy = load('release-policy.json');
   const manifest = load('server/package.json');
