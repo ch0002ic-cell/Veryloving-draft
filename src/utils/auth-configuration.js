@@ -101,6 +101,17 @@ export function isAuthenticationCancellation(error) {
   return /cancel/i.test(marker);
 }
 
+export function isExpectedDemoAuthenticationFailure(
+  provider,
+  error,
+  { demoModeAvailable = false, platform = null } = {}
+) {
+  if (provider !== 'google' || demoModeAvailable !== true || platform !== 'android') return false;
+  const code = String(error?.code ?? '').trim();
+  if (['10', 'DEVELOPER_ERROR', 'PLAY_SERVICES_NOT_AVAILABLE'].includes(code)) return true;
+  return /\bDEVELOPER_ERROR\b/.test(String(error?.message || ''));
+}
+
 export function isTransientAuthenticationError(error) {
   if (['AUTH_NETWORK_ERROR', 'AUTH_TIMEOUT'].includes(error?.code) || error?.name === 'AbortError') {
     return true;

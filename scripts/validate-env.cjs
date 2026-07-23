@@ -12,6 +12,7 @@ const PROJECT_ROOT = resolve(__dirname, '..');
 const VALID_PROFILES = new Set(['development', 'preview', 'production', 'testflight']);
 const BOOLEAN_VARIABLES = new Set([
   'EXPO_PUBLIC_PHONE_AUTH_ENABLED',
+  'EXPO_PUBLIC_DEMO_AUTH_ENABLED',
   'EXPO_PUBLIC_HUME_CLM_ENABLED',
   'EXPO_PUBLIC_ENABLE_OFFLINE_MODE',
   'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES',
@@ -25,6 +26,7 @@ const ROOT_VARIABLES = [
   'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
   'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID',
   'EXPO_PUBLIC_PHONE_AUTH_ENABLED',
+  'EXPO_PUBLIC_DEMO_AUTH_ENABLED',
   'EXPO_PUBLIC_HUME_WS_PROXY_URL',
   'EXPO_PUBLIC_HUME_CONFIG_ID',
   'EXPO_PUBLIC_HUME_CUSTOMIZATION_URL',
@@ -464,6 +466,11 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
 
     if (name === 'EXPO_PUBLIC_ENABLE_OFFLINE_MODE' && production && enabled(env, name)) {
       results.push(makeResult(name, 'error', 'must be false for a production release'));
+      continue;
+    }
+
+    if (name === 'EXPO_PUBLIC_DEMO_AUTH_ENABLED' && profile !== 'development' && enabled(env, name)) {
+      results.push(makeResult(name, 'error', 'must be false outside the development profile'));
       continue;
     }
 

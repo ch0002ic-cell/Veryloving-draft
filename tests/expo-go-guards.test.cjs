@@ -77,22 +77,37 @@ test('auth runtime detects iOS Simulator without loading provider SDKs', async (
   }), false);
 });
 
-test('demo authentication is limited to non-Expo-Go development simulators', async () => {
-  const runtime = ({ development = true, expoGo = false, releaseType = 1 } = {}) => createAuthenticationRuntime({
+test('demo authentication is limited to explicitly enabled development clients', async () => {
+  const runtime = ({
+    development = true,
+    demoEnabled = true,
+    expoGo = false,
+    platform = 'ios',
+    releaseType = 1
+  } = {}) => createAuthenticationRuntime({
     isDevelopment: () => development,
+    isDemoAuthEnabled: () => demoEnabled,
     isExpoGo: () => expoGo,
-    platformOS: () => 'ios',
+    platformOS: () => platform,
     constants: null,
-    loadApplication: async () => ({
-      ApplicationReleaseType: { SIMULATOR: 1, DEVELOPMENT: 3 },
-      getIosApplicationReleaseTypeAsync: async () => releaseType
-    })
+    loadApplication: platform === 'android'
+      ? async () => { throw new Error('Android must not load iOS metadata'); }
+      : async () => ({
+        ApplicationReleaseType: { SIMULATOR: 1, DEVELOPMENT: 3 },
+        getIosApplicationReleaseTypeAsync: async () => releaseType
+      })
   });
 
   assert.equal(await runtime().isDemoModeAvailable(), true);
+  assert.equal(await runtime({ platform: 'android' }).isDemoModeAvailable(), true);
+  assert.equal(await runtime({ platform: 'android', demoEnabled: false }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ platform: 'android', development: false }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ platform: 'android', expoGo: true }).isDemoModeAvailable(), false);
   assert.equal(await runtime({ development: false }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ demoEnabled: false }).isDemoModeAvailable(), false);
   assert.equal(await runtime({ expoGo: true }).isDemoModeAvailable(), false);
   assert.equal(await runtime({ releaseType: 3 }).isDemoModeAvailable(), false);
+  assert.equal(await runtime({ platform: 'web' }).isDemoModeAvailable(), false);
 });
 
 test('notification runtime never evaluates expo-notifications in Expo Go', async () => {

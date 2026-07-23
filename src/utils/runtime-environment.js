@@ -71,6 +71,16 @@ export async function detectIOSSimulatorRuntime({
 export function createAuthenticationRuntime({
   isDevelopment = defaultDevelopmentMode,
   isExpoGo = isExpoGoRuntime,
+  isDemoAuthEnabled = () => {
+    const extra = constants?.expoConfig?.extra ?? constants?.manifest?.extra ?? {};
+    if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'true') {
+      return true;
+    }
+    if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'false') {
+      return false;
+    }
+    return extra.demoAuthEnabled === true;
+  },
   platformOS = runtimePlatformOS,
   constants = loadExpoConstants(),
   loadApplication = () => import('expo-application')
@@ -91,7 +101,13 @@ export function createAuthenticationRuntime({
 
   const isDemoModeAvailable = async () => {
     const development = typeof isDevelopment === 'function' ? isDevelopment() : isDevelopment;
-    if (development !== true || isExpoGo(constants)) return false;
+    const enabled = typeof isDemoAuthEnabled === 'function'
+      ? isDemoAuthEnabled()
+      : isDemoAuthEnabled;
+    if (development !== true || enabled !== true || isExpoGo(constants)) return false;
+    const resolvedPlatform = typeof platformOS === 'function' ? platformOS() : platformOS;
+    if (resolvedPlatform === 'android') return true;
+    if (resolvedPlatform !== 'ios') return false;
     return isIOSSimulator();
   };
 

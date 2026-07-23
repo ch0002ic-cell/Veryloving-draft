@@ -3,6 +3,11 @@ import { createVL01Protocol } from '../services/vl01-protocol';
 
 const extra = Constants.expoConfig?.extra ?? Constants.manifest?.extra ?? {};
 const configuredString = (...values) => values.find((value) => typeof value === 'string' && value.trim())?.trim() || '';
+const configuredBoolean = (environmentValue, extraValue) => {
+  if (environmentValue === 'true') return true;
+  if (environmentValue === 'false') return false;
+  return extraValue === true;
+};
 
 export const config = {
   apiBaseUrl: configuredString(process.env.EXPO_PUBLIC_API_BASE_URL, extra.apiBaseUrl),
@@ -14,6 +19,7 @@ export const config = {
   googleWebClientId: configuredString(process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID, extra.googleWebClientId),
   googleIOSClientId: configuredString(process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID, extra.googleIOSClientId),
   phoneAuthEnabled: process.env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true' || extra.phoneAuthEnabled === true,
+  demoAuthEnabled: configuredBoolean(process.env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, extra.demoAuthEnabled),
   humeWSProxyURL: process.env.EXPO_PUBLIC_HUME_WS_PROXY_URL || '', // Only use env; no fallback to extra
   actionSigningPublicKey: configuredString(process.env.EXPO_PUBLIC_ACTION_SIGNING_PUBLIC_KEY, extra.actionSigningPublicKey),
   humeConfigId: process.env.EXPO_PUBLIC_HUME_CONFIG_ID || extra.humeConfigId || '',

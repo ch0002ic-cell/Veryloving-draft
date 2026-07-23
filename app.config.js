@@ -5,6 +5,18 @@ const FULL_CATALOG_LANGUAGE_PROFILES = new Set(['development', 'testflight']);
 const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight']);
 const SECURE_DISTRIBUTION_PROFILES = new Set(['preview', 'production', 'testflight']);
 
+function demoAuthEnabledForEnvironment(env = process.env) {
+  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
+  const buildProfile = typeof requestedProfile === 'string' && requestedProfile.trim()
+    ? requestedProfile.trim()
+    : env.NODE_ENV === 'production' ? 'production' : 'development';
+  if (buildProfile !== 'development') return false;
+  if (env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'false') return false;
+  return env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === undefined
+    || env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === ''
+    || env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'true';
+}
+
 function isFullCatalogLanguageEnvironment(env = process.env) {
   const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
   return typeof requestedProfile === 'string'
@@ -87,6 +99,7 @@ function createEnvironmentDiagnostics(env = {}) {
   const vl01Enabled = env.EXPO_PUBLIC_VL01_ENABLED === 'true';
   const safetyBackendEnabled = env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
   const phoneAuthEnabled = env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
+  const demoAuthEnabled = demoAuthEnabledForEnvironment(env);
   const showAllLanguagesRequested = env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
   const showAllLanguagesEnabled = showAllCatalogLanguagesEnabled(env);
   const apiBaseUrl = env.EXPO_PUBLIC_API_BASE_URL || '';
@@ -157,6 +170,9 @@ function createEnvironmentDiagnostics(env = {}) {
   if (production && !humeCLMEnabled) invalid.push('hume_clm_must_be_enabled');
   if (production && !vl01Enabled) invalid.push('vl01_protocol_must_be_enabled');
   if (production && offlineModeEnabled) invalid.push('offline_mode_must_be_disabled');
+  if (secureDistribution && env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'true') {
+    invalid.push('demo_auth_must_be_disabled');
+  }
   if (showAllLanguagesRequested && !showAllLanguagesEnabled) {
     invalid.push('all_languages_not_allowed_for_profile');
   }
@@ -231,6 +247,7 @@ function createEnvironmentDiagnostics(env = {}) {
       vl01Enabled,
       safetyBackendEnabled,
       phoneAuthEnabled,
+      demoAuthEnabled,
       showAllLanguagesEnabled
     }
   };
@@ -605,6 +622,7 @@ function createAppConfig() {
   const enableOfflineMode = process.env.EXPO_PUBLIC_ENABLE_OFFLINE_MODE === 'true';
   const safetyBackendEnabled = process.env.EXPO_PUBLIC_SAFETY_BACKEND_ENABLED === 'true';
   const phoneAuthEnabled = process.env.EXPO_PUBLIC_PHONE_AUTH_ENABLED === 'true';
+  const demoAuthEnabled = demoAuthEnabledForEnvironment(process.env);
   const vl01Enabled = process.env.EXPO_PUBLIC_VL01_ENABLED === 'true';
   const vl01ServiceUUID = process.env.EXPO_PUBLIC_VL01_SERVICE_UUID || '';
   const vl01BatteryCharacteristicUUID = process.env.EXPO_PUBLIC_VL01_BATTERY_CHARACTERISTIC_UUID || '';
@@ -648,6 +666,7 @@ function createAppConfig() {
       enableOfflineMode,
       safetyBackendEnabled,
       phoneAuthEnabled,
+      demoAuthEnabled,
       vl01Enabled,
       vl01ServiceUUID,
       vl01BatteryCharacteristicUUID,
@@ -666,3 +685,4 @@ module.exports.reversedGoogleClientId = reversedGoogleClientId;
 module.exports.selectSupportedLocales = selectSupportedLocales;
 module.exports.isFullCatalogLanguageEnvironment = isFullCatalogLanguageEnvironment;
 module.exports.showAllCatalogLanguagesEnabled = showAllCatalogLanguagesEnabled;
+module.exports.demoAuthEnabledForEnvironment = demoAuthEnabledForEnvironment;

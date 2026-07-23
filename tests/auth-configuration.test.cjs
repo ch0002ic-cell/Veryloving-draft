@@ -10,6 +10,7 @@ const {
   createAuthError,
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
+  isExpectedDemoAuthenticationFailure,
   isTransientAuthenticationError,
   userFacingAuthenticationError
 } = require('../src/utils/auth-configuration');
@@ -121,6 +122,35 @@ test('authentication cancellations remain silent while server errors become safe
 
   const typed = createAuthError('AUTH_CONFIGURATION_MISSING', 'Safe configuration error');
   assert.equal(userFacingAuthenticationError('google', typed), typed);
+});
+
+test('only expected Android Google demo failures are classified as non-critical', () => {
+  const demo = { demoModeAvailable: true, platform: 'android' };
+  assert.equal(isExpectedDemoAuthenticationFailure('google', { code: '10' }, demo), true);
+  assert.equal(
+    isExpectedDemoAuthenticationFailure('google', { message: 'DEVELOPER_ERROR: OAuth client unavailable' }, demo),
+    true
+  );
+  assert.equal(
+    isExpectedDemoAuthenticationFailure('google', { code: 'PLAY_SERVICES_NOT_AVAILABLE' }, demo),
+    true
+  );
+  assert.equal(
+    isExpectedDemoAuthenticationFailure('google', { code: '10' }, {
+      demoModeAvailable: false,
+      platform: 'android'
+    }),
+    false
+  );
+  assert.equal(isExpectedDemoAuthenticationFailure('apple', { code: '10' }, demo), false);
+  assert.equal(
+    isExpectedDemoAuthenticationFailure('google', { code: '10' }, {
+      demoModeAvailable: true,
+      platform: 'ios'
+    }),
+    false
+  );
+  assert.equal(isExpectedDemoAuthenticationFailure('google', { code: 'AUTH_NETWORK_ERROR' }, demo), false);
 });
 
 test('auth presentation maps typed failures to localized catalog keys', () => {

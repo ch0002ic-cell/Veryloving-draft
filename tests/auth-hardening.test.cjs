@@ -210,6 +210,13 @@ test('Google Sign-In checks runtime capabilities before loading native code', ()
   assert.match(google, /iosClientId: config\.googleIOSClientId/);
   assert.match(google, /exchangeProviderIdentity/);
   assert.doesNotMatch(google, /await persist\(identity\.user, identity\.identityToken\)/);
+  const failureReporter = auth.slice(
+    auth.indexOf('const reportAuthenticationFailure'),
+    auth.indexOf('\n\n  const requireCapability')
+  );
+  assert.match(failureReporter, /isExpectedDemoAuthenticationFailure/);
+  assert.match(failureReporter, /logger\.info/);
+  assert.match(failureReporter, /logger\.error/);
 });
 
 test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
@@ -260,8 +267,10 @@ test('development demo auth is volatile, internally guarded, and never creates a
   assert.match(demo, /sessionStatus !== 'signed-out'/);
   assert.match(demo, /setAccessToken\(null\)/);
   assert.match(demo, /setUser\(DEVELOPMENT_DEMO_USER\)/);
+  assert.match(demo, /setAuthError\(null\)/);
   assert.match(demo, /setOnboardingComplete\(true\)/);
   assert.match(demo, /setSessionStatus\('demo'\)/);
+  assert.match(demo, /return DEVELOPMENT_DEMO_USER/);
   assert.doesNotMatch(demo, /persist\(|secureStorage\.(?:setItem|getItem)|exchangeProviderIdentity|createSessionEnvelope|JWT|token\s*=/i);
   assert.match(auth, /signedInProvider === 'demo'[\s\S]*setSessionStatus\('signed-out'\)[\s\S]*return/);
 

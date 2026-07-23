@@ -36,6 +36,7 @@ import {
   createAuthError,
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
+  isExpectedDemoAuthenticationFailure,
   isTransientAuthenticationError,
   userFacingAuthenticationError
 } from '../utils/auth-configuration';
@@ -588,12 +589,27 @@ export function AuthProvider({ children }) {
       logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
       return safeError;
     }
+    const developmentDemoAvailable = demoModeAvailable || (
+      typeof __DEV__ !== 'undefined'
+      && __DEV__ === true
+      && config.demoAuthEnabled
+      && Platform.OS === 'android'
+    );
+    if (isExpectedDemoAuthenticationFailure(provider, error, {
+      demoModeAvailable: developmentDemoAvailable,
+      platform: Platform.OS
+    })) {
+      logger.info(`[Auth] ${provider} sign-in unavailable in this demo build`, {
+        errorCode: error?.code || error?.name || 'GOOGLE_DEVELOPMENT_UNAVAILABLE'
+      });
+      return safeError;
+    }
     logger.error(`[Auth] ${provider} sign-in failed`, {
       errorCode: error?.code || error?.name || 'AUTH_FAILED',
       error
     });
     return safeError;
-  }, []);
+  }, [demoModeAvailable]);
 
   const requireCapability = useCallback((provider) => {
     const capability = authCapabilities[provider];
@@ -680,7 +696,7 @@ export function AuthProvider({ children }) {
     if (!await authenticationRuntime.isDemoModeAvailable()) {
       throw createAuthError(
         'DEMO_AUTH_UNAVAILABLE',
-        'Demo mode is available only in a VeryLoving development build running on the iOS Simulator.'
+        'Demo mode is available only in an enabled VeryLoving development build on Android or the iOS Simulator.'
       );
     }
     // Demo mode is a signed-out onboarding path, not an account-switching

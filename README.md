@@ -534,6 +534,7 @@ The configuration groups above and the committed example files are the canonical
 | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Google Web OAuth audience for backend ID-token verification. | Must match server `GOOGLE_TOKEN_AUDIENCES`. |
 | `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` | Native iOS OAuth client and callback-scheme source. | Must use bundle `com.veryloving.app` and be trusted when presented as `azp`. |
 | `EXPO_PUBLIC_PHONE_AUTH_ENABLED` | Public readiness gate for phone sign-in. | Enable only after deployed Twilio endpoints and abuse controls pass. |
+| `EXPO_PUBLIC_DEMO_AUTH_ENABLED` | Enables the volatile, tokenless demo session in development clients. | `true` only for the development profile; preview, TestFlight, and production explicitly disable and reject it. |
 | `EXPO_PUBLIC_HUME_WS_PROXY_URL` | Authenticated long-lived WSS voice endpoint. | Required for live release voice; never point it at the HTTP-only Vercel adapter or include credentials in the URL. |
 | `EXPO_PUBLIC_HUME_CONFIG_ID` | Approved Hume EVI configuration UUID. | Required when custom CLM/tools are enabled. |
 | `EXPO_PUBLIC_HUME_CUSTOMIZATION_URL` | HTTPS root for CLM/tool control calls. | May equal the reviewed API root. |

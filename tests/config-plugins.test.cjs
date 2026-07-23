@@ -136,6 +136,7 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
     );
   }
   assert.equal(config.extra.appleClientId, config.ios.bundleIdentifier);
+  assert.equal(config.extra.demoAuthEnabled, true);
   const collectedTypes = new Set(config.ios.privacyManifests.NSPrivacyCollectedDataTypes.map(
     (entry) => entry.NSPrivacyCollectedDataType
   ));
@@ -146,6 +147,23 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
   assert.ok(plugins.includes('./plugins/withEntitlements.js'));
   assert.ok(plugins.includes('./plugins/withGradleProperties.js'));
   assert.ok(plugins.includes('./plugins/withAndroidManifest.js'));
+});
+
+test('demo authentication configuration is fail-closed outside development', () => {
+  const resolveDemo = createAppConfig.demoAuthEnabledForEnvironment;
+  assert.equal(resolveDemo({}), true);
+  assert.equal(resolveDemo({ VERYLOVING_BUILD_PROFILE: 'development' }), true);
+  assert.equal(resolveDemo({
+    VERYLOVING_BUILD_PROFILE: 'development',
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'false'
+  }), false);
+  for (const profile of ['preview', 'production', 'testflight']) {
+    assert.equal(resolveDemo({
+      VERYLOVING_BUILD_PROFILE: profile,
+      EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true'
+    }), false);
+  }
+  assert.equal(resolveDemo({ NODE_ENV: 'production' }), false);
 });
 
 test('Expo config minimizes native permissions and owns launch appearance', () => {
@@ -333,6 +351,16 @@ test('remote production builds fail closed on missing or unsafe configuration', 
     /Production configuration is invalid/
   );
 
+  const demoAuth = createAppConfig.createEnvironmentDiagnostics({
+    ...safeEnvironment,
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true'
+  });
+  assert.ok(demoAuth.invalid.includes('demo_auth_must_be_disabled'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(demoAuth),
+    /Production configuration is invalid/
+  );
+
   const unauthorizedCatalogProfile = createAppConfig.createEnvironmentDiagnostics({
     ...safeEnvironment,
     EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true'
@@ -479,6 +507,7 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.development.node, '24.18.0');
   assert.equal(eas.build.development.distribution, 'internal');
   assert.equal(eas.build.development.environment, 'development');
+  assert.equal(eas.build.development.env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'true');
   assert.equal(eas.build.development.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build.development.ios, undefined);
   assert.equal(eas.build['development-simulator'].extends, 'development');
@@ -487,12 +516,14 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.preview.node, '24.18.0');
   assert.equal(eas.build.preview.android.buildType, 'apk');
   assert.equal(eas.build.preview.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
+  assert.equal(eas.build.preview.env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'false');
   assert.equal(eas.build.production.environment, 'production');
   assert.equal(eas.build.production.node, '24.18.0');
   assert.equal(eas.build.production.distribution, 'store');
   assert.equal(eas.build.production.autoIncrement, true);
   assert.equal(eas.build.production.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'false');
   assert.equal(eas.build.production.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
+  assert.equal(eas.build.production.env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'false');
   assert.equal(eas.build.testflight.extends, 'production');
   assert.equal(eas.build.testflight.environment, 'production');
   assert.equal(eas.build.testflight.distribution, 'store');
@@ -501,10 +532,12 @@ test('EAS profiles separate simulator, internal QA, and store artifacts with exp
   assert.equal(eas.build.testflight.env.VERYLOVING_BUILD_PROFILE, 'testflight');
   assert.equal(eas.build.testflight.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build.testflight.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'false');
+  assert.equal(eas.build.testflight.env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'false');
   assert.equal(eas.build['testflight-full-catalog'].extends, 'testflight');
   assert.equal(eas.build['testflight-full-catalog'].env.VERYLOVING_BUILD_PROFILE, 'testflight');
   assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES, 'true');
   assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES, 'true');
+  assert.equal(eas.build['testflight-full-catalog'].env.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'false');
   assert.deepEqual(eas.submit.testflight, {});
   assert.deepEqual(eas.submit['testflight-full-catalog'], {});
 });

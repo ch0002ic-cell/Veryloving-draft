@@ -25,6 +25,7 @@ function productionEnvironment(overrides = {}) {
     EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: 'web.apps.googleusercontent.com',
     EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: 'ios.apps.googleusercontent.com',
     EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'false',
     EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.example.test/api/voice/hume-ws',
     EXPO_PUBLIC_HUME_CONFIG_ID: '00000000-0000-4000-8000-000000000001',
     EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://api.example.test',
@@ -343,6 +344,35 @@ test('RTL QA locale flag must be an explicit boolean', () => {
   const issue = results.find((result) => result.name === 'EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES');
   assert.equal(issue?.level, 'error');
   assert.match(issue?.message || '', /true or false/);
+});
+
+test('demo authentication is an explicit development-only environment gate', () => {
+  const invalidBoolean = validateEnvironment(productionEnvironment({
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'yes'
+  }), { profile: 'production' });
+  assert.match(
+    invalidBoolean.find((result) => result.name === 'EXPO_PUBLIC_DEMO_AUTH_ENABLED')?.message || '',
+    /true or false/
+  );
+
+  const development = validateEnvironment(productionEnvironment({
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true',
+    VERYLOVING_BUILD_PROFILE: 'development'
+  }), { profile: 'development' });
+  assert.equal(
+    development.find((result) => result.name === 'EXPO_PUBLIC_DEMO_AUTH_ENABLED')?.level,
+    'ok'
+  );
+
+  for (const profile of ['preview', 'production', 'testflight']) {
+    const results = validateEnvironment(productionEnvironment({
+      EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true',
+      VERYLOVING_BUILD_PROFILE: profile
+    }), { profile });
+    const issue = results.find((result) => result.name === 'EXPO_PUBLIC_DEMO_AUTH_ENABLED');
+    assert.equal(issue?.level, 'error');
+    assert.match(issue?.message || '', /outside the development profile/);
+  }
 });
 
 test('full language catalog flag is limited to development or TestFlight QA and must be an explicit boolean', () => {
