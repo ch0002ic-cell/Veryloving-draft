@@ -27,7 +27,7 @@ Primary compatibility authorities:
 | npm | 10.9.8 | 11.16.0 | Exact npm bundled with Node 24.18.0; avoids an unreviewed network bootstrap inside Docker/EAS. npm 12 is therefore a documented deployment-compatibility hold. |
 | EAS CLI | 21.0.2 | 21.1.0 | Current registry release and Node 24 compatible. |
 | Docker base | Node 22 Alpine | `node:24.18.0-alpine3.24` | Exact tag plus reviewed OCI index digest in `release-policy.json`. |
-| GitHub Actions | checkout/setup-node/upload-artifact 4.x | 7.0.1 / 7.0.0 / 7.0.1 | Current immutable commit pins. Trivy 0.36.0 was already current and remains pinned. |
+| GitHub Actions | checkout/setup-node/upload-artifact 4.x; implicit runner Buildx | 7.0.1 / 7.0.0 / 7.0.1; setup-buildx 4.2.0 | Current immutable commit pins. Trivy 0.36.0 was already current and remains pinned. The release job now provisions a reviewed BuildKit builder before requesting image SBOM/provenance attestations. |
 
 The release gate now verifies the actual Node and npm executables, not only manifest strings. CI also runs the full source regression gate (environment validation, lint, strict server type checks, the mobile compiler/config smoke, tests, Expo Doctor, and both production exports) before artifact validation.
 

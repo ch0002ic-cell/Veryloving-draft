@@ -57,6 +57,8 @@ jobs:
         run: |
           npm ci --ignore-scripts
           npm --prefix server ci --ignore-scripts
+      - name: Set up the reviewed BuildKit builder
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Enforce immutable release policy and query current advisories
         run: npm run validate:production:release
       - name: Scan the built server image for high and critical vulnerabilities
