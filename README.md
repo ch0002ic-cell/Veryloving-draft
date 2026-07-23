@@ -897,15 +897,16 @@ In an approved networked CI runner with Docker Buildx, run the fail-closed artif
 npm run validate:production:release
 ```
 
-That command repeats current registry-backed audits, retains mobile/server production SBOMs under
-the ignored `release-artifacts/` directory, builds the digest-pinned server image with BuildKit SBOM
-and provenance attestations enabled, verifies the non-root/health/entrypoint policy, proves that a
+That command repeats current registry-backed audits, retains validated mobile/server CycloneDX
+production SBOMs under the ignored `release-artifacts/` directory, builds and locally loads the
+digest-pinned server image, verifies the non-root/health/entrypoint policy, proves that a
 credentials-free production start fails closed, and smoke-tests `/health` plus graceful shutdown in
 credential-free development mode. The SHA-pinned workflow in
 [`production-validation.yml`](./.github/workflows/production-validation.yml) runs this gate and
 then applies a commit-pinned Trivy high/critical vulnerability scan to the built server image before
-archiving the SBOMs. Passing it does not substitute for signed EAS artifact, provider, or deployment
-acceptance.
+archiving the SBOMs. Registry-backed provenance attestations belong to the eventual authenticated
+image-publish pipeline; they cannot be retained reliably by this local `--load` smoke-test export.
+Passing it does not substitute for signed EAS artifact, provider, or deployment acceptance.
 
 Run the production configuration gate separately:
 

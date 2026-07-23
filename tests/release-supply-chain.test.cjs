@@ -98,6 +98,7 @@ test('local and live production gates remain distinct and CI actions are commit 
   assert.match(workflow, /npm run validate:production:release/);
   assert.match(workflow, /actions\/checkout@[0-9a-f]{40}/);
   assert.match(workflow, /actions\/setup-node@[0-9a-f]{40}/);
+  assert.match(workflow, /docker\/setup-buildx-action@[0-9a-f]{40}/);
   assert.match(workflow, /aquasecurity\/trivy-action@[0-9a-f]{40}/);
   assert.match(workflow, /image-ref:\s+veryloving-clm:production-validation/);
   assert.match(workflow, /severity:\s+CRITICAL,HIGH/);

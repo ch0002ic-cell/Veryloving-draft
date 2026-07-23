@@ -69,7 +69,7 @@ async function validateContainer() {
   const imageTag = 'veryloving-clm:production-validation';
   const containerName = `veryloving-production-validation-${process.pid}`;
   execute('docker', [
-    'buildx', 'build', '--pull', '--sbom=true', '--provenance=mode=max', '--load',
+    'buildx', 'build', '--pull', '--load',
     '--tag', imageTag, '--file', 'server/Dockerfile', '.'
   ]);
   const user = execute('docker', ['image', 'inspect', '--format', '{{.Config.User}}', imageTag], { capture: true });
