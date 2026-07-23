@@ -568,7 +568,7 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | App authentication | `AUTH_EXCHANGE_ENABLED`, `SESSION_JWT_SECRET`, `SESSION_JWT_ISSUER`, `SESSION_JWT_AUDIENCE`, `SESSION_JWT_TTL_SECONDS`, `SESSION_REFRESH_TTL_SECONDS` | Independent signing secret, exact issuer/audience, bounded access/refresh lifetimes. |
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
 | Phone verification | `PHONE_AUTH_ENABLED`, `PHONE_AUTH_CHALLENGE_SECRET`, `PHONE_AUTH_SUBJECT_SECRET`, `PHONE_AUTH_CHALLENGE_TTL_SECONDS`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID` | Independent secrets; stable subject derivation; Twilio credentials remain server-only. |
-| Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. |
+| Safety/DynamoDB | `SAFETY_API_ENABLED`, `SAFETY_TABLE_NAME`, `SAFETY_RETENTION_DAYS`, `AWS_REGION` (`AWS_DEFAULT_REGION` remains a compatible fallback) | Table uses string `PK`/`SK` and numeric `expiresAt` TTL metadata. If both region variables are configured, they must match. |
 | AI-native orchestration | `AI_NATIVE_ENABLED`, `AI_NATIVE_DATA_LIFECYCLE_ENABLED`, `AI_NATIVE_SINGLE_REPLICA`, `AI_NATIVE_PRODUCTION_MODULE` | Runtime enablement requires a reviewed absolute-path production composition module, durable privacy lifecycle, rotation-safe external keyring, provider capability contract, and all four authenticated ingress/binding hooks. The entrypoint rejects bundled in-memory repositories and incomplete composition before listening. Once an environment stores AI-native data, keep the lifecycle flag enabled during runtime outages so export/deletion cannot omit it. Production intentionally fails closed unless the current single-replica admission gate is explicit. |
 | Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ROBOT_RESET_RECOVERY_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `ROBOT_PAIRING_TOKEN_SECRET`, `ACTION_GATEWAY_SINGLE_REPLICA`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI uses `user_index_pk`/`user_index_sk`; the reset-recovery GSI uses `resetRecoveryPk`/`resetRecoveryAt`. Pairing HMAC and action-signing keys are independent server secrets. Current production delivery must explicitly select one ActionGateway replica until distributed per-device leases exist. |
 | Legacy manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | Historical `manufacturer-default` bindings only. HTTPS endpoints and API key are server-only; modern vendor bindings never fall back to this shared client. |
@@ -862,6 +862,7 @@ Do not add decorative Swift, Next.js, SES, WebRTC, or Spline scaffolds solely to
 npm run validate-env
 npm run lint
 npm test
+npm run test:coverage
 npm run typecheck:adapters
 npm run typecheck:manufacturer-mock
 npm run typecheck:ai-native
@@ -873,6 +874,14 @@ npm run doctor
 npx expo export --platform ios
 npx expo export --platform android
 ```
+
+`npm run test:coverage` is the instrumented critical TypeScript gate for the
+robot HAL/adapters and AI-native state, memory, edge, orchestration, and
+scenario modules. It is not presented as blanket statement coverage for the
+JavaScript mobile/backend tree; those paths are enforced by the complete core
+suite, ESLint, focused lifecycle/security regressions, and production boundary
+tests. The final measured percentages and their scope are recorded in the
+handoff confirmation.
 
 The combined release-oriented source gate is:
 

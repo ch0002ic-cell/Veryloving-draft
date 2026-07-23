@@ -75,19 +75,39 @@ Status: **PASS — FINAL SOURCE GATES EXECUTED ON 23 JULY 2026**
 
 | Gate | Expected command | Result |
 | --- | --- | --- |
-| Full repository suite | `npm test` | ✅ PASS — 1,058/1,058 (823 core, 44 adapter, 8 adapter integration, 183 AI-native) |
+| Full repository suite | `npm test` | ✅ PASS — 1,083/1,083 (847 core, 44 adapter, 8 adapter integration, 184 AI-native) |
 | ESLint | `npm run lint` | ✅ PASS — zero errors or warnings |
 | TypeScript and mobile compiler checks | `npm run typecheck` | ✅ PASS — strict semantic checks cover adapters, mock simulator, AI-native, and all TypeScript tests; the JavaScript mobile tree passes its Expo compiler/config smoke and is enforced by ESLint/tests |
 | Expo project health | `npm run doctor -- --verbose` | ✅ PASS — Expo Doctor 1.20.1, 20/20 checks |
 | Consolidated source gate | `npm run validate` | ✅ PASS — reviewed toolchain, environment dry-run, lint, compiler checks, all tests, Expo Doctor, and both exports completed using the credential-free non-routable production fixture |
-| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 50 production-boundary tests, two validated CycloneDX SBOMs, and zero cached application dependency vulnerabilities |
-| Production artifact gate | `npm run validate:production:release` plus commit-pinned Trivy | ✅ PASS IN CI — live root/server audits, immutable Docker build, non-root and fail-closed runtime checks, health and graceful shutdown, retained SBOMs, and zero high/critical final-image findings |
+| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 184 AI-native tests, 52 production-boundary tests, two validated CycloneDX SBOMs, and zero cached application dependency vulnerabilities |
+| Critical-path coverage | `npm run test:coverage` | ✅ PASS — adapters: 98.55% statements/lines, 91.20% branches, 97.26% functions; AI-native scenario group: 99.80% statements/lines, 90.56% branches, 100% functions. AI-native global branch coverage is 86.03% and passes its configured 85% threshold; no blanket JavaScript-tree coverage claim is made. |
+| Adapter soak / handle leak gate | `npm run test:soak:adapters` | ✅ PASS — 60 seconds, 4,221,509 accepted commands, 0.017 ms p95 software admission, 361,040-byte heap growth, and zero leaked handles |
+| Production artifact gate | `npm run validate:production:release` plus commit-pinned Trivy | ⚠️ **SKIPPED LOCALLY — CI REQUIRED FOR CURRENT COMMIT** — immutable Docker/non-root/health/fail-closed/shutdown/Trivy/SBOM policy is source-tested and passed on the prior CI candidate; this workstation has no Docker/Trivy runtime, so CI must regenerate current-commit image evidence |
 | iOS production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 82 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
 | Android production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 86 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
-| Dependency/security audit | `npm audit` in both workspaces plus Expo compatibility and final-image validation | ✅ PASS — zero vulnerabilities in full and production application graphs; zero high/critical final-image findings; Expo dependencies current for SDK 57 |
+| Dependency/security audit | `npm audit` in both workspaces plus Expo compatibility and final-image validation | ✅ PASS — current full and production application graphs contain zero vulnerabilities and Expo dependencies are current for SDK 57; the prior CI image had zero high/critical findings, while the final commit still requires its commit-pinned image scan |
 | Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — canonical handoff plus dated dependency evidence, stable appendix contracts, no broken local links |
 
 Passing JavaScript exports do not replace signed native builds, simulator/emulator interaction tests, VoiceOver/TalkBack checks, provider delivery, BLE validation, or physical robot acceptance.
+
+### Final comprehensive audit checklist
+
+| Audit area | Status | Evidence / qualification |
+| --- | --- | --- |
+| Tests and deterministic integration | ✅ **PASS** | Full core, adapter, AI-native, manufacturer bridge, dashboard, retry, replay, cancellation, and process-lifecycle suites pass with mocks/in-memory repositories. |
+| Coverage | ✅ **PASS — SCOPED** | Instrumented adapter and AI-native critical groups meet their configured gates; the scenario group exceeds 90% in statements, branches, functions, and lines. JavaScript tests are not mislabeled as instrumented coverage. |
+| Lint and TypeScript | ✅ **PASS** | ESLint has zero errors/warnings. All server TypeScript configs compile strictly with the server-pinned TypeScript 7 compiler; mobile Expo config smoke uses the SDK-compatible root compiler. |
+| Dependency and supply-chain security | ✅ **PASS — SOURCE** | Root/server npm audits report zero vulnerabilities; tracked secret-signature scan is clean; immutable locks, image digest, CI actions, SBOM generation, non-root container policy, and high/critical Trivy gate are regression-tested. GitHub secret-scanning administration remains external. |
+| Authentication, authorization, privacy | ✅ **PASS — SOURCE** | Protected endpoints derive account identity from verified first-party sessions; replay/fencing, encrypted account-bound local and server state, export/delete, and redacted logging are tested. Provider/penetration acceptance remains external. |
+| Error handling and resilience | ✅ **PASS** | External I/O is bounded; late responses are fenced; BLE, robot, audio, contact hydration, account switching, scenario scheduling, and deletion races have explicit regressions; graceful shutdown and SSE/WebSocket cleanup pass. |
+| Mobile iOS/Android source and bundles | ✅ **PASS — SOURCE/BUNDLE** | Both production JavaScript exports and Expo Doctor pass. Android native build/install/launch and demo-auth smoke were previously verified; signed-build, full screen-reader, background, provider, and physical BLE walkthroughs remain manual/external. |
+| Backend/orchestration and simulator | ✅ **PASS** | All five scenarios, multi-vendor HAL routing, authenticated ACKs, mock telemetry/dashboard, SSE limits, idempotency conflicts, and graceful cleanup pass deterministic tests. |
+| Docker/current image runtime | ⚠️ **SKIPPED — TOOLING** | No Docker/Trivy executable exists on this workstation. The commit-pinned CI release gate is mandatory before deployment; source container-policy tests pass. |
+| Documentation | ✅ **PASS** | README, this canonical handoff, dependency evidence, external owners/actions, demo, design system, API, and troubleshooting appendices are consolidated and link-checked. |
+
+Source-level conclusion: **READY FOR HANDOFF**. Production safety release
+remains **NO-GO** until the external/manual gates in Sections 3 and 4 pass.
 
 ## 3. Remaining external and manual acceptance work
 
@@ -114,7 +134,10 @@ There are 13 tracked external dependencies: **2 PASS** (both manufacturer NDAs) 
 | EXT-012 | Twilio production SMS/voice account and approved identities | **BLOCKED — EXTERNAL** | Complete compliance/billing and provision scoped credentials/test numbers. |
 | EXT-013 | Hume EVI enterprise tenant, key, quotas, and data terms | **BLOCKED — EXTERNAL** | Obtain the enterprise package and provision the key server-side. |
 
-Target-cloud IAM/TLS/WAF, signed store artifacts, provider receipts, monitoring/backups/rollback, penetration review, native localization review, clinical/regulatory claims, physical safety, and soak evidence remain production release gates.
+Target-cloud IAM/TLS/WAF, signed store artifacts, provider receipts,
+monitoring/backups/rollback, penetration review, native localization review,
+clinical/regulatory claims, physical safety, and production-scale/physical
+soak evidence remain production release gates.
 
 ## 5. What Grace should do next
 
@@ -151,6 +174,37 @@ We are ready to work directly with Grace's PM/UX team on future iterations.
 ## 7. Closed audit summary
 
 The repository-wide audit closed the documented 66 source defects, passed its source-boundary check, and closed all three internal production gates. Subsequent final-polish review added and verified further mobile lifecycle, voice-completion, scenario, accessibility, and design-system hardening without changing those historical audit counts. Major corrected classes include authentication/deletion races, phone-token replay, push ownership, bounded provider I/O, SSE/WebSocket cleanup, action/outbox/ACK races, binding generation, pairing replay/recovery, multi-vendor isolation, AI-native cancellation and critical-event precedence, simulator limits, mobile account boundaries, BLE/voice/process-death recovery, map freshness, privacy export/delete, and release/supply-chain validation.
+
+### Final bug-hunt corrections
+
+| ID | Severity | Defect / root cause | Resolution | Status |
+| --- | --- | --- | --- | --- |
+| FINAL-001 | High | An unknown Expo build profile and implicit `NODE_ENV=production` could be treated as local configuration. | [`app.config.js`](../app.config.js) now rejects unknown profiles and resolves implicit production fail-closed; deterministic export flags and regressions were added. | ✅ **FIXED — VERIFIED** |
+| FINAL-002 | Medium | Root commands compiled server projects with the SDK-compatible TypeScript 6 compiler instead of the independently pinned server TypeScript 7 compiler. | Server build/typecheck scripts now execute the server-local compiler and the supply-chain test owns that contract. | ✅ **FIXED — VERIFIED** |
+| FINAL-003 | High | A wearable reconnect could succeed after disconnect/disposal and republish a stale online state. | [`WearableDevice.js`](../src/services/device-manager/WearableDevice.js) and [`ble.js`](../src/services/ble.js) use lifecycle generations plus abort-aware in-flight/backoff cancellation. | ✅ **FIXED — VERIFIED** |
+| FINAL-004 | High | Concurrent robot connection probes could complete out of order and overwrite newer telemetry state. | [`HomeRobotDevice.js`](../src/services/device-manager/HomeRobotDevice.js) coalesces connection probes through one lifecycle-owned promise. | ✅ **FIXED — VERIFIED** |
+| FINAL-005 | High | A network-offline event did not invalidate a pending robot health request, allowing a late response to restore online state. | Offline transitions now increment the lifecycle, abort active requests, clear stale single-flight work, park queues, and suppress retry while the network is known offline. | ✅ **FIXED — VERIFIED** |
+| FINAL-006 | Medium | Playback cancellation cleared the drain owner while native cleanup was still active, allowing two drains/players to overlap. | [`audio.js`](../src/services/audio.js) retains one drain owner across cancellation and generation-fences new work. | ✅ **FIXED — VERIFIED** |
+| FINAL-007 | Medium | Same-account JWT rotation dehydrated the emergency-contact cache; obsolete account reconciliation could delay the next account's local hydration. | Local cache hydration is account-driven on a separate queue; token-driven remote reconciliation is serialized and account/token fenced. | ✅ **FIXED — VERIFIED** |
+| FINAL-008 | High | Safety-event replay/incident keys were process-global and delimiter-concatenated, allowing cross-account suppression or tuple aliasing after account switch. | [`safety-events.js`](../src/services/safety-events.js) uses validated account scope and unambiguous tuple encoding; SOS handlers fence the initiating account before dispatch. | ✅ **FIXED — VERIFIED** |
+| FINAL-009 | Medium | Registry rehydration silently swallowed a corrupt descriptor and could display an empty/partial device list as success. | [`DeviceRegistry.js`](../src/services/device-manager/DeviceRegistry.js) now fails with a bounded safe code, disposes partial devices, and lets AppContext retry/report the restore failure. | ✅ **FIXED — VERIFIED** |
+| FINAL-010 | Medium | Reusing a safety-session idempotency key could overwrite the current mode/timestamp. | [`safety-api.cjs`](../server/safety-api.cjs) atomically stores a fingerprinted receipt plus current state; identical replay returns the original receipt and conflicting reuse returns 409. | ✅ **FIXED — VERIFIED** |
+| FINAL-011 | High | Account deletion waited for an abort race, not the real provider promise; an abort-ignoring provider could write after erasure. | [`AINativeRuntime.ts`](../server/src/orchestration/AINativeRuntime.ts) retains and boundedly drains actual provider operations, returning 503 instead of reporting false deletion completion. | ✅ **FIXED — VERIFIED** |
+| FINAL-012 | Medium | Error logs could retain robot/contact/memory identifiers embedded in request paths. | The server log sanitizer now redacts path fields before forwarding to any sink. | ✅ **FIXED — VERIFIED** |
+| FINAL-013 | Medium | Removing `AWS_DEFAULT_REGION` would have broken existing AWS-standard deployments, while accepting two conflicting region variables would be ambiguous. | The fallback is retained, documented, template-owned, and rejected when it conflicts with `AWS_REGION`. | ✅ **FIXED — VERIFIED** |
+| FINAL-014 | Low | The native-locale regression depended on an implicit profile and could fail according to ambient environment/test order. | Full-catalog native resources again require an explicit development/TestFlight profile; the production diagnostic resolver remains fail-closed. | ✅ **FIXED — VERIFIED** |
+| FINAL-015 | Low | The repository lacked a canonical coverage command and could invite a misleading whole-tree coverage claim. | `npm run test:coverage` now owns the instrumented adapter/AI-native scope, and README/reporting state the exact scope and percentages. | ✅ **FIXED — VERIFIED** |
+| FINAL-016 | High | Conflicting EAS and VeryLoving profile variables could prefer a development policy during an actual production EAS build. | Expo configuration now maps the reviewed EAS aliases, rejects conflicting profile policies before build evaluation, and disables demo/full-catalog development gates on any conflict. | ✅ **FIXED — VERIFIED** |
+| FINAL-017 | High | During an account switch, safety telemetry could observe the new account while the emergency-contact ref still held the previous account's cache. | Safety dispatch now requires the active account and synchronously tracked contact owner to match before and after location lookup; contact hydration/mutations clear and fence that ownership explicitly. | ✅ **FIXED — VERIFIED** |
+| FINAL-018 | Medium | The prior 32-bit safety idempotency hash admitted deliberate device-tuple collisions, and raw firmware event punctuation could violate the backend key grammar. | Mobile safety keys now use a bounded 256-bit cryptographic digest over the complete account/device/event tuple and are regression-tested against a known legacy collision and punctuation-bearing event IDs. | ✅ **FIXED — VERIFIED** |
+
+Known distributed-delivery boundary: emergency-contact push is intentionally
+at-least-once. A provider success followed by loss of the Dynamo delivery-state
+write can yield a duplicate after lease expiry. Atomic exactly-once semantics
+cannot be manufactured across DynamoDB and APNs/FCM/Expo without a provider
+idempotency/receipt contract; Grace's provider/SRE acceptance must choose and
+validate the duplicate-versus-missed-alert policy. The API never equates SOS
+acceptance with contact delivery.
 
 The historical robot-adapter log contains 41 closed findings. Their identifiers and titles are preserved below; full reproduction narratives and old candidate outputs remain in Git history because they are no longer active operator documentation.
 
@@ -1541,7 +1595,7 @@ Every ❌ **BLOCKED — EXTERNAL** matrix cell points to at least one entry belo
 - [Detailed public technical research](#hardware-partner-research)
 - [Robot HAL architecture](#robot-hal-architecture)
 - [Adapter integration guide](#robot-adapter-integration-guide)
-- [Adapter runtime bug and fix log](#closed-audit-summary)
+- [Adapter runtime bug and fix log](#7-closed-audit-summary)
 
 <!-- END:hardware-partner-decision-matrix -->
 

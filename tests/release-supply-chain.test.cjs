@@ -110,6 +110,22 @@ test('local and live production gates remain distinct and CI actions are commit 
   const packageJSON = load('package.json');
   assert.equal(packageJSON.scripts['validate:production'], 'node scripts/validate-production.cjs');
   assert.equal(packageJSON.scripts['validate:production:release'], 'node scripts/validate-production.cjs --release');
+  assert.equal(packageJSON.scripts['test:coverage'], 'npm run test:adapters && npm run test:ai-native');
+  for (const scriptName of [
+    'typecheck:adapters',
+    'typecheck:manufacturer-mock',
+    'typecheck:ai-native',
+    'typecheck:tests',
+    'build:adapters',
+    'build:manufacturer-mock',
+    'build:ai-native'
+  ]) {
+    assert.match(
+      packageJSON.scripts[scriptName],
+      /^npm --prefix server exec -- tsc -p server\/tsconfig\.[a-z-]+\.json(?: --noEmit)?$/,
+      `${scriptName} must use the server-pinned TypeScript compiler`
+    );
+  }
   const workflow = fs.readFileSync(path.join(projectRoot, '.github/workflows/production-validation.yml'), 'utf8');
   assert.match(workflow, /npm run validate:production:release/);
   assert.match(workflow, /actions\/checkout@[0-9a-f]{40}/);

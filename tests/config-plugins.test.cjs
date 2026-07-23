@@ -166,6 +166,53 @@ test('demo authentication configuration is fail-closed outside development', () 
   assert.equal(resolveDemo({ NODE_ENV: 'production' }), false);
 });
 
+test('Expo config rejects unknown profiles and treats implicit NODE_ENV production as production', () => {
+  assert.equal(createAppConfig.resolveBuildProfile({}), 'development');
+  assert.equal(createAppConfig.resolveBuildProfile({ NODE_ENV: 'production' }), 'production');
+  assert.equal(createAppConfig.resolveBuildProfile({
+    NODE_ENV: 'production',
+    VERYLOVING_BUILD_PROFILE: 'prodution'
+  }), 'prodution');
+
+  const typo = createAppConfig.createEnvironmentDiagnostics({
+    NODE_ENV: 'production',
+    VERYLOVING_BUILD_PROFILE: 'prodution'
+  });
+  assert.ok(typo.invalid.includes('build_profile_invalid'));
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(typo),
+    /Build profile is invalid/
+  );
+
+  const implicitProduction = createAppConfig.createEnvironmentDiagnostics({
+    NODE_ENV: 'production'
+  });
+  assert.equal(implicitProduction.buildProfile, 'production');
+  assert.equal(implicitProduction.production, true);
+  assert.equal(implicitProduction.secureDistribution, true);
+  assert.ok(implicitProduction.missingRequired.includes('apiBaseUrl'));
+
+  const conflict = createAppConfig.createEnvironmentDiagnostics({
+    EAS_BUILD_PROFILE: 'production',
+    VERYLOVING_BUILD_PROFILE: 'development',
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true'
+  });
+  assert.ok(conflict.invalid.includes('build_profile_conflict'));
+  assert.equal(conflict.flags.demoAuthEnabled, false);
+  assert.throws(
+    () => createAppConfig.assertEnvironmentReady(conflict),
+    /Build profile variables conflict/
+  );
+
+  const simulatorAlias = createAppConfig.createEnvironmentDiagnostics({
+    EAS_BUILD_PROFILE: 'development-simulator',
+    VERYLOVING_BUILD_PROFILE: 'development',
+    EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'true'
+  });
+  assert.equal(simulatorAlias.invalid.includes('build_profile_conflict'), false);
+  assert.equal(simulatorAlias.flags.demoAuthEnabled, true);
+});
+
 test('Expo config minimizes native permissions and owns launch appearance', () => {
   const config = require('../app.config')();
   const packageJSON = JSON.parse(fs.readFileSync('package.json', 'utf8'));

@@ -84,6 +84,7 @@ const SERVER_VARIABLES = [
   'AUTH_SESSION_TABLE_NAME',
   'SAFETY_RETENTION_DAYS',
   'AWS_REGION',
+  'AWS_DEFAULT_REGION',
   'AI_NATIVE_ENABLED',
   'AI_NATIVE_DATA_LIFECYCLE_ENABLED',
   'AI_NATIVE_SINGLE_REPLICA',
@@ -455,7 +456,7 @@ function validateEnvironment(env, { profile = 'development', fileEnvironment = {
     }
 
     if (name === 'VERYLOVING_BUILD_PROFILE' && !VALID_PROFILES.has(value)) {
-      results.push(makeResult(name, 'error', 'must be development, preview, or production'));
+      results.push(makeResult(name, 'error', 'must be development, preview, production, or testflight'));
       continue;
     }
 
@@ -566,6 +567,16 @@ function validateServerEnvironment(env, { profile = 'development', dryRun = fals
       : 'must be a safe integer between 1 and 65535');
   } else {
     results.push(makeResult('PORT', 'warn', 'uses the server default port'));
+  }
+  if (isConfigured(env.AWS_REGION) && isConfigured(env.AWS_DEFAULT_REGION)) {
+    addConfiguredResult(
+      'AWS_DEFAULT_REGION',
+      env.AWS_REGION === env.AWS_DEFAULT_REGION
+        ? null
+        : 'must match AWS_REGION when both region variables are configured'
+    );
+  } else if (isConfigured(env.AWS_DEFAULT_REGION)) {
+    addConfiguredResult('AWS_DEFAULT_REGION', null);
   }
 
   for (const name of SERVER_BOOLEAN_VARIABLES) {

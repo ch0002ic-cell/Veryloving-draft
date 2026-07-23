@@ -230,6 +230,23 @@ test('server Hume persona and provisioning contracts accept a complete redacted 
   assert.doesNotMatch(JSON.stringify(results), /not-printed|api\.example\.test|Calm and concise/);
 });
 
+test('server region aliases remain backward-compatible but cannot disagree', () => {
+  const fallback = validateServerEnvironment({
+    NODE_ENV: 'development',
+    AWS_DEFAULT_REGION: 'ap-southeast-1'
+  });
+  assert.equal(fallback.find((result) => result.name === 'AWS_DEFAULT_REGION')?.level, 'ok');
+
+  const conflict = validateServerEnvironment({
+    NODE_ENV: 'development',
+    AWS_REGION: 'ap-southeast-1',
+    AWS_DEFAULT_REGION: 'us-east-1'
+  });
+  const result = conflict.find((entry) => entry.name === 'AWS_DEFAULT_REGION');
+  assert.equal(result?.level, 'error');
+  assert.match(result?.message || '', /must match AWS_REGION/);
+});
+
 test('server validation rejects malformed Hume and simulator contracts without exposing values', () => {
   const results = validateServerEnvironment({
     NODE_ENV: 'development',
@@ -313,6 +330,7 @@ test('non-release production export fixture is complete, non-routable, and crede
 
   assert.equal(Object.isFrozen(PRODUCTION_EXPORT_ENVIRONMENT), true);
   assert.equal(PRODUCTION_EXPORT_ENVIRONMENT.EAS_BUILD, 'false');
+  assert.equal(PRODUCTION_EXPORT_ENVIRONMENT.EXPO_PUBLIC_DEMO_AUTH_ENABLED, 'false');
   assert.equal(PRODUCTION_EXPORT_ENVIRONMENT.EXPO_PUBLIC_HUME_API_KEY, '');
   assert.match(PRODUCTION_EXPORT_ENVIRONMENT.RNMAPBOX_MAPS_DOWNLOAD_TOKEN, /not-a-credential$/);
 });

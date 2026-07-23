@@ -26,6 +26,7 @@ const PRODUCTION_EXPORT_ENVIRONMENT = Object.freeze({
   EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-bundle-web.apps.googleusercontent.com',
   EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-bundle-ios.apps.googleusercontent.com',
   EXPO_PUBLIC_PHONE_AUTH_ENABLED: 'true',
+  EXPO_PUBLIC_DEMO_AUTH_ENABLED: 'false',
   EXPO_PUBLIC_HUME_WS_PROXY_URL: 'wss://voice.bundle-validation.invalid/socket',
   EXPO_PUBLIC_HUME_CONFIG_ID: '123e4567-e89b-42d3-a456-426614174000',
   EXPO_PUBLIC_HUME_CUSTOMIZATION_URL: 'https://voice.bundle-validation.invalid',

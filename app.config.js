@@ -1,15 +1,46 @@
 const { URL } = require('node:url');
 const languageCatalog = require('./src/i18n/languages.js');
 const RTL_QA_LANGUAGE_CODES = new Set(['ar', 'he']);
+const VALID_BUILD_PROFILES = new Set(['development', 'preview', 'production', 'testflight']);
 const FULL_CATALOG_LANGUAGE_PROFILES = new Set(['development', 'testflight']);
 const PRODUCTION_LIKE_PROFILES = new Set(['production', 'testflight']);
 const SECURE_DISTRIBUTION_PROFILES = new Set(['preview', 'production', 'testflight']);
+const EAS_BUILD_PROFILE_POLICIES = new Map([
+  ['development', 'development'],
+  ['development-simulator', 'development'],
+  ['preview', 'preview'],
+  ['production', 'production'],
+  ['testflight', 'testflight'],
+  ['testflight-full-catalog', 'testflight']
+]);
+
+function normalizedProfile(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function configuredBuildProfiles(env = process.env) {
+  const policyProfile = normalizedProfile(env.VERYLOVING_BUILD_PROFILE);
+  const easProfile = normalizedProfile(env.EAS_BUILD_PROFILE);
+  return {
+    policyProfile,
+    easProfile,
+    easPolicyProfile: easProfile
+      ? EAS_BUILD_PROFILE_POLICIES.get(easProfile) || easProfile
+      : ''
+  };
+}
+
+function resolveBuildProfile(env = process.env) {
+  const { policyProfile, easPolicyProfile } = configuredBuildProfiles(env);
+  if (policyProfile) return policyProfile;
+  if (easPolicyProfile) return easPolicyProfile;
+  return env.NODE_ENV === 'production' ? 'production' : 'development';
+}
 
 function demoAuthEnabledForEnvironment(env = process.env) {
-  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
-  const buildProfile = typeof requestedProfile === 'string' && requestedProfile.trim()
-    ? requestedProfile.trim()
-    : env.NODE_ENV === 'production' ? 'production' : 'development';
+  const { policyProfile, easPolicyProfile } = configuredBuildProfiles(env);
+  if (policyProfile && easPolicyProfile && policyProfile !== easPolicyProfile) return false;
+  const buildProfile = resolveBuildProfile(env);
   if (buildProfile !== 'development') return false;
   if (env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === 'false') return false;
   return env.EXPO_PUBLIC_DEMO_AUTH_ENABLED === undefined
@@ -18,9 +49,10 @@ function demoAuthEnabledForEnvironment(env = process.env) {
 }
 
 function isFullCatalogLanguageEnvironment(env = process.env) {
-  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
-  return typeof requestedProfile === 'string'
-    && FULL_CATALOG_LANGUAGE_PROFILES.has(requestedProfile.trim());
+  const { policyProfile, easProfile, easPolicyProfile } = configuredBuildProfiles(env);
+  if (policyProfile && easPolicyProfile && policyProfile !== easPolicyProfile) return false;
+  if (!policyProfile && !easProfile) return false;
+  return FULL_CATALOG_LANGUAGE_PROFILES.has(policyProfile || easPolicyProfile);
 }
 
 function showAllCatalogLanguagesEnabled(env = process.env) {
@@ -81,10 +113,16 @@ function endpointIssue(value, expectedProtocol) {
 }
 
 function createEnvironmentDiagnostics(env = {}) {
-  const requestedProfile = env.VERYLOVING_BUILD_PROFILE || env.EAS_BUILD_PROFILE;
-  const buildProfile = hasConfiguredValue(requestedProfile)
-    ? requestedProfile.trim()
-    : 'local';
+  const { policyProfile, easProfile, easPolicyProfile } = configuredBuildProfiles(env);
+  const buildProfile = resolveBuildProfile(env);
+  const buildProfileConflict = Boolean(
+    policyProfile
+    && easPolicyProfile
+    && policyProfile !== easPolicyProfile
+  );
+  const buildProfileValid = VALID_BUILD_PROFILES.has(buildProfile)
+    && (!policyProfile || VALID_BUILD_PROFILES.has(policyProfile))
+    && (!easProfile || EAS_BUILD_PROFILE_POLICIES.has(easProfile));
   const easBuild = env.EAS_BUILD === 'true' || env.EAS_BUILD === '1';
   // TestFlight artifacts exercise the same credentials, transports, provider
   // paths, and hardware contracts as App Store candidates. Their optional
@@ -162,6 +200,8 @@ function createEnvironmentDiagnostics(env = {}) {
     }
   }
   const invalid = [];
+  if (!buildProfileValid) invalid.push('build_profile_invalid');
+  if (buildProfileConflict) invalid.push('build_profile_conflict');
   if (configured.actionSigningPublicKey && !/^[A-Za-z0-9_-]{43}$/.test(actionSigningPublicKey.trim())) {
     invalid.push('action_signing_public_key_invalid');
   }
@@ -254,6 +294,12 @@ function createEnvironmentDiagnostics(env = {}) {
 }
 
 function assertEnvironmentReady(diagnostics) {
+  if (diagnostics.invalid.includes('build_profile_invalid')) {
+    throw new Error('[VeryLoving config] Build profile is invalid.');
+  }
+  if (diagnostics.invalid.includes('build_profile_conflict')) {
+    throw new Error('[VeryLoving config] Build profile variables conflict.');
+  }
   if (diagnostics.context !== 'eas-build'
     && diagnostics.invalid.includes('all_languages_not_allowed_for_profile')) {
     throw new Error('[VeryLoving config] Full language catalogs are not allowed for this build profile.');
@@ -686,3 +732,4 @@ module.exports.selectSupportedLocales = selectSupportedLocales;
 module.exports.isFullCatalogLanguageEnvironment = isFullCatalogLanguageEnvironment;
 module.exports.showAllCatalogLanguagesEnabled = showAllCatalogLanguagesEnabled;
 module.exports.demoAuthEnabledForEnvironment = demoAuthEnabledForEnvironment;
+module.exports.resolveBuildProfile = resolveBuildProfile;
