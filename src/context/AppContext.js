@@ -3,7 +3,11 @@ import { AppState } from 'react-native';
 import { voiceProfiles } from '../constants/voiceProfiles';
 import { DEFAULT_SETTINGS, loadSettings, mergeSettings, persistSettings } from '../services/settings-store';
 import { logger } from '../utils/logger';
-import { createSafetyEventRouter } from '../services/safety-events';
+import {
+  createSafetyEventRouter,
+  requireSafetyAccountBinding,
+  safetyEventIdempotencyKey
+} from '../services/safety-events';
 import { decodeVL01SafetyEvent } from '../services/vl01-protocol';
 import { triggerSOS } from '../services/emergency';
 import { loadLastKnownLocation } from '../services/location-cache';
@@ -46,14 +50,6 @@ import {
 } from '../utils/app-hydration';
 
 const AppContext = createContext(null);
-
-function safetyEventIdempotencyKey(deviceId, eventId) {
-  let hash = 2166136261;
-  for (const character of String(deviceId)) {
-    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619);
-  }
-  return `safety-${(hash >>> 0).toString(36)}-${String(eventId).slice(0, 80)}`;
-}
 const DEFAULT_CONTACTS = [];
 const DEFAULT_FRIENDS = [];
 const DEVICE_HYDRATION_TIMEOUT_MS = 8000;
@@ -71,6 +67,8 @@ export function AppProvider({ children }) {
   const settingsMutationQueueRef = useRef(Promise.resolve());
   const [contacts, setContacts] = useState(DEFAULT_CONTACTS);
   const contactsRef = useRef(DEFAULT_CONTACTS);
+  const contactsAccountIdRef = useRef(null);
+  const contactsHydrationQueueRef = useRef(Promise.resolve());
   const contactsMutationQueueRef = useRef(Promise.resolve());
   const localMutationsLockedRef = useRef(false);
   const [device, setDeviceState] = useState(DEFAULT_DEVICE);
@@ -275,25 +273,55 @@ export function AppProvider({ children }) {
   useEffect(() => {
     safetyEventRouterRef.current = createSafetyEventRouter({
       decodeWearableEvent: decodeVL01SafetyEvent,
-      activateSOS: async ({ idempotencyKey, deviceId }) => triggerSOS(contactsRef.current, {
-        accessToken: accessTokenRef.current,
-        accountId: activeAccountIdRef.current,
-        location: await loadLastKnownLocation().catch(() => null),
-        idempotencyKey: safetyEventIdempotencyKey(deviceId, idempotencyKey)
-      }),
-      reportFall: async (event) => triggerSOS(contactsRef.current, {
-        accessToken: accessTokenRef.current,
-        accountId: activeAccountIdRef.current,
-        location: await loadLastKnownLocation().catch(() => null),
-        idempotencyKey: safetyEventIdempotencyKey(event.deviceId, event.eventId)
-      })
+      activateSOS: async ({ idempotencyKey, deviceId, accountScope }) => {
+        requireSafetyAccountBinding(
+          accountScope,
+          activeAccountIdRef.current,
+          contactsAccountIdRef.current
+        );
+        const accountContacts = [...contactsRef.current];
+        const location = await loadLastKnownLocation().catch(() => null);
+        requireSafetyAccountBinding(
+          accountScope,
+          activeAccountIdRef.current,
+          contactsAccountIdRef.current
+        );
+        return triggerSOS(accountContacts, {
+          accessToken: accessTokenRef.current,
+          accountId: accountScope,
+          location,
+          idempotencyKey: safetyEventIdempotencyKey(accountScope, deviceId, idempotencyKey)
+        });
+      },
+      reportFall: async (event, { accountScope } = {}) => {
+        requireSafetyAccountBinding(
+          accountScope,
+          activeAccountIdRef.current,
+          contactsAccountIdRef.current
+        );
+        const accountContacts = [...contactsRef.current];
+        const location = await loadLastKnownLocation().catch(() => null);
+        requireSafetyAccountBinding(
+          accountScope,
+          activeAccountIdRef.current,
+          contactsAccountIdRef.current
+        );
+        return triggerSOS(accountContacts, {
+          accessToken: accessTokenRef.current,
+          accountId: accountScope,
+          location,
+          idempotencyKey: safetyEventIdempotencyKey(accountScope, event.deviceId, event.eventId)
+        });
+      }
     });
     return deviceRegistry.subscribeTelemetry(({ deviceId, deviceType, telemetry }) => {
+      const accountScope = activeAccountIdRef.current;
+      if (!accountScope) return;
       const operation = deviceType === 'wearable' && telemetry?.type === 'event'
-        ? safetyEventRouterRef.current?.routeWearableEvent(telemetry.value, { deviceId })
+        ? safetyEventRouterRef.current?.routeWearableEvent(telemetry.value, { deviceId, accountScope })
         : deviceType === 'home_robot' && Array.isArray(telemetry?.safety_events)
           ? Promise.all(telemetry.safety_events.map((event) => (
-              safetyEventRouterRef.current?.routeRobotEvent(event, { deviceId })
+              safetyEventRouterRef.current?.routeRobotEvent(event, { deviceId, accountScope })
             )))
           : null;
       operation?.catch?.((error) => logger.warn('[SafetyEvents] Device safety event was rejected', {
@@ -434,6 +462,7 @@ export function AppProvider({ children }) {
       deviceGenerationRef.current += 1;
       deviceAccountIdRef.current = null;
       contactsRef.current = DEFAULT_CONTACTS;
+      contactsAccountIdRef.current = null;
       deviceRef.current = DEFAULT_DEVICE;
       setContacts(DEFAULT_CONTACTS);
       setDeviceState(DEFAULT_DEVICE);
@@ -477,8 +506,11 @@ export function AppProvider({ children }) {
         if (active && deviceAccountIdRef.current === accountId) setPairedDeviceAccountId(accountId);
       });
     }
+    contactsRef.current = DEFAULT_CONTACTS;
+    contactsAccountIdRef.current = null;
+    setContacts(DEFAULT_CONTACTS);
     setContactsAccountId(null);
-    const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+    const operation = contactsHydrationQueueRef.current.catch(() => {}).then(async () => {
       let cachedContacts = DEFAULT_CONTACTS;
       try {
         cachedContacts = await withTimeout(
@@ -497,54 +529,95 @@ export function AppProvider({ children }) {
       // Render it immediately; remote reconciliation continues serially in
       // the background and cannot block protected navigation or BLE restore.
       contactsRef.current = cachedContacts;
+      contactsAccountIdRef.current = accountId;
       setContacts(cachedContacts);
       setContactsAccountId(accountId);
-
-      let nextContacts = cachedContacts;
-      if (config.safetyBackendEnabled && accessToken) {
-        try {
-          const remoteContacts = await fetchEmergencyContacts(accessToken);
-          const remoteIds = new Set();
-          const remotePhones = new Set();
-          const canonicalRemoteContacts = remoteContacts.filter((contact) => {
-            if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) return false;
-            remoteIds.add(contact.id);
-            remotePhones.add(contact.phone);
-            return true;
-          });
-          const migratedContacts = [];
-          const pendingLocalContacts = [];
-          for (const contact of cachedContacts) {
-            if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) continue;
-            // A server-issued contact missing from an authoritative refresh
-            // was deleted on another client. Do not recreate it from an old
-            // offline cache; only genuinely local/pending records migrate.
-            if (REMOTE_EMERGENCY_CONTACT_PATTERN.test(contact.id || '')
-              && contact.syncStatus !== 'pending') continue;
-            try {
-              const migrated = await createEmergencyContact({
-                name: contact.name,
-                phone: contact.phone,
-                countryCode: contact.countryCode
-              }, accessToken);
-              migratedContacts.push(migrated);
-              remoteIds.add(migrated.id);
-              remotePhones.add(migrated.phone);
-            } catch (error) {
-              pendingLocalContacts.push({ ...contact, syncStatus: 'pending' });
-              logger.warn('[AppState] Emergency-contact migration is pending', {
-                errorCode: error?.code || error?.name || 'CONTACT_MIGRATION_FAILED'
-              });
-            }
-          }
-          nextContacts = [...canonicalRemoteContacts, ...migratedContacts, ...pendingLocalContacts];
-        } catch (error) {
-          logger.warn('[AppState] Could not refresh emergency contacts', {
-            errorCode: error?.code || error?.name || 'CONTACT_SYNC_FAILED'
-          });
-        }
+    });
+    contactsHydrationQueueRef.current = operation.then(() => undefined, () => undefined);
+    operation.catch((error) => logger.warn('[AppState] Could not restore emergency contacts', {
+      errorCode: error?.code || error?.name || 'CONTACT_RESTORE_FAILED'
+    })).finally(() => {
+      if (active) {
+        contactsAccountIdRef.current = accountId;
+        setContactsAccountId(accountId);
       }
-      if (!active) return;
+    });
+    return () => {
+      active = false;
+    };
+  }, [authLoading, localStateHydrated, settingsAccountId, user?.id]);
+
+  // Access-token rotation may refresh the remote view for the same account,
+  // but it must never dehydrate or reload the already-safe local contact cache.
+  useEffect(() => {
+    const accountId = user?.id || null;
+    const sessionToken = accessToken;
+    if (
+      authLoading
+      || !accountId
+      || contactsAccountId !== accountId
+      || !config.safetyBackendEnabled
+      || !sessionToken
+    ) return undefined;
+
+    let active = true;
+    const assertReconciliationActive = () => (
+      active
+      && activeAccountIdRef.current === accountId
+      && contactsAccountIdRef.current === accountId
+      && accessTokenRef.current === sessionToken
+    );
+    const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
+      if (!assertReconciliationActive()) return;
+      const cachedContacts = contactsRef.current;
+      let nextContacts = cachedContacts;
+      try {
+        const remoteContacts = await fetchEmergencyContacts(sessionToken);
+        if (!assertReconciliationActive()) return;
+        const remoteIds = new Set();
+        const remotePhones = new Set();
+        const canonicalRemoteContacts = remoteContacts.filter((contact) => {
+          if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) return false;
+          remoteIds.add(contact.id);
+          remotePhones.add(contact.phone);
+          return true;
+        });
+        const migratedContacts = [];
+        const pendingLocalContacts = [];
+        for (const contact of cachedContacts) {
+          if (!assertReconciliationActive()) return;
+          if (remoteIds.has(contact.id) || remotePhones.has(contact.phone)) continue;
+          // A server-issued contact missing from an authoritative refresh
+          // was deleted on another client. Do not recreate it from an old
+          // offline cache; only genuinely local/pending records migrate.
+          if (REMOTE_EMERGENCY_CONTACT_PATTERN.test(contact.id || '')
+            && contact.syncStatus !== 'pending') continue;
+          try {
+            const migrated = await createEmergencyContact({
+              name: contact.name,
+              phone: contact.phone,
+              countryCode: contact.countryCode
+            }, sessionToken);
+            if (!assertReconciliationActive()) return;
+            migratedContacts.push(migrated);
+            remoteIds.add(migrated.id);
+            remotePhones.add(migrated.phone);
+          } catch (error) {
+            if (!assertReconciliationActive()) return;
+            pendingLocalContacts.push({ ...contact, syncStatus: 'pending' });
+            logger.warn('[AppState] Emergency-contact migration is pending', {
+              errorCode: error?.code || error?.name || 'CONTACT_MIGRATION_FAILED'
+            });
+          }
+        }
+        nextContacts = [...canonicalRemoteContacts, ...migratedContacts, ...pendingLocalContacts];
+      } catch (error) {
+        if (!assertReconciliationActive()) return;
+        logger.warn('[AppState] Could not refresh emergency contacts', {
+          errorCode: error?.code || error?.name || 'CONTACT_SYNC_FAILED'
+        });
+      }
+      if (!assertReconciliationActive()) return;
       contactsRef.current = nextContacts;
       setContacts(nextContacts);
       await persistEmergencyContactCache(accountId, nextContacts);
@@ -552,13 +625,11 @@ export function AppProvider({ children }) {
     contactsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
     operation.catch((error) => logger.warn('[AppState] Could not reconcile emergency contacts', {
       errorCode: error?.code || error?.name || 'CONTACT_RECONCILIATION_FAILED'
-    })).finally(() => {
-      if (active) setContactsAccountId(accountId);
-    });
+    }));
     return () => {
       active = false;
     };
-  }, [accessToken, authLoading, localStateHydrated, settingsAccountId, user?.id]);
+  }, [accessToken, authLoading, contactsAccountId, user?.id]);
 
   const setDevice = useCallback(async (nextValue) => {
     if (localMutationsLockedRef.current) throw new Error('Local data is being cleared.');
@@ -777,7 +848,10 @@ export function AppProvider({ children }) {
     const accountId = user.id;
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       const assertAccountActive = () => {
-        if (activeAccountIdRef.current === accountId) return;
+        if (
+          activeAccountIdRef.current === accountId
+          && contactsAccountIdRef.current === accountId
+        ) return;
         const error = new Error('The authenticated account changed during the contact update.');
         error.code = 'CONTACT_ACCOUNT_CHANGED';
         throw error;
@@ -821,7 +895,10 @@ export function AppProvider({ children }) {
     const accountId = user.id;
     const operation = contactsMutationQueueRef.current.catch(() => {}).then(async () => {
       const assertAccountActive = () => {
-        if (activeAccountIdRef.current === accountId) return;
+        if (
+          activeAccountIdRef.current === accountId
+          && contactsAccountIdRef.current === accountId
+        ) return;
         const error = new Error('The authenticated account changed during the contact update.');
         error.code = 'CONTACT_ACCOUNT_CHANGED';
         throw error;
@@ -872,9 +949,15 @@ export function AppProvider({ children }) {
           contactId,
           contacts: contactsRef.current,
           edit,
-          isAccountActive: () => activeAccountIdRef.current === accountId
+          isAccountActive: () => (
+            activeAccountIdRef.current === accountId
+            && contactsAccountIdRef.current === accountId
+          )
         });
-        if (activeAccountIdRef.current !== accountId) {
+        if (
+          activeAccountIdRef.current !== accountId
+          || contactsAccountIdRef.current !== accountId
+        ) {
           const error = new Error('The authenticated account changed during the contact update.');
           error.code = 'CONTACT_ACCOUNT_CHANGED';
           throw error;
@@ -888,7 +971,11 @@ export function AppProvider({ children }) {
         }
         return result.contact;
       } catch (error) {
-        if (Array.isArray(error?.latestContacts) && activeAccountIdRef.current === accountId) {
+        if (
+          Array.isArray(error?.latestContacts)
+          && activeAccountIdRef.current === accountId
+          && contactsAccountIdRef.current === accountId
+        ) {
           contactsRef.current = error.latestContacts;
           setContacts(error.latestContacts);
         }
@@ -905,6 +992,7 @@ export function AppProvider({ children }) {
     const nextSettings = mergeSettings(DEFAULT_SETTINGS, { language });
     settingsRef.current = nextSettings;
     contactsRef.current = DEFAULT_CONTACTS;
+    contactsAccountIdRef.current = null;
     deviceRef.current = DEFAULT_DEVICE;
     setSettings(nextSettings);
     setContacts(DEFAULT_CONTACTS);

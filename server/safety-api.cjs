@@ -176,6 +176,13 @@ function sosRequestFingerprint({ occurredAt, source, contactIds, location, medic
   })).digest('base64url');
 }
 
+function safetySessionRequestFingerprint({ mode, location }) {
+  return crypto.createHash('sha256').update(JSON.stringify({
+    mode,
+    location: location || null
+  })).digest('base64url');
+}
+
 function createDynamoSafetyRepository({
   tableName,
   region,
@@ -647,12 +654,55 @@ function createDynamoSafetyRepository({
       return recordDeliveryEvent(userId, 'MEDICATION_ESCALATION', idempotencyKey, delivery);
     },
     async startSafetySession(userId, session) {
-      const putInput = {
-        TableName: tableName,
-        Item: { PK: `USER#${userId}`, SK: 'SAFETY#CURRENT', entity: 'safety-state', ...session }
+      const { expiresAt, ...currentSession } = session;
+      const receiptKey = {
+        PK: `USER#${userId}`,
+        SK: `SAFETY_SESSION#${session.idempotencyKey}`
       };
-      await sendAccountGuardedMutation(userId, new PutCommand(putInput), { Put: putInput });
-      return session;
+      const receiptPut = {
+        TableName: tableName,
+        Item: { ...receiptKey, entity: 'safety-session-receipt', ...currentSession, expiresAt },
+        ConditionExpression: 'attribute_not_exists(PK) AND attribute_not_exists(SK)'
+      };
+      const currentPut = {
+        TableName: tableName,
+        Item: { PK: `USER#${userId}`, SK: 'SAFETY#CURRENT', entity: 'safety-state', ...currentSession }
+      };
+      try {
+        await sendAccountGuardedTransaction(userId, [
+          { Put: receiptPut },
+          { Put: currentPut }
+        ]);
+        return session;
+      } catch (error) {
+        if (!transactionCanceled(error)) throw error;
+        const existing = await documentClient.send(new GetCommand({
+          TableName: tableName,
+          Key: receiptKey,
+          ConsistentRead: true
+        }));
+        if (!existing.Item) throw error;
+        const {
+          id,
+          idempotencyKey,
+          requestFingerprint,
+          mode,
+          status,
+          startedAt,
+          location,
+          expiresAt
+        } = existing.Item;
+        return {
+          id,
+          idempotencyKey,
+          requestFingerprint,
+          mode,
+          status,
+          startedAt,
+          location: location || null,
+          expiresAt
+        };
+      }
     },
     async getSafetySession(userId) {
       const result = await documentClient.send(new GetCommand({
@@ -1088,15 +1138,34 @@ async function handleSafetyAPI({
     requireScope(principal, 'safety:write');
     const idempotencyKey = validateIdempotencyKey(body?.idempotencyKey);
     if (!SAFETY_MODES.has(body?.mode)) throw Object.assign(new Error('mode is invalid'), { statusCode: 400 });
+    const location = validateLocation(body?.location);
+    const requestFingerprint = safetySessionRequestFingerprint({ mode: body.mode, location });
     const session = {
       id: opaqueId('session', `${userId}:${idempotencyKey}`),
       idempotencyKey,
+      requestFingerprint,
       mode: body.mode,
       status: body.mode === 'home' ? 'inactive' : 'active',
       startedAt: Date.now(),
-      location: validateLocation(body?.location)
+      location,
+      expiresAt: safetyEventExpiry(retentionDays)
     };
-    json(res, 201, await repository.startSafetySession(userId, session));
+    const accepted = await repository.startSafetySession(userId, session);
+    const acceptedFingerprint = accepted.requestFingerprint
+      || safetySessionRequestFingerprint(accepted);
+    if (acceptedFingerprint !== requestFingerprint) {
+      throw Object.assign(new Error('idempotencyKey was already used for a different safety session'), {
+        statusCode: 409
+      });
+    }
+    json(res, 201, {
+      id: accepted.id,
+      idempotencyKey: accepted.idempotencyKey,
+      mode: accepted.mode,
+      status: accepted.status,
+      startedAt: accepted.startedAt,
+      location: accepted.location || null
+    });
     return true;
   }
   if (req.method === 'GET' && url.pathname === '/v1/safety-sessions/current') {

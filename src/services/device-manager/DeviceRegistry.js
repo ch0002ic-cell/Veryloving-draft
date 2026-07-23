@@ -128,6 +128,7 @@ export class DeviceRegistry {
       createRobot = (record) => new HomeRobotDevice({ deviceId: record.deviceId, name: record.name, accountId, gatewayURL, accessToken, accessTokenProvider });
     }
     const nextDevices = new Map();
+    let restoreFailureCount = 0;
     for (const record of records) {
       try {
         const device = record.deviceType === 'wearable'
@@ -136,11 +137,20 @@ export class DeviceRegistry {
         device.setStatus({ ...record, online: false, connectionState: record.deviceType === 'wearable' && record.autoReconnect ? 'reconnecting' : 'disconnected' });
         nextDevices.get(device.deviceId)?.dispose?.();
         nextDevices.set(device.deviceId, device);
-      } catch {}
+      } catch {
+        restoreFailureCount += 1;
+      }
     }
     if (generation !== this.rehydrationGeneration) {
       for (const device of nextDevices.values()) device.dispose?.();
       return [];
+    }
+    if (restoreFailureCount > 0) {
+      for (const device of nextDevices.values()) device.dispose?.();
+      const error = new Error('One or more saved devices could not be restored.');
+      error.code = 'DEVICE_REGISTRY_RESTORE_FAILED';
+      error.failedCount = restoreFailureCount;
+      throw error;
     }
     this.replaceDevices(nextDevices);
     for (const device of this.devices.values()) {

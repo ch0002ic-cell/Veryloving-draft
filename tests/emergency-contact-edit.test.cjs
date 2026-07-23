@@ -221,6 +221,39 @@ test('authoritative contact refresh does not resurrect a remotely deleted cached
   assert.match(reconciliation, /canonicalRemoteContacts/);
 });
 
+test('same-account access-token rotation refreshes remotely without dehydrating the contact cache', () => {
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  const cacheEffectStart = appContext.indexOf('if (pairedDeviceNeedsHydration({');
+  const remoteEffectStart = appContext.indexOf('// Access-token rotation may refresh', cacheEffectStart);
+  const cacheEffect = appContext.slice(cacheEffectStart, remoteEffectStart);
+  const remoteEffectEnd = appContext.indexOf('const setDevice = useCallback', remoteEffectStart);
+  const remoteEffect = appContext.slice(remoteEffectStart, remoteEffectEnd);
+
+  assert.ok(cacheEffectStart >= 0 && remoteEffectStart > cacheEffectStart);
+  assert.match(cacheEffect, /\}, \[authLoading, localStateHydrated, settingsAccountId, user\?\.id\]\);/);
+  assert.doesNotMatch(cacheEffect, /\[accessToken,/);
+  assert.match(appContext, /contactsHydrationQueueRef = useRef\(Promise\.resolve\(\)\)/);
+  assert.match(cacheEffect, /contactsHydrationQueueRef\.current/);
+  assert.doesNotMatch(cacheEffect, /contactsMutationQueueRef\.current/);
+  assert.match(remoteEffect, /contactsAccountId !== accountId/);
+  assert.match(remoteEffect, /accessTokenRef\.current === sessionToken/);
+  assert.doesNotMatch(remoteEffect, /setContactsAccountId\(null\)/);
+});
+
+test('AppContext binds safety-event dedupe and delivery to the initiating account', () => {
+  const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
+  const safetyEffectStart = appContext.indexOf('safetyEventRouterRef.current = createSafetyEventRouter');
+  const safetyEffectEnd = appContext.indexOf('registerDevicePushToken', safetyEffectStart);
+  const safetyEffect = appContext.slice(safetyEffectStart, safetyEffectEnd);
+
+  assert.match(safetyEffect, /const accountScope = activeAccountIdRef\.current/);
+  assert.match(safetyEffect, /routeWearableEvent\(telemetry\.value, \{ deviceId, accountScope \}\)/);
+  assert.match(safetyEffect, /routeRobotEvent\(event, \{ deviceId, accountScope \}\)/);
+  assert.match(safetyEffect, /requireSafetyAccountBinding\(/);
+  assert.match(safetyEffect, /contactsAccountIdRef\.current/);
+  assert.match(safetyEffect, /const accountContacts = \[\.\.\.contactsRef\.current\]/);
+});
+
 test('the secure contact cache rejects stale writes after an account-boundary clear', async () => {
   const originalGet = secureStorage.getItemAsync;
   const originalSet = secureStorage.setItemAsync;

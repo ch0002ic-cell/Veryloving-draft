@@ -91,6 +91,37 @@ function logBLEFailure(message, error, context = {}) {
   });
 }
 
+function reconnectCancelledError() {
+  const error = new Error('BLE reconnect was cancelled.');
+  error.name = 'AbortError';
+  error.code = 'BLE_RECONNECT_CANCELLED';
+  return error;
+}
+
+async function waitForReconnectDelay(delayMs, { signal, sleep } = {}) {
+  if (signal?.aborted) throw reconnectCancelledError();
+  let timer;
+  let removeAbortListener;
+  const delay = sleep
+    ? Promise.resolve().then(() => sleep(delayMs))
+    : new Promise((resolve) => { timer = setTimeout(resolve, delayMs); });
+  if (!signal) {
+    await delay;
+    return;
+  }
+  const aborted = new Promise((_, reject) => {
+    const onAbort = () => reject(reconnectCancelledError());
+    signal.addEventListener('abort', onAbort, { once: true });
+    removeAbortListener = () => signal.removeEventListener('abort', onAbort);
+  });
+  try {
+    await Promise.race([delay, aborted]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+    removeAbortListener?.();
+  }
+}
+
 async function assertBluetoothReady(manager, phase) {
   if (!manager?.state) return;
   let state;
@@ -651,12 +682,25 @@ export class BLEService {
     }
   }
 
-  async reconnectWithBackoff(device, { attempts = 4, baseDelayMs = 1000, sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay)) } = {}) {
+  async reconnectWithBackoff(device, { attempts = 4, baseDelayMs = 1000, sleep, signal } = {}) {
     let lastError;
     for (let attempt = 0; attempt < attempts; attempt += 1) {
+      if (signal?.aborted) throw reconnectCancelledError();
+      const abortConnection = () => {
+        void this.disconnect(device?.id).catch(() => {});
+      };
+      signal?.addEventListener('abort', abortConnection, { once: true });
       try {
-        return await this.connect(device, { allowSimulation: false });
+        const connected = await this.connect(device, { allowSimulation: false });
+        if (signal?.aborted) {
+          await this.disconnect(device?.id).catch(() => {});
+          throw reconnectCancelledError();
+        }
+        return connected;
       } catch (error) {
+        if (signal?.aborted || error?.code === 'BLE_RECONNECT_CANCELLED') {
+          throw reconnectCancelledError();
+        }
         lastError = error;
         const terminal = [
           BLE_ERROR_CODES.permissionDenied,
@@ -666,7 +710,9 @@ export class BLEService {
           BLE_ERROR_CODES.incompatibleDevice
         ].includes(error?.code);
         if (terminal || attempt === attempts - 1) break;
-        await sleep(baseDelayMs * Math.pow(2, attempt));
+        await waitForReconnectDelay(baseDelayMs * Math.pow(2, attempt), { signal, sleep });
+      } finally {
+        signal?.removeEventListener('abort', abortConnection);
       }
     }
     throw lastError || createBLEError(BLE_ERROR_CODES.connectFailed, null, 'reconnect');

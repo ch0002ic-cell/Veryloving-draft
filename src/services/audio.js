@@ -295,7 +295,6 @@ export class AudioService {
     const pendingEnqueues = this.playbackEnqueueQueue;
     this.playbackEnqueueQueue = Promise.resolve();
     const pendingDrain = this.playbackDrainPromise;
-    this.playbackDrainPromise = null;
     const pending = this.playbackQueue.splice(0);
     this.playbackQueuedBytes = 0;
     // Queued files no longer retain encoded audio and can release immediately.
@@ -311,9 +310,10 @@ export class AudioService {
       try { player.remove(); } catch {}
     }
     this.currentPlaybackFinish?.();
-    // Native file operations are not reliably cancellable. Detach the next
-    // session immediately and wait only briefly for old work. Every old enqueue
-    // is generation-fenced and deletes its file if the native write resolves.
+    // Native file writes are not reliably cancellable, so enqueue admission is
+    // generation-fenced. Keep an active playback drain as the single owner
+    // until its current player finishes; a new generation can then append work
+    // without creating a second drain that overlaps native player cleanup.
     const cleanup = Promise.allSettled([pendingDeletes, pendingEnqueues, pendingDrain]);
     void cleanup.catch(() => {});
     await waitForBoundedCleanup(cleanup);

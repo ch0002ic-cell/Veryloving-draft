@@ -125,6 +125,31 @@ test('wearable telemetry keeps one BLE bridge until the final listener unsubscri
   assert.equal(removals, 1);
 });
 
+test('disposing a wearable fences a delayed BLE reconnect result', async () => {
+  let reconnectSignal;
+  let resolveReconnect;
+  let disconnects = 0;
+  const wearable = new WearableDevice({
+    deviceId: 'wearable-disposed-reconnect',
+    bleClient: {
+      reconnectWithBackoff(_device, options) {
+        reconnectSignal = options.signal;
+        return new Promise((resolve) => { resolveReconnect = resolve; });
+      },
+      async disconnect() { disconnects += 1; }
+    }
+  });
+
+  const reconnecting = wearable.reconnect();
+  wearable.dispose();
+  assert.equal(reconnectSignal.aborted, true);
+  resolveReconnect({ connected: true, online: true });
+
+  await assert.rejects(reconnecting, (error) => error?.code === 'DEVICE_DISPOSED');
+  assert.equal(wearable.getStatus().online, false);
+  assert.ok(disconnects >= 1);
+});
+
 test('HomeRobotDevice serializes commands through the backend relay', async () => {
   const bodies = [];
   const redirects = [];
@@ -139,6 +164,74 @@ test('HomeRobotDevice serializes commands through the backend relay', async () =
   await Promise.all([robot.sendCommand({ type: 'first' }), robot.sendCommand({ type: 'second' })]);
   assert.deepEqual(bodies.map((body) => body.type), ['first', 'second']);
   assert.deepEqual(redirects, ['error', 'error']);
+});
+
+test('HomeRobotDevice coalesces concurrent connection probes', async () => {
+  let resolveHealth;
+  let healthRequests = 0;
+  let telemetryRequests = 0;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-connect-single-flight',
+    gatewayURL: 'https://api.example.test',
+    now: () => 50_000,
+    fetchImpl: async (url) => {
+      if (url.endsWith('/health')) {
+        healthRequests += 1;
+        return new Promise((resolve) => { resolveHealth = resolve; });
+      }
+      telemetryRequests += 1;
+      return gatewayTextResponse({ online: true, reported_at: 50_000 });
+    }
+  });
+
+  const first = robot.connect();
+  const second = robot.connect();
+  assert.equal(first, second);
+  while (!resolveHealth) await Promise.resolve();
+  assert.equal(healthRequests, 1);
+  resolveHealth(gatewayTextResponse({ status: 'ok' }));
+
+  const [firstStatus, secondStatus] = await Promise.all([first, second]);
+  assert.equal(firstStatus.online, true);
+  assert.deepEqual(secondStatus, firstStatus);
+  assert.equal(healthRequests, 1);
+  assert.equal(telemetryRequests, 1);
+  robot.dispose();
+});
+
+test('an offline network event fences an in-flight robot connection probe', async () => {
+  let resolveHealth;
+  let networkCallback;
+  let requestSignal;
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-network-race',
+    gatewayURL: 'https://api.example.test',
+    fetchImpl: async (url, options) => {
+      if (!url.endsWith('/health')) return gatewayTextResponse({ online: true, reported_at: Date.now() });
+      requestSignal = options.signal;
+      return new Promise((resolve) => { resolveHealth = resolve; });
+    },
+    loadNetwork: async () => ({
+      addNetworkStateListener(callback) {
+        networkCallback = callback;
+        return { remove() {} };
+      }
+    })
+  });
+
+  await robot.startNetworkMonitoring();
+  const connecting = robot.connect();
+  while (!resolveHealth) await Promise.resolve();
+  networkCallback({ isConnected: false, isInternetReachable: false });
+  assert.equal(requestSignal.aborted, true);
+  resolveHealth(gatewayTextResponse({ status: 'ok' }));
+
+  await assert.rejects(connecting, (error) => error?.code === 'DEVICE_DISCONNECTED');
+  assert.equal(robot.getStatus().online, false);
+  assert.equal(robot.getStatus().relayOnline, false);
+  assert.equal(robot.getStatus().lastErrorCode, 'ROBOT_NETWORK_UNAVAILABLE');
+  assert.equal(robot.retryTimer, null);
+  robot.dispose();
 });
 
 test('process death rebuilds wearable and robot registry from account-bound descriptors', async () => {
@@ -165,6 +258,30 @@ test('process death rebuilds wearable and robot registry from account-bound desc
   assert.equal(registryAfterDeath.get('w1').getStatus().online, false);
   assert.equal(registryAfterDeath.get('r1').getStatus().online, false);
   assert.deepEqual(registryAfterDeath.get('w1').getStatus().location, { longitude: 103.8, latitude: 1.3 });
+});
+
+test('registry rehydration surfaces corrupt saved devices instead of silently losing them', async () => {
+  const registry = new DeviceRegistry();
+  let validDevice;
+
+  await assert.rejects(registry.rehydrateRegistry({
+    accountId: 'user-a',
+    loadEntities: async () => [
+      { accountId: 'user-a', deviceId: 'wearable-valid', deviceType: 'wearable', name: 'Valid' },
+      { accountId: 'user-a', deviceId: 'wearable-corrupt', deviceType: 'wearable', name: 'Corrupt' }
+    ],
+    wearableFactory: (record) => {
+      if (record.deviceId === 'wearable-corrupt') throw new Error('malformed persisted record');
+      validDevice = new TestDevice({ deviceId: record.deviceId, deviceType: DEVICE_TYPES.wearable });
+      return validDevice;
+    }
+  }), (error) => (
+    error?.code === 'DEVICE_REGISTRY_RESTORE_FAILED'
+    && error?.failedCount === 1
+  ));
+
+  assert.equal(validDevice.disposed, true);
+  assert.deepEqual(registry.list(), []);
 });
 
 test('per-device queues isolate a stalled BLE wearable from robot HTTP delivery', async () => {

@@ -39,6 +39,23 @@ test('CLM environment parsing rejects fractional and oversized timing values at 
   }
 });
 
+test('CLM environment parsing preserves the standard AWS region fallback', () => {
+  const originalRegion = process.env.AWS_REGION;
+  const originalDefaultRegion = process.env.AWS_DEFAULT_REGION;
+  try {
+    delete process.env.AWS_REGION;
+    process.env.AWS_DEFAULT_REGION = 'ap-southeast-1';
+    assert.equal(envConfig().awsRegion, 'ap-southeast-1');
+    process.env.AWS_REGION = 'us-east-1';
+    assert.equal(envConfig().awsRegion, 'us-east-1');
+  } finally {
+    if (originalRegion === undefined) delete process.env.AWS_REGION;
+    else process.env.AWS_REGION = originalRegion;
+    if (originalDefaultRegion === undefined) delete process.env.AWS_DEFAULT_REGION;
+    else process.env.AWS_DEFAULT_REGION = originalDefaultRegion;
+  }
+});
+
 function aiNativeTestConfig(edgeScenarioRouter, overrides = {}) {
   const scenarioEngine = overrides.scenarioEngine || {};
   return {
@@ -2428,7 +2445,12 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
     async deleteContact(_userId, contactId) {
       records.contacts = records.contacts.filter((contact) => contact.id !== contactId);
     },
-    async startSafetySession(_userId, session) { records.sessions.push(session); return session; },
+    async startSafetySession(_userId, session) {
+      const existing = records.sessions.find((entry) => entry.idempotencyKey === session.idempotencyKey);
+      if (existing) return existing;
+      records.sessions.push(session);
+      return session;
+    },
     async getSafetySession() { return records.sessions.at(-1) || null; },
     async exportUserData() {
       return {
@@ -2518,6 +2540,24 @@ test('authenticated safety API persists contacts, mode sessions, and idempotent 
   });
   assert.equal(mode.status, 201);
   assert.equal(mode.json.status, 'active');
+
+  const duplicateMode = await invoke(config, {
+    method: 'POST',
+    url: '/v1/safety-sessions',
+    headers: authorization,
+    body: { idempotencyKey: 'mode_1234567890abcdef', mode: 'guardian' }
+  });
+  assert.deepEqual(duplicateMode.json, mode.json);
+  assert.equal(records.sessions.length, 1);
+
+  const conflictingMode = await invoke(config, {
+    method: 'POST',
+    url: '/v1/safety-sessions',
+    headers: authorization,
+    body: { idempotencyKey: 'mode_1234567890abcdef', mode: 'home' }
+  });
+  assert.equal(conflictingMode.status, 409);
+  assert.equal(records.sessions.length, 1);
 
   const currentMode = await invoke(config, {
     method: 'GET',

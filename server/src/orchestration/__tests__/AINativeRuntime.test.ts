@@ -95,8 +95,8 @@ describe('AI-native runtime composition', () => {
     expect(provider).not.toHaveBeenCalled();
   });
 
-  it('does not let an abort-ignoring provider block account deletion', async () => {
-    const lifecycle = new AINativeAccountLifecycle();
+  it('fails account deletion within a bound when a provider ignores cancellation', async () => {
+    const lifecycle = new AINativeAccountLifecycle({ operationDrainTimeoutMs: 25 });
     const repository = new InMemoryCiphertextRepository();
     const userState = new UserStateModel({ repository, encryptionKey: ENCRYPTION_KEY });
     const memoryNet = new MemoryNet({ repository, encryptionKey: ENCRYPTION_KEY });
@@ -106,6 +106,7 @@ describe('AI-native runtime composition', () => {
       providerStarted();
       return new Promise<never>(() => undefined);
     });
+    const pendingOutcome = expect(pending).rejects.toMatchObject({ code: 'ACCOUNT_DATA_DELETED' });
     await started;
 
     const deletion = lifecycle.deleteAccountData('account-stuck-provider', {
@@ -120,11 +121,51 @@ describe('AI-native runtime composition', () => {
       deleteExternalProviderData: async () => undefined
     });
 
-    await expect(Promise.race([
-      deletion,
-      new Promise((_, reject) => setTimeout(() => reject(new Error('deletion timed out')), 250))
-    ])).resolves.toMatchObject({ externalProviderDataDeleted: true });
-    await expect(pending).rejects.toMatchObject({ code: 'ACCOUNT_DATA_DELETED' });
+    await expect(deletion).rejects.toMatchObject({
+      code: 'ACCOUNT_OPERATION_DRAIN_TIMEOUT',
+      statusCode: 503
+    });
+    await pendingOutcome;
+  });
+
+  it('waits for an abort-ignoring provider to settle before erasing provider data', async () => {
+    const lifecycle = new AINativeAccountLifecycle({ operationDrainTimeoutMs: 250 });
+    const repository = new InMemoryCiphertextRepository();
+    const userState = new UserStateModel({ repository, encryptionKey: ENCRYPTION_KEY });
+    const memoryNet = new MemoryNet({ repository, encryptionKey: ENCRYPTION_KEY });
+    const events: string[] = [];
+    let providerStarted!: () => void;
+    let releaseProvider!: () => void;
+    const started = new Promise<void>((resolve) => { providerStarted = resolve; });
+    const providerGate = new Promise<void>((resolve) => { releaseProvider = resolve; });
+    const parent = new AbortController();
+    const pending = lifecycle.run('account-late-provider', parent.signal, async () => {
+      providerStarted();
+      await providerGate;
+      events.push('provider-settled');
+    });
+    const pendingOutcome = expect(pending).rejects.toMatchObject({ code: 'OPERATION_CANCELLED' });
+    await started;
+    parent.abort();
+    await pendingOutcome;
+
+    const deletion = lifecycle.deleteAccountData('account-late-provider', {
+      actionGateway: {
+        route: async () => undefined,
+        waitForActionOutcome: async () => undefined,
+        fenceUserActions: async () => undefined
+      },
+      scenarioEngine: { deleteAccountData: async () => 0 },
+      userState,
+      memoryNet,
+      deleteExternalProviderData: async () => { events.push('provider-data-erased'); }
+    });
+    await Promise.resolve();
+    expect(events).toEqual([]);
+
+    releaseProvider();
+    await expect(deletion).resolves.toMatchObject({ externalProviderDataDeleted: true });
+    expect(events).toEqual(['provider-settled', 'provider-data-erased']);
   });
 
   it('sends only bounded summaries—not device IDs or precise coordinates—to Hume', async () => {

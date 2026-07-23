@@ -97,7 +97,16 @@ test('Dynamo safety writes share an atomic account-deletion fence', async () => 
     deliveryStatus: 'failed', eligibleCount: 1, deliveredCount: 0, failedCount: 1,
     claimToken: medicationClaim.deliveryClaimToken
   });
-  await repository.startSafetySession('user-1', { id: 'session-1', status: 'active' });
+  await repository.startSafetySession('user-1', {
+    id: 'session-1',
+    idempotencyKey: 'safety_session_key_0001',
+    requestFingerprint: 'fingerprint',
+    mode: 'guardian',
+    status: 'active',
+    startedAt: 1,
+    location: null,
+    expiresAt: 2
+  });
 
   assert.equal(transactions.length, 10);
   for (const items of transactions) {
@@ -105,7 +114,7 @@ test('Dynamo safety writes share an atomic account-deletion fence', async () => 
     assert.deepEqual(items[0].ConditionCheck.Key, { PK: 'USER#user-1', SK: 'ACCOUNT#STATE' });
     assert.match(items[0].ConditionCheck.ConditionExpression, /deletion_state = :active/);
   }
-  assert.deepEqual(transactions.map((items) => items.length), [4, 3, 4, 2, 2, 2, 2, 2, 2, 2]);
+  assert.deepEqual(transactions.map((items) => items.length), [4, 3, 4, 2, 2, 2, 2, 2, 2, 3]);
   assert.deepEqual(transactions.slice(3).map((items) => Object.keys(items[1])[0]), [
     'Put', 'Update', 'Update', 'Put', 'Update', 'Update', 'Put'
   ]);
@@ -120,6 +129,12 @@ test('Dynamo safety writes share an atomic account-deletion fence', async () => 
   const sosRecordUpdate = transactions[5][1].Update;
   assert.match(sosRecordUpdate.ConditionExpression, /deliveryClaimToken = :claimToken/);
   assert.match(sosRecordUpdate.UpdateExpression, /REMOVE deliveryClaimToken, deliveryClaimExpiresAt/);
+  const safetySessionReceipt = transactions[9][1].Put;
+  assert.equal(safetySessionReceipt.Item.SK, 'SAFETY_SESSION#safety_session_key_0001');
+  assert.match(safetySessionReceipt.ConditionExpression, /attribute_not_exists/);
+  assert.equal(safetySessionReceipt.Item.expiresAt, 2);
+  assert.equal(transactions[9][2].Put.Item.SK, 'SAFETY#CURRENT');
+  assert.equal(transactions[9][2].Put.Item.expiresAt, undefined);
 });
 
 test('Dynamo safety writes fail closed when account deletion wins the transaction', async () => {
@@ -141,9 +156,53 @@ test('Dynamo safety writes fail closed when account deletion wins the transactio
   });
 
   await assert.rejects(
-    repository.startSafetySession('user-1', { id: 'session-1', status: 'active' }),
+    repository.startSafetySession('user-1', {
+      id: 'session-1',
+      idempotencyKey: 'safety_session_key_0001',
+      requestFingerprint: 'fingerprint',
+      mode: 'guardian',
+      status: 'active',
+      startedAt: 1,
+      location: null
+    }),
     { statusCode: 423, code: 'ACCOUNT_DELETION_IN_PROGRESS' }
   );
+  assert.deepEqual(commands, ['TransactWriteCommand', 'GetCommand']);
+});
+
+test('Dynamo safety session retries return the original receipt without replacing current state', async () => {
+  const original = {
+    id: 'session-original',
+    idempotencyKey: 'safety_session_key_0001',
+    requestFingerprint: 'original-fingerprint',
+    mode: 'guardian',
+    status: 'active',
+    startedAt: 100,
+    location: null,
+    expiresAt: 200
+  };
+  const commands = [];
+  const client = {
+    async send(command) {
+      commands.push(command.constructor.name);
+      if (command.constructor.name === 'TransactWriteCommand') {
+        throw transactionCancellation([{ Code: 'ConditionalCheckFailed' }, { Code: 'None' }]);
+      }
+      if (command.constructor.name === 'GetCommand') {
+        return { Item: original };
+      }
+      throw new Error(`Unexpected command ${command.constructor.name}`);
+    }
+  };
+  const repository = createDynamoSafetyRepository({ tableName: 'safety', client });
+  const replay = await repository.startSafetySession('user-1', {
+    ...original,
+    mode: 'home',
+    status: 'inactive',
+    startedAt: 300
+  });
+
+  assert.deepEqual(replay, original);
   assert.deepEqual(commands, ['TransactWriteCommand', 'GetCommand']);
 });
 

@@ -7,21 +7,67 @@ export class WearableDevice extends BaseDevice {
     this.nativeDevice = nativeDevice || { id: deviceId, name };
     this.bleClient = bleClient;
     this.removeBLEHandler = null;
+    this.connectionLifecycleGeneration = 0;
+    this.connectionAbortController = new AbortController();
+  }
+
+  connectionLifecycleError() {
+    if (this.disposed) return this.disposedError();
+    const error = new Error('Wearable device is disconnected.');
+    error.code = 'DEVICE_DISCONNECTED';
+    return error;
+  }
+
+  isConnectionLifecycleCurrent(generation) {
+    return !this.disposed && generation === this.connectionLifecycleGeneration;
+  }
+
+  invalidateConnectionLifecycle() {
+    this.connectionLifecycleGeneration += 1;
+    this.connectionAbortController.abort();
+    this.connectionAbortController = new AbortController();
+  }
+
+  async finishConnection(connected, generation) {
+    if (!this.isConnectionLifecycleCurrent(generation)) {
+      await this.bleClient.disconnect?.(this.deviceId).catch?.(() => {});
+      throw this.connectionLifecycleError();
+    }
+    this.setStatus({ ...connected, online: true, connectionState: 'connected' });
+    return this.getStatus();
   }
 
   async connect(options) {
-    const connected = await this.bleClient.connect(this.nativeDevice, options);
-    this.setStatus({ ...connected, online: true, connectionState: 'connected' });
-    return this.getStatus();
+    if (this.disposed) throw this.disposedError();
+    const generation = this.connectionLifecycleGeneration;
+    let connected;
+    try {
+      connected = await this.bleClient.connect(this.nativeDevice, options);
+    } catch (error) {
+      if (!this.isConnectionLifecycleCurrent(generation)) throw this.connectionLifecycleError();
+      throw error;
+    }
+    return this.finishConnection(connected, generation);
   }
 
   async reconnect(options) {
-    const connected = await this.bleClient.reconnectWithBackoff(this.nativeDevice, options);
-    this.setStatus({ ...connected, online: true, connectionState: 'connected' });
-    return this.getStatus();
+    if (this.disposed) throw this.disposedError();
+    const generation = this.connectionLifecycleGeneration;
+    let connected;
+    try {
+      connected = await this.bleClient.reconnectWithBackoff(this.nativeDevice, {
+        ...options,
+        signal: this.connectionAbortController.signal
+      });
+    } catch (error) {
+      if (!this.isConnectionLifecycleCurrent(generation)) throw this.connectionLifecycleError();
+      throw error;
+    }
+    return this.finishConnection(connected, generation);
   }
 
   async disconnect() {
+    this.invalidateConnectionLifecycle();
     await this.bleClient.disconnect(this.deviceId);
     return this.setStatus({ online: false, connected: false, connectionState: 'disconnected' });
   }
@@ -70,6 +116,7 @@ export class WearableDevice extends BaseDevice {
 
   dispose() {
     if (this.disposed) return;
+    this.invalidateConnectionLifecycle();
     super.dispose();
     this.removeBLEHandler?.();
     this.removeBLEHandler = null;

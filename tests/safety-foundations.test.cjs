@@ -4,7 +4,9 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const {
   createSafetyEventRouter,
-  normalizeSafetyEvent
+  normalizeSafetyEvent,
+  requireSafetyAccountBinding,
+  safetyEventIdempotencyKey
 } = require('../src/services/safety-events');
 const {
   distanceBetweenLocations,
@@ -126,6 +128,101 @@ test('concurrent Pat-Pat duplicates cannot start a second SOS operation and fail
   );
   shouldFail = false;
   assert.equal((await retryRouter.routeWearableEvent(event, { deviceId: 'w1' })).status, 'sos_dispatched');
+});
+
+test('safety-event replay and incident state are isolated across account boundaries', async () => {
+  const calls = [];
+  const router = createSafetyEventRouter({
+    now: () => 3_500_000,
+    decodeWearableEvent: async (value) => value,
+    activateSOS: async (request) => {
+      calls.push(request);
+      return { status: 'accepted' };
+    }
+  });
+  const firstEvent = {
+    type: 'pat_pat',
+    eventId: 'account-bound-event-01',
+    occurredAt: 3_500_000
+  };
+
+  assert.equal((await router.routeWearableEvent(firstEvent, {
+    deviceId: 'shared-wearable',
+    accountScope: 'account-a'
+  })).status, 'sos_dispatched');
+  assert.equal((await router.routeWearableEvent(firstEvent, {
+    deviceId: 'shared-wearable',
+    accountScope: 'account-a'
+  })).status, 'duplicate');
+  assert.equal((await router.routeWearableEvent(firstEvent, {
+    deviceId: 'shared-wearable',
+    accountScope: 'account-b'
+  })).status, 'sos_dispatched');
+
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].accountScope, 'account-a');
+  assert.equal(calls[1].accountScope, 'account-b');
+  assert.equal((await router.routeWearableEvent({
+    ...firstEvent,
+    eventId: 'account-bound-event-02'
+  }, {
+    deviceId: 'shared:wearable:alias',
+    accountScope: 'account-a'
+  })).status, 'sos_dispatched');
+  assert.equal((await router.routeWearableEvent({
+    ...firstEvent,
+    eventId: 'account-bound-event-02'
+  }, {
+    deviceId: 'alias',
+    accountScope: 'account-a:wearable:shared'
+  })).status, 'sos_dispatched');
+  await assert.rejects(
+    router.routeWearableEvent(firstEvent, {
+      deviceId: 'shared-wearable',
+      accountScope: ' '
+    }),
+    (error) => error.code === 'SAFETY_EVENT_ACCOUNT_SCOPE_INVALID'
+  );
+  assert.equal(
+    requireSafetyAccountBinding('account-b', 'account-b', 'account-b'),
+    'account-b'
+  );
+  assert.throws(
+    () => requireSafetyAccountBinding('account-b', 'account-b', 'account-a'),
+    (error) => error.code === 'SAFETY_EVENT_ACCOUNT_CHANGED'
+  );
+});
+
+test('safety idempotency digests resist delimiter aliasing and known legacy FNV collisions', () => {
+  const eventId = 'tuple-event-0001';
+  const first = safetyEventIdempotencyKey(
+    'account-a',
+    'shared:wearable:alias',
+    eventId
+  );
+  const previouslyAliased = safetyEventIdempotencyKey(
+    'account-a:shared',
+    'wearable:alias',
+    eventId
+  );
+
+  assert.notEqual(first, previouslyAliased);
+  assert.equal(first, safetyEventIdempotencyKey(
+    'account-a',
+    'shared:wearable:alias',
+    eventId
+  ));
+
+  // These device IDs collide under the retired 32-bit FNV-1a binding hash.
+  const legacyCollisionA = safetyEventIdempotencyKey('account-a', 'wearable-36vu', eventId);
+  const legacyCollisionB = safetyEventIdempotencyKey('account-a', 'wearable-ayea', eventId);
+  assert.notEqual(legacyCollisionA, legacyCollisionB);
+  assert.match(legacyCollisionA, /^[A-Za-z0-9_-]{16,100}$/);
+  assert.ok(legacyCollisionA.length <= 100);
+  assert.match(
+    safetyEventIdempotencyKey('account-a', 'wearable-1', 'firmware:event.01'),
+    /^[A-Za-z0-9_-]{16,100}$/
+  );
 });
 
 test('a burst of unique safety event IDs coalesces into one active incident', async () => {

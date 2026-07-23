@@ -63,3 +63,44 @@ test('stalled native audio writes remain globally bounded across repeated cancel
   assert.ok(service.playbackRetainedBytes <= 8 * 1024 * 1024);
   assert.equal(await service.playBase64Audio(encodedSegment), false);
 });
+
+test('cancel followed by enqueue retains one playback drain owner', async () => {
+  const service = new AudioService();
+  const started = [];
+  let activePlayers = 0;
+  let maximumActivePlayers = 0;
+  service._playFile = async ({ uri }) => {
+    activePlayers += 1;
+    maximumActivePlayers = Math.max(maximumActivePlayers, activePlayers);
+    started.push(uri);
+    try {
+      if (uri === 'old') {
+        await new Promise((resolve) => { service.currentPlaybackFinish = resolve; });
+      }
+    } finally {
+      if (uri === 'old') service.currentPlaybackFinish = null;
+      activePlayers -= 1;
+    }
+  };
+  const enqueue = (uri) => {
+    service.playbackQueue.push({
+      uri,
+      generation: service.playbackGeneration,
+      sizeBytes: 1,
+      releaseAdmission() {}
+    });
+  };
+
+  enqueue('old');
+  const originalDrain = service._drainPlaybackQueue();
+  while (started.length === 0) await Promise.resolve();
+  const cancellation = service.cancelAndClearQueue();
+  enqueue('new-1');
+  enqueue('new-2');
+  const resumedDrain = service._drainPlaybackQueue();
+
+  assert.equal(resumedDrain, originalDrain);
+  await Promise.all([originalDrain, resumedDrain, cancellation]);
+  assert.deepEqual(started, ['old', 'new-1', 'new-2']);
+  assert.equal(maximumActivePlayers, 1);
+});

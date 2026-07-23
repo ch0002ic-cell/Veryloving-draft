@@ -696,6 +696,34 @@ test('BLE reconnect uses bounded exponential attempts and stops on success', asy
   assert.deepEqual(delays, [10, 20]);
 });
 
+test('BLE reconnect cancellation interrupts backoff before another attempt', async () => {
+  const service = new BLEService({ protocol: TEST_PROTOCOL });
+  const controller = new AbortController();
+  let attempts = 0;
+  let backoffStarted = false;
+  service.connect = async () => {
+    attempts += 1;
+    throw new BLEOperationError(BLE_ERROR_CODES.connectFailed, 'retry');
+  };
+  const reconnecting = service.reconnectWithBackoff(
+    { id: 'VL01-cancelled-reconnect' },
+    {
+      attempts: 4,
+      baseDelayMs: 10,
+      signal: controller.signal,
+      sleep: () => new Promise(() => { backoffStarted = true; })
+    }
+  );
+  while (!backoffStarted) await Promise.resolve();
+  controller.abort();
+
+  await assert.rejects(
+    reconnecting,
+    (error) => error?.name === 'AbortError' && error?.code === 'BLE_RECONNECT_CANCELLED'
+  );
+  assert.equal(attempts, 1);
+});
+
 test('device management exposes typed reconnect failure and an explicit retry path', () => {
   const screen = readFileSync(path.resolve(process.cwd(), 'app/device-management.js'), 'utf8');
   const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');

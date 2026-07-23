@@ -44,3 +44,13 @@ test('server log sanitizer redacts device identifiers in common field styles', (
     nested: { device_ref: '[REDACTED]' }
   });
 });
+
+test('server log sanitizer does not retain identifiers embedded in request paths', () => {
+  assert.deepEqual(sanitizeServerLog({
+    path: '/v1/devices/home-robots/robot-private-1',
+    name: 'UpstreamError'
+  }), {
+    path: '[REDACTED]',
+    name: 'UpstreamError'
+  });
+});

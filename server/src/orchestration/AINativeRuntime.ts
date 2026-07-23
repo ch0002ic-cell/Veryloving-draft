@@ -37,6 +37,7 @@ export interface AINativeAccountDeletionResult {
 interface ActiveAccountOperation {
   readonly controller: AbortController;
   readonly completion: Promise<unknown>;
+  providerCompletion?: Promise<void>;
 }
 
 /**
@@ -46,6 +47,15 @@ interface ActiveAccountOperation {
 export class AINativeAccountLifecycle {
   private readonly fenced = new Set<string>();
   private readonly active = new Map<string, Set<ActiveAccountOperation>>();
+  private readonly operationDrainTimeoutMs: number;
+
+  constructor(options: Readonly<{ operationDrainTimeoutMs?: number }> = {}) {
+    const timeout = options.operationDrainTimeoutMs ?? 5_000;
+    if (!Number.isSafeInteger(timeout) || timeout < 10 || timeout > 120_000) {
+      throw new TypeError('AI-native operation drain timeout is invalid');
+    }
+    this.operationDrainTimeoutMs = timeout;
+  }
 
   private reference(accountId: string): string {
     if (!/^[A-Za-z0-9][A-Za-z0-9._:@-]{0,255}$/.test(accountId ?? '')) {
@@ -92,7 +102,18 @@ export class AINativeAccountLifecycle {
         // but account erasure must not depend on every provider implementing
         // cancellation correctly. Observe the provider promise after the race
         // so a late rejection cannot become an unhandled process rejection.
-        const providerOperation = Promise.resolve(operation(controller.signal));
+        const providerOperation = Promise.resolve().then(() => {
+          if (controller.signal.aborted) {
+            throw Object.assign(new Error('AI-native operation was cancelled'), {
+              code: 'OPERATION_CANCELLED'
+            });
+          }
+          return operation(controller.signal);
+        });
+        entry.providerCompletion = providerOperation.then(
+          () => undefined,
+          () => undefined
+        );
         void providerOperation.catch(() => {});
         result = await Promise.race([providerOperation, abortWait]);
       } catch (error) {
@@ -114,9 +135,16 @@ export class AINativeAccountLifecycle {
       return result;
     } finally {
       parentSignal?.removeEventListener('abort', abort);
-      active.delete(entry);
-      if (active.size === 0) this.active.delete(accountRef);
       resolveCompletion();
+      const removeEntry = (): void => {
+        active.delete(entry);
+        if (active.size === 0) this.active.delete(accountRef);
+      };
+      if (entry.providerCompletion) {
+        void entry.providerCompletion.then(removeEntry);
+      } else {
+        removeEntry();
+      }
     }
   }
 
@@ -145,6 +173,7 @@ export class AINativeAccountLifecycle {
     const scenarioDelete = dependencies.scenarioEngine.deleteAccountData(accountId);
     const [, scenarioExecutionsDeleted] = await Promise.all([actionFence, scenarioDelete]);
     await Promise.allSettled(inFlight.map((entry) => entry.completion));
+    await this.drainProviderOperations(inFlight);
     const [userStateDeleted, memoriesDeleted] = await Promise.all([
       dependencies.userState.deleteAllData(accountId),
       dependencies.memoryNet.deleteAllData(accountId),
@@ -162,6 +191,30 @@ export class AINativeAccountLifecycle {
     return Object.assign(new Error('AI-native account data has been deleted'), {
       code: 'ACCOUNT_DATA_DELETED'
     });
+  }
+
+  private async drainProviderOperations(
+    operations: readonly ActiveAccountOperation[]
+  ): Promise<void> {
+    const pending = operations
+      .map((entry) => entry.providerCompletion)
+      .filter((completion): completion is Promise<void> => completion !== undefined);
+    if (pending.length === 0) return;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => reject(Object.assign(
+        new Error('AI-native provider operations did not settle before account erasure'),
+        {
+          code: 'ACCOUNT_OPERATION_DRAIN_TIMEOUT',
+          statusCode: 503
+        }
+      )), this.operationDrainTimeoutMs);
+    });
+    try {
+      await Promise.race([Promise.all(pending), deadline]);
+    } finally {
+      if (timeout !== undefined) clearTimeout(timeout);
+    }
   }
 }
 

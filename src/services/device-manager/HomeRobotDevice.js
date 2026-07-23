@@ -143,6 +143,7 @@ export class HomeRobotDevice extends BaseDevice {
     this.loadNetwork = loadNetwork;
     this.networkSubscription = null;
     this.networkMonitoringGeneration = 0;
+    this.networkAvailable = null;
     this.lifecycleGeneration = 0;
     this.explicitlyDisconnected = false;
     this.activeRequestControllers = new Set();
@@ -158,6 +159,7 @@ export class HomeRobotDevice extends BaseDevice {
     this.retryTimer = null;
     this.telemetryTimer = null;
     this.telemetryInFlight = null;
+    this.connectInFlight = null;
     this.latestTelemetryAt = 0;
     this.retryAttempt = 0;
     this.commandStore = commandStore || (accountId ? {
@@ -318,7 +320,18 @@ export class HomeRobotDevice extends BaseDevice {
     }
   }
 
-  async connect() {
+  connect() {
+    if (this.disposed) return Promise.reject(this.disposedError());
+    if (this.connectInFlight) return this.connectInFlight;
+    let operation;
+    operation = this.performConnect().finally(() => {
+      if (this.connectInFlight === operation) this.connectInFlight = null;
+    });
+    this.connectInFlight = operation;
+    return operation;
+  }
+
+  async performConnect() {
     if (this.disposed) throw this.disposedError();
     this.explicitlyDisconnected = false;
     const lifecycleGeneration = this.lifecycleGeneration;
@@ -374,6 +387,7 @@ export class HomeRobotDevice extends BaseDevice {
     this.clearNetworkRetry();
     this.stopTelemetryPolling();
     this.telemetryInFlight = null;
+    this.connectInFlight = null;
     this.pendingScan = null;
     for (const controller of this.activeRequestControllers) controller.abort();
     this.activeRequestControllers.clear();
@@ -478,11 +492,19 @@ export class HomeRobotDevice extends BaseDevice {
     const handleNetworkState = (state) => {
       if (this.disposed || this.explicitlyDisconnected || generation !== this.networkMonitoringGeneration) return;
       if (state.isConnected === true && state.isInternetReachable !== false) {
+        this.networkAvailable = true;
         this.connect().catch(() => this.scheduleNetworkRetry());
       } else if (state.isConnected === false || state.isInternetReachable === false) {
+        this.networkAvailable = false;
+        this.lifecycleGeneration += 1;
         this.pauseCommandQueue();
         this.clearNetworkRetry();
         this.stopTelemetryPolling();
+        this.telemetryInFlight = null;
+        this.connectInFlight = null;
+        this.pendingScan = null;
+        for (const controller of this.activeRequestControllers) controller.abort();
+        this.activeRequestControllers.clear();
         this.setStatus({ relayOnline: false, online: false, hardwareStatus: 'unknown', connectionState: 'disconnected', lastErrorCode: 'ROBOT_NETWORK_UNAVAILABLE' });
       }
     };
@@ -498,7 +520,7 @@ export class HomeRobotDevice extends BaseDevice {
   }
 
   scheduleNetworkRetry() {
-    if (this.disposed || this.explicitlyDisconnected || this.retryTimer) return;
+    if (this.disposed || this.explicitlyDisconnected || this.networkAvailable === false || this.retryTimer) return;
     const delay = Math.min(60_000, 1000 * 2 ** Math.min(this.retryAttempt, 6));
     this.retryAttempt += 1;
     this.retryTimer = this.setTimeoutImpl(() => {
@@ -511,6 +533,7 @@ export class HomeRobotDevice extends BaseDevice {
 
   dispose() {
     this.explicitlyDisconnected = true;
+    this.networkAvailable = false;
     this.lifecycleGeneration += 1;
     this.networkMonitoringGeneration += 1;
     this.pauseCommandQueue();
@@ -520,6 +543,7 @@ export class HomeRobotDevice extends BaseDevice {
     for (const controller of this.activeRequestControllers) controller.abort();
     this.activeRequestControllers.clear();
     this.telemetryInFlight = null;
+    this.connectInFlight = null;
     this.pendingScan = null;
     this.networkSubscription?.remove?.();
     this.networkSubscription = null;

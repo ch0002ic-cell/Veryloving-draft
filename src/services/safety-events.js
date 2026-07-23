@@ -1,3 +1,6 @@
+import nacl from 'tweetnacl';
+import { bytesToBase64 } from '../utils/base64';
+
 const SUPPORTED_DEVICE_TYPES = new Set(['wearable', 'home_robot']);
 const EVENT_ID_PATTERN = /^[A-Za-z0-9._:-]{8,128}$/;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
@@ -29,6 +32,56 @@ function requiredIdentifier(value, code, label, pattern = EVENT_ID_PATTERN) {
   const normalized = value.trim();
   if (!pattern.test(normalized)) throw safetyEventError(code, `${label} is invalid.`);
   return normalized;
+}
+
+function normalizeAccountScope(value) {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== 'string') {
+    throw safetyEventError('SAFETY_EVENT_ACCOUNT_SCOPE_INVALID', 'Safety event account scope is invalid.');
+  }
+  const normalized = value.trim();
+  if (!normalized || normalized.length > 256) {
+    throw safetyEventError('SAFETY_EVENT_ACCOUNT_SCOPE_INVALID', 'Safety event account scope is invalid.');
+  }
+  return normalized;
+}
+
+function utf8Bytes(value) {
+  const encoded = encodeURIComponent(String(value));
+  const bytes = [];
+  for (let index = 0; index < encoded.length; index += 1) {
+    if (encoded[index] === '%') {
+      bytes.push(Number.parseInt(encoded.slice(index + 1, index + 3), 16));
+      index += 2;
+    } else {
+      bytes.push(encoded.charCodeAt(index));
+    }
+  }
+  return Uint8Array.from(bytes);
+}
+
+export function safetyEventIdempotencyKey(accountId, deviceId, eventId) {
+  const eventTuple = JSON.stringify([String(accountId), String(deviceId), String(eventId)]);
+  const digest = bytesToBase64(nacl.hash(utf8Bytes(eventTuple)).slice(0, 32))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+  return `safety-${digest}`;
+}
+
+export function requireSafetyAccountBinding(accountScope, activeAccountId, contactsAccountId) {
+  const normalizedScope = normalizeAccountScope(accountScope);
+  if (
+    normalizedScope === null
+    || normalizedScope !== activeAccountId
+    || normalizedScope !== contactsAccountId
+  ) {
+    throw safetyEventError(
+      'SAFETY_EVENT_ACCOUNT_CHANGED',
+      'Account-bound emergency contacts are not ready for this safety event.'
+    );
+  }
+  return normalizedScope;
 }
 
 function normalizeType(value) {
@@ -133,7 +186,7 @@ export function createSafetyEventRouter({
   const inFlightIncidents = new Map();
   const recentIncidents = new Map();
 
-  async function routeDecoded(decoded, deviceType, deviceId) {
+  async function routeDecoded(decoded, deviceType, deviceId, accountScope) {
     const event = normalizeSafetyEvent(decoded, {
       deviceType,
       deviceId,
@@ -141,8 +194,12 @@ export function createSafetyEventRouter({
       maxEventAgeMs,
       futureToleranceMs
     });
-    const dedupeKey = `${event.deviceType}:${event.deviceId}:${event.eventId}`;
-    const incidentKey = `${event.deviceType}:${event.deviceId}:${event.type}`;
+    const normalizedAccountScope = normalizeAccountScope(accountScope);
+    const scopeKey = normalizedAccountScope === null ? 'unscoped' : normalizedAccountScope;
+    // Tuple serialization prevents delimiter-bearing account/device identifiers
+    // from aliasing another account's replay or incident key.
+    const dedupeKey = JSON.stringify([scopeKey, event.deviceType, event.deviceId, event.eventId]);
+    const incidentKey = JSON.stringify([scopeKey, event.deviceType, event.deviceId, event.type]);
     const timestamp = now();
     pruneDedupeRecords(acceptedEvents, timestamp);
     pruneDedupeRecords(recentIncidents, timestamp);
@@ -169,14 +226,20 @@ export function createSafetyEventRouter({
           source: event.source,
           deviceId: event.deviceId,
           occurredAt: event.occurredAt,
-          idempotencyKey: event.eventId
+          idempotencyKey: event.eventId,
+          ...(normalizedAccountScope === null ? {} : { accountScope: normalizedAccountScope })
         });
         acceptedEvents.set(dedupeKey, now() + Math.max(1, dedupeTTLms));
         recentIncidents.set(incidentKey, now() + Math.max(1, incidentCooldownMs));
         return { status: 'sos_dispatched', event, result };
       }
 
-      if (typeof reportFall === 'function') result = await reportFall(event);
+      if (typeof reportFall === 'function') {
+        result = await reportFall(
+          event,
+          normalizedAccountScope === null ? undefined : { accountScope: normalizedAccountScope }
+        );
+      }
       acceptedEvents.set(dedupeKey, now() + Math.max(1, dedupeTTLms));
       recentIncidents.set(incidentKey, now() + Math.max(1, incidentCooldownMs));
       return { status: result === undefined ? 'fall_detected' : 'fall_reported', event, result };
@@ -192,18 +255,18 @@ export function createSafetyEventRouter({
   }
 
   return Object.freeze({
-    async routeWearableEvent(rawValue, { deviceId } = {}) {
+    async routeWearableEvent(rawValue, { deviceId, accountScope } = {}) {
       if (typeof decodeWearableEvent !== 'function') {
         throw safetyEventError('WEARABLE_EVENT_DECODER_UNAVAILABLE', 'Wearable event decoding is unavailable.');
       }
-      return routeDecoded(await decodeWearableEvent(rawValue), 'wearable', deviceId);
+      return routeDecoded(await decodeWearableEvent(rawValue), 'wearable', deviceId, accountScope);
     },
 
-    async routeRobotEvent(rawValue, { deviceId } = {}) {
+    async routeRobotEvent(rawValue, { deviceId, accountScope } = {}) {
       if (typeof decodeRobotEvent !== 'function') {
         throw safetyEventError('ROBOT_EVENT_DECODER_UNAVAILABLE', 'Robot event decoding is unavailable.');
       }
-      return routeDecoded(await decodeRobotEvent(rawValue), 'home_robot', deviceId);
+      return routeDecoded(await decodeRobotEvent(rawValue), 'home_robot', deviceId, accountScope);
     }
   });
 }
