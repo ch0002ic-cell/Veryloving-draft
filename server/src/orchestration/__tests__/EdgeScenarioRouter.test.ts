@@ -19,6 +19,9 @@ function accepted(index: number): ScenarioStartResult {
     accepted: true,
     duplicate: false,
     execution: {
+      schemaVersion: 1,
+      definitionVersion: 1,
+      identityKeyVersion: 1,
       executionId: `execution-${index}`,
       accountRef: 'opaque-account',
       scenarioId: 'fall_detection',

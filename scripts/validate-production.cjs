@@ -38,6 +38,8 @@ function runAudit({ offline }) {
 }
 
 function validateSourceProductionGates() {
+  process.stdout.write('Validating the reviewed Node and npm toolchain.\n');
+  execute(process.execPath, ['scripts/validate-toolchain.cjs']);
   process.stdout.write('Building and testing the production AI-native composition boundary.\n');
   execute(npmCommand, ['run', 'build:ai-native']);
   execute(npmCommand, ['run', 'test:ai-native', '--', '--coverage=false']);

@@ -6,7 +6,7 @@ const { createAINativeRuntimeComposition } = require('./ai-native-composition.cj
 const { createHandler } = require('./clm-server.cjs');
 const { createGracefulShutdown, installProcessSignalHandlers, parseListenPort } = require('./graceful-shutdown.cjs');
 
-// Node 22 loads the local, untracked server environment without requiring
+// Node 24 loads the local, untracked server environment without requiring
 // every assignment to be prefixed with `export`. Existing process variables
 // retain precedence. A deployed server without a local .env is unchanged.
 try {

@@ -9,6 +9,7 @@ import {
   type ScenarioPriority,
   type ScenarioRuntime,
   type ScenarioRuntimeContext,
+  type ScenarioStepDefinition,
   type ScenarioStartRequest
 } from '../ScenarioEngine';
 import { createDefaultScenarioDefinitions } from '../../scenarios';
@@ -18,7 +19,7 @@ const SECRET = 'scenario-test-secret-is-at-least-thirty-two-bytes';
 
 function request(
   scenarioId: ScenarioStartRequest['scenarioId'],
-  suffix = scenarioId,
+  suffix: string = scenarioId,
   input: ScenarioStartRequest['input'] = {}
 ): ScenarioStartRequest {
   const triggerType = {
@@ -45,7 +46,7 @@ class RecordingRuntime implements ScenarioRuntime {
     private readonly handler: (
       operation: ScenarioOperation,
       context: ScenarioRuntimeContext
-    ) => Promise<ScenarioOperationResult> = async (operation) => {
+    ) => Promise<ScenarioOperationResult> = async (operation): Promise<ScenarioOperationResult> => {
       if (operation.kind === 'wait_for_signal') {
         return {
           status: 'succeeded',
@@ -232,7 +233,7 @@ function singleStepDefinition(
   id: ScenarioDefinition['id'],
   priority: ScenarioPriority,
   operation: ScenarioOperation,
-  overrides: Partial<ScenarioDefinition['buildSteps'] extends (...args: never[]) => infer R ? R[number] : never> = {}
+  overrides: Partial<ScenarioStepDefinition> = {}
 ): ScenarioDefinition {
   return {
     id,
@@ -266,7 +267,7 @@ describe('ScenarioEngine', () => {
   );
 
   it('runs the fall escalation path when the user does not respond', async () => {
-    const runtime = new RecordingRuntime(async (operation) => {
+    const runtime = new RecordingRuntime(async (operation): Promise<ScenarioOperationResult> => {
       if (operation.kind === 'wait_for_signal') return { status: 'not_found', data: { responded: false } };
       if (operation.kind === 'device_action_batch') {
         return {
@@ -957,7 +958,11 @@ describe('ActionGatewayScenarioRuntime', () => {
   };
 
   it('bridges every operation to account-bound providers with bounded idempotency', async () => {
-    const route = jest.fn(async () => ({ accepted: true }));
+    const route = jest.fn(async (
+      _accountId: string,
+      _action: Readonly<Record<string, unknown>>,
+      _options?: Readonly<{ signal?: AbortSignal }>
+    ): Promise<unknown> => ({ accepted: true }));
     route.mockResolvedValue({ status: 'accepted', action_id: '11111111-1111-4111-8111-111111111111' });
     const waitForActionOutcome = jest.fn(async () => ({ status: 'delivered' }));
     const beginHumeSession = jest.fn(async () => undefined);

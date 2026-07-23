@@ -3,17 +3,24 @@
     "target": "ES2022",
     "module": "Node16",
     "moduleResolution": "Node16",
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true,
-    "noEmitOnError": true,
+    "rootDir": ".",
     "strict": true,
+    "noEmit": true,
+    "noEmitOnError": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
-  "include": ["src/adapters/**/*.ts"],
-  "exclude": ["src/adapters/**/__tests__/**"]
+  "include": [
+    "src/**/*.ts",
+    "mocks/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": [
+    "dist/**",
+    "dist-ai-native/**",
+    "dist-mocks/**"
+  ]
 }

@@ -5,7 +5,12 @@ const { spawnSync } = require('node:child_process');
 
 const projectRoot = resolve(__dirname, '..');
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+const expoCommand = resolve(
+  projectRoot,
+  'node_modules',
+  '.bin',
+  process.platform === 'win32' ? 'expo.cmd' : 'expo'
+);
 
 // Deterministic, non-routable public configuration used only to prove that a
 // production-profile JavaScript bundle can be generated without Grace's real
@@ -45,6 +50,11 @@ const PRODUCTION_EXPORT_ENVIRONMENT = Object.freeze({
 function createValidationSteps(exportRoot) {
   return [
     {
+      label: 'Reviewed Node and npm toolchain',
+      command: npmCommand,
+      args: ['run', 'validate:toolchain']
+    },
+    {
       label: 'Development environment',
       command: npmCommand,
       args: ['run', 'validate-env', '--', '--profile', 'development', '--no-color']
@@ -55,6 +65,7 @@ function createValidationSteps(exportRoot) {
       args: ['run', 'validate-env:server']
     },
     { label: 'ESLint', command: npmCommand, args: ['run', 'lint'] },
+    { label: 'TypeScript', command: npmCommand, args: ['run', 'typecheck'] },
     { label: 'Tests', command: npmCommand, args: ['test'] },
     { label: 'Expo Doctor', command: npmCommand, args: ['run', 'doctor'] },
     {
@@ -65,14 +76,14 @@ function createValidationSteps(exportRoot) {
     },
     {
       label: 'iOS production export',
-      command: npxCommand,
-      args: ['expo', 'export', '--platform', 'ios', '--output-dir', join(exportRoot, 'ios')],
+      command: expoCommand,
+      args: ['export', '--platform', 'ios', '--output-dir', join(exportRoot, 'ios')],
       env: PRODUCTION_EXPORT_ENVIRONMENT
     },
     {
       label: 'Android production export',
-      command: npxCommand,
-      args: ['expo', 'export', '--platform', 'android', '--output-dir', join(exportRoot, 'android')],
+      command: expoCommand,
+      args: ['export', '--platform', 'android', '--output-dir', join(exportRoot, 'android')],
       env: PRODUCTION_EXPORT_ENVIRONMENT
     }
   ];

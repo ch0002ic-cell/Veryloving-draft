@@ -161,7 +161,11 @@ describe('AI-native runtime composition', () => {
     await memoryNet.updateRelationship('account-1', {
       interactingSince: ISO_NOW, interactionCount: 12, trustLevel: 0.7, lastInteractionAt: ISO_NOW
     }, { idempotencyKey: 'runtime_relation_seed_001' });
-    const beginHumeSession = jest.fn(async () => undefined);
+    const beginHumeSession = jest.fn(async (
+      _accountId: string,
+      _request: Readonly<Record<string, unknown>>,
+      _signal: AbortSignal
+    ) => undefined);
     const runtime = createAINativeScenarioRuntime({
       actionGateway: {
         route: async () => ({ status: 'delivered' }),
@@ -219,7 +223,11 @@ describe('AI-native runtime composition', () => {
     const stateRead = jest.spyOn(userState, 'getCurrentState');
     const memoryRead = jest.spyOn(memoryNet, 'recall');
     const relationshipRead = jest.spyOn(memoryNet, 'getRelationshipMetadata');
-    const beginHumeSession = jest.fn(async () => undefined);
+    const beginHumeSession = jest.fn(async (
+      _accountId: string,
+      _request: Readonly<Record<string, unknown>>,
+      _signal: AbortSignal
+    ) => undefined);
     const authorizeHumeContext = jest.fn(async () => false);
     const runtime = createAINativeScenarioRuntime({
       actionGateway: {

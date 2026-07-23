@@ -383,7 +383,10 @@ describe('adapter hardening branches', () => {
     const retryFetch = jest.fn<FetchLike>()
       .mockResolvedValueOnce(jsonResponse({ authenticated: true }))
       .mockResolvedValueOnce(jsonResponse({ error: 'retry' }, 503, { 'Retry-After': '5' }));
-    const sleep = jest.fn<(milliseconds: number) => Promise<void>>(async () => undefined);
+    const sleep = jest.fn<(
+      milliseconds: number,
+      signal?: AbortSignal
+    ) => Promise<void>>(async () => undefined);
     const expiring = new YongyidaAdapter(options(retryFetch, {
       wallClockNow,
       maxAttempts: 3,

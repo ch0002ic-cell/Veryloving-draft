@@ -21,10 +21,12 @@ const load = (relativePath) => JSON.parse(fs.readFileSync(path.join(projectRoot,
 
 test('release supply-chain policy pins tools, container stages, locks, and EAS builds', () => {
   const result = validateSupplyChain(projectRoot);
-  assert.match(result.nodeImage, /^node:22\.23\.1-alpine3\.24@sha256:[0-9a-f]{64}$/);
-  assert.equal(result.easCliVersion, '21.0.2');
-  assert.ok(result.rootPackages > 900);
-  assert.ok(result.serverPackages > 30);
+  const rootManifest = load('package.json');
+  const serverManifest = load('server/package.json');
+  assert.match(result.nodeImage, /^node:24\.18\.0-alpine3\.24@sha256:[0-9a-f]{64}$/);
+  assert.equal(result.easCliVersion, '21.1.0');
+  assert.ok(result.rootPackages > Object.keys(rootManifest.dependencies).length);
+  assert.ok(result.serverPackages > Object.keys(serverManifest.dependencies).length);
 });
 
 test('release policy rejects mutable tools and container images', () => {

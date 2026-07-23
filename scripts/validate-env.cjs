@@ -47,6 +47,123 @@ const ROOT_VARIABLES = [
   'VERYLOVING_BUILD_PROFILE',
   'VERYLOVING_CONFIG_DIAGNOSTICS'
 ];
+const SERVER_VARIABLES = [
+  'NODE_ENV',
+  'PORT',
+  'HUME_API_KEY',
+  'HUME_CONFIG_ID',
+  'HUME_ALLOWED_VOICE_IDS',
+  'HUME_PERSONA_MAP_JSON',
+  'HUME_DEFAULT_PERSONA_ID',
+  'HUME_ALLOW_CLIENT_RESUME',
+  'HUME_CLM_BEARER_TOKEN',
+  'HUME_CLM_URL',
+  'HUME_TOOL_ID',
+  'HUME_CUSTOM_VOICE_ID',
+  'HUME_VOICE_NAME',
+  'AUTH_EXCHANGE_ENABLED',
+  'SESSION_JWT_SECRET',
+  'SESSION_JWT_ISSUER',
+  'SESSION_JWT_AUDIENCE',
+  'SESSION_JWT_TTL_SECONDS',
+  'SESSION_REFRESH_TTL_SECONDS',
+  'APPLE_CLIENT_IDS',
+  'GOOGLE_TOKEN_AUDIENCES',
+  'GOOGLE_AUTHORIZED_PARTIES',
+  'PHONE_AUTH_ENABLED',
+  'PHONE_AUTH_CHALLENGE_SECRET',
+  'PHONE_AUTH_SUBJECT_SECRET',
+  'PHONE_AUTH_CHALLENGE_TTL_SECONDS',
+  'TWILIO_ACCOUNT_SID',
+  'TWILIO_AUTH_TOKEN',
+  'TWILIO_VERIFY_SERVICE_SID',
+  'SAFETY_API_ENABLED',
+  'SAFETY_TABLE_NAME',
+  'AUTH_SESSION_TABLE_NAME',
+  'SAFETY_RETENTION_DAYS',
+  'AWS_REGION',
+  'AI_NATIVE_ENABLED',
+  'AI_NATIVE_DATA_LIFECYCLE_ENABLED',
+  'AI_NATIVE_SINGLE_REPLICA',
+  'AI_NATIVE_PRODUCTION_MODULE',
+  'AI_NATIVE_DEMO_USER_ID',
+  'ACTION_SIGNING_PRIVATE_KEY',
+  'ACTION_SIGNING_PUBLIC_KEY',
+  'ROBOT_PAIRING_TOKEN_SECRET',
+  'ACTION_GATEWAY_SINGLE_REPLICA',
+  'WEARABLE_COMMAND_PAYLOADS_JSON',
+  'MANUFACTURER_WEBHOOK_URL',
+  'MANUFACTURER_PAIRING_VERIFY_URL',
+  'MANUFACTURER_STATUS_URL',
+  'MANUFACTURER_RESET_URL',
+  'MANUFACTURER_PRIVACY_EXPORT_URL',
+  'MANUFACTURER_PRIVACY_DELETE_URL',
+  'MANUFACTURER_API_KEY',
+  'MOCK_MANUFACTURER_URL',
+  'MOCK_MANUFACTURER_PORT',
+  'MOCK_MANUFACTURER_LATENCY_MIN_MS',
+  'MOCK_MANUFACTURER_LATENCY_MAX_MS',
+  'MOCK_MANUFACTURER_FAILURE_RATE',
+  'MOCK_MANUFACTURER_TELEMETRY_INTERVAL_MS',
+  'MOCK_MANUFACTURER_SEED',
+  'MOCK_MANUFACTURER_FALL_EVENT_RATE',
+  'MOCK_MANUFACTURER_STRESS_EVENT_RATE',
+  'MOCK_MANUFACTURER_MEDICATION_REMINDER_EVERY_TICKS',
+  'MOCK_MANUFACTURER_MAX_SIMULATED_DEVICES',
+  'MOCK_MANUFACTURER_API_KEY',
+  'MOCK_MANUFACTURER_MAX_REQUEST_BYTES',
+  'MOCK_MANUFACTURER_REQUEST_TIMEOUT_MS',
+  'MOCK_MANUFACTURER_MAX_QUEUE_KEYS',
+  'MOCK_MANUFACTURER_MAX_QUEUED_COMMANDS_TOTAL',
+  'MOCK_MANUFACTURER_MAX_CONNECTIONS',
+  'MOCK_MANUFACTURER_MAX_CONCURRENT_REQUESTS',
+  'MOCK_MANUFACTURER_MAX_TELEMETRY_STREAMS',
+  'MOCK_MANUFACTURER_MAX_DASHBOARD_STREAMS',
+  'MOCK_MANUFACTURER_ACK_CALLBACK_URL',
+  'MOCK_MANUFACTURER_ACK_DELAY_MS',
+  'MOCK_MANUFACTURER_ACK_TIMEOUT_MS',
+  'MOCK_MANUFACTURER_ACK_MAX_REQUEST_BYTES',
+  'MOCK_MANUFACTURER_ACK_MAX_RESPONSE_BYTES',
+  'MOCK_MAIN_SERVER_URL',
+  'MOCK_MAIN_SERVER_TIMEOUT_MS',
+  'MOCK_MAIN_SERVER_MAX_RESPONSE_BYTES',
+  'YONGYIDA_ADAPTER_ENABLED',
+  'YONGYIDA_ADAPTER_ID',
+  'YONGYIDA_BRIDGE_URL',
+  'YONGYIDA_BRIDGE_API_KEY',
+  'YONGYIDA_CALLBACK_API_KEY',
+  'YONGYIDA_PAIRING_VERIFY_URL',
+  'YONGYIDA_RESET_URL',
+  'YONGYIDA_PRIVACY_EXPORT_URL',
+  'YONGYIDA_PRIVACY_DELETE_URL',
+  'JIANGZHI_ADAPTER_ENABLED',
+  'JIANGZHI_ADAPTER_ID',
+  'JIANGZHI_BRIDGE_URL',
+  'JIANGZHI_BRIDGE_API_KEY',
+  'JIANGZHI_CALLBACK_API_KEY',
+  'JIANGZHI_PAIRING_VERIFY_URL',
+  'JIANGZHI_RESET_URL',
+  'JIANGZHI_PRIVACY_EXPORT_URL',
+  'JIANGZHI_PRIVACY_DELETE_URL',
+  'ROBOT_ADAPTER_TIMEOUT_MS',
+  'ROBOT_ADAPTER_MAX_ATTEMPTS',
+  'ROBOT_ADAPTER_RETRY_BASE_MS',
+  'ROBOT_ADAPTER_RETRY_MAX_MS',
+  'ROBOT_ADAPTER_ALLOW_INSECURE_HTTP',
+  'DEVICE_TABLE_NAME',
+  'ACTION_OUTBOX_USER_INDEX_NAME',
+  'ROBOT_RESET_RECOVERY_INDEX_NAME',
+  'ACTION_REQUEST_TIMEOUT_MS',
+  'ROBOT_ACK_TIMEOUT_MS',
+  'WEARABLE_ACK_TIMEOUT_MS',
+  'APP_AUTH_VERIFY_URL',
+  'CLM_UPSTREAM_URL',
+  'CLM_UPSTREAM_API_KEY',
+  'CLM_UPSTREAM_MODEL',
+  'CLM_UPSTREAM_TIMEOUT_MS',
+  'ROBOT_SOAK_DURATION_MS',
+  'ROBOT_SOAK_MAX_HEAP_GROWTH_BYTES'
+];
 const SERVER_SECRET_NAMES = new Set([
   'HUME_API_KEY',
   'HUME_SECRET_KEY',
@@ -62,6 +179,7 @@ const SERVER_SECRET_NAMES = new Set([
   'ACTION_SIGNING_PRIVATE_KEY',
   'ROBOT_PAIRING_TOKEN_SECRET',
   'MANUFACTURER_API_KEY',
+  'MOCK_MANUFACTURER_API_KEY',
   'YONGYIDA_BRIDGE_API_KEY',
   'YONGYIDA_CALLBACK_API_KEY',
   'JIANGZHI_BRIDGE_API_KEY',
@@ -189,6 +307,44 @@ function endpointProblem(value, requiredProtocol, { allowLocalDevelopment = fals
 
 function makeResult(name, level, message) {
   return { name, level, message };
+}
+
+function probabilityProblem(value) {
+  if (!/^(?:0(?:\.\d+)?|1(?:\.0+)?)$/.test(value)) return 'must be a decimal probability between 0 and 1';
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1
+    ? null
+    : 'must be a decimal probability between 0 and 1';
+}
+
+function parseHumePersonaMap(value) {
+  if (!isConfigured(value)) return { personas: new Map(), problem: null };
+  let parsed;
+  try {
+    parsed = JSON.parse(value);
+  } catch {
+    return { personas: new Map(), problem: 'must be valid JSON' };
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return { personas: new Map(), problem: 'must be an object keyed by persona ID' };
+  }
+  const personas = new Map();
+  for (const [personaId, definition] of Object.entries(parsed)) {
+    const voiceId = definition?.voice_id;
+    const instructions = definition?.instructions;
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(personaId) || !CANONICAL_UUID_PATTERN.test(String(voiceId || ''))) {
+      return { personas: new Map(), problem: 'must contain only valid persona IDs and canonical voice UUIDs' };
+    }
+    if (instructions !== undefined && (
+      typeof instructions !== 'string'
+      || !instructions.trim()
+      || instructions.length > 500
+    )) {
+      return { personas: new Map(), problem: 'persona instructions must be non-empty strings of at most 500 characters' };
+    }
+    personas.set(personaId, voiceId);
+  }
+  return { personas, problem: null };
 }
 
 function validateEnvironment(env, { profile = 'development', fileEnvironment = {} } = {}) {
@@ -388,6 +544,7 @@ function validateServerEnvironment(env, { profile = 'development', dryRun = fals
 
   const nodeEnvironment = env.NODE_ENV || 'development';
   const productionServerRuntime = nodeEnvironment === 'production';
+  const strictTransport = production || productionServerRuntime;
   if (!['development', 'test', 'production'].includes(nodeEnvironment)) {
     results.push(makeResult('NODE_ENV', 'error', 'must be development, test, or production'));
   } else if (production && nodeEnvironment !== 'production') {
@@ -426,16 +583,160 @@ function validateServerEnvironment(env, { profile = 'development', dryRun = fals
 
   for (const name of SERVER_URL_VARIABLES) {
     if (!isConfigured(env[name])) continue;
-    addConfiguredResult(name, endpointProblem(env[name], 'https:', { allowLocalDevelopment: !production }));
+    addConfiguredResult(name, endpointProblem(env[name], 'https:', { allowLocalDevelopment: !strictTransport }));
   }
   for (const name of ['MOCK_MANUFACTURER_URL', 'MOCK_MAIN_SERVER_URL']) {
     if (!isConfigured(env[name])) continue;
-    let problem = endpointProblem(env[name], 'https:', { allowLocalDevelopment: !production });
+    let problem = endpointProblem(env[name], 'https:', { allowLocalDevelopment: !strictTransport });
     try {
       const hostname = new URL(env[name]).hostname.replace(/^\[|\]$/g, '');
       if (!['localhost', '127.0.0.1', '::1'].includes(hostname)) problem = 'must use a loopback host';
     } catch {}
     addConfiguredResult(name, problem);
+  }
+
+  for (const name of [
+    'MOCK_MANUFACTURER_FAILURE_RATE',
+    'MOCK_MANUFACTURER_FALL_EVENT_RATE',
+    'MOCK_MANUFACTURER_STRESS_EVENT_RATE'
+  ]) {
+    if (!isConfigured(env[name])) continue;
+    addConfiguredResult(name, probabilityProblem(env[name]));
+  }
+
+  const parsedInteger = (name) => {
+    try {
+      return parseBoundedServerInteger(name, env[name]);
+    } catch {
+      return null;
+    }
+  };
+  const latencyMin = parsedInteger('MOCK_MANUFACTURER_LATENCY_MIN_MS');
+  const latencyMax = parsedInteger('MOCK_MANUFACTURER_LATENCY_MAX_MS');
+  if (latencyMin !== null && latencyMax !== null && latencyMax < latencyMin) {
+    results.push(makeResult(
+      'MOCK_MANUFACTURER_LATENCY_MAX_MS',
+      'error',
+      'must be greater than or equal to MOCK_MANUFACTURER_LATENCY_MIN_MS'
+    ));
+  }
+  const retryBase = parsedInteger('ROBOT_ADAPTER_RETRY_BASE_MS');
+  const retryMax = parsedInteger('ROBOT_ADAPTER_RETRY_MAX_MS');
+  if (retryBase !== null && retryMax !== null && retryMax < retryBase) {
+    results.push(makeResult(
+      'ROBOT_ADAPTER_RETRY_MAX_MS',
+      'error',
+      'must be greater than or equal to ROBOT_ADAPTER_RETRY_BASE_MS'
+    ));
+  }
+
+  if (isConfigured(env.MOCK_MANUFACTURER_ACK_CALLBACK_URL)) {
+    let problem = endpointProblem(env.MOCK_MANUFACTURER_ACK_CALLBACK_URL, 'https:', {
+      allowLocalDevelopment: !strictTransport
+    });
+    try {
+      const callback = new URL(env.MOCK_MANUFACTURER_ACK_CALLBACK_URL);
+      const hostname = callback.hostname.replace(/^\[|\]$/g, '');
+      if (!['localhost', '127.0.0.1', '::1'].includes(hostname)) {
+        problem = 'must use a loopback host';
+      } else if (callback.pathname !== '/v1/manufacturer/robot/ack') {
+        problem = 'must target /v1/manufacturer/robot/ack';
+      }
+    } catch {}
+    addConfiguredResult('MOCK_MANUFACTURER_ACK_CALLBACK_URL', problem);
+  }
+
+  for (const name of ['HUME_CONFIG_ID', 'HUME_TOOL_ID', 'HUME_CUSTOM_VOICE_ID']) {
+    if (!isConfigured(env[name])) continue;
+    addConfiguredResult(name, CANONICAL_UUID_PATTERN.test(env[name]) ? null : 'must be a canonical Hume UUID');
+  }
+  let allowedVoiceIds = [];
+  if (isConfigured(env.HUME_ALLOWED_VOICE_IDS)) {
+    allowedVoiceIds = env.HUME_ALLOWED_VOICE_IDS.split(',').map((item) => item.trim()).filter(Boolean);
+    addConfiguredResult(
+      'HUME_ALLOWED_VOICE_IDS',
+      allowedVoiceIds.length > 0 && allowedVoiceIds.every((voiceId) => CANONICAL_UUID_PATTERN.test(voiceId))
+        ? null
+        : 'must contain only comma-separated canonical Hume UUIDs'
+    );
+  }
+  if (isConfigured(env.HUME_DEFAULT_PERSONA_ID)) {
+    addConfiguredResult(
+      'HUME_DEFAULT_PERSONA_ID',
+      /^[A-Za-z0-9_-]{1,40}$/.test(env.HUME_DEFAULT_PERSONA_ID)
+        ? null
+        : 'must be a 1-40 character persona ID'
+    );
+  }
+  const personaMap = parseHumePersonaMap(env.HUME_PERSONA_MAP_JSON);
+  if (isConfigured(env.HUME_PERSONA_MAP_JSON)) {
+    addConfiguredResult('HUME_PERSONA_MAP_JSON', personaMap.problem);
+  }
+  if (!personaMap.problem && isConfigured(env.HUME_PERSONA_MAP_JSON)) {
+    if (strictTransport && personaMap.personas.size === 0) {
+      results.push(makeResult('HUME_PERSONA_MAP_JSON', 'error', 'must define at least one persona in production'));
+    }
+    if (isConfigured(env.HUME_DEFAULT_PERSONA_ID) && !personaMap.personas.has(env.HUME_DEFAULT_PERSONA_ID)) {
+      results.push(makeResult('HUME_DEFAULT_PERSONA_ID', 'error', 'must select a persona in HUME_PERSONA_MAP_JSON'));
+    }
+    const allowed = new Set(allowedVoiceIds);
+    if (allowed.size > 0 && [...personaMap.personas.values()].some((voiceId) => !allowed.has(voiceId))) {
+      results.push(makeResult('HUME_ALLOWED_VOICE_IDS', 'error', 'must include every voice in HUME_PERSONA_MAP_JSON'));
+    }
+  }
+  if (isConfigured(env.HUME_CLM_URL)) {
+    let problem = endpointProblem(env.HUME_CLM_URL, 'https:');
+    if (!problem) {
+      try {
+        if (!new URL(env.HUME_CLM_URL).pathname.endsWith('/chat/completions')) {
+          problem = 'must end with /chat/completions';
+        }
+      } catch {}
+    }
+    addConfiguredResult('HUME_CLM_URL', problem);
+  }
+  if (isConfigured(env.HUME_VOICE_NAME)) {
+    addConfiguredResult(
+      'HUME_VOICE_NAME',
+      env.HUME_VOICE_NAME.length <= 120
+        && env.HUME_VOICE_NAME.trim() === env.HUME_VOICE_NAME
+        && !/[\u0000-\u001f\u007f]/u.test(env.HUME_VOICE_NAME)
+        ? null
+        : 'must be a trimmed string of at most 120 characters without control characters'
+    );
+  }
+
+  if (strictTransport) {
+    const humeRequired = [
+      ['HUME_API_KEY', 'required by the production Hume gateway'],
+      ['HUME_CONFIG_ID', 'required by the production Hume gateway'],
+      ['HUME_ALLOWED_VOICE_IDS', 'required by the production Hume voice allowlist'],
+      ['HUME_PERSONA_MAP_JSON', 'required by the production Hume persona registry'],
+      ['HUME_DEFAULT_PERSONA_ID', 'required by the production Hume persona registry']
+    ];
+    for (const [name, reason] of humeRequired) {
+      if (!isConfigured(env[name])) results.push(makeResult(name, dryRun ? 'warn' : 'error', reason));
+    }
+  }
+
+  const provisioningConfigured = [
+    'HUME_CLM_URL',
+    'HUME_TOOL_ID',
+    'HUME_CUSTOM_VOICE_ID',
+    'HUME_VOICE_NAME'
+  ].some((name) => isConfigured(env[name]));
+  if (provisioningConfigured) {
+    for (const name of ['HUME_API_KEY', 'HUME_CLM_URL']) {
+      if (!isConfigured(env[name])) {
+        results.push(makeResult(
+          name,
+          dryRun ? 'warn' : 'error',
+          `required when Hume provisioning operator inputs are configured${dryRun
+            ? '; credential presence is deferred by dry-run mode'
+            : ''}`
+        ));
+      }
+    }
   }
 
   const requireWhenEnabled = (flag, dependencies) => {
@@ -652,6 +953,7 @@ if (require.main === module) process.exitCode = run();
 
 module.exports = {
   ROOT_VARIABLES,
+  SERVER_VARIABLES,
   parseDotEnv,
   isConfigured,
   endpointProblem,

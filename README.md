@@ -1,6 +1,6 @@
 # VeryLoving – Complete Handoff & Documentation
 
-- Consolidated: 22 July 2026
+- Consolidated: 23 July 2026
 - Repository evidence baseline: source-complete `features/dual-product-draft` handoff
 - Audience: Grace, Product, Mobile QA, Engineering, Security, Privacy, Localization, and Release Operations
 - Primary iOS acceptance environment: signed TestFlight build on a physical device
@@ -244,7 +244,7 @@ Mood history, scenario execution history, and ratings are bounded, encrypted thr
 
 The mobile source-level design-system migration is closed: tracked routes and shared components use semantic color/tone, typography, spacing, radius, elevation, motion, control-size, and layout tokens from [`src/constants/theme.js`](./src/constants/theme.js). Shared `Screen`, `Header`, onboarding-progress, `Button`, `Card`, `TextField`, `ActionTile`, banner/snackbar feedback, animated skeleton, empty/loading/error, scenario-status, feedback-modal, and dual-device patterns keep ordinary, offline, and life-safety states consistent. Press feedback and route/modal transitions honor the motion scale and reduced-motion preference; critical controls expose labels, roles, state, hints, scalable text, logical grouping, and minimum touch targets at source level.
 
-- [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md) is the single canonical handoff document. Its [Design System](./docs/final-handoff-confirmation.md#design-system), [Mobile Polish QA](./docs/final-handoff-confirmation.md#mobile-polish-qa), and [Demo Script](./docs/final-handoff-confirmation.md#demo-script) appendices preserve component guidance, environment-specific acceptance, and the polished walkthrough.
+- [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md) is the canonical product handoff document. Its [Design System](./docs/final-handoff-confirmation.md#design-system), [Mobile Polish QA](./docs/final-handoff-confirmation.md#mobile-polish-qa), and [Demo Script](./docs/final-handoff-confirmation.md#demo-script) appendices preserve component guidance, environment-specific acceptance, and the polished walkthrough. The dated [dependency audit](./docs/dependency-audit-2026-07-23.md) records the reviewed package/toolchain baseline and compatibility exceptions.
 
 Do not call the mobile UI signed-build accepted until the applicable physical-device rows are recorded against the exact build. Source-level design-system adoption and production JavaScript exports are necessary but insufficient evidence for BLE, camera, audio routes, notifications, screen-reader order, background behavior, or persistence.
 
@@ -474,8 +474,8 @@ Evidence: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services
 
 ### Prerequisites
 
-- Node.js 22 or newer and npm.
-- EAS CLI 20 or newer for cloud artifacts.
+- Node.js 24.18.0 and npm 11.16.0, matching the reviewed release policy.
+- EAS CLI 21.1.0 for cloud artifacts.
 - Xcode, CocoaPods, and an iOS simulator for local native work.
 - JDK 17, Android Studio, Android SDK Platform 36, and an API 36 emulator for Android runtime work.
 - A development or signed build for native providers, Keychain, Mapbox, BLE, notifications, telephony, and audio.
@@ -494,10 +494,12 @@ npm run validate-env:server
 - Root `.env` is untracked mobile/build configuration.
 - `npm run validate-env:server` performs a deterministic structural dry-run
   against the committed server template; it validates booleans, URL locality,
-  and bounded integer timing fields without requiring or printing credentials.
+  bounded timing/retry/soak fields, simulator probabilities, Hume persona and
+  provisioning contracts, and template/catalog synchronization without
+  requiring or printing credentials.
 - Every `EXPO_PUBLIC_*` value is bundled and must be treated as public.
 - `server/.env` is untracked local server configuration. `node server/server.cjs`
-  loads it automatically on Node 22 and `npm run mock:manufacturer` loads it
+  loads it automatically on Node 24 and `npm run mock:manufacturer` loads it
   with Node's env-file flag; `npm run clm:start` runs `clm-server.cjs`
   directly, so export/source the file first as shown under Local backend.
 - Backend/provider/session secrets belong in deployment secret managers.
@@ -556,7 +558,7 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 
 | Group | Variable names | Contract |
 | --- | --- | --- |
-| Runtime | `NODE_ENV`, `PORT` | Node 22 service; container platform normally owns `PORT`. |
+| Runtime | `NODE_ENV`, `PORT` | Node 24 service; container platform normally owns `PORT`. |
 | Hume gateway | `HUME_API_KEY`, `HUME_CONFIG_ID`, `HUME_ALLOWED_VOICE_IDS`, `HUME_PERSONA_MAP_JSON`, `HUME_DEFAULT_PERSONA_ID`, `HUME_ALLOW_CLIENT_RESUME`, `HUME_CLM_BEARER_TOKEN` | Server-only; map stable app persona IDs to allowlisted canonical Hume voice UUIDs; keep resume false until ownership binding exists. |
 | App authentication | `AUTH_EXCHANGE_ENABLED`, `SESSION_JWT_SECRET`, `SESSION_JWT_ISSUER`, `SESSION_JWT_AUDIENCE`, `SESSION_JWT_TTL_SECONDS`, `SESSION_REFRESH_TTL_SECONDS` | Independent signing secret, exact issuer/audience, bounded access/refresh lifetimes. |
 | Provider verification | `APPLE_CLIENT_IDS`, `GOOGLE_TOKEN_AUDIENCES`, `GOOGLE_AUTHORIZED_PARTIES` | Exact environment-specific allowlists. |
@@ -566,9 +568,11 @@ Apple Sign-In has no root environment variable: the native token uses `com.veryl
 | Device/action routing | `DEVICE_TABLE_NAME`, `ACTION_OUTBOX_USER_INDEX_NAME`, `ROBOT_RESET_RECOVERY_INDEX_NAME`, `ACTION_SIGNING_PRIVATE_KEY`, `ACTION_SIGNING_PUBLIC_KEY`, `ROBOT_PAIRING_TOKEN_SECRET`, `ACTION_GATEWAY_SINGLE_REPLICA`, `WEARABLE_COMMAND_PAYLOADS_JSON`, `ACTION_REQUEST_TIMEOUT_MS`, `ROBOT_ACK_TIMEOUT_MS`, `WEARABLE_ACK_TIMEOUT_MS` | The action-outbox GSI uses `user_index_pk`/`user_index_sk`; the reset-recovery GSI uses `resetRecoveryPk`/`resetRecoveryAt`. Pairing HMAC and action-signing keys are independent server secrets. Current production delivery must explicitly select one ActionGateway replica until distributed per-device leases exist. |
 | Legacy manufacturer gateway | `MANUFACTURER_WEBHOOK_URL`, `MANUFACTURER_PAIRING_VERIFY_URL`, `MANUFACTURER_STATUS_URL`, `MANUFACTURER_RESET_URL`, `MANUFACTURER_PRIVACY_EXPORT_URL`, `MANUFACTURER_PRIVACY_DELETE_URL`, `MANUFACTURER_API_KEY` | Historical `manufacturer-default` bindings only. HTTPS endpoints and API key are server-only; modern vendor bindings never fall back to this shared client. |
 | Vendor robot adapters/lifecycle | `YONGYIDA_ADAPTER_ENABLED`, `YONGYIDA_ADAPTER_ID`, `YONGYIDA_BRIDGE_URL`, `YONGYIDA_BRIDGE_API_KEY`, `YONGYIDA_CALLBACK_API_KEY`, `YONGYIDA_PAIRING_VERIFY_URL`, `YONGYIDA_RESET_URL`, `YONGYIDA_PRIVACY_EXPORT_URL`, `YONGYIDA_PRIVACY_DELETE_URL`, and the corresponding `JIANGZHI_*` variables | Both adapters can be enabled simultaneously. Each modern binding uses only its immutable adapter's bridge, callback credential, pairing verifier, reset, export, and deletion handlers; missing handlers fail closed without cross-vendor fallback or local deletion. These are provisional Veryloving bridge settings, not published manufacturer endpoints. |
+| Local manufacturer simulator | `MOCK_MANUFACTURER_URL`, `MOCK_MANUFACTURER_PORT`, `MOCK_MANUFACTURER_LATENCY_MIN_MS`, `MOCK_MANUFACTURER_LATENCY_MAX_MS`, `MOCK_MANUFACTURER_FAILURE_RATE`, `MOCK_MANUFACTURER_API_KEY`, `MOCK_MANUFACTURER_ACK_CALLBACK_URL`, `MOCK_MAIN_SERVER_URL`, and the remaining bounded `MOCK_MANUFACTURER_*` controls in `server/.env.example` | Development/test only. Upstream and callback URLs are loopback-bound, probabilities are in `0..1`, latency min/max are ordered, and callback paths are fixed. Never reuse a vendor credential as the simulator key. |
+| Adapter reliability tests | `ROBOT_ADAPTER_TIMEOUT_MS`, `ROBOT_ADAPTER_MAX_ATTEMPTS`, `ROBOT_ADAPTER_RETRY_BASE_MS`, `ROBOT_ADAPTER_RETRY_MAX_MS`, `ROBOT_SOAK_DURATION_MS`, `ROBOT_SOAK_MAX_HEAP_GROWTH_BYTES` | All values are bounded; retry max must not be lower than retry base. Soak controls are test-only and default to a one-minute, 32 MiB heap-growth budget. |
 | Optional upstream CLM | `CLM_UPSTREAM_URL`, `CLM_UPSTREAM_API_KEY`, `CLM_UPSTREAM_MODEL`, `CLM_UPSTREAM_TIMEOUT_MS` | Configure the URL/key/model together or omit all to use deterministic local responses. |
 | Optional verifier fallback | `APP_AUTH_VERIFY_URL` | Not required when all callers use the in-repository app JWT. |
-| Hume provisioning operator | `HUME_CLM_URL`, `HUME_TOOL_ID`, `HUME_CUSTOM_VOICE_ID` | Operator-only inputs for versioned Hume resources; never mobile secrets. |
+| Hume provisioning operator | `HUME_CLM_URL`, `HUME_TOOL_ID`, `HUME_CUSTOM_VOICE_ID`, `HUME_VOICE_NAME` | Operator-only inputs for versioned Hume resources; never mobile secrets. The CLM URL must be credential-free HTTPS ending in `/chat/completions`; IDs are canonical UUIDs. |
 
 Generate independent high-entropy values for session signing, phone challenge signing, phone subject derivation, and CLM authentication. Never reuse a provider credential or paste generated values into shell arguments, tickets, screenshots, logs, or Git.
 
@@ -906,8 +910,12 @@ acceptance.
 Run the production configuration gate separately:
 
 ```bash
-npm run validate-env -- --profile production
+npm run validate-env:production
 ```
+
+This non-dry-run command validates the mobile and server deployment environments
+together; unlike the template gate, it requires enabled production credentials
+to be present while keeping every value redacted from output.
 
 ### Local backend
 
@@ -997,7 +1005,7 @@ The voice architecture, deployment boundaries, and safe commands in this README 
 
 ## 18. Consolidation map
 
-This README is the primary setup and release guide. [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md) is the only active Markdown file under `docs/`; it consolidates Grace's feedback confirmation, verification record, mobile design/QA, AI-native and HAL operations, manufacturer evidence, external dependency ownership, timeline, outreach templates, and closed-audit summaries. Deleted specialist documents and their detailed historical narratives remain recoverable through Git history.
+This README is the primary setup and release guide. [`docs/final-handoff-confirmation.md`](./docs/final-handoff-confirmation.md) remains the canonical product handoff, while [`docs/dependency-audit-2026-07-23.md`](./docs/dependency-audit-2026-07-23.md) is the dated package and toolchain evidence record requested for this release. Deleted specialist documents and their detailed historical narratives remain recoverable through Git history.
 
 | Former document | Content now maintained in README |
 | --- | --- |

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { generateKeyPairSync, sign } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { createServer } from 'node:http';
+import { createServer, type Server } from 'node:http';
 import { connect, type AddressInfo } from 'node:net';
 import { Script } from 'node:vm';
 import { JiangzhiAdapter } from '../../src/adapters/JiangzhiAdapter';
@@ -696,7 +696,8 @@ describe('ManufacturerMockServer', () => {
       const page = await fetch(new URL('/dashboard', baseUrl));
       const setCookie = page.headers.get('set-cookie');
       expect(setCookie).toBeTruthy();
-      const cookie = String(setCookie).split(';', 1)[0];
+      const [cookie] = String(setCookie).split(';', 1);
+      if (!cookie) throw new Error('Dashboard session cookie is unavailable');
       const dashboardHtml = await page.text();
       expect(dashboardHtml).toContain('var dashboardUserId="demo-account-2"');
       expect(dashboardHtml).toContain('if(refreshPromise)return refreshPromise');

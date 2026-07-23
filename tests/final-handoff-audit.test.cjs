@@ -49,11 +49,14 @@ test('Grace handoff confirmation contains no broken local Markdown links', () =>
   }
 });
 
-test('docs has one canonical Markdown deliverable with stable appendix markers', () => {
+test('docs has one canonical handoff plus the dated dependency evidence with stable appendix markers', () => {
   const markdownFiles = readdirSync(path.dirname(documentPath))
     .filter((name) => name.endsWith('.md'))
     .sort();
-  assert.deepEqual(markdownFiles, ['final-handoff-confirmation.md']);
+  assert.deepEqual(markdownFiles, [
+    'dependency-audit-2026-07-23.md',
+    'final-handoff-confirmation.md'
+  ]);
 
   for (const id of [
     'design-system',

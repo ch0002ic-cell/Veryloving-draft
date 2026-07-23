@@ -1,12 +1,12 @@
 {
   "contractVersion": "veryloving.release-policy/1",
-  "nodeVersion": "22.23.1",
-  "npmVersion": "10.9.8",
-  "nodeImage": "node:22.23.1-alpine3.24@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2",
-  "nodeImageRegistryEvidence": "https://hub.docker.com/v2/repositories/library/node/tags/22.23.1-alpine3.24",
-  "easCliVersion": "21.0.2",
-  "easCliRegistryEvidence": "https://www.npmjs.com/package/eas-cli/v/21.0.2",
+  "nodeVersion": "24.18.0",
+  "npmVersion": "11.16.0",
+  "nodeImage": "node:24.18.0-alpine3.24@sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd",
+  "nodeImageRegistryEvidence": "https://hub.docker.com/v2/repositories/library/node/tags/24.18.0-alpine3.24",
+  "easCliVersion": "21.1.0",
+  "easCliRegistryEvidence": "https://www.npmjs.com/package/eas-cli/v/21.1.0",
   "sbomFormat": "CycloneDX 1.5",
   "auditLevel": "high",
-  "reviewedAt": "2026-07-21"
+  "reviewedAt": "2026-07-23"
 }

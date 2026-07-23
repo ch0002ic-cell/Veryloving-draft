@@ -7,6 +7,7 @@ const { spawnSync } = require('node:child_process');
 
 const {
   ROOT_VARIABLES,
+  SERVER_VARIABLES,
   endpointProblem,
   parseDotEnv,
   parseArguments,
@@ -85,6 +86,16 @@ test('server environment dry-run validates structure and timing bounds without r
     ACTION_REQUEST_TIMEOUT_MS: '12.5',
     ROBOT_ACK_TIMEOUT_MS: '9007199254740993',
     CLM_UPSTREAM_TIMEOUT_MS: '30001',
+    ROBOT_ADAPTER_TIMEOUT_MS: '0',
+    ROBOT_ADAPTER_MAX_ATTEMPTS: '6',
+    ROBOT_ADAPTER_RETRY_BASE_MS: '30001',
+    ROBOT_ADAPTER_RETRY_MAX_MS: '60001',
+    MOCK_MANUFACTURER_PORT: '65536',
+    MOCK_MANUFACTURER_LATENCY_MIN_MS: '200',
+    MOCK_MANUFACTURER_LATENCY_MAX_MS: '100',
+    MOCK_MANUFACTURER_FAILURE_RATE: '1.1',
+    ROBOT_SOAK_DURATION_MS: '99',
+    ROBOT_SOAK_MAX_HEAP_GROWTH_BYTES: '1048575',
     MOCK_MAIN_SERVER_URL: 'http://public.example.test:8787',
     AI_NATIVE_ENABLED: 'true',
     AI_NATIVE_DATA_LIFECYCLE_ENABLED: 'false'
@@ -95,6 +106,15 @@ test('server environment dry-run validates structure and timing bounds without r
     'ACTION_REQUEST_TIMEOUT_MS',
     'ROBOT_ACK_TIMEOUT_MS',
     'CLM_UPSTREAM_TIMEOUT_MS',
+    'ROBOT_ADAPTER_TIMEOUT_MS',
+    'ROBOT_ADAPTER_MAX_ATTEMPTS',
+    'ROBOT_ADAPTER_RETRY_BASE_MS',
+    'ROBOT_ADAPTER_RETRY_MAX_MS',
+    'MOCK_MANUFACTURER_PORT',
+    'MOCK_MANUFACTURER_LATENCY_MAX_MS',
+    'MOCK_MANUFACTURER_FAILURE_RATE',
+    'ROBOT_SOAK_DURATION_MS',
+    'ROBOT_SOAK_MAX_HEAP_GROWTH_BYTES',
     'MOCK_MAIN_SERVER_URL',
     'AI_NATIVE_DATA_LIFECYCLE_ENABLED'
   ]) assert.equal(errors.has(name), true, name);
@@ -182,6 +202,76 @@ test('development endpoints allow only HTTP or WS on loopback, including IPv6', 
 test('the environment template and validator catalog stay synchronized', () => {
   const template = parseDotEnv(readFileSync(resolve(process.cwd(), '.env.example'), 'utf8'));
   assert.deepEqual(Object.keys(template).sort(), [...ROOT_VARIABLES].sort());
+});
+
+test('the server environment template and validator catalog stay synchronized', () => {
+  const template = parseDotEnv(readFileSync(resolve(process.cwd(), 'server/.env.example'), 'utf8'));
+  assert.deepEqual(Object.keys(template).sort(), [...SERVER_VARIABLES].sort());
+});
+
+test('server Hume persona and provisioning contracts accept a complete redacted configuration', () => {
+  const voiceId = '00000000-0000-4000-8000-000000000001';
+  const results = validateServerEnvironment({
+    NODE_ENV: 'development',
+    HUME_API_KEY: 'not-printed',
+    HUME_CONFIG_ID: '00000000-0000-4000-8000-000000000002',
+    HUME_TOOL_ID: '00000000-0000-4000-8000-000000000003',
+    HUME_CUSTOM_VOICE_ID: voiceId,
+    HUME_ALLOWED_VOICE_IDS: voiceId,
+    HUME_PERSONA_MAP_JSON: JSON.stringify({
+      capybara: { voice_id: voiceId, instructions: 'Calm and concise.' }
+    }),
+    HUME_DEFAULT_PERSONA_ID: 'capybara',
+    HUME_CLM_URL: 'https://api.example.test/chat/completions',
+    HUME_VOICE_NAME: 'Serene Assistant'
+  });
+  assert.equal(results.some((result) => result.level === 'error'), false);
+  assert.doesNotMatch(JSON.stringify(results), /not-printed|api\.example\.test|Calm and concise/);
+});
+
+test('server validation rejects malformed Hume and simulator contracts without exposing values', () => {
+  const results = validateServerEnvironment({
+    NODE_ENV: 'development',
+    HUME_CONFIG_ID: 'invalid-config-id',
+    HUME_ALLOWED_VOICE_IDS: 'invalid-voice-id',
+    HUME_PERSONA_MAP_JSON: '{"unsafe":{"voice_id":"invalid-secret-value"}}',
+    HUME_DEFAULT_PERSONA_ID: 'missing persona',
+    HUME_CLM_URL: 'https://operator-secret.example.test/wrong-path',
+    HUME_VOICE_NAME: ' bad-name',
+    MOCK_MANUFACTURER_ACK_CALLBACK_URL: 'http://127.0.0.1:8787/wrong-path'
+  });
+  const errors = new Set(results.filter((result) => result.level === 'error').map((result) => result.name));
+  for (const name of [
+    'HUME_CONFIG_ID',
+    'HUME_ALLOWED_VOICE_IDS',
+    'HUME_PERSONA_MAP_JSON',
+    'HUME_DEFAULT_PERSONA_ID',
+    'HUME_CLM_URL',
+    'HUME_VOICE_NAME',
+    'MOCK_MANUFACTURER_ACK_CALLBACK_URL'
+  ]) assert.equal(errors.has(name), true, name);
+  assert.doesNotMatch(JSON.stringify(results), /invalid-secret-value|operator-secret\.example/);
+});
+
+test('production server validation rejects an empty Hume persona registry', () => {
+  const voiceId = '00000000-0000-4000-8000-000000000001';
+  const results = validateServerEnvironment({
+    NODE_ENV: 'production',
+    HUME_API_KEY: 'not-printed',
+    HUME_CONFIG_ID: '00000000-0000-4000-8000-000000000002',
+    HUME_ALLOWED_VOICE_IDS: voiceId,
+    HUME_PERSONA_MAP_JSON: '{}',
+    HUME_DEFAULT_PERSONA_ID: 'capybara'
+  }, { profile: 'production' });
+  assert.equal(
+    results.some((result) => result.name === 'HUME_PERSONA_MAP_JSON' && result.level === 'error'),
+    true
+  );
+  assert.equal(
+    results.some((result) => result.name === 'HUME_DEFAULT_PERSONA_ID' && result.level === 'error'),
+    true
+  );
+  assert.doesNotMatch(JSON.stringify(results), /not-printed/);
 });
 
 test('complete production configuration passes without exposing values', () => {
@@ -374,11 +464,15 @@ test('feature flags make their dependencies required outside production', () => 
 test('root environment rejects misplaced server secrets without returning them', () => {
   const results = validateEnvironment({}, {
     profile: 'development',
-    fileEnvironment: { SESSION_JWT_SECRET: 'do-not-print-this-value' }
+    fileEnvironment: {
+      SESSION_JWT_SECRET: 'do-not-print-this-value',
+      MOCK_MANUFACTURER_API_KEY: 'simulator-key-must-not-print'
+    }
   });
-  const issue = results.find((result) => result.name === 'SESSION_JWT_SECRET');
-  assert.equal(issue?.level, 'error');
-  assert.doesNotMatch(JSON.stringify(results), /do-not-print-this-value/);
+  for (const name of ['SESSION_JWT_SECRET', 'MOCK_MANUFACTURER_API_KEY']) {
+    assert.equal(results.find((result) => result.name === name)?.level, 'error');
+  }
+  assert.doesNotMatch(JSON.stringify(results), /do-not-print-this-value|simulator-key-must-not-print/);
 });
 
 test('preview requires secure endpoint schemes and rejects direct Hume keys', () => {

@@ -34,7 +34,7 @@ describe('WearableEdgeAI', () => {
       const simulator = createSimulator(100 + sequence);
       const frame = simulator.generateFrame({ sequence, profile });
       return [profile, simulator.infer(frame)];
-    }));
+    })) as Record<(typeof profiles)[number], ReturnType<WearableEdgeAI['infer']>>;
 
     expect(results.resting.inference.activity).toBe('resting');
     expect(results.walking.inference.activity).toBe('walking');

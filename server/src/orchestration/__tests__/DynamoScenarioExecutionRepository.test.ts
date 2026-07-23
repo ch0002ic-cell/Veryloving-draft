@@ -104,7 +104,10 @@ class FakeScenarioDocumentClient {
           }
           return {};
         }
-        const puts = transaction.slice(1).map((entry) => entry.Put);
+        const puts = transaction
+          .slice(1)
+          .map((entry) => entry.Put)
+          .filter((put): put is Record<string, unknown> => put !== undefined);
         if (meta?.deletion_state === 'deleted'
           || puts.some((put) => this.records.has(this.key(put.Item as Record<string, unknown>)))) {
           throw transactionConflict();
@@ -150,7 +153,9 @@ class FakeScenarioDocumentClient {
         };
       }
       case 'BatchWriteCommand': {
-        const requestItems = input.RequestItems as Record<string, readonly Record<string, Record<string, unknown>>[]>;
+        const requestItems = input.RequestItems as Record<string, readonly Readonly<{
+          DeleteRequest?: Readonly<{ Key: Record<string, unknown> }>;
+        }>[]>;
         const table = Object.keys(requestItems)[0] as string;
         const requests = requestItems[table] ?? [];
         if (this.returnUnprocessedOnce) {
@@ -195,7 +200,7 @@ describe('DynamoScenarioExecutionRepository', () => {
       (command as { constructor: { name: string } }).constructor.name === 'TransactWriteCommand'
     )) as { input: { TransactItems: readonly Record<string, Record<string, unknown>>[] } };
     expect(transaction.input.TransactItems).toHaveLength(3);
-    expect(transaction.input.TransactItems[0]?.ConditionCheck.ConditionExpression).toContain('deletion_state');
+    expect(transaction.input.TransactItems[0]?.ConditionCheck?.ConditionExpression).toContain('deletion_state');
     expect(JSON.stringify(transaction)).not.toContain('test-user');
   });
 

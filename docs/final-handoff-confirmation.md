@@ -1,12 +1,12 @@
 # Final Handoff Confirmation
 
-Confirmed on: 22 July 2026
+Confirmed on: 23 July 2026
 
 Branch: `features/dual-product-draft`
 
 Assurance boundary: **SOURCE-COMPLETE FOR ALL FIVE FEEDBACK THEMES; EXTERNAL PM/UX, ACCESSIBILITY, PROVIDER, MANUFACTURER, AND PHYSICAL ACCEPTANCE REMAINS; NO-GO FOR PRODUCTION SAFETY USE UNTIL THOSE GATES PASS**
 
-This is the single canonical document in `docs/`. It consolidates the former design, QA, architecture, API, simulator, manufacturer, dependency, research, audit, troubleshooting, and demo documents. Detailed deleted-file history remains recoverable through Git.
+This is the canonical product handoff document in `docs/`. It consolidates the former design, QA, architecture, API, simulator, manufacturer, research, audit, troubleshooting, and demo documents. The dated [`dependency-audit-2026-07-23.md`](./dependency-audit-2026-07-23.md) is retained separately as package/toolchain evidence. Detailed deleted-file history remains recoverable through Git.
 
 ## 1. Grace feedback confirmation
 
@@ -71,18 +71,20 @@ The legacy-surface migration is complete at source level. A whole-source audit p
 
 ## 2. Final verification record
 
-Status: **PASS — FINAL SOURCE GATES EXECUTED ON 22 JULY 2026**
+Status: **PASS — FINAL SOURCE GATES EXECUTED ON 23 JULY 2026**
 
 | Gate | Expected command | Result |
 | --- | --- | --- |
-| Full repository suite | `npm test` | ✅ PASS — 1,050/1,050 (815 core, 44 adapter, 8 adapter integration, 183 AI-native) |
+| Full repository suite | `npm test` | ✅ PASS — 1,056/1,056 (821 core, 44 adapter, 8 adapter integration, 183 AI-native) |
 | ESLint | `npm run lint` | ✅ PASS — zero errors or warnings |
+| TypeScript and mobile compiler checks | `npm run typecheck` | ✅ PASS — strict semantic checks cover adapters, mock simulator, AI-native, and all TypeScript tests; the JavaScript mobile tree passes its Expo compiler/config smoke and is enforced by ESLint/tests |
 | Expo project health | `npm run doctor -- --verbose` | ✅ PASS — Expo Doctor 1.20.1, 20/20 checks |
-| Consolidated source gate | `npm run validate` | ✅ PASS — environment dry-run, lint, all tests, Expo Doctor, and both exports completed using the credential-free non-routable production fixture |
-| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 45 production-boundary tests, two validated CycloneDX SBOMs, and zero cached dependency vulnerabilities; live registry/container evidence remains external |
+| Consolidated source gate | `npm run validate` | ✅ PASS — reviewed toolchain, environment dry-run, lint, compiler checks, all tests, Expo Doctor, and both exports completed using the credential-free non-routable production fixture |
+| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 49 production-boundary tests, two validated CycloneDX SBOMs, and zero cached dependency vulnerabilities; live registry/container evidence remains external |
 | iOS production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 82 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
 | Android production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 86 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
-| Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — one canonical Markdown file, stable appendix contracts, no broken local links |
+| Dependency/security audit | `npm audit` in both workspaces plus Expo compatibility validation | ✅ PASS — zero vulnerabilities in full and production graphs; Expo dependencies current for SDK 57 |
+| Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — canonical handoff plus dated dependency evidence, stable appendix contracts, no broken local links |
 
 Passing JavaScript exports do not replace signed native builds, simulator/emulator interaction tests, VoiceOver/TalkBack checks, provider delivery, BLE validation, or physical robot acceptance.
 
@@ -606,7 +608,7 @@ Complete this block before execution:
 
 ## 3. Source and automated gates
 
-The design-system contract below is inspectable in the current source. Automated rows must be re-run after all mobile polish changes and recorded against the final SHA.
+The design-system contract below is inspectable in the current source. Automated rows must be re-run after all mobile polish changes and recorded against the release candidate.
 
 | ID | Check | Acceptance | Current status |
 | --- | --- | --- | --- |
@@ -614,12 +616,12 @@ The design-system contract below is inspectable in the current source. Automated
 | POLISH-SRC-002 | Shared actions/surfaces | `Button` exposes variant, loading, disabled, selected, icon, hint, and 44-point minimum behavior; `Card` exposes stable surface/padding variants. | **PASS — SOURCE REVIEW** |
 | POLISH-SRC-003 | Shared patterns | Header/onboarding hierarchy, text field, action tile, status pill, feedback banner/snackbar, empty state, bounded loading/skeletons, and dual-device status card are reusable components. | **PASS — SOURCE REVIEW** |
 | POLISH-SRC-004 | Safe screen container | `Screen` supplies safe area, keyboard avoidance, scroll behavior, and readable-width containment. | **PASS — SOURCE REVIEW** |
-| POLISH-AUTO-001 | Lint | `npm run lint` exits zero on the final SHA, with no new warnings. | **PASS — AUTOMATED** (22 July 2026) |
-| POLISH-AUTO-002 | Test suite | `npm test` and applicable targeted suites exit zero on the final SHA. | **PASS — AUTOMATED** (22 July 2026) |
-| POLISH-AUTO-003 | Expo dependency/config health | `npm run doctor` reports the repository's expected full pass on the final SHA. | **PASS — AUTOMATED** (Expo Doctor 20/20, 22 July 2026) |
-| POLISH-AUTO-004 | iOS production JS export | `npx expo export --platform ios` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (22 July 2026) |
-| POLISH-AUTO-005 | Android production JS export | `npx expo export --platform android` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (22 July 2026) |
-| POLISH-AUTO-006 | Diff hygiene | `git diff --check` exits zero; no credential, generated `.env`, build output, or unrelated artifact is staged. | **PASS — AUTOMATED** (22 July 2026) |
+| POLISH-AUTO-001 | Lint | `npm run lint` exits zero on the release candidate, with no new warnings. | **PASS — AUTOMATED** (23 July 2026) |
+| POLISH-AUTO-002 | Test suite | `npm test` and applicable targeted suites exit zero on the release candidate. | **PASS — AUTOMATED** (23 July 2026) |
+| POLISH-AUTO-003 | Expo dependency/config health | `npm run doctor` reports the repository's expected full pass on the release candidate. | **PASS — AUTOMATED** (Expo Doctor 20/20, 23 July 2026) |
+| POLISH-AUTO-004 | iOS production JS export | `npx expo export --platform ios` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (23 July 2026) |
+| POLISH-AUTO-005 | Android production JS export | `npx expo export --platform android` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (23 July 2026) |
+| POLISH-AUTO-006 | Diff hygiene | `git diff --check` exits zero; no credential, generated `.env`, build output, or unrelated artifact is staged. | **PASS — AUTOMATED** (23 July 2026) |
 
 The repository's `npm run validate` is the preferred combined source gate. It is still not a native compile/install, signed TestFlight/Play artifact, or physical-device result.
 
@@ -2681,8 +2683,8 @@ The final translation from the provisional bridge to a real Yongyida API or Jian
 
 ## 2. Prerequisites
 
-- Node.js 22, matching `server/package.json`.
-- npm with the committed lockfile.
+- Node.js 24.18.0, matching `server/package.json` and the release policy.
+- npm 11.16.0 with the committed lockfile.
 - A DynamoDB table using string `PK` and `SK`, TTL, the action-outbox GSI, and the factory-reset recovery GSI described in the main README.
 - An Ed25519 action-signing key pair held by the long-lived gateway.
 - Separate server-only bridge and callback credentials for every enabled adapter.

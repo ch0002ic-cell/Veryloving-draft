@@ -115,7 +115,7 @@ test('Vercel uses one HTTP-only function behind a namespaced catch-all rewrite',
     destination: '/api/index?__veryloving_route=:path*'
   }]);
   assert.equal(packageConfig.type, 'commonjs');
-  assert.equal(packageConfig.engines.node, '22.23.1');
+  assert.equal(packageConfig.engines.node, '24.18.0');
   assert.equal(typeof packageConfig.dependencies['@aws-sdk/client-dynamodb'], 'string');
   assert.equal(typeof packageConfig.dependencies.ws, 'string');
 });
