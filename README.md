@@ -478,7 +478,7 @@ Evidence: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services
 
 ### Prerequisites
 
-- Node.js 24.18.0 and npm 11.16.0, matching the reviewed release policy.
+- Node.js 24.18.0 and npm 12.0.1, matching the reviewed release policy.
 - EAS CLI 21.1.0 for cloud artifacts.
 - Xcode, CocoaPods, and an iOS simulator for local native work.
 - JDK 17, Android Studio, Android SDK Platform 36, and an API 36 emulator for Android runtime work.

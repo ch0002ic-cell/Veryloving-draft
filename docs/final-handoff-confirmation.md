@@ -75,15 +75,16 @@ Status: **PASS — FINAL SOURCE GATES EXECUTED ON 23 JULY 2026**
 
 | Gate | Expected command | Result |
 | --- | --- | --- |
-| Full repository suite | `npm test` | ✅ PASS — 1,056/1,056 (821 core, 44 adapter, 8 adapter integration, 183 AI-native) |
+| Full repository suite | `npm test` | ✅ PASS — 1,058/1,058 (823 core, 44 adapter, 8 adapter integration, 183 AI-native) |
 | ESLint | `npm run lint` | ✅ PASS — zero errors or warnings |
 | TypeScript and mobile compiler checks | `npm run typecheck` | ✅ PASS — strict semantic checks cover adapters, mock simulator, AI-native, and all TypeScript tests; the JavaScript mobile tree passes its Expo compiler/config smoke and is enforced by ESLint/tests |
 | Expo project health | `npm run doctor -- --verbose` | ✅ PASS — Expo Doctor 1.20.1, 20/20 checks |
 | Consolidated source gate | `npm run validate` | ✅ PASS — reviewed toolchain, environment dry-run, lint, compiler checks, all tests, Expo Doctor, and both exports completed using the credential-free non-routable production fixture |
-| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 49 production-boundary tests, two validated CycloneDX SBOMs, and zero cached dependency vulnerabilities; live registry/container evidence remains external |
+| Production source-readiness gate | `npm run validate:production` | ✅ PASS — 183 AI-native tests, 50 production-boundary tests, two validated CycloneDX SBOMs, and zero cached application dependency vulnerabilities |
+| Production artifact gate | `npm run validate:production:release` plus commit-pinned Trivy | ✅ PASS IN CI — live root/server audits, immutable Docker build, non-root and fail-closed runtime checks, health and graceful shutdown, retained SBOMs, and zero high/critical final-image findings |
 | iOS production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 82 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
 | Android production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 86 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
-| Dependency/security audit | `npm audit` in both workspaces plus Expo compatibility validation | ✅ PASS — zero vulnerabilities in full and production graphs; Expo dependencies current for SDK 57 |
+| Dependency/security audit | `npm audit` in both workspaces plus Expo compatibility and final-image validation | ✅ PASS — zero vulnerabilities in full and production application graphs; zero high/critical final-image findings; Expo dependencies current for SDK 57 |
 | Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — canonical handoff plus dated dependency evidence, stable appendix contracts, no broken local links |
 
 Passing JavaScript exports do not replace signed native builds, simulator/emulator interaction tests, VoiceOver/TalkBack checks, provider delivery, BLE validation, or physical robot acceptance.
@@ -2684,7 +2685,7 @@ The final translation from the provisional bridge to a real Yongyida API or Jian
 ## 2. Prerequisites
 
 - Node.js 24.18.0, matching `server/package.json` and the release policy.
-- npm 11.16.0 with the committed lockfile.
+- npm 12.0.1 with the committed lockfile.
 - A DynamoDB table using string `PK` and `SK`, TTL, the action-outbox GSI, and the factory-reset recovery GSI described in the main README.
 - An Ed25519 action-signing key pair held by the long-lived gateway.
 - Separate server-only bridge and callback credentials for every enabled adapter.

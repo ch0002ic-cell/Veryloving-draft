@@ -2,7 +2,7 @@
   "name": "veryloving-expo-rebuild",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "npm@11.16.0",
+  "packageManager": "npm@12.0.1",
   "engines": {
     "node": "24.18.0"
   },
@@ -13,6 +13,7 @@
     "android": "expo run:android",
     "web": "expo start --web",
     "prebuild": "expo prebuild",
+    "eas-build-pre-install": "npm install --global npm@12.0.1 --ignore-scripts --no-audit --no-fund && node scripts/validate-toolchain.cjs",
     "doctor": "expo-doctor",
     "lint": "eslint .",
     "build:server": "npm run build:adapters && npm run build:manufacturer-mock && npm run build:ai-native",

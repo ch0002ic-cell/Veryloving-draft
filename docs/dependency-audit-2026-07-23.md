@@ -8,7 +8,7 @@ Registry candidates were inventoried with `npm-check-updates` in both workspaces
 
 ## Executive result
 
-The repository now uses the newest versions that are compatible with its reviewed Expo SDK 57 / React Native 0.86 platform. Node is upgraded to the current 24.18.0 LTS line, Expo packages match Expo's own compatibility matrix, backend packages are current, security scans contain no known vulnerabilities, and the toolchain is pinned by an executable release policy. Raw registry majors that conflict with Expo or the production runtime remain intentionally pinned and are listed below rather than being hidden by an unsafe forced update.
+The repository now uses the newest versions that are compatible with its reviewed Expo SDK 57 / React Native 0.86 platform. Node is upgraded to the current 24.18.0 LTS line, npm is upgraded to the current Node-compatible 12.0.1 release, Expo packages match Expo's own compatibility matrix, backend packages are current, the application dependency graphs contain no known vulnerabilities, and the final server image contains no detected high/critical vulnerabilities. The toolchain is pinned by an executable release policy. Raw registry majors that conflict with Expo or the production runtime remain intentionally pinned and are listed below rather than being hidden by an unsafe forced update.
 
 Primary compatibility authorities:
 
@@ -24,12 +24,12 @@ Primary compatibility authorities:
 | Item | Previous | Reviewed value | Rationale |
 | --- | --- | --- | --- |
 | Node.js | 22.23.1 | 24.18.0 | Newest LTS; coordinated across manifests, EAS, CI, Docker, tests, and policy. |
-| npm | 10.9.8 | 11.16.0 | Exact npm bundled with Node 24.18.0; avoids an unreviewed network bootstrap inside Docker/EAS. npm 12 is therefore a documented deployment-compatibility hold. |
+| npm | 10.9.8 | 12.0.1 | Current stable release; its engine supports Node 24.18.0. Both lockfiles were clean-installed with it. CI, Docker, EAS, manifests, tests, and policy select the exact version before dependency installation. |
 | EAS CLI | 21.0.2 | 21.1.0 | Current registry release and Node 24 compatible. |
 | Docker base | Node 22 Alpine | `node:24.18.0-alpine3.24` | Exact tag plus reviewed OCI index digest in `release-policy.json`. |
 | GitHub Actions | checkout/setup-node/upload-artifact 4.x; implicit runner Buildx | 7.0.1 / 7.0.0 / 7.0.1; setup-buildx 4.2.0 | Current immutable commit pins. Trivy 0.36.0 was already current and remains pinned. The release job provisions a reviewed BuildKit builder for the locally loaded image; validated CycloneDX SBOMs are retained separately because registry-style attestations do not survive this export path reliably. |
 
-The release gate now verifies the actual Node and npm executables, not only manifest strings. CI also runs the full source regression gate (environment validation, lint, strict server type checks, the mobile compiler/config smoke, tests, Expo Doctor, and both production exports) before artifact validation.
+The release gate now verifies the actual Node and npm executables, not only manifest strings. CI completes the full source regression gate (environment validation, lint, strict server type checks, the mobile compiler/config smoke, tests, Expo Doctor, and both production exports) before starting artifact validation.
 
 ### Mobile and Expo packages
 
@@ -74,7 +74,6 @@ These entries are reported by `npm outdated`, but upgrading them would leave the
 | Jest / Babel Jest / Jest types | 29.7.0 / 29.7.0 / 29.5.14 | 30.4.2 / 30.4.1 / 30.0.0 | Expo Doctor requires the SDK 57-supported Jest 29 line; the newer line was tested but not shipped. |
 | Babel core/register | 7.29.7 | 8.0.1 | Expo/Metro remains on Babel 7; a Babel 8 move is a separate platform migration. |
 | Node types | 24.13.3 | 26.1.1 | Types intentionally match production Node 24, not Current Node 26. |
-| npm | 11.16.0 | 12.0.1 | Uses the npm shipped by the pinned Node LTS image/EAS runtime for reproducibility. |
 
 ## Security and supply chain
 
@@ -82,39 +81,42 @@ These entries are reported by `npm outdated`, but upgrading them would leave the
 - Root production audit: **PASS — 0 vulnerabilities**.
 - Server live audit: **PASS — 0 vulnerabilities** (0 critical/high/moderate/low).
 - Server production audit: **PASS — 0 vulnerabilities**.
+- npm 12.0.1 compatibility installs: **PASS — both immutable application lockfiles clean-installed; zero application vulnerabilities**.
 - No `npm audit fix --force` was used.
 - Both lockfiles remain lockfile v3 with registry HTTPS resolutions and integrity hashes enforced by the release policy.
 - Production and CI dependency installation continues to use `--ignore-scripts`; the two packages npm 12 identified as having lifecycle scripts (`fsevents` and `unrs-resolver`) were also verified loadable from their locked prebuilt modules without executing those scripts.
-- The Docker base is pinned to `sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd`.
+- The Docker base is pinned to `sha256:a0b9bf06e4e6193cf7a0f58816cc935ff8c2a908f81e6f1a95432d679c54fbfd`. Its older bundled npm is replaced before any application install and removed entirely from the final runtime image.
+- CycloneDX files inventory the locked application production graphs. The separate final-image Trivy gate covers operating-system and global-tooling content that an application lockfile SBOM does not represent.
 
 ## Defects found and closed during the audit
 
-1. **High — npm lifecycle collision:** adding a root `build` aggregate implicitly invoked the existing Expo `prebuild` lifecycle, regenerating native folders before server compilation. The aggregate is now `build:server`, which is side-effect-free.
-2. **High — TypeScript test blind spot:** production configs excluded every TypeScript test. A strict `server/tsconfig.tests.json` gate now covers adapter, AI-native, simulator, and integration tests; the newly exposed unsafe optional access and incomplete fixtures were corrected without weakening strictness.
-3. **High — declared toolchain drift:** policy checked version strings but not the executing Node/npm binaries. `validate:toolchain` now fails on runtime drift and is enforced by local/CI production validation.
-4. **Medium — environment contract gaps:** malformed simulator probabilities/ports/latencies, adapter retry settings, Hume persona/provisioning values, and soak limits could pass validation. The validator and committed server template are now synchronized and bounded by regression tests.
-5. **Medium — obsolete native dependency workarounds:** unused legacy codegen and EXAV patches could confuse clean native generation. They were removed and Expo prebuild configuration was revalidated.
+1. **Critical — vulnerable unused package manager in runtime image:** the pinned Node base carried high/critical advisories in its bundled npm (`tar`, `undici`, and `brace-expansion`) even though the application lockfiles were clean. npm is now upgraded to patched 12.0.1 before installs and removed from the final runtime. Source policy and an artifact-level check prevent reintroduction; Trivy verifies the resulting image without an ignore rule.
+2. **High — npm lifecycle collision:** adding a root `build` aggregate implicitly invoked the existing Expo `prebuild` lifecycle, regenerating native folders before server compilation. The aggregate is now `build:server`, which is side-effect-free.
+3. **High — TypeScript test blind spot:** production configs excluded every TypeScript test. A strict `server/tsconfig.tests.json` gate now covers adapter, AI-native, simulator, and integration tests; the newly exposed unsafe optional access and incomplete fixtures were corrected without weakening strictness.
+4. **High — declared toolchain drift:** policy checked version strings but not the executing Node/npm binaries. `validate:toolchain` now fails on runtime drift and is enforced by local/CI production validation.
+5. **Medium — environment contract gaps:** malformed simulator probabilities/ports/latencies, adapter retry settings, Hume persona/provisioning values, and soak limits could pass validation. The validator and committed server template are now synchronized and bounded by regression tests.
+6. **Medium — obsolete native dependency workarounds:** unused legacy codegen and EXAV patches could confuse clean native generation. They were removed and Expo prebuild configuration was revalidated.
 
 ## Verification record
 
 | Check | Result |
 | --- | --- |
-| Exact Node 24.18.0 / npm 11.16.0 toolchain | ✅ PASS |
+| Exact Node 24.18.0 / npm 12.0.1 toolchain | ✅ PASS |
 | Root and server dependency installation/lock consistency | ✅ PASS |
 | Expo dependency compatibility check | ✅ PASS |
 | Server TypeScript production/test configs | ✅ PASS — strict semantic checks cover adapters, simulator, AI-native, and all TypeScript tests |
-| Mobile JavaScript compiler/config smoke | ✅ PASS — the app is JavaScript; `tsc --noEmit` validates the Expo config boundary, while ESLint and 821 mobile/core tests provide semantic regression coverage |
+| Mobile JavaScript compiler/config smoke | ✅ PASS — the app is JavaScript; `tsc --noEmit` validates the Expo config boundary, while ESLint and 823 mobile/core tests provide semantic regression coverage |
 | Root/server live and production npm audits | ✅ PASS — zero vulnerabilities |
 | Backend, adapter, AI-native, and simulator builds | ✅ PASS |
-| Full test suite | ✅ PASS — 1,056/1,056 (821 core, 44 adapter, 8 adapter integration, 183 AI-native) |
+| Full test suite | ✅ PASS — 1,058/1,058 (823 core, 44 adapter, 8 adapter integration, 183 AI-native) |
 | ESLint | ✅ PASS |
 | Expo Doctor 1.20.1 | ✅ PASS — 20/20 |
 | iOS production JavaScript export | ✅ PASS — Hermes bundle and 82 assets |
 | Android production JavaScript export | ✅ PASS — Hermes bundle and 86 assets |
-| `validate:production` | ✅ PASS — 183 AI-native tests, 49 boundary tests, two validated CycloneDX SBOMs, zero cached vulnerabilities |
+| `validate:production` | ✅ PASS — 183 AI-native tests, 50 boundary tests, two validated CycloneDX SBOMs, zero cached vulnerabilities |
 | Adapter soak test | ✅ PASS — 60 seconds, 5,104,841 commands, 0.012 ms p95 admission, 24,424-byte heap growth, zero leaked handles |
 | Backend `/health` + scenario/mock dashboard smoke | ✅ PASS — health OK; fall scenario admitted and completed; both devices, scenario log, status, and 1 Hz telemetry observed |
-| Docker build/runtime health test | ⚠️ NOT RUN LOCALLY — no container runtime is installed; immutable Docker/Trivy validation is enforced by the commit-pinned CI release job |
+| Docker build/runtime/Trivy/SBOM artifact gate | ✅ PASS IN CI — immutable build, non-root/health/entrypoint checks, fail-closed startup, live health, graceful shutdown, zero high/critical final-image findings, and retained SBOMs; not run locally because this workstation has no container runtime |
 | iOS Simulator runtime | ✅ PASS — unsigned `iphonesimulator` build, install, and launch on iOS 26.5; no fatal/crash event in the launch log |
 | Android Emulator runtime | ⚠️ NOT RUN LOCALLY — Android SDK/emulator is not installed on this workstation |
 
@@ -124,7 +126,7 @@ The clean npm install also emits the known `glob@7`/`inflight` deprecation chain
 
 The mobile application is currently JavaScript rather than TypeScript. Its root `tsconfig.json` deliberately declares `checkJs: false`: enabling strict JavaScript inference today surfaces thousands of pre-existing annotation and React-prop inference findings and would require a separate source migration, which this dependency-only change must not disguise as a package update. No strict mobile semantic-check claim is made; server TypeScript remains fully strict, and mobile source is covered by ESLint plus the deterministic core/mobile suite.
 
-The Docker and Android-emulator rows above are still open verification-evidence gates, not manufacturer/provider/credential blockers and not claimed as passes. Container build, health, and Trivy checks are encoded in the immutable release workflow; an Android runtime walkthrough still requires a workstation or CI runner with the Android SDK and emulator installed.
+Only the Android-emulator row above remains an open workstation verification-evidence gate. Container build, runtime, health, shutdown, SBOM retention, and Trivy checks execute in the immutable release workflow. An Android runtime walkthrough still requires a workstation or CI runner with the Android SDK and emulator installed.
 
 ## Remaining external acceptance
 

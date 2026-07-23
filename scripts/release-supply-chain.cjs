@@ -27,6 +27,11 @@ function validatePolicy(policy) {
   invariant(policy?.contractVersion === 'veryloving.release-policy/1', 'Unknown release policy contract');
   invariant(EXACT_SEMVER.test(policy.nodeVersion || ''), 'release-policy nodeVersion must be exact');
   invariant(EXACT_SEMVER.test(policy.npmVersion || ''), 'release-policy npmVersion must be exact');
+  invariant(
+    policy.npmTarball === `https://registry.npmjs.org/npm/-/npm-${policy.npmVersion}.tgz`,
+    'release-policy npmTarball must match npmVersion'
+  );
+  invariant(/^sha512-[A-Za-z0-9+/]+={0,2}$/.test(policy.npmIntegrity || ''), 'release-policy npmIntegrity is invalid');
   invariant(EXACT_SEMVER.test(policy.easCliVersion || ''), 'release-policy easCliVersion must be exact');
   const imageMatch = /^node:(\d+\.\d+\.\d+)-alpine(\d+\.\d+)@(sha256:[0-9a-f]{64})$/.exec(
     policy.nodeImage || ''
@@ -67,7 +72,13 @@ function validateManifestAndLock(manifest, lockfile, label, policy) {
   if (label === 'root') {
     invariant(manifest.packageManager === `npm@${policy.npmVersion}`, 'root packageManager must match release-policy npmVersion');
     invariant(manifest.engines?.node === policy.nodeVersion, 'root Node engine must match release-policy nodeVersion');
+    invariant(
+      manifest.scripts?.['eas-build-pre-install']
+        === `npm install --global npm@${policy.npmVersion} --ignore-scripts --no-audit --no-fund && node scripts/validate-toolchain.cjs`,
+      'EAS must select and validate the reviewed npm toolchain before dependency installation'
+    );
   } else {
+    invariant(manifest.packageManager === `npm@${policy.npmVersion}`, `${label} packageManager must match release-policy npmVersion`);
     invariant(manifest.engines?.node === policy.nodeVersion, `${label} Node engine must match release-policy nodeVersion`);
   }
 }
@@ -80,8 +91,14 @@ function validateDockerfile(source, policy) {
   invariant(fromLines.length === 2, 'Dockerfile must use exactly two stages');
   invariant(fromLines[0] === `FROM ${policy.nodeImage} AS build`, 'Docker build stage must use the reviewed immutable Node image');
   invariant(fromLines[1] === `FROM ${policy.nodeImage}`, 'Docker runtime stage must use the reviewed immutable Node image');
-  const runtimeStage = source.slice(source.lastIndexOf(`FROM ${policy.nodeImage}`));
-  invariant(/RUN npm ci --ignore-scripts(?:\s|$)/.test(source), 'Docker build stage must use npm ci --ignore-scripts');
+  const runtimeStageStart = source.lastIndexOf(`FROM ${policy.nodeImage}`);
+  const buildStage = source.slice(0, runtimeStageStart);
+  const runtimeStage = source.slice(runtimeStageStart);
+  const reviewedNpmInstall = new RegExp(`npm install --global npm@${policy.npmVersion.replaceAll('.', '\\.')}`
+    + ' --ignore-scripts --no-audit --no-fund');
+  invariant(reviewedNpmInstall.test(buildStage), 'Docker build stage must select the reviewed npm toolchain');
+  invariant(reviewedNpmInstall.test(runtimeStage), 'Docker runtime stage must select the reviewed npm toolchain');
+  invariant(/RUN npm ci --ignore-scripts(?:\s|$)/.test(buildStage), 'Docker build stage must use npm ci --ignore-scripts');
   invariant(/RUN npm ci --omit=dev --ignore-scripts(?:\s|&&)/.test(runtimeStage), 'Docker runtime stage must install only locked production dependencies');
   invariant(
     /rm -rf \/usr\/local\/lib\/node_modules\/npm/.test(runtimeStage)
@@ -210,6 +227,8 @@ function validateSupplyChain(projectRoot = PROJECT_ROOT) {
   validateEAS(readJSON(join(projectRoot, 'eas.json')), project.policy);
   return {
     nodeImage: project.policy.nodeImage,
+    npmVersion: project.policy.npmVersion,
+    npmIntegrity: project.policy.npmIntegrity,
     easCliVersion: project.policy.easCliVersion,
     rootPackages: Object.keys(project.rootLockfile.packages).length - 1,
     serverPackages: Object.keys(project.serverLockfile.packages).length - 1
