@@ -275,7 +275,7 @@ The following material defects were reproduced and corrected during the July aud
 | `production` | English, Spanish, French, Simplified Chinese | Public reviewed release surface. |
 | Base `testflight` | Production four plus Arabic and Hebrew | Primary signed QA candidate with RTL review. |
 | `testflight-full-catalog` | All 155 catalogs | Separately identified signed structural/layout/search/persistence/RTL audit. |
-| Development full-catalog mode | All 155 catalogs when permitted by development metadata and `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` | Local/dev-client layout audit. |
+| Development runtime | All 155 catalogs automatically (`__DEV__`); development EAS metadata also sets `EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true` | Local/Expo/dev-client layout, search, persistence, and RTL audit. |
 
 The base TestFlight picker has **System default plus six catalogs: seven rows**. The full-catalog picker has **System default plus 155 catalogs: 156 rows**. Results from the two profiles are not interchangeable.
 
@@ -313,15 +313,19 @@ This section is the canonical localization, translation-review, and RTL policy.
 
 ### Full-catalog development and signed QA
 
-Run all catalogs in a development client only when development metadata and the public audit flag agree:
+The normal Metro development runtime now exposes all 155 catalogs, so this is sufficient for the Expo simulator UI:
 
 ```bash
-VERYLOVING_BUILD_PROFILE=development \
-EXPO_PUBLIC_SHOW_ALL_LANGUAGES=true \
-npx expo start --dev-client
+npx expo start
 ```
 
-When native supported locales and permission strings must also be regenerated, use the same variables with a new native prebuild/development build. For signed physical-device layout QA, do not edit source or the local environment to imitate production:
+For a generated native development client, use the committed development profile; it sets the catalog flag so native supported-locale metadata and permission strings are generated consistently:
+
+```bash
+eas build --platform ios --profile development-simulator
+```
+
+For signed physical-device layout QA, do not edit source or the local environment to imitate production:
 
 ```bash
 eas build --platform ios --profile testflight-full-catalog

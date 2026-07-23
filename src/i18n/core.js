@@ -7,11 +7,14 @@ export const TRANSLATION_FALLBACK_ENABLED = false;
 export const RTL_QA_LANGUAGE_CODES = Object.freeze(['ar', 'he']);
 export const RTL_QA_LANGUAGES_ENABLED = process.env.EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES === 'true';
 export const ALL_CATALOG_LANGUAGES_REQUESTED = process.env.EXPO_PUBLIC_SHOW_ALL_LANGUAGES === 'true';
-// App config and the environment validator authorize this flag only for
-// development or the production-strict TestFlight catalog-QA profile. Do not
-// add an __DEV__ check here: signed TestFlight bundles intentionally run with
-// __DEV__ false and must still be able to exercise the full catalog.
-export const ALL_CATALOG_LANGUAGES_ENABLED = ALL_CATALOG_LANGUAGES_REQUESTED;
+const DEVELOPMENT_CATALOG_AUDIT_ENABLED = typeof __DEV__ !== 'undefined' && __DEV__ === true;
+// Interactive development always exposes the complete catalog so a normal
+// `npx expo start` session cannot silently look like a five-language product.
+// Signed TestFlight audit bundles run with __DEV__ false and therefore still
+// require the reviewed profile flag. Public production remains gated to
+// native-speaker-approved catalogs.
+export const ALL_CATALOG_LANGUAGES_ENABLED = ALL_CATALOG_LANGUAGES_REQUESTED
+  || DEVELOPMENT_CATALOG_AUDIT_ENABLED;
 export const catalogLanguages = languageCatalog
   .filter((language) => language.messages)
   .map((language) => language.code);

@@ -392,6 +392,35 @@ test('development catalog audit mode exposes all base catalogs and switches a re
   assert.equal(result.copy, 'Konto erstellen');
 });
 
+test('ordinary Expo development exposes every catalog without a hidden environment toggle', () => {
+  const probe = spawnSync(process.execPath, [
+    '--require',
+    '@babel/register',
+    '-e',
+    `global.__DEV__ = true; const core = require('./src/i18n/core'); process.stdout.write(JSON.stringify({
+      count: core.supportedLanguages.length,
+      options: core.languageOptions.length,
+      german: core.resolveLanguage('de-DE'),
+      urduRTL: core.isRTLLanguage(core.resolveLanguage('ur-PK'))
+    }));`
+  ], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      NODE_ENV: 'development',
+      EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'false',
+      EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'false'
+    }
+  });
+  assert.equal(probe.status, 0, probe.stderr);
+  const result = JSON.parse(probe.stdout);
+  assert.equal(result.count, 155);
+  assert.equal(result.options, 156);
+  assert.equal(result.german, 'de');
+  assert.equal(result.urduRTL, true);
+});
+
 test('signed full-catalog QA runtime exposes 155 locales without raw critical missing keys', () => {
   const probe = spawnSync(process.execPath, [
     '--require',

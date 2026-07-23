@@ -13,6 +13,7 @@
       "env": {
         "VERYLOVING_BUILD_PROFILE": "development",
         "VERYLOVING_CONFIG_DIAGNOSTICS": "1",
+        "EXPO_PUBLIC_SHOW_ALL_LANGUAGES": "true",
         "EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES": "true"
       }
     },
