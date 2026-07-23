@@ -481,7 +481,7 @@ Evidence: [`ble.js`](./src/services/ble.js), [`vl01-protocol.js`](./src/services
 - Node.js 24.18.0 and npm 12.0.1, matching the reviewed release policy.
 - EAS CLI 21.1.0 for cloud artifacts.
 - Xcode, CocoaPods, and an iOS simulator for local native work.
-- JDK 17, Android Studio, Android SDK Platform 36, and an API 36 emulator for Android runtime work.
+- JDK 17 or JDK 24, Android Studio, Android SDK Platform 36, and an API 36 emulator for Android runtime work. The checked-in Android launcher supplies Java 24's native-access permission to Prefab child processes.
 - A development or signed build for native providers, Keychain, Mapbox, BLE, notifications, telephony, and audio.
 
 ### Safe local bootstrap
@@ -601,12 +601,24 @@ npx expo run:ios --device "<simulator-or-device>"
 
 Expo Go is a UI/foreground preview only. The simulator uses volatile/unavailable fallbacks for entitlement-sensitive storage and notifications and cannot close Apple/Google provider, Keychain, APNs, telephony, BLE, or audio-route gates.
 
-Android runtime work requires JDK 17 and API 36 tooling:
+Android runtime work requires JDK 17 or JDK 24 and API 36 tooling. Use the
+checked-in launcher so Java 24 also grants native access to the Prefab child
+JVM used by native React Native modules:
 
 ```bash
 npx expo prebuild --platform android
-npx expo run:android
+npm run android
+# Rebuild without Gradle's native build cache:
+npm run android:clean
 ```
+
+`npx expo run:android --clear` is not a supported Expo command. If invoking
+Expo directly with JDK 24, set
+`JAVA_TOOL_OPTIONS=--enable-native-access=ALL-UNNAMED` and use
+`--no-build-cache`. Do not use `-Djava.security.manager=allow`: JDK 24 rejects
+that obsolete option before Gradle starts. The generated `android/` directory
+remains ignored under Continuous Native Generation; durable Android behavior
+lives in this launcher, `app.config.js`, and `plugins/`.
 
 Validate local public configuration without printing values:
 

@@ -10,7 +10,8 @@
   "scripts": {
     "start": "expo start",
     "ios": "expo run:ios",
-    "android": "expo run:android",
+    "android": "node scripts/run-android.cjs",
+    "android:clean": "node scripts/run-android.cjs --no-build-cache",
     "web": "expo start --web",
     "prebuild": "expo prebuild",
     "eas-build-pre-install": "npm install --global npm@12.0.1 --ignore-scripts --no-audit --no-fund && node scripts/validate-toolchain.cjs",
