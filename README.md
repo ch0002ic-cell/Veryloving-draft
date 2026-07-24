@@ -7,7 +7,7 @@
 
 This document consolidates the repository's product overview, architecture, UI framework, globalization strategy, privacy model, voice and BLE integrations, setup guidance, deployment boundaries, validation evidence, TestFlight procedures, launch gates, and founding-engineer capability audit. It is intended to give Grace and the wider delivery team one readable handoff from project scope through release decision.
 
-The codebase is a strong source-level TestFlight candidate: the current deterministic suite, lint, Expo Doctor, and iOS/Android production JavaScript exports pass. That evidence does not make the safety product production-ready. The last recorded production configuration remains incomplete, and no signed TestFlight session, physical-device audio/BLE matrix, production-provider run, or end-to-end guardian delivery has been accepted.
+The codebase is a strong source-level TestFlight candidate: the current deterministic suite, lint, Expo SDK dependency checks, and iOS/Android production JavaScript exports pass. Expo Doctor's 18 local checks pass; its two metadata-backed online checks await explicit authorization to contact Expo and React Native Directory. That evidence does not make the safety product production-ready. The last recorded production configuration remains incomplete, and no signed TestFlight session, physical-device audio/BLE matrix, production-provider run, or end-to-end guardian delivery has been accepted.
 
 The current decision is therefore **NO-GO for production release**. An authorized owner must configure and build the exact reviewed commit, and every applicable P1 gate in this document must receive release-build-specific evidence. No environment values, credentials, internal account identifiers, deployment IDs, private service URLs, phone numbers, or precise locations are reproduced here.
 
@@ -83,7 +83,7 @@ Historical test totals remain valid only for their recorded snapshots. The curre
 | AI-native state, memory, edge, orchestration, and scenario integration | **PASS — current candidate** | Five deterministic cross-device workflows and their authenticated ingress/privacy contracts are covered; this is not clinical/model/hardware/provider validation. |
 | ESLint | **PASS** | Current source passed. |
 | Whitespace/diff check | **PASS** | Rechecked against the current documentation changes. |
-| Expo Doctor | **PASS — 20/20** | Project-health checks passed. |
+| Expo Doctor | **ONLINE RECHECK PENDING AUTHORIZATION** | All 18 local checks pass, including SDK package compatibility; schema and React Native Directory checks require metadata-only third-party access. |
 | iOS production JavaScript export | **PASS** | Release-optimized bundle generation only. |
 | Android production JavaScript export | **PASS** | Release-optimized bundle generation only. |
 | iOS simulator supporting run | **PASS for named flows** | Spanish switching/persistence, selected UI flows, honest SOS fallback, Map/Saved Places/share, offline Safety Call, and selected responsive layouts were observed. |

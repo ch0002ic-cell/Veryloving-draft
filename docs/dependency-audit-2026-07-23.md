@@ -1,5 +1,7 @@
 # Dependency and Toolchain Audit — 23 July 2026
 
+Last reverified: 24 July 2026
+
 Branch: `features/dual-product-draft`
 
 Scope: mobile app, backend, mock simulator, TypeScript projects, test/build tools, environment contracts, container/deployment configuration, and active operator documentation.
@@ -36,7 +38,7 @@ The release gate now verifies the actual Node and npm executables, not only mani
 | Package/group | Previous | Final |
 | --- | --- | --- |
 | Expo SDK | 57.0.7 | 57.0.8 |
-| Expo modules | older SDK-57 patches | Expo-recommended patches for asset 57.0.7, audio 57.0.3, constants 57.0.7, dev-client 57.0.8, linking 57.0.4, location 57.0.6, notifications 57.0.7, router 57.0.8, sharing 57.0.7, splash-screen 57.0.5, file-system/font 57.0.1 |
+| Expo modules | older SDK-57 patches | Expo-recommended patches for asset 57.0.7, audio 57.0.3, constants 57.0.7, dev-client 57.0.9, linking 57.0.4, location 57.0.6, notifications 57.0.7, router 57.0.8, sharing 57.0.7, splash-screen 57.0.5, file-system/font 57.0.1 |
 | React Native Screens | 4.25.2 | 4.26.2 (`~4.26.0`) |
 | Google Sign-In | 15.0.0 | 16.1.2 |
 | Mapbox React Native | 10.3.2 locked | 10.3.5 |
@@ -105,17 +107,17 @@ These entries are reported by `npm outdated`, but upgrading them would leave the
 | Root and server dependency installation/lock consistency | ✅ PASS |
 | Expo dependency compatibility check | ✅ PASS |
 | Server TypeScript production/test configs | ✅ PASS — strict semantic checks cover adapters, simulator, AI-native, and all TypeScript tests |
-| Mobile JavaScript compiler/config smoke | ✅ PASS — the app is JavaScript; `tsc --noEmit` validates the Expo config boundary, while ESLint and 847 mobile/core tests provide semantic regression coverage |
+| Mobile JavaScript compiler/config smoke | ✅ PASS — the app is JavaScript; `tsc --noEmit` validates the Expo config boundary, while ESLint and 862 mobile/core tests provide semantic regression coverage |
 | Root/server live and production npm audits | ✅ PASS — zero vulnerabilities |
 | Backend, adapter, AI-native, and simulator builds | ✅ PASS |
-| Full test suite | ✅ PASS — 1,083/1,083 (847 core, 44 adapter, 8 adapter integration, 184 AI-native) |
+| Full test suite | ✅ PASS — 1,098/1,098 (862 core, 44 adapter, 8 adapter integration, 184 AI-native) |
 | ESLint | ✅ PASS |
-| Expo Doctor 1.20.1 | ✅ PASS — 20/20 |
+| Expo Doctor 1.20.1 | ⚠️ ONLINE RECHECK PENDING AUTHORIZATION — 18 local checks pass, including SDK compatibility after the 57.0.9 dev-client patch; two third-party metadata checks await explicit permission |
 | iOS production JavaScript export | ✅ PASS — Hermes bundle and 82 assets |
 | Android production JavaScript export | ✅ PASS — Hermes bundle and 86 assets |
 | `validate:production` | ✅ PASS — 184 AI-native tests, 52 boundary tests, two validated CycloneDX SBOMs, zero cached vulnerabilities |
 | Critical-path coverage | ✅ PASS — adapters: 98.55% statements/lines, 91.20% branches, 97.26% functions; AI-native scenario group: 99.80% statements/lines, 90.56% branches, 100% functions; configured AI-native global threshold also passed |
-| Adapter soak test | ✅ PASS — 60 seconds, 4,221,509 commands, 0.017 ms p95 admission, 361,040-byte heap growth, zero leaked handles |
+| Adapter soak test | ✅ PASS — 60 seconds, 3,972,875 commands, 0.025 ms p95 admission, 360,832-byte heap growth, zero leaked handles |
 | Backend `/health` + scenario/mock dashboard smoke | ✅ PASS — health OK; fall scenario admitted and completed; both devices, scenario log, status, and 1 Hz telemetry observed |
 | Docker build/runtime/Trivy/SBOM artifact gate | ⚠️ CURRENT-COMMIT CI RUN REQUIRED — immutable build, non-root/health/entrypoint checks, fail-closed startup, live health, graceful shutdown, high/critical Trivy policy, and retained SBOMs passed on the prior CI candidate; this workstation has no container runtime, so the release workflow must regenerate evidence for the final commit |
 | iOS Simulator runtime | ✅ PASS — unsigned `iphonesimulator` build, install, and launch on iOS 26.5; no fatal/crash event in the launch log |
