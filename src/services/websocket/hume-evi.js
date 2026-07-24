@@ -58,7 +58,10 @@ export class HumeEVIService {
     this.chatMetadataReceived = false;
     this.chatMetadataTimeout = null;
     this.reconnectTimer = null;
+    this.connectionTimer = null;
+    this.disconnectPromise = null;
     this.connectionAttemptId = 0;
+    this.connectionIntentGeneration = 0;
     this.pendingMicrophoneStart = false;
     this.chatId = null;
     this.chatGroupId = null;
@@ -91,7 +94,7 @@ export class HumeEVIService {
       targetSocket.send(JSON.stringify(payload));
       return true;
     } catch (error) {
-      logger.warn('[HumeEVIService] WebSocket send failed', {
+      logger.recoverable('[HumeEVIService] WebSocket send failed', {
         operation,
         name: error?.name || 'WebSocketSendError'
       });
@@ -115,7 +118,7 @@ export class HumeEVIService {
   }
 
   failConnection(error, context = {}) {
-    logger.error('[HumeEVIService] Connection setup failed', {
+    logger.recoverable('[HumeEVIService] Connection setup failed', {
       errorCode: error?.code || error?.name || 'VOICE_CONNECTION_SETUP_FAILED',
       humeCode: error?.humeCode,
       attemptId: this.connectionAttemptId,
@@ -156,6 +159,13 @@ export class HumeEVIService {
     this.reconnectTimer = null;
   }
 
+  clearConnectionTimer(targetSocket) {
+    if (!this.connectionTimer) return;
+    if (targetSocket && this.connectionTimer.socket !== targetSocket) return;
+    clearTimeout(this.connectionTimer.timeout);
+    this.connectionTimer = null;
+  }
+
   cancelActiveToolCall() {
     for (const controller of this.activeToolAbortControllers.values()) controller.abort();
     this.activeToolAbortControllers.clear();
@@ -192,14 +202,21 @@ export class HumeEVIService {
   }
 
   async connect(sessionConfig = {}, { isReconnect = false } = {}) {
+    const intentGeneration = ++this.connectionIntentGeneration;
+    // Native microphone/audio shutdown is asynchronous. Serializing a
+    // replacement connection behind it prevents stale cleanup from stopping a
+    // new call or publishing a late "disconnected" state.
+    if (this.disconnectPromise) await this.disconnectPromise.catch(() => {});
+    if (intentGeneration !== this.connectionIntentGeneration) return;
     if (this.state === 'connected' || this.state === 'connecting') {
-      logger.warn('[HumeEVIService] Already connected or connecting', { state: this.state });
+      logger.recoverable('[HumeEVIService] Already connected or connecting', { state: this.state });
       return;
     }
 
     this.connectionAttemptId += 1;
     if (!isReconnect) this.reconnectAttempts = 0;
     this.clearReconnectTimer();
+    this.clearConnectionTimer();
     this.resetChatReadiness();
     this.intentionallyConnected = true;
     this.sessionConfig = sessionConfig;
@@ -236,7 +253,7 @@ export class HumeEVIService {
     const configId = normalizeHumeConfigId(sessionConfig.configId)
       || normalizeHumeConfigId(config.humeConfigId);
     if (!configId) {
-      logger.warn('[HumeEVIService] No config_id provided – using Hume default config (if available)');
+      logger.recoverable('[HumeEVIService] No config_id provided – using Hume default config (if available)');
     }
 
     const url = this.buildWebSocketURL({
@@ -269,32 +286,34 @@ export class HumeEVIService {
     const socket = this.socket;
 
     const connectTimer = setTimeout(() => {
-      if (socket.readyState === 0) {
-        logger.error('[HumeEVIService] Connection timeout after 10s');
+      this.clearConnectionTimer(socket);
+      if (socket === this.socket && socket.readyState === 0) {
+        logger.recoverable('[HumeEVIService] Connection timeout after 10s');
         socket.close(4000, 'connection timeout');
       }
     }, 10000);
+    this.connectionTimer = { socket, timeout: connectTimer };
 
     socket.onopen = () => {
-      clearTimeout(connectTimer);
+      this.clearConnectionTimer(socket);
       this.handleOpen(socket);
     };
     socket.onmessage = (event) => {
-      this.handleMessage(event, socket).catch((error) => logger.error('[HumeEVIService] Message handling failed:', error));
+      this.handleMessage(event, socket).catch((error) => logger.recoverable('[HumeEVIService] Message handling failed:', error));
     };
     socket.onerror = (event) => {
-      clearTimeout(connectTimer);
+      this.clearConnectionTimer(socket);
       this.handleError(event, socket);
     };
     socket.onclose = (event) => {
-      clearTimeout(connectTimer);
+      this.clearConnectionTimer(socket);
       this.handleClose(event, socket);
     };
   }
 
   handleOpen(openedSocket = this.socket) {
     if (openedSocket !== this.socket) {
-      logger.warn('[HumeEVIService] Ignoring stale WebSocket open');
+      logger.recoverable('[HumeEVIService] Ignoring stale WebSocket open');
       return;
     }
     logger.voice('[HumeEVIService] WebSocket OPEN; starting secure voice handshake');
@@ -320,7 +339,7 @@ export class HumeEVIService {
     this.clearChatMetadataTimeout();
     this.chatMetadataTimeout = setTimeout(() => {
       if (this.chatMetadataReceived) return;
-      logger.error('[HumeEVIService] Voice handshake timeout after 10s', {
+      logger.recoverable('[HumeEVIService] Voice handshake timeout after 10s', {
         stage,
         socketReadyState: this.socket?.readyState,
         socketURL: sanitizeUrl(this.socket?.url)
@@ -341,7 +360,7 @@ export class HumeEVIService {
 
   sendSessionSettings() {
     if (!this.socket || this.socket.readyState !== SOCKET_OPEN || !this.sessionConfig) {
-      logger.warn('[HumeEVIService] Cannot send session settings - WebSocket is not open');
+      logger.recoverable('[HumeEVIService] Cannot send session settings - WebSocket is not open');
       return false;
     }
     return this.sendSocketPayload(createSessionSettingsPayload(this.sessionConfig), {
@@ -351,14 +370,14 @@ export class HumeEVIService {
 
   async handleMessage(event, sourceSocket = this.socket) {
     if (sourceSocket !== this.socket) {
-      logger.warn('[HumeEVIService] Ignoring message from a stale WebSocket');
+      logger.recoverable('[HumeEVIService] Ignoring message from a stale WebSocket');
       return;
     }
     let message;
     try {
       message = JSON.parse(event.data);
     } catch (error) {
-      logger.error('[HumeEVIService] Message parse error:', error);
+      logger.recoverable('[HumeEVIService] Message parse error:', error);
       return;
     }
 
@@ -386,7 +405,7 @@ export class HumeEVIService {
         try {
           await this.messageHandler.onChatMetadata?.(metadata);
         } catch (error) {
-          logger.error('[HumeEVIService] Chat setup after metadata failed', {
+          logger.recoverable('[HumeEVIService] Chat setup after metadata failed', {
             errorCode: error?.code || error?.name || 'CHAT_SETUP_FAILED',
             attemptId: this.connectionAttemptId,
             hasChatId: Boolean(metadata.chatId),
@@ -409,7 +428,7 @@ export class HumeEVIService {
           hasCustomSessionId: Boolean(metadata.customSessionId)
         });
         this.setState('connected');
-        if (shouldStartMicrophone) this.startMicrophone().catch((error) => logger.error('[HumeEVIService] Pending microphone start failed:', error));
+        if (shouldStartMicrophone) this.startMicrophone().catch((error) => logger.recoverable('[HumeEVIService] Pending microphone start failed:', error));
         break;
       }
       case 'user_message':
@@ -429,11 +448,11 @@ export class HumeEVIService {
       case 'audio_output':
         if (this.assistantAudioInterrupted) break;
         if (typeof message.data !== 'string' || message.data.length > MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS) {
-          logger.warn('[HumeEVIService] Dropped an invalid or oversized assistant audio frame');
+          logger.recoverable('[HumeEVIService] Dropped an invalid or oversized assistant audio frame');
           break;
         }
         this.messageHandler.onAudioOutput?.(message.data);
-        audioService.playBase64Audio(message.data, 'wav').catch((error) => logger.error('[HumeEVIService] Audio playback failed:', error));
+        audioService.playBase64Audio(message.data, 'wav').catch((error) => logger.recoverable('[HumeEVIService] Audio playback failed:', error));
         break;
       case 'assistant_end':
         this.messageHandler.onAssistantEnd?.();
@@ -449,7 +468,7 @@ export class HumeEVIService {
         this.messageHandler.onToolResponse?.(message);
         break;
       case 'tool_error':
-        logger.warn('[HumeEVIService] Tool error received:', { code: message.code, level: message.level, hasToolCallId: Boolean(message.tool_call_id) });
+        logger.recoverable('[HumeEVIService] Tool error received:', { code: message.code, level: message.level, hasToolCallId: Boolean(message.tool_call_id) });
         this.messageHandler.onToolError?.(message);
         break;
       case 'action_response':
@@ -477,7 +496,7 @@ export class HumeEVIService {
           if (this.processedDeviceActionIds.size > 200) this.processedDeviceActionIds.delete(this.processedDeviceActionIds.values().next().value);
           this.sendDeviceActionAcknowledgement(actionId, true, sourceSocket);
         } catch (error) {
-          logger.error('[HumeEVIService] Wearable action failed:', { actionId, name: error?.name || 'WearableActionError' });
+          logger.recoverable('[HumeEVIService] Wearable action failed:', { actionId, name: error?.name || 'WearableActionError' });
           this.sendDeviceActionAcknowledgement(actionId, false, sourceSocket, error?.code || 'WEARABLE_ACTION_FAILED');
           this.messageHandler.onError?.(new Error('The wearable action failed. Please check the wearable connection.'));
         } finally {
@@ -489,7 +508,7 @@ export class HumeEVIService {
         this.handleServerError(message);
         break;
       default:
-        logger.warn('[HumeEVIService] Unknown message type:', message.type);
+        logger.recoverable('[HumeEVIService] Unknown message type:', message.type);
     }
   }
 
@@ -514,7 +533,7 @@ export class HumeEVIService {
       this.sendToolResponse(toolCallId, content, message, sourceSocket);
     } catch (error) {
       if (this.activeToolAbortControllers.get(toolCallId) !== controller || sourceSocket !== this.socket || controller.signal.aborted) return;
-      logger.error('[HumeEVIService] Tool execution failed:', { name: message.name, error: error.message });
+      logger.recoverable('[HumeEVIService] Tool execution failed:', { name: message.name, error: error.message });
       this.sendToolError(toolCallId, error.message || 'Tool execution failed.', 'That safety resource is temporarily unavailable.', sourceSocket);
     } finally {
       if (this.activeToolAbortControllers.get(toolCallId) === controller) this.activeToolAbortControllers.delete(toolCallId);
@@ -758,10 +777,10 @@ export class HumeEVIService {
 
   handleError(event, sourceSocket = this.socket) {
     if (sourceSocket !== this.socket || (event?.target && event.target !== sourceSocket)) {
-      logger.warn('[HumeEVIService] Ignoring stale WebSocket error from an old socket');
+      logger.recoverable('[HumeEVIService] Ignoring stale WebSocket error from an old socket');
       return;
     }
-    logger.error('[HumeEVIService] WebSocket error', {
+    logger.recoverable('[HumeEVIService] WebSocket error', {
       eventType: event?.type || 'error',
       attemptId: this.connectionAttemptId,
       reconnectAttempt: this.reconnectAttempts,
@@ -779,7 +798,7 @@ export class HumeEVIService {
     const readable = message.message || 'Hume voice service returned an error.';
     this.lastServerErrorCode = message.code;
     const error = createHumeServerError(readable, message.code);
-    logger.error('[HumeEVIService] Server error', {
+    logger.recoverable('[HumeEVIService] Server error', {
       errorCode: error.code || error.name,
       humeCode: message.code,
       slug: message.slug,
@@ -790,7 +809,7 @@ export class HumeEVIService {
     });
     this.messageHandler.onError?.(error);
     if (RESUME_UNAVAILABLE_CODES.has(message.code) && this.sessionConfig?.resumedChatGroupId) {
-      logger.warn('[HumeEVIService] Stored chat group cannot be resumed; retrying as a new Hume chat');
+      logger.recoverable('[HumeEVIService] Stored chat group cannot be resumed; retrying as a new Hume chat');
       this.sessionConfig = { ...this.sessionConfig, resumedChatGroupId: undefined };
       if (this.socket?.readyState === SOCKET_OPEN) this.socket.close(4002, 'resume unavailable');
       return;
@@ -798,8 +817,9 @@ export class HumeEVIService {
   }
 
   handleClose(event, closedSocket = this.socket) {
+    this.clearConnectionTimer(closedSocket);
     if (closedSocket !== this.socket || (event?.target && event.target !== closedSocket)) {
-      logger.warn('[HumeEVIService] Ignoring stale WebSocket close from an old socket');
+      logger.recoverable('[HumeEVIService] Ignoring stale WebSocket close from an old socket');
       return;
     }
     logger.voice('[HumeEVIService] WebSocket close:', {
@@ -815,7 +835,7 @@ export class HumeEVIService {
     this.cancelPendingActionRequests();
     this.cancelPendingInteractionCompletion();
     this.chatMetadataReceived = false;
-    this.stopMicrophone().catch((error) => logger.warn('[HumeEVIService] Microphone cleanup after close failed:', error));
+    this.stopMicrophone().catch((error) => logger.recoverable('[HumeEVIService] Microphone cleanup after close failed:', error));
 
     const classification = classifyHumeClose({
       closeCode: event?.code,
@@ -855,7 +875,7 @@ export class HumeEVIService {
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       if (this.intentionallyConnected && this.sessionConfig) {
-        this.connect(this.sessionConfig, { isReconnect: true }).catch((error) => logger.error('[HumeEVIService] Reconnect failed:', error));
+        this.connect(this.sessionConfig, { isReconnect: true }).catch((error) => logger.recoverable('[HumeEVIService] Reconnect failed:', error));
       }
     }, delay);
   }
@@ -869,7 +889,7 @@ export class HumeEVIService {
     }
     if (!this.chatMetadataReceived || !this.socket || this.socket.readyState !== SOCKET_OPEN) {
       this.pendingMicrophoneStart = this.intentionallyConnected;
-      logger.warn('[HumeEVIService] Deferring microphone start until chat_metadata confirms the chat session', {
+      logger.recoverable('[HumeEVIService] Deferring microphone start until chat_metadata confirms the chat session', {
         chatMetadataReceived: this.chatMetadataReceived,
         readyState: this.socket?.readyState,
         state: this.state
@@ -933,7 +953,7 @@ export class HumeEVIService {
     let stopPromise;
     stopPromise = (async () => {
       try {
-        await pendingStart?.catch((error) => logger.warn('[HumeEVIService] Microphone start failed during cleanup:', error));
+        await pendingStart?.catch((error) => logger.recoverable('[HumeEVIService] Microphone start failed during cleanup:', error));
         return await audioService.stopRecording();
       } finally {
         audioService.setAudioChunkCallback(null);
@@ -949,18 +969,18 @@ export class HumeEVIService {
   sendAudio(data) {
     if (!data) return false;
     if (!this.chatMetadataReceived || !this.socket || this.socket.readyState !== SOCKET_OPEN || this.state !== 'connected') {
-      logger.warn('[HumeEVIService] Cannot send audio - chat session is not ready');
+      logger.recoverable('[HumeEVIService] Cannot send audio - chat session is not ready');
       return false;
     }
     if (Number(this.socket.bufferedAmount) > MAX_AUDIO_BUFFERED_BYTES) {
-      logger.warn('[HumeEVIService] Dropping microphone audio while the socket is backpressured');
+      logger.recoverable('[HumeEVIService] Dropping microphone audio while the socket is backpressured');
       return false;
     }
     try {
       this.socket.send(JSON.stringify({ type: 'audio_input', data }));
       return true;
     } catch (error) {
-      logger.warn('[HumeEVIService] Microphone audio send failed', { name: error?.name || 'WebSocketSendError' });
+      logger.recoverable('[HumeEVIService] Microphone audio send failed', { name: error?.name || 'WebSocketSendError' });
       return false;
     }
   }
@@ -986,7 +1006,7 @@ export class HumeEVIService {
       logger.voice('[HumeEVIService] Text sent', { characters: normalized.length });
       return true;
     } catch (nativeError) {
-      logger.warn('[HumeEVIService] Text send failed after the socket readiness check', {
+      logger.recoverable('[HumeEVIService] Text send failed after the socket readiness check', {
         name: nativeError?.name || 'WebSocketSendError'
       });
       const error = new Error('The voice connection was interrupted while sending your message.');
@@ -996,9 +1016,12 @@ export class HumeEVIService {
     }
   }
 
-  async disconnect() {
+  disconnect() {
+    this.connectionIntentGeneration += 1;
+    if (this.disconnectPromise) return this.disconnectPromise;
     this.intentionallyConnected = false;
     this.clearReconnectTimer();
+    this.clearConnectionTimer();
     this.cancelActiveToolCall();
     this.cancelPendingActionRequests();
     this.cancelPendingInteractionCompletion();
@@ -1017,16 +1040,21 @@ export class HumeEVIService {
       try {
         socket.close(1000, 'Client disconnected');
       } catch (error) {
-        logger.warn('[HumeEVIService] Native WebSocket close failed during cleanup', {
+        logger.recoverable('[HumeEVIService] Native WebSocket close failed during cleanup', {
           name: error?.name || 'WebSocketCloseError'
         });
       }
     }
-    await Promise.all([
+    const cleanup = Promise.all([
       this.stopMicrophone().catch(() => {}),
       audioService.cancelAndClearQueue().catch(() => {})
-    ]);
-    this.setState('disconnected');
+    ]).then(() => {
+      if (this.disconnectPromise === cleanup) this.setState('disconnected');
+    }).finally(() => {
+      if (this.disconnectPromise === cleanup) this.disconnectPromise = null;
+    });
+    this.disconnectPromise = cleanup;
+    return cleanup;
   }
 }
 

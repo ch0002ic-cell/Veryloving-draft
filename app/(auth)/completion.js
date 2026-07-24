@@ -17,7 +17,7 @@ export default function Completion() {
     try {
       await completeOnboarding();
     } catch (completionError) {
-      logger.warn('[Auth] Could not persist onboarding completion', completionError);
+      logger.recoverable('[Auth] Could not persist onboarding completion', completionError);
       setErrorKey('settings.updateFailedMessage');
     }
   }, [completeOnboarding]);

@@ -101,12 +101,28 @@ export function isAuthenticationCancellation(error) {
   return /cancel/i.test(marker);
 }
 
+export function isLikelyAndroidEmulator(platformConstants = {}) {
+  const signature = [
+    platformConstants.Brand,
+    platformConstants.Manufacturer,
+    platformConstants.Model,
+    platformConstants.Fingerprint
+  ].filter((value) => typeof value === 'string').join(' ');
+  return /\b(?:generic|unknown|emulator|simulator|google_sdk|vbox|genymotion|ranchu|goldfish)\b|sdk_gphone/i
+    .test(signature);
+}
+
 export function isExpectedDemoAuthenticationFailure(
   provider,
   error,
-  { demoModeAvailable = false, platform = null } = {}
+  { demoModeAvailable = false, platform = null, isAndroidEmulator = false } = {}
 ) {
-  if (provider !== 'google' || demoModeAvailable !== true || platform !== 'android') return false;
+  if (
+    provider !== 'google'
+    || demoModeAvailable !== true
+    || platform !== 'android'
+    || isAndroidEmulator !== true
+  ) return false;
   const code = String(error?.code ?? '').trim();
   if (['10', 'DEVELOPER_ERROR', 'PLAY_SERVICES_NOT_AVAILABLE'].includes(code)) return true;
   return /\bDEVELOPER_ERROR\b/.test(String(error?.message || ''));
@@ -142,6 +158,7 @@ export function authenticationErrorTranslationKey(error) {
     case 'GOOGLE_AUTH_CONFIGURATION_MISSING':
     case 'GOOGLE_AUTH_BACKEND_MISSING':
     case 'GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD':
+    case 'GOOGLE_AUTH_SIGN_OUT_PENDING':
     case 'PHONE_AUTH_UNAVAILABLE':
     case 'PHONE_AUTH_CONFIGURATION_MISSING':
     case 'VOICE_CONFIGURATION_MISSING':

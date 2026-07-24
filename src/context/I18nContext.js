@@ -72,7 +72,7 @@ export function I18nProvider({ children }) {
       ]);
       results.forEach((result, index) => {
         if (result.status === 'fulfilled') return;
-        logger.warn('[I18n] Could not fully disable a stale localized reminder', {
+        logger.recoverable('[I18n] Could not fully disable a stale localized reminder', {
           errorCode: result.reason?.code || result.reason?.name || 'REMINDER_CLEANUP_FAILED',
           operation: index === 0 ? 'native-reminder' : 'persisted-preference',
           reason
@@ -81,7 +81,7 @@ export function I18nProvider({ children }) {
       const nativeCleanupSuperseded = results[0].status === 'fulfilled'
         && results[0].value?.reason === 'superseded';
       if (nativeCleanupSuperseded) {
-        logger.warn('[I18n] Reminder cleanup was superseded by a newer reminder operation', {
+        logger.recoverable('[I18n] Reminder cleanup was superseded by a newer reminder operation', {
           errorCode: 'REMINDER_CLEANUP_SUPERSEDED',
           reason
         });
@@ -104,7 +104,7 @@ export function I18nProvider({ children }) {
       const cleaned = await disableReminderSafely(reminder.reason || 'not-enabled');
       return { status: cleaned ? 'reminder-disabled' : 'reminder-cleanup-incomplete' };
     } catch (error) {
-      logger.warn('[I18n] Could not refresh the localized reminder', {
+      logger.recoverable('[I18n] Could not refresh the localized reminder', {
         errorCode: error?.code || error?.name || 'REMINDER_LOCALIZATION_FAILED'
       });
       if (!isCurrent()) return { status: 'superseded' };
@@ -117,7 +117,7 @@ export function I18nProvider({ children }) {
     setI18nLocale(locale);
     if (!isHydrated || Platform.OS === 'web') return;
     if (isExpoGoRuntime()) {
-      logger.warn('[I18n] RTL direction changes require a development build or standalone app');
+      logger.recoverable('[I18n] RTL direction changes require a development build or standalone app');
       return;
     }
     let active = true;
@@ -139,7 +139,7 @@ export function I18nProvider({ children }) {
         if (!active || desiredLocaleRef.current !== locale) return;
       }
       if (preparation.status === 'timeout') {
-        logger.warn('[I18n] Locale preparation timed out before the direction reload', {
+        logger.recoverable('[I18n] Locale preparation timed out before the direction reload', {
           errorCode: preparation.error?.code || 'LOCALE_PREPARATION_TIMEOUT',
           locale
         });
@@ -148,7 +148,7 @@ export function I18nProvider({ children }) {
         preparation.status === 'reminder-cleanup-incomplete'
         || preparation.status === 'reminder-superseded'
       ) {
-        logger.warn('[I18n] Direction reload deferred because reminder state is still changing', {
+        logger.recoverable('[I18n] Direction reload deferred because reminder state is still changing', {
           errorCode: preparation.status === 'reminder-superseded'
             ? 'REMINDER_TRANSITION_SUPERSEDED'
             : 'REMINDER_CLEANUP_INCOMPLETE',
@@ -161,7 +161,7 @@ export function I18nProvider({ children }) {
       try {
         recordedDirection = await loadRecordedLocaleDirection();
       } catch (error) {
-        logger.warn('[I18n] Could not read the last native interface direction', {
+        logger.recoverable('[I18n] Could not read the last native interface direction', {
           errorCode: error?.code || error?.name || 'RTL_DIRECTION_READ_FAILED',
           locale
         });
@@ -183,7 +183,7 @@ export function I18nProvider({ children }) {
         try {
           await persistRecordedLocaleDirection(desiredDirection);
         } catch (error) {
-          logger.warn('[I18n] Native direction changed but its reload guard could not be saved', {
+          logger.recoverable('[I18n] Native direction changed but its reload guard could not be saved', {
             errorCode: error?.code || error?.name || 'RTL_DIRECTION_WRITE_FAILED',
             locale
           });
@@ -195,14 +195,14 @@ export function I18nProvider({ children }) {
         await reloadAppAsync(`Interface direction changed to ${isRTL ? 'RTL' : 'LTR'}`);
       } catch (error) {
         await clearRecordedLocaleDirection().catch(() => {});
-        logger.warn('[I18n] Layout direction will update on the next app launch', {
+        logger.recoverable('[I18n] Layout direction will update on the next app launch', {
           errorCode: error?.code || error?.name || 'RTL_RELOAD_FAILED',
           locale
         });
       }
     };
     applyDirection().catch((error) => {
-      logger.warn('[I18n] Could not prepare the interface direction change', {
+      logger.recoverable('[I18n] Could not prepare the interface direction change', {
         errorCode: error?.code || error?.name || 'RTL_PREPARATION_FAILED',
         locale
       });

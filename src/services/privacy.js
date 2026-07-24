@@ -129,7 +129,7 @@ export async function buildUserDataExport({ accessToken } = {}) {
     fetchRemoteData: fetchRemoteUserData
   });
   if (snapshot.remoteDataStatus === REMOTE_DATA_EXPORT_STATUS.unavailable) {
-    logger.warn('[Privacy] Remote data was unavailable; local export remains complete', {
+    logger.recoverable('[Privacy] Remote data was unavailable; local export remains complete', {
       errorCode: snapshot.remoteDataErrorCode
     });
   }
@@ -159,7 +159,7 @@ export async function exportUserData(options) {
     } catch (cleanupError) {
       // A cleanup failure must not turn a completed native share into a false
       // failure. Record only non-sensitive context for a subsequent audit.
-      logger.warn('[Privacy] Could not remove the temporary export file', {
+      logger.recoverable('[Privacy] Could not remove the temporary export file', {
         name: cleanupError?.name || 'FileCleanupError'
       });
     }
@@ -203,7 +203,7 @@ export async function deleteLocalUserData({
   };
   const artifactFailures = Number(result?.artifactCleanup?.failures) || 0;
   if (hasLocalUserDataDeletionWarnings(result)) {
-    logger.warn('[Privacy] Local deletion completed with residual artifact warnings', {
+    logger.recoverable('[Privacy] Local deletion completed with residual artifact warnings', {
       drainFailures: result?.drainFailures || 0,
       artifactFailures,
       localStoreFailures: result.localStoreFailures,
@@ -268,7 +268,7 @@ export async function deleteAllUserData({ accessToken, ...options } = {}) {
     // Keychain value from restoring the account. Report cleanup failures as a
     // warning so Settings can still finish AuthContext sign-out and clear the
     // in-memory access token instead of leaving a deleted account active.
-    logger.warn('[Privacy] Account deletion left protected secure-storage artifacts', {
+    logger.recoverable('[Privacy] Account deletion left protected secure-storage artifacts', {
       secureStoreFailures
     });
   }

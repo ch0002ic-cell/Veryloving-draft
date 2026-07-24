@@ -153,6 +153,109 @@ test('disconnect detaches the WebSocket before waiting for native microphone cle
   assert.equal(service.getState(), 'disconnected');
 });
 
+test('disconnect clears the pending connection timeout owned by its socket', async () => {
+  fakeAudioService.stopRecording = async () => {};
+  fakeAudioService.cancelAndClearQueue = async () => {};
+  const service = readyService();
+  const timeout = setTimeout(() => {}, 60_000);
+  service.connectionTimer = { socket: service.socket, timeout };
+
+  await service.disconnect();
+
+  assert.equal(service.connectionTimer, null);
+  assert.equal(service.getState(), 'disconnected');
+});
+
+test('a replacement connection waits for native cleanup from the previous call', async () => {
+  let resolveStop;
+  let socketCreations = 0;
+  const originalWebSocket = global.WebSocket;
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = () => new Promise((resolve) => { resolveStop = resolve; });
+  fakeAudioService.cancelAndClearQueue = async () => {};
+  class FakeWebSocket {
+    constructor(url) {
+      socketCreations += 1;
+      this.url = url;
+      this.readyState = 0;
+    }
+    send() {}
+    close() { this.readyState = 3; }
+  }
+  global.WebSocket = FakeWebSocket;
+
+  try {
+    const service = readyService();
+    await service.startMicrophone();
+    const disconnecting = service.disconnect();
+    const reconnecting = service.connect({ humeAccessToken: 'test-access-token' });
+    await Promise.resolve();
+    assert.equal(socketCreations, 0);
+
+    await Promise.resolve();
+    assert.equal(typeof resolveStop, 'function');
+    resolveStop();
+    await disconnecting;
+    await reconnecting;
+    assert.equal(socketCreations, 1);
+    assert.equal(service.getState(), 'connecting');
+
+    const replacement = service.socket;
+    replacement.readyState = 1;
+    replacement.onopen();
+    await service.handleMessage({
+      data: JSON.stringify({
+        type: 'chat_metadata',
+        chat_id: 'replacement-chat',
+        chat_group_id: 'replacement-group'
+      })
+    }, replacement);
+    assert.equal(service.socket, replacement);
+    assert.equal(service.getState(), 'connected');
+
+    fakeAudioService.stopRecording = async () => {};
+    await service.disconnect();
+  } finally {
+    global.WebSocket = originalWebSocket;
+  }
+});
+
+test('a final disconnect cancels a replacement connection waiting on old native cleanup', async () => {
+  let resolveStop;
+  let socketCreations = 0;
+  const originalWebSocket = global.WebSocket;
+  fakeAudioService.startRecording = async () => {};
+  fakeAudioService.stopRecording = () => new Promise((resolve) => { resolveStop = resolve; });
+  fakeAudioService.cancelAndClearQueue = async () => {};
+  global.WebSocket = class {
+    constructor() {
+      socketCreations += 1;
+      this.readyState = 0;
+    }
+    close() { this.readyState = 3; }
+    send() {}
+  };
+
+  try {
+    const service = readyService();
+    await service.startMicrophone();
+    const firstDisconnect = service.disconnect();
+    const replacementConnect = service.connect({ humeAccessToken: 'test-access-token' });
+    const finalDisconnect = service.disconnect();
+    assert.equal(firstDisconnect, finalDisconnect);
+
+    await Promise.resolve();
+    resolveStop();
+    await Promise.all([firstDisconnect, replacementConnect, finalDisconnect]);
+
+    assert.equal(socketCreations, 0);
+    assert.equal(service.socket, null);
+    assert.equal(service.getState(), 'disconnected');
+  } finally {
+    global.WebSocket = originalWebSocket;
+  }
+});
+
 test('a native WebSocket close exception cannot skip microphone and playback cleanup', async () => {
   let stopCalls = 0;
   let cancelCalls = 0;

@@ -37,6 +37,7 @@ import {
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
   isExpectedDemoAuthenticationFailure,
+  isLikelyAndroidEmulator,
   isTransientAuthenticationError,
   userFacingAuthenticationError
 } from '../utils/auth-configuration';
@@ -135,6 +136,8 @@ export function AuthProvider({ children }) {
   const refreshRetryTimerRef = useRef(null);
   const refreshSessionRef = useRef(null);
   const authGenerationRef = useRef(0);
+  const signOutInFlightRef = useRef(false);
+  const googleSignOutCleanupRef = useRef(null);
   const sessionMutationRef = useRef(Promise.resolve());
   const onboardingProgressRef = useRef(null);
   const authCapabilities = useMemo(() => authenticationCapabilities(config, {
@@ -182,7 +185,34 @@ export function AuthProvider({ children }) {
     return operation;
   }, []);
 
+  const beginAuthenticationOperation = useCallback(() => {
+    if (signOutInFlightRef.current) {
+      throw createAuthError(
+        'AUTH_SIGN_OUT_IN_PROGRESS',
+        'Wait for sign-out to finish before starting another authentication request.'
+      );
+    }
+    authGenerationRef.current += 1;
+    if (refreshRetryTimerRef.current) {
+      clearTimeout(refreshRetryTimerRef.current);
+      refreshRetryTimerRef.current = null;
+    }
+    return authGenerationRef.current;
+  }, []);
+
+  const assertAuthenticationCurrent = useCallback((authGeneration) => {
+    if (authGeneration !== authGenerationRef.current) {
+      throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
+    }
+  }, []);
+
   const refreshSession = useCallback((providedRefreshToken) => {
+    if (signOutInFlightRef.current) {
+      return Promise.reject(createAuthError(
+        'AUTH_SIGN_OUT_IN_PROGRESS',
+        'Session refresh is unavailable while sign-out is in progress.'
+      ));
+    }
     if (refreshInFlightRef.current) return refreshInFlightRef.current;
     const authGeneration = authGenerationRef.current;
     let operation;
@@ -343,6 +373,7 @@ export function AuthProvider({ children }) {
             await secureStorage.setItemAsync(SESSION_KEY, JSON.stringify(envelope));
             await removeLegacySessionKeys();
           });
+          if (!active || authGeneration !== authGenerationRef.current) return;
         }
       }
 
@@ -352,9 +383,10 @@ export function AuthProvider({ children }) {
       // but before Settings finished its best-effort local cleanup.
       if (envelope?.user?.id) {
         const boundary = await ensureAccountDataOwner(envelope.user.id);
-        if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
+        if (boundary.warnings) logger.recoverable('[Auth] Local account isolation completed with cleanup warnings', {
           warningCount: boundary.warnings
         });
+        if (!active || authGeneration !== authGenerationRef.current) return;
       }
 
       if (envelope && isSessionTokenUsable(envelope.accessToken)) {
@@ -399,10 +431,11 @@ export function AuthProvider({ children }) {
         setSessionStatus('signed-out');
       }
     }).catch((error) => {
+      if (!active || authGeneration !== authGenerationRef.current) return;
       // Volatile Expo Go storage has no previous session by design. It should
       // never turn that expected signed-out state into a tester-facing warning.
       if (!secureStorage.isVolatile) {
-        logger.warn('[Auth] Could not restore the secure session', error);
+        logger.recoverable('[Auth] Could not restore the secure session', error);
       }
       onboardingProgressRef.current = null;
       setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
@@ -420,7 +453,7 @@ export function AuthProvider({ children }) {
     if (!accessToken) return undefined;
     const claims = sessionTokenClaims(accessToken);
     const expiresInMs = Number(claims?.exp) * 1000 - Date.now() - 30000;
-    const renewSession = () => refreshSession().catch((error) => logger.warn('[Auth] Session refresh is pending', {
+    const renewSession = () => refreshSession().catch((error) => logger.recoverable('[Auth] Session refresh is pending', {
       errorCode: error?.code || error?.name || 'AUTH_REFRESH_FAILED'
     }));
     if (!Number.isFinite(expiresInMs) || expiresInMs <= 0) {
@@ -462,11 +495,10 @@ export function AuthProvider({ children }) {
     return () => clearTimeout(timer);
   }, [pendingPhoneVerification]);
 
-  const persist = useCallback(async (nextUser, session) => {
+  const persist = useCallback(async (nextUser, session, authGeneration) => {
     // A new authentication ceremony always starts fail-closed. The user-bound
     // completion marker is written only after the onboarding flow finishes.
-    authGenerationRef.current += 1;
-    const authGeneration = authGenerationRef.current;
+    assertAuthenticationCurrent(authGeneration);
     const nextEnvelope = createSessionEnvelope({
       accessToken: session.accessToken,
       refreshToken: session.refreshToken,
@@ -477,34 +509,29 @@ export function AuthProvider({ children }) {
     }
     const initialProgress = createOnboardingProgress(nextEnvelope.user.id);
     const serializedEnvelope = JSON.stringify(nextEnvelope);
-    const boundary = await ensureAccountDataOwner(nextEnvelope.user.id);
-    if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
-      warningCount: boundary.warnings
-    });
-    const assertAuthenticationCurrent = () => {
-      if (authGeneration !== authGenerationRef.current) {
-        throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
-      }
-    };
-    assertAuthenticationCurrent();
     await runSessionMutation(async () => {
-      assertAuthenticationCurrent();
+      assertAuthenticationCurrent(authGeneration);
+      const boundary = await ensureAccountDataOwner(nextEnvelope.user.id);
+      if (boundary.warnings) logger.recoverable('[Auth] Local account isolation completed with cleanup warnings', {
+        warningCount: boundary.warnings
+      });
+      assertAuthenticationCurrent(authGeneration);
       try {
         await secureStorage.deleteItemAsync(ONBOARDING_KEY);
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
         await secureStorage.setItemAsync(SESSION_KEY, serializedEnvelope);
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
         await secureStorage.setItemAsync(ONBOARDING_PROGRESS_KEY, JSON.stringify(initialProgress));
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
         await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
         // signOut writes this tombstone before it queues persisted-session
         // invalidation. Never let a superseded sign-in remove that marker
         // after the user has already requested sign-out.
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
         await storage.remove(SIGNED_OUT_KEY);
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
         await removeLegacySessionKeys();
-        assertAuthenticationCurrent();
+        assertAuthenticationCurrent(authGeneration);
       } catch (error) {
         await invalidatePersistedSession().catch(() => {});
         if (authGeneration === authGenerationRef.current) {
@@ -517,7 +544,7 @@ export function AuthProvider({ children }) {
         }
         throw error;
       }
-      assertAuthenticationCurrent();
+      assertAuthenticationCurrent(authGeneration);
       setUser(nextEnvelope.user);
       setAccessToken(nextEnvelope.accessToken);
       setSessionStatus('active');
@@ -527,7 +554,7 @@ export function AuthProvider({ children }) {
       setPendingPhoneVerification(null);
       setAuthError(null);
     });
-  }, [runSessionMutation]);
+  }, [assertAuthenticationCurrent, runSessionMutation]);
 
   const advanceOnboarding = useCallback(async (nextRoute) => {
     if (!user?.id) throw new Error('A signed-in user is required to continue onboarding.');
@@ -567,7 +594,7 @@ export function AuthProvider({ children }) {
       }
       await secureStorage.setItemAsync(ONBOARDING_KEY, JSON.stringify(marker));
       await secureStorage.deleteItemAsync(ONBOARDING_PROGRESS_KEY).catch((error) => {
-        logger.warn('[Auth] Completed onboarding progress cleanup is pending', {
+        logger.recoverable('[Auth] Completed onboarding progress cleanup is pending', {
           errorCode: error?.code || error?.name || 'ONBOARDING_PROGRESS_CLEANUP_FAILED'
         });
       });
@@ -583,12 +610,6 @@ export function AuthProvider({ children }) {
       logger.info(`[Auth] ${provider} sign-in cancelled`);
       return error;
     }
-    const safeError = userFacingAuthenticationError(provider, error);
-    setAuthError(authenticationErrorTranslationKey(safeError));
-    if (safeError.code?.endsWith('_AUTH_SIMULATOR_UNAVAILABLE')) {
-      logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
-      return safeError;
-    }
     const developmentDemoAvailable = demoModeAvailable || (
       typeof __DEV__ !== 'undefined'
       && __DEV__ === true
@@ -597,14 +618,33 @@ export function AuthProvider({ children }) {
     );
     if (isExpectedDemoAuthenticationFailure(provider, error, {
       demoModeAvailable: developmentDemoAvailable,
-      platform: Platform.OS
+      platform: Platform.OS,
+      isAndroidEmulator: isLikelyAndroidEmulator(Platform.constants)
     })) {
+      const safeError = createAuthError(
+        'GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD',
+        'Google Sign-In is unavailable in this emulator build. Continue with demo mode.',
+        error
+      );
+      setAuthError(authenticationErrorTranslationKey(safeError));
       logger.info(`[Auth] ${provider} sign-in unavailable in this demo build`, {
         errorCode: error?.code || error?.name || 'GOOGLE_DEVELOPMENT_UNAVAILABLE'
       });
       return safeError;
     }
-    logger.error(`[Auth] ${provider} sign-in failed`, {
+    const safeError = userFacingAuthenticationError(provider, error);
+    setAuthError(authenticationErrorTranslationKey(safeError));
+    if (safeError.code?.endsWith('_AUTH_SIMULATOR_UNAVAILABLE')) {
+      logger.info(`[Auth] ${provider} sign-in skipped for this simulator build`);
+      return safeError;
+    }
+    if (isTransientAuthenticationError(safeError)) {
+      logger.info(`[Auth] ${provider} sign-in deferred while the service is unavailable`, {
+        errorCode: safeError.code
+      });
+      return safeError;
+    }
+    logger.recoverable(`[Auth] ${provider} sign-in failed`, {
       errorCode: error?.code || error?.name || 'AUTH_FAILED',
       error
     });
@@ -626,19 +666,23 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signInWithApple = useCallback(async () => {
+    const authGeneration = beginAuthenticationOperation();
     setAuthError(null);
     try {
       requireCapability('apple');
       await requireProviderRuntime('apple');
+      assertAuthenticationCurrent(authGeneration);
       // The package is evaluated only in a configured native development or
       // signed build. Expo Go never enters this branch.
       const appleModule = await import('expo-apple-authentication');
+      assertAuthenticationCurrent(authGeneration);
       const AppleAuthentication = typeof appleModule.signInAsync === 'function'
         ? appleModule
         : appleModule.default;
       if (!AppleAuthentication || !await AppleAuthentication.isAvailableAsync()) {
         throw createAuthError('APPLE_AUTH_UNAVAILABLE', 'Apple Sign-In is not available on this device.');
       }
+      assertAuthenticationCurrent(authGeneration);
       const nonce = createAuthenticationNonce();
       const credential = await AppleAuthentication.signInAsync({
         requestedScopes: [
@@ -647,6 +691,7 @@ export function AuthProvider({ children }) {
         ],
         nonce
       });
+      assertAuthenticationCurrent(authGeneration);
       if (!credential.identityToken) throw new Error('Apple Sign-In did not return an identity token.');
       const displayName = [credential.fullName?.givenName, credential.fullName?.familyName]
         .filter(Boolean)
@@ -657,18 +702,36 @@ export function AuthProvider({ children }) {
         nonce,
         displayName
       });
-      await persist(session.user, session);
+      assertAuthenticationCurrent(authGeneration);
+      await persist(session.user, session, authGeneration);
     } catch (error) {
+      assertAuthenticationCurrent(authGeneration);
       throw reportAuthenticationFailure('apple', error);
     }
-  }, [persist, reportAuthenticationFailure, requireCapability, requireProviderRuntime]);
+  }, [
+    assertAuthenticationCurrent,
+    beginAuthenticationOperation,
+    persist,
+    reportAuthenticationFailure,
+    requireCapability,
+    requireProviderRuntime
+  ]);
 
   const signInWithGoogle = useCallback(async () => {
+    if (googleSignOutCleanupRef.current) {
+      throw createAuthError(
+        'GOOGLE_AUTH_SIGN_OUT_PENDING',
+        'Google Sign-In is still finishing the previous sign-out. Try again shortly.'
+      );
+    }
+    const authGeneration = beginAuthenticationOperation();
     setAuthError(null);
     try {
       requireCapability('google');
       await requireProviderRuntime('google');
+      assertAuthenticationCurrent(authGeneration);
       const googleModule = await import('@react-native-google-signin/google-signin');
+      assertAuthenticationCurrent(authGeneration);
       const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
       if (!GoogleSignin) throw new Error('The native Google Sign-In module is unavailable.');
       GoogleSignin.configure({
@@ -677,8 +740,10 @@ export function AuthProvider({ children }) {
       });
       if (Platform.OS === 'android') {
         await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+        assertAuthenticationCurrent(authGeneration);
       }
       const identity = googleIdentityFromResponse(await GoogleSignin.signIn());
+      assertAuthenticationCurrent(authGeneration);
       if (!identity) throw googleSignInCancellationError();
       if (!identity.identityToken) throw new Error('Google Sign-In did not return an identity token.');
       const session = await exchangeProviderIdentity({
@@ -686,14 +751,26 @@ export function AuthProvider({ children }) {
         idToken: identity.identityToken,
         displayName: identity.user.name
       });
-      await persist(session.user, session);
+      assertAuthenticationCurrent(authGeneration);
+      await persist(session.user, session, authGeneration);
     } catch (error) {
+      assertAuthenticationCurrent(authGeneration);
       throw reportAuthenticationFailure('google', error);
     }
-  }, [persist, reportAuthenticationFailure, requireCapability, requireProviderRuntime]);
+  }, [
+    assertAuthenticationCurrent,
+    beginAuthenticationOperation,
+    persist,
+    reportAuthenticationFailure,
+    requireCapability,
+    requireProviderRuntime
+  ]);
 
   const continueAsDemo = useCallback(async () => {
-    if (!await authenticationRuntime.isDemoModeAvailable()) {
+    const authGeneration = beginAuthenticationOperation();
+    const available = await authenticationRuntime.isDemoModeAvailable();
+    assertAuthenticationCurrent(authGeneration);
+    if (!available) {
       throw createAuthError(
         'DEMO_AUTH_UNAVAILABLE',
         'Demo mode is available only in an enabled VeryLoving development build on Android or the iOS Simulator.'
@@ -708,34 +785,45 @@ export function AuthProvider({ children }) {
         'Sign out of the current account before entering demo mode.'
       );
     }
-    authGenerationRef.current += 1;
-    const authGeneration = authGenerationRef.current;
-    if (refreshRetryTimerRef.current) {
-      clearTimeout(refreshRetryTimerRef.current);
-      refreshRetryTimerRef.current = null;
-    }
-    const boundary = await ensureAccountDataOwner(DEVELOPMENT_DEMO_USER.id);
-    if (boundary.warnings) logger.warn('[Auth] Local account isolation completed with cleanup warnings', {
-      warningCount: boundary.warnings
+    await runSessionMutation(async () => {
+      assertAuthenticationCurrent(authGeneration);
+      const boundary = await ensureAccountDataOwner(DEVELOPMENT_DEMO_USER.id);
+      if (boundary.warnings) logger.recoverable('[Auth] Local account isolation completed with cleanup warnings', {
+        warningCount: boundary.warnings
+      });
+      assertAuthenticationCurrent(authGeneration);
+      // Demo is deliberately volatile. Establish the same durable signed-out
+      // barrier used by logout so a superseded provider response or partial
+      // session write cannot be restored after process death.
+      await invalidatePersistedSession();
+      assertAuthenticationCurrent(authGeneration);
+      setPendingPhoneVerification(null);
+      setAccessToken(null);
+      setUser(DEVELOPMENT_DEMO_USER);
+      setOnboardingComplete(true);
+      setSessionStatus('demo');
+      setAuthError(null);
     });
-    if (authGenerationRef.current !== authGeneration) {
-      throw createAuthError('AUTH_OPERATION_CANCELLED', 'Authentication was superseded.');
-    }
-    setPendingPhoneVerification(null);
-    await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
-    setAccessToken(null);
-    setUser(DEVELOPMENT_DEMO_USER);
-    setOnboardingComplete(true);
-    setSessionStatus('demo');
-    setAuthError(null);
     return DEVELOPMENT_DEMO_USER;
-  }, [accessToken, sessionStatus, user]);
+  }, [
+    accessToken,
+    assertAuthenticationCurrent,
+    beginAuthenticationOperation,
+    runSessionMutation,
+    sessionStatus,
+    user
+  ]);
 
   const signInWithPhone = useCallback(async ({ e164, countryCode }) => {
+    const authGeneration = beginAuthenticationOperation();
     setAuthError(null);
     setPendingPhoneVerification(null);
     try {
-      await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
+      await runSessionMutation(async () => {
+        assertAuthenticationCurrent(authGeneration);
+        await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY);
+        assertAuthenticationCurrent(authGeneration);
+      });
       requireCapability('phone');
       const phone = createPhoneValue(e164, countryCode);
       if (!phone.isValid) {
@@ -748,19 +836,32 @@ export function AuthProvider({ children }) {
         phone: phone.e164,
         countryCode: phone.countryCode
       });
+      assertAuthenticationCurrent(authGeneration);
       const persistedChallenge = createPhoneVerificationState(challenge);
       if (!persistedChallenge) {
         throw createAuthError('AUTH_RESPONSE_INVALID', 'The phone verification server returned an invalid challenge.');
       }
-      await secureStorage.setItemAsync(PHONE_VERIFICATION_KEY, JSON.stringify(persistedChallenge));
-      setPendingPhoneVerification(persistedChallenge);
+      await runSessionMutation(async () => {
+        assertAuthenticationCurrent(authGeneration);
+        await secureStorage.setItemAsync(PHONE_VERIFICATION_KEY, JSON.stringify(persistedChallenge));
+        assertAuthenticationCurrent(authGeneration);
+        setPendingPhoneVerification(persistedChallenge);
+      });
       return { phone: persistedChallenge.phone, countryCode: persistedChallenge.countryCode };
     } catch (error) {
+      assertAuthenticationCurrent(authGeneration);
       throw reportAuthenticationFailure('phone', error);
     }
-  }, [reportAuthenticationFailure, requireCapability]);
+  }, [
+    assertAuthenticationCurrent,
+    beginAuthenticationOperation,
+    reportAuthenticationFailure,
+    requireCapability,
+    runSessionMutation
+  ]);
 
   const verifyCode = useCallback(async (code) => {
+    const authGeneration = beginAuthenticationOperation();
     setAuthError(null);
     try {
       requireCapability('phone');
@@ -776,14 +877,27 @@ export function AuthProvider({ children }) {
         verificationId: pendingPhoneVerification.verificationId,
         code: normalizedCode
       });
-      await persist(session.user, session);
-      setPendingPhoneVerification(null);
+      assertAuthenticationCurrent(authGeneration);
+      await persist(session.user, session, authGeneration);
     } catch (error) {
+      assertAuthenticationCurrent(authGeneration);
       throw reportAuthenticationFailure('phone', error);
     }
-  }, [pendingPhoneVerification, persist, reportAuthenticationFailure, requireCapability]);
+  }, [
+    assertAuthenticationCurrent,
+    beginAuthenticationOperation,
+    pendingPhoneVerification,
+    persist,
+    reportAuthenticationFailure,
+    requireCapability
+  ]);
 
   const signOut = useCallback(async () => {
+    const authGeneration = beginAuthenticationOperation();
+    // Keep provider and phone-challenge cleanup behind one synchronous
+    // transition barrier. Otherwise the newly exposed signed-out screen can
+    // start a ceremony that a late cleanup from this session cancels.
+    signOutInFlightRef.current = true;
     const signedInProvider = user?.provider;
     const tokenToRevoke = accessToken;
     const pushUnregistration = retryPendingPushTokenUnregister().catch(() => false);
@@ -792,89 +906,99 @@ export function AuthProvider({ children }) {
     const revocation = tokenToRevoke
       ? revokeApplicationSession(tokenToRevoke).catch(() => false)
       : Promise.resolve(false);
-    authGenerationRef.current += 1;
-    const authGeneration = authGenerationRef.current;
-    if (refreshRetryTimerRef.current) {
-      clearTimeout(refreshRetryTimerRef.current);
-      refreshRetryTimerRef.current = null;
-    }
-    // This durable marker is the first local sign-out mutation. Settings may
-    // subsequently sweep every account-bound store, but a process death at
-    // any point after this await can no longer restore a residual Keychain
-    // session.
-    let tombstoneStored = false;
     try {
-      await storage.setJSON(SIGNED_OUT_KEY, {
-        version: 1,
-        signedOutAt: Date.now()
-      });
-      tombstoneStored = true;
-    } catch {
-      // AsyncStorage can be unavailable during low-storage/native failures.
-      // Continue immediately to Keychain deletion; invalidatePersistedSession
-      // fails only if neither durable barrier can be established.
-    }
-    if (signedInProvider === 'demo') {
-      setUser(null);
-      setAccessToken(null);
-      setOnboardingComplete(false);
-      onboardingProgressRef.current = null;
-      setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
-      setSessionStatus('signed-out');
-      setAuthError(null);
-      setPendingPhoneVerification(null);
-      await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY).catch(() => {});
-      return;
-    }
-    const cleanup = await runSessionMutation(() => invalidatePersistedSession({
-      tombstoneAlreadyStored: tombstoneStored
-    }));
-    if (authGeneration === authGenerationRef.current) {
-      setUser(null);
-      setAccessToken(null);
-      setOnboardingComplete(false);
-      onboardingProgressRef.current = null;
-      setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
-      setSessionStatus('signed-out');
-      setAuthError(null);
-      setPendingPhoneVerification(null);
-    }
-    if (signedInProvider === 'google' && !isExpoGoRuntime()) {
+      // This durable marker is the first local sign-out mutation. Settings
+      // may subsequently sweep every account-bound store, but a process
+      // death after this await cannot restore a residual Keychain session.
+      let tombstoneStored = false;
       try {
-        await withTimeout(
-          import('@react-native-google-signin/google-signin').then((googleModule) => {
+        await storage.setJSON(SIGNED_OUT_KEY, {
+          version: 1,
+          signedOutAt: Date.now()
+        });
+        tombstoneStored = true;
+      } catch {
+        // AsyncStorage can be unavailable during low-storage/native
+        // failures. Continue to Keychain deletion; invalidation fails only
+        // if neither durable barrier can be established.
+      }
+
+      let cleanup = { residualFailures: 0 };
+      if (signedInProvider === 'demo') {
+        await runSessionMutation(
+          () => secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY)
+        );
+      } else {
+        cleanup = await runSessionMutation(() => invalidatePersistedSession({
+          tombstoneAlreadyStored: tombstoneStored
+        }));
+      }
+
+      if (signedInProvider === 'google' && !isExpoGoRuntime()) {
+        const nativeCleanup = import('@react-native-google-signin/google-signin')
+          .then((googleModule) => {
             const GoogleSignin = googleModule.GoogleSignin || googleModule.default?.GoogleSignin;
             return GoogleSignin?.signOut?.();
-          }),
-          PROVIDER_SIGN_OUT_TIMEOUT_MS,
-          'Google provider sign-out timed out.'
-        );
-      } catch (error) {
-        // Local credentials and account-bound data are already cleared. A
-        // native provider failure must not resurrect the app session, but
-        // awaiting it here prevents an immediate re-login from racing a late
-        // Google SDK sign-out.
-        logger.info('[Auth] Google provider sign-out could not be confirmed', {
-          errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
+          })
+          .catch((error) => {
+            logger.info('[Auth] Google provider sign-out could not be confirmed', {
+              errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
+            });
+            return false;
+          });
+        googleSignOutCleanupRef.current = nativeCleanup;
+        nativeCleanup.finally(() => {
+          if (googleSignOutCleanupRef.current === nativeCleanup) {
+            googleSignOutCleanupRef.current = null;
+          }
+        }).catch(() => {});
+        try {
+          await withTimeout(
+            nativeCleanup,
+            PROVIDER_SIGN_OUT_TIMEOUT_MS,
+            'Google provider sign-out timed out.'
+          );
+        } catch (error) {
+          // A timeout does not cancel the native promise. Keep its exact
+          // operation in googleSignOutCleanupRef so a new Google ceremony
+          // cannot race the late cleanup after the public UI is shown.
+          logger.info('[Auth] Google provider sign-out is still pending', {
+            errorCode: error?.code || error?.name || 'GOOGLE_SIGN_OUT_FAILED'
+          });
+        }
+      }
+      await withTimeout(
+        revocation,
+        PROVIDER_SIGN_OUT_TIMEOUT_MS,
+        'Backend session revocation timed out.'
+      ).catch(() => false);
+      await withTimeout(
+        pushUnregistration,
+        PROVIDER_SIGN_OUT_TIMEOUT_MS,
+        'Push token unregistration timed out.'
+      ).catch(() => false);
+
+      if (authGeneration === authGenerationRef.current) {
+        setUser(null);
+        setAccessToken(null);
+        setOnboardingComplete(false);
+        onboardingProgressRef.current = null;
+        setOnboardingRoute(INITIAL_ONBOARDING_ROUTE);
+        setSessionStatus('signed-out');
+        setAuthError(null);
+        setPendingPhoneVerification(null);
+      }
+      if (cleanup.residualFailures) {
+        logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {
+          residualFailures: cleanup.residualFailures
         });
       }
+    } finally {
+      if (authGeneration === authGenerationRef.current) {
+        signOutInFlightRef.current = false;
+      }
     }
-    await withTimeout(
-      revocation,
-      PROVIDER_SIGN_OUT_TIMEOUT_MS,
-      'Backend session revocation timed out.'
-    ).catch(() => false);
-    await withTimeout(
-      pushUnregistration,
-      PROVIDER_SIGN_OUT_TIMEOUT_MS,
-      'Push token unregistration timed out.'
-    ).catch(() => false);
-    if (cleanup.residualFailures) {
-      logger.info('[Auth] Signed-out tombstone is protecting residual secure data', {
-        residualFailures: cleanup.residualFailures
-      });
-    }
-  }, [accessToken, runSessionMutation, user?.provider]);
+  }, [accessToken, beginAuthenticationOperation, runSessionMutation, user?.provider]);
 
   const value = useMemo(() => ({
     user,

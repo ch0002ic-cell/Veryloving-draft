@@ -351,7 +351,7 @@ export function useScenarioRunner() {
     } catch (error) {
       if (error?.code === 'SCENARIO_CANCELLED'
         || !ownsIdentity(expectedAccountId, expectedAccessToken, expectedFocusGeneration)) return null;
-      logger.warn('[Scenarios] User-started scenario request failed', {
+      logger.recoverable('[Scenarios] User-started scenario request failed', {
         errorCode: safeErrorCode(error, 'SCENARIO_START_FAILED'),
         scenarioId
       });

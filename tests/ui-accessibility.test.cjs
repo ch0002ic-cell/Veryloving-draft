@@ -358,6 +358,11 @@ test('shared controls expose selection only when it is a meaningful state', () =
   }
 });
 
+test('home quick actions retain a readable width with large text and translated labels', () => {
+  const home = source('app/(tabs)/index.js');
+  assert.match(home, /quickAction: \{ minWidth: 220, flexBasis: '47%', flexGrow: 1 \}/);
+});
+
 test('selection modals move accessibility focus into the modal and restore it to their trigger', () => {
   const phone = source('src/components/GlobalPhoneInput.js');
   const country = source('src/components/CountryPicker.js');

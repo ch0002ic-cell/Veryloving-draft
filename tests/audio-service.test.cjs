@@ -33,7 +33,7 @@ Module._load = function loadAudioTestDependency(request, parent, isMain) {
     return { VOICE_AUDIO_CACHE_PREFIX: 'voice-' };
   }
   if (isAudioService && request === '../utils/logger') {
-    return { logger: { error() {}, info() {}, voice() {}, warn() {} } };
+    return { logger: { error() {}, info() {}, recoverable() {}, voice() {}, warn() {} } };
   }
   if (isAudioService && request === '../utils/runtime-environment') {
     return { isExpoGoRuntime: () => false };

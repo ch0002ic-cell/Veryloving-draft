@@ -29,7 +29,7 @@ export function createMapboxRuntime({
         const loaded = loadMapbox();
         mapbox = loaded.default || loaded;
       } catch (error) {
-        logger.warn('[Mapbox] Native module unavailable; using the deterministic map fallback', {
+        logger.recoverable('[Mapbox] Native module unavailable; using the deterministic map fallback', {
           errorCode: error?.code || error?.name || 'MAPBOX_NATIVE_UNAVAILABLE'
         });
       }
@@ -39,10 +39,14 @@ export function createMapboxRuntime({
 }
 
 const mapboxRuntime = createMapboxRuntime();
+let missingTokenLogged = false;
 
 export function getMapboxModule() {
   if (!hasUsableMapboxAccessToken(config.mapboxAccessToken)) {
-    logger.warn('[Mapbox] Runtime access token is unavailable; using the deterministic map fallback');
+    if (!missingTokenLogged) {
+      missingTokenLogged = true;
+      logger.recoverable('[Mapbox] Runtime access token is unavailable; using the deterministic map fallback');
+    }
     return null;
   }
   const Mapbox = mapboxRuntime.getModule();
@@ -61,7 +65,7 @@ export function cacheMapRegion(location) {
       styleURL: Mapbox.StyleURL?.Street || OFFLINE_MAP_STYLE_URL
     })
   )).catch((error) => {
-    logger.warn('[Mapbox] Could not update the offline safety-map region', {
+    logger.recoverable('[Mapbox] Could not update the offline safety-map region', {
       errorCode: error?.code || error?.name || 'Error'
     });
     return { status: 'failed' };

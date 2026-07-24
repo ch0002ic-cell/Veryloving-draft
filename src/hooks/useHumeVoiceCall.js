@@ -129,7 +129,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       sessionId: sessionIdRef.current,
       voiceId: selectedVoice.id,
       voiceName: selectedVoice.displayName
-    }).catch((historyError) => logger.warn('[VoiceCall] Failed to persist conversation message', historyError));
+    }).catch((historyError) => logger.recoverable('[VoiceCall] Failed to persist conversation message', historyError));
     return message;
   }, [selectedVoice.displayName, selectedVoice.id]);
 
@@ -216,7 +216,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       queueRetryTimerRef.current = setTimeout(() => {
         queueRetryTimerRef.current = null;
         flushPendingMessagesRef.current?.().catch((queueError) => {
-          logger.warn('[VoiceCall] Scheduled queue retry failed', queueError);
+          logger.recoverable('[VoiceCall] Scheduled queue retry failed', queueError);
         });
       }, Math.max(0, nextAttemptAt - Date.now()));
     }
@@ -243,7 +243,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
             if (isCurrent()) presentError(microphoneError);
           });
           if (service === humeEVIService) flushPendingMessages().catch((queueError) => {
-            if (isCurrent()) logger.warn('[VoiceCall] Queue flush failed', queueError);
+            if (isCurrent()) logger.recoverable('[VoiceCall] Queue flush failed', queueError);
           });
         }
       }
@@ -265,7 +265,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
           customSessionId: sessionIdRef.current,
           voiceId: selectedVoice.id,
           voiceName: selectedVoice.displayName
-        }).catch((historyError) => logger.warn('[VoiceCall] Failed to persist Hume session metadata', historyError));
+        }).catch((historyError) => logger.recoverable('[VoiceCall] Failed to persist Hume session metadata', historyError));
         if (!isCurrent()) throw cancelledVoiceOperation();
         await configureHumeCustomSession({
           chatId: metadata.chatId,
@@ -313,7 +313,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       return;
     }
     if (humeEVIService.getState() === 'connected') {
-      flushPendingMessages().catch((queueError) => logger.warn('[VoiceCall] Network-restored queue flush failed', queueError));
+      flushPendingMessages().catch((queueError) => logger.recoverable('[VoiceCall] Network-restored queue flush failed', queueError));
     }
   }, [flushPendingMessages, isOnline]);
 
@@ -328,7 +328,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
           });
         }
       })
-      .catch((historyError) => logger.warn('[VoiceCall] Failed to load conversation', historyError));
+      .catch((historyError) => logger.recoverable('[VoiceCall] Failed to load conversation', historyError));
     refreshPendingCount().catch(() => {});
   }, [refreshPendingCount]);
 
@@ -402,7 +402,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       return true;
     } catch (startError) {
       if (startError?.code === 'VOICE_OPERATION_CANCELLED') return false;
-      logger.warn('[VoiceCall] Start failed', startError);
+      logger.recoverable('[VoiceCall] Start failed', startError);
       presentError(startError);
       if (!forcedOffline && isOnline) setFallbackAvailable(true);
       return false;
@@ -426,7 +426,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       return true;
     } catch (fallbackError) {
       if (fallbackError?.code === 'VOICE_OPERATION_CANCELLED') return false;
-      logger.warn('[VoiceCall] Offline fallback failed', fallbackError);
+      logger.recoverable('[VoiceCall] Offline fallback failed', fallbackError);
       presentError(fallbackError);
     } finally {
       startInFlightRef.current = false;
@@ -449,7 +449,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       await connectService(humeEVIService, generation);
     } catch (retryError) {
       if (retryError?.code === 'VOICE_OPERATION_CANCELLED') return;
-      logger.warn('[VoiceCall] Reconnect failed', retryError);
+      logger.recoverable('[VoiceCall] Reconnect failed', retryError);
       presentError(retryError);
       setFallbackAvailable(true);
     } finally {
@@ -469,7 +469,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       try {
         interactionFeedbackEligible = await service.completeInteraction(completedInteractionId) === true;
       } catch (completionError) {
-        logger.warn('[VoiceCall] Secure interaction completion was not acknowledged', {
+        logger.recoverable('[VoiceCall] Secure interaction completion was not acknowledged', {
           errorCode: completionError?.code || completionError?.name || 'VOICE_INTERACTION_COMPLETION_FAILED'
         });
       }
@@ -516,7 +516,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       setNotice(isOnline ? voiceCallCopyKeys.queued : voiceCallCopyKeys.offline);
       return false;
     } catch (queueError) {
-      logger.warn('[VoiceCall] Could not persist the offline message', {
+      logger.recoverable('[VoiceCall] Could not persist the offline message', {
         name: queueError?.name || 'OfflineQueueError'
       });
       presentError(queueError);

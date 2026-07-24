@@ -43,7 +43,7 @@ export async function explainPermission(permissionId, { force = false } = {}) {
     try {
       if (await hasSeenPermissionRationale(permissionId)) return true;
     } catch (error) {
-      logger.warn('[Permissions] Could not read rationale state', {
+      logger.recoverable('[Permissions] Could not read rationale state', {
         permissionId,
         name: error?.name || 'StorageError'
       });
@@ -61,7 +61,7 @@ export async function explainPermission(permissionId, { force = false } = {}) {
     await markPermissionRationaleSeen(permissionId).catch((error) => {
       // Rationale persistence is helpful bookkeeping, not a reason to block
       // the operating-system permission request after the user continued.
-      logger.warn('[Permissions] Could not persist rationale state', {
+      logger.recoverable('[Permissions] Could not persist rationale state', {
         permissionId,
         name: error?.name || 'StorageError'
       });

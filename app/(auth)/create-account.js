@@ -36,6 +36,8 @@ export default function CreateAccount() {
   const [localErrorKey, setLocalErrorKey] = useState(null);
   const appleSignInAvailable = authCapabilities.apple.enabled;
   const googleSignInAvailable = authCapabilities.google.enabled;
+  const activeErrorKey = authError || localErrorKey;
+  const activeErrorTone = activeErrorKey === 'releaseCritical.authUnavailable' ? 'info' : 'error';
   const configurationMessages = [...new Set([
     Platform.OS === 'ios' ? authenticationCapabilityTranslationKey(authCapabilities.apple) : null,
     ['ios', 'android'].includes(Platform.OS) ? authenticationCapabilityTranslationKey(authCapabilities.google) : null,
@@ -88,9 +90,11 @@ export default function CreateAccount() {
   return (
     <Screen>
       <Header title={t('auth.createAccount')} subtitle={t('auth.createSubtitle')} showBack backLabel={t('common.back')} />
-      <FeedbackBanner message={authError ? t(authError) : null} />
-      <FeedbackBanner message={!authError && localErrorKey ? t(localErrorKey) : null} />
-      {configurationMessages.length ? (
+      <FeedbackBanner
+        message={activeErrorKey ? t(activeErrorKey) : null}
+        tone={activeErrorTone}
+      />
+      {!activeErrorKey && configurationMessages.length ? (
         <FeedbackBanner message={configurationMessages.join('\n')} tone="info" />
       ) : null}
       {appleSignInAvailable || googleSignInAvailable ? <Card style={styles.socialRow}>

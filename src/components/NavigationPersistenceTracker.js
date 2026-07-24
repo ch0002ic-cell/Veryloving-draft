@@ -16,7 +16,7 @@ export function NavigationPersistenceTracker() {
     if (isDemoMode || loading || !onboardingComplete || !user?.id || !destination) return;
     persistSafeNavigationDestination(user.id, destination).catch((error) => {
       if (error?.code === 'LOCAL_DATA_CLEANUP_LOCKED') return;
-      logger.warn('[Navigation] Could not persist the last safe destination', {
+      logger.recoverable('[Navigation] Could not persist the last safe destination', {
         errorCode: error?.code || error?.name || 'NAVIGATION_PERSIST_FAILED'
       });
     });

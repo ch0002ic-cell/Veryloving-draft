@@ -211,7 +211,7 @@ test('contact add and remove mutations fence account changes before cache and UI
 test('authoritative contact refresh does not resurrect a remotely deleted cached contact', () => {
   const appContext = readFileSync(path.resolve(process.cwd(), 'src/context/AppContext.js'), 'utf8');
   const start = appContext.indexOf('const remoteContacts = await fetchEmergencyContacts');
-  const end = appContext.indexOf("logger.warn('[AppState] Could not refresh emergency contacts'", start);
+  const end = appContext.indexOf("logger.recoverable('[AppState] Could not refresh emergency contacts'", start);
   const reconciliation = appContext.slice(start, end);
 
   assert.match(reconciliation, /const remoteIds = new Set\(\)/);

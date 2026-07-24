@@ -88,7 +88,7 @@ function RootRuntime() {
   const fontsReady = useAppFonts();
   useEffect(() => {
     initializeNotifications().catch((error) => {
-      logger.warn('[Notifications] Initialization failed', {
+      logger.recoverable('[Notifications] Initialization failed', {
         errorCode: error?.code || error?.name || 'NOTIFICATIONS_INITIALIZATION_FAILED'
       });
     });

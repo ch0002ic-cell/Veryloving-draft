@@ -260,13 +260,13 @@ function observeLocalWrite(operationFactory, message, fallbackCode) {
   try {
     operation = Promise.resolve().then(operationFactory);
   } catch (error) {
-    logger.warn(message, { errorCode: error?.code || error?.name || fallbackCode });
+    logger.recoverable(message, { errorCode: error?.code || error?.name || fallbackCode });
     return;
   }
   let reported = false;
   const timeout = setTimeout(() => {
     reported = true;
-    logger.warn(message, { errorCode: `${fallbackCode}_TIMEOUT` });
+    logger.recoverable(message, { errorCode: `${fallbackCode}_TIMEOUT` });
   }, LOCAL_WRITE_OBSERVATION_TIMEOUT_MS);
   timeout.unref?.();
   operation.then(
@@ -274,7 +274,7 @@ function observeLocalWrite(operationFactory, message, fallbackCode) {
     (error) => {
       clearTimeout(timeout);
       if (!reported) {
-        logger.warn(message, { errorCode: error?.code || error?.name || fallbackCode });
+        logger.recoverable(message, { errorCode: error?.code || error?.name || fallbackCode });
       }
     }
   );
@@ -632,7 +632,7 @@ export async function reconcileScenarioExecutions({
     try {
       pending = await readPendingIntentWithDeadline(accountId, scenarioId, reservationTimeoutMs);
     } catch (error) {
-      logger.warn('[Scenarios] Could not read a pending intent for reconciliation', {
+      logger.recoverable('[Scenarios] Could not read a pending intent for reconciliation', {
         errorCode: error?.code || error?.name || 'SCENARIO_RECONCILIATION_LOCAL_FAILED',
         scenarioId
       });
@@ -651,7 +651,7 @@ export async function reconcileScenarioExecutions({
       reconciled.push(...result.started.map(({ execution }) => execution));
     } catch (error) {
       if (error?.code === 'SCENARIO_CANCELLED') throw error;
-      logger.warn('[Scenarios] Pending intent reconciliation remains incomplete', {
+      logger.recoverable('[Scenarios] Pending intent reconciliation remains incomplete', {
         errorCode: error?.code || error?.name || 'SCENARIO_RECONCILIATION_FAILED',
         scenarioId: pending.scenarioId
       });

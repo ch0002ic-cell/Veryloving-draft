@@ -187,7 +187,7 @@ export function AppProvider({ children }) {
       setRobotEntitiesState(robots);
       setDeviceEntitiesAccountId(accountId);
     }).catch((error) => {
-      logger.warn('[AppState] Could not restore the account-bound device registry', {
+      logger.recoverable('[AppState] Could not restore the account-bound device registry', {
         errorCode: error?.code || error?.name || 'DEVICE_REGISTRY_RESTORE_FAILED'
       });
       if (active
@@ -265,7 +265,7 @@ export function AppProvider({ children }) {
       return persistDeviceEntities(accountId, entities);
     });
     deviceEntitiesMutationQueueRef.current = operation.then(() => undefined, () => undefined);
-    operation.catch((error) => logger.warn('[AppState] Could not persist live device status', {
+    operation.catch((error) => logger.recoverable('[AppState] Could not persist live device status', {
       errorCode: error?.code || error?.name || 'DEVICE_ENTITY_PERSIST_FAILED'
     }));
   }), [deviceEntitiesAccountId, deviceHydrationErrorCode, user?.id]);
@@ -324,7 +324,7 @@ export function AppProvider({ children }) {
               safetyEventRouterRef.current?.routeRobotEvent(event, { deviceId, accountScope })
             )))
           : null;
-      operation?.catch?.((error) => logger.warn('[SafetyEvents] Device safety event was rejected', {
+      operation?.catch?.((error) => logger.recoverable('[SafetyEvents] Device safety event was rejected', {
         errorCode: error?.code || error?.name || 'SAFETY_EVENT_REJECTED',
         deviceType
       }));
@@ -333,7 +333,7 @@ export function AppProvider({ children }) {
 
   useEffect(() => {
     if (!isHydrated || !user?.id || !accessToken || !config.safetyBackendEnabled) return;
-    registerDevicePushToken(accessToken).catch((error) => logger.warn('[AppState] Push token registration deferred', {
+    registerDevicePushToken(accessToken).catch((error) => logger.recoverable('[AppState] Push token registration deferred', {
       errorCode: error?.code || error?.name || 'PUSH_TOKEN_REGISTRATION_FAILED'
     }));
   }, [accessToken, isHydrated, user?.id]);
@@ -371,7 +371,7 @@ export function AppProvider({ children }) {
           accessToken: accessTokenRef.current
         });
       },
-      onDeliveryFailure: ({ phase, errorCode }) => logger.warn('[Medication] Reminder delivery deferred', {
+      onDeliveryFailure: ({ phase, errorCode }) => logger.recoverable('[Medication] Reminder delivery deferred', {
         phase,
         errorCode
       }),
@@ -387,7 +387,7 @@ export function AppProvider({ children }) {
       if (medicationSchedulerRef.current === scheduler && activeAccountIdRef.current === accountId) {
         setMedicationReminders(reminders);
       }
-    }).catch((error) => logger.warn('[Medication] Reminder restoration failed', {
+    }).catch((error) => logger.recoverable('[Medication] Reminder restoration failed', {
       errorCode: error?.code || error?.name || 'MEDICATION_RESTORE_FAILED'
     }));
     return () => {
@@ -415,7 +415,7 @@ export function AppProvider({ children }) {
           medicationSchedulerRef.current === scheduler
           && activeAccountIdRef.current === accountId
         ) setMedicationReminders(reminders);
-      }).catch((error) => logger.warn('[Medication] Robot delivery acknowledgement was rejected', {
+      }).catch((error) => logger.recoverable('[Medication] Robot delivery acknowledgement was rejected', {
         errorCode: error?.code || error?.name || 'MEDICATION_ACK_REJECTED'
       }));
     });
@@ -431,7 +431,7 @@ export function AppProvider({ children }) {
       settingsRef.current = savedSettings;
       setSettings(savedSettings);
     }).catch((error) => {
-      logger.warn('[AppState] Could not restore local settings', error);
+      logger.recoverable('[AppState] Could not restore local settings', error);
       if (!active) return;
       // Never retain an in-memory previous-account preference snapshot when
       // the newly established account boundary cannot be read.
@@ -500,7 +500,7 @@ export function AppProvider({ children }) {
         ) return;
         deviceRef.current = savedDevice;
         setDeviceState(savedDevice);
-      }).catch((error) => logger.warn('[AppState] Could not restore the account-bound paired device', {
+      }).catch((error) => logger.recoverable('[AppState] Could not restore the account-bound paired device', {
         errorCode: error?.code || error?.name || 'DEVICE_RESTORE_FAILED'
       })).finally(() => {
         if (active && deviceAccountIdRef.current === accountId) setPairedDeviceAccountId(accountId);
@@ -519,7 +519,7 @@ export function AppProvider({ children }) {
           'Emergency-contact restoration timed out.'
         );
       } catch (error) {
-        logger.warn('[AppState] Could not load the secure emergency-contact cache', {
+        logger.recoverable('[AppState] Could not load the secure emergency-contact cache', {
           errorCode: error?.code || error?.name || 'CONTACT_CACHE_LOAD_FAILED'
         });
       }
@@ -534,7 +534,7 @@ export function AppProvider({ children }) {
       setContactsAccountId(accountId);
     });
     contactsHydrationQueueRef.current = operation.then(() => undefined, () => undefined);
-    operation.catch((error) => logger.warn('[AppState] Could not restore emergency contacts', {
+    operation.catch((error) => logger.recoverable('[AppState] Could not restore emergency contacts', {
       errorCode: error?.code || error?.name || 'CONTACT_RESTORE_FAILED'
     })).finally(() => {
       if (active) {
@@ -605,7 +605,7 @@ export function AppProvider({ children }) {
           } catch (error) {
             if (!assertReconciliationActive()) return;
             pendingLocalContacts.push({ ...contact, syncStatus: 'pending' });
-            logger.warn('[AppState] Emergency-contact migration is pending', {
+            logger.recoverable('[AppState] Emergency-contact migration is pending', {
               errorCode: error?.code || error?.name || 'CONTACT_MIGRATION_FAILED'
             });
           }
@@ -613,7 +613,7 @@ export function AppProvider({ children }) {
         nextContacts = [...canonicalRemoteContacts, ...migratedContacts, ...pendingLocalContacts];
       } catch (error) {
         if (!assertReconciliationActive()) return;
-        logger.warn('[AppState] Could not refresh emergency contacts', {
+        logger.recoverable('[AppState] Could not refresh emergency contacts', {
           errorCode: error?.code || error?.name || 'CONTACT_SYNC_FAILED'
         });
       }
@@ -623,7 +623,7 @@ export function AppProvider({ children }) {
       await persistEmergencyContactCache(accountId, nextContacts);
     });
     contactsMutationQueueRef.current = operation.then(() => undefined, () => undefined);
-    operation.catch((error) => logger.warn('[AppState] Could not reconcile emergency contacts', {
+    operation.catch((error) => logger.recoverable('[AppState] Could not reconcile emergency contacts', {
       errorCode: error?.code || error?.name || 'CONTACT_RECONCILIATION_FAILED'
     }));
     return () => {
@@ -690,7 +690,7 @@ export function AppProvider({ children }) {
         connected: false,
         connectionState: current.autoReconnect ? 'reconnecting' : 'disconnected',
         lastErrorCode: nativeError?.errorCode ? 'BLE_DISCONNECTED' : null
-      }).catch((error) => logger.warn('[AppState] Could not persist device disconnect state', {
+      }).catch((error) => logger.recoverable('[AppState] Could not persist device disconnect state', {
         errorCode: error?.code || error?.name || 'DEVICE_STATE_UPDATE_FAILED'
       }));
     },
@@ -703,7 +703,7 @@ export function AppProvider({ children }) {
         connected: false,
         connectionState: current.autoReconnect ? 'reconnecting' : 'disconnected',
         lastErrorCode: nativeError?.errorCode ? 'BLE_GATT_MONITOR_FAILED' : 'BLE_CONNECTION_DEGRADED'
-      }).catch((error) => logger.warn('[AppState] Could not persist degraded BLE state', {
+      }).catch((error) => logger.recoverable('[AppState] Could not persist degraded BLE state', {
         errorCode: error?.code || error?.name || 'DEVICE_STATE_UPDATE_FAILED'
       }));
     },
@@ -716,7 +716,7 @@ export function AppProvider({ children }) {
         connectionState: 'reconnecting',
         autoReconnect: true,
         lastErrorCode: null
-      }).catch((error) => logger.warn('[AppState] Could not reattach a restored BLE session', {
+      }).catch((error) => logger.recoverable('[AppState] Could not reattach a restored BLE session', {
         errorCode: error?.code || error?.name || 'DEVICE_STATE_UPDATE_FAILED'
       }));
     }
@@ -727,7 +727,7 @@ export function AppProvider({ children }) {
       const current = deviceRef.current;
       if (nextState !== 'active' || !current.id || !current.autoReconnect || current.connected) return;
       setDevice({ ...current, connectionState: 'reconnecting', lastErrorCode: null }).catch((error) => {
-        logger.warn('[AppState] Could not schedule foreground device reconnect', {
+        logger.recoverable('[AppState] Could not schedule foreground device reconnect', {
           errorCode: error?.code || error?.name || 'DEVICE_STATE_UPDATE_FAILED'
         });
       });
@@ -750,7 +750,7 @@ export function AppProvider({ children }) {
     bleService.reconnect(deviceSnapshot).then((connectedDevice) => {
       if (reconnectGeneration !== deviceGenerationRef.current || deviceRef.current.id !== deviceSnapshot.id) {
         return bleService.disconnect(connectedDevice?.id).catch((error) => {
-          logger.warn('[AppState] Stale device reconnect cleanup failed', {
+          logger.recoverable('[AppState] Stale device reconnect cleanup failed', {
             errorCode: error?.code || 'BLE_DISCONNECT_FAILED',
             nativeErrorCode: error?.nativeErrorCode,
             hasDeviceId: Boolean(connectedDevice?.id)
@@ -760,7 +760,7 @@ export function AppProvider({ children }) {
       return setDevice(connectedDevice);
     }).catch((error) => {
       if (reconnectGeneration !== deviceGenerationRef.current || deviceRef.current.id !== deviceSnapshot.id) return;
-      logger.warn('[AppState] Remembered device could not reconnect', {
+      logger.recoverable('[AppState] Remembered device could not reconnect', {
         errorCode: error?.code || 'BLE_RECONNECT_FAILED',
         nativeErrorCode: error?.nativeErrorCode,
         hasDeviceId: true
@@ -771,7 +771,7 @@ export function AppProvider({ children }) {
         connectionState: 'disconnected',
         autoReconnect: true,
         lastErrorCode: error?.code || 'BLE_RECONNECT_FAILED'
-      }).catch((persistError) => logger.warn('[AppState] Could not persist device reconnect state', {
+      }).catch((persistError) => logger.recoverable('[AppState] Could not persist device reconnect state', {
         errorCode: persistError?.code || persistError?.name || 'DEVICE_STATE_PERSIST_FAILED'
       }));
     }).finally(() => {
@@ -819,7 +819,7 @@ export function AppProvider({ children }) {
     }
 
     if (!result.nativeDisconnected) {
-      logger.warn('[AppState] Removed device but native disconnect failed', {
+      logger.recoverable('[AppState] Removed device but native disconnect failed', {
         errorCode: result.disconnectError?.code || 'BLE_DISCONNECT_FAILED',
         nativeErrorCode: result.disconnectError?.nativeErrorCode,
         hasDeviceId: Boolean(rememberedDevice.id)
@@ -873,7 +873,7 @@ export function AppProvider({ children }) {
       } catch (error) {
         if (error?.code === 'CONTACT_ACCOUNT_CHANGED') throw error;
         if (syncRemote) {
-          logger.warn('[AppState] Server contact was saved but its secure offline cache could not be updated', {
+          logger.recoverable('[AppState] Server contact was saved but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });
           return nextContact;
@@ -921,7 +921,7 @@ export function AppProvider({ children }) {
       } catch (error) {
         if (error?.code === 'CONTACT_ACCOUNT_CHANGED') throw error;
         if (syncRemote) {
-          logger.warn('[AppState] Server contact was removed but its secure offline cache could not be updated', {
+          logger.recoverable('[AppState] Server contact was removed but its secure offline cache could not be updated', {
             errorCode: error?.code || error?.name || 'CONTACT_CACHE_WRITE_FAILED'
           });
           return next;
@@ -965,7 +965,7 @@ export function AppProvider({ children }) {
         contactsRef.current = result.contacts;
         setContacts(result.contacts);
         if (result.cacheWarning) {
-          logger.warn('[AppState] Server contact was updated but its secure offline cache could not be refreshed', {
+          logger.recoverable('[AppState] Server contact was updated but its secure offline cache could not be refreshed', {
             errorCode: 'CONTACT_CACHE_WRITE_FAILED'
           });
         }
@@ -1006,7 +1006,7 @@ export function AppProvider({ children }) {
     setRobotEntitiesState([]);
     setMedicationReminders([]);
     if (pairedDeviceId) {
-      bleService.disconnect(pairedDeviceId).catch((error) => logger.warn('[AppState] Device cleanup failed', {
+      bleService.disconnect(pairedDeviceId).catch((error) => logger.recoverable('[AppState] Device cleanup failed', {
         errorCode: error?.code || 'BLE_DISCONNECT_FAILED',
         nativeErrorCode: error?.nativeErrorCode,
         hasDeviceId: true
@@ -1109,7 +1109,7 @@ export function AppProvider({ children }) {
       return persistDeviceEntities(accountId, [...wearables, ...robotEntitiesRef.current]);
     });
     deviceEntitiesMutationQueueRef.current = operation.then(() => undefined, () => undefined);
-    operation.catch((error) => logger.warn('[AppState] Could not persist wearable descriptors', {
+    operation.catch((error) => logger.recoverable('[AppState] Could not persist wearable descriptors', {
       errorCode: error?.code || error?.name || 'DEVICE_ENTITY_PERSIST_FAILED'
     }));
   }, [device, deviceEntitiesAccountId, deviceHydrationErrorCode, pairedDeviceAccountId, user?.id]);
@@ -1187,7 +1187,7 @@ export function AppProvider({ children }) {
         }
         registered.name = robot.name;
         registered.setStatus(robot);
-        registered.startNetworkMonitoring?.().catch((error) => logger.warn('[AppState] Robot network monitoring could not start', {
+        registered.startNetworkMonitoring?.().catch((error) => logger.recoverable('[AppState] Robot network monitoring could not start', {
           errorCode: error?.code || error?.name || 'ROBOT_NETWORK_MONITOR_FAILED'
         }));
       }
@@ -1230,7 +1230,7 @@ export function AppProvider({ children }) {
         }
         return [...byId.values()];
       });
-    }).catch((error) => logger.warn('[AppState] Backend robot registry sync deferred', {
+    }).catch((error) => logger.recoverable('[AppState] Backend robot registry sync deferred', {
       errorCode: error?.code || error?.name || 'ROBOT_REGISTRY_SYNC_FAILED'
     }));
     return () => { active = false; };

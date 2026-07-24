@@ -84,6 +84,7 @@ test('the safety map exposes Quick Share and passes a resolved location to it', 
   assert.match(mapScreen, /useFocusEffect\(useCallback/);
   assert.match(mapScreen, /AppState\.addEventListener\('change'/);
   assert.match(mapScreen, /liveSubscription\?\.remove\?\.\(\)/);
+  assert.match(mapScreen, /setError\(\{ translationKey: locationErrorTranslationKey\(liveError\) \}\)/);
   assert.match(mapScreen, /await shareQuickLocation\(shareLocation, \{ locale \}\)/);
   assert.match(mapScreen, /shareInProgressRef\.current/);
 });

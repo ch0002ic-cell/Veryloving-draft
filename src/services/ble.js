@@ -82,7 +82,7 @@ function createBLEError(code, cause, phase) {
 }
 
 function logBLEFailure(message, error, context = {}) {
-  const log = EXPECTED_BLE_STATE_CODES.has(error?.code) ? logger.info : logger.error;
+  const log = EXPECTED_BLE_STATE_CODES.has(error?.code) ? logger.info : logger.recoverable;
   log(message, {
     errorCode: error?.code || 'BLE_OPERATION_FAILED',
     nativeErrorCode: error?.nativeErrorCode ?? error?.errorCode,
@@ -257,7 +257,7 @@ export class BLEService {
         }
       });
     } catch {
-      logger.warn('[BLE] Native BLE unavailable', {
+      logger.recoverable('[BLE] Native BLE unavailable', {
         developmentSimulationEnabled: DEVELOPMENT_RUNTIME
       });
       this.manager = false;

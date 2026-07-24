@@ -26,7 +26,7 @@ const {
 } = require('../src/services/websocket/hume-errors');
 const { OperationTimeoutError, withTimeout } = require('../src/utils/async');
 const { chooseOfflineResponse } = require('../src/mocks/offlineResponses');
-const { sanitizeLogPayload, sanitizeUrl } = require('../src/utils/logger');
+const { createLogger, sanitizeLogPayload, sanitizeUrl } = require('../src/utils/logger');
 
 test('voice, language, and companion visibility settings survive storage reloads', async () => {
   let stored = null;
@@ -273,6 +273,128 @@ test('diagnostic logging redacts JWTs and Expo push tokens embedded in error mes
   assert.doesNotMatch(sanitized.message, /eyJ|private-device-token/);
   assert.match(sanitized.message, /REDACTED_JWT/);
   assert.match(sanitized.message, /REDACTED_PUSH_TOKEN/);
+});
+
+test('only explicitly recoverable mobile diagnostics bypass React Native LogBox', () => {
+  const calls = { log: [], warn: [], error: [] };
+  const consoleImpl = {
+    log: (...args) => calls.log.push(args),
+    warn: (...args) => calls.warn.push(args),
+    error: (...args) => calls.error.push(args)
+  };
+  const mobileLogger = createLogger({
+    development: true,
+    reactNativeDevelopment: true,
+    consoleImpl
+  });
+
+  mobileLogger.recoverable('recoverable warning', { accessToken: 'private-token' });
+  mobileLogger.recoverable('handled failure', new Error('Bearer private-token'));
+
+  assert.equal(calls.warn.length, 0);
+  assert.equal(calls.error.length, 0);
+  assert.deepEqual(calls.log.map((entry) => entry[0]), ['[recoverable]', '[recoverable]']);
+  assert.equal(calls.log[0][2].accessToken, '[REDACTED]');
+  assert.equal(calls.log[1][2].message, 'Bearer [REDACTED]');
+  mobileLogger.warn('invariant warning');
+  mobileLogger.error('unhandled failure');
+  assert.equal(calls.warn.length, 1);
+  assert.equal(calls.error.length, 1);
+
+  const productionLogger = createLogger({
+    development: false,
+    reactNativeDevelopment: false,
+    consoleImpl
+  });
+  productionLogger.recoverable('production recoverable warning');
+  productionLogger.error('production failure');
+  assert.equal(calls.warn.length, 2);
+  assert.equal(calls.error.length, 2);
+});
+
+test('diagnostic payloads are bounded before reaching native developer tooling', () => {
+  const longValue = `Bearer private-token ${'x'.repeat(4096)}`;
+  const sanitized = sanitizeLogPayload({
+    message: longValue,
+    values: Array.from({ length: 75 }, (_, index) => index)
+  });
+
+  assert.doesNotMatch(sanitized.message, /private-token/);
+  assert.match(sanitized.message, /\[TRUNCATED\]$/);
+  assert.ok(sanitized.message.length < longValue.length);
+  assert.equal(sanitized.values.length, 51);
+  assert.equal(sanitized.values.at(-1), '[TRUNCATED]');
+});
+
+test('diagnostic truncation never exposes a credential cut by the string boundary', () => {
+  const credentialPrefix = 'eyJAAAA.BBBBB';
+  const value = `${'safe '.repeat(400)}${credentialPrefix}${'C'.repeat(256)}.DDDD`;
+  const sanitized = sanitizeLogPayload(value);
+
+  assert.match(sanitized, /\[REDACTED_TRUNCATED\]…\[TRUNCATED\]$/);
+  assert.doesNotMatch(sanitized, /eyJAAAA|BBBBB|CCCCC|DDDD/);
+});
+
+test('diagnostic sanitization contains throwing getters and bounds error metadata', () => {
+  let reads = 0;
+  const payload = {};
+  for (let index = 0; index < 75; index += 1) {
+    Object.defineProperty(payload, `field-${index}`, {
+      enumerable: true,
+      get() {
+        reads += 1;
+        if (index === 2) throw new Error('getter detail');
+        return index;
+      }
+    });
+  }
+  const error = new Error(`Bearer private-token ${'x'.repeat(4096)}`);
+  error.name = `ProviderError${'y'.repeat(4096)}`;
+
+  const sanitizedPayload = sanitizeLogPayload(payload);
+  const sanitizedError = sanitizeLogPayload(error);
+  assert.equal(reads, 50);
+  assert.equal(sanitizedPayload['field-2'], '[UNREADABLE]');
+  assert.equal(sanitizedPayload.truncated, true);
+  assert.doesNotMatch(sanitizedError.message, /private-token/);
+  assert.match(sanitizedError.name, /\[TRUNCATED\]$/);
+});
+
+test('diagnostic sanitization contains proxies that throw during type inspection', () => {
+  const throwingProxy = new Proxy({}, {
+    getPrototypeOf() {
+      throw new Error('unreadable native object');
+    }
+  });
+  const revocable = Proxy.revocable([], {});
+  revocable.revoke();
+
+  assert.doesNotThrow(() => sanitizeLogPayload(throwingProxy));
+  assert.equal(sanitizeLogPayload(throwingProxy), '[UNREADABLE]');
+  assert.doesNotThrow(() => sanitizeLogPayload(revocable.proxy));
+  assert.equal(sanitizeLogPayload(revocable.proxy), '[UNREADABLE]');
+});
+
+test('diagnostic sanitization rejects non-string and unreadable Error metadata', () => {
+  const structuredMetadata = new Error('safe');
+  structuredMetadata.name = { apiKey: 'private-name-key' };
+  structuredMetadata.message = { accessToken: 'private-message-token' };
+  const unreadableMetadata = new Error('safe');
+  Object.defineProperty(unreadableMetadata, 'name', {
+    get() {
+      throw new Error('private getter detail');
+    }
+  });
+
+  assert.deepEqual(sanitizeLogPayload(structuredMetadata), {
+    name: 'Error',
+    message: '[UNREADABLE]'
+  });
+  assert.deepEqual(sanitizeLogPayload(unreadableMetadata), {
+    name: 'Error',
+    message: '[UNREADABLE]'
+  });
+  assert.equal(sanitizeLogPayload(() => 'private function detail'), '[Function]');
 });
 
 test('async timeout guard rejects stalled operations with a typed error', async () => {

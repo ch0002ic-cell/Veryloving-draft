@@ -17,6 +17,7 @@ import { useI18n } from '../src/context/I18nContext';
 export default function RobotPairingScreen() {
   const [permission, requestPermission, getCameraPermission] = useCameraPermissions();
   const [busy, setBusy] = useState(false);
+  const [cameraFailed, setCameraFailed] = useState(false);
   const [errorKey, setErrorKey] = useState(null);
   const [robotVendor, setRobotVendor] = useState('yongyida');
   const pairingInFlightRef = useRef(false);
@@ -91,7 +92,15 @@ export default function RobotPairingScreen() {
 
   const retryScan = () => {
     pairingInFlightRef.current = false;
+    setCameraFailed(false);
     setErrorKey(null);
+    setBusy(false);
+  };
+
+  const handleCameraMountError = () => {
+    pairingInFlightRef.current = false;
+    setCameraFailed(true);
+    setErrorKey('settings.updateFailedMessage');
     setBusy(false);
   };
 
@@ -159,18 +168,30 @@ export default function RobotPairingScreen() {
         })}
       </View>
       <View style={styles.cameraFrame}>
-        <CameraView
-          accessible={false}
-          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-          onBarcodeScanned={busy ? undefined : pair}
-          style={StyleSheet.absoluteFill}
-        />
-        <View accessible={false} pointerEvents="none" style={styles.scanGuide}>
-          <View style={[styles.corner, styles.topLeft]} />
-          <View style={[styles.corner, styles.topRight]} />
-          <View style={[styles.corner, styles.bottomLeft]} />
-          <View style={[styles.corner, styles.bottomRight]} />
-        </View>
+        {cameraFailed ? (
+          <View
+            accessible={false}
+            style={styles.cameraUnavailable}
+          >
+            <Ionicons accessible={false} name="camera-outline" size={48} color={colors.textInverse} />
+          </View>
+        ) : (
+          <>
+            <CameraView
+              accessible={false}
+              barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+              onBarcodeScanned={busy ? undefined : pair}
+              onMountError={handleCameraMountError}
+              style={StyleSheet.absoluteFill}
+            />
+            <View accessible={false} pointerEvents="none" style={styles.scanGuide}>
+              <View style={[styles.corner, styles.topLeft]} />
+              <View style={[styles.corner, styles.topRight]} />
+              <View style={[styles.corner, styles.bottomLeft]} />
+              <View style={[styles.corner, styles.bottomRight]} />
+            </View>
+          </>
+        )}
         {busy ? (
           <View
             accessibilityLabel={t('common.connecting')}
@@ -192,6 +213,7 @@ export default function RobotPairingScreen() {
 
 const styles = StyleSheet.create({
   cameraFrame: { flex: 1, minHeight: 240, overflow: 'hidden', borderRadius: radii.xl, backgroundColor: colors.textPrimary },
+  cameraUnavailable: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center' },
   vendorButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   vendorChoice: { minHeight: 48, minWidth: 140, flexBasis: '47%', flexGrow: 1, paddingHorizontal: spacing.mdSm, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, borderWidth: 1, borderColor: colors.borderControl, borderRadius: radii.lg, backgroundColor: colors.surfaceRaised },
   vendorSelected: { borderColor: colors.blueAccessible, borderWidth: 2, backgroundColor: colors.blueSoft },

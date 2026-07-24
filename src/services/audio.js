@@ -67,7 +67,7 @@ export class AudioService {
     if (buffer?.sampleRate !== HUME_SAMPLE_RATE || buffer?.channels !== HUME_CHANNELS) {
       if (!this.pcmFormatWarningShown) {
         this.pcmFormatWarningShown = true;
-        logger.error('[AudioService] Native PCM format does not match the Hume session', {
+        logger.recoverable('[AudioService] Native PCM format does not match the Hume session', {
           sampleRate: buffer?.sampleRate,
           channels: buffer?.channels
         });
@@ -80,7 +80,7 @@ export class AudioService {
       this.audioChunkCallback(encoded);
       return true;
     } catch (error) {
-      logger.warn('[AudioService] Dropped an invalid PCM buffer', { name: error?.name || 'PCMEncodingError' });
+      logger.recoverable('[AudioService] Dropped an invalid PCM buffer', { name: error?.name || 'PCMEncodingError' });
       return false;
     }
   }
@@ -167,7 +167,7 @@ export class AudioService {
   async playBase64Audio(base64, extension = 'wav') {
     if (typeof base64 !== 'string' || !base64) return false;
     if (base64.length > MAX_PLAYBACK_SEGMENT_BASE64_CHARACTERS) {
-      logger.warn('[AudioService] Dropped an oversized assistant audio segment', {
+      logger.recoverable('[AudioService] Dropped an oversized assistant audio segment', {
         encodedCharacters: base64.length
       });
       return false;
@@ -177,7 +177,7 @@ export class AudioService {
       this.playbackRetainedSegments >= MAX_PLAYBACK_QUEUE_SEGMENTS
       || this.playbackRetainedBytes + sizeBytes > MAX_PLAYBACK_QUEUE_BYTES
     ) {
-      logger.warn('[AudioService] Dropped assistant audio while the playback queue was full');
+      logger.recoverable('[AudioService] Dropped assistant audio while the playback queue was full');
       return false;
     }
     const generation = this.playbackGeneration;
@@ -206,7 +206,7 @@ export class AudioService {
         retainedByPlayback = true;
         this.playbackQueuedBytes += sizeBytes;
         this._drainPlaybackQueue().catch((error) => {
-          logger.error('[AudioService] Playback queue failed', error);
+          logger.recoverable('[AudioService] Playback queue failed', error);
         });
         return true;
       } finally {
@@ -229,7 +229,7 @@ export class AudioService {
             continue;
           }
           await this._playFile(item).catch((error) => {
-            logger.error('[AudioService] Could not play assistant audio', error);
+            logger.recoverable('[AudioService] Could not play assistant audio', error);
           });
         } finally {
           item.releaseAdmission?.();

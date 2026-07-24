@@ -427,3 +427,93 @@ test('caregiver backend receipts preserve delivered and failed delivery semantic
   assert.equal(byId.get('failed-reminder-0001').delivery.escalation.deliveryStatus, 'failed');
   scheduler.stop();
 });
+
+test('stop fences a delayed scheduler hydration before it can resurrect timers or dispatch', async () => {
+  let resolveHydration;
+  let robotCalls = 0;
+  let caregiverCalls = 0;
+  let stateChanges = 0;
+  let writes = 0;
+  const timers = timerHarness();
+  const scheduler = createMedicationReminderScheduler({
+    accountId: 'user-a',
+    storageImpl: {
+      getJSON: () => new Promise((resolve) => { resolveHydration = resolve; }),
+      async setJSON() { writes += 1; }
+    },
+    now: () => 12_000_000,
+    setTimeoutImpl: timers.setTimeoutImpl,
+    clearTimeoutImpl: timers.clearTimeoutImpl,
+    sendRobotReminder: async () => { robotCalls += 1; },
+    notifyCaregiver: async () => { caregiverCalls += 1; },
+    onStateChange: () => { stateChanges += 1; }
+  });
+
+  const starting = scheduler.start();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(typeof resolveHydration, 'function');
+  scheduler.stop();
+  resolveHydration(null);
+  const restored = await starting;
+
+  assert.deepEqual(restored.reminders, []);
+  assert.equal(robotCalls, 0);
+  assert.equal(caregiverCalls, 0);
+  assert.equal(writes, 0);
+  assert.equal(stateChanges, 0);
+  assert.equal(timers.active(), null);
+});
+
+test('stop fences an in-flight medication dispatch before it can persist or re-arm', async () => {
+  let currentTime = 13_000_000;
+  let resolveRobot;
+  let signalRobotStarted;
+  const robotStarted = new Promise((resolve) => { signalRobotStarted = resolve; });
+  let writes = 0;
+  let stateChanges = 0;
+  const baseStorage = memoryStorage();
+  const storageImpl = {
+    getJSON: (...args) => baseStorage.getJSON(...args),
+    async setJSON(...args) {
+      writes += 1;
+      return baseStorage.setJSON(...args);
+    }
+  };
+  const timers = timerHarness();
+  const scheduler = createMedicationReminderScheduler({
+    accountId: 'user-a',
+    storageImpl,
+    now: () => currentTime,
+    setTimeoutImpl: timers.setTimeoutImpl,
+    clearTimeoutImpl: timers.clearTimeoutImpl,
+    sendRobotReminder: () => {
+      signalRobotStarted();
+      return new Promise((resolve) => { resolveRobot = resolve; });
+    },
+    notifyCaregiver: async () => ({
+      accepted: true,
+      receiptId: 'caregiver-not-used'
+    }),
+    onStateChange: () => { stateChanges += 1; }
+  });
+  await scheduler.start();
+  await scheduler.schedule({
+    ...reminderInput('lifecycle-reminder-0001'),
+    dueAt: currentTime + 60_000
+  });
+  currentTime += 60_000;
+
+  const dispatching = scheduler.runDue();
+  await robotStarted;
+  const writesBeforeStop = writes;
+  const stateChangesBeforeStop = stateChanges;
+  scheduler.stop();
+  resolveRobot({ accepted: true, receiptId: 'robot-late-acceptance' });
+  const result = await dispatching;
+
+  assert.deepEqual(result, { attempted: 1, accepted: 0, total: 1 });
+  assert.equal(writes, writesBeforeStop);
+  assert.equal(stateChanges, stateChangesBeforeStop);
+  assert.equal(timers.active(), null);
+  assert.equal((await scheduler.list())[0].status, MEDICATION_REMINDER_STATUS.reminderDue);
+});

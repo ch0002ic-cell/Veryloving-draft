@@ -23,7 +23,7 @@ export default function QuickShareLocation() {
       const location = await requestCurrentLocation();
       await shareQuickLocation(location, { locale });
     } catch (shareError) {
-      logger.warn('[QuickShare] Could not share a location snapshot', {
+      logger.recoverable('[QuickShare] Could not share a location snapshot', {
         errorCode: shareError?.code || shareError?.name || 'LOCATION_SHARE_FAILED'
       });
       if (mountedRef.current) {

@@ -24,7 +24,7 @@ export function useAppFonts() {
     ).catch((error) => {
       // Bundled fonts improve the presentation but must never prevent access
       // to a safety flow. React Native falls back to the platform font.
-      logger.warn('[Startup] Bundled fonts were unavailable', {
+      logger.recoverable('[Startup] Bundled fonts were unavailable', {
         errorCode: error?.code || error?.name || 'FONT_LOAD_FAILED'
       });
     }).finally(() => mounted && setReady(true));

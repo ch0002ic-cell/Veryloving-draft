@@ -11,6 +11,7 @@ const {
   createSimulatorAuthenticationError,
   isAuthenticationCancellation,
   isExpectedDemoAuthenticationFailure,
+  isLikelyAndroidEmulator,
   isTransientAuthenticationError,
   userFacingAuthenticationError
 } = require('../src/utils/auth-configuration');
@@ -125,7 +126,7 @@ test('authentication cancellations remain silent while server errors become safe
 });
 
 test('only expected Android Google demo failures are classified as non-critical', () => {
-  const demo = { demoModeAvailable: true, platform: 'android' };
+  const demo = { demoModeAvailable: true, platform: 'android', isAndroidEmulator: true };
   assert.equal(isExpectedDemoAuthenticationFailure('google', { code: '10' }, demo), true);
   assert.equal(
     isExpectedDemoAuthenticationFailure('google', { message: 'DEVELOPER_ERROR: OAuth client unavailable' }, demo),
@@ -138,7 +139,8 @@ test('only expected Android Google demo failures are classified as non-critical'
   assert.equal(
     isExpectedDemoAuthenticationFailure('google', { code: '10' }, {
       demoModeAvailable: false,
-      platform: 'android'
+      platform: 'android',
+      isAndroidEmulator: true
     }),
     false
   );
@@ -146,11 +148,28 @@ test('only expected Android Google demo failures are classified as non-critical'
   assert.equal(
     isExpectedDemoAuthenticationFailure('google', { code: '10' }, {
       demoModeAvailable: true,
-      platform: 'ios'
+      platform: 'ios',
+      isAndroidEmulator: false
     }),
     false
   );
   assert.equal(isExpectedDemoAuthenticationFailure('google', { code: 'AUTH_NETWORK_ERROR' }, demo), false);
+  assert.equal(isExpectedDemoAuthenticationFailure('google', { code: '10' }, {
+    demoModeAvailable: true,
+    platform: 'android',
+    isAndroidEmulator: false
+  }), false);
+  assert.equal(isLikelyAndroidEmulator({
+    Brand: 'google',
+    Model: 'sdk_gphone64_arm64',
+    Fingerprint: 'google/sdk_gphone64_arm64/emu64a:16/test-keys'
+  }), true);
+  assert.equal(isLikelyAndroidEmulator({
+    Brand: 'google',
+    Manufacturer: 'Google',
+    Model: 'Pixel 9',
+    Fingerprint: 'google/tokay/tokay:16/release-keys'
+  }), false);
 });
 
 test('auth presentation maps typed failures to localized catalog keys', () => {
@@ -158,6 +177,7 @@ test('auth presentation maps typed failures to localized catalog keys', () => {
   assert.equal(authenticationErrorTranslationKey({ code: 'PHONE_AUTH_CODE_INVALID' }), 'releaseCritical.authCodeInvalid');
   assert.equal(authenticationErrorTranslationKey({ code: 'AUTH_HTTP_429' }), 'releaseCritical.authRateLimited');
   assert.equal(authenticationErrorTranslationKey({ code: 'AUTH_NETWORK_ERROR' }), 'releaseCritical.authNetwork');
+  assert.equal(authenticationErrorTranslationKey({ code: 'GOOGLE_AUTH_SIGN_OUT_PENDING' }), 'releaseCritical.authUnavailable');
   assert.equal(authenticationErrorTranslationKey(new Error('raw provider detail')), 'auth.signInFailedMessage');
   assert.equal(
     authenticationCapabilityTranslationKey({ enabled: false, code: 'GOOGLE_AUTH_CONFIGURATION_MISSING' }),

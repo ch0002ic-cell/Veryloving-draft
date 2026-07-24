@@ -97,5 +97,9 @@ test('robot pairing remains scrollable at accessibility text sizes and hides cam
   const pairing = source('app/robot-pairing.js');
   assert.doesNotMatch(pairing, /<Screen scroll=\{false\}>/);
   assert.match(pairing, /<CameraView\s+accessible=\{false\}/);
+  assert.match(pairing, /onMountError=\{handleCameraMountError\}/);
+  assert.match(pairing, /cameraFailed \? \(/);
+  assert.match(pairing, /cameraFailed \? \([\s\S]*?<View\s+accessible=\{false\}/);
+  assert.match(pairing, /setCameraFailed\(false\)/);
   assert.match(pairing, /accessibilityRole="progressbar"/);
 });

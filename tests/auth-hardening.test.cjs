@@ -157,7 +157,7 @@ test('choose-voice onboarding provides a real selector before completion', () =>
   assert.match(screen, /voiceProfiles\.map/);
   assert.match(screen, /await updateSettings\(\{ selectedVoiceId: voiceId \}\)/);
   assert.match(screen, /catch \(error\)/);
-  assert.match(screen, /logger\.warn\('\[Onboarding\] Could not persist voice selection'/);
+  assert.match(screen, /logger\.recoverable\('\[Onboarding\] Could not persist voice selection'/);
   assert.match(screen, /advanceTo\('\/\(auth\)\/completion'/);
   assert.doesNotMatch(screen, /(?:router\.(?:push|replace)|advanceTo)\('\/voices'\)/);
 });
@@ -216,7 +216,7 @@ test('Google Sign-In checks runtime capabilities before loading native code', ()
   );
   assert.match(failureReporter, /isExpectedDemoAuthenticationFailure/);
   assert.match(failureReporter, /logger\.info/);
-  assert.match(failureReporter, /logger\.error/);
+  assert.match(failureReporter, /logger\.recoverable/);
 });
 
 test('Apple Sign-In binds a secure nonce and exchanges the provider credential', () => {
@@ -317,12 +317,41 @@ test('a superseded sign-in cannot erase a newer sign-out tombstone', () => {
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
   const persist = auth.slice(auth.indexOf('const persist = useCallback'), auth.indexOf('const completeOnboarding'));
   const tombstoneRemoval = persist.indexOf('await storage.remove(SIGNED_OUT_KEY)');
-  const precedingFence = persist.lastIndexOf('assertAuthenticationCurrent();', tombstoneRemoval);
+  const precedingFence = persist.lastIndexOf('assertAuthenticationCurrent(authGeneration);', tombstoneRemoval);
   const phoneCleanup = persist.indexOf('await secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY)');
 
   assert.notEqual(tombstoneRemoval, -1);
   assert.ok(precedingFence > phoneCleanup && precedingFence < tombstoneRemoval);
-  assert.match(persist.slice(tombstoneRemoval), /await storage\.remove\(SIGNED_OUT_KEY\);\s*assertAuthenticationCurrent\(\);/);
+  assert.match(persist.slice(tombstoneRemoval), /await storage\.remove\(SIGNED_OUT_KEY\);\s*assertAuthenticationCurrent\(authGeneration\);/);
+});
+
+test('every authentication ceremony claims intent before awaiting and stale results stay silent', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const sections = [
+    ['signInWithApple', 'signInWithGoogle'],
+    ['signInWithGoogle', 'continueAsDemo'],
+    ['continueAsDemo', 'signInWithPhone'],
+    ['signInWithPhone', 'verifyCode'],
+    ['verifyCode', 'signOut']
+  ].map(([start, end]) => auth.slice(
+    auth.indexOf(`const ${start} = useCallback`),
+    auth.indexOf(`const ${end} = useCallback`)
+  ));
+
+  for (const section of sections) {
+    assert.match(section, /const authGeneration = beginAuthenticationOperation\(\)/);
+    assert.match(section, /assertAuthenticationCurrent\(authGeneration\)/);
+  }
+
+  const providerAndVerificationSections = [sections[0], sections[1], sections[3], sections[4]];
+  for (const section of providerAndVerificationSections) {
+    assert.match(section, /catch \(error\) \{\s*assertAuthenticationCurrent\(authGeneration\);\s*throw reportAuthenticationFailure/);
+  }
+  assert.match(sections[0], /persist\(session\.user, session, authGeneration\)/);
+  assert.match(sections[1], /persist\(session\.user, session, authGeneration\)/);
+  assert.match(sections[2], /runSessionMutation\(async \(\) => \{[\s\S]*invalidatePersistedSession\(\)/);
+  assert.match(sections[3], /runSessionMutation\(async \(\) => \{[\s\S]*setPendingPhoneVerification\(persistedChallenge\)/);
+  assert.match(sections[4], /persist\(session\.user, session, authGeneration\)/);
 });
 
 test('auth restore migrates only validated legacy sessions and refresh stays atomic', () => {
@@ -347,8 +376,57 @@ test('Google logout is bounded and completes after local session invalidation', 
   const awaitsProvider = signOut.indexOf("import('@react-native-google-signin/google-signin')");
 
   assert.ok(invalidatesLocalSession >= 0 && invalidatesLocalSession < awaitsProvider);
-  assert.match(signOut, /await withTimeout\([\s\S]*GoogleSignin\?\.signOut\?\.\(\)[\s\S]*PROVIDER_SIGN_OUT_TIMEOUT_MS/);
-  assert.match(signOut, /catch \(error\)[\s\S]*Google provider sign-out could not be confirmed/);
+  assert.match(signOut, /const nativeCleanup = import\([\s\S]*GoogleSignin\?\.signOut\?\.\(\)/);
+  assert.match(signOut, /await withTimeout\(\s*nativeCleanup,\s*PROVIDER_SIGN_OUT_TIMEOUT_MS/);
+  assert.match(signOut, /\.catch\(\(error\) => \{[\s\S]*Google provider sign-out could not be confirmed/);
+});
+
+test('sign-out cleanup remains behind a barrier until the public auth UI is safe', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const beginOperation = auth.slice(
+    auth.indexOf('const beginAuthenticationOperation = useCallback'),
+    auth.indexOf('const assertAuthenticationCurrent')
+  );
+  const signOut = auth.slice(
+    auth.indexOf('const signOut = useCallback'),
+    auth.indexOf('\n\n  const value = useMemo')
+  );
+  const phoneCleanup = signOut.indexOf(
+    '() => secureStorage.deleteItemAsync(PHONE_VERIFICATION_KEY)'
+  );
+  const googleCleanup = signOut.indexOf(
+    "const nativeCleanup = import('@react-native-google-signin/google-signin')"
+  );
+  const publishesSignedOut = signOut.lastIndexOf("setSessionStatus('signed-out')");
+
+  assert.match(beginOperation, /if \(signOutInFlightRef\.current\)/);
+  assert.match(signOut, /signOutInFlightRef\.current = true/);
+  assert.ok(phoneCleanup >= 0 && phoneCleanup < publishesSignedOut);
+  assert.ok(googleCleanup >= 0 && googleCleanup < publishesSignedOut);
+  assert.match(signOut, /googleSignOutCleanupRef\.current = nativeCleanup/);
+  assert.match(signOut, /googleSignOutCleanupRef\.current === nativeCleanup[\s\S]*googleSignOutCleanupRef\.current = null/);
+  assert.match(signOut, /finally \{[\s\S]*signOutInFlightRef\.current = false/);
+});
+
+test('late native Google cleanup and refresh cannot cross the sign-out boundary', () => {
+  const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
+  const refresh = auth.slice(
+    auth.indexOf('const refreshSession = useCallback'),
+    auth.indexOf('refreshSessionRef.current = refreshSession')
+  );
+  const google = auth.slice(
+    auth.indexOf('const signInWithGoogle = useCallback'),
+    auth.indexOf('const continueAsDemo = useCallback')
+  );
+  const signOut = auth.slice(
+    auth.indexOf('const signOut = useCallback'),
+    auth.indexOf('\n\n  const value = useMemo')
+  );
+
+  assert.match(refresh, /if \(signOutInFlightRef\.current\)[\s\S]*AUTH_SIGN_OUT_IN_PROGRESS/);
+  assert.match(google, /if \(googleSignOutCleanupRef\.current\)[\s\S]*GOOGLE_AUTH_SIGN_OUT_PENDING/);
+  assert.match(signOut, /withTimeout\(\s*nativeCleanup,/);
+  assert.match(signOut, /timeout does not cancel the native promise/i);
 });
 
 test('settings writes and preserves the sign-out tombstone before sweeping account data', () => {
@@ -490,8 +568,13 @@ test('visible authentication errors retain translation keys across language chan
 
   assert.match(auth, /setAuthError\('auth\.signInFailedMessage'\)/);
   assert.match(auth, /setAuthError\(authenticationErrorTranslationKey\(safeError\)\)/);
+  assert.match(auth, /GOOGLE_AUTH_REQUIRES_DEVELOPMENT_BUILD/);
+  assert.match(auth, /isTransientAuthenticationError\(safeError\)[\s\S]*logger\.info/);
   assert.match(auth, /setAuthError\('releaseCritical\.authSessionExpired'\)[\s\S]*setSessionStatus\('reauthentication-required'\)/);
   assert.doesNotMatch(auth, /setAuthError\(translate\(/);
-  assert.match(createAccount, /authError \? t\(authError\) : null/);
+  assert.match(createAccount, /const activeErrorKey = authError \|\| localErrorKey/);
+  assert.match(createAccount, /activeErrorTone = activeErrorKey === 'releaseCritical\.authUnavailable' \? 'info' : 'error'/);
+  assert.match(createAccount, /message=\{activeErrorKey \? t\(activeErrorKey\) : null\}/);
+  assert.match(createAccount, /!activeErrorKey && configurationMessages\.length/);
   assert.match(verifyCode, /\(errorKey \|\| authError\) \? t\(errorKey \|\| authError\) : null/);
 });

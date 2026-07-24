@@ -44,13 +44,13 @@ export async function requestCurrentLocation({ showRationale = true } = {}) {
       translate('map.timeout')
     );
     await saveLastKnownLocation(location).catch((error) => {
-      logger.warn('[Mapbox] Could not persist the last known location', { name: error?.name });
+      logger.recoverable('[Mapbox] Could not persist the last known location', { name: error?.name });
     });
     return { ...location, isCached: false };
   } catch (liveLocationError) {
     const cached = await loadLastKnownLocation().catch(() => null);
     if (cached) {
-      logger.warn('[Mapbox] Live location unavailable; using the recent local location cache', {
+      logger.recoverable('[Mapbox] Live location unavailable; using the recent local location cache', {
         name: liveLocationError?.name,
         cachedAt: cached.cachedAt
       });
@@ -73,7 +73,7 @@ export async function watchLiveLocation(onLocation, {
     distanceInterval: 15
   }, (location) => {
     onLocation({ ...location, isCached: false });
-    saveLastKnownLocation(location).catch((error) => logger.warn('[Mapbox] Could not cache a live location update', {
+    saveLastKnownLocation(location).catch((error) => logger.recoverable('[Mapbox] Could not cache a live location update', {
       name: error?.name || 'LocationCacheError'
     }));
   });

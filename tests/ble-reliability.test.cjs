@@ -306,7 +306,7 @@ test('scan timeout reports no matching devices instead of silent success', async
   assert.deepEqual(scannedServices, ['fff0']);
 });
 
-test('connect failures retain a typed code and never invent battery data', async () => {
+test('connect failures retain a typed UI error without triggering LogBox or inventing battery data', async () => {
   permissionGranted = true;
   const service = new BLEService({ protocol: TEST_PROTOCOL });
   service.manager = {
@@ -326,7 +326,7 @@ test('connect failures retain a typed code and never invent battery data', async
   } finally {
     console.error = originalConsoleError;
   }
-  assert.equal(errorLogs.length, 1);
+  assert.equal(errorLogs.length, 0);
 
   service.manager.connectToDevice = async () => ({
     id: 'VL01-success',

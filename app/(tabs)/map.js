@@ -237,7 +237,7 @@ export default function MapScreen() {
     try {
       await Linking.openSettings();
     } catch (settingsError) {
-      logger.warn('[Mapbox] Could not open system settings', {
+      logger.recoverable('[Mapbox] Could not open system settings', {
         errorCode: settingsError?.code || settingsError?.name || 'SETTINGS_LINK_FAILED'
       });
       if (mountedRef.current) {
@@ -249,7 +249,7 @@ export default function MapScreen() {
   }, []);
 
   const handleMapLoadError = useCallback((mapError) => {
-    logger.warn('[Mapbox] Native map style failed to load', {
+    logger.recoverable('[Mapbox] Native map style failed to load', {
       name: mapError?.name || 'MapLoadingError'
     });
     if (mountedRef.current && !mapStyleReadyRef.current) {
@@ -317,7 +317,7 @@ export default function MapScreen() {
       }
       await shareQuickLocation(shareLocation, { locale });
     } catch (shareLocationError) {
-      logger.warn('[Mapbox] Could not open the location share sheet', {
+      logger.recoverable('[Mapbox] Could not open the location share sheet', {
         errorCode: shareLocationError?.code || shareLocationError?.name || 'LOCATION_SHARE_FAILED',
         usedCachedLocation: Boolean(location?.isCached)
       });
@@ -405,12 +405,13 @@ export default function MapScreen() {
       if (active) liveSubscription = subscription;
       else subscription?.remove?.();
     }).catch((liveError) => {
-      logger.warn('[Mapbox] Live location updates are unavailable', {
+      logger.recoverable('[Mapbox] Live location updates are unavailable', {
         errorCode: liveError?.code || liveError?.name || 'LIVE_LOCATION_UNAVAILABLE'
       });
       if (active && mountedRef.current) {
         setLiveLocationAllowed(false);
         setPermissionDenied(liveError?.code === 'LOCATION_PERMISSION_DENIED');
+        setError({ translationKey: locationErrorTranslationKey(liveError) });
       }
     });
     return () => {

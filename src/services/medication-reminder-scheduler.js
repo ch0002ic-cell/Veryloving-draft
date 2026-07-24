@@ -248,6 +248,7 @@ export function createMedicationReminderScheduler({
   let running = false;
   let timer = null;
   let timerGeneration = 0;
+  let lifecycleGeneration = 0;
   let mutationQueue = Promise.resolve();
 
   const serialize = (operation) => {
@@ -322,9 +323,9 @@ export function createMedicationReminderScheduler({
     timer = null;
   };
 
-  const armUnsafe = () => {
+  const armUnsafe = (expectedGeneration = lifecycleGeneration) => {
     clearTimerUnsafe();
-    if (!running) return;
+    if (!running || expectedGeneration !== lifecycleGeneration) return;
     const currentTime = checkedNow(now);
     const nextAt = listUnsafe().reduce((earliest, state) => {
       const candidate = nextActionAt(state, currentTime);
@@ -334,7 +335,11 @@ export function createMedicationReminderScheduler({
     const generation = timerGeneration;
     const delay = Math.min(maximumTimerDelay, Math.max(0, nextAt - currentTime));
     timer = setTimeoutImpl(() => {
-      if (!running || generation !== timerGeneration) return;
+      if (
+        !running
+        || generation !== timerGeneration
+        || expectedGeneration !== lifecycleGeneration
+      ) return;
       timer = null;
       runDue().catch((error) => {
         Promise.resolve(onDeliveryFailure({
@@ -346,7 +351,8 @@ export function createMedicationReminderScheduler({
     timer?.unref?.();
   };
 
-  const recordFailureUnsafe = async (state, phase, currentTime, error) => {
+  const recordFailureUnsafe = async (state, phase, currentTime, error, expectedGeneration) => {
+    if (expectedGeneration !== lifecycleGeneration) return false;
     const previous = phaseMetadata(state, phase);
     const attempts = previous.attempts + 1;
     const exhausted = attempts >= attemptLimit;
@@ -362,8 +368,10 @@ export function createMedicationReminderScheduler({
       exhausted,
       lastErrorCode: deliveryErrorCode(error)
     }, currentTime);
+    if (expectedGeneration !== lifecycleGeneration) return false;
     reminders.set(next.id, next);
     await persistUnsafe();
+    if (expectedGeneration !== lifecycleGeneration) return false;
     await Promise.resolve(onDeliveryFailure({
       reminderId: next.id,
       phase,
@@ -371,9 +379,11 @@ export function createMedicationReminderScheduler({
       exhausted,
       errorCode: deliveryErrorCode(error)
     })).catch(() => {});
+    return true;
   };
 
-  const dispatchActionUnsafe = async (state, action, currentTime) => {
+  const dispatchActionUnsafe = async (state, action, currentTime, expectedGeneration) => {
+    if (expectedGeneration !== lifecycleGeneration) return false;
     const phase = action.type === 'send_robot_reminder' ? 'reminder' : 'escalation';
     const previous = phaseMetadata(state, phase);
     try {
@@ -392,6 +402,7 @@ export function createMedicationReminderScheduler({
             idempotencyKey: action.idempotencyKey,
             occurredAt: action.occurredAt
           });
+      if (expectedGeneration !== lifecycleGeneration) return false;
       const result = normalizeDispatchResult(rawResult);
       const event = phase === 'reminder'
         ? {
@@ -411,17 +422,22 @@ export function createMedicationReminderScheduler({
         ...(result.deliveryStatus ? { deliveryStatus: result.deliveryStatus } : {}),
         ...(result.delivered ? { deliveredAt: currentTime } : { acceptedAt: currentTime })
       }, currentTime);
+      if (expectedGeneration !== lifecycleGeneration) return false;
       reminders.set(next.id, next);
       await persistUnsafe();
-      return true;
+      return expectedGeneration === lifecycleGeneration;
     } catch (error) {
-      await recordFailureUnsafe(state, phase, currentTime, error);
+      if (expectedGeneration !== lifecycleGeneration) return false;
+      await recordFailureUnsafe(state, phase, currentTime, error, expectedGeneration);
       return false;
     }
   };
 
-  const processDueUnsafe = async () => {
+  const processDueUnsafe = async (expectedGeneration) => {
     await loadUnsafe();
+    if (expectedGeneration !== lifecycleGeneration) {
+      return { attempted: 0, accepted: 0, total: reminders.size };
+    }
     const currentTime = checkedNow(now);
     let changed = false;
     for (const state of listUnsafe()) {
@@ -434,10 +450,14 @@ export function createMedicationReminderScheduler({
     // Persist due/escalation transitions before any external side effect. A
     // process death can then safely retry using the same idempotency key.
     if (changed) await persistUnsafe();
+    if (expectedGeneration !== lifecycleGeneration) {
+      return { attempted: 0, accepted: 0, total: reminders.size };
+    }
 
     let attempted = 0;
     let accepted = 0;
     for (const state of listUnsafe()) {
+      if (expectedGeneration !== lifecycleGeneration) break;
       if (attempted >= cycleLimit) break;
       const action = nextMedicationActions(state)[0];
       if (!action) continue;
@@ -445,26 +465,41 @@ export function createMedicationReminderScheduler({
       const metadata = phaseMetadata(state, phase);
       if (metadata.exhausted || (metadata.nextAttemptAt && metadata.nextAttemptAt > currentTime)) continue;
       attempted += 1;
-      if (await dispatchActionUnsafe(state, action, currentTime)) accepted += 1;
+      if (await dispatchActionUnsafe(state, action, currentTime, expectedGeneration)) accepted += 1;
     }
     return { attempted, accepted, total: reminders.size };
   };
 
-  const runDue = () => serialize(async () => {
-    const result = await processDueUnsafe();
-    armUnsafe();
-    return result;
-  });
+  const runDue = () => {
+    const generation = lifecycleGeneration;
+    return serialize(async () => {
+      const result = await processDueUnsafe(generation);
+      armUnsafe(generation);
+      return result;
+    });
+  };
 
-  const start = () => serialize(async () => {
-    await loadUnsafe();
-    running = true;
-    const result = await processDueUnsafe();
-    armUnsafe();
-    return { ...result, reminders: listUnsafe().map(cloneState) };
-  });
+  const start = () => {
+    const generation = ++lifecycleGeneration;
+    return serialize(async () => {
+      await loadUnsafe();
+      if (generation !== lifecycleGeneration) {
+        return {
+          attempted: 0,
+          accepted: 0,
+          total: reminders.size,
+          reminders: listUnsafe().map(cloneState)
+        };
+      }
+      running = true;
+      const result = await processDueUnsafe(generation);
+      armUnsafe(generation);
+      return { ...result, reminders: listUnsafe().map(cloneState) };
+    });
+  };
 
   const stop = () => {
+    lifecycleGeneration += 1;
     running = false;
     clearTimerUnsafe();
   };
@@ -492,8 +527,9 @@ export function createMedicationReminderScheduler({
     reminders.set(reminder.id, { ...reminder, delivery: {} });
     await persistUnsafe();
     if (running) {
-      await processDueUnsafe();
-      armUnsafe();
+      const generation = lifecycleGeneration;
+      await processDueUnsafe(generation);
+      armUnsafe(generation);
     }
     return cloneState(reminders.get(reminder.id));
   });

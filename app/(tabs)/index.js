@@ -64,7 +64,7 @@ export default function Home() {
       await activateSafetyMode(settings.mode, token);
     } catch (error) {
       if (!ownsSession(generation, accountId, token)) return;
-      logger.warn('[SafetyMode] Could not reconcile the current backend mode', {
+      logger.recoverable('[SafetyMode] Could not reconcile the current backend mode', {
         errorCode: error?.code || error?.name || 'MODE_RECONCILIATION_FAILED'
       });
       setModeReconciliationFailed(true);
@@ -106,7 +106,7 @@ export default function Home() {
       setModeFeedback(mode);
     } catch (error) {
       if (!ownsSession(generation, accountId, token)) return;
-      logger.warn('[SafetyMode] Could not save the requested local mode', {
+      logger.recoverable('[SafetyMode] Could not save the requested local mode', {
         requestedMode: mode,
         errorCode: error?.code || error?.name || 'MODE_SAVE_FAILED'
       });
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   deviceGrid: { gap: spacing.sm },
   deviceCard: { padding: spacing.mdSm },
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  quickAction: { minWidth: 148, flexBasis: '47%', flexGrow: 1 },
+  quickAction: { minWidth: 220, flexBasis: '47%', flexGrow: 1 },
   wellnessList: { gap: spacing.sm },
   modeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.mdSm },
   modeButton: { minWidth: 100, flexBasis: '30%', flexGrow: 1 }

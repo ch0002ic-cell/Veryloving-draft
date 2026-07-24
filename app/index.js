@@ -34,7 +34,7 @@ export default function Index() {
     ).then((destination) => {
       if (active) setRestoration({ accountId, ready: true, destination });
     }).catch((error) => {
-      logger.warn('[Navigation] Could not restore the last safe destination', {
+      logger.recoverable('[Navigation] Could not restore the last safe destination', {
         errorCode: error?.code || error?.name || 'NAVIGATION_RESTORE_FAILED'
       });
       if (active) setRestoration({ accountId, ready: true, destination: null });

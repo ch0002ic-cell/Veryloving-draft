@@ -27,7 +27,7 @@ export default function ChooseVoiceTutorial() {
     try {
       await updateSettings({ selectedVoiceId: voiceId });
     } catch (error) {
-      logger.warn('[Onboarding] Could not persist voice selection', {
+      logger.recoverable('[Onboarding] Could not persist voice selection', {
         errorCode: error?.code || error?.name || 'VOICE_SELECTION_PERSIST_FAILED',
         voiceId
       });
