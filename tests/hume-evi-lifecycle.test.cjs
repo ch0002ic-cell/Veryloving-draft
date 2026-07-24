@@ -566,6 +566,36 @@ test('voice socket sends tolerate an OPEN-to-CLOSING race without escaping', () 
   assert.equal(service.sendDeviceActionAcknowledgement('action-1', true), false);
 });
 
+test('tool failures expose only localized fallback copy and a stable provider error code', async () => {
+  const service = readyService();
+  service.sessionConfig = {
+    customSessionId: 'test-session',
+    toolFailureMessage: 'No se pudo iniciar la atención conectada.'
+  };
+  const sent = [];
+  service.socket.send = (payload) => sent.push(JSON.parse(payload));
+  service.setMessageHandler({
+    async onToolCall() {
+      throw new Error('manufacturer token private-diagnostic-value expired');
+    }
+  });
+
+  await service.handleToolCall({
+    response_required: true,
+    tool_call_id: 'tool-localized-failure',
+    name: 'check_medication'
+  }, service.socket);
+
+  assert.deepEqual(sent, [{
+    type: 'tool_error',
+    tool_call_id: 'tool-localized-failure',
+    error: 'TOOL_EXECUTION_FAILED',
+    fallback_content: 'No se pudo iniciar la atención conectada.',
+    level: 'warn'
+  }]);
+  assert.doesNotMatch(JSON.stringify(sent), /manufacturer token|private-diagnostic-value|expired/);
+});
+
 test('device action responses bound untrusted status and error identifiers', async () => {
   const service = readyService();
   service.usesProxy = true;

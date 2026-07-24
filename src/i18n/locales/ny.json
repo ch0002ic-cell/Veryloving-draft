@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving imagwiritsa ntchito cholankhulira chanu pokhapo mutayimba AI mnzanu kapena foni yotetezedwa.",
     "bluetoothRationaleTitle": "Bluetooth amalumikiza zobvala zanu",
     "bluetoothRationaleMessage": "VeryLoving amagwilitsila nchito Bluetooth kuphatikizana ndi NorthStar zodzikongoletsera, kuwerenga mkhalidwe wa kulumikizana, ndi kuyambitsa kuyenda kwa chitetezo kuchovala.",
-    "cameraRationaleTitle": "Kamera ndiyosasankha",
-    "cameraRationaleMessage": "VeryLoving imagwiritsa ntchito kamera pokhapo mutasankha kujambula chithunzi cha mbiri yanu kapena kugawana chithunzi chachitetezo."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving imasunga kutuluka uku kupezeka kuchokera ku Zikhazikiko ndi pa bolodi.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ikufunika mwayi wolandila maikolofoni kuti itetezeke komanso AI kuyimbana ndi anthu.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving imagwiritsa ntchito malo omwe muli pamapu achitetezo ndi zachitetezo chapafupi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving amagwiritsa Bluetooth kulumikiza NorthStar zodzikongoletsera zachitetezo."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving amagwiritsa Bluetooth kulumikiza NorthStar zodzikongoletsera zachitetezo.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

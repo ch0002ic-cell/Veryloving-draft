@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving kosalela mikro na yo kaka soki obandi kosolola na moninga na yo ya AI to ya libateli.",
     "bluetoothRationaleTitle": "Bluetooth connecter elamba na yo",
     "bluetoothRationaleMessage": "VeryLoving asalelaka Bluetooth mpo na kosangisa babiju na NorthStar, kotánga état ya connexion, mpe kosala ete biloko ya kolata ezala malamu.",
-    "cameraRationaleTitle": "Kamera ezali pona kopona",
-    "cameraRationaleMessage": "VeryLoving kosalela aparɛyi yango kaka soki oponi kozwa fɔtɔ ya profil to kotya fɔtɔ ya libateli."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving esalaka ete flux wana ezala na Réglages mpe na tableau de bord.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving azali na mposa ya microphone mpo na libateli mpe AI baninga.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving kosalela karte ya likama mpe biloko ya likama oyo ezali pene na yo.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving asalelaka Bluetooth mpo na kobenda likebi ya bato na NorthStar na yo.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -1,7 +1,9 @@
 'use strict';
 
-// All 183 assigned ISO 639-1 identifiers are represented. Catalogs are attached only
-// when every English key has a validated, non-empty translation.
+// All 183 assigned ISO 639-1 identifiers are represented. Attached catalogs are
+// schema-complete and non-empty. Only entries with reviewRequired: false are
+// approved for public production; machine-generated catalogs remain QA surfaces
+// until native-speaker review is complete.
 module.exports = [
   {
     code: 'ab',
@@ -133,6 +135,8 @@ module.exports = [
     code: 'az',
     englishName: 'Azerbaijani',
     nativeName: 'Azərbaycan dili',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'az-Latn',
     isRTL: false,
     messages: require('./locales/az.json'),
     translationStatus: 'machine-generated',
@@ -141,7 +145,9 @@ module.exports = [
   {
     code: 'bm',
     englishName: 'Bambara',
-    nativeName: 'بَمَنَنكَن',
+    nativeName: 'Bamanankan',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'bm-Latn',
     isRTL: false,
     messages: require('./locales/bm.json'),
     translationStatus: 'machine-generated',
@@ -259,6 +265,8 @@ module.exports = [
     code: 'zh',
     englishName: 'Chinese',
     nativeName: '简体中文',
+    localeScript: 'Hans',
+    nativeLocaleTag: 'zh-Hans',
     isRTL: false,
     messages: require('./locales/zh.json'),
     translationStatus: 'maintained',
@@ -421,6 +429,8 @@ module.exports = [
     code: 'tl',
     englishName: 'Filipino',
     nativeName: 'Wikang Tagalog',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'fil',
     isRTL: false,
     messages: require('./locales/tl.json'),
     translationStatus: 'machine-generated',
@@ -447,7 +457,9 @@ module.exports = [
   {
     code: 'ff',
     englishName: 'Fula',
-    nativeName: '𞤊𞤵𞤤𞤬𞤵𞤤𞤣𞤫',
+    nativeName: 'Fulfulde',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'ff-Latn',
     isRTL: false,
     messages: require('./locales/ff.json'),
     translationStatus: 'machine-generated',
@@ -528,7 +540,9 @@ module.exports = [
   {
     code: 'ha',
     englishName: 'Hausa',
-    nativeName: 'هَرْشٜن هَوْس (halshen Hausa)',
+    nativeName: 'Harshen Hausa',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'ha-Latn',
     isRTL: false,
     messages: require('./locales/ha.json'),
     translationStatus: 'machine-generated',
@@ -708,7 +722,9 @@ module.exports = [
   {
     code: 'kr',
     englishName: 'Kanuri',
-    nativeName: 'كَنُرِيِه',
+    nativeName: 'Kanuri',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'kr-Latn',
     isRTL: false,
     messages: require('./locales/kr.json'),
     translationStatus: 'machine-generated',
@@ -717,7 +733,9 @@ module.exports = [
   {
     code: 'ks',
     englishName: 'Kashmiri',
-    nativeName: 'कॉशुर',
+    nativeName: 'کٲشُر',
+    localeScript: 'Arab',
+    nativeLocaleTag: 'ks-Arab',
     isRTL: true,
     messages: require('./locales/ks.json'),
     translationStatus: 'machine-generated',
@@ -797,8 +815,10 @@ module.exports = [
   },
   {
     code: 'ku',
-    englishName: 'Kurdish',
+    englishName: 'Kurdish (Sorani)',
     nativeName: 'کوردی',
+    localeScript: 'Arab',
+    nativeLocaleTag: 'ckb-Arab',
     isRTL: true,
     messages: require('./locales/ku.json'),
     translationStatus: 'machine-generated',
@@ -970,6 +990,8 @@ module.exports = [
     code: 'mn',
     englishName: 'Mongolian',
     nativeName: 'Монгол',
+    localeScript: 'Cyrl',
+    nativeLocaleTag: 'mn-Cyrl',
     isRTL: false,
     messages: require('./locales/mn.json'),
     translationStatus: 'machine-generated',
@@ -1159,6 +1181,8 @@ module.exports = [
     code: 'pa',
     englishName: 'Punjabi',
     nativeName: 'ਪੰਜਾਬੀ',
+    localeScript: 'Guru',
+    nativeLocaleTag: 'pa-Guru',
     isRTL: false,
     messages: require('./locales/pa.json'),
     translationStatus: 'machine-generated',
@@ -1258,6 +1282,8 @@ module.exports = [
     code: 'sr',
     englishName: 'Serbian',
     nativeName: 'Српски (Srpski)',
+    localeScript: 'Cyrl',
+    nativeLocaleTag: 'sr-Cyrl',
     isRTL: false,
     messages: require('./locales/sr.json'),
     translationStatus: 'machine-generated',
@@ -1285,6 +1311,8 @@ module.exports = [
     code: 'sd',
     englishName: 'Sindhi',
     nativeName: 'سنڌي',
+    localeScript: 'Arab',
+    nativeLocaleTag: 'sd-Arab',
     isRTL: true,
     messages: require('./locales/sd.json'),
     translationStatus: 'machine-generated',
@@ -1537,6 +1565,8 @@ module.exports = [
     code: 'uz',
     englishName: 'Uzbek',
     nativeName: 'Ózbekça',
+    localeScript: 'Latn',
+    nativeLocaleTag: 'uz-Latn',
     isRTL: false,
     messages: require('./locales/uz.json'),
     translationStatus: 'machine-generated',

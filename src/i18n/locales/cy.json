@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving yn defnyddio'ch meicroffon dim ond pan fyddwch chi'n dechrau AI cydymaith neu alwad diogelwch.",
     "bluetoothRationaleTitle": "Bluetooth yn cysylltu eich wearable",
     "bluetoothRationaleMessage": "VeryLoving yn defnyddio Bluetooth i baru â gemwaith NorthStar, darllen statws cysylltiad, a sbarduno llif diogelwch o'r wearable.",
-    "cameraRationaleTitle": "Mae'r camera yn ddewisol",
-    "cameraRationaleMessage": "VeryLoving'n defnyddio'r camera dim ond pan fyddwch chi'n dewis tynnu llun proffil neu rannu delwedd ddiogelwch."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving yn cadw'r llif hwn ar gael o'r Gosodiadau a'r dangosfwrdd.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving angen mynediad meicroffon ar gyfer diogelwch a galwadau cydymaith AI.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving yn defnyddio eich lleoliad ar gyfer y map diogelwch a nodweddion diogelwch cyfagos.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving yn defnyddio Bluetooth i gysylltu â'ch gemwaith diogelwch NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yn defnyddio Bluetooth i gysylltu â'ch gemwaith diogelwch NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

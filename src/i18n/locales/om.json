@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving maaykiroofoonii kee kan fayyadamu yeroo AI hiriyyaa ykn bilbila nageenyaa jalqabdu qofa.",
     "bluetoothRationaleTitle": "Bluetooth kan uffatamu kee walitti hidha",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth fayyadama faaya NorthStar waliin wal-qabsiisuuf, haala walqabsiisaa dubbisuuf, fi dhangala'aa nageenyaa kan uffatamu irraa kakaasuuf.",
-    "cameraRationaleTitle": "Kaameeraan filannoodha",
-    "cameraRationaleMessage": "VeryLoving kaameraa kan fayyadamu yeroo suuraa piroofaayilii kaasuu ykn suuraa nageenyaa qooduu filattan qofa."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving dhangala'aa kana Sajoo fi daashboordii irraa akka argamu taasisa.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving nageenyaaf maaykiroofooniin fayyadamuu fi AI bilbila hiriyyaa barbaada.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving bakka jirtu kaartaa nageenyaa fi amaloota nageenya dhiyoo jiraniif fayyadama.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth fayyadamuun faaya nageenyaa NorthStar kee waliin wal qunnamsiisa.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

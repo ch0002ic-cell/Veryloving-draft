@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving te faaaogaina lau masini faaleotele leo pe a e amataina se soa AI po o se valaau mo le saogalemu.",
     "bluetoothRationaleTitle": "Bluetooth fa'afeso'ota'i lau ofu",
     "bluetoothRationaleMessage": "VeryLoving fa'aaogaina Bluetooth e fa'apipi'i ai ma NorthStar mea teuteu, faitau le tulaga o feso'ota'iga, ma fa'aosofia le saogalemu tafe mai le ofuina.",
-    "cameraRationaleTitle": "O le mea pu'eata e fa'atagaina",
-    "cameraRationaleMessage": "VeryLoving te fa'aaogaina le mea pu'eata pe a e filifili e pu'eina se ata fa'apitoa pe fa'asoa se ata saogalemu."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving tausia lenei tafe avanoa mai Tulaga ma le dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving te mana'omia le avanoa o masini faaleotele leo mo le saogalemu ma AI soa vala'au.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving te fa'aaogaina lou nofoaga mo le fa'afanua o le saogalemu ma vaega saogalemu lata ane.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving fa'aaogaina Bluetooth e fa'afeso'ota'i ai lau NorthStar saogalemu teuteuga.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

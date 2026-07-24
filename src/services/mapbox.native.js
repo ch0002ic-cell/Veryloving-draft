@@ -1,6 +1,9 @@
 import { config } from '../utils/config';
 import { logger } from '../utils/logger';
-import { hasUsableMapboxAccessToken } from '../utils/mapbox-config';
+import {
+  configureMapboxModule,
+  hasUsableMapboxAccessToken
+} from '../utils/mapbox-config';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
 import {
   ensureOfflineMapRegion,
@@ -40,6 +43,7 @@ export function createMapboxRuntime({
 
 const mapboxRuntime = createMapboxRuntime();
 let missingTokenLogged = false;
+let moduleConfigurationFailureLogged = false;
 
 export function getMapboxModule() {
   if (!hasUsableMapboxAccessToken(config.mapboxAccessToken)) {
@@ -51,8 +55,15 @@ export function getMapboxModule() {
   }
   const Mapbox = mapboxRuntime.getModule();
   if (!Mapbox) return null;
-  Mapbox.setAccessToken(config.mapboxAccessToken.trim());
-  return Mapbox;
+  return configureMapboxModule(Mapbox, config.mapboxAccessToken, {
+    onFailure: (errorCode) => {
+      if (moduleConfigurationFailureLogged) return;
+      moduleConfigurationFailureLogged = true;
+      logger.recoverable('[Mapbox] Native module configuration failed; using the deterministic map fallback', {
+        errorCode
+      });
+    }
+  });
 }
 
 export function cacheMapRegion(location) {

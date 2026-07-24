@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ang iyong mikropono kapag nagsimula ka ng AI na kasama o tawag sa kaligtasan.\nIkinokonekta ng",
     "bluetoothRationaleTitle": "Bluetooth ang iyong naisusuot\nGumagamit ang",
     "bluetoothRationaleMessage": "VeryLoving ng Bluetooth para ipares sa NorthStar na alahas, basahin ang status ng koneksyon, at i-trigger ang mga daloy ng kaligtasan mula sa naisusuot.",
-    "cameraRationaleTitle": "Ang camera ay opsyonal\nGinagamit lang ng",
-    "cameraRationaleMessage": "VeryLoving ang camera kapag pinili mong kumuha ng larawan sa profile o magbahagi ng larawang pangkaligtasan.\nPinapanatili ng"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving na available ang daloy na ito mula sa Mga Setting at sa dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving\nKailangan ng",
       "NSMicrophoneUsageDescription": "VeryLoving ng access sa mikropono para sa kaligtasan at AI mga kasamang tawag.\nGinagamit ng",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ang iyong lokasyon para sa mapa ng kaligtasan at mga tampok na pangkaligtasan sa malapit.\nGinagamit ng",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan.\nGumagamit ang"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ng Bluetooth para kumonekta sa iyong NorthStar alahas na pangkaligtasan.\nGumagamit ang",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

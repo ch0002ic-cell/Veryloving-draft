@@ -63,6 +63,20 @@ const protectedTerms = [
   'SOS',
   'AI'
 ];
+const reviewedEnglishEqualityAllowlist = new Set([
+  // Product/provider names and globally recognized emergency abbreviations.
+  'common.apple',
+  'common.google',
+  'common.sos',
+  'common.veryLoving',
+  'voices.profiles.capybara.name',
+  'native.ios.CFBundleDisplayName',
+  'native.android.app_name',
+  // Genuine cognates or technical input examples in the reviewed catalogs.
+  'home.mode',
+  'medicalProfile.allergies',
+  'medication.referencePlaceholder'
+]);
 
 function flattenCatalog(value, prefix = '', output = {}) {
   for (const [key, child] of Object.entries(value || {})) {
@@ -123,6 +137,23 @@ test('reviewed safety catalogs do not silently reuse English source copy', () =>
   }
 });
 
+test('reviewed public catalogs do not hide English copy outside the explicit neutral allowlist', () => {
+  const reviewed = availableLanguages.filter((language) => (
+    language.reviewRequired === false && language.code !== 'en'
+  ));
+  for (const language of reviewed) {
+    const translated = flattenCatalog(language.messages);
+    const unexpectedEnglish = Object.keys(reference).filter((key) => (
+      translated[key] === reference[key] && !reviewedEnglishEqualityAllowlist.has(key)
+    ));
+    assert.deepEqual(
+      unexpectedEnglish,
+      [],
+      `${language.code} contains unapproved English-identical public copy`
+    );
+  }
+});
+
 test('every selectable catalog exactly covers the complete English key set with non-empty strings', () => {
   assert.equal(availableLanguages.length, 155);
   assert.ok(referenceKeys.length >= 410, 'the public copy surface must not silently shrink');
@@ -145,6 +176,13 @@ test('every selectable catalog exactly covers the complete English key set with 
     }
     if (language.code !== 'en') {
       assert.ok(englishIdenticalValues < referenceKeys.length / 2, `${language.code} appears to be an English fallback`);
+      if (englishIdenticalValues > reviewedEnglishEqualityAllowlist.size) {
+        assert.equal(
+          language.reviewRequired,
+          true,
+          `${language.code} contains untranslated source copy but is not review-gated`
+        );
+      }
     }
   }
 });
@@ -240,4 +278,30 @@ test('machine-generated catalogs are explicitly marked for native-speaker review
 test('RTL metadata includes every selectable right-to-left catalog', () => {
   const rtlCodes = availableLanguages.filter((language) => language.isRTL).map((language) => language.code).sort();
   assert.deepEqual(rtlCodes, ['ar', 'dv', 'fa', 'he', 'ks', 'ku', 'ps', 'sd', 'ug', 'ur', 'yi']);
+});
+
+test('camera rationale and native permission metadata match the QR-only implementation', () => {
+  const reviewedCodes = new Set(['en', 'es', 'fr', 'zh']);
+  for (const language of availableLanguages) {
+    const { permissions, native } = language.messages;
+    assert.equal(
+      native.ios.NSCameraUsageDescription,
+      permissions.cameraRationaleMessage,
+      `${language.code} native and in-app camera purpose must match`
+    );
+    assert.match(permissions.cameraRationaleTitle, /QR|二维码/iu, `${language.code} camera title must identify QR scanning`);
+    assert.match(permissions.cameraRationaleMessage, /QR|二维码/iu, `${language.code} camera purpose must identify QR scanning`);
+    assert.doesNotMatch(
+      permissions.cameraRationaleMessage,
+      /profile photo|safety image|profilebild|avatar|头像|صورة للملف|תמונת פרופיל/iu,
+      `${language.code} camera purpose must not claim an unimplemented photo feature`
+    );
+    if (reviewedCodes.has(language.code) && language.code !== 'en') {
+      assert.notEqual(
+        permissions.cameraRationaleMessage,
+        english.permissions.cameraRationaleMessage,
+        `${language.code} reviewed camera purpose must not fall back to English`
+      );
+    }
+  }
 });

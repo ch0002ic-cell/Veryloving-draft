@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving a sala kusala na micro ti mo gi tongana mo to nda ti mbeni AI kamarade wala mbeni iringo ndo ti batango tele.",
     "bluetoothRationaleTitle": "Bluetooth abungbi abongo ti mo .",
     "bluetoothRationaleMessage": "VeryLoving asala kusala na Bluetooth ti bungbi na NorthStar ti bijou, ti diko statut ti connexion, na ti sala si a-flux ti batango tele so alondo na wearable ni.",
-    "cameraRationaleTitle": "Caméra ayeke ye so zo alingbi ti soro",
-    "cameraRationaleMessage": "VeryLoving a yeke sala kusala na caméra gi tongana mo soro ti mû foto ti profil wala ti kangbi mbeni image ti batango tele."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving abata flux so ayeke na yâ ti Paramètres nga na tableau ti tableau.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving a hunda ti wara micro ti tene a bata mo nzoni nga na AI a-appel ti kamarade.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving lo sara kua na ndo ti mo ti sara na carte ti sécurité nga na a-appareil ti sécurité so ayeke nduru na mo.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving lo Bluetooth ti tingbi na NorthStar ti mo ti batango tele.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

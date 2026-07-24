@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving gebruuk eur microfoon allein es geej un AI metgezel of veiligheidsoproep begint.",
     "bluetoothRationaleTitle": "Bluetooth verbint eur draagbare apparaat",
     "bluetoothRationaleMessage": "VeryLoving gebruuk Bluetooth um te koppele mit NorthStar juwele, de status vaan de verbinding te leze en veiligheidsstrouminge vaan de wearable te activere.",
-    "cameraRationaleTitle": "De camera is optioneel",
-    "cameraRationaleMessage": "VeryLoving gebruuk de camera allein es ge d’r veur kiest um ‘n profielfoto te make of ‘n veiligheidsfoto te deile."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving houdt deze flow besjikbaar vaan Instellinge en ‘t dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving heet microfoontoegang nuudig veur veiligheid en AI metgezelsgesprekke.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving gebruuk eur locatie veur de veiligheidskaart en veiligheidsfuncties in de buurt.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving gebruuk Bluetooth um te verbinde mit eur NorthStar veiligheidsjuwele."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving gebruuk Bluetooth um te verbinde mit eur NorthStar veiligheidsjuwele.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

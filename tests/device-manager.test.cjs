@@ -150,6 +150,67 @@ test('disposing a wearable fences a delayed BLE reconnect result', async () => {
   assert.ok(disconnects >= 1);
 });
 
+test('wearable disconnect invalidates active and queued BLE commands before reconnect', async () => {
+  let releaseFirstWrite;
+  const writes = [];
+  const wearable = new WearableDevice({
+    deviceId: 'wearable-command-disconnect',
+    bleClient: {
+      async connect() {
+        return { connected: true, online: true };
+      },
+      async disconnect() {},
+      writeCommand(_deviceId, payload) {
+        writes.push(payload);
+        if (payload === 'first') {
+          return new Promise((resolve) => { releaseFirstWrite = resolve; });
+        }
+        return Promise.resolve();
+      }
+    }
+  });
+
+  await assert.rejects(
+    wearable.sendCommand({ payload: 'before-connect' }),
+    (error) => error?.code === 'DEVICE_DISCONNECTED'
+  );
+  await wearable.connect();
+  const first = wearable.sendCommand({ payload: 'first' });
+  while (!releaseFirstWrite) await Promise.resolve();
+  const second = wearable.sendCommand({ payload: 'second' });
+  const outcomesPromise = Promise.allSettled([first, second]);
+  let drained = false;
+  const drainPromise = wearable.drainCommandQueue().then(() => { drained = true; });
+
+  await wearable.disconnect();
+  await Promise.resolve();
+  assert.equal(drained, false);
+  await assert.rejects(
+    wearable.sendCommand({ payload: 'after-disconnect' }),
+    (error) => error?.code === 'DEVICE_DISCONNECTED'
+  );
+  releaseFirstWrite();
+  const outcomes = await outcomesPromise;
+  await drainPromise;
+  assert.equal(drained, true);
+
+  assert.deepEqual(writes, ['first']);
+  assert.deepEqual(
+    outcomes.map((outcome) => [outcome.status, outcome.reason?.code]),
+    [
+      ['rejected', 'DEVICE_DISCONNECTED'],
+      ['rejected', 'DEVICE_DISCONNECTED']
+    ]
+  );
+
+  await wearable.connect();
+  assert.deepEqual(
+    await wearable.sendCommand({ payload: 'after-reconnect' }),
+    { accepted: true, deviceId: 'wearable-command-disconnect' }
+  );
+  assert.deepEqual(writes, ['first', 'after-reconnect']);
+});
+
 test('HomeRobotDevice serializes commands through the backend relay', async () => {
   const bodies = [];
   const redirects = [];
@@ -260,6 +321,23 @@ test('process death rebuilds wearable and robot registry from account-bound desc
   assert.deepEqual(registryAfterDeath.get('w1').getStatus().location, { longitude: 103.8, latitude: 1.3 });
 });
 
+test('device defaults remain locale-neutral while custom names survive persistence', () => {
+  assert.equal(normalizeDeviceEntity({
+    deviceId: 'robot-new',
+    deviceType: 'home_robot'
+  }, 'user-a').name, null);
+  assert.equal(normalizeDeviceEntity({
+    deviceId: 'robot-legacy',
+    deviceType: 'home_robot',
+    name: 'VeryLoving Home'
+  }, 'user-a').name, null);
+  assert.equal(normalizeDeviceEntity({
+    deviceId: 'robot-custom',
+    deviceType: 'home_robot',
+    name: 'Kitchen helper'
+  }, 'user-a').name, 'Kitchen helper');
+});
+
 test('registry rehydration surfaces corrupt saved devices instead of silently losing them', async () => {
   const registry = new DeviceRegistry();
   let validDevice;
@@ -336,6 +414,9 @@ test('per-device queues prioritize safety work and STOP bypasses a stalled write
   const wearable = new WearableDevice({
     deviceId: 'real-stop-1',
     bleClient: {
+      async connect() {
+        return { connected: true, online: true };
+      },
       writeCommand(_id, payload) {
         nativeWrites.push(payload);
         if (payload === 'RUN') return new Promise((resolve) => { releaseNativeWrite = resolve; });
@@ -343,6 +424,7 @@ test('per-device queues prioritize safety work and STOP bypasses a stalled write
       }
     }
   });
+  await wearable.connect();
   const nativeRunning = wearable.sendCommand({ payload: 'RUN', priority: 'background' });
   while (!releaseNativeWrite) await Promise.resolve();
   await wearable.sendCommand({ payload: 'HALT', action: 'stop' });
@@ -484,11 +566,17 @@ test('upserting a replacement disposes the old device and cancels its queued wor
   const first = oldDevice.sendCommand('first');
   while (!releaseFirst) await Promise.resolve();
   const second = oldDevice.sendCommand('second');
+  const outcomesPromise = Promise.allSettled([first, second]);
   registry.upsert(new TestDevice({ deviceId: 'same-id', deviceType: DEVICE_TYPES.wearable }));
   releaseFirst('done');
 
-  assert.equal(await first, 'done');
-  await assert.rejects(second, (error) => error?.code === 'DEVICE_DISPOSED');
+  assert.deepEqual(
+    (await outcomesPromise).map((outcome) => [outcome.status, outcome.reason?.code]),
+    [
+      ['rejected', 'DEVICE_DISPOSED'],
+      ['rejected', 'DEVICE_DISPOSED']
+    ]
+  );
   assert.equal(oldDevice.disposed, true);
 });
 
@@ -547,6 +635,41 @@ test('generic relay health never labels manufacturer hardware online', async () 
   assert.equal(status.hardwareStatus, 'unknown');
   assert.equal(status.connectionState, 'disconnected');
   assert.equal(status.lastErrorCode, 'ROBOT_TELEMETRY_TIMESTAMP_INVALID');
+});
+
+test('home robot pairing credentials are requested and transmitted only to protected routes', async () => {
+  const requests = [];
+  let accessTokenReads = 0;
+  let pairingTokenReads = 0;
+  const pairingToken = 'p'.repeat(43);
+  const robot = new HomeRobotDevice({
+    deviceId: 'robot-credential-scope',
+    gatewayURL: 'https://api.example.test',
+    accessTokenProvider: async () => {
+      accessTokenReads += 1;
+      return 'session-token';
+    },
+    pairingTokenProvider: async () => {
+      pairingTokenReads += 1;
+      return pairingToken;
+    },
+    fetchImpl: async (url, options) => {
+      requests.push({ url, options });
+      return gatewayTextResponse({ accepted: true });
+    }
+  });
+
+  await robot.request('/health');
+  assert.equal(accessTokenReads, 0);
+  assert.equal(pairingTokenReads, 0);
+  assert.equal(requests[0].options.headers['X-Device-Pairing-Token'], undefined);
+  assert.equal(requests[0].options.headers.Authorization, undefined);
+
+  await robot.request('/v1/devices/robot-credential-scope/telemetry');
+  assert.equal(accessTokenReads, 1);
+  assert.equal(pairingTokenReads, 1);
+  assert.equal(requests[1].options.headers['X-Device-Pairing-Token'], pairingToken);
+  robot.dispose();
 });
 
 test('successful telemetry persists robot location without cancelling a failed command retry', async () => {
@@ -617,7 +740,10 @@ test('home robot polls telemetry, validates navigation paths, and cleans up the 
   const mapSource = readFileSync(path.resolve(process.cwd(), 'app/(tabs)/map.js'), 'utf8');
   assert.match(mapSource, /id="home-robot-navigation-paths"/);
   assert.match(mapSource, /geometry:\s*\{ type: 'LineString', coordinates \}/);
-  assert.match(mapSource, /robotPathSourceRef\.current\?\.setNativeProps/);
+  assert.match(
+    mapSource,
+    /refreshMapShapeSource\(robotPathSourceRef\.current, robotPathFeatureCollection\)/
+  );
 });
 
 test('home robot telemetry is single-flight, rejects older samples, and suspends polling offline', async () => {
@@ -907,13 +1033,14 @@ test('home robot request timeout also bounds stalled credential retrieval', asyn
     deviceId: 'robot-credential-timeout',
     gatewayURL: 'https://api.example.test',
     timeoutMs: 10,
-    accessTokenProvider: async () => new Promise(() => {}),
+    accessTokenProvider: async () => 'session-token',
+    pairingTokenProvider: async () => new Promise(() => {}),
     fetchImpl: async () => {
       fetches += 1;
       return { ok: true, status: 204 };
     }
   });
-  await assert.rejects(robot.request('/health'), { code: 'ROBOT_NETWORK_TIMEOUT' });
+  await assert.rejects(robot.request('/v1/device-actions'), { code: 'ROBOT_NETWORK_TIMEOUT' });
   assert.equal(fetches, 0);
   robot.dispose();
 });

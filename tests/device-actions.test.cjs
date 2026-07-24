@@ -5,6 +5,9 @@ const { test } = require('node:test');
 const nacl = require('tweetnacl');
 const { dispatchWearableAction, verifyWearableActionEnvelope } = require('../src/services/device-actions');
 const { createDeviceActionReplayStore } = require('../src/services/device-action-replay-store');
+const {
+  lockAndDrainLocalUserDataMutations
+} = require('../src/services/local-mutation-coordinator');
 
 function signedMessage(envelope, keyPair) {
   const payload = Buffer.from(JSON.stringify(envelope)).toString('base64url');
@@ -137,4 +140,49 @@ test('a signed STOP envelope is the only remote path that requests critical queu
     }
   });
   assert.deepEqual(commands, [{ payload: 'AA==', action: 'stop', priority: 'critical', withResponse: true }]);
+});
+
+test('replay persistence participates in the logout and privacy mutation barrier', async () => {
+  const values = new Map();
+  let releaseWrite;
+  let writeStarted;
+  const started = new Promise((resolve) => { writeStarted = resolve; });
+  const blockedWrite = new Promise((resolve) => { releaseWrite = resolve; });
+  const replayStore = createDeviceActionReplayStore({
+    storage: {
+      async getItem(key) { return values.get(key) || null; },
+      async setItem(key, value) {
+        writeStarted();
+        await blockedWrite;
+        values.set(key, value);
+      }
+    },
+    now: () => 10_001
+  });
+
+  let releaseMutations;
+  try {
+    const reserve = replayStore.reserve('barrier-action-1', 20_000);
+    await started;
+    let barrierEstablished = false;
+    const locking = lockAndDrainLocalUserDataMutations().then((release) => {
+      barrierEstablished = true;
+      releaseMutations = release;
+    });
+    await Promise.resolve();
+    assert.equal(barrierEstablished, false);
+
+    releaseWrite();
+    assert.equal(await reserve, true);
+    await locking;
+    assert.equal(barrierEstablished, true);
+
+    await assert.rejects(
+      replayStore.remember('barrier-action-2', 20_000),
+      (error) => error.code === 'LOCAL_DATA_CLEANUP_LOCKED'
+    );
+  } finally {
+    releaseWrite?.();
+    releaseMutations?.();
+  }
 });

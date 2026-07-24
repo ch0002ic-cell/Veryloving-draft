@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving mikrofoni atortarpaa aatsaat AI-mik inngiaqateqarnissamut imaluunniit isumannaallisaanermut sianernissamut aallartitsiguit.",
     "bluetoothRationaleTitle": "Bluetooth wearable-imut atassuteqarpoq",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth atortarpaa NorthStar-mik pinnersaatinik paarlaasseqatigiinnissamut, attaveqarnerup inissisimanera atuarnissaanut, aammalu atorneqarsinnaasumit isumannaallisaanermut strøm-inik aallartitsinissamut.",
-    "cameraRationaleTitle": "Kamera toqqarneqarsinnaavoq",
-    "cameraRationaleMessage": "VeryLoving aatsaat profilimi assilisassiornissaq imaluunniit isumannaallisaanermut assilisassiornissaq toqqarukku kamera atortarpaa."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving-ip flow-i taanna Instillinger-imiit aamma dashboard-imiit pissarsiarineqarsinnaanngortittarpaa.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving isumannaallisaanermut aamma AI inngiaqateqarnissamut mikrofonimik atuisoqartariaqarpoq.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving isumannaallisaanermut nunap assiga aamma isumannaallisaanermut qanittukkut sumiiffiit atortarpai.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving atorlugu Bluetooth isumannaallisaanermut pinnersaatinut NorthStar-mut attaveqarsinnaavoq.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

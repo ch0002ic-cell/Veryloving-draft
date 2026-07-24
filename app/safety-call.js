@@ -199,7 +199,7 @@ export default function SafetyCall() {
         navigateAfterCompletion = closeAfterCompletionRef.current;
         closeAfterCompletionRef.current = false;
         if (!navigateAfterCompletion) {
-          setSnackbar({ tone: 'error', message: t('safetyCall.interrupted') });
+          setSnackbar({ tone: 'error', messageKey: 'safetyCall.interrupted' });
         }
       } else if (callLifecycleEpochRef.current === lifecycleEpoch) {
         closeAfterCompletionRef.current = false;
@@ -211,7 +211,7 @@ export default function SafetyCall() {
       }
     }
     if (navigateAfterCompletion && mountedRef.current) closeScreen();
-  }, [stop, t]);
+  }, [stop]);
 
   const endCall = useCallback(() => finishCall(), [finishCall]);
   const requestClose = useCallback(() => finishCall({ closeAfter: true }), [finishCall]);
@@ -265,7 +265,7 @@ export default function SafetyCall() {
       const shouldClose = closeAfterCompletionRef.current;
       closeAfterCompletionRef.current = false;
       if (shouldClose) closeScreen();
-      else setSnackbar({ tone: 'success', message: t('wellness.feedback.thanks') });
+      else setSnackbar({ tone: 'success', messageKey: 'wellness.feedback.thanks' });
     } catch (feedbackError) {
       if (feedbackError?.code !== 'SCENARIO_CANCELLED'
         && feedbackFlightRef.current === flight && mountedRef.current) {
@@ -277,17 +277,17 @@ export default function SafetyCall() {
         if (mountedRef.current) setFeedbackBusy(false);
       }
     }
-  }, [accessToken, feedbackBusy, feedbackInteraction, t, user?.id]);
+  }, [accessToken, feedbackBusy, feedbackInteraction, user?.id]);
 
   const openSystemSettings = useCallback(async () => {
     try {
       await Linking.openSettings();
     } catch {
       if (mountedRef.current) {
-        setSnackbar({ tone: 'error', message: t('settings.linkFailed') });
+        setSnackbar({ tone: 'error', messageKey: 'settings.linkFailed' });
       }
     }
-  }, [t]);
+  }, []);
 
   return (
     <Screen scroll={false}>
@@ -383,7 +383,7 @@ export default function SafetyCall() {
           : <Button title={isConnecting ? t('safetyCall.connecting') : t('safetyCall.startCall')} icon="call" onPress={startCall} loading={isConnecting || endingCall} />}
       </View>
       <Snackbar
-        message={snackbar?.message}
+        message={snackbar?.messageKey ? t(snackbar.messageKey, snackbar.messageOptions) : null}
         onDismiss={() => setSnackbar(null)}
         tone={snackbar?.tone}
       />

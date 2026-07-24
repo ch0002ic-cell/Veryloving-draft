@@ -24,11 +24,18 @@ export function normalizeDeviceEntity(value, accountId, { now = Date.now } = {})
   const deviceId = boundedString(value?.deviceId ?? value?.id);
   if (!accountId || !deviceType || !deviceId) return null;
   const location = normalizedLocation(value);
+  const storedName = boundedString(value?.name, 80);
+  // Older builds persisted this English placeholder as though it were a user
+  // supplied name. Treat it as an unset default so every UI can render the
+  // active locale's generic robot label without overwriting real custom names.
+  const name = deviceType === 'home_robot' && storedName === 'VeryLoving Home'
+    ? null
+    : storedName;
   return {
     accountId,
     deviceId,
     deviceType,
-    name: boundedString(value?.name, 80) || (deviceType === 'wearable' ? 'NorthStar VL01' : 'VeryLoving Home'),
+    name,
     online: false,
     connectionState: deviceType === 'wearable' && value?.autoReconnect !== false ? 'reconnecting' : 'disconnected',
     autoReconnect: deviceType === 'wearable' && value?.autoReconnect !== false,

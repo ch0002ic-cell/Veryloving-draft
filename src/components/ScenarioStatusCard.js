@@ -4,6 +4,7 @@ import { Button } from './Button';
 import { StatusPill } from './StatusPill';
 import { colors, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
+import { formatLocalizedDateTime } from '../utils/localized-format';
 
 const STATE_TONES = Object.freeze({
   queued: 'idle',
@@ -13,6 +14,14 @@ const STATE_TONES = Object.freeze({
   failed: 'danger',
   cancelled: 'idle'
 });
+const SCENARIO_IDS = new Set([
+  'fall_detection',
+  'medication_adherence',
+  'emotional_check_in',
+  'cognitive_engagement',
+  'ai_angel_auto_dial'
+]);
+const SCENARIO_STATES = new Set(Object.keys(STATE_TONES));
 
 export function ScenarioStatusCard({
   execution,
@@ -24,9 +33,13 @@ export function ScenarioStatusCard({
 }) {
   const { isRTL, locale, t } = useI18n();
   const active = execution.state === 'queued' || execution.state === 'running';
-  const title = t(`wellness.scenarios.names.${execution.scenarioId}`);
-  const status = t(`wellness.scenarios.statuses.${execution.state}`);
-  const updated = new Date(execution.updatedAt).toLocaleString(locale);
+  const title = SCENARIO_IDS.has(execution.scenarioId)
+    ? t(`wellness.scenarios.names.${execution.scenarioId}`)
+    : t('common.unknown');
+  const status = SCENARIO_STATES.has(execution.state)
+    ? t(`wellness.scenarios.statuses.${execution.state}`)
+    : t('common.unknown');
+  const updated = formatLocalizedDateTime(execution.updatedAt, locale) || t('common.unknown');
   return (
     <Card padding="sm" style={style}>
       <View
@@ -46,7 +59,7 @@ export function ScenarioStatusCard({
             {t('wellness.scenarios.updated', { date: updated })}
           </Text>
         </View>
-        <StatusPill label={status} tone={STATE_TONES[execution.state]} />
+        <StatusPill label={status} tone={STATE_TONES[execution.state] || 'idle'} />
       </View>
       {execution.state === 'fallback_completed' ? (
         <Text style={[styles.note, isRTL && styles.rtlText]}>{t('wellness.scenarios.fallbackNote')}</Text>

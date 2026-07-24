@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving oipuru ne micrófono remoñepyrũ jave añoite peteĩ AI compañero térã seguridad ñehenói.",
     "bluetoothRationaleTitle": "Bluetooth ombojoaju nde mba’e ojeporúva",
     "bluetoothRationaleMessage": "VeryLoving oipuru Bluetooth ombojoaju hagua NorthStar joya ndive, omoñe e estado conexión rehegua ha ombohape umi flujo seguridad rehegua pe ojeporúvagui.",
-    "cameraRationaleTitle": "Cámara ha’e opcional",
-    "cameraRationaleMessage": "VeryLoving oipuru cámara reiporavóramo añoite rejagarra hag̃ua peteĩ taꞌãngamýi perfil rehegua térã rembohasa hag̃ua peteĩ taꞌãngamýi seguridad rehegua."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving oñongatu ko flujo ojeguerekóva Ñemboheko ha panel-gui.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving oikotevẽ micrófono jeike seguridad ha AI compañero ñehenói.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving oipuru nde reimeha pe mapa seguridad rehegua ha umi mba’e seguridad rehegua hi’aguĩvape g̃uarã.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving oipuru Bluetooth oñembojoaju hagua nde NorthStar joya seguridad rehegua ndive.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

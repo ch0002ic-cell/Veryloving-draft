@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving یوازې هغه وخت مایکروفون کاروی کله چې ته د ملګری AI یا د خوندیتوب زنګ پیل کړې.",
     "bluetoothRationaleTitle": "Bluetooth ستا د اغوستلو وړ نښلوی.",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth کاروی ترڅو له NorthStar ګاڼو سره جوړه شی، د اتصال حالت ولولی، او د اغوستلو وړ وسیله د خوندیتوب جریان فعال کړی.",
-    "cameraRationaleTitle": "کمره اختیاری ده",
-    "cameraRationaleMessage": "VeryLoving یوازې هغه وخت کامره کاروی کله چې تاسو د پروفایل عکس اخیستل یا د خوندیتوب عکس شریک کړئ."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving دا جریان د تنظیماتو او داشبورډ څخه شتون لری.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving د خوندیتوب او د ملګرو AI لپاره مایکروفون ته اړتیا لری.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ستاسو موقعیت د خوندیتوب نقشه او نږدې خوندیتوب ځانګړتیاوو لپاره کاروی.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth کاروی چې ستاسو د خوندیتوب ګاڼې NorthStar وصل کړی."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth کاروی چې ستاسو د خوندیتوب ګاڼې NorthStar وصل کړی.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

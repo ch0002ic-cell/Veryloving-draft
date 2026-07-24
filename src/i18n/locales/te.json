@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "మీరు AI సహచరుడు లేదా భద్రతా కాల్ ప్రారంభించినప్పుడు మాత్రమే VeryLoving మీ మైక్రోఫోన్ ను ఉపయోగిస్తారు.",
     "bluetoothRationaleTitle": "Bluetooth మీ ధరించదగ్గాన్ని కనెక్ట్ చేస్తుంది",
     "bluetoothRationaleMessage": "VeryLoving NorthStar ఆభరణాలతో జత చేయడానికి, కనెక్షన్ స్థితిని చదవడానికి మరియు ధరించగలిగే వాటి నుండి భద్రతా ప్రవాహాలను ప్రేరేపించడానికి Bluetooth ఉపయోగిస్తుంది.",
-    "cameraRationaleTitle": "కెమెరా ఐచ్ఛికం",
-    "cameraRationaleMessage": "మీరు ప్రొఫైల్ ఫోటోను తీయాలని లేదా భద్రతా ఇమేజ్ను భాగస్వామ్యం చేయడాన్ని ఎంచుకున్నప్పుడు మాత్రమే VeryLoving కెమెరాను ఉపయోగిస్తాడు."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving సెట్టింగ్స్ మరియు డ్యాష్ బోర్డ్ నుంచి ఈ ప్రవాహాన్ని అందుబాటులో ఉంచుతుంది.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "భద్రత మరియు AI సహచర కాల్స్ కోసం VeryLoving మైక్రోఫోన్ యాక్సెస్ అవసరం.",
       "NSLocationWhenInUseUsageDescription": "భద్రతా మ్యాప్ మరియు సమీప భద్రతా ఫీచర్ల కోసం VeryLoving మీ స్థానాన్ని ఉపయోగిస్తుంది.",
-      "NSBluetoothAlwaysUsageDescription": "మీ NorthStar భద్రతా ఆభరణాలకు కనెక్ట్ చేయడానికి VeryLoving Bluetooth ఉపయోగిస్తుంది."
+      "NSBluetoothAlwaysUsageDescription": "మీ NorthStar భద్రతా ఆభరణాలకు కనెక్ట్ చేయడానికి VeryLoving Bluetooth ఉపయోగిస్తుంది.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

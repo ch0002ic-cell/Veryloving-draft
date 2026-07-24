@@ -5,6 +5,17 @@ export const ROBOT_PAIRING_CREDENTIALS_KEY = 'veryloving.robotPairingCredentials
 const ROBOT_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 let credentialMutationQueue = Promise.resolve();
+let credentialCleanupGeneration = 0;
+
+function cleanupSupersededError() {
+  const error = new Error('Robot credential recovery was superseded by local data cleanup.');
+  error.code = 'ROBOT_CREDENTIAL_CLEANUP_SUPERSEDED';
+  return error;
+}
+
+export function getRobotPairingCredentialCleanupGeneration() {
+  return credentialCleanupGeneration;
+}
 
 function mutateCredentials(mutation, { cleanup = false } = {}) {
   const previous = credentialMutationQueue;
@@ -45,13 +56,28 @@ async function loadSnapshot(accountId, secureStorageImpl) {
 }
 
 export async function saveRobotPairingCredential(accountId, robotId, token, {
-  secureStorageImpl = secureStorage
+  secureStorageImpl = secureStorage,
+  expectedCleanupGeneration
 } = {}) {
   if (!ROBOT_ID_PATTERN.test(robotId || '') || !TOKEN_PATTERN.test(token || '')) {
     throw new Error('The robot pairing credential is invalid.');
   }
+  if (
+    expectedCleanupGeneration !== undefined
+    && (!Number.isSafeInteger(expectedCleanupGeneration) || expectedCleanupGeneration < 0)
+  ) {
+    throw new TypeError('The robot credential cleanup generation is invalid.');
+  }
   return mutateCredentials(async () => {
+    if (
+      expectedCleanupGeneration !== undefined
+      && expectedCleanupGeneration !== credentialCleanupGeneration
+    ) throw cleanupSupersededError();
     const snapshot = await loadSnapshot(accountId, secureStorageImpl);
+    if (
+      expectedCleanupGeneration !== undefined
+      && expectedCleanupGeneration !== credentialCleanupGeneration
+    ) throw cleanupSupersededError();
     snapshot.credentials[robotId] = token;
     await secureStorageImpl.setItemAsync(ROBOT_PAIRING_CREDENTIALS_KEY, JSON.stringify({ version: 1, ...snapshot }));
     return true;
@@ -81,6 +107,10 @@ export async function removeRobotPairingCredential(accountId, robotId, {
 }
 
 export function clearRobotPairingCredentials({ secureStorageImpl = secureStorage } = {}) {
+  // Invalidate recovery operations before their non-cancellable network read
+  // can resolve. The serialized delete still runs after any write already in
+  // progress, so neither ordering can resurrect an earlier account's token.
+  credentialCleanupGeneration += 1;
   return mutateCredentials(
     () => secureStorageImpl.deleteItemAsync(ROBOT_PAIRING_CREDENTIALS_KEY),
     { cleanup: true }

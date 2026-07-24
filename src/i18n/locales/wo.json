@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving du jëfandikoo sa mikro sudee danga tàmbali AI woote àndadoo wala wooteb kaaraange.",
     "bluetoothRationaleTitle": "Bluetooth dafay boole sa wearable",
     "bluetoothRationaleMessage": "VeryLoving dafay jëfandikoo Bluetooth ngir boole ak takkaay NorthStar, jàng tolluwaayu lëkkaloo bi, ak def kaaraange ci wearable bi.",
-    "cameraRationaleTitle": "Kamera bi mënul ñàkk",
-    "cameraRationaleMessage": "VeryLoving du jëfandikoo kameraa bi sudee danga tànn jël nataalu profil wala nga séddoo nataalu kaaraange."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving dafay tëye flow bi ci Jekkal yi ak ci tablo bi.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving soxla mikro ngir kaaraange ak AI woote àndadoo.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving dafay jëfandikoo sa barab ngir kàrtu kaaraange ak man-mani kaaraange yi la gëna jege.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dafay jëfandikoo Bluetooth ngir boole sa NorthStar takkaay kaaraange.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

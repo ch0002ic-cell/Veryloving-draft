@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ke sadilaka mikro na nge kaka ntangu nge ke yantika AI nduku to kubinga ya lutaninu.",
     "bluetoothRationaleTitle": "Bluetooth ke vukisaka bima na nge ya kulwata",
     "bluetoothRationaleMessage": "VeryLoving ke sadilaka Bluetooth sambu na kuvukisa ti bima ya mayaka NorthStar, kutanga kisika ya nguizani, mpi kubasisa ba nzila ya lutaninu yina ke katukaka na kima ya kulwata.",
-    "cameraRationaleTitle": "Camera kele ya kupona",
-    "cameraRationaleMessage": "VeryLoving ke sadilaka kamera kaka ntangu nge ke ponaka kubaka foto ya profil to kukabula kifwanisu ya lutaninu."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ke bumbaka nzila yai na Parametre mpi na tablo ya ordinatere.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving kele na mfunu ya kukota na mikro sambu na lutaninu mpi AI kubinga ya banduku.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ke sadilaka kisika na nge sambu na karte ya lutaninu mpi bima ya lutaninu yina kele pene-pene.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ke sadilaka Bluetooth sambu na kukangama na bima na nge ya lutaninu ya NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

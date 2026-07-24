@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving משתמש במיקרופון שלך רק כשאתה מתחיל שיחת לוויין AI או שיחת בטיחות.",
     "bluetoothRationaleTitle": "Bluetooth מחבר את הלבישה שלך",
     "bluetoothRationaleMessage": "VeryLoving משתמש Bluetooth לשילוב עם תכשיטי NorthStar, קריאת מצב החיבור והפעלת זרמי בטיחות מהלבישה.",
-    "cameraRationaleTitle": "מצלמה היא אופציונלית",
-    "cameraRationaleMessage": "VeryLoving משתמש במצלמה רק כשאתה בוחר לצלם תמונת פרופיל או לשתף תמונת בטיחות."
+    "cameraRationaleTitle": "סריקת קוד ה-QR של הרובוט",
+    "cameraRationaleMessage": "VeryLoving משתמשת במצלמה רק כדי לסרוק את קוד ה-QR החד-פעמי לצימוד שעל הרובוט הביתי שלך."
   },
   "tutorial": {
     "sharedBody": "VeryLoving שומר על הזרימה הזו זמינה מההגדרות ומלוח המחוונים.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving זקוקה לגישה למיקרופון לצורך בטיחות ושיחות AI לשותפים.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving משתמשת במיקום שלך למפת הבטיחות ולתכונות הבטיחות הסמוכות.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving משתמש Bluetooth כדי להתחבר לתכשיטי הבטיחות NorthStar שלך."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving משתמש Bluetooth כדי להתחבר לתכשיטי הבטיחות NorthStar שלך.",
+      "NSCameraUsageDescription": "VeryLoving משתמשת במצלמה רק כדי לסרוק את קוד ה-QR החד-פעמי לצימוד שעל הרובוט הביתי שלך."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -217,12 +217,15 @@ test('medical emergency sharing is reachable, explicit, and accessibly labelled'
   assert.match(settings, /router\.push\('\/medical-profile'\)/);
   assert.match(authRouting, /'medical-profile'/);
   assert.match(medicalProfile, /loadMedicalEmergencyProfile\(user\.id\)/);
-  assert.match(medicalProfile, /saveMedicalEmergencyProfile\(user\.id/);
-  assert.match(medicalProfile, /clearMedicalEmergencyProfile\(user\.id\)/);
+  assert.match(medicalProfile, /const accountId = user\.id/);
+  assert.match(medicalProfile, /saveMedicalEmergencyProfile\(accountId/);
+  assert.match(medicalProfile, /clearMedicalEmergencyProfile\(accountId\)/);
+  assert.match(medicalProfile, /mountedRef\.current[\s\S]*accountIdRef\.current === accountId/);
+  assert.match(medicalProfile, /mutationRequestRef\.current === requestId/);
   assert.match(medicalProfile, /accessibilityLabel=\{t\('medicalProfile\.shareLabel'\)\}/);
   assert.match(medicalProfile, /accessibilityHint=\{t\('medicalProfile\.shareHint'\)\}/);
   assert.match(medicalProfile, /consentRecordedAt: form\.shareInEmergency/);
-  assert.match(medicalProfile, /toLocaleString\(locale\)/);
+  assert.match(medicalProfile, /formatLocalizedDateTime\(profile\.updatedAt, locale\)/);
 });
 
 test('shared screen content is never hidden behind an entrance animation', () => {
@@ -267,7 +270,8 @@ test('legacy async and modal controls expose busy, validation, retry, and modal 
   }
 
   const language = source('src/components/LanguageSelector.js');
-  assert.match(language, /accessibilityLabel=\{`\$\{t\('languages\.title'\)\}: \$\{languageLabel\(selectedLanguage\)\}`\}/);
+  assert.match(language, /languageAccessibilityLabel\(selectedLanguage, true\)/);
+  assert.match(language, /accessibilityLabel=\{languageAccessibilityLabel\(item, selected\)\}/);
 
   const chat = source('src/components/ChatBubble.js');
   assert.match(chat, /accessibilityState=\{\{ busy: retrying, disabled: retryDisabled \}\}/);

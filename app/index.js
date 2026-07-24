@@ -6,10 +6,12 @@ import { AppLoadingState } from '../src/components/AppLoadingState';
 import { restoreSafeNavigationDestination } from '../src/services/navigation-persistence';
 import { withTimeout } from '../src/utils/async';
 import { logger } from '../src/utils/logger';
+import { useI18n } from '../src/context/I18nContext';
 
 const NAVIGATION_RESTORE_TIMEOUT_MS = 1500;
 
 export default function Index() {
+  const { t } = useI18n();
   const {
     hasPendingPhoneVerification,
     isDemoMode,
@@ -44,13 +46,13 @@ export default function Index() {
     };
   }, [isDemoMode, loading, onboardingComplete, user?.id]);
 
-  if (loading) return <AppLoadingState />;
+  if (loading) return <AppLoadingState message={t('common.loading')} />;
   if (!user && hasPendingPhoneVerification) return <Redirect href="/(auth)/verify-code" />;
   if (!user) return <Redirect href="/(auth)/onboarding" />;
   if (!onboardingComplete) return <Redirect href={onboardingRoute} />;
   if (isDemoMode) return <Redirect href="/(tabs)" />;
   if (restoration.accountId !== user.id || !restoration.ready) {
-    return <AppLoadingState />;
+    return <AppLoadingState message={t('common.loading')} />;
   }
   return <Redirect href={restoration.destination || '/(tabs)'} />;
 }

@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving geavaha du mikrofovnna dušše dalle go álggahat AI ovttasbargoguoimmi dahje sihkarvuođatelefovnna.",
     "bluetoothRationaleTitle": "Bluetooth čatná du geavahanrusttega",
     "bluetoothRationaleMessage": "VeryLoving geavaha Bluetooth ovttastahttit NorthStar juvllaiguin, lohkat oktavuođa stáhtusa ja álggahit sihkarvuođavuođuid geavahanrusttegis.",
-    "cameraRationaleTitle": "Govvenrusttet lea válljejuvvon",
-    "cameraRationaleMessage": "VeryLoving geavaha govvenrusttega dušše dalle go válljet govvet profiilagova dahje juohkit sihkarvuođagova."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving doallá dán vuođu olámuttos njuolggadusain ja dávvirtávvalis.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving dárbbaša mikrofovdnabeassama sihkarvuođa dihte ja AI ovttasbargoguoimmiid riŋgemiid dihte.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving geavaha du báikki dorvvolašvuođakártii ja lagaš dorvvolašvuođadoaimmaide.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving geavaha Bluetooth čatnat du NorthStar sihkarvuođajuvllaide."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving geavaha Bluetooth čatnat du NorthStar sihkarvuođajuvllaide.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

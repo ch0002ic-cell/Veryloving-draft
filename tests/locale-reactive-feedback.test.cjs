@@ -23,7 +23,7 @@ test('visible app-owned feedback is translated from stable keys during render', 
   const map = screenSource('app/(tabs)/map.js');
   assert.match(map, /translationKey: 'releaseCritical\.locationShareFailed'/);
   assert.match(map, /message=\{localizedFeedbackMessage\(shareError \|\| error\)\}/);
-  assert.match(map, /capturedAt: new Date\(feedback\.capturedAt\)\.toLocaleString\(locale\)/);
+  assert.match(map, /capturedAt: formatLocalizedDateTime\(feedback\.capturedAt, locale\)/);
   assert.doesNotMatch(map, /set(?:Error|ShareError|SavedPlaceFeedback)\([^\n]*t\(/);
 
   const notifications = screenSource('app/(auth)/notification-permission.js');
@@ -55,7 +55,11 @@ test('onboarding, permission, and device failures remain reactive to locale chan
 
   const jewelry = screenSource('app/(auth)/jewelry-setup.js');
   assert.match(jewelry, /translationKey: 'settings\.updateFailedMessage'/);
-  assert.match(jewelry, /message=\{error\?\.translationKey \? t\(error\.translationKey\) : error\}/);
+  assert.match(
+    jewelry,
+    /const errorMessage = error\?\.translationKey \? t\(error\.translationKey\)[\s\S]*?: error \? t\('settings\.updateFailedMessage'\) : null/
+  );
+  assert.match(jewelry, /message=\{errorMessage\}/);
   assert.doesNotMatch(jewelry, /setError\(t\(/);
 
   const deviceManagement = screenSource('app/device-management.js');
@@ -76,4 +80,25 @@ test('changing language cannot retrigger onboarding completion persistence', () 
   assert.match(finish, /\}, \[completeOnboarding\]\);/);
   assert.doesNotMatch(finish, /\bt\(/);
   assert.match(completion, /message=\{t\(errorKey\)\}/);
+});
+
+test('async wellness, medication, profile, and voice feedback stores translation keys', () => {
+  const expectations = [
+    ['app/medication-reminders.js', /message=\{feedback\?\.messageKey \? t\(feedback\.messageKey, feedback\.messageOptions\) : null\}/],
+    ['app/emotional-check-in.js', /t\(snackbar\.messageKey, snackbar\.messageOptions\)/],
+    ['app/cognitive-engagement.js', /t\(snackbar\.messageKey, snackbar\.messageOptions\)/],
+    ['app/scenario-center.js', /message=\{snackbar\?\.messageKey \? t\(snackbar\.messageKey, snackbar\.messageOptions\) : null\}/],
+    ['app/medical-profile.js', /message=\{feedback\?\.messageKey \? t\(feedback\.messageKey, feedback\.messageOptions\) : null\}/],
+    ['app/safety-call.js', /message=\{snackbar\?\.messageKey \? t\(snackbar\.messageKey, snackbar\.messageOptions\) : null\}/]
+  ];
+
+  for (const [relativePath, renderPattern] of expectations) {
+    const screen = screenSource(relativePath);
+    assert.match(screen, renderPattern, `${relativePath} must translate transient state during render`);
+    assert.doesNotMatch(
+      screen,
+      /set(?:Feedback|Snackbar)\(\{[^\n}]*message:\s*t\(/,
+      `${relativePath} must not store a translation captured by an async closure`
+    );
+  }
 });

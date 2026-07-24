@@ -53,6 +53,17 @@ test('action gateway rejects unsafe transport and acknowledgement timing configu
   );
 });
 
+test('action gateway observability failures cannot replace contained repository failures', async () => {
+  const gateway = new ActionGateway({
+    outboxRepository: {
+      async getAction() { throw new Error('contained repository failure'); }
+    },
+    logger: { error() { throw new Error('hostile logger sink'); } }
+  });
+  await assert.doesNotReject(gateway.readOutboxRecord('action-safe-log'));
+  assert.equal(await gateway.readOutboxRecord('action-safe-log'), undefined);
+});
+
 function acknowledgeRobot(gateway, actionId, acknowledgement = { ok: true }, {
   adapterId = 'manufacturer-default',
   bindingEpoch = defaultBindingEpoch

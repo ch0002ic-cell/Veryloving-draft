@@ -1,5 +1,6 @@
 import { MEDICATION_REMINDER_STATUS } from './medication-reminder-state';
 import { createAuthenticationNonce } from '../utils/session-token';
+import { normalizeDecimalDigits } from '../utils/unicode-digits';
 
 const MEDICATION_REFERENCE_PATTERN = /^[A-Za-z0-9_-]{1,100}$/;
 const DEVICE_IDENTIFIER_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
@@ -12,7 +13,9 @@ function formError(code, message) {
 }
 
 function boundedMinutes(value, label, maximum) {
-  const normalized = typeof value === 'string' ? value.trim() : value;
+  const normalized = typeof value === 'string'
+    ? normalizeDecimalDigits(value).trim()
+    : value;
   const minutes = Number(normalized);
   if (!Number.isSafeInteger(minutes) || minutes < 1 || minutes > maximum) {
     throw formError('MEDICATION_MINUTES_INVALID', `${label} is invalid.`);

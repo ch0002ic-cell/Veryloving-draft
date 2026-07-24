@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving အဖော် သို့မဟုတ် ဘေးကင်းရေးခေါ်ဆိုမှုစတင်သည့်အခါမှသာ သင့်မိုက်ကရိုဖုန်းကို AI အသုံးပြုသည်။",
     "bluetoothRationaleTitle": "Bluetooth သင့်ရဲ့ ဝတ်ဆင်နိုင်တဲ့ ကိရိယာကို ဆက်သွယ်ပေးတယ်",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth သည် NorthStar ရတနာ များ နှင့် တွဲဖက် ရန် ၊ ဆက်သွယ် မှု အခြေအနေ ကို ဖတ်ရှု ရန် နှင့် ဝတ်ဆင် နိုင် သော ကိရိယာ မှ ဘေးကင်း လုံခြုံ မှု စီးဆင်း မှု များ ကို စတင် ဆောင်ရွက် ရန်  ကို အသုံးပြု သည် ။",
-    "cameraRationaleTitle": "ကင်မရာသည် ရွေးချယ်စရာဖြစ်သည်၊",
-    "cameraRationaleMessage": "VeryLoving ကိုယ်ရေးရာဇဝင်ဓာတ်ပုံရိုက်ရန် သို့မဟုတ် ဘေးကင်းသောပုံရိပ်ကို ဝေမျှရန် သင်ရွေးချယ်သည့်အခါမှသာ ကင်မရာကို အသုံးပြုသည်။"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ဆက်သွယ်မှုနှင့် ဒိုင်ဘုတ်ဘုတ်မှ ဤစီးဆင်းမှုကို ထိန်းသိမ်းထားသည်။",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving လုံခြုံရေးအတွက် မိုက်ကရိုဖုန်း အသုံးပြုဖို့လိုပြီး AI ခေါ်ဆိုမှုအတွက် လိုအပ်သည်။",
       "NSLocationWhenInUseUsageDescription": "VeryLoving လုံခြုံရေးမြေပုံနှင့် အနီးအနားရှိ လုံခြုံရေးအသွင်အပြင်များအတွက် သင့်တည်နေရာကို အသုံးပြုသည်။",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth လုံခြုံ ရေး ရတနာ များ နှင့် ချိတ်ဆက် ရန် NorthStar ကို အသုံးပြု သည် ။"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth လုံခြုံ ရေး ရတနာ များ နှင့် ချိတ်ဆက် ရန် NorthStar ကို အသုံးပြု သည် ။",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

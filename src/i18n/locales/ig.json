@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving na-eji igwe okwu gị naanị mgbe ị na-amalite enyi AI ma ọ bụ oku nchekwa.",
     "bluetoothRationaleTitle": "Bluetooth jikọọ gị wearable",
     "bluetoothRationaleMessage": "VeryLoving na-eji Bluetooth jikọtara ya na ọla NorthStar, gụọ ọnọdụ njikọ, ma kpalite nchekwa nchebe site na wearable.",
-    "cameraRationaleTitle": "Igwefoto bụ nhọrọ",
-    "cameraRationaleMessage": "VeryLoving na-eji igwefoto naanị mgbe ị na-ahọrọ ịse foto profaịlụ ma ọ bụ kesaa foto nchekwa."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving na-eme ka usoro a dị site na Ntọala na dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving chọrọ ohere igwe okwu maka nchekwa na AI oku ndị enyi.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving na-eji ọnọdụ gị maka map nchekwa na atụmatụ nchekwa dị nso.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving na-eji Bluetooth iji jikọọ na ọla nchekwa NorthStar gị."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving na-eji Bluetooth iji jikọọ na ọla nchekwa NorthStar gị.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

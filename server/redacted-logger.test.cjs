@@ -54,3 +54,54 @@ test('server log sanitizer does not retain identifiers embedded in request paths
     name: 'UpstreamError'
   });
 });
+
+test('server diagnostics contain hostile values and bound native log payloads', () => {
+  let reads = 0;
+  const hostile = {};
+  for (let index = 0; index < 75; index += 1) {
+    Object.defineProperty(hostile, `field-${index}`, {
+      enumerable: true,
+      get() {
+        reads += 1;
+        if (index === 2) throw new Error('getter exploded');
+        return index;
+      }
+    });
+  }
+  const revoked = Proxy.revocable([], {});
+  revoked.revoke();
+  const longSecret = `Bearer private-token ${'x'.repeat(4096)}`;
+
+  assert.doesNotThrow(() => sanitizeServerLog(hostile));
+  const sanitized = sanitizeServerLog({
+    hostile,
+    revoked: revoked.proxy,
+    detail: longSecret,
+    values: Array.from({ length: 75 }, (_, index) => index)
+  });
+  assert.equal(reads, 100);
+  assert.equal(sanitized.hostile['field-2'], '[UNREADABLE]');
+  assert.equal(sanitized.hostile.truncated, true);
+  assert.equal(sanitized.revoked, '[UNREADABLE]');
+  assert.doesNotMatch(sanitized.detail, /private-token/);
+  assert.match(sanitized.detail, /\[TRUNCATED\]$/);
+  assert.equal(sanitized.values.length, 51);
+  assert.equal(sanitized.values.at(-1), '[TRUNCATED]');
+});
+
+test('redacted logger never turns a sanitizer or sink failure into an application failure', () => {
+  const hostile = {};
+  Object.defineProperty(hostile, 'detail', {
+    enumerable: true,
+    get() { throw new Error('getter exploded'); }
+  });
+  const throwingSink = createRedactedLogger({
+    error() { throw new Error('sink unavailable'); }
+  });
+  const revokedSink = Proxy.revocable({}, {});
+  revokedSink.revoke();
+  const inaccessibleSink = createRedactedLogger(revokedSink.proxy);
+
+  assert.doesNotThrow(() => throwingSink.error('handled failure', hostile));
+  assert.doesNotThrow(() => inaccessibleSink.error('handled failure', hostile));
+});

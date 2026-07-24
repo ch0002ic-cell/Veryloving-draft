@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "Chan eil VeryLoving a’ cleachdadh a’ mhicreofon agad ach nuair a thòisicheas tu air companach no gairm sàbhailteachd AI.",
     "bluetoothRationaleTitle": "Bluetooth a' ceangal an so-ghiùlain agad",
     "bluetoothRationaleMessage": "Cleachdaidh VeryLoving Bluetooth gus seudaireachd NorthStar a chàradh, inbhe ceangail a leughadh, agus sruthan sàbhailteachd a bhrosnachadh on nì a ghabhas caitheamh.",
-    "cameraRationaleTitle": "Tha camara roghainneil\nCha chleachd",
-    "cameraRationaleMessage": "VeryLoving an camara ach nuair a roghnaicheas tu dealbh pròifil a thogail no dealbh sàbhailteachd a cho-roinn.\nCumaidh"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving an sruth seo ri làimh o Settings agus an deas-bhòrd.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "Feumaidh VeryLoving cothrom air a’ mhicreofon airson sàbhailteachd agus fiosan companach AI.",
       "NSLocationWhenInUseUsageDescription": "Cleachdaidh VeryLoving d’ ionad airson a’ mhapa sàbhailteachd agus feartan sàbhailteachd faisg air làimh.",
-      "NSBluetoothAlwaysUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad."
+      "NSBluetoothAlwaysUsageDescription": "Cleachdaidh VeryLoving Bluetooth gus ceangal a dhèanamh ris an t-seudan sàbhailteachd NorthStar agad.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

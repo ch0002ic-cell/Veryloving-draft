@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving hutumia maikrofoni yako tu unapoanzisha simu ya AI au ya usalama.",
     "bluetoothRationaleTitle": "Bluetooth inaunganisha kifaa chako cha kuvaa",
     "bluetoothRationaleMessage": "VeryLoving hutumia Bluetooth kuoanisha na vito vya NorthStar, kusoma hali ya muunganisho, na kuchochea mtiririko wa usalama kutoka kwa inayoweza kuvaliwa.",
-    "cameraRationaleTitle": "Kamera ni hiari",
-    "cameraRationaleMessage": "VeryLoving hutumia kamera tu unapochagua kupiga picha ya wasifu au kushiriki picha ya usalama."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving huweka mtiririko huu kutoka kwa Mipangilio na dashibodi.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving inahitaji ufikiaji wa maikrofoni kwa usalama na simu AI mwenza.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving hutumia eneo lako kwa ramani ya usalama na vipengele vya usalama vilivyo karibu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving hutumia Bluetooth kuungana na vito vyako vya usalama NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

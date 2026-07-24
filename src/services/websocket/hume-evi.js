@@ -28,6 +28,9 @@ const RESUME_UNAVAILABLE_CODES = new Set(['E0708', 'E0720']);
 const ACTION_ERROR_CODE_PATTERN = /^[A-Z][A-Z0-9_:-]{0,79}$/;
 const ACTION_ID_PATTERN = /^[A-Za-z0-9._:-]{1,160}$/;
 const INTERACTION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/;
+const TOOL_HANDLER_UNAVAILABLE = 'TOOL_HANDLER_UNAVAILABLE';
+const TOOL_EXECUTION_FAILED = 'TOOL_EXECUTION_FAILED';
+const DEFAULT_TOOL_FAILURE_MESSAGE = 'Connected care is temporarily unavailable.';
 
 function stableActionRequestId(scope, toolCallId) {
   const hash = (value) => {
@@ -519,7 +522,13 @@ export class HumeEVIService {
     }
     const toolCallId = message.tool_call_id || message.toolCallId;
     if (!toolCallId || typeof this.messageHandler.onToolCall !== 'function') {
-      this.sendToolError(toolCallId || 'unknown', 'No handler is registered for this tool.', 'I could not access that safety resource.', sourceSocket);
+      this.sendToolError(
+        toolCallId || 'unknown',
+        TOOL_HANDLER_UNAVAILABLE,
+        normalizeVoiceText(this.sessionConfig?.toolFailureMessage, { truncate: true })
+          || DEFAULT_TOOL_FAILURE_MESSAGE,
+        sourceSocket
+      );
       return;
     }
 
@@ -533,8 +542,17 @@ export class HumeEVIService {
       this.sendToolResponse(toolCallId, content, message, sourceSocket);
     } catch (error) {
       if (this.activeToolAbortControllers.get(toolCallId) !== controller || sourceSocket !== this.socket || controller.signal.aborted) return;
-      logger.recoverable('[HumeEVIService] Tool execution failed:', { name: message.name, error: error.message });
-      this.sendToolError(toolCallId, error.message || 'Tool execution failed.', 'That safety resource is temporarily unavailable.', sourceSocket);
+      logger.recoverable('[HumeEVIService] Tool execution failed:', {
+        name: message.name,
+        errorName: error?.name || 'ToolExecutionError'
+      });
+      this.sendToolError(
+        toolCallId,
+        TOOL_EXECUTION_FAILED,
+        normalizeVoiceText(this.sessionConfig?.toolFailureMessage, { truncate: true })
+          || DEFAULT_TOOL_FAILURE_MESSAGE,
+        sourceSocket
+      );
     } finally {
       if (this.activeToolAbortControllers.get(toolCallId) === controller) this.activeToolAbortControllers.delete(toolCallId);
     }

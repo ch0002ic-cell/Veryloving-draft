@@ -436,9 +436,12 @@ test('settings writes and preserves the sign-out tombstone before sweeping accou
     settings.indexOf('\n\n  return (', settings.indexOf('const handleSignOut = async'))
   );
   const durableSignOut = signOutHandler.indexOf('await signOut()');
-  const localSweep = signOutHandler.indexOf('await deleteLocalUserData({');
+  const localSweep = signOutHandler.indexOf('deleteLocalUserData({');
   assert.ok(durableSignOut >= 0 && durableSignOut < localSweep);
   assert.match(signOutHandler, /preserveSignedOutTombstone: true/);
+  assert.match(signOutHandler, /performSettingsSignOut\(\{/);
+  assert.match(signOutHandler, /establishSessionBarrier: async \(\) => \{[\s\S]*await signOut\(\)/);
+  assert.match(signOutHandler, /sweepLocalData: \(\) => deleteLocalUserData\(/);
 
   const auth = readFileSync(path.resolve(process.cwd(), 'src/context/AuthContext.js'), 'utf8');
   const signOut = auth.slice(

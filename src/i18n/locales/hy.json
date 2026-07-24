@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving օգտագործում է ձեր խոսափողը միայն այն ժամանակ, երբ սկսում եք AI զուգընկերոջ կամ անվտանգության զանգը։",
     "bluetoothRationaleTitle": "Bluetooth միացնում է ձեր wearable-ը",
     "bluetoothRationaleMessage": "VeryLoving օգտագործում է Bluetooth NorthStar զարդերի հետ զուգակցելու, կապի կարգավիճակը կարդալու եւ հագուստի անվտանգության հոսքերը խթանելու համար։",
-    "cameraRationaleTitle": "Տեսախցիկը ընտրովի է",
-    "cameraRationaleMessage": "VeryLoving օգտագործում է տեսախցիկը միայն այն ժամանակ, երբ նախընտրում եք նկարել պրոֆիլը կամ կիսվել անվտանգության պատկերով։"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving այս հոսքը հասանելի է պահում Կարգավորումներից եւ վահանակից:",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving կարիք ունի խոսափողի հասանելիության անվտանգության եւ ուղեկցող զանգերի AI։",
       "NSLocationWhenInUseUsageDescription": "VeryLoving օգտագործում է ձեր գտնվելու վայրը անվտանգության քարտեզի եւ մոտակա անվտանգության առանձնահատկությունների համար:",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving օգտագործում է Bluetooth ձեր NorthStar անվտանգության զարդերին միանալու համար:"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving օգտագործում է Bluetooth ձեր NorthStar անվտանգության զարդերին միանալու համար:",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

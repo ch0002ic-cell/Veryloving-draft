@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { explainPermission } from './permissions';
-import { translate } from '../i18n/core';
+import { translate, translateForLocale } from '../i18n/core';
 import { logger } from '../utils/logger';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
 import {
@@ -15,6 +15,7 @@ import { secureStorage } from './secure-storage';
 export const PENDING_PUSH_UNREGISTER_KEY = 'veryloving.push.pendingUnregister.v1';
 const PUSH_UNREGISTER_RECEIPT_PATTERN = /^[A-Za-z0-9_-]{80,1024}$/;
 let pushRegistrationQueue = Promise.resolve();
+let notificationChannelRefreshQueue = Promise.resolve();
 
 function serializePushRegistration(operation) {
   const next = pushRegistrationQueue.catch(() => {}).then(operation);
@@ -84,17 +85,42 @@ export async function getNotificationsModule() {
   return notificationsRuntime.getModule();
 }
 
+/**
+ * Keep Android's persisted notification channel label aligned with the active
+ * app locale. Updating an existing channel is idempotent and does not request
+ * notification permission, so this is safe during any locale transition.
+ *
+ * Android persists channel metadata outside the JavaScript process. Serialize
+ * refreshes so rapid locale changes cannot let an older native write finish
+ * after the newest one.
+ */
+export function refreshSafetyNotificationChannel(locale, {
+  notificationsModule,
+  platformOS = Platform.OS
+} = {}) {
+  if (platformOS !== 'android') return Promise.resolve(false);
+  const operation = notificationChannelRefreshQueue.catch(() => {}).then(async () => {
+    const Notifications = notificationsModule || await notificationsRuntime.getModule();
+    if (!Notifications) return false;
+    const name = locale
+      ? translateForLocale(locale, 'notifications.channelName')
+      : translate('notifications.channelName');
+    await Notifications.setNotificationChannelAsync('safety', {
+      name,
+      importance: Notifications.AndroidImportance.MAX
+    });
+    return true;
+  });
+  notificationChannelRefreshQueue = operation.then(() => undefined, () => undefined);
+  return operation;
+}
+
 export async function requestNotificationPermission({ showRationale = true } = {}) {
   const Notifications = await notificationsRuntime.getModule();
   if (!Notifications) return false;
   // Android 13+ needs a channel before the operating system can present the
   // notification permission prompt.
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('safety', {
-      name: translate('notifications.channelName'),
-      importance: Notifications.AndroidImportance.MAX
-    });
-  }
+  await refreshSafetyNotificationChannel(undefined, { notificationsModule: Notifications });
   const existing = await Notifications.getPermissionsAsync();
   let status = existing.status;
   if (status !== 'granted') {

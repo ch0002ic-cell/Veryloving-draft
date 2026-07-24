@@ -33,6 +33,8 @@ import { triggerSOS } from '../services/emergency';
 import { loadLastKnownLocation } from '../services/location-cache';
 import { loadEmergencyMedicalAttachment } from '../services/medical-profile-store';
 import { normalizeVoiceText } from '../utils/voice-text';
+import { voiceServiceOwnership } from '../services/websocket/voice-service-ownership';
+import { nativeLocaleTagForLanguage } from '../i18n/core';
 
 const MAX_IN_MEMORY_MESSAGES = 200;
 const MAX_SUPPRESSED_USER_ECHOES = 64;
@@ -58,11 +60,13 @@ function voiceOverride(selectedVoice) {
 export function useHumeVoiceCall({ initialSessionId } = {}) {
   const { accessToken, isDemoMode, user } = useAuth();
   const { contacts, selectedVoice, settings, wearableEntities, robotEntities } = useAppState();
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const networkState = useNetworkState();
   const isOnline = networkState.isConnected !== false && networkState.isInternetReachable !== false;
   const forcedOffline = isDemoMode || config.enableOfflineMode || settings.offlineMode;
   const serviceRef = useRef(forcedOffline ? offlineEVIService : humeEVIService);
+  const serviceOwnerRef = useRef(null);
+  if (!serviceOwnerRef.current) serviceOwnerRef.current = Symbol('voice-call-owner');
   const sessionIdRef = useRef(normalizeSessionId(initialSessionId) || createConversationSessionId());
   // A durable conversation may be resumed many times, while the authenticated
   // feedback proof is deliberately single-use. Keep those identities separate
@@ -74,7 +78,9 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   const connectionGenerationRef = useRef(0);
   const flushPendingMessagesRef = useRef(null);
   const queueRetryTimerRef = useRef(null);
-  const [status, setStatus] = useState(serviceRef.current.getState());
+  // A singleton transport may still be finishing cleanup for an older screen.
+  // Until this hook explicitly claims it, that transport state is not ours.
+  const [status, setStatus] = useState('disconnected');
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
   const [notice, setNotice] = useState(null);
@@ -174,7 +180,11 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   }, [pruneSuppressedEchoes]);
 
   const flushPendingMessages = useCallback(async () => {
-    if (!isOnline || humeEVIService.getState() !== 'connected') return;
+    if (
+      !isOnline
+      || humeEVIService.getState() !== 'connected'
+      || !voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)
+    ) return;
     if (queueRetryTimerRef.current) {
       clearTimeout(queueRetryTimerRef.current);
       queueRetryTimerRef.current = null;
@@ -182,6 +192,9 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     const remaining = await flushOfflineMessageQueue({
       sessionId: sessionIdRef.current,
       sendMessage: async (queued) => {
+        if (!voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)) {
+          return false;
+        }
         rememberSuppressedEcho(queued.text);
         const accepted = humeEVIService.sendText(queued.text);
         if (!accepted) {
@@ -212,7 +225,11 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     const nextAttemptAt = remaining
       .filter((item) => item.sessionId === sessionIdRef.current && item.nextAttemptAt > Date.now())
       .reduce((earliest, item) => Math.min(earliest, item.nextAttemptAt), Infinity);
-    if (Number.isFinite(nextAttemptAt) && humeEVIService.getState() === 'connected') {
+    if (
+      Number.isFinite(nextAttemptAt)
+      && humeEVIService.getState() === 'connected'
+      && voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)
+    ) {
       queueRetryTimerRef.current = setTimeout(() => {
         queueRetryTimerRef.current = null;
         flushPendingMessagesRef.current?.().catch((queueError) => {
@@ -231,6 +248,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       mountedRef.current
       && connectionGenerationRef.current === generation
       && serviceRef.current === service
+      && voiceServiceOwnership.owns(serviceOwnerRef.current, service)
     );
     service.setStateHandler({
       onStateChange: (next) => {
@@ -300,11 +318,9 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
   }, [accessToken, appendMessage, consumeSuppressedEcho, flushPendingMessages, presentError, requestHelpDial, selectedVoice.displayName, selectedVoice.id]);
 
   useEffect(() => {
-    bindServiceHandlers(serviceRef.current);
-  }, [bindServiceHandlers]);
-
-  useEffect(() => {
-    humeEVIService.updateDevices([...wearableEntities, ...robotEntities]);
+    if (voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)) {
+      humeEVIService.updateDevices([...wearableEntities, ...robotEntities]);
+    }
   }, [robotEntities, wearableEntities]);
 
   useEffect(() => {
@@ -312,7 +328,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       setNotice(voiceCallCopyKeys.offline);
       return;
     }
-    if (humeEVIService.getState() === 'connected') {
+    if (
+      humeEVIService.getState() === 'connected'
+      && voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)
+    ) {
       flushPendingMessages().catch((queueError) => logger.recoverable('[VoiceCall] Network-restored queue flush failed', queueError));
     }
   }, [flushPendingMessages, isOnline]);
@@ -338,21 +357,68 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       mountedRef.current = false;
       connectionGenerationRef.current += 1;
       if (queueRetryTimerRef.current) clearTimeout(queueRetryTimerRef.current);
-      serviceRef.current.disconnect?.().catch?.(() => {});
+      const service = serviceRef.current;
+      if (voiceServiceOwnership.owns(serviceOwnerRef.current, service)) {
+        const cleanup = service.disconnect?.();
+        voiceServiceOwnership.release(serviceOwnerRef.current, service);
+        cleanup?.catch?.(() => {});
+      }
     };
   }, []);
 
+  const handleOwnershipRevoked = useCallback(() => {
+    connectionGenerationRef.current += 1;
+    startInFlightRef.current = false;
+    if (queueRetryTimerRef.current) {
+      clearTimeout(queueRetryTimerRef.current);
+      queueRetryTimerRef.current = null;
+    }
+    if (!mountedRef.current) return;
+    setStatus('disconnected');
+    setIsStarting(false);
+    setFallbackAvailable(false);
+    setError(null);
+    setNotice(null);
+  }, []);
+
   const connectService = useCallback(async (service, generation) => {
+    const owner = serviceOwnerRef.current;
     const assertCurrent = async () => {
       if (
         mountedRef.current
         && connectionGenerationRef.current === generation
         && serviceRef.current === service
+        && voiceServiceOwnership.owns(owner, service)
       ) return;
-      await service.disconnect?.().catch?.(() => {});
+      if (voiceServiceOwnership.owns(owner, service)) {
+        const cleanup = service.disconnect?.();
+        voiceServiceOwnership.release(owner, service);
+        await cleanup?.catch?.(() => {});
+      }
       throw cancelledVoiceOperation();
     };
+    const previousService = serviceRef.current;
+    const previousOwner = voiceServiceOwnership.claim(
+      owner,
+      service,
+      handleOwnershipRevoked
+    );
     serviceRef.current = service;
+    // A voice transport is process-global because native recording/playback is
+    // process-global. A newer screen explicitly takes ownership, tears down the
+    // previous transport, and waits for cleanup before installing handlers.
+    const servicesToReset = [...new Set([
+      previousOwner?.service,
+      previousService,
+      service
+    ].filter(Boolean))];
+    for (const candidate of servicesToReset) {
+      if (!voiceServiceOwnership.owns(owner, service)) throw cancelledVoiceOperation();
+      if (candidate.getState?.() !== 'disconnected') {
+        await candidate.disconnect?.().catch?.(() => {});
+      }
+    }
+    await assertCurrent();
     bindServiceHandlers(service, generation);
     setStatus(service.getState());
     if (service === offlineEVIService) {
@@ -360,6 +426,7 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       await assertCurrent();
       return;
     }
+    const providerLocale = nativeLocaleTagForLanguage(locale) || 'en';
     const session = await loadConversationSession(sessionIdRef.current);
     await assertCurrent();
     await service.connect({
@@ -370,16 +437,17 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       // explicitly configured branded UUID.
       voiceId: config.humeWSProxyURL ? undefined : voiceOverride(selectedVoice),
       personaId: selectedVoice.id,
-      locale,
+      locale: providerLocale,
       customSessionId: config.humeWSProxyURL
         ? interactionIdRef.current
         : sessionIdRef.current,
       resumedChatGroupId: session?.chatGroupId,
-      systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Be concise, emotionally attuned, honest about actions, and practical.`,
+      systemPrompt: `You are ${selectedVoice.displayName}, a compassionate safety companion. Respond in the selected interface language (${providerLocale}) unless the user explicitly requests another language. Be concise, emotionally attuned, honest about actions, and practical.`,
+      toolFailureMessage: t('wellness.scenarioFailed'),
       devices: [...wearableEntities, ...robotEntities]
     });
     await assertCurrent();
-  }, [accessToken, bindServiceHandlers, locale, robotEntities, selectedVoice.displayName, selectedVoice.id, wearableEntities]);
+  }, [accessToken, bindServiceHandlers, handleOwnershipRevoked, locale, robotEntities, selectedVoice.displayName, selectedVoice.id, t, wearableEntities]);
 
   const start = useCallback(async () => {
     if (startInFlightRef.current) return false;
@@ -417,7 +485,6 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     startInFlightRef.current = true;
     const generation = ++connectionGenerationRef.current;
     setIsStarting(true);
-    await serviceRef.current.disconnect?.().catch(() => {});
     setError(null);
     setFallbackAvailable(false);
     try {
@@ -440,7 +507,6 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     startInFlightRef.current = true;
     const generation = ++connectionGenerationRef.current;
     setIsStarting(true);
-    await serviceRef.current.disconnect?.().catch(() => {});
     setError(null);
     setNotice(null);
     setFallbackAvailable(false);
@@ -460,6 +526,13 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
 
   const stop = useCallback(async () => {
     const service = serviceRef.current;
+    const owner = serviceOwnerRef.current;
+    if (!voiceServiceOwnership.owns(owner, service)) {
+      return Object.freeze({
+        interactionFeedbackEligible: false,
+        interactionId: null
+      });
+    }
     let interactionFeedbackEligible = false;
     const completedInteractionId = service === humeEVIService && config.humeWSProxyURL
       ? interactionIdRef.current
@@ -475,12 +548,20 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       }
       await microphoneStop;
     }
+    if (!voiceServiceOwnership.owns(owner, service)) {
+      return Object.freeze({
+        interactionFeedbackEligible: false,
+        interactionId: null
+      });
+    }
     connectionGenerationRef.current += 1;
     if (queueRetryTimerRef.current) {
       clearTimeout(queueRetryTimerRef.current);
       queueRetryTimerRef.current = null;
     }
-    await service.disconnect();
+    const disconnecting = service.disconnect();
+    voiceServiceOwnership.release(owner, service);
+    await disconnecting;
     if (completedInteractionId) interactionIdRef.current = createConversationSessionId();
     return Object.freeze({
       interactionFeedbackEligible,
@@ -498,9 +579,21 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
     }
     if (!text) return false;
     const service = serviceRef.current;
-    if (service === humeEVIService && isOnline && service.getState() === 'connected' && service.sendText(text)) return true;
+    const ownsService = voiceServiceOwnership.owns(serviceOwnerRef.current, service);
+    if (
+      ownsService
+      && service === humeEVIService
+      && isOnline
+      && service.getState() === 'connected'
+      && service.sendText(text)
+    ) return true;
 
-    if (service === offlineEVIService && forcedOffline && service.getState() === 'connected') {
+    if (
+      ownsService
+      && service === offlineEVIService
+      && forcedOffline
+      && service.getState() === 'connected'
+    ) {
       appendMessage('user', text, { source: 'offline', deliveryStatus: 'local' });
       service.sendText(text, { emitUser: false });
       setNotice(null);
@@ -511,7 +604,11 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       const queued = await queueOfflineMessage({ sessionId: sessionIdRef.current, text });
       appendMessage('user', text, { id: queued.id, source: 'offline', deliveryStatus: 'queued' });
       await refreshPendingCount();
-      if (service === offlineEVIService && service.getState() === 'connected') service.sendText(text, { emitUser: false });
+      if (
+        ownsService
+        && service === offlineEVIService
+        && service.getState() === 'connected'
+      ) service.sendText(text, { emitUser: false });
       else setFallbackAvailable(true);
       setNotice(isOnline ? voiceCallCopyKeys.queued : voiceCallCopyKeys.offline);
       return false;
@@ -536,7 +633,10 @@ export function useHumeVoiceCall({ initialSessionId } = {}) {
       setNotice(voiceCallCopyKeys.offline);
       return false;
     }
-    if (humeEVIService.getState() === 'connected') {
+    if (
+      humeEVIService.getState() === 'connected'
+      && voiceServiceOwnership.owns(serviceOwnerRef.current, humeEVIService)
+    ) {
       await flushPendingMessages();
       return true;
     }

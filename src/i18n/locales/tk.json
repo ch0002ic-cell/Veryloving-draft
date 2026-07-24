@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving mikrofony diňe ýoldaş ýa-da howpsuzlyk jaňyny başlatanyňyzda AI ulanýar.",
     "bluetoothRationaleTitle": "Bluetooth geýilýän enjamyňyzy birikdirýär",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth şaý-sepler bilen birikdirmek, baglanyşygyň ýagdaýyny okamak we geýilýän enjamdan howpsuzlyk akymyny başlatmak üçin NorthStar ulanýar.",
-    "cameraRationaleTitle": "Kamera hökman däl",
-    "cameraRationaleMessage": "VeryLoving kamerany diňe profil suratyny çekeniňizde ýa-da howpsuzlyk suratyny paýlaşanyňyzda ulanýar."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving bu akymy Sazlamalardan we dashboarddan elýeterli edýär.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving howpsuzlyk we ýoldaş jaňlary üçin mikrofon AI gerek.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving howpsuzlyk kartasy we golaýdaky howpsuzlyk aýratynlyklary üçin siziň ýerleşýän ýeriňizi ulanýar.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth howpsuzlyk şaý-sepleriňize birikdirmek üçin NorthStar ulanýar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

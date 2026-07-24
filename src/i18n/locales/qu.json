@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving micrófonoykita llamk'achin AI compañero utaq seguridad waqyayta qallarinki chaylla.",
     "bluetoothRationaleTitle": "Bluetooth nisqa churakuqniykikunata tinkuchin",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth llamk'achin NorthStar joyería kaqwan tupachiypaq, tinkinakuy estadota ñawirinapaq, chaymanta churanapaqmanta hark'ay puriykunata llamk'achin.",
-    "cameraRationaleTitle": "Cámara nisqa munasqa",
-    "cameraRationaleMessage": "VeryLoving cámarata llamk'achin mayk'aqchus akllanki huk perfil fotota utaq huk seguridad siq'ita qunakuypaq."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving kay flujota Ajustes kaqmanta chaymanta tabla de mando kaqmanta kaqta waqaychan.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving nisqa.",
       "NSMicrophoneUsageDescription": "VeryLoving micrófono yaykuyta munan mana imamanta manchachiypaq chaymanta AI compañero waqyaykunapaq.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving maypi kasqaykita llamk'achin seguridad mapapaq chaymanta qaylla seguridad ruwanakunapaq.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth llamk'achin NorthStar waqaychasqa joyeríaykiwan tinkinapaq.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving nisqa."

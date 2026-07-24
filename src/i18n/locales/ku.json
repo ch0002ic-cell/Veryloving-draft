@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving مایکرۆفۆنەکەت تەنها کاتێک بەکاردێنێت کە دەست دەکەیت بە یاوەری AI یان پەیوەندیەکی سەلامەتی .",
     "bluetoothRationaleTitle": "Bluetooth لەبەرکردنەکەت دەبەستێتەوە",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth بەکاردەهێنێت بۆ جووتکردن لەگەڵ خشڵی NorthStar، خوێندنەوەی دۆخی پەیوەندی، و دەستپێکردنی لێشاوی سەلامەتی لە لەبەرکراوەکە.",
-    "cameraRationaleTitle": "کامێرا ئارەزوومەندانەیە",
-    "cameraRationaleMessage": "VeryLoving کامێراکە تەنها کاتێک بەکاردەهێنێت کە وێنەیەکی پرۆفایل بگریت یان وێنەیەکی سەلامەتی بڵاو بکەیتەوە."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ئەم لێشاوە لە رێکبەندەکان و داشبۆردەوە بەردەست دەهێڵێتەوە.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving پێویستی بە دەستگەیشتنی مایکرۆفۆن هەیە بۆ سەلامەتی و پەیوەندی AI یاوەر.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving شوێنەکەت بەکاردەهێنێت بۆ نەخشەی سەلامەتی و تایبەتمەندیەکانی سەلامەتی نزیک.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth بەکاردەهێنێت بۆ گرێدان بە خشڵی سەلامەتی NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth بەکاردەهێنێت بۆ گرێدان بە خشڵی سەلامەتی NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

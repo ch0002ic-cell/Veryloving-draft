@@ -207,14 +207,23 @@ export class HomeRobotDevice extends BaseDevice {
     };
     try {
       const operation = (async () => {
-        const providedAccessToken = await this.accessTokenProvider?.();
+        const protectedRoute = path.startsWith('/v1/');
+        const providedAccessToken = protectedRoute
+          ? await this.accessTokenProvider?.()
+          : null;
         this.assertLifecycleCurrent(lifecycleGeneration);
-        const accessToken = providedAccessToken || this.accessToken;
-        const providedPairingToken = await this.pairingTokenProvider?.(this.deviceId);
+        const accessToken = protectedRoute
+          ? providedAccessToken || this.accessToken
+          : null;
+        const providedPairingToken = protectedRoute
+          ? await this.pairingTokenProvider?.(this.deviceId)
+          : null;
         this.assertLifecycleCurrent(lifecycleGeneration);
-        const pairingToken = providedPairingToken || this.pairingToken;
+        const pairingToken = protectedRoute
+          ? providedPairingToken || this.pairingToken
+          : null;
         if (timedOut) throw gatewayTimeoutError();
-        if (path.startsWith('/v1/') && this.pairingTokenProvider && !pairingToken) {
+        if (protectedRoute && this.pairingTokenProvider && !pairingToken) {
           const error = new Error('Robot pairing credential is unavailable');
           error.code = 'ROBOT_PAIRING_CREDENTIAL_MISSING';
           throw error;

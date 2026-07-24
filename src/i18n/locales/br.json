@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ne implij ho mikro nemet pa grogit gant ur galv AI evit ur c'hompagnun pe ur galv surentez.",
     "bluetoothRationaleTitle": "Bluetooth a gevre ho dafar gwiskañ",
     "bluetoothRationaleMessage": "VeryLoving a implij Bluetooth evit pareañ gant NorthStar bravigoù, lenn stad ar c'hennask, ha degas redoù surentez eus ar gwiskañ.",
-    "cameraRationaleTitle": "Dibar eo ar c'hamera",
-    "cameraRationaleMessage": "VeryLoving ne implij ar c'hamera nemet pa zibabit tennañ ur foto profil pe rannañ ur skeudenn surentez."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving a vir ar red-mañ da vezañ hegerz diwar an arventennoù hag ar panel.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving en deus ezhomm eus ur mikro evit ar surentez ha AI galvoù kenlabourerien.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving a implij ho lec'hiadur evit ar gartenn surentez hag ar perzhioù surentez tost.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving a implij Bluetooth evit kevreañ ouzh ho NorthStar bravigoù surentez.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

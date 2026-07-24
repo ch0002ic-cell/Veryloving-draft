@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ikoresha mikoro yawe gusa mugihe utangiyeAI mugenzi wawe cyangwa guhamagara umutekano.",
     "bluetoothRationaleTitle": "Bluetooth ihuza imyenda yawe",
     "bluetoothRationaleMessage": "VeryLoving ikoreshaBluetooth kugirango ihuze naNorthStar imitako, soma imiterere ihuza, kandi itere umutekano umutekano uva kwambara.",
-    "cameraRationaleTitle": "Kamera irahitamo",
-    "cameraRationaleMessage": "VeryLoving ikoresha kamera gusa mugihe uhisemo gufata ifoto yumwirondoro cyangwa gusangira ishusho yumutekano."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ituma iyi flux iboneka kuva Igenamiterere hamwe na bande.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving akeneye mikoro kugirango abone umutekano naAI umuhamagaro.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ikoresha aho uherereye ku ikarita yumutekano hamwe nibiranga umutekano hafi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ikoreshaBluetooth kugirango uhuzeNorthStar imitako yumutekano."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ikoreshaBluetooth kugirango uhuzeNorthStar imitako yumutekano.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

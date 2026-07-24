@@ -17,6 +17,7 @@ import { StatusPill } from '../../src/components/StatusPill';
 import { images } from '../../src/constants/assets';
 import { useAuth } from '../../src/context/AuthContext';
 import { bleErrorTranslationKey } from '../../src/services/ble-errors';
+import { formatLocalizedNumber } from '../../src/utils/localized-format';
 
 export default function JewelrySetup() {
   const params = useLocalSearchParams();
@@ -33,7 +34,7 @@ export default function JewelrySetup() {
   const finishingRef = useRef(false);
   const { setDevice, setWearableEntities } = useAppState();
   const { advanceOnboarding } = useAuth();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
 
   const finishSetup = useCallback(async () => {
     if (finishingRef.current) return;
@@ -153,6 +154,8 @@ export default function JewelrySetup() {
       }
     }
   }, []);
+  const errorMessage = error?.translationKey ? t(error.translationKey)
+    : error ? t('settings.updateFailedMessage') : null;
 
   return (
     <Screen scroll={false}>
@@ -166,7 +169,9 @@ export default function JewelrySetup() {
           <Text style={styles.scanMessage}>{scanning ? t('jewelry.searchingMessage') : t('jewelry.pairSubtitle')}</Text>
         </View>
         <StatusPill
-          label={scanning ? t('jewelry.scanning') : String(devices.length)}
+          label={scanning
+            ? t('jewelry.scanning')
+            : formatLocalizedNumber(devices.length, locale)}
           tone={scanning ? 'active' : devices.length ? 'ok' : 'idle'}
         />
       </Card>
@@ -177,7 +182,7 @@ export default function JewelrySetup() {
         loading={scanning}
       />
       <FeedbackBanner
-        message={error?.translationKey ? t(error.translationKey) : error}
+        message={errorMessage}
         tone={error?.code === 'BLE_UNAVAILABLE' ? 'info' : 'error'}
         actionLabel={error?.code === 'BLE_PERMISSION_DENIED' ? t('common.settings') : t('common.retry')}
         onAction={error?.code === 'BLE_PERMISSION_DENIED' ? openSystemSettings : scan}

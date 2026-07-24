@@ -75,12 +75,27 @@ function selectSupportedLocales(env = process.env) {
     .map((language) => language.code);
 }
 
+function nativeLocaleTag(language) {
+  return typeof language?.nativeLocaleTag === 'string' && language.nativeLocaleTag.trim()
+    ? language.nativeLocaleTag.trim()
+    : language?.code;
+}
+
+function selectSupportedNativeLocales(env = process.env) {
+  const selected = new Set(selectSupportedLocales(env));
+  return languageCatalog
+    .filter((language) => selected.has(language.code) && language.messages)
+    .map(nativeLocaleTag);
+}
+
 const supportedLocales = selectSupportedLocales();
+const supportedNativeLocales = selectSupportedNativeLocales();
 const nativeLocales = Object.fromEntries(
   languageCatalog
     .filter((language) => supportedLocales.includes(language.code) && language.messages?.native)
-    .map((language) => [language.code, language.messages.native])
+    .map((language) => [nativeLocaleTag(language), language.messages.native])
 );
+const defaultNativeIOS = languageCatalog.find((language) => language.code === 'en')?.messages?.native?.ios || {};
 
 function hasConfiguredValue(value) {
   if (typeof value !== 'string') return false;
@@ -353,10 +368,10 @@ const config = {
     "bundleIdentifier": "com.veryloving.app",
     "buildNumber": "1",
     "infoPlist": {
-      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code.",
-      "NSMicrophoneUsageDescription": "VeryLoving needs access to your microphone for safety calls",
-      "NSLocationWhenInUseUsageDescription": "VeryLoving needs your location to show the map and provide safety features",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving needs Bluetooth to connect to your safety bracelet",
+      "NSCameraUsageDescription": defaultNativeIOS.NSCameraUsageDescription,
+      "NSMicrophoneUsageDescription": defaultNativeIOS.NSMicrophoneUsageDescription,
+      "NSLocationWhenInUseUsageDescription": defaultNativeIOS.NSLocationWhenInUseUsageDescription,
+      "NSBluetoothAlwaysUsageDescription": defaultNativeIOS.NSBluetoothAlwaysUsageDescription,
       "ITSAppUsesNonExemptEncryption": false
     },
     "privacyManifests": {
@@ -550,7 +565,7 @@ const config = {
     [
       "expo-camera",
       {
-        "cameraPermission": "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code.",
+        "cameraPermission": defaultNativeIOS.NSCameraUsageDescription,
         "recordAudioAndroid": false,
         "barcodeScannerEnabled": true
       }
@@ -558,7 +573,7 @@ const config = {
     [
       "expo-location",
       {
-        "locationWhenInUsePermission": "VeryLoving needs your location to show the map and provide safety features",
+        "locationWhenInUsePermission": defaultNativeIOS.NSLocationWhenInUseUsageDescription,
         "locationAlwaysAndWhenInUsePermission": false,
         "locationAlwaysPermission": false,
         "motionUsagePermission": false,
@@ -590,7 +605,7 @@ const config = {
     [
       "expo-audio",
       {
-        "microphonePermission": "Allow VeryLoving to access your microphone for AI safety companion calls.",
+        "microphonePermission": defaultNativeIOS.NSMicrophoneUsageDescription,
         "enableBackgroundPlayback": true,
         "enableBackgroundRecording": true
       }
@@ -603,7 +618,7 @@ const config = {
           "central"
         ],
         "neverForLocation": true,
-        "bluetoothAlwaysPermission": "VeryLoving needs Bluetooth to connect to your safety bracelet"
+        "bluetoothAlwaysPermission": defaultNativeIOS.NSBluetoothAlwaysUsageDescription
       }
     ],
     [
@@ -618,8 +633,8 @@ const config = {
       "expo-localization",
       {
         "supportedLocales": {
-          "ios": supportedLocales,
-          "android": supportedLocales
+          "ios": supportedNativeLocales,
+          "android": supportedNativeLocales
         }
       }
     ],
@@ -729,6 +744,7 @@ module.exports.createEnvironmentDiagnostics = createEnvironmentDiagnostics;
 module.exports.assertEnvironmentReady = assertEnvironmentReady;
 module.exports.reversedGoogleClientId = reversedGoogleClientId;
 module.exports.selectSupportedLocales = selectSupportedLocales;
+module.exports.selectSupportedNativeLocales = selectSupportedNativeLocales;
 module.exports.isFullCatalogLanguageEnvironment = isFullCatalogLanguageEnvironment;
 module.exports.showAllCatalogLanguagesEnabled = showAllCatalogLanguagesEnabled;
 module.exports.demoAuthEnabledForEnvironment = demoAuthEnabledForEnvironment;

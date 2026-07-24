@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving tortor ligula tua utitur tantum, cum comitem aut salutem vocationis AI incipe.",
     "bluetoothRationaleTitle": "Bluetooth Coniungit tuum wearable",
     "bluetoothRationaleMessage": "VeryLoving utitur Bluetooth ad par cum ornamento NorthStar, nexum status lege, et salus felis fluit ex debili.",
-    "cameraRationaleTitle": "Camera ad libitum",
-    "cameraRationaleMessage": "VeryLoving utitur camera tantum cum voles accipere a profile photo vel participes in salute imaginis."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving Hunc fluentem praesto retinet ex Occasus et ashboardday.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving tortor ligula, facilisis accessum ad salutem et ad socium AI vocat.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving loco tuo utitur ad tabulam tutandam et ad lineamenta prope salutem.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving uses Bluetooth coniungere cum ornamento tuo NorthStar salutem.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

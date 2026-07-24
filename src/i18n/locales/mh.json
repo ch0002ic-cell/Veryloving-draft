@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ej kajerbal microphone eo am wōt ñe kwoj jino juon AI call ñan ro mōttam ak safety call.",
     "bluetoothRationaleTitle": "Bluetooth ej kobaik wearable eo am",
     "bluetoothRationaleMessage": "VeryLoving ej kōjerbal Bluetooth ñan koba ippān NorthStar jewelry, riiti jekjek in koneek eo, im kōmman an safety flow ko jen wearable eo.",
-    "cameraRationaleTitle": "Camera ejjab aikuj",
-    "cameraRationaleMessage": "VeryLoving ej kōjerbal camera eo wot ñe kwoj kōnaan bōk juon pija in profile ak kwalok juon pija in kejbãrok."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ej kōjparok flow in jen Settings im dashboard eo.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ej aikuj in maroñ in bōk microphone ñan kejbãrok im AI call ko an ro mōttan.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ej kōjerbal jikin eo am ñan mep in kejbãrok eo im kein kejbãrok ko iturin.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ej kōjerbal Bluetooth ñan kōppeļaak ñan NorthStar jewelry in kōjparok eo am.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

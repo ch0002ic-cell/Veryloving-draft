@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving микрофонды тик AI ярҙамсы йәки хәүефһеҙлек саҡырыуы башлағанда ғына ҡуллана.",
     "bluetoothRationaleTitle": "Bluetooth һеҙҙең кейелгән ҡоролмағыҙҙы тоташтыра",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth ҡуллана, NorthStar биҙәүестәр менән парлаштырыу, тоташтырыу статусын уҡый һәм кейелә торған ҡоролманан триггер хәүефһеҙлек ағымдарын эшләтеү өсөн.",
-    "cameraRationaleTitle": "Камера өҫтәмә вариант",
-    "cameraRationaleMessage": "VeryLoving камераны тик профиль фотоһы төшөрөү йәки хәүефһеҙлек фотоһы менән уртаҡлашҡанда ғына ҡуллана."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving был ағымды Көйләүҙәрҙән һәм прибор панеленән асыҡ тота.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving хәүефһеҙлек һәм AI ярҙамсы шылтыратыуҙар өсөн микрофон аша инеү кәрәк.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving һеҙҙең урынығыҙҙы хәүефһеҙлек картаһы һәм яҡындағы хәүефһеҙлек функциялары өсөн ҡуллана.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth NorthStar хәүефһеҙлек биҙәүестәренә тоташтырыу өсөн ҡуллана."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth NorthStar хәүефһеҙлек биҙәүестәренә тоташтырыу өсөн ҡуллана.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

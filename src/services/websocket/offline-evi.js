@@ -3,17 +3,30 @@ import { logger } from '../../utils/logger';
 import { normalizeVoiceText } from '../../utils/voice-text';
 
 export class OfflineEVIService {
-  constructor() {
+  constructor({
+    setTimeoutImpl = setTimeout,
+    clearTimeoutImpl = clearTimeout,
+    connectionDelayMs = 400,
+    responseDelayMs = 500
+  } = {}) {
     this.state = 'disconnected';
     this.messageHandler = {};
     this.stateHandler = {};
+    this.messageHandlerGeneration = 0;
     this.connectionTimer = null;
     this.connectionResolve = null;
     this.responseTimers = new Set();
     this.sessionConfig = {};
+    this.setTimeoutImpl = setTimeoutImpl;
+    this.clearTimeoutImpl = clearTimeoutImpl;
+    this.connectionDelayMs = connectionDelayMs;
+    this.responseDelayMs = responseDelayMs;
   }
 
-  setMessageHandler(handler) { this.messageHandler = handler || {}; }
+  setMessageHandler(handler) {
+    this.messageHandler = handler || {};
+    this.messageHandlerGeneration += 1;
+  }
   setStateHandler(handler) { this.stateHandler = handler || {}; }
   setState(state) { this.state = state; this.stateHandler.onStateChange?.(state); }
   getState() { return this.state; }
@@ -26,17 +39,17 @@ export class OfflineEVIService {
       personaId: sessionConfig.personaId
     };
     if (this.state === 'connected') return;
-    if (this.connectionTimer) clearTimeout(this.connectionTimer);
+    if (this.connectionTimer) this.clearTimeoutImpl(this.connectionTimer);
     this.connectionResolve?.();
     this.setState('connecting');
     await new Promise((resolve) => {
       this.connectionResolve = resolve;
-      this.connectionTimer = setTimeout(() => {
+      this.connectionTimer = this.setTimeoutImpl(() => {
         this.connectionTimer = null;
         this.connectionResolve = null;
         this.setState('connected');
         resolve();
-      }, 400);
+      }, this.connectionDelayMs);
     });
   }
 
@@ -59,23 +72,32 @@ export class OfflineEVIService {
       return false;
     }
     if (!normalized) return false;
-    const response = chooseOfflineResponse(normalized);
-    if (emitUser) this.messageHandler.onUserMessage?.(normalized, {});
-    const timer = setTimeout(() => {
+    const response = chooseOfflineResponse(normalized, this.sessionConfig.locale);
+    const handler = this.messageHandler;
+    const handlerGeneration = this.messageHandlerGeneration;
+    if (emitUser) handler.onUserMessage?.(normalized, {});
+    let timer;
+    timer = this.setTimeoutImpl(() => {
       this.responseTimers.delete(timer);
-      this.messageHandler.onAssistantMessage?.(response.text, {});
-      this.messageHandler.onAssistantEnd?.();
-    }, 500);
+      // Handler replacement means another mounted call now owns this singleton.
+      // Never deliver an earlier caller's delayed response into the new call.
+      if (
+        handlerGeneration !== this.messageHandlerGeneration
+        || handler !== this.messageHandler
+      ) return;
+      handler.onAssistantMessage?.(response.text, {});
+      handler.onAssistantEnd?.();
+    }, this.responseDelayMs);
     this.responseTimers.add(timer);
     return true;
   }
 
   async disconnect() {
-    if (this.connectionTimer) clearTimeout(this.connectionTimer);
+    if (this.connectionTimer) this.clearTimeoutImpl(this.connectionTimer);
     this.connectionTimer = null;
     this.connectionResolve?.();
     this.connectionResolve = null;
-    this.responseTimers.forEach(clearTimeout);
+    this.responseTimers.forEach((timer) => this.clearTimeoutImpl(timer));
     this.responseTimers.clear();
     this.setState('disconnected');
   }

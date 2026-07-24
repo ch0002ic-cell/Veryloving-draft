@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving mampiasa ny mikrô raha tsy manomboka ny mpiara-mitory AI na ny antso ho an'ny fiarovana.",
     "bluetoothRationaleTitle": "Bluetooth mampifandray ny akanjonao",
     "bluetoothRationaleMessage": "VeryLoving dia mampiasa Bluetooth mba hiaraka amin'ny firavaka NorthStar, hamaky ny satan'ny fifandraisana, ary hiteraka fiarovana avy amin'ny akanjo.",
-    "cameraRationaleTitle": "Ny fakantsary dia tsy azo atao",
-    "cameraRationaleMessage": "VeryLoving mampiasa ny fakantsary raha tsy misafidy ny haka sary ny mombamomba anao na hizara sary fiarovana."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving mitazona an'io mikoriana io azo alaina avy amin'ny Settings sy ny dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving dia mila fidirana amin'ny mikrô ho an'ny fiarovana sy ny antso AI mpiara-miasa.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving dia mampiasa ny toerana misy anao ho an'ny sarintany fiarovana sy ny fiarovana akaiky.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving dia mampiasa Bluetooth mba hifandraisana amin'ny firavaka fiarovana NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

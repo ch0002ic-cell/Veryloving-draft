@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ha usa i mikrofon-mu ha' yanggen un tutuhon un AI na inagang para i kompañero pat i safety call.",
     "bluetoothRationaleTitle": "Bluetooth ha konne' i magagu-mu",
     "bluetoothRationaleMessage": "VeryLoving ha usa Bluetooth para u parehu yan NorthStar na alahas, taitai i estao i koneksion, yan ha na'fanhuyong i safety flows ginen i wearable.",
-    "cameraRationaleTitle": "Ti nisisåriu i kamera",
-    "cameraRationaleMessage": "VeryLoving ha usa i kamera ha' yanggen malago' hao para un chule' un litråtu gi i prugråma-mu pat un na'i un litråtu put i inañadi."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ha na'guaha este na lina'la' ginen i Settings yan i dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving nisisåriu na guaha mikrofon-ña para i inañadi yan AI i inagang i mangga'chong-ña.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ha usa i lugat-mu para i mapa yan i siñat siha gi fi'on-mu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ha usa Bluetooth para u konekta gi i NorthStar na alahas-mu.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving də microphone lan faidatin sa AI companion au safety bowotə badijiya bas.",
     "bluetoothRationaleTitle": "Bluetooth awo tǝkǝna dǝga kǝljin",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth faidatə zaye NorthStar'a kəljin, kəndaram kəltəye kərajin, kuru awo təkkindən nəlefa suwudin.",
-    "cameraRationaleTitle": "Kemeradǝ mburo walzǝna",
-    "cameraRationaleMessage": "VeryLoving də camera faidatin sa foto kəlanzəye gotə au foto nəlefaye yayaktə bas lan."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving dəye letəram adəga Settings-a dashboard-a lan tuwondin.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLovingdǝ microphone fando mǝradǝzǝna kǝla nǝlefa-a kuru AI sawa-a bowotǝro.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving nanǝm faidatin map nǝlefabe-a kuru awowa nǝlefabe karǝngǝbe-aro.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth faidatə awo nzəliwobe NorthStar dəga kəljin.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -17,6 +17,10 @@ const TERMINAL_SERVER_CODES = new Set([
 
 const TERMINAL_CLOSE_CODES = new Set([1000, 1002, 1003, 1007, 1008, 1009, 1010, 4001]);
 const RETRYABLE_TRANSPORT_CLOSE_CODES = new Set([1001, 1006, 1011, 1012, 1013, 1014, 4000]);
+const TOOL_ERROR_CODE_PATTERN = /^[A-Z][A-Z0-9_:-]{0,79}$/;
+const MAX_TOOL_FALLBACK_CHARACTERS = 500;
+const DEFAULT_TOOL_ERROR_CODE = 'TOOL_EXECUTION_FAILED';
+const DEFAULT_TOOL_FALLBACK_CONTENT = 'Connected care is temporarily unavailable.';
 
 export function normalizeHumeConfigId(value) {
   if (typeof value !== 'string') return undefined;
@@ -126,11 +130,21 @@ export function createToolResponsePayload({ toolCallId, content, toolCall = {}, 
 }
 
 export function createToolErrorPayload({ toolCallId, error, fallbackContent }) {
+  const normalizedError = typeof error === 'string' && TOOL_ERROR_CODE_PATTERN.test(error)
+    ? error
+    : DEFAULT_TOOL_ERROR_CODE;
+  const normalizedFallback = typeof fallbackContent === 'string'
+    ? fallbackContent
+      .replace(/[\u0000-\u001f\u007f]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, MAX_TOOL_FALLBACK_CHARACTERS)
+    : '';
   return {
     type: 'tool_error',
     tool_call_id: toolCallId,
-    error,
-    fallback_content: fallbackContent,
+    error: normalizedError,
+    fallback_content: normalizedFallback || DEFAULT_TOOL_FALLBACK_CONTENT,
     level: 'warn'
   };
 }

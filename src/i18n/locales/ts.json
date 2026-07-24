@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving yi tirhisa microphone ya wena ntsena loko u sungula AI munghana kumbe riqingho ra vuhlayiseki.",
     "bluetoothRationaleTitle": "Bluetooth yi hlanganisa wearable ya wena",
     "bluetoothRationaleMessage": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na NorthStar vuhlalu, ku hlaya xiyimo xa vuhlanganisi, na ku hlohlotela ku khuluka ka vuhlayiseki ku suka eka leswi ambariwaka.",
-    "cameraRationaleTitle": "Khamera i ya ku hlawula",
-    "cameraRationaleMessage": "VeryLoving yi tirhisa khamera ntsena loko u hlawula ku teka xifaniso xa phurofayili kumbe ku avelana xifaniso xa vuhlayiseki."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving yi hlayisa ku khuluka loku ku kumeka ku suka eka Switirhisiwa na dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving yi lava mfikelelo wa microphone ku hlayiseka na AI ku bela riqingho ra munghana.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving yi tirhisa ndhawu ya wena eka mepe wa vuhlayiseki na switirhisiwa swa vuhlayiseki swa le kusuhi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yi tirhisa Bluetooth ku hlanganisa na vuhlalu bya wena bya vuhlayiseki bya NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

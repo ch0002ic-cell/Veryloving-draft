@@ -119,9 +119,18 @@ test('I18nProvider wires persistence and reminder preparation ahead of native re
   assert.ok(refreshesReminder < completesGate);
   assert.ok(
     reminderPreparation.indexOf('setI18nLocale(targetLocale)')
+      < reminderPreparation.indexOf('refreshSafetyNotificationChannel(targetLocale)')
+  );
+  assert.ok(
+    reminderPreparation.indexOf('refreshSafetyNotificationChannel(targetLocale)')
       < reminderPreparation.indexOf('if (!enabled) return')
   );
+  assert.match(
+    reminderPreparation,
+    /Could not refresh the localized notification channel/
+  );
   assert.match(reminderPreparation, /setCapybearReminderEnabled\(true, \{ locale: targetLocale \}\)/);
+  assert.match(source, /useLayoutEffect\(\(\) => \{\s*setI18nLocale\(locale\);\s*\}, \[locale\]\)/);
   assert.match(directionEffect, /if \(!preparation\.matched\)[\s\S]*await prepareLocalizedReminder\(locale/);
   assert.match(directionEffect, /if \(preparation\.pendingLocale\) return/);
 });

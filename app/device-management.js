@@ -74,8 +74,9 @@ export default function DeviceManagement() {
   };
 
   const resetRobot = (entity) => {
+    const displayName = entity.name || t('medication.robot');
     Alert.alert(
-      t('contacts.removeTitle', { name: entity.name }),
+      t('contacts.removeTitle', { name: displayName }),
       t('history.cannotUndo'),
       [
         { text: t('common.cancel'), style: 'cancel' },
@@ -165,7 +166,7 @@ export default function DeviceManagement() {
               ) : null}
               <Button
                 title={t('common.remove')}
-                accessibilityLabel={`${t('common.remove')} ${entity.name}`}
+                accessibilityLabel={`${t('common.remove')} ${entity.name || (entity.deviceType === 'wearable' ? t('home.northStarDevice') : t('medication.robot'))}`}
                 variant={entity.deviceType === 'home_robot' ? 'danger' : 'ghost'}
                 compact
                 disabled={busy}

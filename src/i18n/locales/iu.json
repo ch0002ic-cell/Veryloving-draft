@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᖃᓂᙳᕐᓇᐅᑎᖕᓂᒃ AI ᐅᕝᕙᓘᓐᓃᑦ ᐊᑦᑕᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐅᖄᓚᓕᕌᖓᕕᑦ.",
     "bluetoothRationaleTitle": "Bluetooth ᑲᓲᒪᑎᑦᑎᔪᖅ ᐊᑐᒐᕐᓂᒃ",
     "bluetoothRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᑲᑎᙵᑎᑦᑎᓪᓗᓂ NorthStar ᐱᐅᓴᐅᑎᓂᒃ, ᐅᖃᓕᒫᖅᐸᒃᖢᓂ ᐊᑕᓂᖓᑕ ᖃᓄᐃᓕᖓᓂᖓᓂᒃ, ᐱᒋᐊᖅᑎᑦᑎᕙᒃᖢᓂᓗ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᑐᖅᑕᐅᕙᒃᑐᒥᒃ ᐊᑐᖅᑕᒥᓄᑦ.",
-    "cameraRationaleTitle": "ᐊᔾᔨᓕᐅᕈᑎ ᐃᓱᒪᖅᓲᑕᐅᕗᖅ",
-    "cameraRationaleMessage": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᐊᔾᔨᓕᐅᕈᑎᒥᒃ ᓂᕈᐊᕆᔭᖃᑐᐊᕌᖓᕕᑦ ᐊᔾᔨᓕᐅᕆᔪᒪᒍᕕᑦ ᐊᒥᖅᑳᖃᑎᖃᕈᒪᒍᕕᓪᓘᓐᓃᑦ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᔾᔨᙳᐊᒥᒃ."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ᑖᓐᓇ ᐃᖏᕐᕋᓂᐅᔪᖅ ᐊᑐᐃᓐᓇᐅᑎᑉᐸᒃᑕᖓ ᐋᖅᑭᒃᓯᒪᓂᖏᓐᓂ ᐊᒻᒪ ᖃᕋᓴᐅᔭᒃᑰᕈᑎᖓᓂ.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ᖃᓂᙳᕐᓇᐅᑎᖃᕆᐊᖃᖅᐳᖅ ᖁᐊᖅᓵᕐᓇᖅᑐᒦᖁᓇᒍ AI ᐱᖃᓐᓇᕆᔭᒥᓄᑦ ᐅᖄᓚᖃᑦᑕᕈᒪᓂᕐᒧᑦ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ ᓇᓃᓐᓂᕆᔭᕐᓂᒃ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᓄᓇᙳᐊᒧᑦ ᖃᓂᒋᔭᖏᓐᓄᓪᓗ ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐊᑐᖅᑕᐅᕙᒃᑐᓄᑦ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᐊᑦᑕᑕᖅᑎᖦᖢᒍ NorthStar ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᐅᓴᐅᑎᓄᑦ."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ᐊᑐᖅᐸᒃᐳᖅ Bluetooth ᐊᑦᑕᑕᖅᑎᖦᖢᒍ NorthStar ᖁᐊᖅᓵᕐᓇᖅᑕᐃᓕᒪᓂᕐᒧᑦ ᐱᐅᓴᐅᑎᓄᑦ.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

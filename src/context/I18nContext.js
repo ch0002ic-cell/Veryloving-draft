@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { reloadAppAsync } from 'expo';
 import { useLocales } from 'expo-localization';
 import { I18nManager, Platform } from 'react-native';
@@ -16,6 +16,7 @@ import { logger } from '../utils/logger';
 import { withTimeout } from '../utils/async';
 import { isExpoGoRuntime } from '../utils/runtime-environment';
 import { setCapybearReminderEnabled } from '../services/capybear-reminder';
+import { refreshSafetyNotificationChannel } from '../services/notifications';
 import {
   createLocaleTransitionCoordinator,
   localeTransitionAllowsDirectionReload
@@ -29,6 +30,7 @@ import {
 } from '../services/locale-direction';
 
 const I18nContext = createContext(null);
+const NOTIFICATION_CHANNEL_LOCALE_REFRESH_TIMEOUT_MS = 4000;
 const REMINDER_LOCALE_REFRESH_TIMEOUT_MS = 6000;
 const REMINDER_LOCALE_CLEANUP_TIMEOUT_MS = 4000;
 
@@ -55,6 +57,21 @@ export function I18nProvider({ children }) {
     // Keep imperative translation consumers (permissions, BLE, emergency
     // prompts) in lockstep with the React context before any awaited work.
     setI18nLocale(targetLocale);
+    try {
+      await withTimeout(
+        refreshSafetyNotificationChannel(targetLocale),
+        NOTIFICATION_CHANNEL_LOCALE_REFRESH_TIMEOUT_MS,
+        'Notification channel localization timed out.'
+      );
+    } catch (error) {
+      // A channel label is recoverable UI metadata. It must not prevent the
+      // locale change or prompt for permission merely because Android's native
+      // notification service is temporarily unavailable.
+      logger.recoverable('[I18n] Could not refresh the localized notification channel', {
+        errorCode: error?.code || error?.name || 'NOTIFICATION_CHANNEL_LOCALIZATION_FAILED'
+      });
+    }
+    if (!isCurrent()) return { status: 'superseded' };
     if (!enabled) return { status: 'ready' };
 
     const disableReminderSafely = async (reason) => {
@@ -113,8 +130,15 @@ export function I18nProvider({ children }) {
     }
   }, [updateSettings]);
 
-  useEffect(() => {
+  // Imperative consumers (permission alerts, BLE errors, SOS and native
+  // reminder copy) must switch in the same commit as React-owned text. A
+  // passive effect leaves one frame where a freshly rendered locale can still
+  // open an alert in the previous language.
+  useLayoutEffect(() => {
     setI18nLocale(locale);
+  }, [locale]);
+
+  useEffect(() => {
     if (!isHydrated || Platform.OS === 'web') return;
     if (isExpoGoRuntime()) {
       logger.recoverable('[I18n] RTL direction changes require a development build or standalone app');

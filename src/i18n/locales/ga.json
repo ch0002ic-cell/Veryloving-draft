@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "Ní úsáideann VeryLoving do mhicreafón ach amháin nuair a thosaíonn tú AI chompánach nó glao sábháilteachta.",
     "bluetoothRationaleTitle": "Bluetooth nascann do wearable",
     "bluetoothRationaleMessage": "Úsáideann VeryLoving Bluetooth chun péire le jewelry NorthStar, stádas nasc a léamh, agus sreabhadh sábháilteachta a spreagadh ón wearable.",
-    "cameraRationaleTitle": "Tá an ceamara roghnach",
-    "cameraRationaleMessage": "Ní úsáideann VeryLoving an ceamara ach amháin nuair a roghnaíonn tú grianghraf próifíle a thógáil nó íomhá sábháilteachta a roinnt."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "Coinníonn VeryLoving an sreabhadh seo ar fáil ó Socruithe agus ón bpainéal.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving gá rochtain ar mhicreafón ar mhaithe le sábháilteacht agus glaonna compánach AI.",
       "NSLocationWhenInUseUsageDescription": "Úsáideann VeryLoving do shuíomh don léarscáil sábháilteachta agus do ghnéithe sábháilteachta in aice láimhe.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving úsáideann Bluetooth chun ceangal le do jewelry sábháilteachta NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

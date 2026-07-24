@@ -12,6 +12,11 @@ import { clearConversationHistory, deleteConversationSession, loadConversationHi
 import { clearOfflineMessageQueue, deleteQueuedMessagesForSession } from '../src/services/offline-message-queue';
 import { colors, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
+import {
+  conversationCompanionName,
+  conversationRoleLabel,
+  conversationTimestamp
+} from '../src/utils/conversation-history-display';
 import { images } from '../src/constants/assets';
 
 export default function ConversationHistory() {
@@ -116,25 +121,34 @@ export default function ConversationHistory() {
         contentContainerStyle={styles.list}
         renderItem={({ item }) => {
           const preview = item.messages?.slice(-2) || [];
-          const companionName = item.voiceId
-            ? t(`voices.profiles.${item.voiceId}.name`)
-            : item.voiceName || t('history.aiCompanion');
+          const companionName = conversationCompanionName(item, t);
+          const updatedAt = conversationTimestamp(item, locale) || t('common.unknown');
           const deleting = busyAction === `delete:${item.id}`;
           return (
             <Card style={styles.card}>
               <View style={[styles.row, isRTL && styles.rtlRow]}>
                 <View style={styles.titleGroup}>
                   <Text style={[styles.title, isRTL && styles.rtlText]}>{companionName}</Text>
-                  <Text style={[styles.muted, isRTL && styles.rtlText]}>{new Date(item.updatedAt || item.startedAt).toLocaleString(locale)}</Text>
+                  <Text style={[styles.muted, isRTL && styles.rtlText]}>
+                    {updatedAt}
+                  </Text>
                 </View>
                 <View style={[styles.actions, isRTL && styles.rtlActions]}>
                   <Button accessibilityLabel={`${t('history.resume')}: ${companionName}`} title={t('history.resume')} variant="ghost" disabled={Boolean(busyAction)} onPress={() => router.push({ pathname: '/safety-call', params: { sessionId: item.id } })} />
                   <Button accessibilityLabel={`${t('common.delete')}: ${companionName}`} title={t('common.delete')} variant="ghost" loading={deleting} disabled={Boolean(busyAction)} onPress={() => removeSession(item.id)} />
                 </View>
               </View>
-              {preview.map((message) => (
-                <Text key={message.id} style={[styles.message, isRTL && styles.rtlText]}>
-                  <Text style={[styles.role, isRTL && styles.rtlText]}>{t(`history.roles.${message.role}`)}: </Text>{message.text}
+              {preview.map((message, index) => (
+                <Text
+                  key={typeof message.id === 'string'
+                    ? message.id
+                    : `${String(item.id)}:preview:${index}`}
+                  style={[styles.message, isRTL && styles.rtlText]}
+                >
+                  <Text style={[styles.role, isRTL && styles.rtlText]}>
+                    {conversationRoleLabel(message.role, t)}:{' '}
+                  </Text>
+                  {message.text}
                 </Text>
               ))}
             </Card>

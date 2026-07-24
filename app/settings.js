@@ -20,6 +20,7 @@ import { colors, motion, sizes, spacing, typography } from '../src/constants/the
 import { LanguageSelector } from '../src/components/LanguageSelector';
 import { useI18n } from '../src/context/I18nContext';
 import { setCapybearReminderEnabled } from '../src/services/capybear-reminder';
+import { performSettingsSignOut } from '../src/services/settings-sign-out';
 
 export default function Settings() {
   const { settings, updateSettings, selectedVoice, resetLocalState, lockAndFlushLocalMutations } = useAppState();
@@ -121,26 +122,26 @@ export default function Settings() {
 
   const handleSignOut = async () => {
     let releaseLocalMutations;
-    let deletionWarning = false;
     try {
       setBusyAction('signOut');
-      try {
-        releaseLocalMutations = await lockAndFlushLocalMutations();
-        // AuthContext durably writes the signed-out marker before any broad
-        // settings sweep. Preserve that marker so a process death during
-        // cleanup cannot resurrect a residual secure session.
-        await signOut();
-        const deletion = await deleteLocalUserData({
+      releaseLocalMutations = await lockAndFlushLocalMutations();
+      const cleanup = await performSettingsSignOut({
+        establishSessionBarrier: async () => {
+          // AuthContext durably writes the signed-out marker before any broad
+          // settings sweep. Preserve that marker so a process death during
+          // cleanup cannot resurrect a residual secure session.
+          await signOut();
+        },
+        sweepLocalData: () => deleteLocalUserData({
           localMutationLockHeld: true,
           preserveSignedOutTombstone: true,
           preserveLanguage: true
-        });
-        deletionWarning = hasLocalUserDataDeletionWarnings(deletion);
-      } catch {
-        deletionWarning = true;
-      }
+        })
+      });
       resetLocalState({ language: settings.language });
       router.replace('/(auth)/onboarding');
+      const deletionWarning = cleanup.cleanupFailed
+        || hasLocalUserDataDeletionWarnings(cleanup.cleanupResult);
       if (deletionWarning) Alert.alert(t('settings.deleteFailedTitle'), t('settings.deleteFailedMessage'));
     } catch {
       Alert.alert(t('settings.signOutFailedTitle'), t('settings.signOutFailedMessage'));

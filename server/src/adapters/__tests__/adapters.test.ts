@@ -60,7 +60,7 @@ describe('vendor robot adapters', () => {
       name: 'Private medicine name',
       dosage: 'Private dosage',
       requestId: 'voice-action-001'
-    }, { id: 'account-001', preferredLanguage: 'en' });
+    }, { id: 'account-001', preferredLanguage: 'fil-PH' });
 
     expect(result).toEqual({
       success: true,
@@ -75,10 +75,44 @@ describe('vendor robot adapters', () => {
     expect(request.redirect).toBe('error');
     expect(JSON.parse(request.body)).toMatchObject({
       command: 'VL_SEND_MEDICATION_REMINDER',
-      device_id: 'robot-device-001'
+      device_id: 'robot-device-001',
+      parameters: {
+        user: {
+          id: 'account-001',
+          preferred_language: 'fil'
+        }
+      }
     });
     expect(metrics).toHaveLength(2);
     expect(metrics[1]).toMatchObject({ operation: 'send_medication_reminder', outcome: 'success' });
+  });
+
+  test('manufacturer medication payloads use an unambiguous Sorani provider tag', async () => {
+    const fetchImpl = jest.fn<FetchLike>()
+      .mockResolvedValueOnce(jsonResponse({ authenticated: true }))
+      .mockResolvedValueOnce(jsonResponse({
+        success: true,
+        command_id: 'command-sorani',
+        state: 'accepted'
+      }));
+    const adapter = new YongyidaAdapter(adapterOptions(fetchImpl));
+
+    await adapter.initialize({ deviceId: 'robot-device-001' });
+    await adapter.sendMedicationReminder({
+      id: 'medication-001',
+      name: 'medicine'
+    }, {
+      id: 'account-001',
+      preferredLanguage: 'ckb-IQ'
+    });
+
+    expect(JSON.parse(fetchImpl.mock.calls[1]![1].body)).toMatchObject({
+      parameters: {
+        user: {
+          preferred_language: 'ckb-Arab'
+        }
+      }
+    });
   });
 
   test('auth failures are never retried', async () => {

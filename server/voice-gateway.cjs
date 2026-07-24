@@ -6,7 +6,10 @@ const {
   AI_ANGEL_TOOL_SCHEMA,
   DEVICE_ACTION_TOOL_SCHEMAS
 } = require('./device-action-tools.cjs');
-const { VOICE_LOCALES: VOICE_LOCALE_CODES } = require('./voice-locales.cjs');
+const {
+  normalizeVoiceLocale,
+  providerVoiceLocaleTag
+} = require('./voice-locales.cjs');
 
 const GATEWAY_PATH = '/api/voice/hume-ws';
 const HUME_WS_URL = 'wss://api.hume.ai/v0/evi/chat';
@@ -22,7 +25,6 @@ const HUME_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f
 const PERSONA_ID_PATTERN = /^[A-Za-z0-9_-]{1,40}$/;
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const INTERACTION_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/;
-const VOICE_LOCALES = new Set(VOICE_LOCALE_CODES);
 const VOICE_INTERACTION_ACTIVITY_TYPES = new Set(['user_message', 'assistant_message']);
 const FORBIDDEN_AI_CONTEXT_KEY = /(?:device_?id|serial|latitude|longitude|coordinates?|raw|transcript|token|secret|api[_-]?key)/i;
 
@@ -31,10 +33,15 @@ function boundedString(value, maxLength) {
   return typeof value === 'string' && value.length <= maxLength ? value : null;
 }
 
-function normalizeVoiceLocale(value) {
-  if (typeof value !== 'string') return undefined;
-  const normalized = value.trim().replace(/_/g, '-').toLowerCase();
-  return VOICE_LOCALES.has(normalized) ? normalized : undefined;
+function safeGatewayLog(config, level, message, metadata) {
+  try {
+    const logger = config?.logger;
+    const method = logger?.[level];
+    if (typeof method === 'function') method.call(logger, message, metadata);
+  } catch {
+    // Diagnostics must never turn a contained provider/client failure into an
+    // unhandled process exception.
+  }
 }
 
 function parsePersonaMap(value) {
@@ -95,7 +102,10 @@ function assertVoicePersonaConfig(config) {
 function resolveVoiceSession(auth, config) {
   const personas = configuredPersonaMap(config);
   const personaId = auth.personaId || configuredDefaultPersona(config);
-  const locale = auth.locale || 'en';
+  const locale = auth.locale === undefined
+    ? 'en'
+    : normalizeVoiceLocale(auth.locale, { allowCatalogCode: true });
+  if (!locale) throw new Error('The requested voice locale is not supported');
   if (!personas.size) return { ...auth, locale, personaId };
   const persona = personas.get(personaId);
   if (!persona) throw new Error('The requested voice persona is not allowed');
@@ -130,8 +140,12 @@ function parseVoiceAuthenticationMessage(raw) {
   const configId = boundedString(connection.config_id, 200);
   const voiceId = boundedString(connection.voice_id, 200);
   const personaId = boundedString(connection.persona_id, 40);
+  const localeProvided = Object.prototype.hasOwnProperty.call(connection, 'locale');
   const rawLocale = boundedString(connection.locale, 35);
-  const locale = normalizeVoiceLocale(rawLocale);
+  // The authenticated first-party client sends its resolved compact catalog
+  // code. In particular, internal `ku` means the Sorani catalog; it is
+  // converted to the unambiguous provider tag `ckb-Arab` before Hume sees it.
+  const locale = normalizeVoiceLocale(rawLocale, { allowCatalogCode: true });
   const resumedChatGroupId = boundedString(connection.resumed_chat_group_id, 200);
   const devices = normalizeDevices(connection.devices);
   if (
@@ -140,6 +154,7 @@ function parseVoiceAuthenticationMessage(raw) {
     || personaId === null
     || (personaId !== undefined && !PERSONA_ID_PATTERN.test(personaId))
     || rawLocale === null
+    || (localeProvided && rawLocale === undefined)
     || (rawLocale !== undefined && !locale)
     || resumedChatGroupId === null
   ) {
@@ -258,7 +273,7 @@ async function loadAINativeVoiceContext(accountId, config) {
     ]);
     return sanitizeAINativeVoiceContext(context);
   } catch {
-    config.logger?.warn?.('[VoiceGateway] AI-native context omitted', {
+    safeGatewayLog(config, 'warn', '[VoiceGateway] AI-native context omitted', {
       code: 'AI_NATIVE_VOICE_CONTEXT_UNAVAILABLE'
     });
     return undefined;
@@ -293,12 +308,18 @@ function prepareUpstreamMessage(data, isBinary, config) {
     delete sanitized.variables;
   }
   const voiceSession = config.voiceSession || {};
+  const voiceLocale = voiceSession.locale === undefined
+    ? 'en'
+    : normalizeVoiceLocale(voiceSession.locale, { allowCatalogCode: true });
+  if (!voiceLocale) throw new Error('Voice session locale is invalid');
+  const providerLocale = providerVoiceLocaleTag(voiceLocale, { allowCatalogCode: true });
+  if (!providerLocale) throw new Error('Voice session locale is invalid');
   const sessionVariables = config.nodeEnv === 'production'
     ? {}
     : { ...(sanitized.variables && typeof sanitized.variables === 'object' ? sanitized.variables : {}) };
   delete sessionVariables.veryloving_locale;
   delete sessionVariables.veryloving_persona;
-  sessionVariables.veryloving_locale = voiceSession.locale || 'en';
+  sessionVariables.veryloving_locale = providerLocale;
   if (voiceSession.personaId) sessionVariables.veryloving_persona = voiceSession.personaId;
   sanitized.variables = sessionVariables;
   if (config.nodeEnv === 'production') {
@@ -310,7 +331,7 @@ function prepareUpstreamMessage(data, isBinary, config) {
       : '';
     sanitized.context = {
       type: 'persistent',
-      text: `Respond in the user's interface language (${voiceSession.locale || 'en'}) unless the user explicitly requests another language.${personaInstruction}${aiNativeContext}`
+      text: `Respond in the user's interface language (${providerLocale}) unless the user explicitly requests another language.${personaInstruction}${aiNativeContext}`
     };
   }
   // Device/scenario tools are always server-owned. This makes the deployed
@@ -482,7 +503,13 @@ function attachVoiceGateway(server, config) {
         clearTimeout(authTimer);
         clearTimeout(sessionExpiryTimer);
       }
-      unregisterActionSession?.();
+      try {
+        unregisterActionSession?.();
+      } catch {
+        safeGatewayLog(config, 'warn', '[VoiceGateway] Action session cleanup failed', {
+          code: 'VOICE_ACTION_SESSION_CLEANUP_FAILED'
+        });
+      }
       unregisterActionSession = null;
       if (principal?.sub && voiceInteractionId && !voiceInteractionCompleted) {
         try {
@@ -494,12 +521,12 @@ function attachVoiceGateway(server, config) {
             // legacy repository without an explicit disconnect transition
             // must fail closed instead of turning an abrupt close into a
             // completion record that could authorize feedback.
-            config.logger?.warn?.('[VoiceGateway] Interaction disconnect proof unavailable', {
+            safeGatewayLog(config, 'warn', '[VoiceGateway] Interaction disconnect proof unavailable', {
               code: 'VOICE_INTERACTION_DISCONNECT_UNAVAILABLE'
             });
           }
         } catch {
-          config.logger?.warn?.('[VoiceGateway] Interaction completion proof unavailable', {
+          safeGatewayLog(config, 'warn', '[VoiceGateway] Interaction completion proof unavailable', {
             code: 'VOICE_INTERACTION_COMPLETION_FAILED'
           });
         }
@@ -554,12 +581,20 @@ function attachVoiceGateway(server, config) {
           upstream = createUpstream(upstreamURL);
           upstream.on('open', () => {
             if (client.readyState !== WebSocket.OPEN) return cleanup();
-            authenticated = true;
-            authenticating = false;
-            principal = claims;
-            clearTimeout(authTimer);
-            unregisterActionSession = config.actionGateway?.registerSession(claims.sub, client, auth.devices);
-            if (!safeSendSocket(client, JSON.stringify({ type: 'auth_ok' }))) cleanup();
+            try {
+              unregisterActionSession = config.actionGateway?.registerSession(claims.sub, client, auth.devices);
+              authenticated = true;
+              authenticating = false;
+              principal = claims;
+              clearTimeout(authTimer);
+              if (!safeSendSocket(client, JSON.stringify({ type: 'auth_ok' }))) cleanup();
+            } catch {
+              safeGatewayLog(config, 'warn', '[VoiceGateway] Action session registration failed', {
+                code: 'VOICE_ACTION_SESSION_REGISTRATION_FAILED'
+              });
+              closeSocket(client, 1011, 'voice session unavailable');
+              cleanup();
+            }
           });
           upstream.on('message', (payload, upstreamBinary) => {
             if (client.readyState !== WebSocket.OPEN) return;
@@ -573,7 +608,7 @@ function attachVoiceGateway(server, config) {
                   ?.observeActivity?.(principal.sub, voiceInteractionId) === true
                   || voiceInteractionActivityObserved;
               } catch {
-                config.logger?.warn?.('[VoiceGateway] Interaction activity proof unavailable', {
+                safeGatewayLog(config, 'warn', '[VoiceGateway] Interaction activity proof unavailable', {
                   code: 'VOICE_INTERACTION_ACTIVITY_FAILED'
                 });
               }
@@ -592,10 +627,14 @@ function attachVoiceGateway(server, config) {
           if (client.readyState === WebSocket.OPEN) {
             safeSendSocket(client, JSON.stringify({ type: 'auth_error' }));
           }
-          config.logger?.warn?.('[VoiceGateway] Authentication rejected', {
+          safeGatewayLog(config, 'warn', '[VoiceGateway] Authentication rejected', {
             name: error?.name || 'VoiceAuthenticationError'
           });
           closeSocket(client, 4001, 'voice authentication failed');
+          // Do not rely on a peer completing the WebSocket close handshake to
+          // release authentication/session timers and any partially-created
+          // upstream. Some failed or synthetic transports never emit close.
+          cleanup();
         });
         return;
       }
@@ -660,12 +699,27 @@ function attachVoiceGateway(server, config) {
         }
         if (message?.type === 'devices_update') {
           const devices = normalizeDevices(message.devices);
-          config.actionGateway?.updateSessionDevices?.(principal?.sub, client, devices);
+          try {
+            config.actionGateway?.updateSessionDevices?.(principal?.sub, client, devices);
+          } catch {
+            safeGatewayLog(config, 'warn', '[VoiceGateway] Device session update failed', {
+              code: 'VOICE_DEVICE_SESSION_UPDATE_FAILED'
+            });
+            closeSocket(client, 1011, 'voice session unavailable');
+            cleanup();
+            return;
+          }
           safeSendSocket(client, JSON.stringify({ type: 'devices_updated', count: devices.length }));
           return;
         }
         if (message?.type === 'device_action_ack') {
-          config.actionGateway?.acknowledgeWearable?.(principal?.sub, client, message);
+          try {
+            config.actionGateway?.acknowledgeWearable?.(principal?.sub, client, message);
+          } catch {
+            safeGatewayLog(config, 'warn', '[VoiceGateway] Device acknowledgement rejected', {
+              code: 'VOICE_DEVICE_ACKNOWLEDGEMENT_FAILED'
+            });
+          }
           return;
         }
         if (message?.type === 'action_request') {
@@ -764,7 +818,17 @@ function attachVoiceGateway(server, config) {
         closeSocket(client, 4000, 'upstream backpressure limit');
         return;
       }
-      const outbound = prepareUpstreamMessage(data, isBinary, { ...config, voiceSession });
+      let outbound;
+      try {
+        outbound = prepareUpstreamMessage(data, isBinary, { ...config, voiceSession });
+      } catch {
+        safeGatewayLog(config, 'warn', '[VoiceGateway] Client message rejected', {
+          code: 'VOICE_CLIENT_MESSAGE_INVALID'
+        });
+        closeSocket(client, 4000, 'invalid voice message');
+        cleanup();
+        return;
+      }
       if (!safeSendSocket(upstream, outbound.payload, { binary: outbound.binary })) {
         closeSocket(client, 1011, 'voice upstream send failed');
         cleanup();

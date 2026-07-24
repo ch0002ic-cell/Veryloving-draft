@@ -8,6 +8,7 @@ import { FeedbackBanner } from '../../src/components/FeedbackBanner';
 import { useAuth } from '../../src/context/AuthContext';
 import { colors, radii, sizes, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
+import { normalizeDecimalDigits } from '../../src/utils/unicode-digits';
 import { formatE164ForDisplay } from '../../src/utils/phone';
 import { authenticationErrorTranslationKey } from '../../src/utils/auth-configuration';
 
@@ -65,7 +66,7 @@ export default function VerifyCode() {
         maxLength={6}
         onBlur={() => setCodeTouched(true)}
         onChangeText={(value) => {
-          setCode(value.replace(/\D/g, '').slice(0, 6));
+          setCode(normalizeDecimalDigits(value).replace(/\D/g, '').slice(0, 6));
           setErrorKey(null);
           clearAuthError();
         }}

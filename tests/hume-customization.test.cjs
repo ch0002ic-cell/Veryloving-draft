@@ -169,16 +169,17 @@ test('Hume tool payloads preserve tool-call correlation and safe fallback conten
 
   const failure = createToolErrorPayload({
     toolCallId: 'call-1',
-    error: 'timeout',
+    error: 'private timeout diagnostic',
     fallbackContent: 'Tips are unavailable.'
   });
   assert.deepEqual(failure, {
     type: 'tool_error',
     tool_call_id: 'call-1',
-    error: 'timeout',
+    error: 'TOOL_EXECUTION_FAILED',
     fallback_content: 'Tips are unavailable.',
     level: 'warn'
   });
+  assert.doesNotMatch(JSON.stringify(failure), /private timeout diagnostic/);
   assert.equal(reconnectDelay(1000, 5), 16000);
 });
 

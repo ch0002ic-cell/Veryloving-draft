@@ -44,6 +44,23 @@ function boundedIdentifier(value, maxLength = 128) {
     : undefined;
 }
 
+function createFailureIsolatedLogger(logger) {
+  const write = (level, message, metadata) => {
+    try {
+      const method = logger?.[level];
+      if (typeof method === 'function') method.call(logger, message, metadata);
+    } catch {
+      // Observability must never replace the durable action result or reject a
+      // background delivery/recovery promise.
+    }
+  };
+  return Object.freeze({
+    error: (message, metadata) => write('error', message, metadata),
+    info: (message, metadata) => write('info', message, metadata),
+    warn: (message, metadata) => write('warn', message, metadata)
+  });
+}
+
 function normalizeActionParameters(action, parameters) {
   if (WEARABLE_ACTION_NAMES.includes(action)) {
     if (Object.keys(parameters).length) {
@@ -756,7 +773,7 @@ class ActionGateway {
     this.maxPendingRobotCommands = maxPendingRobotCommands;
     this.maxPendingWearableAcks = maxPendingWearableAcks;
     this.sleep = sleep || ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
-    this.logger = logger;
+    this.logger = createFailureIsolatedLogger(logger);
     this.notifyUser = notifyUser;
     this.authorizeDevice = authorizeDevice;
     this.resolveManufacturerDeviceId = resolveManufacturerDeviceId;

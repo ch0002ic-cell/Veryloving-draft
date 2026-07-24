@@ -16,8 +16,8 @@ test('startup hydration uses one branded progress surface and font loading canno
 
   assert.match(root, /<AppLoadingState message={t\('common\.loading'\)\} \/>/);
   assert.match(root, /if \(!fontsReady\) return <AppLoadingState \/>/);
-  assert.match(authLayout, /if \(loading\)[\s\S]*<AppLoadingState \/>/);
-  assert.equal([...index.matchAll(/<AppLoadingState \/>/g)].length, 2);
+  assert.match(authLayout, /if \(loading\)[\s\S]*<AppLoadingState message=\{t\('common\.loading'\)\} \/>/);
+  assert.equal([...index.matchAll(/<AppLoadingState message=\{t\('common\.loading'\)\} \/>/g)].length, 2);
   assert.match(loading, /accessibilityRole="progressbar"/);
   assert.match(loading, /accessibilityState=\{\{ busy: true \}\}/);
   assert.match(loading, /<Image accessible=\{false\}/);

@@ -18,6 +18,7 @@ import {
 import { useAppState } from '../src/context/AppContext';
 import { colors, radii, spacing, typography } from '../src/constants/theme';
 import { useI18n } from '../src/context/I18nContext';
+import { formatLocalizedDateTime } from '../src/utils/localized-format';
 import { useAuth } from '../src/context/AuthContext';
 import { loadLastKnownLocation } from '../src/services/location-cache';
 import { loadEmergencyMedicalAttachment } from '../src/services/medical-profile-store';
@@ -159,7 +160,7 @@ export default function EmergencySOS() {
           <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('releaseCritical.lastSOSAttempt')}</Text>
           <Text style={[styles.body, isRTL && styles.rtlText]}>{t(sosStatusTranslationKey(lastSOSStatus.status))}</Text>
           <Text style={[styles.timestamp, isRTL && styles.rtlText]}>
-            {new Date(lastSOSStatus.recordedAt).toLocaleString(locale)}
+            {formatLocalizedDateTime(lastSOSStatus.recordedAt, locale) || t('common.unknown')}
           </Text>
         </Card>
       ) : null}

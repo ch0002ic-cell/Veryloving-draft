@@ -74,7 +74,8 @@ const LEGACY_SESSION_KEYS = [LEGACY_TOKEN_KEY, LEGACY_REFRESH_TOKEN_KEY, LEGACY_
 const DEVELOPMENT_DEMO_USER = Object.freeze({
   id: 'demo:local',
   provider: 'demo',
-  name: 'Demo User',
+  // User-facing surfaces fall back to the localized common.user label.
+  name: null,
   email: 'demo@veryloving.invalid',
   isDemo: true
 });

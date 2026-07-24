@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ໃຊ້ ໄມ ໂກ ຂອງ ທ່ານ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລີ່ມ AI ຄູ່ ຄອງ ຫລື ການ ເອີ້ນ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ.",
     "bluetoothRationaleTitle": "Bluetooth ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ນຸ່ງ ຖື ຂອງ ທ່ານ",
     "bluetoothRationaleMessage": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຄູ່ ກັບ ເຄື່ອງ ເອ້ NorthStar, ອ່ານ ສະພາບ ການ ຕິດ ຕໍ່ ແລະ ກະ ຕຸ້ນ ຄວາມ ປອດ ໄພ ຈາກ ເຄື່ອງ ນຸ່ງ ຖື.",
-    "cameraRationaleTitle": "ກ້ອງຖ່າຍຮູບເປັນທາງເລືອກ",
-    "cameraRationaleMessage": "VeryLoving ໃຊ້ ກ້ອງຖ່າຍຮູບ ພຽງ ແຕ່ ເມື່ອ ທ່ານ ເລືອກ ທີ່ ຈະ ຖ່າຍ ຮູບ ຫລື ແບ່ງປັນ ຮູບ ຄວາມ ປອດ ໄພ ເທົ່າ ນັ້ນ."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ຮັກສາ flow ນີ້ ໄວ້ ຈາກ Settings ແລະ dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ຕ້ອງການ ໄມ ໂກ ເພື່ອ ຄວາມ ປອດ ໄພ ແລະ AI ການ ເອີ້ນ ຂອງ ຄູ່ ຄອງ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ໃຊ້ ສະຖານ ທີ່ ຂອງ ທ່ານ ສໍາລັບ ແຜນ ທີ່ ຄວາມ ປອດ ໄພ ແລະ ລັກສະນະ ຄວາມ ປອດ ໄພ ທີ່ຢູ່ ໃກ້ໆ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ໃຊ້ Bluetooth ເພື່ອ ຕິດ ຕໍ່ ກັບ ເຄື່ອງ ເອ້ ຄວາມ ປອດ ໄພ NorthStar ຂອງ ທ່ານ.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

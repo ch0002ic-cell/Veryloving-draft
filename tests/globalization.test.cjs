@@ -7,12 +7,16 @@ const path = require('node:path');
 const { test } = require('node:test');
 const {
   catalogLanguages,
+  filterLanguageOptions,
   getTranslationKeys,
   isRTLLanguage,
   maintainedLanguages,
+  nativeLocaleTagForLanguage,
   normalizeLanguageCode,
   resolveLanguage,
   RTL_QA_LANGUAGE_CODES,
+  selectLanguageOption,
+  selectPluralizationKeys,
   selectRuntimeLanguageCodes,
   supportedLanguages,
   TRANSLATION_FALLBACK_ENABLED,
@@ -28,6 +32,7 @@ const {
   getDefaultCountry,
   phoneValueFromE164
 } = require('../src/utils/phone');
+const { normalizeDecimalDigits } = require('../src/utils/unicode-digits');
 const { ENGLISH_COUNTRY_NAMES } = require('../src/data/country-names-en');
 const { DEFAULT_SETTINGS, mergeSettings } = require('../src/services/settings-store');
 const languageCatalog = require('../src/i18n/languages');
@@ -66,6 +71,27 @@ test('phone input formats and validates numbers across regions', () => {
   }
 });
 
+test('localized decimal digits normalize at OTP and phone protocol boundaries', () => {
+  assert.equal(
+    normalizeDecimalDigits('٠١٢٣٤٥٦٧٨٩ ۰۱۲۳۴۵۶۷۸۹ ०१२३४५६७८९ １２３ 𝟜𝟝'),
+    '0123456789 0123456789 0123456789 123 45'
+  );
+  assert.equal(createPhoneValue('٤١٥٥٥٥٢٦٧١', 'US').e164, '+14155552671');
+  assert.equal(createPhoneValue('+۳۴ ۶۱۲ ۳۴ ۵۶ ۷۸', 'US').e164, '+34612345678');
+  assert.ok(filterCountryOptions(getCountryOptions('ar'), '٦٥').some((country) => (
+    country.callingCode === '65'
+  )));
+
+  const verificationScreen = readFileSync(
+    path.resolve(process.cwd(), 'app/(auth)/verify-code.js'),
+    'utf8'
+  );
+  assert.match(
+    verificationScreen,
+    /normalizeDecimalDigits\(value\)\.replace\(\/\\D\/g, ''\)\.slice\(0, 6\)/
+  );
+});
+
 test('international paste detects the country and stores only canonical E.164', () => {
   const phone = createPhoneValue('+34 612 34 56 78', 'US');
   assert.equal(phone.countryCode, 'ES');
@@ -101,6 +127,22 @@ test('country options are complete, localized, and searchable by dialing code', 
   assert.ok(matches.some((country) => country.code === 'ES'));
   assert.equal(getDefaultCountry([{ regionCode: 'SG' }]), 'SG');
   assert.equal(getDefaultCountry([{ regionCode: null }]), 'US');
+});
+
+test('country option Intl boundaries use native tags and reject malformed locales safely', () => {
+  const expectedSoraniName = new Intl.DisplayNames(['ckb-Arab'], { type: 'region' }).of('IQ');
+  const soraniOptions = getCountryOptions('ku');
+  assert.equal(soraniOptions.find((country) => country.code === 'IQ')?.name, expectedSoraniName);
+  assert.equal(nativeLocaleTagForLanguage('ku'), 'ckb-Arab');
+
+  let malformedOptions;
+  assert.doesNotThrow(() => {
+    malformedOptions = getCountryOptions('not a locale<script>');
+  });
+  assert.equal(
+    malformedOptions.find((country) => country.code === 'US')?.name,
+    getCountryOptions('en').find((country) => country.code === 'US')?.name
+  );
 });
 
 test('English country-name fallback covers every supported phone region', () => {
@@ -162,6 +204,17 @@ test('translated strings preserve every interpolation placeholder', () => {
 });
 
 test('language resolution supports regional tags, system preference, and fallback', () => {
+  assert.deepEqual(filterLanguageOptions(null, ''), []);
+  assert.deepEqual(filterLanguageOptions({ code: 'en' }, 'English'), []);
+  const sampleOptions = [
+    { code: 'system' },
+    { code: 'en' },
+    { code: 'es' }
+  ];
+  assert.equal(selectLanguageOption(sampleOptions, 'system', 'es').code, 'system');
+  assert.equal(selectLanguageOption(sampleOptions, 'de', 'es').code, 'es');
+  assert.equal(selectLanguageOption(sampleOptions, 'de', 'de').code, 'en');
+  assert.equal(selectLanguageOption(null, 'de', 'en'), null);
   assert.equal(normalizeLanguageCode('es-MX'), 'es');
   assert.equal(normalizeLanguageCode('fr-CA'), 'fr');
   assert.equal(normalizeLanguageCode('zh-Hans-CN'), 'zh');
@@ -179,9 +232,17 @@ test('language resolution supports regional tags, system preference, and fallbac
   assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hans' }]), 'zh');
   assert.equal(resolveLanguage('system', [{ languageTag: 'zh-Hant-TW' }]), 'en');
   assert.equal(resolveLanguage('system', [{ languageTag: 'zh-HK' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageCode: 'zh', scriptCode: 'Hant', regionCode: 'TW' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageCode: 'zh', regionCode: 'TW' }]), 'en');
+  assert.equal(resolveLanguage('system', [{ languageCode: 'zh', scriptCode: 'Hans', regionCode: 'SG' }]), 'zh');
   assert.equal(resolveLanguage('system', [{ languageTag: 'ja-JP' }]), 'en');
   assert.equal(resolveLanguage('system', [{ languageTag: 'ae-AF' }]), 'en');
   assert.equal(resolveLanguage('en', [{ languageTag: 'es-ES' }]), 'en');
+  assert.equal(resolveLanguage('ae-AF', [{ languageTag: 'es-ES' }]), 'en');
+  assert.equal(resolveLanguage('zh-Hant-TW', [{ languageTag: 'es-ES' }]), 'en');
+  assert.equal(resolveLanguage(' SYSTEM ', [{ languageTag: 'es-ES' }]), 'es');
+  assert.equal(resolveLanguage('system', { languageTag: 'es-ES' }), 'en');
+  assert.equal(resolveLanguage('system', [null, 42, {}, { languageTag: 'fr-CA' }]), 'fr');
   assert.equal(translateForLocale('es', 'auth.createAccount'), 'Crear cuenta');
   assert.equal(translateForLocale('fr', 'auth.createAccount'), 'Créer un compte');
   assert.equal(translateForLocale('zh', 'auth.createAccount'), '创建账户');
@@ -199,6 +260,37 @@ test('language resolution supports regional tags, system preference, and fallbac
     translateForLocale('zh', 'safetyCall.messagesWaiting', { count: 2 }),
     '2条消息等待发送'
   );
+});
+
+test('locale pluralization selects CLDR categories with a safe other fallback', () => {
+  const cases = [
+    ['ar', 0, 'zero'],
+    ['ar', 1, 'one'],
+    ['ar', 2, 'two'],
+    ['ar', 3, 'few'],
+    ['ar', 11, 'many'],
+    ['ar', 100, 'other'],
+    ['ru', 1, 'one'],
+    ['ru', 2, 'few'],
+    ['ru', 5, 'many'],
+    ['ru', 21, 'one'],
+    ['pl', 2, 'few'],
+    ['pl', 5, 'many'],
+    ['sl', 2, 'two'],
+    ['sl', 3, 'few'],
+    ['cy', 0, 'zero'],
+    ['cy', 2, 'two'],
+    ['cy', 3, 'few'],
+    ['cy', 6, 'many'],
+    ['fr', 0, 'one'],
+    ['zh', 2, 'other']
+  ];
+  for (const [locale, count, category] of cases) {
+    const keys = selectPluralizationKeys(locale, count);
+    assert.equal(keys[0], category, `${locale} count ${count} has the wrong plural category`);
+    assert.equal(keys.at(-1), 'other');
+  }
+  assert.deepEqual(selectPluralizationKeys('not-a-locale', 2), ['other']);
 });
 
 test('selectable catalogs never use a hidden English per-string fallback', () => {
@@ -258,17 +350,41 @@ test('RTL language resolution is driven by catalog metadata', () => {
   assert.equal(isRTLLanguage('he-IL'), true);
   assert.equal(isRTLLanguage('ur-PK'), true);
   assert.equal(isRTLLanguage('de-DE'), false);
-  assert.equal(isRTLLanguage('ae'), true);
+  assert.equal(isRTLLanguage('ae'), false);
   assert.equal(isRTLLanguage('zz'), false);
+});
+
+test('all registry-only languages fail closed consistently across app locale boundaries', () => {
+  const unavailable = languageCatalog.filter((language) => (
+    language.code !== 'system' && !language.messages
+  ));
+  assert.equal(unavailable.length, 28);
+  for (const language of unavailable) {
+    assert.equal(normalizeLanguageCode(language.code), null, language.code);
+    assert.equal(
+      resolveLanguage('system', [{ languageTag: language.code }]),
+      'en',
+      language.code
+    );
+    assert.equal(isRTLLanguage(language.code), false, language.code);
+    assert.equal(
+      translateForLocale(language.code, 'auth.createAccount'),
+      'Create account',
+      language.code
+    );
+  }
 });
 
 test('Expo config derives native locale declarations from the language catalog', () => {
   const appConfig = require('../app.config');
   const config = appConfig();
   const localizationPlugin = config.plugins.find((plugin) => Array.isArray(plugin) && plugin[0] === 'expo-localization');
-  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, supportedLanguages);
-  assert.deepEqual(localizationPlugin[1].supportedLocales.android, supportedLanguages);
-  assert.deepEqual(Object.keys(config.locales), supportedLanguages);
+  const supportedNativeLocales = appConfig.selectSupportedNativeLocales();
+  assert.deepEqual(localizationPlugin[1].supportedLocales.ios, supportedNativeLocales);
+  assert.deepEqual(localizationPlugin[1].supportedLocales.android, supportedNativeLocales);
+  assert.deepEqual(Object.keys(config.locales), supportedNativeLocales);
+  assert.ok(supportedNativeLocales.includes('zh-Hans'));
+  assert.ok(!supportedNativeLocales.includes('zh'));
   assert.deepEqual(
     appConfig.selectSupportedLocales({ EXPO_PUBLIC_ENABLE_RTL_QA_LOCALES: 'true' }).sort(),
     ['ar', 'en', 'es', 'fr', 'he', 'zh']
@@ -306,7 +422,29 @@ test('Expo config derives native locale declarations from the language catalog',
   }), true);
   assert.match(config.locales.es.ios.NSMicrophoneUsageDescription, /micrófono/i);
   assert.match(config.locales.fr.ios.NSMicrophoneUsageDescription, /microphone/i);
-  assert.match(config.locales.zh.ios.NSMicrophoneUsageDescription, /麦克风/);
+  assert.match(config.locales['zh-Hans'].ios.NSMicrophoneUsageDescription, /麦克风/);
+  assert.equal(
+    config.ios.infoPlist.NSCameraUsageDescription,
+    translations.en.native.ios.NSCameraUsageDescription
+  );
+  assert.equal(
+    config.plugins.find((plugin) => Array.isArray(plugin) && plugin[0] === 'expo-camera')[1].cameraPermission,
+    translations.en.native.ios.NSCameraUsageDescription
+  );
+  assert.equal(config.locales.es.ios.NSCameraUsageDescription, translations.es.permissions.cameraRationaleMessage);
+  assert.equal(config.locales.fr.ios.NSCameraUsageDescription, translations.fr.permissions.cameraRationaleMessage);
+  assert.equal(config.locales['zh-Hans'].ios.NSCameraUsageDescription, translations.zh.permissions.cameraRationaleMessage);
+  const fullNativeLocales = appConfig.selectSupportedNativeLocales({
+    EXPO_PUBLIC_SHOW_ALL_LANGUAGES: 'true',
+    VERYLOVING_BUILD_PROFILE: 'development'
+  });
+  assert.equal(fullNativeLocales.length, 155);
+  assert.equal(new Set(fullNativeLocales).size, 155);
+  assert.ok(fullNativeLocales.includes('fil'));
+  assert.ok(fullNativeLocales.includes('ckb-Arab'));
+  assert.ok(fullNativeLocales.includes('sr-Cyrl'));
+  assert.ok(!fullNativeLocales.includes('tl'));
+  assert.ok(!fullNativeLocales.includes('ku'));
 });
 
 test('language preference is retained by settings merges', () => {
@@ -321,7 +459,8 @@ test('language selector persists before publishing and visibly marks the current
   const i18nContext = readFileSync(path.resolve(process.cwd(), 'src/context/I18nContext.js'), 'utf8');
 
   assert.match(selector, /await setLanguage\(languageCode\)/);
-  assert.match(selector, /const selected = item\.code === languagePreference/);
+  assert.match(selector, /selectLanguageOption\(languageOptions, languagePreference, locale\)/);
+  assert.match(selector, /const selected = item\.code === selectedLanguage\?\.code/);
   assert.match(selector, /accessibilityState=\{\{ checked: selected/);
   assert.match(selector, /selected \? <Ionicons[^>]*name="checkmark-circle"/);
   assert.match(selector, /<FlatList/);
@@ -426,7 +565,7 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
     '--require',
     '@babel/register',
     '-e',
-    `global.__DEV__ = false; const core = require('./src/i18n/core'); const { DEFAULT_SETTINGS, mergeSettings } = require('./src/services/settings-store'); const referenceKeys = core.getTranslationKeys(core.translations.en); process.stdout.write(JSON.stringify({
+    `global.__DEV__ = false; const core = require('./src/i18n/core'); const catalog = require('./src/i18n/languages'); const { DEFAULT_SETTINGS, mergeSettings } = require('./src/services/settings-store'); const referenceKeys = core.getTranslationKeys(core.translations.en); const unsupportedCodes = catalog.filter((language) => language.code !== 'system' && !language.messages).map((language) => language.code).sort(); process.stdout.write(JSON.stringify({
       count: core.supportedLanguages.length,
       options: core.languageOptions.length,
       german: core.resolveLanguage('de-DE'),
@@ -435,13 +574,26 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
       urdu: core.resolveLanguage('ur-PK'),
       urduRTL: core.isRTLLanguage(core.resolveLanguage('ur-PK')),
       unsupported: core.resolveLanguage('ae-AF'),
+      unsupportedDoesNotLeakToSystem: core.resolveLanguage('ae-AF', [{ languageTag: 'de-DE' }]),
+      unsupportedCodes,
+      unsupportedResolutionSafe: unsupportedCodes.every((code) => core.normalizeLanguageCode(code) === null && !core.languageOptions.some((option) => option.code === code)),
+      aliases: Object.fromEntries(['fil-PH', 'nb-NO', 'in-ID', 'iw-IL', 'ji-001', 'jw-ID', 'mo-MD', 'ckb', 'ckb-Arab', 'ckb-IQ'].map((tag) => [tag, core.normalizeLanguageCode(tag)])),
+      scripts: Object.fromEntries(['ks-Deva-IN', 'ks-Arab-IN', 'sr-Latn-RS', 'sr-Cyrl-RS', 'sr-ME', 'sr-RS', 'pa-Arab-PK', 'pa-Guru-IN', 'pa-PK', 'pa-IN', 'az-Arab-IR', 'az-Latn-AZ', 'az-IR', 'az-AZ', 'uz-Cyrl-UZ', 'mn-Mong-CN', 'mn-CN', 'mn-MN', 'ku-Latn-TR', 'ku-Arab-IQ', 'ku-TR', 'ku-IQ', 'ku-IR', 'ha-Arab-NG', 'ff-Adlm-GN'].map((tag) => [tag, core.normalizeLanguageCode(tag)])),
+      bareKurdishExternal: core.normalizeLanguageCode('ku'),
+      bareKurdishSystem: core.resolveLanguage('system', [{ languageTag: 'ku' }]),
+      soraniSystem: core.resolveLanguage('system', [{ languageTag: 'ckb-IQ' }]),
+      soraniPreference: core.resolveLanguage('ku'),
+      soraniNativeTag: core.nativeLocaleTagForLanguage(core.resolveLanguage('ku')),
+      soraniRTL: core.isRTLLanguage(core.resolveLanguage('ku')),
+      scriptFallback: core.resolveLanguage('system', [{ languageTag: 'pa-PK' }, { languageTag: 'pa-IN' }]),
       germanCopy: core.translateForLocale('de', 'auth.createAccount'),
       criticalCopy: core.translateForLocale('de', 'releaseCritical.authNetwork'),
       englishCriticalCopy: core.translateForLocale('en', 'releaseCritical.authNetwork'),
       qaMarkers: core.languageOptions.filter((option) => option.reviewRequired).length,
       emptySearchCount: core.filterLanguageOptions(core.languageOptions, '').length,
-      searchMatches: Object.fromEntries(['German', 'Portuguese', 'Russian', 'اردو'].map((query) => [query, core.filterLanguageOptions(core.languageOptions, query).map((option) => option.code)])),
+      searchMatches: Object.fromEntries(['German', 'Portuguese', 'Russian', 'اردو', 'ckb', 'zh-Hans'].map((query) => [query, core.filterLanguageOptions(core.languageOptions, query).map((option) => option.code)])),
       exactEffectiveSchema: core.supportedLanguages.every((code) => JSON.stringify(core.getTranslationKeys(core.translations[code])) === JSON.stringify(referenceKeys)),
+      pluralSafe: core.supportedLanguages.every((code) => [0, 1, 2, 3, 5, 11, 21, 100].every((count) => !/\\[missing .* translation\\]/.test(core.translateForLocale(code, 'safetyCall.messagesWaiting', { count })))),
       persisted: mergeSettings(DEFAULT_SETTINGS, { language: 'de' }).language
     }));`
   ], {
@@ -464,6 +616,55 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
   assert.equal(result.urdu, 'ur');
   assert.equal(result.urduRTL, true);
   assert.equal(result.unsupported, 'en');
+  assert.equal(result.unsupportedDoesNotLeakToSystem, 'en');
+  assert.equal(result.unsupportedCodes.length, 28);
+  assert.equal(result.unsupportedResolutionSafe, true);
+  assert.deepEqual(result.aliases, {
+    'fil-PH': 'tl',
+    'nb-NO': 'nb',
+    'in-ID': 'id',
+    'iw-IL': 'he',
+    'ji-001': 'yi',
+    'jw-ID': 'jv',
+    'mo-MD': 'ro',
+    ckb: 'ku',
+    'ckb-Arab': 'ku',
+    'ckb-IQ': 'ku'
+  });
+  assert.deepEqual(result.scripts, {
+    'ks-Deva-IN': null,
+    'ks-Arab-IN': 'ks',
+    'sr-Latn-RS': null,
+    'sr-Cyrl-RS': 'sr',
+    'sr-ME': null,
+    'sr-RS': 'sr',
+    'pa-Arab-PK': null,
+    'pa-Guru-IN': 'pa',
+    'pa-PK': null,
+    'pa-IN': 'pa',
+    'az-Arab-IR': null,
+    'az-Latn-AZ': 'az',
+    'az-IR': null,
+    'az-AZ': 'az',
+    'uz-Cyrl-UZ': null,
+    'mn-Mong-CN': null,
+    'mn-CN': null,
+    'mn-MN': 'mn',
+    'ku-Latn-TR': null,
+    'ku-Arab-IQ': 'ku',
+    'ku-TR': null,
+    'ku-IQ': 'ku',
+    'ku-IR': 'ku',
+    'ha-Arab-NG': null,
+    'ff-Adlm-GN': null
+  });
+  assert.equal(result.bareKurdishExternal, null);
+  assert.equal(result.bareKurdishSystem, 'en');
+  assert.equal(result.soraniSystem, 'ku');
+  assert.equal(result.soraniPreference, 'ku');
+  assert.equal(result.soraniNativeTag, 'ckb-Arab');
+  assert.equal(result.soraniRTL, true);
+  assert.equal(result.scriptFallback, 'pa');
   assert.equal(result.germanCopy, 'Konto erstellen');
   assert.notEqual(result.criticalCopy, result.englishCriticalCopy);
   assert.doesNotMatch(result.criticalCopy, /\[missing .* translation\]/);
@@ -473,6 +674,9 @@ test('signed full-catalog QA runtime exposes 155 locales without raw critical mi
   assert.ok(result.searchMatches.Portuguese.includes('pt'));
   assert.ok(result.searchMatches.Russian.includes('ru'));
   assert.ok(result.searchMatches['اردو'].includes('ur'));
+  assert.ok(result.searchMatches.ckb.includes('ku'));
+  assert.ok(result.searchMatches['zh-Hans'].includes('zh'));
   assert.equal(result.exactEffectiveSchema, true);
+  assert.equal(result.pluralSafe, true);
   assert.equal(result.persisted, 'de');
 });

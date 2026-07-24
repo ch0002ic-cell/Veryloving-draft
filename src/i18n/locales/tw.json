@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving de wo microphone di dwuma bere a woafi ase AI hokafo anaa ahobammɔ frɛ nkutoo.",
     "bluetoothRationaleTitle": "Bluetooth na ɛka wo wearable no bom",
     "bluetoothRationaleMessage": "VeryLoving de Bluetooth di dwuma de bɔ NorthStar agude, kenkan nkitahodi tebea, na ɛkanyan ahobammɔ nsu a ɛsen fi nea wɔhyɛ no mu.",
-    "cameraRationaleTitle": "Camera yɛ nea obi betumi apaw",
-    "cameraRationaleMessage": "VeryLoving de kamera no di dwuma bere a wopaw sɛ wobɛtwe profile mfonini anaasɛ wobɛkyɛ ahobammɔ mfonini nkutoo."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ma saa nsuo yi kɔ so firi Nsiesiei ne dashboard no so.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hia microphone kwan ma ahobanbɔ ne AI ɔhokafoɔ frɛ.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving de wo beaeɛ di dwuma ma ahobanbɔ asase mfonini ne ahobanbɔ nneɛma a ɛbɛn hɔ.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving de Bluetooth di dwuma de ka wo NorthStar ahobanbɔ agude no ho."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving de Bluetooth di dwuma de ka wo NorthStar ahobanbɔ agude no ho.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

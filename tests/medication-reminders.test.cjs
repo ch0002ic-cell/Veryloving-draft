@@ -321,6 +321,21 @@ test('management form creates a durable reminder that can be listed and acknowle
   scheduler.stop();
 });
 
+test('management form accepts localized decimal digits for reminder durations', () => {
+  const input = createMedicationReminderInput({
+    medicationReference: 'evening_dose',
+    robotDeviceId: 'robot-home-0001',
+    reminderDelayMinutes: '٥',
+    escalationDelayMinutes: '۱۵'
+  }, {
+    now: () => 5_000_000,
+    createId: () => 'localized-reminder-0001'
+  });
+
+  assert.equal(input.dueAt, 5_300_000);
+  assert.equal(input.escalationDelayMs, 900_000);
+});
+
 test('authenticated manufacturer telemetry records delivery only for the reminder robot', async () => {
   let currentTime = 8_000_000;
   const scheduler = createMedicationReminderScheduler({

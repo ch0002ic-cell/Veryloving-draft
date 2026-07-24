@@ -12,7 +12,10 @@ export class AppErrorBoundary extends Component {
   }
 
   componentDidCatch(error) {
-    logger.error('[UI] Unhandled render error', {
+    // The boundary has contained the render failure and presents a retry UI.
+    // Keep the diagnostic observable without promoting a handled failure into
+    // a second React Native LogBox surface.
+    logger.recoverable('[UI] Render error contained by the application boundary', {
       name: error?.name || 'RenderError'
     });
   }

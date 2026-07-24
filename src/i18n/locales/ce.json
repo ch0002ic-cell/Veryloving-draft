@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving хьан микрофон лелайо ахь AI накъост я кхерамазаллин зӀе йолийча бен.",
     "bluetoothRationaleTitle": "Bluetooth хьан тӀеюха хӀума вовшахтуху",
     "bluetoothRationaleMessage": "VeryLoving лелайо Bluetooth NorthStar ювелиран хӀуманашца уьйр латто, зӀенан хьал деша, тӀеюхачу хӀуманера кхерамазаллин дӀасадаларш дӀадоло.",
-    "cameraRationaleTitle": "Камера лаамехь ю",
-    "cameraRationaleMessage": "VeryLoving лелайо камера ахь хьайн профилан сурт даккха я кхерамазаллин сурт декъа лаахь бен."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving латтадо и дӀасадалар Настройкашкахь а, панелехь а.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving кхерамазаллина а, AI накъостийн зӀенашна а микрофон оьшу.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving лелайо хьан меттиг кхерамазаллин картана а, гергарчу кхерамзаллин агӀонашна а.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving лелайо Bluetooth хьан NorthStar кхерамазаллин ювелиран хӀуманашца зӀе латто."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving лелайо Bluetooth хьан NorthStar кхерамазаллин ювелиран хӀуманашца зӀе латто.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

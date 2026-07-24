@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving itilize mikwofòn ou sèlman lè ou kòmanse yon konpayon AI oswa apèl sekirite.",
     "bluetoothRationaleTitle": "Bluetooth konekte wearable ou",
     "bluetoothRationaleMessage": "VeryLoving sèvi ak Bluetooth yo pè ak NorthStar bijou, li estati koneksyon ak deklanche koule sekirite soti nan wearable la.",
-    "cameraRationaleTitle": "Kamera se si ou vle",
-    "cameraRationaleMessage": "VeryLoving itilize kamera a sèlman lè ou chwazi pou pran yon foto pwofil oswa pataje yon imaj sekirite."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving kenbe koule sa a disponib nan Anviwònman ak tablodbò a.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving bezwen aksè mikwofòn pou sekirite ak apèl konpayon AI",
       "NSLocationWhenInUseUsageDescription": "VeryLoving sèvi ak kote ou ye pou kat jeyografik la sekirite ak karakteristik sekirite ki tou pre.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sèvi ak Bluetooth konekte ak NorthStar bijou sekirite ou",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

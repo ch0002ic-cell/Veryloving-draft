@@ -17,6 +17,7 @@ import {
   canAcknowledgeMedicationReminder,
   createMedicationReminderInput
 } from '../src/services/medication-reminder-form';
+import { formatLocalizedDateTime } from '../src/utils/localized-format';
 
 export default function MedicationReminders() {
   const {
@@ -104,10 +105,10 @@ export default function MedicationReminders() {
       await scheduleMedicationReminder(input);
       if (!operationIsCurrent()) return;
       setMedicationReference('');
-      setFeedback({ tone: 'success', message: t('medication.saved') });
+      setFeedback({ tone: 'success', messageKey: 'medication.saved' });
     } catch {
       if (operationIsCurrent()) {
-        setFeedback({ tone: 'error', message: t('medication.saveFailed') });
+        setFeedback({ tone: 'error', messageKey: 'medication.saveFailed' });
       }
     } finally {
       if (mutationEpoch === mutationEpochRef.current) {
@@ -131,11 +132,11 @@ export default function MedicationReminders() {
     try {
       await acknowledgeMedicationReminder(reminderId);
       if (operationIsCurrent()) {
-        setFeedback({ tone: 'success', message: t('medication.acknowledged') });
+        setFeedback({ tone: 'success', messageKey: 'medication.acknowledged' });
       }
     } catch {
       if (operationIsCurrent()) {
-        setFeedback({ tone: 'error', message: t('medication.acknowledgeFailed') });
+        setFeedback({ tone: 'error', messageKey: 'medication.acknowledgeFailed' });
       }
     } finally {
       if (mutationEpoch === mutationEpochRef.current) {
@@ -153,7 +154,10 @@ export default function MedicationReminders() {
         showBack
         backLabel={t('common.back')}
       />
-      <FeedbackBanner message={feedback?.message} tone={feedback?.tone} />
+      <FeedbackBanner
+        message={feedback?.messageKey ? t(feedback.messageKey, feedback.messageOptions) : null}
+        tone={feedback?.tone}
+      />
 
       <Card style={styles.form}>
         <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('medication.create')}</Text>
@@ -173,10 +177,11 @@ export default function MedicationReminders() {
         <Text style={[styles.label, isRTL && styles.rtlText]}>{t('medication.robot')}</Text>
         {robotEntities.length ? robotEntities.map((robot) => {
           const selected = robot.deviceId === robotDeviceId;
+          const robotName = robot.name || t('medication.robot');
           return (
             <Pressable
               key={robot.deviceId}
-              accessibilityLabel={`${robot.name} · ${robot.online ? t('safetyCall.connected') : t('safetyCall.offline')}`}
+              accessibilityLabel={`${robotName} · ${robot.online ? t('safetyCall.connected') : t('safetyCall.offline')}`}
               accessibilityRole="radio"
               accessibilityState={{ checked: selected, disabled: Boolean(busyAction) }}
               disabled={Boolean(busyAction)}
@@ -189,7 +194,7 @@ export default function MedicationReminders() {
               ]}
             >
               <View style={styles.flex}>
-                <Text style={[styles.robotName, isRTL && styles.rtlText]}>{robot.name}</Text>
+                <Text style={[styles.robotName, isRTL && styles.rtlText]}>{robotName}</Text>
                 <Text style={[styles.muted, isRTL && styles.rtlText]}>
                   {robot.online ? t('safetyCall.connected') : t('safetyCall.offline')}
                 </Text>
@@ -261,6 +266,7 @@ export default function MedicationReminders() {
       ) : null}
       {medicationReminders.map((reminder) => {
         const robot = robotEntities.find((entity) => entity.deviceId === reminder.robotDeviceId);
+        const dueAt = formatLocalizedDateTime(reminder.dueAt, locale) || t('common.unknown');
         return (
           <Card key={reminder.id} style={styles.reminderCard}>
             <View style={[styles.reminderHeader, isRTL && styles.rtlRow]}>
@@ -271,7 +277,7 @@ export default function MedicationReminders() {
               <StatusPill label={t(`medication.statuses.${reminder.status}`)} tone={reminder.status === 'acknowledged' ? 'ok' : 'active'} />
             </View>
             <Text style={[styles.muted, isRTL && styles.rtlText]}>
-              {t('medication.due', { date: new Date(reminder.dueAt).toLocaleString(locale) })}
+              {t('medication.due', { date: dueAt })}
             </Text>
             {canAcknowledgeMedicationReminder(reminder) ? (
               <Button

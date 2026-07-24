@@ -2,7 +2,12 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
+const {
+  createDynamoRobotRepository,
+  derivePairingToken,
+  pairRobot,
+  recoverPairingToken
+} = require('./robot-pairing.cjs');
 
 test('Dynamo ownership lookup paginates past nonmatching robots without Limit filtering bugs', async () => {
   const inputs = [];
@@ -78,6 +83,96 @@ test('robot pairing credential verification is account-bound and timing-safe', a
   assert.equal(await repository.verifyPairingToken('user-a', 'robot-1', token), true);
   assert.equal(await repository.verifyPairingToken('user-a', 'robot-1', 'b'.repeat(43)), false);
   assert.equal(await repository.verifyPairingToken('user-b', 'robot-1', 'short'), false);
+});
+
+test('credential derivation lookup returns only active owner-bound material', async () => {
+  const crypto = require('node:crypto');
+  const pairingCodeHash = 'C'.repeat(43);
+  const pairingTokenHash = crypto.createHash('sha256').update('t'.repeat(43)).digest('base64url');
+  let lifecycleState = 'active';
+  const inputs = [];
+  const repository = createDynamoRobotRepository({
+    tableName: 'devices',
+    client: {
+      async send(command) {
+        inputs.push(command.input);
+        if (command.input.ExpressionAttributeValues[':pk'] !== 'USER#user-a') return { Items: [] };
+        return { Items: [{
+          id: 'robot-1',
+          manufacturerDeviceId: 'must-not-return',
+          serialHash: 'must-not-return',
+          pairingClaimHash: pairingCodeHash,
+          pairingTokenHash,
+          vendorNamespace: 'jiangzhi',
+          bindingEpoch: 4,
+          lifecycleState
+        }] };
+      }
+    }
+  });
+
+  assert.deepEqual(await repository.resolvePairingCredentialDerivation('user-a', 'robot-1'), {
+    pairingCodeHash,
+    pairingScope: 'jiangzhi',
+    pairingTokenHash
+  });
+  assert.doesNotMatch(
+    JSON.stringify(await repository.resolvePairingCredentialDerivation('user-a', 'robot-1')),
+    /manufacturer|serial|user-a|robot-1/
+  );
+  assert.equal(await repository.resolvePairingCredentialDerivation('user-b', 'robot-1'), null);
+  lifecycleState = 'reset_pending';
+  assert.equal(await repository.resolvePairingCredentialDerivation('user-a', 'robot-1'), null);
+  assert.match(inputs[0].ProjectionExpression, /vendorNamespace/);
+});
+
+test('pairing credential recovery derives and timing-safe verifies the original token', async () => {
+  const crypto = require('node:crypto');
+  const secret = 'test-robot-pairing-token-secret-at-least-32-characters';
+  const pairingCodeHash = 'C'.repeat(43);
+  const pairingScope = 'jiangzhi';
+  const expectedToken = derivePairingToken({
+    userId: 'user-a',
+    pairingCodeHash,
+    pairingScope,
+    secret
+  });
+  const material = {
+    pairingCodeHash,
+    pairingScope,
+    pairingTokenHash: crypto.createHash('sha256').update(expectedToken).digest('base64url')
+  };
+  const calls = [];
+  const repository = {
+    async resolvePairingCredentialDerivation(userId, robotId) {
+      calls.push([userId, robotId]);
+      return userId === 'user-a' && robotId === 'robot-1' ? material : null;
+    }
+  };
+
+  assert.deepEqual(await recoverPairingToken({
+    userId: 'user-a',
+    robotId: 'robot-1',
+    pairingTokenSecret: secret,
+    repository
+  }), {
+    robot_id: 'robot-1',
+    pairing_token: expectedToken,
+    device_type: 'home_robot'
+  });
+  assert.deepEqual(calls[0], ['user-a', 'robot-1']);
+  await assert.rejects(recoverPairingToken({
+    userId: 'user-b',
+    robotId: 'robot-1',
+    pairingTokenSecret: secret,
+    repository
+  }), (error) => error.statusCode === 404);
+  await assert.rejects(recoverPairingToken({
+    userId: 'user-a',
+    robotId: 'robot-1',
+    pairingTokenSecret: `${secret}-rotated`,
+    repository
+  }), (error) => error.statusCode === 503 && error.code === 'ROBOT_PAIRING_CREDENTIAL_MISMATCH');
 });
 
 test('Dynamo pairing recovery rotates only the original account binding token', async () => {

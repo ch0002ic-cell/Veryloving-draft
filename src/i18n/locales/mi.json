@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving whakamahi anake i tō uruoro ina tīmata koe i tētahi hoa AI, waea haumaru rānei.",
     "bluetoothRationaleTitle": "Bluetooth tūhono ai i tō mauranga",
     "bluetoothRationaleMessage": "Ka whakamahia e VeryLoving Bluetooth hei takirua ki NorthStar taonga, ki te pānui i te tūnga hononga, me te whakaoho i ngā rerenga haumaru mai i te mauranga.",
-    "cameraRationaleTitle": "He kōwhiringa te kāmera",
-    "cameraRationaleMessage": "VeryLoving ka whakamahi anake i te kāmera ina kōwhiri koe ki te tango whakaahua kōtaha, ki te tiri rānei i tētahi atahanga haumaru."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ka wātea tēnei rerenga mai i Ngā Tautuhinga me te paemana.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hiahia ana ki te urunga uruoro mō te haumaru me te AI waea hoa.",
       "NSLocationWhenInUseUsageDescription": "Ka whakamahi VeryLoving i tō tauwāhi mō te mahere haumaru me ngā āhuahira haumaru pātata.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving whakamahi Bluetooth hei tūhono ki ō taonga haumaru NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

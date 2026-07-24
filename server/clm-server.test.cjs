@@ -14,6 +14,7 @@ const {
 } = require('./clm-server.cjs');
 const { SAFETY_SYSTEM_PROMPT, getSafetyTips, inferScenario } = require('./safety-companion.cjs');
 const { signSessionJWT, verifySessionJWT } = require('./auth-session.cjs');
+const { derivePairingToken } = require('./robot-pairing.cjs');
 
 const silentLogger = { info() {}, warn() {}, error() {} };
 const VALID_HUME_CONFIG_ID = '11111111-1111-4111-8111-111111111111';
@@ -2801,6 +2802,96 @@ test('safety classification selects conservative scenarios', () => {
   assert.equal(inferScenario('I think someone is following me'), 'being_followed');
   assert.equal(inferScenario('I am waiting for my rideshare'), 'rideshare');
   assert.equal(getSafetyTips('unknown').scenario, 'general');
+});
+
+test('robot credential recovery is authenticated, owner-bound, strict, and non-cacheable', async () => {
+  const secret = 'test-robot-pairing-token-secret-at-least-32-characters';
+  const pairingCodeHash = 'C'.repeat(43);
+  const expectedToken = derivePairingToken({
+    userId: 'google:user-1',
+    pairingCodeHash,
+    pairingScope: 'jiangzhi',
+    secret
+  });
+  const pairingTokenHash = crypto.createHash('sha256').update(expectedToken).digest('base64url');
+  const lookups = [];
+  const config = {
+    verifyAppToken: async (token) => token === 'owner-session'
+      ? { sub: 'google:user-1' }
+      : token === 'other-session' ? { sub: 'google:user-2' } : false,
+    robotPairingTokenSecret: secret,
+    robotRepository: {
+      async resolvePairingCredentialDerivation(userId, robotId) {
+        lookups.push([userId, robotId]);
+        return userId === 'google:user-1' && robotId === 'robot:1'
+          ? { pairingCodeHash, pairingScope: 'jiangzhi', pairingTokenHash }
+          : null;
+      }
+    }
+  };
+  const path = '/v1/devices/home-robots/robot%3A1/pairing-credential/recover';
+  const recovered = await invoke(config, {
+    method: 'POST',
+    url: path,
+    headers: { Authorization: 'Bearer owner-session' },
+    body: {}
+  });
+  assert.equal(recovered.status, 200);
+  assert.equal(recovered.headers['Cache-Control'], 'no-store');
+  assert.deepEqual(recovered.json, {
+    robot_id: 'robot:1',
+    pairing_token: expectedToken,
+    device_type: 'home_robot'
+  });
+  assert.deepEqual(lookups, [['google:user-1', 'robot:1']]);
+
+  const unauthorized = await invoke(config, {
+    method: 'POST',
+    url: path,
+    body: {}
+  });
+  assert.equal(unauthorized.status, 401);
+  assert.equal(lookups.length, 1);
+
+  const otherAccount = await invoke(config, {
+    method: 'POST',
+    url: path,
+    headers: { Authorization: 'Bearer other-session' },
+    body: {}
+  });
+  assert.equal(otherAccount.status, 404);
+  assert.equal(lookups.at(-1)[0], 'google:user-2');
+
+  for (const request of [
+    {
+      url: '/v1/devices/home-robots/%2Fetc/pairing-credential/recover',
+      body: {}
+    },
+    {
+      url: path,
+      body: { robot_id: 'attacker-selected' }
+    }
+  ]) {
+    const invalid = await invoke(config, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer owner-session' },
+      ...request
+    });
+    assert.equal(invalid.status, 400);
+  }
+
+  const mismatched = await invoke({
+    ...config,
+    robotPairingTokenSecret: `${secret}-rotated`
+  }, {
+    method: 'POST',
+    url: path,
+    headers: { Authorization: 'Bearer owner-session' },
+    body: {}
+  });
+  assert.equal(mismatched.status, 503);
+  assert.deepEqual(mismatched.json, { error: 'Internal server error' });
+  assert.doesNotMatch(mismatched.text, new RegExp(expectedToken));
 });
 
 test('robot recovery, telemetry, and manufacturer ACK endpoints preserve trust boundaries', async () => {

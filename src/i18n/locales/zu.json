@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving usebenzisa imakrofoni yakho kuphela uma uqala umlingani AI noma ucingo lokuphepha.",
     "bluetoothRationaleTitle": "Bluetooth uxhuma i-wearable yakho",
     "bluetoothRationaleMessage": "VeryLoving isebenzisa Bluetooth ukubhangqa nobucwebe NorthStar, ukufunda isimo sokuxhumana, futhi kubangele ukugeleza kokuphepha kusuka ku-wearable.",
-    "cameraRationaleTitle": "Ikhamera iyazikhethela",
-    "cameraRationaleMessage": "VeryLoving usebenzisa ikhamera kuphela uma ukhetha ukuthatha isithombe sephrofayili noma ukwabelana ngesithombe sokuphepha."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving igcina lokhu kugeleza kutholakala kuzilungiselelo nakudeshibhodi.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving idinga ukufinyelela kumakrofoni ukuze kuphephe futhi AI izingcingo ezihambisana nazo.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving usebenzisa indawo yakho kumephu yokuphepha nezici zokuphepha eziseduze.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving isebenzisa Bluetooth ukuxhuma ubucwebe bakho NorthStar ukuphepha."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving isebenzisa Bluetooth ukuxhuma ubucwebe bakho NorthStar ukuphepha.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

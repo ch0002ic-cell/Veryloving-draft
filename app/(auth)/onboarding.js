@@ -12,7 +12,7 @@ const HERO_ENTERING = FadeInDown.duration(motion.durationEmphasis).reduceMotion(
 const CTA_ENTERING = FadeInUp.delay(motion.durationFast).duration(motion.durationEmphasis).reduceMotion(ReduceMotion.System);
 
 export default function Onboarding() {
-  const { t } = useI18n();
+  const { isRTL, t } = useI18n();
   return (
     <Screen background={images.onboarding1} style={styles.wrap}>
       <Animated.View entering={HERO_ENTERING} style={styles.hero}>
@@ -28,7 +28,7 @@ export default function Onboarding() {
         <Card variant="raised" style={styles.ctaCard}>
           <Button
             title={t('auth.createAccount')}
-            icon="arrow-forward"
+            icon={isRTL ? 'arrow-back' : 'arrow-forward'}
             iconPosition="trailing"
             onPress={() => router.push('/(auth)/create-account')}
           />

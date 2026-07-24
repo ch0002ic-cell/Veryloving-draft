@@ -33,7 +33,7 @@ export class BaseDevice {
     }
     this.deviceId = deviceId;
     this.deviceType = deviceType;
-    this.name = name || deviceId;
+    this.name = typeof name === 'string' && name.trim() ? name.trim() : null;
     this.status = Object.freeze({ online: false, connectionState: 'disconnected' });
     this.telemetryListeners = new Set();
     this.statusListeners = new Set();
@@ -44,6 +44,7 @@ export class BaseDevice {
     // and background work without blocking a different device instance.
     this.pendingCommands = [];
     this.commandActive = false;
+    this.activeCommand = null;
     this.commandQueuePaused = false;
     this.commandSequence = 0;
     this.commandDrainWaiters = new Set();
@@ -58,10 +59,21 @@ export class BaseDevice {
     if (typeof operation !== 'function') throw new TypeError('Command operation is required');
     if (this.disposed) return Promise.reject(this.disposedError());
     const generation = this.commandGeneration;
-    if (bypass) return Promise.resolve().then(() => {
-      if (this.disposed || generation !== this.commandGeneration) throw this.disposedError();
-      return operation();
-    });
+    if (bypass) return Promise.resolve()
+      .then(() => {
+        if (this.disposed || generation !== this.commandGeneration) throw this.commandLifecycleError();
+        return operation();
+      })
+      .then(
+        (value) => {
+          if (this.disposed || generation !== this.commandGeneration) throw this.commandLifecycleError();
+          return value;
+        },
+        (error) => {
+          if (this.disposed || generation !== this.commandGeneration) throw this.commandLifecycleError();
+          throw error;
+        }
+      );
     if (!(priority in COMMAND_PRIORITIES)) throw new TypeError('Command priority is invalid');
     if (this.pendingCommands.length + (this.commandActive ? 1 : 0) >= this.maxCommandQueueDepth) {
       return Promise.reject(commandQueueFullError());
@@ -81,21 +93,49 @@ export class BaseDevice {
   }
 
   pumpCommandQueue() {
-    if (this.commandActive || this.commandQueuePaused || this.disposed) return;
+    if (this.commandActive) return;
+    if (this.commandQueuePaused || this.disposed) {
+      this.resolveCommandDrainWaitersIfIdle();
+      return;
+    }
     const next = this.pendingCommands.shift();
     if (!next) {
-      for (const resolve of this.commandDrainWaiters) resolve();
-      this.commandDrainWaiters.clear();
+      this.resolveCommandDrainWaitersIfIdle();
       return;
     }
     this.commandActive = true;
+    this.activeCommand = next;
     Promise.resolve().then(() => {
-      if (this.disposed || next.generation !== this.commandGeneration) throw this.disposedError();
+      if (this.disposed || next.generation !== this.commandGeneration) {
+        throw next.invalidationError || this.commandLifecycleError();
+      }
       return next.operation();
-    }).then(next.resolve, next.reject).finally(() => {
+    }).then(
+      (value) => {
+        if (this.disposed || next.generation !== this.commandGeneration) {
+          next.reject(next.invalidationError || this.commandLifecycleError());
+          return;
+        }
+        next.resolve(value);
+      },
+      (error) => {
+        next.reject(
+          this.disposed || next.generation !== this.commandGeneration
+            ? next.invalidationError || this.commandLifecycleError()
+            : error
+        );
+      }
+    ).finally(() => {
+      if (this.activeCommand === next) this.activeCommand = null;
       this.commandActive = false;
       this.pumpCommandQueue();
     });
+  }
+
+  resolveCommandDrainWaitersIfIdle() {
+    if (this.commandActive || this.pendingCommands.length > 0) return;
+    for (const resolve of this.commandDrainWaiters) resolve();
+    this.commandDrainWaiters.clear();
   }
 
   drainCommandQueue() {
@@ -113,6 +153,24 @@ export class BaseDevice {
     this.pumpCommandQueue();
   }
 
+  commandLifecycleError() {
+    if (this.disposed) return this.disposedError();
+    const error = new Error('Device command was invalidated.');
+    error.code = 'DEVICE_COMMAND_INVALIDATED';
+    return error;
+  }
+
+  invalidateCommandQueue({ pause = false, error = this.commandLifecycleError() } = {}) {
+    if (pause) this.commandQueuePaused = true;
+    this.commandGeneration += 1;
+    if (this.activeCommand) this.activeCommand.invalidationError = error;
+    for (const command of this.pendingCommands.splice(0)) {
+      command.invalidationError = error;
+      command.reject(error);
+    }
+    this.resolveCommandDrainWaitersIfIdle();
+  }
+
   disposedError() {
     const error = new Error('Device is no longer active.');
     error.code = 'DEVICE_DISPOSED';
@@ -123,11 +181,8 @@ export class BaseDevice {
     if (this.disposed) return;
     this.disposed = true;
     this.commandQueuePaused = false;
-    this.commandGeneration += 1;
     const error = this.disposedError();
-    for (const command of this.pendingCommands.splice(0)) command.reject(error);
-    for (const resolve of this.commandDrainWaiters) resolve();
-    this.commandDrainWaiters.clear();
+    this.invalidateCommandQueue({ error });
     this.telemetryListeners.clear();
     this.statusListeners.clear();
   }

@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ekozesa akazindaalo ko nga otandise AI omubeezi oba okukuba essimu ey’obukuumi.",
     "bluetoothRationaleTitle": "Bluetooth egatta eky’okwambala kyo",
     "bluetoothRationaleMessage": "VeryLoving ekozesa Bluetooth okugatta n’amajolobero NorthStar, okusoma embeera y’okuyungibwa, n’okutandika okukulukuta kw’obukuumi okuva mu by’okwambala.",
-    "cameraRationaleTitle": "Kkamera ya kwesalirawo",
-    "cameraRationaleMessage": "VeryLoving ekozesa kkamera yokka ng’osazeewo okukuba ekifaananyi kya profile oba okugabana ekifaananyi ky’obukuumi."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ekuuma okutambula kuno okuva ku Settings ne dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving yeetaaga okuyingira mu mayirofooni olw’obukuumi n’okukuba essimu AI omubeezi.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ekozesa ekifo kyo ku maapu y’obukuumi n’ebintu eby’obukuumi ebiriraanyewo.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ekozesa Bluetooth okuyunga ku by’okwewunda byo NorthStar eby’obukuumi.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

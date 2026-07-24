@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "જ્યારે તમે AI સાથી અથવા સલામતી કોલ શરૂ કરો છો ત્યારે જ VeryLoving તમારા માઇક્રોફોનનો ઉપયોગ કરે છે.",
     "bluetoothRationaleTitle": "Bluetooth તમારા વેરેબલ સાથે જોડે છે",
     "bluetoothRationaleMessage": "VeryLoving NorthStar ઝવેરાત સાથે જોડી બનાવવા, કનેક્શનની સ્થિતિ વાંચવા અને વેરેબલ માંથી સલામતી પ્રવાહને ટ્રિગર કરવા માટે Bluetooth ઉપયોગ કરે છે.",
-    "cameraRationaleTitle": "કૅમેરા વૈકલ્પિક છે",
-    "cameraRationaleMessage": "જ્યારે તમે પ્રોફાઇલ ફોટો લેવાનું પસંદ કરો છો અથવા સલામતી ઇમેજ શેર કરવાનું પસંદ કરો છો ત્યારે જ VeryLoving કૅમેરાનો ઉપયોગ કરે છે."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving આ પ્રવાહને સેટિંગ્સ અને ડેશબોર્ડથી ઉપલબ્ધ રાખે છે.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving સલામતી અને AI સાથી કોલ્સ માટે માઇક્રોફોન ઍક્સેસની જરૂર છે.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving સલામતી નકશા અને નજીકની સલામતી સુવિધાઓ માટે તમારા સ્થાનનો ઉપયોગ કરે છે.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving તમારા NorthStar સલામતી ઝવેરાત સાથે કનેક્ટ થવા માટે Bluetooth નો ઉપયોગ કરે છે."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving તમારા NorthStar સલામતી ઝવેરાત સાથે કનેક્ટ થવા માટે Bluetooth નો ઉપયોગ કરે છે.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving يستخدم الميكروفون فقط عند بدء AI مكالمة مرافقة أو مكالمة أمان.",
     "bluetoothRationaleTitle": "Bluetooth يربط جهازك القابل للارتداء",
     "bluetoothRationaleMessage": "VeryLoving يستخدم Bluetooth للاقتران مع مجوهرات NorthStar، وقراءة حالة الاتصال، وتشغيل تدفقات الأمان من الجهاز القابل للارتداء.",
-    "cameraRationaleTitle": "الكاميرا اختيارية",
-    "cameraRationaleMessage": "VeryLoving تستخدم الكاميرا فقط عندما تختار التقاط صورة للملف الشخصي أو مشاركة عنصر أمان. image."
+    "cameraRationaleTitle": "امسح رمز QR الخاص بالروبوت",
+    "cameraRationaleMessage": "تستخدم VeryLoving الكاميرا فقط لمسح رمز QR للاقتران لمرة واحدة الموجود على روبوتك المنزلي."
   },
   "tutorial": {
     "sharedBody": "VeryLoving يبقي هذا التدفق متاحًا من الإعدادات ولوحة التحكم.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving يحتاج إلى الوصول إلى الميكروفون للأمان وAI المرافق المكالمات.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving يستخدم موقعك لخريطة الأمان وميزات الأمان القريبة.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving يستخدم Bluetooth للاتصال بـ NorthStar أمانك المجوهرات."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving يستخدم Bluetooth للاتصال بـ NorthStar أمانك المجوهرات.",
+      "NSCameraUsageDescription": "تستخدم VeryLoving الكاميرا فقط لمسح رمز QR للاقتران لمرة واحدة الموجود على روبوتك المنزلي."
     },
     "android": {
       "app_name": "VeryLoving"

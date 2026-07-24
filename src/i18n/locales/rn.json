@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ikoresha mikoro yawe gusa iyo utanguye AI guhamagara umugenzi canke guhamagara umutekano.",
     "bluetoothRationaleTitle": "Bluetooth ihuza ivyo wambara",
     "bluetoothRationaleMessage": "VeryLoving ikoresha Bluetooth gufatanya n'amabuye y'agaciro NorthStar, gusoma uko ubufatanye buri, no gutuma umutekano uva ku vyo kwambara.",
-    "cameraRationaleTitle": "Ikamera ni ubusabe",
-    "cameraRationaleMessage": "VeryLoving ikoresha kamera gusa iyo uhisemwo gufata ifoto y’ibanga canke gusangira ishusho y’umutekano."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving igumya iyo nzira iboneka mu Miterere no ku rubuga.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ikeneye gukoresha mikoro kugira ngo ibe nziza kandi AI ihamagara abagenzi.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ikoresha aho uri ku ikarita y’umutekano n’ibintu vy’umutekano biri hafi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ikoresha Bluetooth kugira ngo ihuze n'amabuye yawe y'agaciro NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ikoresha Bluetooth kugira ngo ihuze n'amabuye yawe y'agaciro NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

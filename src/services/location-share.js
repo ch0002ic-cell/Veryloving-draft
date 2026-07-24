@@ -1,4 +1,5 @@
 import { translateForLocale } from '../i18n/core';
+import { formatLocalizedDateTime } from '../utils/localized-format';
 
 export class LocationShareUnavailableError extends Error {
   constructor(code = 'LOCATION_SHARE_FAILED') {
@@ -15,11 +16,10 @@ function finiteCoordinate(value, limit) {
   return coordinate;
 }
 
-function recordedAt(location) {
+function recordedAt(location, locale) {
   const timestamp = Number(location?.timestamp ?? location?.cachedAt);
   if (!Number.isFinite(timestamp) || timestamp <= 0) return null;
-  const date = new Date(timestamp);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  return formatLocalizedDateTime(timestamp, locale);
 }
 
 export function buildLocationShareContent(location, { locale = 'en' } = {}) {
@@ -29,7 +29,7 @@ export function buildLocationShareContent(location, { locale = 'en' } = {}) {
     throw new LocationShareUnavailableError('LOCATION_MISSING');
   }
 
-  const capturedAt = recordedAt(location);
+  const capturedAt = recordedAt(location, locale);
   const mapsURL = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
   const sourceCopy = capturedAt
     ? translateForLocale(

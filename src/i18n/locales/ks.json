@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving چھُ پنُن مایکروفون صرف تمہِ ساتہٕ استعمال کران ییٚلہِ تُہۍ AI سٲتھی یا حفاظتی کال شروع کٔرِو۔",
     "bluetoothRationaleTitle": "Bluetooth چُھ تُہٕنٛدِس پہننَس لایق جوڑان",
     "bluetoothRationaleMessage": "VeryLoving چھُ Bluetooth NorthStar زیورات سۭتۍ جوڑنہٕ خٲطرٕ، کنیکشنٕچ حیثیت پرنہٕ باپتھ، تہٕ پہننہٕ یِنہٕ والہِ سۭتۍ حفٲظتی بہاؤ متحرک کرنہٕ خٲطرٕ استعمال کران۔",
-    "cameraRationaleTitle": "کیمرا چھُ اختیاری",
-    "cameraRationaleMessage": "VeryLoving چھُ کیمرا صرف تمہِ ساتہٕ استعمال کران ییٚلہِ تُہۍ پروفائل فوٹو تُلنُک یا حفٲظتی تصویر شیئر کرنُک انتخاب کران چھِو۔"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving چھُ یہِ بہاؤ سیٹینگ تہٕ ڈیش بورڈٕ پیٹھٕ دٔستِیاب تھاوان۔",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving حفاظت تہٕ AI سٲتھی کالہٕ خٲطرٕ چھِ مایکروفون تام رسٲیی ہٕنٛز ضرورت۔",
       "NSLocationWhenInUseUsageDescription": "VeryLoving چھُ تُہٕنٛز جاے حِفٲظتی نقشہٕ تہٕ نزدیٖکی حِفٲظتی خصوٗصیَتن باپتھ اِستعمال کَران۔",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving چھُ تُہنٛدِس NorthStar حِفاظتی زیورات سۭتۍ رٲبطہٕ کرنہٕ خٲطرٕ Bluetooth استعمال کران۔"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving چھُ تُہنٛدِس NorthStar حِفاظتی زیورات سۭتۍ رٲبطہٕ کرنہٕ خٲطرٕ Bluetooth استعمال کران۔",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

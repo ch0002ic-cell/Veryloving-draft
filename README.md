@@ -290,10 +290,23 @@ The base TestFlight picker has **System default plus six catalogs: seven rows**.
 - General English per-string overlay fallback is disabled. The selected catalog supplies its own critical block.
 - Structural completeness is not translation, cultural, legal, or safety approval.
 - The full-catalog picker marks 151 review-required rows `QA`: 149 generated critical blocks plus Arabic and Hebrew.
+- The 151 `QA` catalogs may intentionally retain English source copy in newer
+  non-critical surfaces. Coverage tests force any catalog with such source-copy
+  reuse to remain `reviewRequired`; it must not be described as a fully
+  translated public language.
+- Offline safety conversation is natively reviewed only for English, Spanish,
+  French, and Simplified Chinese. The other 151 catalogs deliberately receive
+  reviewed English offline safety copy until native-speaker intent review is
+  complete.
 
 The 28 registered codes without catalogs are: `an`, `ae`, `bi`, `cu`, `kw`, `cr`, `hz`, `ho`, `io`, `ia`, `ie`, `ik`, `ki`, `kj`, `lu`, `na`, `nv`, `nd`, `ng`, `nn`, `oj`, `pi`, `rm`, `sc`, `vo`, `wa`, `ii`, and `za`. System default resolves these honestly to English.
 
 Traditional Chinese requests such as `zh-Hant`, `zh-TW`, `zh-HK`, and `zh-MO` also resolve to English rather than being mislabeled as the maintained Simplified Chinese catalog.
+
+The internal picker code `ku` is the shipped Sorani catalog. A bare external or
+operating-system `ku` is ambiguous and fails closed; explicit `ckb`/`ckb-Arab`
+resolves to Sorani and external providers receive `ckb-Arab`. Filipino aliases
+resolve to the internal `tl` catalog and use the canonical external tag `fil`.
 
 ### Runtime language behavior
 

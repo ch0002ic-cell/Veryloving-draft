@@ -30,6 +30,9 @@ const {
   MEDICAL_PROFILE_KEY,
   saveMedicalEmergencyProfile
 } = require('../src/services/medical-profile-store');
+const {
+  lockAndDrainLocalUserDataMutations
+} = require('../src/services/local-mutation-coordinator');
 const { decodeVL01SafetyEvent } = require('../src/services/vl01-protocol');
 
 test('Pat-Pat routes exactly once into the injected SOS path with a durable event identity', async () => {
@@ -503,6 +506,61 @@ test('in-session medical profile clearing cannot erase another account snapshot'
     assert.equal(deleted, true);
   } finally {
     secureStorage.getItemAsync = originalGet;
+    secureStorage.deleteItemAsync = originalDelete;
+  }
+});
+
+test('privacy cleanup drains an admitted medical write before deleting its snapshot', async () => {
+  const originalGet = secureStorage.getItemAsync;
+  const originalSet = secureStorage.setItemAsync;
+  const originalDelete = secureStorage.deleteItemAsync;
+  let stored = null;
+  let releaseWrite;
+  let writeStarted;
+  const started = new Promise((resolve) => { writeStarted = resolve; });
+  const blockedWrite = new Promise((resolve) => { releaseWrite = resolve; });
+  secureStorage.getItemAsync = async () => stored;
+  secureStorage.setItemAsync = async (_key, value) => {
+    writeStarted();
+    await blockedWrite;
+    stored = value;
+  };
+  secureStorage.deleteItemAsync = async () => { stored = null; };
+
+  let releaseMutations;
+  try {
+    const save = saveMedicalEmergencyProfile('account-a', {
+      bloodType: 'O+',
+      conditions: [],
+      allergies: [],
+      medications: [],
+      shareInEmergency: false
+    }, { now: () => 1_000_000 });
+    await started;
+
+    let barrierEstablished = false;
+    const locking = lockAndDrainLocalUserDataMutations().then((release) => {
+      barrierEstablished = true;
+      releaseMutations = release;
+    });
+    await Promise.resolve();
+    assert.equal(barrierEstablished, false);
+
+    releaseWrite();
+    await save;
+    await locking;
+    assert.equal(barrierEstablished, true);
+    assert.notEqual(stored, null);
+
+    // Cleanup is privileged to run while the global mutation barrier is held,
+    // but the private medical queue guarantees this deletion is last.
+    await clearMedicalEmergencyProfile();
+    assert.equal(stored, null);
+  } finally {
+    releaseWrite?.();
+    releaseMutations?.();
+    secureStorage.getItemAsync = originalGet;
+    secureStorage.setItemAsync = originalSet;
     secureStorage.deleteItemAsync = originalDelete;
   }
 });

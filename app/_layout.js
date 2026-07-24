@@ -13,14 +13,14 @@ import { PROTECTED_ROOT_ROUTES } from '../src/utils/auth-routing';
 import { AppErrorBoundary } from '../src/components/AppErrorBoundary';
 import { AudioStreamBridge } from '../src/components/AudioStreamBridge';
 import { NavigationPersistenceTracker } from '../src/components/NavigationPersistenceTracker';
-import { AppLoadingState } from '../src/components/AppLoadingState';
+import { AppLoadingState, bootstrapTranslation } from '../src/components/AppLoadingState';
 import { initializeNotifications } from '../src/services/notifications';
 import { logger } from '../src/utils/logger';
 
 const OUTER_ERROR_COPY = Object.freeze({
-  title: 'VeryLoving encountered a problem',
-  message: 'Close and reopen the app if retrying does not resolve the issue.',
-  retryLabel: 'Retry'
+  title: bootstrapTranslation('settings.updateFailedTitle'),
+  message: bootstrapTranslation('settings.updateFailedMessage'),
+  retryLabel: bootstrapTranslation('common.retry')
 });
 
 if (Platform.OS !== 'web') {

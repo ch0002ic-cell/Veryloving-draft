@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving amfani da makirufo ne kawai lokacin da ka fara AI abokin tarayya ko kiran aminci.",
     "bluetoothRationaleTitle": "Bluetooth haɗa kayan aikin ku na kayan ado",
     "bluetoothRationaleMessage": "VeryLoving yana amfani da Bluetooth don haɗuwa da kayan ado na NorthStar, karanta matsayin haɗi, da kuma haifar da kwararar aminci daga kayan sawa.",
-    "cameraRationaleTitle": "Kamara zaɓi ne na zaɓi",
-    "cameraRationaleMessage": "VeryLoving amfani da kyamara ne kawai idan ka zaɓi ɗaukar hoton bayanin martaba ko raba hoton aminci."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving kiyaye wannan kwararar samuwa daga saituna da dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving buƙatar samun damar makirufo don aminci da kiran abokin AI.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving amfani da wurinka don taswirar tsaro da siffofin tsaro na kusa.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving yana amfani da Bluetooth don haɗi tare da kayan adon tsaro na NorthStar ɗinku.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

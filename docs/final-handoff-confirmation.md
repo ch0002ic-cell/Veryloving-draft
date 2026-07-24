@@ -1,6 +1,6 @@
 # Final Handoff Confirmation
 
-Confirmed on: 24 July 2026
+Confirmed on: 25 July 2026
 
 Branch: `features/dual-product-draft`
 
@@ -71,18 +71,18 @@ The legacy-surface migration is complete at source level. A whole-source audit p
 
 ## 2. Final verification record
 
-Status: **PASS — LOCAL/OFFLINE SOURCE GATES EXECUTED ON 24 JULY 2026; ONLINE DOCTOR RECHECK PENDING AUTHORIZATION**
+Status: **PASS — LOCAL/OFFLINE SOURCE GATES EXECUTED ON 25 JULY 2026; ONLINE DOCTOR RECHECK PENDING EXPLICIT METADATA-DISCLOSURE AUTHORIZATION**
 
 | Gate | Expected command | Result |
 | --- | --- | --- |
-| Full repository suite | `npm test` | ✅ PASS — 1,098/1,098 (862 core, 44 adapter, 8 adapter integration, 184 AI-native) on Node 24.18.0/npm 12.0.1 |
+| Full repository suite | `npm test` | ✅ PASS — 1,164/1,164 (927 core, 45 adapter, 8 adapter integration, 184 AI-native) on Node 24.18.0/npm 12.0.1 |
 | ESLint | `npm run lint` | ✅ PASS — zero errors or warnings |
 | TypeScript and mobile compiler checks | `npm run typecheck` | ✅ PASS — strict semantic checks cover adapters, mock simulator, AI-native, and all TypeScript tests; the JavaScript mobile tree passes its Expo compiler/config smoke and is enforced by ESLint/tests |
-| Expo project health | `npm run doctor -- --verbose` | ⚠️ **ONLINE RECHECK PENDING AUTHORIZATION** — all 18 local checks pass, including the SDK package-version check after updating `expo-dev-client` to 57.0.9; the Expo schema and React Native Directory checks require disclosure of public config/dependency metadata to third-party services |
-| Consolidated source gate | `npm run validate` | ⚠️ **PARTIAL VERIFICATION ONLY** — reviewed toolchain, environment dry-run, lint, compiler checks, and all 1,098 tests passed; the command stopped only at the two authorization-gated online Doctor checks, so both exports were rerun directly with the same credential-free non-routable production fixture and passed |
+| Expo project health | `npm run doctor -- --verbose` | ⚠️ **ONLINE RECHECK PENDING EXPLICIT AUTHORIZATION** — all 18 local checks pass, including the SDK package-version check; the Expo schema and React Native Directory checks could not resolve in the sandbox, and permission to disclose public config/dependency metadata to those third-party services was not granted |
+| Consolidated source gate | `npm run validate` | ⚠️ **PARTIAL VERIFICATION ONLY** — every constituent local gate was run directly and passed; the combined command cannot complete only because its Doctor step includes the two authorization-gated online checks. Both exports were rerun with the same credential-free non-routable production fixture and passed. |
 | Production source-readiness gate | `npm run validate:production` | ✅ PASS — 184 AI-native tests, 52 production-boundary tests, two validated CycloneDX SBOMs, and zero cached application dependency vulnerabilities |
-| Critical-path coverage | `npm run test:coverage` | ✅ PASS — adapters: 98.55% statements/lines, 91.20% branches, 97.26% functions; AI-native scenario group: 99.80% statements/lines, 90.56% branches, 100% functions. AI-native global branch coverage is 86.03% and passes its configured 85% threshold; no blanket JavaScript-tree coverage claim is made. |
-| Adapter soak / handle leak gate | `npm run test:soak:adapters` | ✅ PASS — 60 seconds, 3,972,875 accepted commands, 0.025 ms p95 software admission, 360,832-byte heap growth, and zero leaked handles |
+| Critical-path coverage | `npm run test:coverage` | ✅ PASS — adapters: 98.56% statements/lines, 91.25% branches, 97.26% functions; AI-native: 97.41% statements/lines, 86.03% branches, 98.68% functions. The AI-native scenario group remains 99.80% statements/lines and 100% functions. No blanket JavaScript-tree coverage claim is made. |
+| Adapter soak / handle leak gate | `npm run test:soak:adapters` | ✅ PASS — 60 seconds, 4,532,311 accepted commands, 0.014 ms p95 software admission, 304,008-byte heap growth, and zero leaked handles |
 | Production artifact gate | `npm run validate:production:release` plus commit-pinned Trivy | ⚠️ **SKIPPED LOCALLY — CI REQUIRED FOR CURRENT COMMIT** — immutable Docker/non-root/health/fail-closed/shutdown/Trivy/SBOM policy is source-tested and passed on the prior CI candidate; this workstation has no Docker/Trivy runtime, so CI must regenerate current-commit image evidence |
 | iOS production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 82 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
 | Android production-profile JavaScript export | Executed by `npm run validate` | ✅ PASS — Hermes bundle and 86 assets exported to a temporary directory with `.invalid` endpoints; not a signed release artifact |
@@ -90,6 +90,61 @@ Status: **PASS — LOCAL/OFFLINE SOURCE GATES EXECUTED ON 24 JULY 2026; ONLINE D
 | Diff and document-reference hygiene | `git diff --check` plus consolidation regression tests | ✅ PASS — canonical handoff plus dated dependency evidence, stable appendix contracts, no broken local links |
 
 Passing JavaScript exports do not replace signed native builds, simulator/emulator interaction tests, VoiceOver/TalkBack checks, provider delivery, BLE validation, or physical robot acceptance.
+
+### 25 July language, provider-boundary, and LogBox audit
+
+The final whole-tree pass separated four different language claims that must not
+be conflated:
+
+| Boundary | Verified disposition |
+| --- | --- |
+| Assigned language registry | All 183 assigned ISO 639-1 identifiers are represented exactly once. |
+| Selectable development/full-QA catalogs | 155 catalogs have exact key, interpolation-placeholder, plural, native-permission, and release-critical schema parity. |
+| Intentionally unavailable identifiers | 28 registry-only identifiers have no catalog and fail closed to reviewed English without inventing RTL direction, provider support, or a selectable row. |
+| Public reviewed languages | English, Spanish, French, and Simplified Chinese are public reviewed catalogs. The other 151 selectable catalogs remain visibly marked `QA`/`reviewRequired`; structural completeness is not linguistic, cultural, medical, or legal approval. |
+
+Additional verified behavior:
+
+- Language tags are script-aware. Simplified Chinese accepts the maintained
+  `zh-Hans` family; `zh-Hant`/Traditional Chinese fails closed to English rather
+  than being mislabeled. Filipino aliases resolve to `tl` internally and `fil`
+  at external provider/manufacturer boundaries.
+- The internal picker code `ku` denotes the shipped Sorani catalog, but a bare
+  external/OS `ku` is ambiguous and therefore fails closed. Explicit
+  `ckb`/`ckb-Arab` resolves to Sorani and external systems receive the canonical
+  `ckb-Arab` tag.
+- The 28 no-catalog identifiers never become RTL merely because an ISO language
+  historically uses a right-to-left script; direction is driven only by a
+  selected, available catalog.
+- Dates, times, percentages, phone-region names, country search, map
+  measurements, reminder input digits, OTP/phone digits, status copy, loading
+  copy, feedback, and accessibility labels are formatted or translated at the
+  active-locale render boundary. Stored protocol values remain canonical.
+- Default robot labels are no longer persisted as the English placeholder
+  `VeryLoving Home`; unset and migrated legacy defaults render the active
+  locale's generic robot label while user-supplied names remain unchanged.
+- Hume receives the selected canonical provider locale and an explicit
+  same-language instruction. Failed tool calls now send catalog-derived
+  fallback copy plus a stable error code; raw adapter/gateway messages cannot
+  cross into model- or user-visible content.
+- Offline safety conversation has native reviewed intent sets for the four
+  public languages. The other 151 QA catalogs intentionally use reviewed
+  English offline safety copy until native-speaker intent review exists; the
+  app does not silently present machine-generated emergency dialogue as
+  approved translation.
+- Android notification-channel metadata refreshes after a locale change without
+  prompting for permission. Map source refreshes are explicit and failures move
+  to the localized retry/fallback state instead of leaving a stale marker.
+- The mobile source contains no direct `console.warn`, `console.error`,
+  `logger.warn`, or `logger.error` call. Expected Google-emulator, BLE, camera,
+  location, push, network, and provider failures use typed, redacted
+  `logger.recoverable` paths plus localized UI. Automated source scans and
+  hostile diagnostic-object regressions protect this LogBox boundary; an exact
+  signed-build walkthrough remains a manual acceptance gate.
+
+Native-speaker review of the 151 QA catalogs is still an external content gate,
+not something deterministic source code or automated translation can honestly
+close.
 
 ### Final comprehensive audit checklist
 
@@ -173,7 +228,7 @@ We are ready to work directly with Grace's PM/UX team on future iterations.
 
 ## 7. Closed audit summary
 
-The repository-wide audit closed the documented 66 source defects, passed its source-boundary check, and closed all three internal production gates. The 24 July final LogBox and hidden-bug pass separated expected handled mobile failures from genuine faults, bounded/redacted diagnostic payloads, and closed additional voice, reminder, camera, authentication, map, and large-text lifecycle defects without changing those historical audit counts. Major corrected classes include authentication/deletion races, phone-token replay, push ownership, bounded provider I/O, SSE/WebSocket cleanup, action/outbox/ACK races, binding generation, pairing replay/recovery, multi-vendor isolation, AI-native cancellation and critical-event precedence, simulator limits, mobile account boundaries, BLE/voice/process-death recovery, map freshness, privacy export/delete, and release/supply-chain validation.
+The repository-wide audit closed the documented 66 source defects, passed its source-boundary check, and closed all three internal production gates. The 24–25 July final LogBox, language-boundary, and hidden-bug passes separated expected handled mobile failures from genuine faults, bounded/redacted diagnostic payloads, and closed additional voice, reminder, camera, authentication, map, credential-recovery, localization, privacy-race, and large-text lifecycle defects without changing those historical audit counts. Major corrected classes include authentication/deletion races, phone-token replay, push ownership, bounded provider I/O, SSE/WebSocket cleanup, action/outbox/ACK races, binding generation, pairing replay/recovery, multi-vendor isolation, AI-native cancellation and critical-event precedence, simulator limits, mobile account boundaries, BLE/voice/process-death recovery, map freshness, privacy export/delete, locale/provider contracts, and release/supply-chain validation.
 
 ### Final bug-hunt corrections
 
@@ -209,6 +264,15 @@ The repository-wide audit closed the documented 66 source defects, passed its so
 | FINAL-028 | Low | Expo Doctor's current SDK 57 matrix moved `expo-dev-client` from 57.0.8 to 57.0.9. | The existing package and its launcher/menu transitive patches were updated to the Expo-required 57.0.9 line; no new dependency was introduced and live npm audit remains clean. | ✅ **FIXED — VERIFIED** |
 | FINAL-029 | High | Logger type inspection evaluated `instanceof Error` and `Array.isArray` before containment; a throwing or revoked native proxy could therefore turn a recoverable diagnostic into an unhandled exception and LogBox. | [`logger.js`](../src/utils/logger.js) now contains both type probes and returns a bounded `[UNREADABLE]` marker. A regression covers throwing and revoked proxies. | ✅ **FIXED — VERIFIED** |
 | FINAL-030 | High | Writable, object-valued `Error.name` or `Error.message` fields could bypass string redaction and expose nested diagnostic secrets. | Error metadata is now accepted only as a bounded redacted string; non-string, throwing, and function values collapse to safe markers with regression coverage. | ✅ **FIXED — VERIFIED** |
+| FINAL-031 | High | Locale normalization conflated Sorani with an ambiguous bare `ku`, accepted unsupported script variants, and could pass non-canonical tags to Hume/manufacturer/Intl boundaries. | Catalog resolution is now script-aware and fail-closed; explicit Sorani uses `ckb-Arab`, Filipino uses `fil` externally, unavailable variants fall back to reviewed English, and exhaustive app/server/adapter tests own all 183 registry entries. | ✅ **FIXED — VERIFIED** |
+| FINAL-032 | Medium | Newer surfaces mixed raw dates, percentages, default device names, English asynchronous feedback, and ASCII-only numeric input with otherwise localized UI. | Guarded locale formatters, Unicode decimal normalization, translation-key feedback, locale-neutral device defaults, and render-boundary labels now cover these values without changing canonical stored protocols. | ✅ **FIXED — VERIFIED** |
+| FINAL-033 | Medium | A hydrated/updated Mapbox entity could leave its native ShapeSource stale, and an Android notification channel retained the old locale until another permission/schedule flow ran. | Entity changes explicitly refresh bounded GeoJSON sources with a localized failure state; locale changes serialize an idempotent Android channel-metadata refresh without requesting permission. | ✅ **FIXED — VERIFIED** |
+| FINAL-034 | High | A late one-time pairing/recovery response could resurrect a robot credential after logout, while robot health checks unnecessarily transmitted access and pairing tokens. | A synchronous cleanup-generation fence rejects late credential writes; credentials are loaded and attached only to protected `/v1/*` robot routes, never public `/health`. | ✅ **FIXED — VERIFIED** |
+| FINAL-035 | High | A lost local robot pairing credential could brick rehydration/reset even though the server retained the active owner binding. | An authenticated, owner-bound, non-cacheable recovery route deterministically derives and timing-safely verifies the active credential; mobile recovery is coalesced, bounded, account-fenced, and persisted in SecureStore. | ✅ **FIXED — VERIFIED** |
+| FINAL-036 | High | Hume tool failure frames used English-only fallback text and forwarded raw internal `error.message` content to the provider. | The voice session injects active-catalog fallback copy; protocol output accepts only stable bounded error codes and strips raw diagnostics. Spanish and privacy regression coverage verifies the boundary. | ✅ **FIXED — VERIFIED** |
+| FINAL-037 | High | Disconnect/disposal could leave queued device work eligible to run, and an older voice screen could release or receive offline output owned by its replacement. | BaseDevice generations fence active and queued work with independent drain ownership; the process-global voice transport now has explicit owner claims, stale-cleanup guards, and delivery fencing. | ✅ **FIXED — VERIFIED** |
+| FINAL-038 | High | Privacy cleanup could race an admitted medical-profile or wearable-action replay write and allow protected state to reappear after deletion. | Both stores participate in the shared local user-data mutation barrier; screen requests also capture account, mount, and request generations before publishing results. | ✅ **FIXED — VERIFIED** |
+| FINAL-039 | Medium | Dynamic conversation, friend, scenario, and telemetry values could become translation keys, invalid React children, malformed paths, or stale user-visible timestamps. | Dynamic values now use explicit allowlists/sanitizers; invalid paths fail as a whole; location-share timestamps and user-visible status values use guarded localized formatting. | ✅ **FIXED — VERIFIED** |
 
 Known distributed-delivery boundary: emergency-contact push is intentionally
 at-least-once. A provider success followed by loss of the Dynamo delivery-state
@@ -683,12 +747,12 @@ The design-system contract below is inspectable in the current source. Automated
 | POLISH-SRC-002 | Shared actions/surfaces | `Button` exposes variant, loading, disabled, selected, icon, hint, and 44-point minimum behavior; `Card` exposes stable surface/padding variants. | **PASS — SOURCE REVIEW** |
 | POLISH-SRC-003 | Shared patterns | Header/onboarding hierarchy, text field, action tile, status pill, feedback banner/snackbar, empty state, bounded loading/skeletons, and dual-device status card are reusable components. | **PASS — SOURCE REVIEW** |
 | POLISH-SRC-004 | Safe screen container | `Screen` supplies safe area, keyboard avoidance, scroll behavior, and readable-width containment. | **PASS — SOURCE REVIEW** |
-| POLISH-AUTO-001 | Lint | `npm run lint` exits zero on the release candidate, with no new warnings. | **PASS — AUTOMATED** (24 July 2026) |
-| POLISH-AUTO-002 | Test suite | `npm test` and applicable targeted suites exit zero on the release candidate. | **PASS — AUTOMATED** (1,098/1,098 on 24 July 2026) |
+| POLISH-AUTO-001 | Lint | `npm run lint` exits zero on the release candidate, with no new warnings. | **PASS — AUTOMATED** (25 July 2026) |
+| POLISH-AUTO-002 | Test suite | `npm test` and applicable targeted suites exit zero on the release candidate. | **PASS — AUTOMATED** (1,164/1,164 on 25 July 2026) |
 | POLISH-AUTO-003 | Expo dependency/config health | `npm run doctor` reports the repository's expected full pass on the release candidate. | **ONLINE RECHECK PENDING AUTHORIZATION** — 18 local checks pass, including SDK package compatibility; two metadata-backed checks require explicit permission |
-| POLISH-AUTO-004 | iOS production JS export | `npx expo export --platform ios` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (82 assets, 24 July 2026) |
-| POLISH-AUTO-005 | Android production JS export | `npx expo export --platform android` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (86 assets, 24 July 2026) |
-| POLISH-AUTO-006 | Diff hygiene | `git diff --check` exits zero; no credential, generated `.env`, build output, or unrelated artifact is staged. | **PASS — AUTOMATED** (24 July 2026) |
+| POLISH-AUTO-004 | iOS production JS export | `npx expo export --platform ios` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (82 assets, 25 July 2026) |
+| POLISH-AUTO-005 | Android production JS export | `npx expo export --platform android` exits zero with no Metro/Babel/module-resolution failure. | **PASS — AUTOMATED** (86 assets, 25 July 2026) |
+| POLISH-AUTO-006 | Diff hygiene | `git diff --check` exits zero; no credential, generated `.env`, build output, or unrelated artifact is staged. | **PASS — AUTOMATED** (25 July 2026) |
 
 The repository's `npm run validate` is the preferred combined source gate. It is still not a native compile/install, signed TestFlight/Play artifact, or physical-device result.
 

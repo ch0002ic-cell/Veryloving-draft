@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving juża l-mikrofonu tiegħek biss meta tibda sejħa AI companion jew safety.",
     "bluetoothRationaleTitle": "Bluetooth jgħaqqad il-wearable tiegħek",
     "bluetoothRationaleMessage": "VeryLoving juża Bluetooth biex jingħaqad ma' ġojjellerija NorthStar, jaqra l-istatus tal-konnessjoni, u jħalli l-flussi ta' sigurtà mill-wearable.",
-    "cameraRationaleTitle": "Il-kamera hija fakultattiva",
-    "cameraRationaleMessage": "VeryLoving tuża l-kamera biss meta tagħżel li tieħu ritratt ta' profil jew taqsam immaġni ta' sigurtà."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving jżomm dan il-fluss disponibbli kemm mis-settings kif ukoll mid-dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving jeħtieġ aċċess mikrofoniku għas-sigurtà u AI sejħiet ta' sħubija.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving juża l-post tiegħek għall-mappa tas-sigurtà u l-karatteristiċi tas-sigurtà fil-viċin.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving juża Bluetooth biex jikkonnettja mal-ġojjellerija tas-sigurtà NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

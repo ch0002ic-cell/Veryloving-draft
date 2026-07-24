@@ -61,6 +61,26 @@ test('voice gateway requires first-frame authentication and bounds connection me
   assert.equal(parsed.configId, 'approved-config');
   assert.equal(parsed.personaId, 'bestie');
   assert.equal(parsed.locale, 'fr');
+  assert.equal(parseVoiceAuthenticationMessage(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'token',
+    connection: { locale: 'ckb-Arab' }
+  })).locale, 'ku');
+  const compactSoraniAuth = parseVoiceAuthenticationMessage(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'token',
+    connection: { locale: 'ku' }
+  }));
+  assert.equal(compactSoraniAuth.locale, 'ku');
+  const compactSoraniSession = resolveVoiceSession(compactSoraniAuth, {});
+  const compactSoraniSettings = JSON.parse(prepareUpstreamMessage(Buffer.from(JSON.stringify({
+    type: 'session_settings'
+  })), false, {
+    nodeEnv: 'production',
+    voiceSession: compactSoraniSession
+  }).payload);
+  assert.equal(compactSoraniSettings.variables.veryloving_locale, 'ckb-Arab');
+  assert.match(compactSoraniSettings.context.text, /interface language \(ckb-Arab\)/);
   assert.throws(() => parseVoiceAuthenticationMessage('{bad'), /valid JSON/);
   assert.throws(() => parseVoiceAuthenticationMessage(JSON.stringify({ type: 'audio_input' })), /required/);
   assert.throws(() => parseVoiceAuthenticationMessage(JSON.stringify({
@@ -68,6 +88,13 @@ test('voice gateway requires first-frame authentication and bounds connection me
     access_token: 'token',
     connection: { locale: 'en<script>' }
   })), /invalid/);
+  for (const locale of [null, '']) {
+    assert.throws(() => parseVoiceAuthenticationMessage(JSON.stringify({
+      type: 'authenticate',
+      access_token: 'token',
+      connection: { locale }
+    })), /invalid/);
+  }
   assert.equal(hasScope({ scope: 'safety:read voice:connect' }, 'voice:connect'), true);
   assert.equal(hasScope({ scope: 'safety:read' }, 'voice:connect'), false);
 
@@ -84,6 +111,18 @@ test('voice gateway requires first-frame authentication and bounds connection me
   assert.deepEqual(withDevices.devices, [
     { device_id: 'wearable-valid', device_type: 'wearable', online: true }
   ]);
+
+  const aliasedLocale = parseVoiceAuthenticationMessage(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-session',
+    connection: { locale: 'fil-PH' }
+  }));
+  assert.equal(aliasedLocale.locale, 'tl');
+  assert.throws(() => parseVoiceAuthenticationMessage(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-session',
+    connection: { locale: 'zh-Hant-TW' }
+  })), /invalid/);
 });
 
 test('server-owned personas resolve stable app IDs to allowlisted provider UUIDs', () => {
@@ -108,6 +147,11 @@ test('server-owned personas resolve stable app IDs to allowlisted provider UUIDs
     personaId: 'bestie',
     voiceId: CAPYBARA_VOICE_ID
   }, config), /Direct voice overrides/);
+  assert.equal(resolveVoiceSession({ personaId: 'bestie', locale: 'EN_us' }, config).locale, 'en');
+  assert.throws(() => resolveVoiceSession({
+    personaId: 'bestie',
+    locale: 'sr-Latn'
+  }, config), /locale is not supported/);
   assert.throws(() => assertVoicePersonaConfig({
     ...config,
     humeAllowedVoiceIds: CAPYBARA_VOICE_ID
@@ -175,6 +219,21 @@ test('gateway owns CLM credentials and strips production prompt overrides', () =
   assert.match(payload.context.text, /interface language \(es\)/);
   assert.match(payload.context.text, /bright and reassuring/);
   assert.doesNotMatch(payload.context.text, /client-injected/);
+  assert.throws(() => prepareUpstreamMessage(Buffer.from(JSON.stringify({
+    type: 'session_settings'
+  })), false, {
+    nodeEnv: 'production',
+    voiceSession: { locale: 'en<script>' }
+  }), /locale is invalid/);
+
+  const canonicalLocalePayload = JSON.parse(prepareUpstreamMessage(Buffer.from(JSON.stringify({
+    type: 'session_settings'
+  })), false, {
+    nodeEnv: 'production',
+    voiceSession: { locale: 'ckb-IQ' }
+  }).payload);
+  assert.equal(canonicalLocalePayload.variables.veryloving_locale, 'ckb-Arab');
+  assert.match(canonicalLocalePayload.context.text, /interface language \(ckb-Arab\)/);
 
   const aiNativePayload = JSON.parse(prepareUpstreamMessage(Buffer.from(JSON.stringify({
     type: 'session_settings',
@@ -243,6 +302,12 @@ test('AI-native Hume context is bounded, strips forbidden identity/media fields,
     '[VoiceGateway] AI-native context omitted',
     { code: 'AI_NATIVE_VOICE_CONTEXT_UNAVAILABLE' }
   ]]);
+
+  await assert.doesNotReject(loadAINativeVoiceContext('account-1', {
+    aiNativeEnabled: true,
+    aiNativeSystem: { async getVoiceContext() { throw new Error('contained'); } },
+    get logger() { throw new Error('hostile logger getter'); }
+  }));
 
   let disabledRead = false;
   assert.equal(await loadAINativeVoiceContext('account-1', {
@@ -348,6 +413,95 @@ test('disconnect during AI-native context lookup never opens a Hume upstream', a
   await new Promise((resolve) => setImmediate(resolve));
 
   assert.equal(upstreamCreations, 0);
+});
+
+test('voice gateway contains injected lifecycle hook and logger failures', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = () => { upstream.readyState = WebSocket.CLOSED; };
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-hook-failure',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    actionGateway: {
+      registerSession() { throw new Error('injected registration failure'); }
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() { throw new Error('injected logger sink failure'); } }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+    }
+    send() {}
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.doesNotThrow(() => upstream.emit('open'));
+  assert.equal(client.readyState, WebSocket.CLOSED);
+});
+
+test('voice gateway contains presence and cleanup hook failures', async () => {
+  const upstream = new EventEmitter();
+  upstream.readyState = WebSocket.OPEN;
+  upstream.bufferedAmount = 0;
+  upstream.send = () => {};
+  upstream.close = () => { upstream.readyState = WebSocket.CLOSED; };
+  const gateway = attachVoiceGateway(new EventEmitter(), {
+    verifyVoiceToken: async () => ({
+      sub: 'google:voice-presence-failure',
+      scope: 'voice:connect',
+      exp: Math.floor(Date.now() / 1000) + 60
+    }),
+    humeApiKey: 'server-key',
+    humeConfigId: 'approved-config',
+    actionGateway: {
+      registerSession() {
+        return () => { throw new Error('injected cleanup failure'); };
+      },
+      updateSessionDevices() { throw new Error('injected presence failure'); }
+    },
+    createUpstreamWebSocket: () => upstream,
+    logger: { warn() { throw new Error('injected logger sink failure'); } }
+  });
+  class FakeClient extends EventEmitter {
+    constructor() {
+      super();
+      this.readyState = WebSocket.OPEN;
+      this.bufferedAmount = 0;
+    }
+    send() {}
+    close() { this.readyState = WebSocket.CLOSED; }
+  }
+  const client = new FakeClient();
+  gateway.emit('connection', client);
+  client.emit('message', Buffer.from(JSON.stringify({
+    type: 'authenticate',
+    access_token: 'first-party-token'
+  })), false);
+  await new Promise((resolve) => setImmediate(resolve));
+  upstream.emit('open');
+
+  assert.doesNotThrow(() => client.emit('message', Buffer.from(JSON.stringify({
+    type: 'devices_update',
+    devices: []
+  })), false));
+  assert.equal(client.readyState, WebSocket.CLOSED);
 });
 
 test('authenticated action and presence frames stay on the long-lived voice gateway', async () => {

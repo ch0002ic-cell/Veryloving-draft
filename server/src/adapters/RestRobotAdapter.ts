@@ -32,6 +32,13 @@ import {
   type StructuredAdapterLogger
 } from './StructuredAdapterLogger';
 
+const { providerVoiceLocaleTag } = require('../../voice-locales.cjs') as {
+  providerVoiceLocaleTag(
+    value: unknown,
+    options?: { readonly allowCatalogCode?: boolean }
+  ): string | undefined;
+};
+
 export interface BridgeResponseHeaders {
   get?(name: string): string | null;
 }
@@ -803,7 +810,12 @@ export abstract class RestRobotAdapter implements RobotAdapter {
     if (medication.scheduledAt !== undefined && !Number.isFinite(Date.parse(medication.scheduledAt))) {
       throw invalidRequest('medication.scheduledAt is invalid');
     }
-    if (user.preferredLanguage !== undefined) assertString(user.preferredLanguage, 'user.preferredLanguage', 35);
+    const preferredLanguage = user.preferredLanguage === undefined
+      ? undefined
+      : providerVoiceLocaleTag(user.preferredLanguage, { allowCatalogCode: true });
+    if (user.preferredLanguage !== undefined && !preferredLanguage) {
+      throw invalidRequest('user.preferredLanguage is invalid or unsupported');
+    }
     return this.sendCommand('send_medication_reminder', {
       medication: {
         id: medication.id,
@@ -814,7 +826,7 @@ export abstract class RestRobotAdapter implements RobotAdapter {
       },
       user: {
         id: user.id,
-        ...(user.preferredLanguage === undefined ? {} : { preferred_language: user.preferredLanguage })
+        ...(preferredLanguage === undefined ? {} : { preferred_language: preferredLanguage })
       }
     }, medication.requestId);
   }

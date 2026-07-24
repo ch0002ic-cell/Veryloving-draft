@@ -22,7 +22,12 @@ Module._load = function loadPushLifecycleDependency(request, parent, isMain) {
       return { __esModule: true, default: { easConfig: { projectId: 'test-project' } } };
     }
     if (request === './permissions') return { explainPermission: async () => true };
-    if (request === '../i18n/core') return { translate: (key) => key };
+    if (request === '../i18n/core') {
+      return {
+        translate: (key) => key,
+        translateForLocale: (_locale, key) => key
+      };
+    }
     if (request === '../utils/logger') return { logger: { info() {} } };
     if (request === '../utils/runtime-environment') return { isExpoGoRuntime: () => false };
     if (request === './notifications-runtime') {

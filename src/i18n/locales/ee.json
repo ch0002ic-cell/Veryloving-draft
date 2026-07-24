@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving zãa wò nuƒomɔ̃ ne èdze AI zɔhɛ alo dedienɔnɔ ƒe kaƒoƒo gɔme ko.",
     "bluetoothRationaleTitle": "Bluetooth doa ka kple wò wearable",
     "bluetoothRationaleMessage": "VeryLoving zãa Bluetooth tsɔ ƒoa ƒu kple NorthStar atsyɔ̃ɖonuwo, xlẽa kadodo ƒe nɔnɔme, eye wòʋãa dedienɔnɔ ƒe sisi tso nusi wodona me.",
-    "cameraRationaleTitle": "Fotoɖemɔ̃ nye tiatia",
-    "cameraRationaleMessage": "VeryLoving zãa fotoɖemɔ̃a ne ètiae be yeaɖe yeƒe nɔnɔmetata alo yeama dedienɔnɔ ƒe nɔnɔmetata ko."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving nana be sisi sia nɔa anyi tso Settings kple dashboard la gbɔ.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hiã nuƒomɔ̃ ƒe zazã hena dedienɔnɔ kple AI zɔhɛ kaƒoƒo.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving zãa afi si nèle hena dedienɔnɔ ƒe anyigbatata kple dedienɔnɔ ƒe nɔnɔme siwo te ɖe ŋuwò.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving zãa Bluetooth tsɔ doa ka kple wò NorthStar dedienɔnɔ ƒe atsyɔ̃ɖonuwo."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving zãa Bluetooth tsɔ doa ka kple wò NorthStar dedienɔnɔ ƒe atsyɔ̃ɖonuwo.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

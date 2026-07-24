@@ -43,7 +43,7 @@ export default function RobotPairingScreen() {
         : [...current, {
             deviceId: paired.robot_id,
             deviceType: 'home_robot',
-            name: 'VeryLoving Home',
+            name: null,
             online: false,
             connectionState: 'disconnected'
           }]);
@@ -120,7 +120,7 @@ export default function RobotPairingScreen() {
           <Ionicons accessible={false} name="qr-code-outline" size={56} color={colors.blueAccessible} />
         </View>
         <Text style={[styles.copy, isRTL && styles.rtlText]}>
-          {t('jewelry.scan')} · {t('medication.robot')}
+          {t('permissions.cameraRationaleMessage')}
         </Text>
         <FeedbackBanner message={errorKey ? t(errorKey) : null} />
         <Button
@@ -135,7 +135,7 @@ export default function RobotPairingScreen() {
   }
   return (
     <Screen>
-      <Header title={title} subtitle={t('jewelry.scan')} showBack backLabel={t('common.back')} />
+      <Header title={title} subtitle={t('permissions.cameraRationaleTitle')} showBack backLabel={t('common.back')} />
       <View accessibilityRole="radiogroup" style={[styles.vendorButtons, isRTL && styles.rtlRow]}>
         {[
           { id: 'yongyida', label: 'Yongyida' },

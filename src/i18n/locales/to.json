@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "ʻVeryLoving fakaʻaongaʻi pe hoʻo maika ʻi he taimi ʻoku ke kamata ai ha AI hoa pe telefoni malu.",
     "bluetoothRationaleTitle": "Bluetooth fakafehokotaki hoʻo wearable",
     "bluetoothRationaleMessage": "ʻOku fakaʻaongaʻi ʻe VeryLoving ʻa e Bluetooth ke fakatauhoa mo e ngaahi meʻa teuteu ʻNorthStar, lau ʻa e tuʻunga ʻo e fehokotakiʻanga, pea fakatupu ʻa e tafe malu mei he wearable.",
-    "cameraRationaleTitle": "ʻOku fili pe ʻa e meʻafaitaa",
-    "cameraRationaleMessage": "ʻVeryLoving fakaʻaongaʻi pe ʻa e meʻafaitaa ʻi he taimi ʻoku ke fili ai ke faitaaʻi ha fakamatala fakafoʻituitui pe vahevahe ha ʻimisi malu."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving tauhi ʻa e tafe ko ʻeni ke maʻu mei he Settings mo e dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "ʻVeryLoving fie maʻu ke hu ki he maika ke malu mo AI ʻa e ngaahi telefoni mo e hoa.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving fakaʻaongaʻi ho feituʻu ki he mape malu mo e ngaahi meʻa malu ofi mai.",
-      "NSBluetoothAlwaysUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi."
+      "NSBluetoothAlwaysUsageDescription": "ʻOku VeryLoving fakaʻaongaʻi ʻa e Bluetooth ke fakafehokotaki ki hoʻo NorthStar meʻa teuteu maluʻi.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

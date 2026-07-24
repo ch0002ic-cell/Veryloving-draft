@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLovingは、AIの仲間や安全通話を始めるときだけマイクを使います。",
     "bluetoothRationaleTitle": "Bluetoothあなたのウェアラブルをつなげます",
     "bluetoothRationaleMessage": "VeryLovingBluetoothを使ってNorthStarジュエリーとペアリングし、接続状況を読み取り、ウェアラブルからの安全フローをトリガーします。",
-    "cameraRationaleTitle": "カメラはオプションです",
-    "cameraRationaleMessage": "VeryLovingカメラはプロフィール写真を撮るか安全写真を共有する時だけ使います。"
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving設定やダッシュボードからこのフローを保持できます。",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving安全のためにマイクアクセスとAIの相棒通話が必要です。",
       "NSLocationWhenInUseUsageDescription": "VeryLovingはあなたの位置情報を使って安全地図や近くの安全機能を表示します。",
-      "NSBluetoothAlwaysUsageDescription": "VeryLovingBluetoothを使ってNorthStarの安全ジュエリーに接続します。"
+      "NSBluetoothAlwaysUsageDescription": "VeryLovingBluetoothを使ってNorthStarの安全ジュエリーに接続します。",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

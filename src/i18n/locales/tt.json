@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving микрофонны AI компаньон яки куркынычсызлык чакыруы башлаганда гына куллана.",
     "bluetoothRationaleTitle": "Bluetooth кию җайланмасын тоташтыра",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth NorthStar бизәнү әйберләре белән парлашу, тоташтыру статусын уку һәм кию җайланмасының куркынычсызлык агымын кабындыру өчен куллана.",
-    "cameraRationaleTitle": "Камера мәҗбүри",
-    "cameraRationaleMessage": "VeryLoving камераны профиль фотосы яки куркынычсызлык сурәте белән уртаклашканда гына куллана."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving бу агымны Көйләүләрдән һәм панельдән файдаланып тора.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving куркынычсызлык һәм юлдаш шалтыратулар өчен микрофон AI кирәк.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving сезнең урыныгызны куркынычсызлык картасы һәм якындагы куркынычсызлык функцияләре өчен куллана.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth куркынычсызлык бизәнү әйберләренә тоташтыру өчен NorthStar куллана."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving Bluetooth куркынычсызлык бизәнү әйберләренә тоташтыру өчен NorthStar куллана.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

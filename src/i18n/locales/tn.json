@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving e dirisa maekerofouno ya gago fela fa o simolola AI molekane kgotsa mogala wa pabalesego.",
     "bluetoothRationaleTitle": "Bluetooth e golaganya sediriswa sa gago se se aparwang",
     "bluetoothRationaleMessage": "VeryLoving e dirisa Bluetooth go kopanya le mabenyane a NorthStar, go bala seemo sa kgolagano, le go tlhotlheletsa diphallo tsa pabalesego go tswa mo go se se aparwang.",
-    "cameraRationaleTitle": "Khemera ga se ya boikgethelo",
-    "cameraRationaleMessage": "VeryLoving e dirisa khamera fela fa o tlhopha go tsaya senepe sa porofaele kgotsa go abelana setshwantsho sa pabalesego."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving e boloka kelelo eno e le teng go tswa mo Diseting le mo dashebotong.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving e tlhoka go kgona go dirisa maekerofouno go bona pabalesego le AI megala e e tsamayang le yone.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving e dirisa lefelo la gago la mmapa wa pabalesego le dikarolo tsa pabalesego tse di gaufi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving e dirisa Bluetooth go golagana le mabenyane a gago a pabalesego a NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

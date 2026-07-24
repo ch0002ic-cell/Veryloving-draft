@@ -3,6 +3,22 @@
 const crypto = require('node:crypto');
 const { redactSerial } = require('./action-gateway.cjs');
 
+const ACCOUNT_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:@-]{0,255}$/;
+const ROBOT_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
+const PAIRING_SCOPE_PATTERN = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+const SHA256_BASE64URL_PATTERN = /^[A-Za-z0-9_-]{43}$/;
+
+function timingSafeTokenMatches(token, expectedHash) {
+  if (
+    typeof token !== 'string'
+    || !SHA256_BASE64URL_PATTERN.test(token)
+    || typeof expectedHash !== 'string'
+  ) return false;
+  const supplied = Buffer.from(crypto.createHash('sha256').update(token).digest('base64url'));
+  const expected = Buffer.from(expectedHash);
+  return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
+}
+
 function createDynamoRobotRepository({
   tableName,
   region,
@@ -29,7 +45,7 @@ function createDynamoRobotRepository({
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         FilterExpression: 'id = :id',
         ExpressionAttributeValues: { ':pk': `USER#${userId}`, ':prefix': 'ROBOT#', ':id': robotId },
-        ProjectionExpression: 'id, manufacturerDeviceId, adapterId, serialHash, pairingClaimHash, pairingTokenHash, pairedAt, bindingEpoch, lifecycleState, resetId, resetRequestedAt, resetRemoteCompletedAt, resetAttempt, resetLeaseOwner, resetLeaseExpiresAt, nextResetAttemptAt, SK',
+        ProjectionExpression: 'id, manufacturerDeviceId, adapterId, vendorNamespace, serialHash, pairingClaimHash, pairingTokenHash, pairedAt, bindingEpoch, lifecycleState, resetId, resetRequestedAt, resetRemoteCompletedAt, resetAttempt, resetLeaseOwner, resetLeaseExpiresAt, nextResetAttemptAt, SK',
         ConsistentRead: true,
         ...(exclusiveStartKey ? { ExclusiveStartKey: exclusiveStartKey } : {})
       }));
@@ -84,13 +100,6 @@ function createDynamoRobotRepository({
     if (!Number.isSafeInteger(value) || value < 0) {
       throw Object.assign(new Error(`${name} is invalid`), { statusCode: 400, code: 'ROBOT_RESET_INVALID' });
     }
-  }
-
-  function timingSafeTokenMatches(token, expectedHash) {
-    if (typeof token !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(token) || typeof expectedHash !== 'string') return false;
-    const supplied = Buffer.from(crypto.createHash('sha256').update(token).digest('base64url'));
-    const expected = Buffer.from(expectedHash);
-    return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
   }
 
   async function accountDeletionState(userId) {
@@ -748,6 +757,37 @@ function createDynamoRobotRepository({
       && (expectedBinding.adapterId || 'manufacturer-default') === (record.adapterId || 'manufacturer-default')
     );
   }
+
+  async function resolvePairingCredentialDerivation(userId, robotId) {
+    if (!ACCOUNT_ID_PATTERN.test(userId || '') || !ROBOT_ID_PATTERN.test(robotId || '')) return null;
+    const record = await findBoundRobot(userId, robotId);
+    if (!record || effectiveLifecycleState(record) !== 'active') return null;
+    if (!validBindingEpoch(record.bindingEpoch)) {
+      throw Object.assign(new Error('Robot binding requires an epoch migration'), {
+        statusCode: 409,
+        code: 'ROBOT_BINDING_MIGRATION_REQUIRED'
+      });
+    }
+    if (
+      !SHA256_BASE64URL_PATTERN.test(record.pairingClaimHash || '')
+      || !SHA256_BASE64URL_PATTERN.test(record.pairingTokenHash || '')
+      || !PAIRING_SCOPE_PATTERN.test(record.vendorNamespace || '')
+    ) {
+      throw Object.assign(new Error('Robot pairing credential state is incomplete'), {
+        statusCode: 409,
+        code: 'ROBOT_PAIRING_CREDENTIAL_STATE_INCOMPLETE'
+      });
+    }
+    // This is deliberately the complete return surface: no manufacturer
+    // routing ID, serial hash, owner identifier, reset metadata, or token is
+    // exposed to the recovery service.
+    return Object.freeze({
+      pairingCodeHash: record.pairingClaimHash,
+      pairingScope: record.vendorNamespace,
+      pairingTokenHash: record.pairingTokenHash
+    });
+  }
+
   return {
     async owns(userId, robotId) {
       return Boolean(await findBoundRobot(userId, robotId));
@@ -770,6 +810,7 @@ function createDynamoRobotRepository({
       const record = await findBoundRobot(userId, robotId);
       return timingSafeTokenMatches(token, record?.pairingTokenHash);
     },
+    resolvePairingCredentialDerivation,
     list,
     async listManufacturerDeviceIds(userId) {
       const robots = await queryBoundRobots(userId, 'manufacturerDeviceId');
@@ -940,9 +981,76 @@ function derivePairingToken({ userId, pairingCodeHash, pairingScope, secret }) {
       code: 'ROBOT_PAIRING_TOKEN_UNAVAILABLE'
     });
   }
+  if (
+    !ACCOUNT_ID_PATTERN.test(userId || '')
+    || !SHA256_BASE64URL_PATTERN.test(pairingCodeHash || '')
+    || !PAIRING_SCOPE_PATTERN.test(pairingScope || '')
+  ) {
+    throw Object.assign(new Error('Robot pairing token input is invalid'), {
+      statusCode: 400,
+      code: 'ROBOT_PAIRING_TOKEN_INPUT_INVALID'
+    });
+  }
   return crypto.createHmac('sha256', secret)
     .update(JSON.stringify(['veryloving-robot-pairing-v1', userId, pairingScope, pairingCodeHash]))
     .digest('base64url');
+}
+
+async function recoverPairingToken({
+  userId,
+  robotId,
+  pairingTokenSecret,
+  repository
+}) {
+  if (!ACCOUNT_ID_PATTERN.test(userId || '') || !ROBOT_ID_PATTERN.test(robotId || '')) {
+    throw Object.assign(new Error('Robot identifier is invalid'), {
+      statusCode: 400,
+      code: 'ROBOT_PAIRING_RECOVERY_INVALID'
+    });
+  }
+  if (typeof repository?.resolvePairingCredentialDerivation !== 'function') {
+    throw Object.assign(new Error('Robot pairing credential recovery is unavailable'), {
+      statusCode: 503,
+      code: 'ROBOT_PAIRING_RECOVERY_UNAVAILABLE'
+    });
+  }
+  const material = await repository.resolvePairingCredentialDerivation(userId, robotId);
+  if (!material) {
+    throw Object.assign(new Error('Robot was not found'), {
+      statusCode: 404,
+      code: 'ROBOT_NOT_FOUND'
+    });
+  }
+  if (
+    !SHA256_BASE64URL_PATTERN.test(material.pairingCodeHash || '')
+    || !SHA256_BASE64URL_PATTERN.test(material.pairingTokenHash || '')
+    || !PAIRING_SCOPE_PATTERN.test(material.pairingScope || '')
+  ) {
+    throw Object.assign(new Error('Robot pairing credential recovery is unavailable'), {
+      statusCode: 503,
+      code: 'ROBOT_PAIRING_CREDENTIAL_STATE_INVALID'
+    });
+  }
+  const pairingToken = derivePairingToken({
+    userId,
+    pairingCodeHash: material.pairingCodeHash,
+    pairingScope: material.pairingScope,
+    secret: pairingTokenSecret
+  });
+  // The hash persisted at pairing time remains authoritative. This catches
+  // secret rotation, corrupt derivation material, and accidental cross-scope
+  // recovery without exposing either digest.
+  if (!timingSafeTokenMatches(pairingToken, material.pairingTokenHash)) {
+    throw Object.assign(new Error('Robot pairing credential recovery is unavailable'), {
+      statusCode: 503,
+      code: 'ROBOT_PAIRING_CREDENTIAL_MISMATCH'
+    });
+  }
+  return Object.freeze({
+    robot_id: robotId,
+    pairing_token: pairingToken,
+    device_type: 'home_robot'
+  });
 }
 
 function robotLogReference(robotId) {
@@ -1058,4 +1166,9 @@ async function pairRobot({
   return { robot_id: record.id, pairing_token: pairingToken, device_type: 'home_robot' };
 }
 
-module.exports = { createDynamoRobotRepository, derivePairingToken, pairRobot };
+module.exports = {
+  createDynamoRobotRepository,
+  derivePairingToken,
+  pairRobot,
+  recoverPairingToken
+};

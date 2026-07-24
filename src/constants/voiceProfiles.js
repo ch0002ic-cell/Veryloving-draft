@@ -1,11 +1,12 @@
 import { images } from './assets';
+import { VOICE_PROFILE_IDS } from './voice-profile-ids';
 
 // These IDs are first-party persona identifiers, not provider resource IDs.
 // The authenticated voice gateway resolves them to allowlisted Hume voice
 // UUIDs from server-only configuration.
 export const voiceProfiles = Object.freeze([
   {
-    id: 'capybara',
+    id: VOICE_PROFILE_IDS.capybara,
     displayName: 'Capybear',
     description: 'soft, calm, grounding',
     avatar: images.capybara,
@@ -13,7 +14,7 @@ export const voiceProfiles = Object.freeze([
     characteristics: ['warm', 'patient', 'protective']
   },
   {
-    id: 'bestie',
+    id: VOICE_PROFILE_IDS.bestie,
     displayName: 'Bestie',
     description: 'bright, reassuring, conversational',
     avatar: images.bestie,
@@ -21,7 +22,7 @@ export const voiceProfiles = Object.freeze([
     characteristics: ['playful', 'supportive', 'direct']
   },
   {
-    id: 'boyfriend',
+    id: VOICE_PROFILE_IDS.boyfriend,
     displayName: 'Boyfriend',
     description: 'steady, affectionate, present',
     avatar: images.boyfriend,
@@ -29,7 +30,7 @@ export const voiceProfiles = Object.freeze([
     characteristics: ['gentle', 'romantic', 'calm']
   },
   {
-    id: 'muscleMan',
+    id: VOICE_PROFILE_IDS.muscleMan,
     displayName: 'Muscleman',
     description: 'confident, protective, motivating',
     avatar: images.muscleMan,

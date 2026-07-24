@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving vakayagataka ga na nomu microphone ni ko tekivuna e dua na AI na itokani se veitaqomaki.",
     "bluetoothRationaleTitle": "Bluetooth semata na nomu wearable",
     "bluetoothRationaleMessage": "VeryLoving vakayagataka na Bluetooth me veisotari kei na NorthStar na iyaya ni iukuuku, wilika na ituvaki ni isema ka vakavuna na drodro ni veitaqomaki mai na wearable.",
-    "cameraRationaleTitle": "E digitaki na itaba",
-    "cameraRationaleMessage": "VeryLoving vakayagataka ga na itaba ni o digitaka mo taura e dua na itaba se wasea e dua na iyaloyalo ni veitaqomaki."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving maroroya na drodro oqo mai na Settings kei na dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving gadreva na microphone me baleta na veitaqomaki kei na AI veikacivi ni itokani.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving vakayagataka na nomu vanua me baleta na mape ni tataqomaki kei na veitaqomaki voleka.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving vakayagataka na Bluetooth me semati ki na nomu iyaya ni tataqomaki NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

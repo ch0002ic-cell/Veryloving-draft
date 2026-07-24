@@ -236,6 +236,18 @@ describe('adapter hardening branches', () => {
     await expect(adapter.sendMedicationReminder({
       id: 'medication-001', name: 'medicine', scheduledAt: 'not-a-date'
     }, { id: 'account-001' })).rejects.toMatchObject({ code: 'ADAPTER_REQUEST_INVALID' });
+    await expect(adapter.sendMedicationReminder({
+      id: 'medication-001', name: 'medicine'
+    }, { id: 'account-001', preferredLanguage: 'zh-Hant-TW' }))
+      .rejects.toMatchObject({ code: 'ADAPTER_REQUEST_INVALID' });
+    await expect(adapter.sendMedicationReminder({
+      id: 'medication-001', name: 'medicine'
+    }, { id: 'account-001', preferredLanguage: 'ku-Latn-TR' }))
+      .rejects.toMatchObject({ code: 'ADAPTER_REQUEST_INVALID' });
+    await expect(adapter.sendMedicationReminder({
+      id: 'medication-001', name: 'medicine'
+    }, { id: 'account-001', preferredLanguage: 'ae' }))
+      .rejects.toMatchObject({ code: 'ADAPTER_REQUEST_INVALID' });
     await expect(adapter.playSoothingAudio('audio-1', 101))
       .rejects.toMatchObject({ code: 'ADAPTER_REQUEST_INVALID' });
     await expect(adapter.setConfig({ values: [] as unknown as Record<string, never> }))

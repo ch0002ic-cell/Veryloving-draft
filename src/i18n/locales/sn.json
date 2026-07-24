@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving inoshandisa maikorofoni yako chete paunotanga AI mufambidzani kana runhare rwekuchengetedza.",
     "bluetoothRationaleTitle": "Bluetooth inobatanidza zvinopfekwa zvako",
     "bluetoothRationaleMessage": "VeryLoving inoshandisa Bluetooth kubatanidza neNorthStar jewelry, kuverenga mamiriro ekubatanidza, uye kukonzeresa kuyerera kwekuchengetedza kubva kune zvinopfeka.",
-    "cameraRationaleTitle": "Kamera inosarudzika",
-    "cameraRationaleMessage": "VeryLoving inoshandisa kamera chete kana wasarudza kutora mufananidzo kana kugovera chengetedzo mufananidzo."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving inochengetedza kuyerera uku kunowanikwa kubva kuSettings uye dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving inoda kuwana maikorofoni kuti ive kuchengeteka uye AI nhare dzinofambidzana.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving inoshandisa nzvimbo yako semepu yekuchengetedza uye maficha ari pedyo.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving inoshandisa Bluetooth kubatanidza kune NorthStar yako zvishongo zvekuchengetedza."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving inoshandisa Bluetooth kubatanidza kune NorthStar yako zvishongo zvekuchengetedza.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

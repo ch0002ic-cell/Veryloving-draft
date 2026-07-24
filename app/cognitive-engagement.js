@@ -154,7 +154,7 @@ export default function CognitiveEngagement() {
         && accountIdRef.current === operationAccountId
         && accountEpochRef.current === operationEpoch
         && result?.started?.length) {
-        setSnackbar({ tone: 'success', message: t('wellness.scenarioStarted') });
+        setSnackbar({ tone: 'success', messageKey: 'wellness.scenarioStarted' });
       }
     } catch {
       // The runner logs a redacted diagnostic and publishes a retryable code.
@@ -169,7 +169,7 @@ export default function CognitiveEngagement() {
       && mountedRef.current
       && accountIdRef.current === operationAccountId
       && accountEpochRef.current === operationEpoch) {
-      setSnackbar({ tone: 'success', message: t('wellness.feedback.thanks') });
+      setSnackbar({ tone: 'success', messageKey: 'wellness.feedback.thanks' });
     }
   };
 
@@ -351,7 +351,7 @@ export default function CognitiveEngagement() {
               {memoryResult ? (
                 <Button
                   title={t('wellness.cognitive.nextRound')}
-                  icon="arrow-forward-outline"
+                  icon={isRTL ? 'arrow-back-outline' : 'arrow-forward-outline'}
                   iconPosition="trailing"
                   onPress={nextMemoryRound}
                 />
@@ -391,7 +391,7 @@ export default function CognitiveEngagement() {
           {triviaResult ? (
             <Button
               title={t('wellness.cognitive.nextRound')}
-              icon="arrow-forward-outline"
+              icon={isRTL ? 'arrow-back-outline' : 'arrow-forward-outline'}
               iconPosition="trailing"
               onPress={nextTriviaRound}
             />
@@ -421,7 +421,9 @@ export default function CognitiveEngagement() {
       ) : null}
 
       <Snackbar
-        message={accountAligned ? snackbar?.message : null}
+        message={accountAligned && snackbar?.messageKey
+          ? t(snackbar.messageKey, snackbar.messageOptions)
+          : null}
         tone={snackbar?.tone}
         onDismiss={() => setSnackbar(null)}
       />

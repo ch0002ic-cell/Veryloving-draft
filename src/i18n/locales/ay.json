@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving ukax micrófono ukax AI compañero jan ukax seguridad jawsañ qalltañkamakiwa.",
     "bluetoothRationaleTitle": "Bluetooth ukax wearable ukaruw uñt’ayi",
     "bluetoothRationaleMessage": "VeryLoving Bluetooth apnaqi NorthStar joyas ukamp chikt’añataki, conexión estado ukar uñakipañataki, ukat seguridad flujos ukar wearable ukar ch’amanchañataki.",
-    "cameraRationaleTitle": "Camara ukax opcional ukhamawa",
-    "cameraRationaleMessage": "VeryLoving ukax cámara ukax kunapachatix perfil foto apsuñ jan ukax seguridad ukan uñacht’äwip uñt’ayañ amtkta ukhakiw apnaqi."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ukax aka jawirax Configuración ukat tablón de instrumentos ukanakat utjañapatakiw uñji.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving ukax micrófono ukar mantañapawa seguridad ukat AI compañero jawsañataki.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ukax kawkhantix jikxataskta ukax seguridad mapa ukat jak’ankir seguridad ukanakatakiw apnaqi.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ukax Bluetooth ukampiw NorthStar seguridad joyas ukar uñt’ayañataki.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

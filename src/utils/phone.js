@@ -6,6 +6,8 @@ import {
   validatePhoneNumberLength
 } from 'libphonenumber-js';
 import { ENGLISH_COUNTRY_NAMES } from '../data/country-names-en';
+import { nativeLocaleTagForLanguage } from '../i18n/core';
+import { normalizeDecimalDigits } from './unicode-digits';
 
 export const DEFAULT_COUNTRY = 'US';
 export const countryCodes = getCountries();
@@ -48,7 +50,7 @@ function validationCodeFor(input, countryCode, phoneNumber) {
 
 export function createPhoneValue(input = '', selectedCountry = DEFAULT_COUNTRY) {
   const initialCountry = normalizeCountryCode(selectedCountry);
-  const rawInput = String(input || '').trim();
+  const rawInput = normalizeDecimalDigits(input).trim();
   const international = rawInput.startsWith('+');
   const formatter = new AsYouType(international ? undefined : initialCountry);
   let formatted = '';
@@ -97,7 +99,7 @@ export function formatE164ForDisplay(e164) {
 }
 
 export function getCountryOptions(locale = 'en') {
-  const normalizedLocale = String(locale || 'en');
+  const normalizedLocale = nativeLocaleTagForLanguage(locale) || 'en';
   if (countryOptionCache.has(normalizedLocale)) return countryOptionCache.get(normalizedLocale);
 
   let displayNames;
@@ -106,7 +108,12 @@ export function getCountryOptions(locale = 'en') {
   } catch {
     displayNames = null;
   }
-  const collator = new Intl.Collator(normalizedLocale, { sensitivity: 'base' });
+  let collator;
+  try {
+    collator = new Intl.Collator(normalizedLocale, { sensitivity: 'base' });
+  } catch {
+    collator = new Intl.Collator('en', { sensitivity: 'base' });
+  }
   const options = countryCodes.map((countryCode) => {
     let localizedName = '';
     try {
@@ -133,7 +140,10 @@ export function getCountryOptions(locale = 'en') {
 }
 
 function searchable(value) {
-  return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return normalizeDecimalDigits(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 export function filterCountryOptions(options, query) {

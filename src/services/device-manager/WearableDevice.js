@@ -9,6 +9,9 @@ export class WearableDevice extends BaseDevice {
     this.removeBLEHandler = null;
     this.connectionLifecycleGeneration = 0;
     this.connectionAbortController = new AbortController();
+    // A freshly restored descriptor is paired, not connected. Never admit a
+    // GATT write until service discovery has completed for this process.
+    this.pauseCommandQueue();
   }
 
   connectionLifecycleError() {
@@ -16,6 +19,10 @@ export class WearableDevice extends BaseDevice {
     const error = new Error('Wearable device is disconnected.');
     error.code = 'DEVICE_DISCONNECTED';
     return error;
+  }
+
+  commandLifecycleError() {
+    return this.connectionLifecycleError();
   }
 
   isConnectionLifecycleCurrent(generation) {
@@ -34,6 +41,7 @@ export class WearableDevice extends BaseDevice {
       throw this.connectionLifecycleError();
     }
     this.setStatus({ ...connected, online: true, connectionState: 'connected' });
+    this.resumeCommandQueue();
     return this.getStatus();
   }
 
@@ -68,11 +76,14 @@ export class WearableDevice extends BaseDevice {
 
   async disconnect() {
     this.invalidateConnectionLifecycle();
+    this.invalidateCommandQueue({ pause: true, error: this.connectionLifecycleError() });
+    const status = this.setStatus({ online: false, connected: false, connectionState: 'disconnected' });
     await this.bleClient.disconnect(this.deviceId);
-    return this.setStatus({ online: false, connected: false, connectionState: 'disconnected' });
+    return status;
   }
 
   sendCommand(command) {
+    if (this.commandQueuePaused) return Promise.reject(this.connectionLifecycleError());
     const payload = typeof command === 'string' ? command : command?.payload;
     const stop = typeof command === 'object' && [command.action, command.type, command.command]
       .some((value) => typeof value === 'string' && value.toLowerCase() === 'stop');
@@ -93,6 +104,8 @@ export class WearableDevice extends BaseDevice {
       onEvent: (deviceId, value) => deviceId === this.deviceId && this.emitTelemetry({ type: 'event', value }),
       onDisconnected: (deviceId) => {
         if (deviceId !== this.deviceId) return;
+        this.invalidateConnectionLifecycle();
+        this.invalidateCommandQueue({ pause: true, error: this.connectionLifecycleError() });
         this.setStatus({ online: false, connected: false, connectionState: 'disconnected' });
         this.emitTelemetry({ type: 'connection', online: false });
       }

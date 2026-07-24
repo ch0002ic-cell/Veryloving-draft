@@ -10,9 +10,9 @@ import { Card } from '../../src/components/Card';
 import {
   cacheMapRegion,
   dangerZones,
-    getMapboxModule,
-    requestCurrentLocation,
-    watchLiveLocation
+  getMapboxModule,
+  requestCurrentLocation,
+  watchLiveLocation
 } from '../../src/services/mapbox';
 import { colors, radii, shadows, spacing, typography } from '../../src/constants/theme';
 import { useI18n } from '../../src/context/I18nContext';
@@ -27,6 +27,12 @@ import { loadSavedPlaces, removeSavedPlace, saveCurrentPlace } from '../../src/s
 import { useAuth } from '../../src/context/AuthContext';
 import { useAppState } from '../../src/context/AppContext';
 import { evaluateGeofence } from '../../src/services/geofence-evaluator';
+import {
+  formatLocalizedDateTime,
+  formatLocalizedNumber
+} from '../../src/utils/localized-format';
+import { normalizeMapNavigationPath } from '../../src/utils/map-geometry';
+import { refreshMapShapeSource } from '../../src/utils/map-source-refresh';
 
 const DEFAULT_COORDINATES = [-79.3832, 43.6532];
 
@@ -74,20 +80,59 @@ function locationErrorTranslationKey(error) {
   return 'map.updateFailed';
 }
 
-const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, deviceFeatureCollection, robotPathFeatureCollection, onLoadError, onStyleLoaded, t }) {
+const NativeSafetyMap = memo(function NativeSafetyMap({
+  Mapbox,
+  coordinates,
+  deviceFeatureCollection,
+  locale,
+  robotPathFeatureCollection,
+  onLoadError,
+  onSourceUpdateError,
+  onStyleLoaded,
+  t
+}) {
   const deviceSourceRef = useRef(null);
   const robotPathSourceRef = useRef(null);
+  const deviceUpdateQueueRef = useRef(Promise.resolve());
+  const robotPathUpdateQueueRef = useRef(Promise.resolve());
+  const [styleGeneration, setStyleGeneration] = useState(0);
+  const handleStyleLoaded = useCallback(() => {
+    setStyleGeneration((generation) => generation + 1);
+    onStyleLoaded();
+  }, [onStyleLoaded]);
   useEffect(() => {
-    // ShapeSource exposes setNativeProps rather than setData in the installed
-    // native SDK. Updating it explicitly prevents stale markers after resume.
-    deviceSourceRef.current?.setNativeProps?.({ shape: deviceFeatureCollection });
-  }, [deviceFeatureCollection]);
+    if (!styleGeneration) return undefined;
+    let active = true;
+    // Serialize updates so a slower native call for old telemetry cannot
+    // overwrite a newer feature collection after it has already rendered.
+    const operation = deviceUpdateQueueRef.current.catch(() => {}).then(
+      () => refreshMapShapeSource(deviceSourceRef.current, deviceFeatureCollection)
+    );
+    deviceUpdateQueueRef.current = operation.then(() => undefined, () => undefined);
+    operation.catch((error) => {
+      if (active) onSourceUpdateError(error);
+    });
+    return () => {
+      active = false;
+    };
+  }, [deviceFeatureCollection, onSourceUpdateError, styleGeneration]);
   useEffect(() => {
-    robotPathSourceRef.current?.setNativeProps?.({ shape: robotPathFeatureCollection });
-  }, [robotPathFeatureCollection]);
+    if (!styleGeneration) return undefined;
+    let active = true;
+    const operation = robotPathUpdateQueueRef.current.catch(() => {}).then(
+      () => refreshMapShapeSource(robotPathSourceRef.current, robotPathFeatureCollection)
+    );
+    robotPathUpdateQueueRef.current = operation.then(() => undefined, () => undefined);
+    operation.catch((error) => {
+      if (active) onSourceUpdateError(error);
+    });
+    return () => {
+      active = false;
+    };
+  }, [onSourceUpdateError, robotPathFeatureCollection, styleGeneration]);
   return (
     <Mapbox.MapView
-      onDidFinishLoadingStyle={onStyleLoaded}
+      onDidFinishLoadingStyle={handleStyleLoaded}
       onMapLoadingError={onLoadError}
       styleURL={Mapbox.StyleURL?.Street}
       style={styles.nativeMap}
@@ -98,7 +143,7 @@ const NativeSafetyMap = memo(function NativeSafetyMap({ Mapbox, coordinates, dev
         const zoneTitle = t(zone.nameKey);
         const zoneDescription = t('map.risk', {
           risk: t(`map.risks.${zone.risk}`),
-          radius: zone.radius
+          radius: formatLocalizedNumber(zone.radius, locale) || String(zone.radius)
         });
         return (
           <Mapbox.PointAnnotation
@@ -186,7 +231,7 @@ export default function MapScreen() {
     });
     setDeviceFeatureCollection({ type: 'FeatureCollection', features });
     const robotPaths = robotEntities.flatMap((entity) => {
-      const coordinates = Array.isArray(entity?.navigationPath) ? entity.navigationPath : [];
+      const coordinates = normalizeMapNavigationPath(entity?.navigationPath);
       if (coordinates.length < 2) return [];
       return [{
         type: 'Feature',
@@ -221,12 +266,23 @@ export default function MapScreen() {
     : DEFAULT_COORDINATES, [location]);
   const localizedFeedbackMessage = useCallback((feedback) => {
     if (!feedback?.translationKey) return null;
-    const translationOptions = feedback.capturedAt
-      ? {
-          ...feedback.translationOptions,
-          capturedAt: new Date(feedback.capturedAt).toLocaleString(locale)
+    const translationOptions = {
+      ...feedback.translationOptions,
+      ...(feedback?.translationOptions?.radius !== undefined
+        ? {
+            radius: formatLocalizedNumber(
+              Number(feedback.translationOptions.radius),
+              locale
+            ) || String(feedback.translationOptions.radius)
+          }
+        : {}),
+      ...(feedback.capturedAt
+        ? {
+          capturedAt: formatLocalizedDateTime(feedback.capturedAt, locale)
+            || t('common.unknown')
         }
-      : feedback.translationOptions;
+        : {})
+    };
     const message = t(feedback.translationKey, translationOptions);
     return feedback.prefixTranslationKey
       ? `${t(feedback.prefixTranslationKey)} ${message}`
@@ -260,6 +316,17 @@ export default function MapScreen() {
 
   const handleMapStyleLoaded = useCallback(() => {
     mapStyleReadyRef.current = true;
+  }, []);
+
+  const handleMapSourceUpdateError = useCallback((mapError) => {
+    logger.recoverable('[Mapbox] Native map source update failed', {
+      name: mapError?.name || 'MapSourceUpdateError'
+    });
+    if (mountedRef.current) {
+      mapStyleReadyRef.current = false;
+      setMapLoadFailed(true);
+      setError({ translationKey: 'releaseCritical.mapUnavailable' });
+    }
   }, []);
 
   const refreshLocation = useCallback(async () => {
@@ -374,7 +441,9 @@ export default function MapScreen() {
   }, [savedPlaceAction, user?.id]);
 
   const savedPlaceLabel = useCallback((place) => (
-    `${t('releaseCritical.savedPlace')} · ${new Date(place.capturedAt).toLocaleString(locale)}`
+    `${t('releaseCritical.savedPlace')} · ${
+      formatLocalizedDateTime(place.capturedAt, locale) || t('common.unknown')
+    }`
   ), [locale, t]);
 
   useEffect(() => {
@@ -445,9 +514,11 @@ export default function MapScreen() {
         <NativeSafetyMap
           Mapbox={Mapbox}
           deviceFeatureCollection={deviceFeatureCollection}
+          locale={locale}
           robotPathFeatureCollection={robotPathFeatureCollection}
           coordinates={coordinates}
           onLoadError={handleMapLoadError}
+          onSourceUpdateError={handleMapSourceUpdateError}
           onStyleLoaded={handleMapStyleLoaded}
           t={t}
         />
@@ -485,7 +556,7 @@ export default function MapScreen() {
             <View style={[styles.savedPlaceRow, isRTL && styles.rtlRow]}>
               <View style={styles.savedPlaceCopy}>
                 <Text style={[styles.zone, isRTL && styles.rtlText]}>{savedPlaceLabel(savedPlaces[savedPlaces.length - 1])}</Text>
-                <Text style={[styles.muted, isRTL && styles.rtlText]}>
+                <Text style={styles.coords}>
                   {savedPlaces[savedPlaces.length - 1].latitude.toFixed(5)}, {savedPlaces[savedPlaces.length - 1].longitude.toFixed(5)}
                 </Text>
               </View>
@@ -556,7 +627,10 @@ export default function MapScreen() {
       {dangerZones.map((zone) => (
         <Card key={zone.id}>
           <Text style={[styles.zone, isRTL && styles.rtlText]}>{t(zone.nameKey)}</Text>
-          <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('map.risk', { risk: t(`map.risks.${zone.risk}`), radius: zone.radius })}</Text>
+          <Text style={[styles.muted, isRTL && styles.rtlText]}>{t('map.risk', {
+            risk: t(`map.risks.${zone.risk}`),
+            radius: formatLocalizedNumber(zone.radius, locale) || String(zone.radius)
+          })}</Text>
         </Card>
       ))}
       <Text accessibilityRole="header" style={[styles.sectionTitle, isRTL && styles.rtlText]}>{t('map.savedTitle')}</Text>
@@ -632,7 +706,12 @@ const styles = StyleSheet.create({
   savedOverlayContent: { padding: spacing.mdSm, gap: spacing.sm },
   mapFallback: { height: 320, borderRadius: radii.xl, backgroundColor: colors.surfaceMapFallback, alignItems: 'center', justifyContent: 'center', gap: spacing.sm },
   mapText: { ...typography.display, color: colors.textPrimary },
-  coords: { ...typography.caption, color: colors.textSecondary },
+  coords: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    textAlign: 'left',
+    writingDirection: 'ltr'
+  },
   zone: { ...typography.label, color: colors.textPrimary },
   sectionTitle: { ...typography.heading, color: colors.textPrimary },
   muted: { ...typography.caption, color: colors.textSecondary },

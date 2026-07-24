@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { test } = require('node:test');
 const createAppConfig = require('../app.config');
+const englishCatalog = require('../src/i18n/locales/en.json');
 const { mergeVeryLovingEntitlements } = require('../plugins/withEntitlements');
 const { normalizeVeryLovingAndroidManifest } = require('../plugins/withAndroidManifest');
 const {
@@ -127,12 +128,7 @@ test('Expo config owns the privacy manifest and local CNG plugins', () => {
   for (const locale of Object.values(config.locales)) {
     assert.deepEqual(
       Object.keys(locale.ios).sort(),
-      [
-        'CFBundleDisplayName',
-        'NSBluetoothAlwaysUsageDescription',
-        'NSLocationWhenInUseUsageDescription',
-        'NSMicrophoneUsageDescription'
-      ]
+      Object.keys(englishCatalog.native.ios).sort()
     );
   }
   assert.equal(config.extra.appleClientId, config.ios.bundleIdentifier);
@@ -241,7 +237,7 @@ test('Expo config minimizes native permissions and owns launch appearance', () =
   assert.equal(plugins.get('react-native-ble-plx').isBackgroundEnabled, true);
   assert.equal(
     plugins.get('expo-location').locationWhenInUsePermission,
-    'VeryLoving needs your location to show the map and provide safety features'
+    englishCatalog.native.ios.NSLocationWhenInUseUsageDescription
   );
   assert.equal(plugins.get('expo-location').locationAlwaysAndWhenInUsePermission, false);
   assert.equal(plugins.get('expo-location').locationAlwaysPermission, false);
@@ -257,11 +253,11 @@ test('Expo config minimizes native permissions and owns launch appearance', () =
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSLocationAlwaysUsageDescription'), false);
   assert.equal(
     config.ios.infoPlist.NSCameraUsageDescription,
-    "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code."
+    englishCatalog.native.ios.NSCameraUsageDescription
   );
   assert.equal(
     plugins.get('expo-camera').cameraPermission,
-    "VeryLoving uses the camera only to scan your home robot's one-time pairing QR code."
+    englishCatalog.native.ios.NSCameraUsageDescription
   );
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSPhotoLibraryUsageDescription'), false);
   assert.equal(Object.hasOwn(config.ios.infoPlist, 'NSBluetoothPeripheralUsageDescription'), false);

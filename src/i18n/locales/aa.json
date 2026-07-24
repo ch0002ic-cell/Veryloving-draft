@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving maykarafoon dubuk atu qimmissa AI waklenta akkek amaan seeco.",
     "bluetoothRationaleTitle": "Bluetooth ku sarittam tasgoorowe",
     "bluetoothRationaleMessage": "VeryLoving nammay takkoh Bluetooth bila, fantaaxaw caalat NorthStar , kee uguugus amaan cayxi sartan.",
-    "cameraRationaleTitle": "Kaameera dooriti",
-    "cameraRationaleMessage": "VeryLoving kaameerat duqaysimtam dubuk atu porofaayil taswiir beytam doorte wak hinnay amaan taswiir tabissa wak."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ta cayxi dacrissa farmoomaa kee dashborxi.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving maykorofoon gufneh amaan kee AI waklentit seecooca.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving ku aracat duqaysimak amaan le karta kee xayikket tan amaan weeloola.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving doqaysimeh Bluetooth kok garaytuh NorthStar amaan le bila.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

@@ -169,8 +169,8 @@ test('localized status UI preserves language casing and selected-locale dates', 
   const emergencySource = fs.readFileSync(path.resolve('app/emergency-sos.js'), 'utf8');
 
   assert.doesNotMatch(homeSource, /modeName\.toUpperCase\(\)/);
-  assert.match(mapSource, /toLocaleString\(locale\)/);
-  assert.match(emergencySource, /toLocaleString\(locale\)/);
+  assert.match(mapSource, /formatLocalizedDateTime\(/);
+  assert.match(emergencySource, /formatLocalizedDateTime\(/);
 });
 
 test('voice errors are actionable without leaking raw service details', () => {
@@ -310,6 +310,28 @@ test('only explicitly recoverable mobile diagnostics bypass React Native LogBox'
   productionLogger.error('production failure');
   assert.equal(calls.warn.length, 2);
   assert.equal(calls.error.length, 2);
+});
+
+test('mobile source contains no direct warning or error diagnostic that can trigger LogBox', () => {
+  const roots = ['app', 'src'];
+  const pending = roots.map((root) => path.resolve(root));
+  const violations = [];
+  while (pending.length) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const target = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        pending.push(target);
+        continue;
+      }
+      if (!/\.[jt]sx?$/.test(entry.name) || target.endsWith(path.join('src', 'utils', 'logger.js'))) continue;
+      const contents = fs.readFileSync(target, 'utf8');
+      if (/\b(?:console|logger)\.(?:warn|error)\s*\(/.test(contents)) {
+        violations.push(path.relative(process.cwd(), target));
+      }
+    }
+  }
+  assert.deepEqual(violations, []);
 });
 
 test('diagnostic payloads are bounded before reaching native developer tooling', () => {

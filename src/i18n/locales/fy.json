@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving brûkt jo mikrofoan allinich as jo in AI begelieder of feiligensoprop begjinne.",
     "bluetoothRationaleTitle": "Bluetooth ferbynt jo wearable",
     "bluetoothRationaleMessage": "VeryLoving brûkt Bluetooth om te paren mei NorthStar sieraden, ferbiningstatus te lêzen en feiligensstreamen fan 'e wearable te triggerjen.",
-    "cameraRationaleTitle": "Kamera is opsjoneel",
-    "cameraRationaleMessage": "VeryLoving brûkt de kamera allinich as jo kieze om in profylfoto te nimmen of in feiligensôfbylding te dielen."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving hâldt dizze stream beskikber fanút Ynstellings en it dashboard.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving hat mikrofoantagong nedich foar feiligens en AI begeliedersoproppen.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving brûkt jo lokaasje foar de feiligenskaart en feiligensfunksjes yn 'e buert.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving brûkt Bluetooth om te ferbinen mei jo NorthStar feiligenssieraden."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving brûkt Bluetooth om te ferbinen mei jo NorthStar feiligenssieraden.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

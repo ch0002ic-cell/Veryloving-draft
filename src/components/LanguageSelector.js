@@ -15,18 +15,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useI18n } from '../context/I18nContext';
 import { colors, layout, motion, radii, sizes, spacing, tones, typography } from '../constants/theme';
-import { filterLanguageOptions } from '../i18n/core';
+import { filterLanguageOptions, selectLanguageOption } from '../i18n/core';
 
 export function LanguageSelector({ onError }) {
-  const { isRTL, languageOptions, languagePreference, setLanguage, t } = useI18n();
+  const {
+    isRTL,
+    languageOptions,
+    languagePreference,
+    locale,
+    setLanguage,
+    t
+  } = useI18n();
   const [savingLanguage, setSavingLanguage] = useState(null);
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
   const titleRef = useRef(null);
   const triggerRef = useRef(null);
   const wasVisibleRef = useRef(false);
-  const selectedLanguage = languageOptions.find((language) => language.code === languagePreference)
+  const resolvedLanguage = languageOptions.find((language) => language.code === locale)
+    || languageOptions.find((language) => language.code === 'en')
     || languageOptions[0];
+  const selectedLanguage = selectLanguageOption(languageOptions, languagePreference, locale)
+    || resolvedLanguage;
   const languageLabel = (language) => language.code === 'system'
     ? t(language.translationKey)
     : language.nativeName;
@@ -34,6 +44,18 @@ export function LanguageSelector({ onError }) {
     language.code.toUpperCase(),
     language.reviewRequired ? 'QA' : null
   ].filter(Boolean).join(' · ');
+  const languageAccessibilityLabel = (language, selected = false) => {
+    const effectiveLanguage = language.code === 'system' ? resolvedLanguage : language;
+    return [
+      languageLabel(language),
+      language.code === 'system' ? languageLabel(effectiveLanguage) : null,
+      effectiveLanguage.englishName !== effectiveLanguage.nativeName
+        ? effectiveLanguage.englishName
+        : null,
+      languageCodeLabel(effectiveLanguage),
+      selected ? t('common.selected') : null
+    ].filter(Boolean).join(', ');
+  };
   const filteredLanguages = useMemo(
     () => filterLanguageOptions(languageOptions, query, t('languages.system')),
     [languageOptions, query, t]
@@ -76,7 +98,9 @@ export function LanguageSelector({ onError }) {
     <>
       <Pressable
         ref={triggerRef}
-        accessibilityLabel={`${t('languages.title')}: ${languageLabel(selectedLanguage)}`}
+        accessibilityLabel={`${t('languages.title')}: ${
+          languageAccessibilityLabel(selectedLanguage, true)
+        }`}
         accessibilityRole="button"
         accessibilityState={{ busy: Boolean(savingLanguage), disabled: Boolean(savingLanguage), expanded: visible }}
         android_ripple={{ color: colors.borderSubtle }}
@@ -86,7 +110,11 @@ export function LanguageSelector({ onError }) {
       >
         <View style={styles.triggerCopy}>
           <Text style={[styles.selectedLabel, isRTL && styles.rtlText]}>{languageLabel(selectedLanguage)}</Text>
-          {selectedLanguage.code !== 'system' ? <Text style={[styles.code, isRTL && styles.rtlText]}>{languageCodeLabel(selectedLanguage)}</Text> : null}
+          <Text style={[styles.code, isRTL && styles.rtlText]}>
+            {selectedLanguage.code === 'system'
+              ? `${languageLabel(resolvedLanguage)} · ${languageCodeLabel(resolvedLanguage)}`
+              : languageCodeLabel(selectedLanguage)}
+          </Text>
         </View>
         {savingLanguage
           ? <ActivityIndicator size="small" color={colors.orangeAccessible} />
@@ -135,10 +163,10 @@ export function LanguageSelector({ onError }) {
               keyExtractor={(language) => language.code}
               ListEmptyComponent={<Text accessibilityRole="summary" style={styles.empty}>{t('languages.noResults')}</Text>}
               renderItem={({ item }) => {
-                const selected = item.code === languagePreference;
+                const selected = item.code === selectedLanguage?.code;
                 return (
                   <Pressable
-                    accessibilityLabel={languageLabel(item)}
+                    accessibilityLabel={languageAccessibilityLabel(item, selected)}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: selected, disabled: Boolean(savingLanguage) }}
                     android_ripple={{ color: colors.borderSubtle }}

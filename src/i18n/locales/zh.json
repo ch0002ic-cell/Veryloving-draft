@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving 只会在你主动发起 AI 伙伴通话或安全通话时使用麦克风。",
     "bluetoothRationaleTitle": "蓝牙用于连接穿戴设备",
     "bluetoothRationaleMessage": "VeryLoving 使用蓝牙配对 NorthStar 安全首饰、读取连接状态，并通过穿戴设备启动安全流程。",
-    "cameraRationaleTitle": "相机为可选权限",
-    "cameraRationaleMessage": "VeryLoving 只会在你选择拍摄头像或分享安全图片时使用相机。"
+    "cameraRationaleTitle": "扫描机器人的二维码",
+    "cameraRationaleMessage": "VeryLoving 仅使用相机扫描家用机器人的一次性配对二维码。"
   },
   "tutorial": {
     "sharedBody": "你可以随时从设置和主页重新进入此流程。",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving 需要使用麦克风进行安全通话和 AI 伙伴通话。",
       "NSLocationWhenInUseUsageDescription": "VeryLoving 使用你的位置提供安全地图和附近的安全功能。",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving 使用蓝牙连接你的 NorthStar 安全首饰。"
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving 使用蓝牙连接你的 NorthStar 安全首饰。",
+      "NSCameraUsageDescription": "VeryLoving 仅使用相机扫描家用机器人的一次性配对二维码。"
     },
     "android": {
       "app_name": "VeryLoving"

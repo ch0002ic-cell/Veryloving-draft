@@ -8,6 +8,8 @@ import { EmptyState } from '../src/components/EmptyState';
 import { images } from '../src/constants/assets';
 import { colors, spacing, typography } from '../src/constants/theme';
 
+const FRIEND_STATUSES = new Set(['guardian', 'pending']);
+
 export default function Friends() {
   const { friends } = useAppState();
   const { isRTL, t } = useI18n();
@@ -17,7 +19,9 @@ export default function Friends() {
       <FlatList
         contentContainerStyle={styles.list}
         data={friends}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => (
+          typeof item?.id === 'string' && item.id ? item.id : `friend-${index}`
+        )}
         ListEmptyComponent={(
           <EmptyState
             image={images.bestie}
@@ -26,10 +30,18 @@ export default function Friends() {
           />
         )}
         renderItem={({ item }) => {
-          const status = t(`friends.statuses.${String(item.status).toLowerCase()}`);
+          const statusId = typeof item?.status === 'string'
+            ? item.status.trim().toLowerCase()
+            : '';
+          const status = FRIEND_STATUSES.has(statusId)
+            ? t(`friends.statuses.${statusId}`)
+            : t('common.unknown');
+          const name = typeof item?.name === 'string' && item.name.trim()
+            ? item.name.trim()
+            : t('common.unknown');
           return (
-            <Card accessible accessibilityLabel={`${item.name}, ${status}`} accessibilityRole="summary" style={styles.card}>
-              <Text style={[styles.name, isRTL && styles.rtlText]}>{item.name}</Text>
+            <Card accessible accessibilityLabel={`${name}, ${status}`} accessibilityRole="summary" style={styles.card}>
+              <Text style={[styles.name, isRTL && styles.rtlText]}>{name}</Text>
               <Text style={[styles.status, isRTL && styles.rtlText]}>{status}</Text>
             </Card>
           );

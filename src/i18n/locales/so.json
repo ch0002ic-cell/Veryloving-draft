@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving isticmaalaa makarafoonkaaga kaliya markaad bilowdo wicitaan AI saaxiib ama badbaado.",
     "bluetoothRationaleTitle": "Bluetooth isku xiraa qalabkaaga xidhan",
     "bluetoothRationaleMessage": "VeryLoving wuxuu isticmaalaa Bluetooth si uu ula xiriiro dahabka NorthStar, uu akhriyo xaaladda xiriirka, iyo inuu kiciyo socodka badbaadada ee qalabka la xiro.",
-    "cameraRationaleTitle": "Kamaraddu waa ikhtiyaari",
-    "cameraRationaleMessage": "VeryLoving isticmaalaa kamaradda oo kaliya markaad doorato inaad sawir profile ka qaaddo ama la wadaagto sawir badbaado ah."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ka dhigtaa socodkan mid laga heli karo Settings iyo dashboard-ka.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving u baahan yahay marin makarafoon si ammaan ah iyo wicitaannada saaxiibka AI.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving isticmaalaa goobtaada khariidadda badbaadada iyo astaamaha badbaadada ee agagaarka.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving isticmaalaa Bluetooth si ay ugu xirmaan dahabkaaga badbaadada NorthStar.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

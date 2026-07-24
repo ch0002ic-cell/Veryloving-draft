@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving chỉ sử dụng micrô khi bạn bắt đầu cuộc gọi an toàn hoặc bạn đồng hành AI.",
     "bluetoothRationaleTitle": "Bluetooth kết nối thiết bị đeo của bạn",
     "bluetoothRationaleMessage": "VeryLoving sử dụng Bluetooth để ghép nối với đồ trang sức NorthStar, đọc trạng thái kết nối và kích hoạt luồng an toàn từ thiết bị đeo.",
-    "cameraRationaleTitle": "Máy ảnh là tùy chọn",
-    "cameraRationaleMessage": "VeryLoving chỉ sử dụng máy ảnh khi bạn chọn chụp ảnh hồ sơ hoặc chia sẻ hình ảnh an toàn."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving giữ cho quy trình này có sẵn từ Cài đặt và bảng thông tin.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving cần truy cập micrô để đảm bảo an toàn và AI các cuộc gọi đồng hành.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving sử dụng vị trí của bạn cho bản đồ an toàn và các tính năng an toàn gần đó.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving sử dụng Bluetooth để kết nối với đồ trang sức an toàn NorthStar của bạn."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving sử dụng Bluetooth để kết nối với đồ trang sức an toàn NorthStar của bạn.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

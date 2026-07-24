@@ -37,7 +37,11 @@ const {
   deriveEd25519PublicKey,
   parseWearableCommandPayloads
 } = require('./action-gateway.cjs');
-const { createDynamoRobotRepository, pairRobot } = require('./robot-pairing.cjs');
+const {
+  createDynamoRobotRepository,
+  pairRobot,
+  recoverPairingToken
+} = require('./robot-pairing.cjs');
 const { createRobotResetCoordinator } = require('./robot-reset.cjs');
 const {
   createManufacturerPairingVerifier,
@@ -2235,6 +2239,33 @@ function createHandler(overrides = {}) {
         if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
         if (!config.robotRepository?.list) { json(res, 503, { error: 'Robot registry is not configured' }); return; }
         json(res, 200, { devices: await config.robotRepository.list(principal.sub) });
+        return;
+      }
+
+      const robotCredentialRecoveryMatch = /^\/v1\/devices\/home-robots\/([^/]{1,384})\/pairing-credential\/recover$/.exec(url.pathname);
+      if (req.method === 'POST' && robotCredentialRecoveryMatch) {
+        const principal = await authenticateApp(req, config);
+        if (!principal?.sub) { json(res, 401, { error: 'Unauthorized' }); return; }
+        let robotId;
+        try { robotId = decodeURIComponent(robotCredentialRecoveryMatch[1]); } catch { robotId = ''; }
+        if (!/^[A-Za-z0-9._:-]{1,128}$/.test(robotId)) {
+          json(res, 400, { error: 'Robot identifier is invalid' }); return;
+        }
+        const body = await readJson(req);
+        if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).length) {
+          json(res, 400, { error: 'Robot credential recovery body must be empty' }); return;
+        }
+        if (typeof config.robotRepository?.resolvePairingCredentialDerivation !== 'function'
+          || typeof config.robotPairingTokenSecret !== 'string'
+          || config.robotPairingTokenSecret.length < 32) {
+          json(res, 503, { error: 'Robot pairing credential recovery is not configured' }); return;
+        }
+        json(res, 200, await recoverPairingToken({
+          userId: principal.sub,
+          robotId,
+          pairingTokenSecret: config.robotPairingTokenSecret,
+          repository: config.robotRepository
+        }));
         return;
       }
 

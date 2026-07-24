@@ -50,7 +50,7 @@ test('emotional check-in stores bounded private summaries and supports Hume scen
   assert.match(screen, /<EmptyState/);
   assert.match(screen, /<ScenarioStatusCard/);
   assert.match(screen, /<InteractionFeedbackModal/);
-  assert.match(screen, /history\.slice\(0, visibleHistoryCount\)/);
+  assert.match(screen, /history\s*\.slice\(0, visibleHistoryCount\)/);
   assert.match(screen, /Math\.min\(history\.length, current \+ HISTORY_PAGE_SIZE\)/);
   assert.match(screen, /actionLabel=\{t\('common\.retry'\)\}/);
   assert.match(screen, /accessibilityRole="radiogroup"/);
@@ -142,13 +142,17 @@ test('voice feedback is gated by a server-acknowledged interaction completion', 
 
   assert.match(stop, /service\.stopMicrophone\(\)/);
   assert.match(stop, /await service\.completeInteraction\(completedInteractionId\) === true/);
-  assert.match(stop, /await service\.disconnect\(\)/);
+  assert.match(stop, /const disconnecting = service\.disconnect\(\)/);
+  assert.match(stop, /voiceServiceOwnership\.release\(owner, service\)/);
+  assert.match(stop, /await disconnecting/);
   assert.match(stop, /interactionFeedbackEligible/);
   assert.match(stop, /interactionIdRef\.current = createConversationSessionId\(\)/);
   assert.match(stop, /interactionId: interactionFeedbackEligible \? completedInteractionId : null/);
   assert.match(hook, /customSessionId: config\.humeWSProxyURL[\s\S]*interactionIdRef\.current[\s\S]*sessionIdRef\.current/);
   assert.match(hook, /loadConversationSession\(sessionIdRef\.current\)/);
   assert.ok(stop.indexOf('completeInteraction') < stop.indexOf('disconnect'));
+  assert.ok(stop.indexOf('service.disconnect()') < stop.indexOf('voiceServiceOwnership.release'));
+  assert.ok(stop.indexOf('voiceServiceOwnership.release') < stop.indexOf('await disconnecting'));
   assert.match(transport, /pendingInteractionCompletion/);
   assert.match(transport, /type: 'interaction_complete'/);
   assert.match(transport, /case 'interaction_completed'/);

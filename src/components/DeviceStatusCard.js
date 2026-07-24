@@ -5,6 +5,10 @@ import { Card } from './Card';
 import { StatusPill } from './StatusPill';
 import { colors, radii, sizes, spacing, typography } from '../constants/theme';
 import { useI18n } from '../context/I18nContext';
+import {
+  formatLocalizedDateTime,
+  formatLocalizedPercent
+} from '../utils/localized-format';
 
 export function DeviceStatusCard({
   entity,
@@ -28,6 +32,8 @@ export function DeviceStatusCard({
     ? t('common.connecting')
     : online ? t('safetyCall.connected') : t('safetyCall.offline');
   const typeLabel = wearable ? t('home.northStarDevice') : t('medication.robot');
+  const batteryLabel = formatLocalizedPercent(entity?.battery, locale);
+  const lastSeenLabel = formatLocalizedDateTime(entity?.lastSeenAt, locale);
 
   useEffect(() => {
     setDraftName(name || '');
@@ -67,6 +73,8 @@ export function DeviceStatusCard({
               maxLength={80}
               onChangeText={setDraftName}
               onEndEditing={finishRename}
+              placeholder={typeLabel}
+              placeholderTextColor={colors.textSecondary}
               returnKeyType="done"
               selectTextOnFocus
               style={[styles.nameInput, isRTL && styles.rtlText]}
@@ -79,17 +87,17 @@ export function DeviceStatusCard({
         <StatusPill label={statusLabel} tone={online ? 'ok' : reconnecting ? 'warn' : 'idle'} />
       </View>
 
-      {Number.isFinite(entity?.battery) ? (
+      {Number.isFinite(entity?.battery) && batteryLabel ? (
         <View style={[styles.detailRow, isRTL && styles.rtlRow]}>
           <Ionicons accessible={false} name="battery-half-outline" size={sizes.iconSmall} color={colors.textSecondary} />
-          <Text style={[styles.detail, isRTL && styles.rtlText]}>{entity.battery}%</Text>
+          <Text style={[styles.detail, isRTL && styles.rtlText]}>{batteryLabel}</Text>
         </View>
       ) : null}
-      {Number.isFinite(entity?.lastSeenAt) ? (
+      {Number.isFinite(entity?.lastSeenAt) && lastSeenLabel ? (
         <View style={[styles.detailRow, isRTL && styles.rtlRow]}>
           <Ionicons accessible={false} name="time-outline" size={sizes.iconSmall} color={colors.textSecondary} />
           <Text style={[styles.detail, isRTL && styles.rtlText]}>
-            {t('device.lastSeen', { date: new Date(entity.lastSeenAt).toLocaleString(locale) })}
+            {t('device.lastSeen', { date: lastSeenLabel })}
           </Text>
         </View>
       ) : null}

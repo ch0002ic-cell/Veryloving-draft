@@ -14,6 +14,7 @@ import {
   loadMedicalEmergencyProfile,
   saveMedicalEmergencyProfile
 } from '../src/services/medical-profile-store';
+import { formatLocalizedDateTime } from '../src/utils/localized-format';
 
 const BLOOD_TYPES = Object.freeze(['unknown', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
 const EMPTY_FORM = Object.freeze({
@@ -72,6 +73,10 @@ export default function MedicalProfile() {
   const [busyAction, setBusyAction] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const loadRequestRef = useRef(0);
+  const mutationRequestRef = useRef(0);
+  const mountedRef = useRef(true);
+  const accountIdRef = useRef(user?.id || null);
+  accountIdRef.current = user?.id || null;
 
   const loadProfile = useCallback(async () => {
     const requestId = ++loadRequestRef.current;
@@ -104,8 +109,19 @@ export default function MedicalProfile() {
     };
   }, [loadProfile]);
 
+  useEffect(() => () => {
+    mountedRef.current = false;
+    mutationRequestRef.current += 1;
+  }, []);
+
+  useEffect(() => {
+    mutationRequestRef.current += 1;
+    setBusyAction(null);
+    setFeedback(null);
+  }, [user?.id]);
+
   const reviewedLabel = useMemo(() => profile?.updatedAt
-    ? new Date(profile.updatedAt).toLocaleString(locale)
+    ? formatLocalizedDateTime(profile.updatedAt, locale) || t('medicalProfile.neverReviewed')
     : t('medicalProfile.neverReviewed'), [locale, profile?.updatedAt, t]);
 
   const patchForm = (patch) => {
@@ -115,6 +131,13 @@ export default function MedicalProfile() {
 
   const save = async () => {
     if (!user?.id || busyAction) return;
+    const accountId = user.id;
+    const requestId = ++mutationRequestRef.current;
+    const isCurrent = () => (
+      mountedRef.current
+      && accountIdRef.current === accountId
+      && mutationRequestRef.current === requestId
+    );
     setBusyAction('save');
     setFeedback(null);
     const reviewedAt = Date.now();
@@ -135,19 +158,23 @@ export default function MedicalProfile() {
       if (candidate.shareInEmergency) {
         buildEmergencyMedicalAttachment(candidate, { now: () => reviewedAt });
       }
-      const saved = await saveMedicalEmergencyProfile(user.id, candidate);
+      const saved = await saveMedicalEmergencyProfile(accountId, candidate);
+      if (!isCurrent()) return;
       setProfile(saved);
       setForm(formFromProfile(saved));
-      setFeedback({ message: t('medicalProfile.saved'), tone: 'success' });
+      setFeedback({ messageKey: 'medicalProfile.saved', tone: 'success' });
     } catch {
-      setFeedback({ message: t('medicalProfile.saveFailed'), tone: 'error' });
+      if (isCurrent()) {
+        setFeedback({ messageKey: 'medicalProfile.saveFailed', tone: 'error' });
+      }
     } finally {
-      setBusyAction(null);
+      if (isCurrent()) setBusyAction(null);
     }
   };
 
   const clear = () => {
-    if (busyAction) return;
+    if (!user?.id || busyAction) return;
+    const accountId = user.id;
     Alert.alert(
       t('medicalProfile.clearTitle'),
       t('medicalProfile.clearMessage'),
@@ -157,17 +184,27 @@ export default function MedicalProfile() {
           text: t('common.clear'),
           style: 'destructive',
           onPress: async () => {
+            if (!mountedRef.current || accountIdRef.current !== accountId) return;
+            const requestId = ++mutationRequestRef.current;
+            const isCurrent = () => (
+              mountedRef.current
+              && accountIdRef.current === accountId
+              && mutationRequestRef.current === requestId
+            );
             setBusyAction('clear');
             setFeedback(null);
             try {
-              await clearMedicalEmergencyProfile(user.id);
+              await clearMedicalEmergencyProfile(accountId);
+              if (!isCurrent()) return;
               setProfile(null);
               setForm({ ...EMPTY_FORM });
-              setFeedback({ message: t('medicalProfile.cleared'), tone: 'success' });
+              setFeedback({ messageKey: 'medicalProfile.cleared', tone: 'success' });
             } catch {
-              setFeedback({ message: t('medicalProfile.clearFailed'), tone: 'error' });
+              if (isCurrent()) {
+                setFeedback({ messageKey: 'medicalProfile.clearFailed', tone: 'error' });
+              }
             } finally {
-              setBusyAction(null);
+              if (isCurrent()) setBusyAction(null);
             }
           }
         }
@@ -193,7 +230,10 @@ export default function MedicalProfile() {
       ) : (
         <>
           <Text style={[styles.description, isRTL && styles.rtlText]}>{t('medicalProfile.description')}</Text>
-          <FeedbackBanner message={feedback?.message} tone={feedback?.tone} />
+          <FeedbackBanner
+            message={feedback?.messageKey ? t(feedback.messageKey, feedback.messageOptions) : null}
+            tone={feedback?.tone}
+          />
 
           <View style={styles.fieldGroup}>
             <Text style={[styles.label, isRTL && styles.rtlText]}>{t('medicalProfile.bloodType')}</Text>

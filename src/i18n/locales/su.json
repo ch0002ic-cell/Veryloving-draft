@@ -105,8 +105,8 @@
     "microphoneRationaleMessage": "VeryLoving nganggo mikropon anjeun ngan ukur nalika anjeun ngamimitian telepon pendamping atanapi kaamanan AI.",
     "bluetoothRationaleTitle": "Bluetooth nyambungkeun wearable anjeun",
     "bluetoothRationaleMessage": "VeryLoving ngagunakeun Bluetooth pikeun masangkeun jeung NorthStar perhiasan, maca status sambungan, sarta memicu aliran kaamanan ti wearable.",
-    "cameraRationaleTitle": "Kaméra pilihan",
-    "cameraRationaleMessage": "VeryLoving ngagunakeun kaméra ngan lamun anjeun milih nyandak poto profil atawa babagi gambar kaamanan."
+    "cameraRationaleTitle": "Scan your robot's QR code",
+    "cameraRationaleMessage": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
   },
   "tutorial": {
     "sharedBody": "VeryLoving ngajaga aliran ieu sadia ti Setélan jeung dasbor.",
@@ -394,7 +394,8 @@
       "CFBundleDisplayName": "VeryLoving",
       "NSMicrophoneUsageDescription": "VeryLoving peryogi aksés mikropon pikeun kaamanan sareng AI telepon pendamping.",
       "NSLocationWhenInUseUsageDescription": "VeryLoving nganggo lokasi anjeun pikeun peta kaamanan sareng fitur kaamanan caket dieu.",
-      "NSBluetoothAlwaysUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun."
+      "NSBluetoothAlwaysUsageDescription": "VeryLoving ngagunakeun Bluetooth pikeun nyambung ka NorthStar perhiasan kaamanan anjeun.",
+      "NSCameraUsageDescription": "VeryLoving uses the camera only to scan the one-time pairing QR code on your home robot."
     },
     "android": {
       "app_name": "VeryLoving"

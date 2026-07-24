@@ -40,8 +40,10 @@ import { WearableDevice } from '../services/device-manager/WearableDevice';
 import { HomeRobotDevice } from '../services/device-manager/HomeRobotDevice';
 import { persistDeviceEntities } from '../services/device-entity-store';
 import { registerDevicePushToken } from '../services/notifications';
-import { listHomeRobots } from '../services/robot-pairing';
-import { loadRobotPairingCredential } from '../services/robot-pairing-credential-store';
+import {
+  listHomeRobots,
+  loadOrRecoverHomeRobotCredential
+} from '../services/robot-pairing';
 import { createMedicationReminderScheduler } from '../services/medication-reminder-scheduler';
 import { recordMedicationDeliveryTelemetry } from '../services/medication-telemetry';
 import {
@@ -157,7 +159,11 @@ export function AppProvider({ children }) {
           accountId,
           gatewayURL: config.actionGatewayURL,
           accessTokenProvider: () => accessTokenRef.current,
-          pairingTokenProvider: (deviceId) => loadRobotPairingCredential(accountId, deviceId)
+          pairingTokenProvider: (deviceId) => loadOrRecoverHomeRobotCredential(
+            deviceId,
+            accessTokenRef.current,
+            { accountId }
+          )
         })
       });
       hydration.promise = operation.then((devices) => {
@@ -1182,7 +1188,11 @@ export function AppProvider({ children }) {
             accountId: user.id,
             gatewayURL: config.actionGatewayURL,
             accessTokenProvider: () => accessTokenRef.current,
-            pairingTokenProvider: (deviceId) => loadRobotPairingCredential(user.id, deviceId)
+            pairingTokenProvider: (deviceId) => loadOrRecoverHomeRobotCredential(
+              deviceId,
+              accessTokenRef.current,
+              { accountId: user.id }
+            )
           }));
         }
         registered.name = robot.name;
@@ -1223,7 +1233,7 @@ export function AppProvider({ children }) {
             ...local,
             deviceId,
             deviceType: 'home_robot',
-            name: local?.name || 'VeryLoving Home',
+            name: local?.name || null,
             online: local?.online === true,
             connectionState: local?.connectionState || 'disconnected'
           });

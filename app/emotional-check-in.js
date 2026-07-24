@@ -22,6 +22,10 @@ import {
   MOOD_OPTIONS,
   saveMoodCheckIn
 } from '../src/services/mood-checkin-store';
+import {
+  formatLocalizedDateTime,
+  formatLocalizedNumber
+} from '../src/utils/localized-format';
 
 const MOOD_EMOJI = Object.freeze({
   very_low: '😞',
@@ -178,12 +182,12 @@ export default function EmotionalCheckIn() {
       });
       setMoodKey(null);
       setReflectionSummary('');
-      setSnackbar({ tone: 'success', message: t('wellness.emotional.saved') });
+      setSnackbar({ tone: 'success', messageKey: 'wellness.emotional.saved' });
     } catch {
       if (mountedRef.current
         && accountIdRef.current === operationAccountId
         && accountEpochRef.current === operationEpoch) {
-        setSnackbar({ tone: 'error', message: t('wellness.emotional.saveFailed') });
+        setSnackbar({ tone: 'error', messageKey: 'wellness.emotional.saveFailed' });
       }
     } finally {
       if (saveFlightRef.current === flight) saveFlightRef.current = null;
@@ -207,12 +211,12 @@ export default function EmotionalCheckIn() {
         || accountEpochRef.current !== operationEpoch) return;
       setHistory(nextHistory);
       setLastConsentedContext(null);
-      setSnackbar({ tone: 'success', message: t('wellness.emotional.deleted') });
+      setSnackbar({ tone: 'success', messageKey: 'wellness.emotional.deleted' });
     } catch {
       if (mountedRef.current
         && accountIdRef.current === operationAccountId
         && accountEpochRef.current === operationEpoch) {
-        setSnackbar({ tone: 'error', message: t('wellness.emotional.deleteFailed') });
+        setSnackbar({ tone: 'error', messageKey: 'wellness.emotional.deleteFailed' });
       }
     } finally {
       if (deleteFlightRef.current === flight) deleteFlightRef.current = null;
@@ -243,7 +247,7 @@ export default function EmotionalCheckIn() {
         && accountIdRef.current === operationAccountId
         && accountEpochRef.current === operationEpoch
         && result?.started?.length) {
-        setSnackbar({ tone: 'success', message: t('wellness.scenarioStarted') });
+        setSnackbar({ tone: 'success', messageKey: 'wellness.scenarioStarted' });
       }
     } catch {
       // The runner logs a redacted diagnostic and publishes a retryable code.
@@ -258,7 +262,7 @@ export default function EmotionalCheckIn() {
       && mountedRef.current
       && accountIdRef.current === operationAccountId
       && accountEpochRef.current === operationEpoch) {
-      setSnackbar({ tone: 'success', message: t('wellness.feedback.thanks') });
+      setSnackbar({ tone: 'success', messageKey: 'wellness.feedback.thanks' });
     }
   };
 
@@ -344,8 +348,11 @@ export default function EmotionalCheckIn() {
         />
         <Text style={[styles.characterCount, isRTL && styles.rtlText]}>
           {t('wellness.emotional.characterCount', {
-            count: accountAligned ? reflectionSummary.length : 0,
-            max: MAX_REFLECTION_SUMMARY_LENGTH
+            count: formatLocalizedNumber(
+              accountAligned ? reflectionSummary.length : 0,
+              locale
+            ),
+            max: formatLocalizedNumber(MAX_REFLECTION_SUMMARY_LENGTH, locale)
           })}
         </Text>
         <FeedbackBanner message={t('wellness.emotional.privacyNote')} tone="info" />
@@ -450,43 +457,49 @@ export default function EmotionalCheckIn() {
           />
         </Card>
       ) : null}
-      {accountAligned && !historyLoading && !historyError ? history.slice(0, visibleHistoryCount).map((checkIn) => (
-        <Card
-          key={checkIn.id}
-          style={styles.historyCard}
-        >
-          <View style={[styles.historyHeader, isRTL && styles.rtlRow]}>
-            <View
-              accessible
-              accessibilityLabel={`${t(`wellness.emotional.moods.${checkIn.moodKey}`)}, ${new Date(checkIn.occurredAt).toLocaleString(locale)}`}
-              accessibilityRole="summary"
-              style={[styles.historyMood, isRTL && styles.rtlRow]}
+      {accountAligned && !historyLoading && !historyError ? history
+        .slice(0, visibleHistoryCount)
+        .map((checkIn) => {
+          const occurredAt = formatLocalizedDateTime(checkIn.occurredAt, locale)
+            || t('common.unknown');
+          return (
+            <Card
+              key={checkIn.id}
+              style={styles.historyCard}
             >
-              <Text accessible={false} style={styles.historyEmoji}>{MOOD_EMOJI[checkIn.moodKey]}</Text>
-              <View style={styles.historyCopy}>
-                <Text style={[styles.historyTitle, isRTL && styles.rtlText]}>
-                  {t(`wellness.emotional.moods.${checkIn.moodKey}`)}
-                </Text>
-                <Text style={[styles.timestamp, isRTL && styles.rtlText]}>
-                  {new Date(checkIn.occurredAt).toLocaleString(locale)}
-                </Text>
+              <View style={[styles.historyHeader, isRTL && styles.rtlRow]}>
+                <View
+                  accessible
+                  accessibilityLabel={`${t(`wellness.emotional.moods.${checkIn.moodKey}`)}, ${occurredAt}`}
+                  accessibilityRole="summary"
+                  style={[styles.historyMood, isRTL && styles.rtlRow]}
+                >
+                  <Text accessible={false} style={styles.historyEmoji}>{MOOD_EMOJI[checkIn.moodKey]}</Text>
+                  <View style={styles.historyCopy}>
+                    <Text style={[styles.historyTitle, isRTL && styles.rtlText]}>
+                      {t(`wellness.emotional.moods.${checkIn.moodKey}`)}
+                    </Text>
+                    <Text style={[styles.timestamp, isRTL && styles.rtlText]}>
+                      {occurredAt}
+                    </Text>
+                  </View>
+                </View>
+                <Button
+                  title={t('common.delete')}
+                  accessibilityLabel={`${t('common.delete')} · ${t(`wellness.emotional.moods.${checkIn.moodKey}`)}`}
+                  variant="ghost"
+                  compact
+                  disabled={Boolean(deletingId)}
+                  loading={deletingId === checkIn.id}
+                  onPress={() => confirmDelete(checkIn.id)}
+                />
               </View>
-            </View>
-            <Button
-              title={t('common.delete')}
-              accessibilityLabel={`${t('common.delete')} · ${t(`wellness.emotional.moods.${checkIn.moodKey}`)}`}
-              variant="ghost"
-              compact
-              disabled={Boolean(deletingId)}
-              loading={deletingId === checkIn.id}
-              onPress={() => confirmDelete(checkIn.id)}
-            />
-          </View>
-          {checkIn.reflectionSummary ? (
-            <Text style={[styles.reflection, isRTL && styles.rtlText]}>{checkIn.reflectionSummary}</Text>
-          ) : null}
-        </Card>
-      )) : null}
+              {checkIn.reflectionSummary ? (
+                <Text style={[styles.reflection, isRTL && styles.rtlText]}>{checkIn.reflectionSummary}</Text>
+              ) : null}
+            </Card>
+          );
+        }) : null}
       {accountAligned && !historyLoading && !historyError && history.length > visibleHistoryCount ? (
         <Button
           title={t('wellness.emotional.showMore')}
@@ -499,7 +512,9 @@ export default function EmotionalCheckIn() {
       ) : null}
 
       <Snackbar
-        message={accountAligned ? snackbar?.message : null}
+        message={accountAligned && snackbar?.messageKey
+          ? t(snackbar.messageKey, snackbar.messageOptions)
+          : null}
         tone={snackbar?.tone}
         onDismiss={() => setSnackbar(null)}
       />

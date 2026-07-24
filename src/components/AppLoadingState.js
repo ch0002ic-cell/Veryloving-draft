@@ -1,12 +1,26 @@
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { getLocales } from 'expo-localization';
 import { images } from '../constants/assets';
 import { colors, radii, spacing, tones, typography } from '../constants/theme';
+import { resolveLanguage, translateForLocale } from '../i18n/core';
 
-export function AppLoadingState({ message = 'Preparing VeryLoving…' }) {
+export function bootstrapTranslation(key) {
+  let locales = [];
+  try {
+    locales = getLocales();
+  } catch {
+    // The outer startup boundary must remain renderable even when the native
+    // localization module is the component that failed to initialize.
+  }
+  return translateForLocale(resolveLanguage('system', locales), key);
+}
+
+export function AppLoadingState({ message }) {
+  const visibleMessage = message || bootstrapTranslation('common.loading');
   return (
     <View
       accessible
-      accessibilityLabel={message}
+      accessibilityLabel={visibleMessage}
       accessibilityLiveRegion="polite"
       accessibilityRole="progressbar"
       accessibilityState={{ busy: true }}
@@ -16,7 +30,7 @@ export function AppLoadingState({ message = 'Preparing VeryLoving…' }) {
         <Image accessible={false} source={images.capybaraMenu} resizeMode="contain" style={styles.image} />
       </View>
       <Text style={styles.brand}>VeryLoving</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={styles.message}>{visibleMessage}</Text>
       <ActivityIndicator accessible={false} color={colors.actionAccent} size="small" />
     </View>
   );

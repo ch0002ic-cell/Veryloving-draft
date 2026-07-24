@@ -9,14 +9,19 @@ const {
   LocationShareUnavailableError,
   shareLocationSnapshot
 } = require('../src/services/location-share');
+const { formatLocalizedDateTime } = require('../src/utils/localized-format');
 
 test('quick share creates an honest, static current-location payload', () => {
+  const timestamp = Date.parse('2026-07-13T04:00:00.000Z');
   const content = buildLocationShareContent({
-    timestamp: Date.parse('2026-07-13T04:00:00.000Z'),
+    timestamp,
     coords: { latitude: 1.3521, longitude: 103.8198 }
   });
 
-  assert.match(content.message, /location recorded at 2026-07-13T04:00:00\.000Z/);
+  assert.match(content.message, new RegExp(
+    `location recorded at ${formatLocalizedDateTime(timestamp, 'en').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`
+  ));
+  assert.doesNotMatch(content.message, /T04:00:00\.000Z/);
   assert.match(content.message, /query=1\.3521,103\.8198/);
   assert.match(content.message, /one-time location snapshot/i);
   assert.match(content.message, /does not update after sending/i);
@@ -24,28 +29,32 @@ test('quick share creates an honest, static current-location payload', () => {
 });
 
 test('quick share localizes safety copy while retaining exact coordinates and freshness', () => {
+  const timestamp = Date.parse('2026-07-12T23:00:00.000Z');
   const content = buildLocationShareContent({
     isCached: true,
-    cachedAt: Date.parse('2026-07-12T23:00:00.000Z'),
+    cachedAt: timestamp,
     coords: { latitude: 40.4168, longitude: -3.7038 }
   }, { locale: 'es' });
 
   assert.match(content.title, /Envío rápido/);
   assert.match(content.message, /última ubicación guardada/i);
-  assert.match(content.message, /2026-07-12T23:00:00\.000Z/);
+  assert.ok(content.message.includes(formatLocalizedDateTime(timestamp, 'es')));
+  assert.doesNotMatch(content.message, /T23:00:00\.000Z/);
   assert.match(content.message, /query=40\.4168,-3\.7038/);
   assert.match(content.message, /No se actualizará/);
 });
 
 test('quick share labels cached coordinates as the last saved location', () => {
+  const timestamp = Date.parse('2026-07-12T23:00:00.000Z');
   const content = buildLocationShareContent({
     isCached: true,
-    cachedAt: Date.parse('2026-07-12T23:00:00.000Z'),
+    cachedAt: timestamp,
     coords: { latitude: -33.8688, longitude: 151.2093 }
   });
 
   assert.match(content.message, /last saved location/i);
-  assert.match(content.message, /2026-07-12T23:00:00\.000Z/);
+  assert.ok(content.message.includes(formatLocalizedDateTime(timestamp, 'en')));
+  assert.doesNotMatch(content.message, /T23:00:00\.000Z/);
 });
 
 test('quick share rejects invalid coordinates before opening the native sheet', async () => {

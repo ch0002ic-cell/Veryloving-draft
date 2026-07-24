@@ -75,7 +75,7 @@ export default function ScenarioCenter() {
 
   const trigger = async (scenarioId) => {
     const result = await scenario.runScenario(scenarioId);
-    if (result?.started?.length) setSnackbar(t('wellness.scenarios.started'));
+    if (result?.started?.length) setSnackbar({ messageKey: 'wellness.scenarios.started' });
   };
 
   const confirmAndTrigger = (definition) => {
@@ -298,7 +298,10 @@ export default function ScenarioCenter() {
         />
       )}
 
-      <Snackbar message={snackbar} onDismiss={() => setSnackbar(null)} />
+      <Snackbar
+        message={snackbar?.messageKey ? t(snackbar.messageKey, snackbar.messageOptions) : null}
+        onDismiss={() => setSnackbar(null)}
+      />
       <InteractionFeedbackModal
         busy={scenario.feedbackBusy}
         error={Boolean(scenario.feedbackErrorCode)}
